@@ -1,0 +1,85 @@
+{
+  "assignment_seeds": [
+    4337005825,
+    4337005826
+  ],
+  "bootstrap_seed": 4337005904,
+  "clock": [
+    "cargo",
+    "+ohm",
+    "test",
+    "--no-run",
+    "--workspace",
+    "--locked",
+    "--offline",
+    "-j4"
+  ],
+  "clock_source": "clock.py",
+  "format": 1,
+  "git_index_sha256": "fc84f15ac7401cd9bdc362e4574c6d395529766c16be2e6b032ac47fa63d21cd",
+  "images": {
+    "B": {
+      "cargo_sha": "e74dddbed648ca90bd5cabab90d9e02517478e40f5552a0a8369d72d15596d33",
+      "driver": "36d1fd142355c3ad9e0ce006c1e92b7e511cba70c431b09eb1e335f572d27d05",
+      "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+    },
+    "C": {
+      "cargo_sha": "787ed90b5a14000ac0b1efc1d1aac5d730e0107b2e995cc0471138402759a4d5",
+      "driver": "52d5c046f570d3d61ff8bbaeff0d44798df916306110b4a2cac7fe459bc11955",
+      "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+    }
+  },
+  "isolation": "Dedicated host / exclusive native lock, CPUs 0\u20137, four jobs, offline, no trust opt-ins, wrappers, trace, JSON or tests in the clock. Child/host environment, source, Cargo profile flags and those canonical paths frozen. No common native outputs or shared training. State block one resides on dedicated secondary disk, block two on home disk. Each arm in each block independently starts with empty rustc, target, build and home state plus only a copied Cargo registry package tar/index. Both physical state locations are new and cross-arm linked files are forbidden. Native commands execute serially. Separate custody of prior migration states.",
+  "orders": [
+    [
+      "CB",
+      "BC",
+      "CB",
+      "CB",
+      "BC",
+      "BC"
+    ],
+    [
+      "BC",
+      "CB",
+      "CB",
+      "BC",
+      "BC",
+      "CB"
+    ]
+  ],
+  "qualification": "For each of four states run one authentic cold then three unchanged JSON/traced controls. Final two independently require exit 0, all 619 artifact records, identical canonical unit/output/features/profiles and diagnostics, 102 advertised executable paths (84 harness profiles, 18 others), 110 workspace ELF. Parent must execute 1 full ron rustc plus 50 link-only rustcs and 50 Wild, candidate zero full/link-only/Wild with 619 fresh. Require exact selected ty_server/e2e --list --format terse. Match cross-arm and cross-block workspace ELF raw or equality of every byte except GNU note build-ID and an actually different Wild rodata.sh_entsize (0 vs nonzero). If bytes outside the two fields move, or only build ID moves, fail the entire cohort. Do not execute test bodies.",
+  "reference_source": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "safety": "Before score, verify the primary independently qualified stabilized source/semantic/corrupt-cache controls on exactly these cross-host subjects. Root publishes this plan, then exact machine and runtime/worker binding; check all four native qualifications before opening a clock.",
+  "scope": "Independent second-machine repeat of the steady-state, complete Ruff workspace test-build endpoint. No Cargo/compiler changes and no Ruff edits. Four separate cold-trained states, ordinary release-source commands. Distinct from a published SDK and from the official -16 migration cost.",
+  "scored": "Minimum whole-command monotonic clock around the ordinary Cargo command inside the namespace. On each of 24 commands verify exit, no lock contention, the expected compiler status lines in ordinary stderr (not native process proof by themselves), exact selected harness list and complete raw or strictly normalized ELF digests outside the clock. Two traced structural controls before and one after timing for each state. No elapsed claims on traced or cold invocations. Six adjacent pairs per block, block one then block two. No interim hypothesis queries, deletions, substitutions or stopping. Every failure is preserved. Publish raw observations when completed.",
+  "sdk": "Bind matching common LLVM, all standard libraries and Wild. Capture complete SDK checksums on both hosts. rustc +ohm --print=sysroot must return an absolute path ending in /Ohm SDK. Plain unspaced target, registry and build paths. One effective source path and one SDK path across arms and blocks.",
+  "sources": {
+    "B_cargo": "db24aef819477e2fa46a50299bb23d5020dd518a",
+    "B_rust": "d6497b5469d81dd23cf010416c82c9443a04c61c",
+    "C_cargo": "a0c7d08c898d3fdff992f2f431dec57d2486add2",
+    "C_cargo_full_index_diff_sha256": "26883ced2f75bf7099bea1d69f83cc64a7e76b63069700cad8426a981d1170d3",
+    "C_rust": "4c0f6097a200ea5bc2209e1dfe3bad506a5e8680",
+    "C_rust_full_index_diff_sha256": "65e30b1570d62d6c95ecadaefec0c10828f0e2c69f7197f12e6c43c4036f04f4"
+  },
+  "statistics": "Single predeclared external endpoint. Full medians, geometric mean paired reduction, two-sided conditional randomization over all 20\u00d720 allowed slot assignments, 100,000 within-block resamples of pairs (two strata each of size 6). Qualify at p < .05, 95% lower bound > 1%, at least eight of twelve favorable pairs and positive effects in both independently trained strata. No pooling with the earlier machine or marginal attribution to either source patch.",
+  "storage": {
+    "initial_devshm_free_bytes": 52731404288,
+    "initial_home_free_bytes": 213746536448,
+    "initial_secondary_GiB_min": 65,
+    "initial_secondary_free_bytes": 73163784192,
+    "sustained_floor_GiB_home_secondary_tmpfs": 25
+  },
+  "train_order": {
+    "block_1_secondary": [
+      "B",
+      "C"
+    ],
+    "block_2_home": [
+      "C",
+      "B"
+    ]
+  }
+}

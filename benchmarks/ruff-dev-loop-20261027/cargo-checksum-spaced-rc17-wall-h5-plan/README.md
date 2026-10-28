@@ -1,0 +1,3 @@
+Two independently cold-trained pairs of Ruff test-build states run on a separate Linux host. Both members of a pair share the same physical storage class. Each has private targets and a private Cargo build store. The pinned Ruff checkout stays unchanged.
+
+The trial measures 12 adjacent pairs of ordinary, unchanged full-workspace test builds. The outputs, compiler process counts and a native harness listing must first pass on each state. The clock includes Cargo dispatch, compilation, linking, and waiting. [Earlier source and inference protocol](https://github.com/astral-sh/ohm-cargo/tree/8895a739552df06a4d4914b09acfd9c4764beb89/benchmarks/ruff-dev-loop-20261027/rc17-spaced-ruff-wall-plan)
