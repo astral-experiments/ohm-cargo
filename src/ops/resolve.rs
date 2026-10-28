@@ -141,6 +141,29 @@ pub fn resolve_ws<'a>(ws: &Workspace<'a>, dry_run: bool) -> CargoResult<(Package
     Ok((packages, resolve))
 }
 
+/// Checks that the selected packages are members whose targets can use the cached resolution.
+fn workspace_specs_allow_cached_resolve(ws: &Workspace<'_>, specs: &[PackageIdSpec]) -> bool {
+    // Workspace member names are unique. A spec can also restrict the version or source.
+    let members: HashMap<_, _> = ws
+        .members()
+        .map(|member| (member.name().as_str(), member))
+        .collect();
+    specs.iter().all(|spec| {
+        let Some(member) = members.get(spec.name()) else {
+            return false;
+        };
+        spec.matches(member.package_id())
+            && member.targets().iter().all(|target| {
+                // Dependency features require graph edges missing from the cached resolution.
+                target.required_features().is_none_or(|features| {
+                    features.iter().all(|feature| {
+                        matches!(FeatureValue::new(feature.into()), FeatureValue::Feature(_))
+                    })
+                })
+            })
+    })
+}
+
 /// Resolves dependencies for some packages of the workspace,
 /// taking into account `paths` overrides and activated features.
 ///
@@ -196,9 +219,6 @@ pub fn resolve_ws_with_opts<'gctx>(
         let can_reuse_workspace_resolve = !dry_run
             && !ws.is_ephemeral()
             && !specs.is_empty()
-            && specs
-                .iter()
-                .all(|spec| ws.members().any(|member| spec.matches(member.package_id())))
             && ws
                 .gctx()
                 .get_env_os("CARGO_EXPERIMENTAL_RESOLVE_CACHE")
@@ -206,23 +226,7 @@ pub fn resolve_ws_with_opts<'gctx>(
                     || ws.gctx().cli_unstable().ohm_defaults(),
                     |enabled| enabled == "1",
                 )
-            && ws
-                .members()
-                .filter(|member| specs.iter().any(|spec| spec.matches(member.package_id())))
-                .all(|member| {
-                    member.targets().iter().all(|target| {
-                        // Local features are validated from package summaries, but
-                        // dependency-feature validation needs complete graph edges.
-                        target.required_features().is_none_or(|features| {
-                            features.iter().all(|feature| {
-                                matches!(
-                                    FeatureValue::new(feature.into()),
-                                    FeatureValue::Feature(_)
-                                )
-                            })
-                        })
-                    })
-                });
+            && workspace_specs_allow_cached_resolve(ws, specs);
         let cached_resolve = if can_reuse_workspace_resolve {
             ops::lockfile::load_pkg_lockfile_with(ws, |resolve, lockfile_contents| {
                 Ok(resolve_cache::cached_workspace_resolve_is_fresh(

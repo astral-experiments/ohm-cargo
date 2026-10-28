@@ -3037,6 +3037,27 @@ fn workspace_resolve_cache_reuses_unchanged_workspace() {
 }
 
 #[cargo_test]
+fn workspace_resolve_cache_matches_qualified_member_specs() {
+    let project = workspace_resolve_cache_project();
+    project.change_file("external/Cargo.toml", &basic_manifest("other", "0.2.0"));
+    project.change_file(
+        "selected/Cargo.toml",
+        &format!(
+            "{}\n[dependencies]\nexternal = {{ package = 'other', path = '../external' }}",
+            basic_manifest("selected", "0.1.0")
+        ),
+    );
+
+    workspace_resolve_cache_command(&project, "check -p selected").run();
+    workspace_resolve_cache_command(&project, "check -p other@0.1.0")
+        .with_stderr_contains(WORKSPACE_RESOLVE_CACHE_HIT)
+        .run();
+    workspace_resolve_cache_command(&project, "check -p other@0.2.0")
+        .with_stderr_does_not_contain(WORKSPACE_RESOLVE_CACHE_HIT)
+        .run();
+}
+
+#[cargo_test]
 fn workspace_resolve_cache_ignores_execution_only_environment() {
     let project = workspace_resolve_cache_project();
 
