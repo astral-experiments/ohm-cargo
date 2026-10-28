@@ -1,0 +1,41 @@
+{
+  "BLAKE3_1_8_5_crate_sha256": "0aa83c34e62843d924f905e0f5c866eb1dd6545fc4d719e803d9ba6030371fce",
+  "controls": "Both arms open/consume the same bytes twice, same machine/compiler/held files, explicit first/second replacement checks, registered clean raw BLAKE3.",
+  "modeled_arms": {
+    "copy": "One raw BLAKE3 leaf per generated file in a domain-separated prospective tree, retain immutable heap bytes and compare second read via memcmp; compute actual normal-order digest on mismatch.",
+    "raw": "BLAKE3 first tree payload then ordinary raw BLAKE3 second."
+  },
+  "n": 24,
+  "orders": [
+    "raw-copy",
+    "raw-copy",
+    "copy-raw",
+    "raw-copy",
+    "copy-raw",
+    "raw-copy",
+    "copy-raw",
+    "copy-raw",
+    "copy-raw",
+    "raw-copy",
+    "copy-raw",
+    "copy-raw",
+    "copy-raw",
+    "copy-raw",
+    "raw-copy",
+    "copy-raw",
+    "raw-copy",
+    "raw-copy",
+    "raw-copy",
+    "raw-copy",
+    "copy-raw",
+    "raw-copy",
+    "copy-raw",
+    "raw-copy"
+  ],
+  "preflight": "host one-minute load below 2, at least 10 GiB available RAM, all three raw data hashes exact; verify 7,918,933 B, stable true-consecutive output from independently fresh processes, and both directions of actual ZIP changes.",
+  "public_primary": "descriptive median per arm and all 24 paired differences; if slower or ambiguous, do not build a product.",
+  "schedule_seed": 2026102821520,
+  "scope": "Native-only cost of two verified observations on three real warm Ruff generated buffers. No Cargo product or whole-build effect inferred.",
+  "source_sha256": "b48c72f021b958cce93a31186b3318983d96a438d463119854846e7d33da6b42",
+  "workload": "Fresh process per arm. First both Unicode files then both consumers, followed by ZIP first+second. One CPU 28. Exact reads default 16KiB then 64KiB. Timing includes allocation, first write, comparison, both reads, free."
+}

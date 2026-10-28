@@ -1,0 +1,310 @@
+{
+  "actual_release": "7caf39914da1e28a67744ecbc963a5f26361474d",
+  "cargo_distinct_live_or_pr_heads": 287,
+  "distinct_blob_sets": [
+    [
+      "0374f77e03f72497a9124bbd1001aa903f0c0f79",
+      1
+    ],
+    [
+      "0682c05a4e0a95682659ca51ba1803ae829f78b7",
+      1
+    ],
+    [
+      "364e474712f6385d69e758a86e7a6a3087026925",
+      1
+    ],
+    [
+      "83f0acb83838bc176d78903bc4eb74526fe5f77e",
+      151
+    ],
+    [
+      "c54f8a5038e9e422ebfad143bb6bfe184e668440",
+      1
+    ],
+    [
+      "f6cbf3060e51af95668d75134e66d8bda5bbc83d",
+      15
+    ]
+  ],
+  "related_cargo": [
+    {
+      "headRefOid": "235f9228651b74c591e6f62cae4c9b761448dd2d",
+      "number": 274,
+      "state": "OPEN",
+      "title": "Replace symlinked Ohm worktree markers atomically",
+      "url": "https://github.com/astral-sh/ohm-cargo/pull/274"
+    },
+    {
+      "headRefOid": "a0c7d08c898d3fdff992f2f431dec57d2486add2",
+      "number": 258,
+      "state": "OPEN",
+      "title": "Revalidate checksums recorded for ambiguous input paths",
+      "url": "https://github.com/astral-sh/ohm-cargo/pull/258"
+    },
+    {
+      "headRefOid": "db24aef819477e2fa46a50299bb23d5020dd518a",
+      "number": 256,
+      "state": "OPEN",
+      "title": "Use the build-script result timestamp when restoring check metadata",
+      "url": "https://github.com/astral-sh/ohm-cargo/pull/256"
+    },
+    {
+      "headRefOid": "7f71057cd288aceb35036dc5d074225301f5dd08",
+      "number": 249,
+      "state": "OPEN",
+      "title": "Reuse verified Git index checksums for package file lists",
+      "url": "https://github.com/astral-sh/ohm-cargo/pull/249"
+    },
+    {
+      "headRefOid": "71b2274138b5a40d47180c0097f73abc8ad52042",
+      "number": 248,
+      "state": "OPEN",
+      "title": "Reuse checksum prefetch miss counts during freshness checks",
+      "url": "https://github.com/astral-sh/ohm-cargo/pull/248"
+    },
+    {
+      "headRefOid": "744e575a77fc13f0e1a8436712e79865881488a6",
+      "number": 186,
+      "state": "OPEN",
+      "title": "Parallelize checksum freshness checks",
+      "url": "https://github.com/astral-sh/ohm-cargo/pull/186"
+    },
+    {
+      "headRefOid": "ff1eacd2b577777ecb8a7f3e934ddac36d11928e",
+      "number": 177,
+      "state": "OPEN",
+      "title": "Skip identity OUT_DIR rewrites in cached build output",
+      "url": "https://github.com/astral-sh/ohm-cargo/pull/177"
+    },
+    {
+      "headRefOid": "41ca5f3e3b5e526a845d808d46e1bdfe57352bd2",
+      "number": 105,
+      "state": "OPEN",
+      "title": "Reuse the source checksum buffer across files",
+      "url": "https://github.com/astral-sh/ohm-cargo/pull/105"
+    },
+    {
+      "headRefOid": "1269b29fe760338393c8052dbbd03154c20ebe10",
+      "number": 103,
+      "state": "OPEN",
+      "title": "Allow trusted local macro snapshots in new worktrees",
+      "url": "https://github.com/astral-sh/ohm-cargo/pull/103"
+    },
+    {
+      "headRefOid": "9866420326d95cc9628ba6442b51e51af76ba35c",
+      "number": 101,
+      "state": "OPEN",
+      "title": "Seed Git worktrees with reusable Cargo build state",
+      "url": "https://github.com/astral-sh/ohm-cargo/pull/101"
+    }
+  ],
+  "repos": {
+    "cargo": {
+      "live_branches": 283,
+      "live_head_map_commitment": "aa79781d93be0c84678fa73d42ba9c8d4665f68adda085be3fb17fdf84141129",
+      "pr_head_commitment": "c32c6b51034e3af872839e2df9a815a9309d2c4e552f70f8806dc74bbb19e84a",
+      "prs_all": 228
+    },
+    "rust": {
+      "live_branches": 312,
+      "live_head_map_commitment": "d02653a3b1f8196fb2ee35b24332f6695a00164ff2368c34055b364d47b5f9a5",
+      "pr_head_commitment": "af7a04270c445637028756f7b22e9846bc5b2bd573124dc7d561f8dc0ea38fac",
+      "prs_all": 220
+    }
+  },
+  "source_blobs": {
+    "0374f77e03f72497a9124bbd1001aa903f0c0f79": {
+      "can_reuse_after_scripts": {
+        "file_hasher": false,
+        "includes_comparison": false,
+        "includes_raw_reads": false,
+        "sha256": "84ac0fcb505ee7c9b540b86970ca0fa5cfd6e78ef0628918891f4f58d645675b"
+      },
+      "hash_file": {
+        "file_hasher": true,
+        "includes_comparison": false,
+        "includes_raw_reads": true,
+        "sha256": "188254e1a63c0075c60e20b77701be23b0e49a08d4604253a11b9ba4fc50753f"
+      },
+      "hash_tree": {
+        "file_hasher": true,
+        "includes_comparison": false,
+        "includes_raw_reads": true,
+        "sha256": "deb232279fd5d44872125759a856f3ac83bc07465b81b4d6e5244e2aeb6775ce"
+      },
+      "load_script_result": {
+        "file_hasher": false,
+        "includes_comparison": false,
+        "includes_raw_reads": false,
+        "sha256": "ef6ab60a1b097345888b2ef97560ed57467751920ab52c74dd9db045068004c4"
+      },
+      "result_digest": {
+        "file_hasher": true,
+        "includes_comparison": false,
+        "includes_raw_reads": true,
+        "sha256": "790272c8bf05fc4095e8a955e961b541749f67950f17aa280a156b8b34ff5db7"
+      }
+    },
+    "0682c05a4e0a95682659ca51ba1803ae829f78b7": {
+      "can_reuse_after_scripts": {
+        "file_hasher": false,
+        "includes_comparison": false,
+        "includes_raw_reads": false,
+        "sha256": "8300efb639ea4f1a08450f55c8e2e271b6ca4ea54e7ea2f20603151eab2b74a2"
+      },
+      "hash_file": {
+        "file_hasher": true,
+        "includes_comparison": false,
+        "includes_raw_reads": true,
+        "sha256": "188254e1a63c0075c60e20b77701be23b0e49a08d4604253a11b9ba4fc50753f"
+      },
+      "hash_tree": {
+        "file_hasher": true,
+        "includes_comparison": false,
+        "includes_raw_reads": true,
+        "sha256": "deb232279fd5d44872125759a856f3ac83bc07465b81b4d6e5244e2aeb6775ce"
+      },
+      "load_script_result": {
+        "file_hasher": false,
+        "includes_comparison": false,
+        "includes_raw_reads": false,
+        "sha256": "ef6ab60a1b097345888b2ef97560ed57467751920ab52c74dd9db045068004c4"
+      },
+      "result_digest": {
+        "file_hasher": true,
+        "includes_comparison": false,
+        "includes_raw_reads": true,
+        "sha256": "790272c8bf05fc4095e8a955e961b541749f67950f17aa280a156b8b34ff5db7"
+      }
+    },
+    "364e474712f6385d69e758a86e7a6a3087026925": {
+      "can_reuse_after_scripts": {
+        "file_hasher": false,
+        "includes_comparison": false,
+        "includes_raw_reads": false,
+        "sha256": "9429ddc342dec3b5e1b5fe2ef19b3eeec3b0dfa79db8fe0f103ae42da86236a1"
+      },
+      "hash_file": {
+        "file_hasher": true,
+        "includes_comparison": false,
+        "includes_raw_reads": true,
+        "sha256": "188254e1a63c0075c60e20b77701be23b0e49a08d4604253a11b9ba4fc50753f"
+      },
+      "hash_tree": {
+        "file_hasher": true,
+        "includes_comparison": false,
+        "includes_raw_reads": true,
+        "sha256": "deb232279fd5d44872125759a856f3ac83bc07465b81b4d6e5244e2aeb6775ce"
+      },
+      "load_script_result": {
+        "file_hasher": false,
+        "includes_comparison": false,
+        "includes_raw_reads": false,
+        "sha256": "ef6ab60a1b097345888b2ef97560ed57467751920ab52c74dd9db045068004c4"
+      },
+      "result_digest": {
+        "file_hasher": true,
+        "includes_comparison": false,
+        "includes_raw_reads": true,
+        "sha256": "790272c8bf05fc4095e8a955e961b541749f67950f17aa280a156b8b34ff5db7"
+      }
+    },
+    "83f0acb83838bc176d78903bc4eb74526fe5f77e": {
+      "can_reuse_after_scripts": {
+        "file_hasher": false,
+        "includes_comparison": false,
+        "includes_raw_reads": false,
+        "sha256": "9429ddc342dec3b5e1b5fe2ef19b3eeec3b0dfa79db8fe0f103ae42da86236a1"
+      },
+      "hash_file": {
+        "file_hasher": true,
+        "includes_comparison": false,
+        "includes_raw_reads": true,
+        "sha256": "188254e1a63c0075c60e20b77701be23b0e49a08d4604253a11b9ba4fc50753f"
+      },
+      "hash_tree": {
+        "file_hasher": true,
+        "includes_comparison": false,
+        "includes_raw_reads": true,
+        "sha256": "deb232279fd5d44872125759a856f3ac83bc07465b81b4d6e5244e2aeb6775ce"
+      },
+      "load_script_result": {
+        "file_hasher": false,
+        "includes_comparison": false,
+        "includes_raw_reads": false,
+        "sha256": "ef6ab60a1b097345888b2ef97560ed57467751920ab52c74dd9db045068004c4"
+      },
+      "result_digest": {
+        "file_hasher": true,
+        "includes_comparison": false,
+        "includes_raw_reads": true,
+        "sha256": "790272c8bf05fc4095e8a955e961b541749f67950f17aa280a156b8b34ff5db7"
+      }
+    },
+    "c54f8a5038e9e422ebfad143bb6bfe184e668440": {
+      "can_reuse_after_scripts": {
+        "file_hasher": false,
+        "includes_comparison": false,
+        "includes_raw_reads": false,
+        "sha256": "8300efb639ea4f1a08450f55c8e2e271b6ca4ea54e7ea2f20603151eab2b74a2"
+      },
+      "hash_file": {
+        "file_hasher": true,
+        "includes_comparison": false,
+        "includes_raw_reads": true,
+        "sha256": "188254e1a63c0075c60e20b77701be23b0e49a08d4604253a11b9ba4fc50753f"
+      },
+      "hash_tree": {
+        "file_hasher": true,
+        "includes_comparison": false,
+        "includes_raw_reads": true,
+        "sha256": "deb232279fd5d44872125759a856f3ac83bc07465b81b4d6e5244e2aeb6775ce"
+      },
+      "load_script_result": {
+        "file_hasher": false,
+        "includes_comparison": false,
+        "includes_raw_reads": false,
+        "sha256": "ef6ab60a1b097345888b2ef97560ed57467751920ab52c74dd9db045068004c4"
+      },
+      "result_digest": {
+        "file_hasher": true,
+        "includes_comparison": false,
+        "includes_raw_reads": true,
+        "sha256": "790272c8bf05fc4095e8a955e961b541749f67950f17aa280a156b8b34ff5db7"
+      }
+    },
+    "f6cbf3060e51af95668d75134e66d8bda5bbc83d": {
+      "can_reuse_after_scripts": {
+        "file_hasher": false,
+        "includes_comparison": false,
+        "includes_raw_reads": false,
+        "sha256": "9429ddc342dec3b5e1b5fe2ef19b3eeec3b0dfa79db8fe0f103ae42da86236a1"
+      },
+      "hash_file": {
+        "file_hasher": true,
+        "includes_comparison": false,
+        "includes_raw_reads": true,
+        "sha256": "188254e1a63c0075c60e20b77701be23b0e49a08d4604253a11b9ba4fc50753f"
+      },
+      "hash_tree": {
+        "file_hasher": true,
+        "includes_comparison": false,
+        "includes_raw_reads": true,
+        "sha256": "deb232279fd5d44872125759a856f3ac83bc07465b81b4d6e5244e2aeb6775ce"
+      },
+      "load_script_result": {
+        "file_hasher": false,
+        "includes_comparison": false,
+        "includes_raw_reads": false,
+        "sha256": "ef6ab60a1b097345888b2ef97560ed57467751920ab52c74dd9db045068004c4"
+      },
+      "result_digest": {
+        "file_hasher": true,
+        "includes_comparison": false,
+        "includes_raw_reads": true,
+        "sha256": "790272c8bf05fc4095e8a955e961b541749f67950f17aa280a156b8b34ff5db7"
+      }
+    }
+  }
+}

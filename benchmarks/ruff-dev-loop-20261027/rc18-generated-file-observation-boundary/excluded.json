@@ -1,0 +1,75 @@
+{
+  "first_raw_zip_count_assertion": {
+    "accepted": false,
+    "actual": {
+      "cargo": "02a86ebd2d9e4f237b33f212102b81ed145eb77fae090d67e379cb6f1d70a573",
+      "commands": [
+        {
+          "artifacts": 182,
+          "dirty": [],
+          "hook_log": [
+            "cargo-open 1 pid 1666265 mutated 0",
+            "cargo-open 2 pid 1666265 mutated 0"
+          ],
+          "label": "unchanged",
+          "products": [
+            {
+              "changed_zip": 0,
+              "file": ".rlib",
+              "old_zip": 2,
+              "sha256": "8b44e1442003c8e1ef51b9989db2dca5128762dbb33022b3833b623ce5b5fadf"
+            },
+            {
+              "changed_zip": 0,
+              "file": ".rmeta",
+              "old_zip": 1,
+              "sha256": "7cc5a9e8c78ac557742bd3240b857807efd743fb9f4e6d350f4106a72e19adbf"
+            }
+          ],
+          "rc": 0,
+          "stderr_sha256": "1f1a1545a8c68a946f34f852ff6f24024d06d691f834007966eaaa43654d6350",
+          "stdout_sha256": "2822d54365e5db6b72df34556e460d38a945ca27bfd988d2d7b2b80e3eefa666",
+          "zip": "198913903bc7a97bf02a697768ab78ed3675b645a0f9ecaf78bd1cd9ca7800de"
+        }
+      ],
+      "differing_bytes": [
+        10,
+        5519002
+      ],
+      "hook": "9ffe2dbd58e90a5f518ff25123cc63ba21c1757ee9208c69563708811a53d31d",
+      "same_mtime": true,
+      "stub": "721696b22e172c4f9dbe15ec5e04a04a9939188eca12d8110ab62f9de81d96a1",
+      "zip_changed": "9981488fd5597c72340f4546aa08b91a8d0bcd891a78267a81e72c7220987bb3",
+      "zip_old": "198913903bc7a97bf02a697768ab78ed3675b645a0f9ecaf78bd1cd9ca7800de",
+      "zip_size": 5577690
+    },
+    "correction": "Require two complete ZIP copies in rlib, one in rmeta, before running either replacement on disjoint independent initial copies.",
+    "role": "original positive-only qualification expected one raw ZIP per output"
+  },
+  "instruction_startup": {
+    "accepted": false,
+    "artifacts": 0,
+    "exit": 133,
+    "raw_profile_sha256": null,
+    "role": "first Callgrind startup without preselected SSL trust-store paths",
+    "signal": "SIGTRAP",
+    "stack": "libc setenv via openssl_probe::try_init_openssl_env_vars"
+  },
+  "later_qualified_profile_environment": {
+    "SSL_CERT_DIR": "/etc/ssl/certs",
+    "SSL_CERT_FILE": "/etc/ssl/certs/ca-certificates.crt",
+    "scope": "Explicit only for Callgrind to avoid its setenv trap. Same fresh counts and output gates."
+  },
+  "leaf_model_setup": {
+    "accepted": false,
+    "correction": "Use the exact relative paths already observed in the ordinary positive trace.",
+    "role": "first path-only preflight saw multiple historical output directories",
+    "wall_slots": 0
+  },
+  "trusted_namespace_setup": {
+    "accepted": false,
+    "artifacts": 0,
+    "cause": "offline registry did not resolve anyhow",
+    "role": "first unscored synthetic-root trial omitted existing site Cargo configuration"
+  }
+}

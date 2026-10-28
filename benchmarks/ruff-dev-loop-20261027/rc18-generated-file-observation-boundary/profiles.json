@@ -1,0 +1,1273 @@
+{
+  "ordinary": {
+    "events": "events: Ir",
+    "executed_ir": 313383175,
+    "functions": {
+      "<cargo::compiler::custom_build::BuildOutput>::parse": {
+        "inclusive_incoming": 2281795,
+        "incoming": {
+          "<cargo::compiler::custom_build::BuildOutput>::parse_file": [
+            48,
+            2281795
+          ]
+        },
+        "local_cost": 1824715,
+        "outgoing": {
+          "13502": [
+            358,
+            143940
+          ],
+          "13504": [
+            33,
+            2343
+          ],
+          "13518": [
+            2,
+            880
+          ],
+          "4354": [
+            674,
+            69694
+          ],
+          "4650": [
+            412,
+            36202
+          ],
+          "4754": [
+            722,
+            10342
+          ],
+          "6558": [
+            96,
+            13482
+          ],
+          "6636": [
+            2,
+            156
+          ],
+          "6664": [
+            48,
+            30714
+          ],
+          "6800": [
+            48,
+            2256
+          ],
+          "7238": [
+            102,
+            27178
+          ],
+          "7440": [
+            2,
+            9509
+          ],
+          "8888": [
+            3008,
+            110384
+          ]
+        }
+      },
+      "<cargo::compiler::custom_build::BuildOutput>::parse_file": {
+        "inclusive_incoming": 2344519,
+        "incoming": {
+          "cargo::compiler::custom_build::prev_build_output": [
+            48,
+            2344519
+          ]
+        },
+        "local_cost": 2444,
+        "outgoing": {
+          "4650": [
+            46,
+            5212
+          ],
+          "7510": [
+            48,
+            55068
+          ],
+          "<cargo::compiler::custom_build::BuildOutput>::parse": [
+            48,
+            2281795
+          ]
+        }
+      },
+      "cargo::compiler::custom_build::prev_build_output": {
+        "inclusive_incoming": 2856759,
+        "incoming": {
+          "13467": [
+            23,
+            1120369
+          ],
+          "13595": [
+            2,
+            593439
+          ],
+          "15158": [
+            23,
+            1142951
+          ]
+        },
+        "local_cost": 12963,
+        "outgoing": {
+          "13268": [
+            48,
+            864
+          ],
+          "13486": [
+            48,
+            203279
+          ],
+          "13488": [
+            48,
+            1920
+          ],
+          "13494": [
+            48,
+            90037
+          ],
+          "4354": [
+            96,
+            11451
+          ],
+          "4650": [
+            336,
+            54704
+          ],
+          "4754": [
+            144,
+            4320
+          ],
+          "6666": [
+            48,
+            86819
+          ],
+          "7510": [
+            48,
+            45883
+          ],
+          "<cargo::compiler::custom_build::BuildOutput>::parse_file": [
+            48,
+            2344519
+          ]
+        }
+      },
+      "cargo::compiler::fingerprint::read_checksum": {
+        "inclusive_incoming": 35458284,
+        "incoming": {
+          "13618": [
+            161,
+            35458284
+          ]
+        },
+        "local_cost": 26465,
+        "outgoing": {
+          "12200": [
+            331,
+            33956387
+          ],
+          "12354": [
+            161,
+            176968
+          ],
+          "12356": [
+            161,
+            80178
+          ],
+          "4534": [
+            17,
+            1114384
+          ],
+          "4754": [
+            161,
+            33649
+          ],
+          "6698": [
+            492,
+            28044
+          ],
+          "6702": [
+            161,
+            8533
+          ],
+          "7218": [
+            17,
+            33676
+          ]
+        }
+      },
+      "cargo::compiler::fingerprint::worktree::hash_file": {
+        "inclusive_incoming": 31609352,
+        "incoming": {
+          "cargo::compiler::fingerprint::worktree::hash_tree": [
+            4,
+            31255615
+          ],
+          "cargo::compiler::fingerprint::worktree::result_digest": [
+            2,
+            353737
+          ]
+        },
+        "local_cost": 7316,
+        "outgoing": {
+          "12200": [
+            499,
+            31462581
+          ],
+          "13674": [
+            499,
+            36926
+          ],
+          "4534": [
+            6,
+            98406
+          ],
+          "6702": [
+            6,
+            318
+          ],
+          "9506": [
+            6,
+            2479
+          ],
+          "9530": [
+            6,
+            1326
+          ]
+        }
+      },
+      "cargo::compiler::fingerprint::worktree::hash_tree": {
+        "inclusive_incoming": 31295287,
+        "incoming": {
+          "cargo::compiler::fingerprint::worktree::result_digest": [
+            2,
+            31295287
+          ]
+        },
+        "local_cost": 490,
+        "outgoing": {
+          "12190": [
+            4,
+            1733
+          ],
+          "12200": [
+            20,
+            3275
+          ],
+          "13678": [
+            2,
+            2322
+          ],
+          "13682": [
+            2,
+            1913
+          ],
+          "13686": [
+            2,
+            224
+          ],
+          "4650": [
+            4,
+            792
+          ],
+          "6654": [
+            4,
+            3734
+          ],
+          "8806": [
+            2,
+            1765
+          ],
+          "8824": [
+            4,
+            1304
+          ],
+          "9306": [
+            4,
+            22120
+          ],
+          "cargo::compiler::fingerprint::worktree::hash_file": [
+            4,
+            31255615
+          ]
+        }
+      },
+      "cargo::compiler::fingerprint::worktree::result_digest": {
+        "inclusive_incoming": 31657779,
+        "incoming": {
+          "13660": [
+            2,
+            31657779
+          ]
+        },
+        "local_cost": 172,
+        "outgoing": {
+          "12190": [
+            4,
+            1667
+          ],
+          "12200": [
+            2,
+            244
+          ],
+          "13664": [
+            2,
+            110
+          ],
+          "13666": [
+            2,
+            1264
+          ],
+          "13690": [
+            2,
+            5298
+          ],
+          "cargo::compiler::fingerprint::worktree::hash_file": [
+            2,
+            353737
+          ],
+          "cargo::compiler::fingerprint::worktree::hash_tree": [
+            2,
+            31295287
+          ]
+        }
+      },
+      "cargo::sources::path::list_files": {
+        "inclusive_incoming": 11501994,
+        "incoming": {
+          "13762": [
+            1,
+            11501994
+          ]
+        },
+        "local_cost": 272,
+        "outgoing": {
+          "13766": [
+            1,
+            405070
+          ],
+          "14208": [
+            1,
+            19319
+          ],
+          "14288": [
+            1,
+            666
+          ],
+          "14298": [
+            1,
+            7064429
+          ],
+          "14692": [
+            1,
+            6277
+          ],
+          "14698": [
+            2,
+            28
+          ],
+          "14700": [
+            1,
+            761
+          ],
+          "14702": [
+            2,
+            264
+          ],
+          "14704": [
+            2,
+            2969
+          ],
+          "14716": [
+            1,
+            3844431
+          ],
+          "15048": [
+            1,
+            154382
+          ],
+          "15110": [
+            2,
+            1242
+          ],
+          "15120": [
+            2,
+            332
+          ],
+          "4650": [
+            1,
+            85
+          ],
+          "4754": [
+            5,
+            709
+          ],
+          "8122": [
+            1,
+            380
+          ],
+          "8310": [
+            1,
+            14
+          ],
+          "8544": [
+            1,
+            364
+          ]
+        }
+      }
+    },
+    "last_totals_ir": 313383176,
+    "normal_termination": true,
+    "sha256": "b10faef02bb41c1007141ccadb82e0d771a50a421be877ed0b373803f841e447"
+  },
+  "trusted_json": {
+    "events": "events: Ir",
+    "executed_ir": 323298099,
+    "functions": {
+      "<cargo::compiler::custom_build::BuildOutput>::parse": {
+        "inclusive_incoming": 2288418,
+        "incoming": {
+          "<cargo::compiler::custom_build::BuildOutput>::parse_file": [
+            48,
+            2288418
+          ]
+        },
+        "local_cost": 1824715,
+        "outgoing": {
+          "13520": [
+            358,
+            143940
+          ],
+          "13522": [
+            33,
+            2995
+          ],
+          "13536": [
+            2,
+            880
+          ],
+          "4350": [
+            674,
+            73983
+          ],
+          "4646": [
+            412,
+            36283
+          ],
+          "4750": [
+            722,
+            10342
+          ],
+          "6554": [
+            96,
+            13482
+          ],
+          "6632": [
+            2,
+            156
+          ],
+          "6660": [
+            48,
+            32047
+          ],
+          "6796": [
+            48,
+            2256
+          ],
+          "7240": [
+            102,
+            27386
+          ],
+          "7456": [
+            2,
+            9569
+          ],
+          "8898": [
+            3008,
+            110384
+          ]
+        }
+      },
+      "<cargo::compiler::custom_build::BuildOutput>::parse_file": {
+        "inclusive_incoming": 2352241,
+        "incoming": {
+          "cargo::compiler::custom_build::prev_build_output": [
+            48,
+            2352241
+          ]
+        },
+        "local_cost": 2444,
+        "outgoing": {
+          "4646": [
+            46,
+            5209
+          ],
+          "7526": [
+            48,
+            56170
+          ],
+          "<cargo::compiler::custom_build::BuildOutput>::parse": [
+            48,
+            2288418
+          ]
+        }
+      },
+      "cargo::compiler::custom_build::prev_build_output": {
+        "inclusive_incoming": 2860088,
+        "incoming": {
+          "13485": [
+            23,
+            1119081
+          ],
+          "13613": [
+            2,
+            593443
+          ],
+          "15172": [
+            23,
+            1147564
+          ]
+        },
+        "local_cost": 12963,
+        "outgoing": {
+          "13288": [
+            48,
+            864
+          ],
+          "13504": [
+            48,
+            199459
+          ],
+          "13506": [
+            48,
+            2022
+          ],
+          "13512": [
+            48,
+            88109
+          ],
+          "4350": [
+            96,
+            12453
+          ],
+          "4646": [
+            336,
+            54287
+          ],
+          "4750": [
+            144,
+            4320
+          ],
+          "6662": [
+            48,
+            87487
+          ],
+          "7526": [
+            48,
+            45883
+          ],
+          "<cargo::compiler::custom_build::BuildOutput>::parse_file": [
+            48,
+            2352241
+          ]
+        }
+      },
+      "cargo::compiler::fingerprint::read_checksum": {
+        "inclusive_incoming": 35458099,
+        "incoming": {
+          "13636": [
+            161,
+            35458099
+          ]
+        },
+        "local_cost": 26465,
+        "outgoing": {
+          "12220": [
+            331,
+            33956387
+          ],
+          "12374": [
+            161,
+            176968
+          ],
+          "12376": [
+            161,
+            80178
+          ],
+          "4530": [
+            17,
+            1114384
+          ],
+          "4750": [
+            161,
+            33649
+          ],
+          "6694": [
+            492,
+            28044
+          ],
+          "6698": [
+            161,
+            8533
+          ],
+          "7220": [
+            17,
+            33491
+          ]
+        }
+      },
+      "cargo::compiler::fingerprint::worktree::hash_file": {
+        "inclusive_incoming": 31609352,
+        "incoming": {
+          "cargo::compiler::fingerprint::worktree::hash_tree": [
+            4,
+            31255615
+          ],
+          "cargo::compiler::fingerprint::worktree::result_digest": [
+            2,
+            353737
+          ]
+        },
+        "local_cost": 7316,
+        "outgoing": {
+          "12220": [
+            499,
+            31462581
+          ],
+          "13692": [
+            499,
+            36926
+          ],
+          "4530": [
+            6,
+            98406
+          ],
+          "6698": [
+            6,
+            318
+          ],
+          "9518": [
+            6,
+            2479
+          ],
+          "9542": [
+            6,
+            1326
+          ]
+        }
+      },
+      "cargo::compiler::fingerprint::worktree::hash_tree": {
+        "inclusive_incoming": 31296027,
+        "incoming": {
+          "cargo::compiler::fingerprint::worktree::result_digest": [
+            2,
+            31296027
+          ]
+        },
+        "local_cost": 490,
+        "outgoing": {
+          "12210": [
+            4,
+            1733
+          ],
+          "12220": [
+            20,
+            3275
+          ],
+          "13696": [
+            2,
+            2230
+          ],
+          "13700": [
+            2,
+            1913
+          ],
+          "13704": [
+            2,
+            224
+          ],
+          "4646": [
+            4,
+            822
+          ],
+          "6650": [
+            4,
+            4325
+          ],
+          "8814": [
+            2,
+            2008
+          ],
+          "8832": [
+            4,
+            1332
+          ],
+          "9320": [
+            4,
+            22060
+          ],
+          "cargo::compiler::fingerprint::worktree::hash_file": [
+            4,
+            31255615
+          ]
+        }
+      },
+      "cargo::compiler::fingerprint::worktree::result_digest": {
+        "inclusive_incoming": 31658519,
+        "incoming": {
+          "13678": [
+            2,
+            31658519
+          ]
+        },
+        "local_cost": 172,
+        "outgoing": {
+          "12210": [
+            4,
+            1667
+          ],
+          "12220": [
+            2,
+            244
+          ],
+          "13682": [
+            2,
+            110
+          ],
+          "13684": [
+            2,
+            1264
+          ],
+          "13708": [
+            2,
+            5298
+          ],
+          "cargo::compiler::fingerprint::worktree::hash_file": [
+            2,
+            353737
+          ],
+          "cargo::compiler::fingerprint::worktree::hash_tree": [
+            2,
+            31296027
+          ]
+        }
+      },
+      "cargo::sources::path::list_files": {
+        "inclusive_incoming": 11520986,
+        "incoming": {
+          "13780": [
+            1,
+            11520986
+          ]
+        },
+        "local_cost": 272,
+        "outgoing": {
+          "13784": [
+            1,
+            405522
+          ],
+          "14226": [
+            1,
+            18602
+          ],
+          "14306": [
+            1,
+            666
+          ],
+          "14316": [
+            1,
+            7064428
+          ],
+          "14710": [
+            1,
+            6276
+          ],
+          "14716": [
+            2,
+            28
+          ],
+          "14718": [
+            1,
+            762
+          ],
+          "14720": [
+            2,
+            264
+          ],
+          "14722": [
+            2,
+            2979
+          ],
+          "14732": [
+            1,
+            3864023
+          ],
+          "15062": [
+            1,
+            154012
+          ],
+          "15124": [
+            2,
+            1242
+          ],
+          "15134": [
+            2,
+            332
+          ],
+          "4646": [
+            1,
+            113
+          ],
+          "4750": [
+            5,
+            709
+          ],
+          "8132": [
+            1,
+            380
+          ],
+          "8318": [
+            1,
+            14
+          ],
+          "8552": [
+            1,
+            362
+          ]
+        }
+      }
+    },
+    "last_totals_ir": 323298100,
+    "normal_termination": true,
+    "sha256": "5d35bf7846bd76b9bea1cef30de786185b47d25d20ecd98f75044aad0c5d872f"
+  },
+  "untrusted_json": {
+    "events": "events: Ir",
+    "executed_ir": 397349307,
+    "functions": {
+      "<cargo::compiler::custom_build::BuildOutput>::parse": {
+        "inclusive_incoming": 2286924,
+        "incoming": {
+          "<cargo::compiler::custom_build::BuildOutput>::parse_file": [
+            48,
+            2286924
+          ]
+        },
+        "local_cost": 1824715,
+        "outgoing": {
+          "13276": [
+            358,
+            143940
+          ],
+          "13278": [
+            33,
+            2494
+          ],
+          "13292": [
+            2,
+            880
+          ],
+          "4350": [
+            674,
+            73477
+          ],
+          "4646": [
+            412,
+            36171
+          ],
+          "4750": [
+            722,
+            10342
+          ],
+          "6554": [
+            96,
+            13482
+          ],
+          "6632": [
+            2,
+            156
+          ],
+          "6660": [
+            48,
+            31161
+          ],
+          "6796": [
+            48,
+            2256
+          ],
+          "7240": [
+            102,
+            27966
+          ],
+          "7456": [
+            2,
+            9500
+          ],
+          "8898": [
+            3008,
+            110384
+          ]
+        }
+      },
+      "<cargo::compiler::custom_build::BuildOutput>::parse_file": {
+        "inclusive_incoming": 2351380,
+        "incoming": {
+          "cargo::compiler::custom_build::prev_build_output": [
+            48,
+            2351380
+          ]
+        },
+        "local_cost": 2444,
+        "outgoing": {
+          "4646": [
+            46,
+            5301
+          ],
+          "7526": [
+            48,
+            56711
+          ],
+          "<cargo::compiler::custom_build::BuildOutput>::parse": [
+            48,
+            2286924
+          ]
+        }
+      },
+      "cargo::compiler::custom_build::prev_build_output": {
+        "inclusive_incoming": 2861783,
+        "incoming": {
+          "13241": [
+            23,
+            1119931
+          ],
+          "13369": [
+            2,
+            593419
+          ],
+          "15136": [
+            23,
+            1148433
+          ]
+        },
+        "local_cost": 12963,
+        "outgoing": {
+          "12984": [
+            48,
+            864
+          ],
+          "13260": [
+            48,
+            199490
+          ],
+          "13262": [
+            48,
+            1952
+          ],
+          "13268": [
+            48,
+            90360
+          ],
+          "4350": [
+            96,
+            12971
+          ],
+          "4646": [
+            336,
+            54224
+          ],
+          "4750": [
+            144,
+            4320
+          ],
+          "6662": [
+            48,
+            87376
+          ],
+          "7526": [
+            48,
+            45883
+          ],
+          "<cargo::compiler::custom_build::BuildOutput>::parse_file": [
+            48,
+            2351380
+          ]
+        }
+      },
+      "cargo::compiler::fingerprint::read_checksum": {
+        "inclusive_incoming": 35459160,
+        "incoming": {
+          "13392": [
+            161,
+            35459160
+          ]
+        },
+        "local_cost": 26474,
+        "outgoing": {
+          "13434": [
+            1,
+            54
+          ],
+          "13436": [
+            1,
+            44
+          ],
+          "13438": [
+            331,
+            33956387
+          ],
+          "13588": [
+            161,
+            176968
+          ],
+          "13590": [
+            161,
+            80178
+          ],
+          "4530": [
+            17,
+            1114384
+          ],
+          "4750": [
+            161,
+            33649
+          ],
+          "6694": [
+            492,
+            28044
+          ],
+          "6698": [
+            161,
+            8533
+          ],
+          "7220": [
+            17,
+            34445
+          ]
+        }
+      },
+      "cargo::compiler::fingerprint::worktree::hash_file": {
+        "inclusive_incoming": 31609352,
+        "incoming": {
+          "cargo::compiler::fingerprint::worktree::hash_tree": [
+            4,
+            31255615
+          ],
+          "cargo::compiler::fingerprint::worktree::result_digest": [
+            2,
+            353737
+          ]
+        },
+        "local_cost": 7316,
+        "outgoing": {
+          "13438": [
+            499,
+            31462581
+          ],
+          "13610": [
+            499,
+            36926
+          ],
+          "4530": [
+            6,
+            98406
+          ],
+          "6698": [
+            6,
+            318
+          ],
+          "9518": [
+            6,
+            2479
+          ],
+          "9542": [
+            6,
+            1326
+          ]
+        }
+      },
+      "cargo::compiler::fingerprint::worktree::hash_tree": {
+        "inclusive_incoming": 31295876,
+        "incoming": {
+          "cargo::compiler::fingerprint::worktree::result_digest": [
+            2,
+            31295876
+          ]
+        },
+        "local_cost": 490,
+        "outgoing": {
+          "12104": [
+            4,
+            1733
+          ],
+          "13438": [
+            20,
+            3275
+          ],
+          "13614": [
+            2,
+            2230
+          ],
+          "13618": [
+            2,
+            1913
+          ],
+          "13622": [
+            2,
+            224
+          ],
+          "4646": [
+            4,
+            816
+          ],
+          "6650": [
+            4,
+            3938
+          ],
+          "8814": [
+            2,
+            2158
+          ],
+          "8832": [
+            4,
+            1360
+          ],
+          "9320": [
+            4,
+            22124
+          ],
+          "cargo::compiler::fingerprint::worktree::hash_file": [
+            4,
+            31255615
+          ]
+        }
+      },
+      "cargo::compiler::fingerprint::worktree::result_digest": {
+        "inclusive_incoming": 31658368,
+        "incoming": {
+          "13596": [
+            2,
+            31658368
+          ]
+        },
+        "local_cost": 172,
+        "outgoing": {
+          "12104": [
+            4,
+            1667
+          ],
+          "13438": [
+            2,
+            244
+          ],
+          "13600": [
+            2,
+            110
+          ],
+          "13602": [
+            2,
+            1264
+          ],
+          "13626": [
+            2,
+            5298
+          ],
+          "cargo::compiler::fingerprint::worktree::hash_file": [
+            2,
+            353737
+          ],
+          "cargo::compiler::fingerprint::worktree::hash_tree": [
+            2,
+            31295876
+          ]
+        }
+      },
+      "cargo::sources::path::list_files": {
+        "inclusive_incoming": 66125565,
+        "incoming": {
+          "13698": [
+            1,
+            66125565
+          ]
+        },
+        "local_cost": 272,
+        "outgoing": {
+          "13702": [
+            1,
+            404820
+          ],
+          "14144": [
+            1,
+            19371
+          ],
+          "14224": [
+            1,
+            666
+          ],
+          "14234": [
+            1,
+            61651323
+          ],
+          "14668": [
+            1,
+            6280
+          ],
+          "14674": [
+            2,
+            28
+          ],
+          "14676": [
+            1,
+            769
+          ],
+          "14678": [
+            2,
+            264
+          ],
+          "14680": [
+            2,
+            2683
+          ],
+          "14692": [
+            1,
+            3881610
+          ],
+          "15026": [
+            1,
+            154202
+          ],
+          "15088": [
+            2,
+            1367
+          ],
+          "15098": [
+            2,
+            332
+          ],
+          "4646": [
+            1,
+            113
+          ],
+          "4750": [
+            5,
+            709
+          ],
+          "8132": [
+            1,
+            380
+          ],
+          "8318": [
+            1,
+            14
+          ],
+          "8552": [
+            1,
+            362
+          ]
+        }
+      }
+    },
+    "last_totals_ir": 397349308,
+    "normal_termination": true,
+    "sha256": "458579056314374d8d9a0547f84351510b47e8fd055b7ae5e85bde4d4b3185e4"
+  }
+}

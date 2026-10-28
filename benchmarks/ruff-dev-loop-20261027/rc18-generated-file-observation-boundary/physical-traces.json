@@ -1,0 +1,1238 @@
+{
+  "ordinary": {
+    "fs1": {
+      "children_raw_traces_sha256": {
+        "trace.1671968": "6bca62ec9d38461c770910194b84ee4999c2971c97e93b09aee92eeacd738951",
+        "trace.1671969": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "trace.1671970": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "trace.1671971": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "trace.1671972": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "trace.1671973": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "trace.1671974": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "trace.1671975": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "trace.1671976": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "trace.1671977": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "trace.1671978": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "trace.1671979": "49d03ba5cd7388268fc460afe0bbe5474a45a4dae8a5ba5b3b27fcfd9814886a",
+        "trace.1671980": "d27589a478e673ba42f0e63c251caf2c077fc21ea0ffe29fda332b5f39aa1250"
+      },
+      "exec_roles": [
+        "rustup",
+        "official-Cargo"
+      ],
+      "policy_marker": {
+        "close": 3,
+        "fchmod": 3,
+        "openat": 3,
+        "renameat": 3,
+        "statx": 6,
+        "write": 3
+      },
+      "script_paths": {
+        "anyhow/9b684f47e487f326/run/root-output": {
+          "bytes": 300,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "anyhow/9b684f47e487f326/run/stdout": {
+          "bytes": 674,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "camino/571ecb34faca057c/run/root-output": {
+          "bytes": 300,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "camino/571ecb34faca057c/run/stdout": {
+          "bytes": 1216,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "crc32fast/e7a23f5e8c79d3b0/run/root-output": {
+          "bytes": 306,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "crc32fast/e7a23f5e8c79d3b0/run/stdout": {
+          "bytes": 198,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "crc32fast/ebe7413b3c5145c3/run/root-output": {
+          "bytes": 306,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "crc32fast/ebe7413b3c5145c3/run/stdout": {
+          "bytes": 198,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "crossbeam-utils/57f4561202d5503b/run/root-output": {
+          "bytes": 318,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "crossbeam-utils/57f4561202d5503b/run/stdout": {
+          "bytes": 218,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "libc/b85b673d689d58b0/run/root-output": {
+          "bytes": 296,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "libc/b85b673d689d58b0/run/stdout": {
+          "bytes": 2444,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "memoffset/811a0ffc41ea036c/run/root-output": {
+          "bytes": 306,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "memoffset/811a0ffc41ea036c/run/stdout": {
+          "bytes": 402,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "object/effe62d25813dfdb/run/root-output": {
+          "bytes": 300,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "object/effe62d25813dfdb/run/stdout": {
+          "bytes": 130,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "parking_lot_core/392e661842880de9/run/root-output": {
+          "bytes": 320,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "parking_lot_core/392e661842880de9/run/stdout": {
+          "bytes": 144,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "portable-atomic/da453b91d9f6c525/run/root-output": {
+          "bytes": 318,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "portable-atomic/da453b91d9f6c525/run/stdout": {
+          "bytes": 3566,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "proc-macro2/434b63caf2a880f2/run/root-output": {
+          "bytes": 310,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "proc-macro2/434b63caf2a880f2/run/stdout": {
+          "bytes": 1864,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "psm/5efb775851701c81/run/root-output": {
+          "bytes": 294,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "psm/5efb775851701c81/run/stdout": {
+          "bytes": 5844,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "quote/fc2bafc06bbc80ff/run/root-output": {
+          "bytes": 298,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "quote/fc2bafc06bbc80ff/run/stdout": {
+          "bytes": 166,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "ruff_unicode_names2/f17900a6a44d7d41/run/root-output": {
+          "bytes": 489,
+          "eof": 3,
+          "opens": 3,
+          "reads": 3
+        },
+        "ruff_unicode_names2/f17900a6a44d7d41/run/stdout": {
+          "bytes": 4468,
+          "eof": 4,
+          "opens": 4,
+          "reads": 4
+        },
+        "rustversion/8ae4f574167d8ea5/run/root-output": {
+          "bytes": 310,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "rustversion/8ae4f574167d8ea5/run/stdout": {
+          "bytes": 282,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "serde/7a35cc4396189b34/run/root-output": {
+          "bytes": 298,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "serde/7a35cc4396189b34/run/stdout": {
+          "bytes": 1164,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "serde_core/5133b868e53168ee/run/root-output": {
+          "bytes": 308,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "serde_core/5133b868e53168ee/run/stdout": {
+          "bytes": 968,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "serde_json/87661087f1f72031/run/root-output": {
+          "bytes": 308,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "serde_json/87661087f1f72031/run/stdout": {
+          "bytes": 264,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "stacker/d3884c9c991a2d5e/run/root-output": {
+          "bytes": 302,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "stacker/d3884c9c991a2d5e/run/stdout": {
+          "bytes": 0,
+          "eof": 2,
+          "opens": 2,
+          "reads": 0
+        },
+        "thiserror/d51bf202212902cd/run/root-output": {
+          "bytes": 306,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "thiserror/d51bf202212902cd/run/stdout": {
+          "bytes": 490,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "ty_vendored/55bc40c417024a68/run/root-output": {
+          "bytes": 465,
+          "eof": 3,
+          "opens": 3,
+          "reads": 3
+        },
+        "ty_vendored/55bc40c417024a68/run/stdout": {
+          "bytes": 300996,
+          "eof": 4,
+          "opens": 4,
+          "reads": 8
+        },
+        "typeid/86cded40ddb2daeb/run/root-output": {
+          "bytes": 300,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "typeid/86cded40ddb2daeb/run/stdout": {
+          "bytes": 152,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "zmij/6ccc1e2d029e8c31/run/root-output": {
+          "bytes": 296,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "zmij/6ccc1e2d029e8c31/run/stdout": {
+          "bytes": 252,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        }
+      },
+      "total_read_bytes": 30630812
+    },
+    "fs2": {
+      "children_raw_traces_sha256": {
+        "trace.1671985": "c43594fdf548fbe799335c3d1b9fbc2d094dbb3ae1780fa605c0fbcacaec4e52",
+        "trace.1671986": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "trace.1671987": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "trace.1671988": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "trace.1671989": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "trace.1671990": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "trace.1671991": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "trace.1671992": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "trace.1671993": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "trace.1671994": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "trace.1671995": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "trace.1671996": "ae554019c890391f1782cf39d5cab3b71785a746e3cd7a7106ad86213a09ec1d",
+        "trace.1671997": "31a48df0edbaecd6ea15623cf8556cf393201794ed784f7b46aab819c2b16f7b"
+      },
+      "exec_roles": [
+        "rustup",
+        "official-Cargo"
+      ],
+      "policy_marker": {
+        "close": 3,
+        "fchmod": 3,
+        "openat": 3,
+        "renameat": 3,
+        "statx": 6,
+        "write": 3
+      },
+      "script_paths": {
+        "anyhow/9b684f47e487f326/run/root-output": {
+          "bytes": 300,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "anyhow/9b684f47e487f326/run/stdout": {
+          "bytes": 674,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "camino/571ecb34faca057c/run/root-output": {
+          "bytes": 300,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "camino/571ecb34faca057c/run/stdout": {
+          "bytes": 1216,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "crc32fast/e7a23f5e8c79d3b0/run/root-output": {
+          "bytes": 306,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "crc32fast/e7a23f5e8c79d3b0/run/stdout": {
+          "bytes": 198,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "crc32fast/ebe7413b3c5145c3/run/root-output": {
+          "bytes": 306,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "crc32fast/ebe7413b3c5145c3/run/stdout": {
+          "bytes": 198,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "crossbeam-utils/57f4561202d5503b/run/root-output": {
+          "bytes": 318,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "crossbeam-utils/57f4561202d5503b/run/stdout": {
+          "bytes": 218,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "libc/b85b673d689d58b0/run/root-output": {
+          "bytes": 296,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "libc/b85b673d689d58b0/run/stdout": {
+          "bytes": 2444,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "memoffset/811a0ffc41ea036c/run/root-output": {
+          "bytes": 306,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "memoffset/811a0ffc41ea036c/run/stdout": {
+          "bytes": 402,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "object/effe62d25813dfdb/run/root-output": {
+          "bytes": 300,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "object/effe62d25813dfdb/run/stdout": {
+          "bytes": 130,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "parking_lot_core/392e661842880de9/run/root-output": {
+          "bytes": 320,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "parking_lot_core/392e661842880de9/run/stdout": {
+          "bytes": 144,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "portable-atomic/da453b91d9f6c525/run/root-output": {
+          "bytes": 318,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "portable-atomic/da453b91d9f6c525/run/stdout": {
+          "bytes": 3566,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "proc-macro2/434b63caf2a880f2/run/root-output": {
+          "bytes": 310,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "proc-macro2/434b63caf2a880f2/run/stdout": {
+          "bytes": 1864,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "psm/5efb775851701c81/run/root-output": {
+          "bytes": 294,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "psm/5efb775851701c81/run/stdout": {
+          "bytes": 5844,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "quote/fc2bafc06bbc80ff/run/root-output": {
+          "bytes": 298,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "quote/fc2bafc06bbc80ff/run/stdout": {
+          "bytes": 166,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "ruff_unicode_names2/f17900a6a44d7d41/run/root-output": {
+          "bytes": 489,
+          "eof": 3,
+          "opens": 3,
+          "reads": 3
+        },
+        "ruff_unicode_names2/f17900a6a44d7d41/run/stdout": {
+          "bytes": 4468,
+          "eof": 4,
+          "opens": 4,
+          "reads": 4
+        },
+        "rustversion/8ae4f574167d8ea5/run/root-output": {
+          "bytes": 310,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "rustversion/8ae4f574167d8ea5/run/stdout": {
+          "bytes": 282,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "serde/7a35cc4396189b34/run/root-output": {
+          "bytes": 298,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "serde/7a35cc4396189b34/run/stdout": {
+          "bytes": 1164,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "serde_core/5133b868e53168ee/run/root-output": {
+          "bytes": 308,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "serde_core/5133b868e53168ee/run/stdout": {
+          "bytes": 968,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "serde_json/87661087f1f72031/run/root-output": {
+          "bytes": 308,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "serde_json/87661087f1f72031/run/stdout": {
+          "bytes": 264,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "stacker/d3884c9c991a2d5e/run/root-output": {
+          "bytes": 302,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "stacker/d3884c9c991a2d5e/run/stdout": {
+          "bytes": 0,
+          "eof": 2,
+          "opens": 2,
+          "reads": 0
+        },
+        "thiserror/d51bf202212902cd/run/root-output": {
+          "bytes": 306,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "thiserror/d51bf202212902cd/run/stdout": {
+          "bytes": 490,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "ty_vendored/55bc40c417024a68/run/root-output": {
+          "bytes": 465,
+          "eof": 3,
+          "opens": 3,
+          "reads": 3
+        },
+        "ty_vendored/55bc40c417024a68/run/stdout": {
+          "bytes": 300996,
+          "eof": 4,
+          "opens": 4,
+          "reads": 8
+        },
+        "typeid/86cded40ddb2daeb/run/root-output": {
+          "bytes": 300,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "typeid/86cded40ddb2daeb/run/stdout": {
+          "bytes": 152,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "zmij/6ccc1e2d029e8c31/run/root-output": {
+          "bytes": 296,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "zmij/6ccc1e2d029e8c31/run/stdout": {
+          "bytes": 252,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        }
+      },
+      "total_read_bytes": 30630812
+    }
+  },
+  "untrusted_json": {
+    "fs1": {
+      "children_raw_traces_sha256": {
+        "trace.1662261": "1053efbf8bc45cb55159a37665456160d22fe0142316a5affd1e1bc7217d44ea",
+        "trace.1662262": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "trace.1662263": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "trace.1662264": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "trace.1662265": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "trace.1662266": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "trace.1662267": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "trace.1662268": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "trace.1662269": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "trace.1662270": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "trace.1662271": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "trace.1662272": "fe7b99103fb5f59c77cf7cca27f90a5029fc817c11e274f9294d5aa8af407418",
+        "trace.1662273": "e8d3e417c404f1f5746c07e7c3d6a1eeb3753d2367768725b4e9ecec918409eb"
+      },
+      "exec_roles": [
+        "rustup",
+        "official-Cargo"
+      ],
+      "policy_marker": {
+        "close": 3,
+        "fchmod": 3,
+        "openat": 3,
+        "renameat": 3,
+        "statx": 6,
+        "write": 3
+      },
+      "script_paths": {
+        "anyhow/9b684f47e487f326/run/root-output": {
+          "bytes": 300,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "anyhow/9b684f47e487f326/run/stdout": {
+          "bytes": 674,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "camino/571ecb34faca057c/run/root-output": {
+          "bytes": 300,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "camino/571ecb34faca057c/run/stdout": {
+          "bytes": 1216,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "crc32fast/e7a23f5e8c79d3b0/run/root-output": {
+          "bytes": 306,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "crc32fast/e7a23f5e8c79d3b0/run/stdout": {
+          "bytes": 198,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "crc32fast/ebe7413b3c5145c3/run/root-output": {
+          "bytes": 306,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "crc32fast/ebe7413b3c5145c3/run/stdout": {
+          "bytes": 198,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "crossbeam-utils/57f4561202d5503b/run/root-output": {
+          "bytes": 318,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "crossbeam-utils/57f4561202d5503b/run/stdout": {
+          "bytes": 218,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "libc/b85b673d689d58b0/run/root-output": {
+          "bytes": 296,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "libc/b85b673d689d58b0/run/stdout": {
+          "bytes": 2444,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "memoffset/811a0ffc41ea036c/run/root-output": {
+          "bytes": 306,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "memoffset/811a0ffc41ea036c/run/stdout": {
+          "bytes": 402,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "object/effe62d25813dfdb/run/root-output": {
+          "bytes": 300,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "object/effe62d25813dfdb/run/stdout": {
+          "bytes": 130,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "parking_lot_core/392e661842880de9/run/root-output": {
+          "bytes": 320,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "parking_lot_core/392e661842880de9/run/stdout": {
+          "bytes": 144,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "portable-atomic/da453b91d9f6c525/run/root-output": {
+          "bytes": 318,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "portable-atomic/da453b91d9f6c525/run/stdout": {
+          "bytes": 3566,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "proc-macro2/434b63caf2a880f2/run/root-output": {
+          "bytes": 310,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "proc-macro2/434b63caf2a880f2/run/stdout": {
+          "bytes": 1864,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "psm/5efb775851701c81/run/root-output": {
+          "bytes": 294,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "psm/5efb775851701c81/run/stdout": {
+          "bytes": 5844,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "quote/fc2bafc06bbc80ff/run/root-output": {
+          "bytes": 298,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "quote/fc2bafc06bbc80ff/run/stdout": {
+          "bytes": 166,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "ruff_unicode_names2/f17900a6a44d7d41/run/root-output": {
+          "bytes": 489,
+          "eof": 3,
+          "opens": 3,
+          "reads": 3
+        },
+        "ruff_unicode_names2/f17900a6a44d7d41/run/stdout": {
+          "bytes": 4468,
+          "eof": 4,
+          "opens": 4,
+          "reads": 4
+        },
+        "rustversion/8ae4f574167d8ea5/run/root-output": {
+          "bytes": 310,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "rustversion/8ae4f574167d8ea5/run/stdout": {
+          "bytes": 282,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "serde/7a35cc4396189b34/run/root-output": {
+          "bytes": 298,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "serde/7a35cc4396189b34/run/stdout": {
+          "bytes": 1164,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "serde_core/5133b868e53168ee/run/root-output": {
+          "bytes": 308,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "serde_core/5133b868e53168ee/run/stdout": {
+          "bytes": 968,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "serde_json/87661087f1f72031/run/root-output": {
+          "bytes": 308,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "serde_json/87661087f1f72031/run/stdout": {
+          "bytes": 264,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "stacker/d3884c9c991a2d5e/run/root-output": {
+          "bytes": 302,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "stacker/d3884c9c991a2d5e/run/stdout": {
+          "bytes": 0,
+          "eof": 2,
+          "opens": 2,
+          "reads": 0
+        },
+        "thiserror/d51bf202212902cd/run/root-output": {
+          "bytes": 306,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "thiserror/d51bf202212902cd/run/stdout": {
+          "bytes": 490,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "ty_vendored/55bc40c417024a68/run/root-output": {
+          "bytes": 465,
+          "eof": 3,
+          "opens": 3,
+          "reads": 3
+        },
+        "ty_vendored/55bc40c417024a68/run/stdout": {
+          "bytes": 300996,
+          "eof": 4,
+          "opens": 4,
+          "reads": 8
+        },
+        "typeid/86cded40ddb2daeb/run/root-output": {
+          "bytes": 300,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "typeid/86cded40ddb2daeb/run/stdout": {
+          "bytes": 152,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "zmij/6ccc1e2d029e8c31/run/root-output": {
+          "bytes": 296,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "zmij/6ccc1e2d029e8c31/run/stdout": {
+          "bytes": 252,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        }
+      },
+      "total_read_bytes": 30409032
+    },
+    "fs2": {
+      "children_raw_traces_sha256": {
+        "trace.1662283": "30cb66123027ea457644e2b394c0be1411f147dfaa602ec92b3d2b1e1bd89f8b",
+        "trace.1662284": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "trace.1662285": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "trace.1662286": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "trace.1662287": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "trace.1662288": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "trace.1662289": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "trace.1662290": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "trace.1662291": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "trace.1662295": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "trace.1662297": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "trace.1662298": "c089f44507cebcf1521f1ae609c6429c3d0385a7e5db39bcf0938d4929904b99",
+        "trace.1662299": "6e05ffa103f82c811d435b6dc22e18e46f6b52c89c7b9434b52ef9c8b6359d32"
+      },
+      "exec_roles": [
+        "rustup",
+        "official-Cargo"
+      ],
+      "policy_marker": {
+        "close": 3,
+        "fchmod": 3,
+        "openat": 3,
+        "renameat": 3,
+        "statx": 6,
+        "write": 3
+      },
+      "script_paths": {
+        "anyhow/9b684f47e487f326/run/root-output": {
+          "bytes": 300,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "anyhow/9b684f47e487f326/run/stdout": {
+          "bytes": 674,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "camino/571ecb34faca057c/run/root-output": {
+          "bytes": 300,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "camino/571ecb34faca057c/run/stdout": {
+          "bytes": 1216,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "crc32fast/e7a23f5e8c79d3b0/run/root-output": {
+          "bytes": 306,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "crc32fast/e7a23f5e8c79d3b0/run/stdout": {
+          "bytes": 198,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "crc32fast/ebe7413b3c5145c3/run/root-output": {
+          "bytes": 306,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "crc32fast/ebe7413b3c5145c3/run/stdout": {
+          "bytes": 198,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "crossbeam-utils/57f4561202d5503b/run/root-output": {
+          "bytes": 318,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "crossbeam-utils/57f4561202d5503b/run/stdout": {
+          "bytes": 218,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "libc/b85b673d689d58b0/run/root-output": {
+          "bytes": 296,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "libc/b85b673d689d58b0/run/stdout": {
+          "bytes": 2444,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "memoffset/811a0ffc41ea036c/run/root-output": {
+          "bytes": 306,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "memoffset/811a0ffc41ea036c/run/stdout": {
+          "bytes": 402,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "object/effe62d25813dfdb/run/root-output": {
+          "bytes": 300,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "object/effe62d25813dfdb/run/stdout": {
+          "bytes": 130,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "parking_lot_core/392e661842880de9/run/root-output": {
+          "bytes": 320,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "parking_lot_core/392e661842880de9/run/stdout": {
+          "bytes": 144,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "portable-atomic/da453b91d9f6c525/run/root-output": {
+          "bytes": 318,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "portable-atomic/da453b91d9f6c525/run/stdout": {
+          "bytes": 3566,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "proc-macro2/434b63caf2a880f2/run/root-output": {
+          "bytes": 310,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "proc-macro2/434b63caf2a880f2/run/stdout": {
+          "bytes": 1864,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "psm/5efb775851701c81/run/root-output": {
+          "bytes": 294,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "psm/5efb775851701c81/run/stdout": {
+          "bytes": 5844,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "quote/fc2bafc06bbc80ff/run/root-output": {
+          "bytes": 298,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "quote/fc2bafc06bbc80ff/run/stdout": {
+          "bytes": 166,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "ruff_unicode_names2/f17900a6a44d7d41/run/root-output": {
+          "bytes": 489,
+          "eof": 3,
+          "opens": 3,
+          "reads": 3
+        },
+        "ruff_unicode_names2/f17900a6a44d7d41/run/stdout": {
+          "bytes": 4468,
+          "eof": 4,
+          "opens": 4,
+          "reads": 4
+        },
+        "rustversion/8ae4f574167d8ea5/run/root-output": {
+          "bytes": 310,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "rustversion/8ae4f574167d8ea5/run/stdout": {
+          "bytes": 282,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "serde/7a35cc4396189b34/run/root-output": {
+          "bytes": 298,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "serde/7a35cc4396189b34/run/stdout": {
+          "bytes": 1164,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "serde_core/5133b868e53168ee/run/root-output": {
+          "bytes": 308,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "serde_core/5133b868e53168ee/run/stdout": {
+          "bytes": 968,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "serde_json/87661087f1f72031/run/root-output": {
+          "bytes": 308,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "serde_json/87661087f1f72031/run/stdout": {
+          "bytes": 264,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "stacker/d3884c9c991a2d5e/run/root-output": {
+          "bytes": 302,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "stacker/d3884c9c991a2d5e/run/stdout": {
+          "bytes": 0,
+          "eof": 2,
+          "opens": 2,
+          "reads": 0
+        },
+        "thiserror/d51bf202212902cd/run/root-output": {
+          "bytes": 306,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "thiserror/d51bf202212902cd/run/stdout": {
+          "bytes": 490,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "ty_vendored/55bc40c417024a68/run/root-output": {
+          "bytes": 465,
+          "eof": 3,
+          "opens": 3,
+          "reads": 3
+        },
+        "ty_vendored/55bc40c417024a68/run/stdout": {
+          "bytes": 300996,
+          "eof": 4,
+          "opens": 4,
+          "reads": 8
+        },
+        "typeid/86cded40ddb2daeb/run/root-output": {
+          "bytes": 300,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "typeid/86cded40ddb2daeb/run/stdout": {
+          "bytes": 152,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "zmij/6ccc1e2d029e8c31/run/root-output": {
+          "bytes": 296,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        },
+        "zmij/6ccc1e2d029e8c31/run/stdout": {
+          "bytes": 252,
+          "eof": 2,
+          "opens": 2,
+          "reads": 2
+        }
+      },
+      "total_read_bytes": 30409032
+    }
+  }
+}
