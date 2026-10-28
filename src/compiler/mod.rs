@@ -129,8 +129,7 @@ use cargo_util_terminal::Verbosity;
 use rustfix::diagnostics::Applicability;
 
 const RUSTDOC_CRATE_VERSION_FLAG: &str = "--crate-version";
-const OHM_DEFAULT_RUSTFLAGS: [&str; 3] =
-    ["-Zpublic-api-hash", "-Zcache-proc-macros", "-Zthreads=8"];
+const OHM_DEFAULT_RUSTFLAGS: [&str; 2] = ["-Zpublic-api-hash", "-Zthreads=8"];
 const OHM_EARLY_METADATA_RUSTFLAG: &str = "-Zohm-early-metadata";
 const OHM_INCREMENTAL_CODEGEN_RUSTFLAGS: [&str; 2] =
     ["-Zohm-caller-local-cgus", "-Zohm-stable-cgu-merging"];
