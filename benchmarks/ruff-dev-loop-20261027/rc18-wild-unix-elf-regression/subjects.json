@@ -1,0 +1,78 @@
+{
+  "candidate": {
+    "CARGO_HOME": "/work/cargo",
+    "base": "e856d81f6683cad80b9fe0ebf1a0c3c403c6fe11",
+    "build_log_sha256": "84a779c9fdf13c168f510c8692c3ea68b1b055646ab2f2ba56b563c51fe32090",
+    "build_rc": 0,
+    "build_script": "aa5ad57ce313634274a36b9c7f328224fb85cdd78d91ee61dc595ce35c910403",
+    "cargo_argv": [
+      "cargo",
+      "build",
+      "--locked",
+      "--profile",
+      "dist",
+      "--package",
+      "wild-linker",
+      "--bin",
+      "wild",
+      "--target",
+      "x86_64-unknown-linux-gnu"
+    ],
+    "commit": "38eb35bd8b76dad3e97e027cc52d8e89fd3bc263",
+    "cwd": "/work/source",
+    "default_features": [
+      "fork",
+      "plugins",
+      "wasm",
+      "zstd"
+    ],
+    "image_digest": "docker.io/library/rust@sha256:8bf7188ae46ad73b801c8d405eedc13ce63a7852b562885743a56890723549a8",
+    "image_id": "sha256:8bf7188ae46ad73b801c8d405eedc13ce63a7852b562885743a56890723549a8",
+    "library_log_sha256": "c222f9399e493bd5a11d7a80e7e6388fd52413fbf2b5c306e579eedf4b37e045",
+    "library_rc": 0,
+    "patch": "62debcbfd9042c9b1d79bd27b9ca101c191e15e9dfd949cfc5294f395626072f",
+    "regression_log_sha256": "554b3987c64c3ec4bafff299188a92860d9455bf06fc633b8a04d19194b9d1e5",
+    "regression_rc": 0,
+    "results": {
+      "LICENSE-APACHE": {
+        "mode": "0o644",
+        "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+        "size": 9723
+      },
+      "LICENSE-MIT": {
+        "mode": "0o644",
+        "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3",
+        "size": 1023
+      },
+      "wild": {
+        "mode": "0o755",
+        "sha256": "9de3bdd6675f02e08d687045383c097ab0ef6027c779f153a7823153ecf8445e",
+        "size": 10315032
+      }
+    },
+    "source": "490a7660a6f94b333446c5243a211b94078900b5b1421e59205d1aa8f365eb81",
+    "toolchain": "1.99.1-x86_64-unknown-linux-gnu (default)\nrustc 1.99.1 (58cf8f9c3 2026-10-13)\nbinary: rustc\ncommit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67\ncommit-date: 2026-10-13\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.1\nLLVM version: 23.1.1\ncargo 1.99.1 (5f94df478 2026-08-27)\nrelease: 1.99.1\ncommit-hash: 5f94df4789f005f9a352888e8355ffc645b7ed0e\ncommit-date: 2026-08-27\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.6.3)\nssl: OpenSSL 3.6.3 9 Jun 2026\nos: Debian 12.0.0 (bookworm) [64-bit]\n",
+    "tree": "cf726ba83093fd10840c6db1dcb3957561fcc0fa",
+    "version": "Wild 0.11.0 non-git-build (compatible with GNU linkers)"
+  },
+  "observed_image_rebuilds": 2,
+  "official_source_tag": "e856d81f6683cad80b9fe0ebf1a0c3c403c6fe11",
+  "original": {
+    "rc16": {
+      "cargo": "42e90992cec21a29956e20fd52ab952472a9dbc1dcc7a3b60c92aad101b5f568",
+      "rust-lld": "9f47056ea756a869ce9d130f4633894c0c0a17ef8575d32a16f6f43397c5228c",
+      "rustc": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+      "rustc_version": "rustc 1.99.0-dev (9a1b7cb6a 2026-10-27) (ohm-1.99.0-16)\nbinary: rustc\ncommit-hash: 9a1b7cb6a356d5380fdf80714523cb434c34dccb\ncommit-date: 2026-10-27\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-dev\nLLVM version: 23.1.1\n",
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+    },
+    "rc17": {
+      "cargo": "63ca8f87b86164a75a8d219a5fccf1879be298ef0c35fc85db439baecb597b85",
+      "rust-lld": "9f47056ea756a869ce9d130f4633894c0c0a17ef8575d32a16f6f43397c5228c",
+      "rustc": "7ec5263869aed2fc9272ea7212aabbe7b272a4685f1b79af75c123daff09c02c",
+      "rustc_version": "rustc 1.99.0-dev (bfa236f63 2026-10-27) (ohm-1.99.0-17)\nbinary: rustc\ncommit-hash: bfa236f639034f61ec884c15bd1f4e0b75e508ac\ncommit-date: 2026-10-27\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-dev\nLLVM version: 23.1.1\n",
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+    }
+  },
+  "source_pr": "https://github.com/astral-sh/ohm-wild/pull/44",
+  "upstream_latest_source_at_inspection": "f9d30429d062228e0314643cc7c3fde57817bbae"
+}
