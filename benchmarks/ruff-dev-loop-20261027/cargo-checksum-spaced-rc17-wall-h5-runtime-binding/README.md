@@ -1,0 +1,3 @@
+The independent machine verified 81 immutable compiler, Cargo and shared SDK files at transfer. Both compilers use the same LLVM library, standard library, native linkers, and compiler frontend. The primary study separately identifies the matching release-source fixes and their profiles. All four workspace states train from empty native caches. The earlier migration states remain separate.
+
+The runner requires complete typed output rosters, diagnostics, a harness listing and the strict 110-ELF comparison before a clock can open. The extra output-path reader preserves the single allowed compiler namespace component. The ELF audit retains differences outside the allowed fields and rejects timing when any occur.

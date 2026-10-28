@@ -1,0 +1,93 @@
+{
+  "boundary": "Transfer manifest addresses every physical input from the independent runtime donor and receiving host. The B and C driver, frontends, Cargo, and Wild agree with both independent qualifications on the primary host. Whole runtime file cross-host identity with primary logs is limited by the original donor ledger; the independent runtime tree below is completely identified.",
+  "common_sdk_ledger": "19754fceb4be0f2349b75b2fd16b150b1d4c2e187bd2f9195059d85001afe67b",
+  "cpu_identity": [
+    "x86_64",
+    "AMD EPYC-Genoa Processor"
+  ],
+  "cpus": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "elf_selftest": {
+    "different_text_rejected": true,
+    "identical_control": true,
+    "two_permitted_fields": true
+  },
+  "exact_source_fixture_safety": "3f1fe2a410368d527055d9fcd2c2fd9f663d8fae",
+  "floor": {
+    "/dev/shm": 52731404288,
+    "/home/dev-user": 213746372608,
+    "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027": 72401674240
+  },
+  "kernel": "7.0.0-38-generic",
+  "logical": {
+    "build": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/rc17-spaced-full-test-h5-v1/work/shared",
+    "registry": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/rc17-spaced-full-test-h5-v1/work/cargo",
+    "rustup": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/rc17-spaced-full-test-h5-v1/work/rustup",
+    "sdk": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/rc17-spaced-full-test-h5-v1/work/Ohm SDK",
+    "source": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027",
+    "target": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/rc17-spaced-full-test-h5-v1/work/ruff-target"
+  },
+  "lscpu_original_sha256": "71fb6e3a9144d9ff4bb24dd01622613dc4a23456797d0db15a00e16e4d37e1c3",
+  "original_cold_parent_binding": {
+    "effective_sdk": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/rc17-spaced-full-test-h5-v1/work/Ohm SDK",
+    "hashes": {
+      "bin/cargo": "e74dddbed648ca90bd5cabab90d9e02517478e40f5552a0a8369d72d15596d33",
+      "bin/rustc": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+      "lib/librustc_driver-774a793a844d5500.so": "36d1fd142355c3ad9e0ce006c1e92b7e511cba70c431b09eb1e335f572d27d05",
+      "lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld/ld.bfd": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+    },
+    "version": {
+      "cargo": "cargo 1.99.0 (db24aef81 2026-10-27)\nrelease: 1.99.0\ncommit-hash: db24aef819477e2fa46a50299bb23d5020dd518a\ncommit-date: 2026-10-27\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.0.13)\nos: Ubuntu 24.4.0 (noble) [64-bit]\n",
+      "rustc": "rustc 1.99.0-dev (f1a7cf9d2 2026-10-25) (ohm-1.99.0-14)\nbinary: rustc\ncommit-hash: f1a7cf9d20b2cae39e991b178b56ba06b43dc8fa\ncommit-date: 2026-10-25\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-dev\nLLVM version: 23.1.1\n"
+    }
+  },
+  "original_fixed_process_oracle": "50b8ef536a54f11506113ffe068836e6f6aa8848",
+  "original_parent_process_oracle": "aa8a9f0c334d92906dd82d7d9e5a4ab8347a33f4",
+  "paths": {
+    "block1": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/rc17-spaced-full-test-h5-v1/states/block-1",
+    "block2": "/home/dev-user/.cache/ohm-rc17-spaced-full-test-h5-v1/states/block-2"
+  },
+  "physical_preflight_sha256": "37025c79ad886586421baf9becd3f6ca0e91d708ed2bacb8f409469a967ba19c",
+  "raw_qualification_runner_sha256": "e283426527e54e6f95848a596f421c4e4b82e3ed03e84b5a4a24f66838614b47",
+  "registered_plan": "eeff437a2d827c20e19d0ca66de145c8e2d2ccb9",
+  "registry": {
+    "bytes": 163117023,
+    "files": 1576,
+    "private_manifest_sha": "12a9be5b69360b972d906853b13c3bb7971df7e2046c4e4b2ad8f026d611f871"
+  },
+  "release_inputs": {
+    "B": {
+      "cargo_sha": "e74dddbed648ca90bd5cabab90d9e02517478e40f5552a0a8369d72d15596d33",
+      "driver": "36d1fd142355c3ad9e0ce006c1e92b7e511cba70c431b09eb1e335f572d27d05",
+      "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+    },
+    "C": {
+      "cargo_sha": "787ed90b5a14000ac0b1efc1d1aac5d730e0107b2e995cc0471138402759a4d5",
+      "driver": "52d5c046f570d3d61ff8bbaeff0d44798df916306110b4a2cac7fe459bc11955",
+      "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+    }
+  },
+  "runtime_ledger": "20b7c12df9d4a24f161f1d08f0003ebe2eeba719d0d0ced0f34ded1b001e923b",
+  "source_index": "fc84f15ac7401cd9bdc362e4574c6d395529766c16be2e6b032ac47fa63d21cd",
+  "source_lock": "c9e345325bec5ff08dbbe3916edd39ad0c3d1c7797a8c241ae32f62754e764bf",
+  "tool_auth": {
+    "bwrap": "e318903862396f96de3df57264e0158682b952fd3fb53ac23d876413e7b30f71",
+    "cc": "1b99826121ae6682a634e5efe09bd3e3df58ce58e0b28f849114ab5b89139c26",
+    "git": "eb54b535467e0975c1284d4c4d08eea779aeb248a5d34b02e2ee171382e22201",
+    "python3": "e50d468e8b0adfb05733f5b87b3cff34829c4a8c1aea50c865aa8bdfe4bb150f",
+    "rustup": "5be191e8c70a5007074254cb74d78dbfdd25cd5a61c27de7b8e5410122ec24f4",
+    "strace": "28f957c227012de0b18d1bd7fff2d396cb693ea60ed8013be68de071e84b5001"
+  },
+  "transfer_sha256": "20b7c12df9d4a24f161f1d08f0003ebe2eeba719d0d0ced0f34ded1b001e923b",
+  "typed_path_requirement": "fa28717493d006f703296e1198bef893206749e03429421384680102de67ffb3"
+}
