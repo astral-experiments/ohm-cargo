@@ -1,0 +1,219 @@
+{
+  "after": {
+    "inode": 12845337,
+    "mtime": 1793167651128443117,
+    "sha256": "cad0dedaa04dd84b00f00b889aa40fd9d9e306fb7a8d3b72f251c234ba0eeef2",
+    "size": 2
+  },
+  "before": {
+    "inode": 12845129,
+    "mtime": 1793167651128443117,
+    "sha256": "612571b57dc6ef4bdceb6323f39eddf16837a085fd0c5bb995647225ede7f830",
+    "size": 2
+  },
+  "case": "observer-replacement",
+  "exit": 0,
+  "input_api": "include_bytes!",
+  "measured_arms": {
+    "composed": {
+      "copied_old_fingerprint": "e7237f7354fc0eb1281f7482b4963dc2c3ed9ba9b05f230f388b0cd55fd58aeb",
+      "final_input_sha256": "cad0dedaa04dd84b00f00b889aa40fd9d9e306fb7a8d3b72f251c234ba0eeef2",
+      "native_stdout": {
+        "again": "revision=2\nsample=29\n19 #15 bytes(375377..375399)\n",
+        "repeat": "revision=2\nsample=29\n19 #15 bytes(375377..375399)\n"
+      },
+      "old_executable": "5bf8de0318c8c1e570afa9cb9f1236c39f773db09ee3f20d9674a79cf0c25f9d",
+      "raw_before_sha256": "f01f8a2afc8fb778030165a61cab02196bc37c3cea99e11ae8b53fc0df9cc4ea",
+      "raw_final_sha256": "3329e515e555b1fc636a4794d0df8d26f12c9388f938ff2e81df480f77c967bc",
+      "rows": {
+        "again": {
+          "all_units": 4,
+          "complete": false,
+          "dep": "82211f68e519f55e38fcb44622d14a517e047c06b9d6fea00b6c950dce320eac",
+          "elf": "95ff54ca0a826f389fa931e9726f15ab3221f700ada3af4b8da5e3304a4f86a1",
+          "fingerprint": "943f17931f2376309bbde6fd0ea14c0cfe6fc0f9c81ca8605b994ad5b1ede004",
+          "fresh": false,
+          "input": "cad0dedaa04dd84b00f00b889aa40fd9d9e306fb7a8d3b72f251c234ba0eeef2",
+          "program": "2d53d82c6da11bc92d0d92ecca943ee58222c36da904cba94e31de922a45bd0c",
+          "rebuilt_units": [
+            "hold_direct"
+          ],
+          "source": "801e619f41b3594c2b03156284e5f8c17c3f24de3b4db95d4e2a38bed6f6e739",
+          "trace": "22a187f0064decb695fd85c915a0632035e5264e5c21fd93d54168551726cdb3",
+          "value": 29
+        },
+        "repeat": {
+          "all_units": 4,
+          "complete": false,
+          "dep": "82211f68e519f55e38fcb44622d14a517e047c06b9d6fea00b6c950dce320eac",
+          "elf": "95ff54ca0a826f389fa931e9726f15ab3221f700ada3af4b8da5e3304a4f86a1",
+          "fingerprint": "943f17931f2376309bbde6fd0ea14c0cfe6fc0f9c81ca8605b994ad5b1ede004",
+          "fresh": false,
+          "input": "cad0dedaa04dd84b00f00b889aa40fd9d9e306fb7a8d3b72f251c234ba0eeef2",
+          "program": "2d53d82c6da11bc92d0d92ecca943ee58222c36da904cba94e31de922a45bd0c",
+          "rebuilt_units": [
+            "hold_direct"
+          ],
+          "source": "801e619f41b3594c2b03156284e5f8c17c3f24de3b4db95d4e2a38bed6f6e739",
+          "trace": "a6ad4c4540033aea9b03fb9416a07dcb9563930b3280d1afc82f3bc5e4776e83",
+          "value": 29
+        }
+      },
+      "source_sha256": "801e619f41b3594c2b03156284e5f8c17c3f24de3b4db95d4e2a38bed6f6e739",
+      "subject": "813ba8a480bc6047d2effde2edff5fe5990781904ff453815ddc71aeb5e0e754"
+    },
+    "observer": {
+      "copied_old_fingerprint": "e7237f7354fc0eb1281f7482b4963dc2c3ed9ba9b05f230f388b0cd55fd58aeb",
+      "final_input_sha256": "cad0dedaa04dd84b00f00b889aa40fd9d9e306fb7a8d3b72f251c234ba0eeef2",
+      "native_stdout": {
+        "again": "revision=2\nsample=29\n19 #15 bytes(375377..375399)\n",
+        "repeat": "revision=2\nsample=29\n19 #15 bytes(375377..375399)\n"
+      },
+      "old_executable": "5bf8de0318c8c1e570afa9cb9f1236c39f773db09ee3f20d9674a79cf0c25f9d",
+      "raw_before_sha256": "f01f8a2afc8fb778030165a61cab02196bc37c3cea99e11ae8b53fc0df9cc4ea",
+      "raw_final_sha256": "055b024854ab4a8b8060de5401b2cf25216a580d1b6245246058e44719066a10",
+      "rows": {
+        "again": {
+          "all_units": 4,
+          "complete": false,
+          "dep": "82211f68e519f55e38fcb44622d14a517e047c06b9d6fea00b6c950dce320eac",
+          "elf": "95ff54ca0a826f389fa931e9726f15ab3221f700ada3af4b8da5e3304a4f86a1",
+          "fingerprint": "943f17931f2376309bbde6fd0ea14c0cfe6fc0f9c81ca8605b994ad5b1ede004",
+          "fresh": false,
+          "input": "cad0dedaa04dd84b00f00b889aa40fd9d9e306fb7a8d3b72f251c234ba0eeef2",
+          "program": "2d53d82c6da11bc92d0d92ecca943ee58222c36da904cba94e31de922a45bd0c",
+          "rebuilt_units": [
+            "hold_direct"
+          ],
+          "source": "801e619f41b3594c2b03156284e5f8c17c3f24de3b4db95d4e2a38bed6f6e739",
+          "trace": "ddf2a072867178ee22338400690b21f558b43f9ce4ddb0fc62b825dd45498010",
+          "value": 29
+        },
+        "repeat": {
+          "all_units": 4,
+          "complete": false,
+          "dep": "82211f68e519f55e38fcb44622d14a517e047c06b9d6fea00b6c950dce320eac",
+          "elf": "95ff54ca0a826f389fa931e9726f15ab3221f700ada3af4b8da5e3304a4f86a1",
+          "fingerprint": "943f17931f2376309bbde6fd0ea14c0cfe6fc0f9c81ca8605b994ad5b1ede004",
+          "fresh": false,
+          "input": "cad0dedaa04dd84b00f00b889aa40fd9d9e306fb7a8d3b72f251c234ba0eeef2",
+          "program": "2d53d82c6da11bc92d0d92ecca943ee58222c36da904cba94e31de922a45bd0c",
+          "rebuilt_units": [
+            "hold_direct"
+          ],
+          "source": "801e619f41b3594c2b03156284e5f8c17c3f24de3b4db95d4e2a38bed6f6e739",
+          "trace": "b4f75ba81405efecafa97a59872d0a763e1e70e228ee20fcd071917d42d01f03",
+          "value": 29
+        }
+      },
+      "source_sha256": "801e619f41b3594c2b03156284e5f8c17c3f24de3b4db95d4e2a38bed6f6e739",
+      "subject": "0aa04df8023984b83ef676d1494d43e482472e1b2bccdb82a4d0bd390578a322"
+    }
+  },
+  "mutable_source_untouched": true,
+  "official_cargo": "4e4065390403afbf4fb77b2f41fbc21c59afe3dda2337a5bbe29fda29a47dbb3",
+  "original_states": {
+    "again": {
+      "actual_stdout": "revision=2\nsample=17\n19 #15 bytes(375377..375399)\n",
+      "row": {
+        "all_fresh": true,
+        "caller_sha": "801e619f41b3594c2b03156284e5f8c17c3f24de3b4db95d4e2a38bed6f6e739",
+        "dep": "f3321daa94c91ae9bf757782fd69e77c522a611f8b1c2e9a5a17d4b880b30f94",
+        "exe": "5bf8de0318c8c1e570afa9cb9f1236c39f773db09ee3f20d9674a79cf0c25f9d",
+        "fingerprint": "e7237f7354fc0eb1281f7482b4963dc2c3ed9ba9b05f230f388b0cd55fd58aeb",
+        "fresh": true,
+        "initially_complete": true,
+        "input_checksums": [
+          "# checksum:blake3=b5d1e70f1eaa471a592b91e695b13d181156521c31840321052f937a87937658 file_len:2 /mnt/devbox-scratch/dev-user/ohm-combined-prs-20261028/combined-safety-controls/trained-include-bytes-preserved/private-input.txt"
+        ],
+        "native": "06111299c65c68aded8fd726f1d0685dd39973d222d432c4a3587f29f8aa7ddd",
+        "optional": false,
+        "trace": "27a4782b6eded98f91ef1ce64ddef75cd13ffdcb02a51f8c20721af5f5675dd4",
+        "untrackable": false,
+        "value": 17
+      }
+    },
+    "change": {
+      "actual_stdout": "revision=2\nsample=17\n19 #15 bytes(375377..375399)\n",
+      "row": {
+        "all_fresh": false,
+        "caller_sha": "801e619f41b3594c2b03156284e5f8c17c3f24de3b4db95d4e2a38bed6f6e739",
+        "dep": "f3321daa94c91ae9bf757782fd69e77c522a611f8b1c2e9a5a17d4b880b30f94",
+        "exe": "5bf8de0318c8c1e570afa9cb9f1236c39f773db09ee3f20d9674a79cf0c25f9d",
+        "fingerprint": "e7237f7354fc0eb1281f7482b4963dc2c3ed9ba9b05f230f388b0cd55fd58aeb",
+        "fresh": false,
+        "initially_complete": true,
+        "input_checksums": [
+          "# checksum:blake3=b5d1e70f1eaa471a592b91e695b13d181156521c31840321052f937a87937658 file_len:2 /mnt/devbox-scratch/dev-user/ohm-combined-prs-20261028/combined-safety-controls/trained-include-bytes-preserved/private-input.txt"
+        ],
+        "native": "06111299c65c68aded8fd726f1d0685dd39973d222d432c4a3587f29f8aa7ddd",
+        "optional": false,
+        "trace": "410813ab024ffb9d0f17a9068ac9adac35813c89722846aa2fdf78202e6095b3",
+        "untrackable": false,
+        "value": 17
+      }
+    },
+    "clean": {
+      "actual_stdout": "revision=2\nsample=29\n19 #15 bytes(375377..375399)\n",
+      "row": {
+        "all_fresh": false,
+        "caller_sha": "801e619f41b3594c2b03156284e5f8c17c3f24de3b4db95d4e2a38bed6f6e739",
+        "dep": "2b9ac9a0ad644f231993b4a291c21f963b000f03955effe312db4ff2292d8f75",
+        "exe": "95ff54ca0a826f389fa931e9726f15ab3221f700ada3af4b8da5e3304a4f86a1",
+        "fingerprint": "7a28062de2c8ddf5981e2ae3cbc8da17dafeaae064631b55950d9b0f8a545b70",
+        "fresh": false,
+        "initially_complete": false,
+        "input_checksums": [
+          "# checksum:blake3=b5d1e70f1eaa471a592b91e695b13d181156521c31840321052f937a87937658 file_len:2 /mnt/devbox-scratch/dev-user/ohm-combined-prs-20261028/combined-safety-controls/trained-include-bytes-preserved/private-input.txt"
+        ],
+        "native": "2d53d82c6da11bc92d0d92ecca943ee58222c36da904cba94e31de922a45bd0c",
+        "optional": false,
+        "trace": "fe65efd51d7a718b58bc22a4b02321ea40b31c7d0247da25efe6cc05abf5bdd4",
+        "untrackable": false,
+        "value": 29
+      }
+    },
+    "repeat": {
+      "actual_stdout": "revision=2\nsample=17\n19 #15 bytes(375377..375399)\n",
+      "row": {
+        "all_fresh": true,
+        "caller_sha": "801e619f41b3594c2b03156284e5f8c17c3f24de3b4db95d4e2a38bed6f6e739",
+        "dep": "f3321daa94c91ae9bf757782fd69e77c522a611f8b1c2e9a5a17d4b880b30f94",
+        "exe": "5bf8de0318c8c1e570afa9cb9f1236c39f773db09ee3f20d9674a79cf0c25f9d",
+        "fingerprint": "e7237f7354fc0eb1281f7482b4963dc2c3ed9ba9b05f230f388b0cd55fd58aeb",
+        "fresh": true,
+        "initially_complete": true,
+        "input_checksums": [
+          "# checksum:blake3=b5d1e70f1eaa471a592b91e695b13d181156521c31840321052f937a87937658 file_len:2 /mnt/devbox-scratch/dev-user/ohm-combined-prs-20261028/combined-safety-controls/trained-include-bytes-preserved/private-input.txt"
+        ],
+        "native": "06111299c65c68aded8fd726f1d0685dd39973d222d432c4a3587f29f8aa7ddd",
+        "optional": false,
+        "trace": "3782470d885c01de03b0ec5811a6e48ffb46b3eb808946dbe5616c2d7f6515b9",
+        "untrackable": false,
+        "value": 17
+      }
+    },
+    "train2": {
+      "actual_stdout": "sample=17\n19 #13 bytes(375354..375376)\n",
+      "row": {
+        "all_fresh": false,
+        "caller_sha": "7a5e2ceb00e6272a6a6a345057406a88d717b51b306c30caf9072cc1d336d3b2",
+        "dep": "1abf8c0cfa70a322fe31ba5352b069b1c6d921f569ee0b2dae510a0acbbbebcb",
+        "exe": "6fe45d793e7b057d18eac9d1653db3acde459b04292b8e5a827508622150763a",
+        "fingerprint": "a6df7414e84766afe4dcc1de6bbc3bcc57291be371ce6ecda64c5cb45fb75fbb",
+        "fresh": false,
+        "initially_complete": true,
+        "input_checksums": [
+          "# checksum:blake3=f76b1dfe1ed3b52ca1baa17a72b847e706cb437d2301b37f9b9838c5207ba87b file_len:2 /mnt/devbox-scratch/dev-user/ohm-combined-prs-20261028/combined-safety-controls/trained-include-bytes-preserved/private-input.txt"
+        ],
+        "native": "0fc20ddab47462a9a6992a59cc1193f8c272a8d33523b6cb12c27b618b899bc7",
+        "optional": false,
+        "trace": "e9d6e80326dd01470751653ae3bc24231769702e505dad341c56ae393641fc57",
+        "untrackable": false,
+        "value": 17
+      }
+    }
+  },
+  "subject": "0aa04df8023984b83ef676d1494d43e482472e1b2bccdb82a4d0bd390578a322",
+  "unchanged_input_mtime": 1793167651128443117
+}

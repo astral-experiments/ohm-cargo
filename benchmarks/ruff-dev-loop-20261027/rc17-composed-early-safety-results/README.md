@@ -1,0 +1,21 @@
+# Safety qualification for the composed early-test Cargo
+
+These unscored measurements check the inputs to the independent H5 wall study. Its Cargo control is the #261 observer fix `0aa04df8…`. Its composed Cargo `813ba8a4…` applies the #260 scheduler patch after #261, on Cargo `a0c7d08c…`. The H5 validation keeps its official Ohm -17 rustc and SDK. An ordinary package or full-workspace speedup requires separate native admission and clocks.
+
+## Native Cargo builds
+
+All three H8 builds ran `cargo +ohm build --release --locked --offline -p cargo --bin cargo --features ohm-defaults -j12`. We resolved their two successful physical rustc invocations from the original trace for each build. All 874 library and 1,040 executable argv elements match literally across the control, repeated control and composed image. The compiler, actual profile file bytes and embedded source-version stamp match. The source inventory checks Git blob contents, symlink targets and executable modes over all 3,108 files. The original and repeated control source inventories are identical. The composed inventory changes the intended scheduler implementation and tests on top of the observer fix. The emitted Cargo version string retains the common historical build stamp. The source inventories and applied patch digests identify the actual trees.
+
+The original bytewise repeated-control check failed. The repeated binary is `49e68b34…` versus `0aa04df8…`. Rechecking the two complete binaries found identical program headers and no differences in the executable or writable load segments. The read-only segment differs in the ELF section-table offset and GNU build-ID descriptor, a total of 34 bytes. Nonallocated symbol and string tables differ. The two full file sizes are 43,439,288 and 43,439,664 bytes. The wall protocol explicitly binds this code/data equivalence and the physical original control. The raw whole-file mismatch is retained.
+
+## Physical safety evidence
+
+The repository’s exact two scheduler test groups passed against the measured composed executable, with 14 and 41 traced invocations of that Cargo. The source-matched native test harness SHA-256 is `032ee041cd45ec8c1ee974cebf6ebbf885a5213a55324a13a8f08d0776148953`. In the first group, the actual integration compiler process ran once against a prebuilt library, once against an unused library, twice against a used overlapping library and twice when its proof was missing. The checked-in tests also assert real program results and check the retry behavior. The second group includes warm, missing, conflicting and newly used proof states.
+
+On H5 an established observer consumed 17 before an external writer replaced its two-byte input with 29 at the exact prior timestamp. The released native program returned 17 on two subsequent fresh commands. An independent empty build returned 29. With separate copies of the same stale state, each measured Cargo rebuilt just the observer and returned 29 on both subsequent runs. Those observer builds remain ineligible for complete reuse. A separate ordinary `include_str!` reader exercised both measured images. It printed 17, 17, 29 and 29 through cold build, unchanged build, actual edit and second unchanged build. The full rustc process counts were 1, 0, 1 and 0.
+
+Each component PR was checked at the exact measured input head. Eight checks passed on each, including Linux and macOS Cargo tests. The separate APFS replay job was skipped on both. The measured combination was validated privately by the source-matched tests above.
+
+## Verification
+
+Run `python3 -IB verify.py` from this directory. `--protocol PATH` also invokes the frozen wall proposal’s QA validator in isolation. It executes no Cargo or wall command. On the authorized benchmark host, `--native-raw PATH` additionally rehashes all underlying private files. The physical native build receipts, full compiler argv, selected scheduler argv, real program stdout, source/ELF fingerprints and original raw-file SHA ledgers are included here. The full host-only strace and original fixture snapshots remain private. One raw Cargo JSON stream contains the internal registry name and is represented here only by its digest and selected local targets. The independent gate issuer owns the archive and any decision to start clocks.

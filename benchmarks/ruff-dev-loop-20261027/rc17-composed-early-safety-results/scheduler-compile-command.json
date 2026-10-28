@@ -1,0 +1,19 @@
+{
+  "code": 0,
+  "command": [
+    "cargo",
+    "+ohm",
+    "test",
+    "--locked",
+    "--offline",
+    "-p",
+    "cargo",
+    "--features",
+    "ohm-defaults",
+    "--test",
+    "testsuite",
+    "--no-run",
+    "-j8",
+    "--message-format=json"
+  ]
+}

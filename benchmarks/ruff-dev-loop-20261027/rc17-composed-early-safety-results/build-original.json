@@ -1,0 +1,58 @@
+{
+  "native_trace": {
+    "bytes": 1336835,
+    "sha256": "ba9c40d36f7c25a41f9d0d3acee8c6df80be65b901b63bc3e211b6988db76287",
+    "successful_rustc_lines": {
+      "src/bin/cargo/main.rs": "834ea6df1060b5acff4c1d77d61b22b3836d4d1a63a5be10f24ad606f687e98b",
+      "src/lib.rs": "48e6184cc19947f8eff754c82238c31af84eb532bb73f1d4d343d7267735782b"
+    }
+  },
+  "physical": {
+    "cargo": "0aa04df8023984b83ef676d1494d43e482472e1b2bccdb82a4d0bd390578a322",
+    "changed_vs_base": {
+      "src/compiler/fingerprint/dep_info.rs": "8d5c64c38ce9a3a2ec52180736c5d047b347909d2861537263dcd1bf4ca35571",
+      "src/compiler/fingerprint/mod.rs": "2121cc040bea8e8ebc923eee2d5a54756024acec1167846bfea11c3ac3a6ca9b",
+      "src/compiler/mod.rs": "dadfe5af5cd4809e0fa6928abeaca757f5146ca56fe9f33639261ddfc1e1fb38",
+      "src/ops/cargo_worktree/mod.rs": "67bad0a44432051f0191bfb3a80239e60e8fc9cdbc629357c30cecd63115c04d"
+    },
+    "files": 3108,
+    "frontend": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+    "profile": "481ada8a40c70dad11b3c7e8871e9a52207d78447ca5e8ace06fc4aec2d2b5a7",
+    "profile_bytes": 60529728,
+    "source_commit_stamp": "4e83718109f1a02195592740c79a8b87a3cb472198db7cde721b0b948daf262d",
+    "source_records_sha256": "ba575e3db9849ffae1b8b2e3b8b3ce01b6ed361c93a49cc03b4c01a8fc4f823b"
+  },
+  "receipt_raw": {
+    "file": "original-native-receipt.json",
+    "sha256": "810346ee97732c2ef54c3eeebec5076149aef0b755aa9031277080b2ce3cc48c"
+  },
+  "recipe": {
+    "actual_rustc_argv_counts": {
+      "src/bin/cargo/main.rs": 1040,
+      "src/lib.rs": 874
+    },
+    "canonical_decoded_sha256": "257d78b6811968b889168c9a53b8536229f01cea450d63a5c9d4195142bc13a8",
+    "file": "common-recipe.json.gz"
+  },
+  "source_recipe": {
+    "actual_sources_and_modes_sha256": "ba575e3db9849ffae1b8b2e3b8b3ce01b6ed361c93a49cc03b4c01a8fc4f823b",
+    "actually_changed_source_bytes": {
+      "src/compiler/fingerprint/dep_info.rs": "8d5c64c38ce9a3a2ec52180736c5d047b347909d2861537263dcd1bf4ca35571",
+      "src/compiler/fingerprint/mod.rs": "2121cc040bea8e8ebc923eee2d5a54756024acec1167846bfea11c3ac3a6ca9b",
+      "src/compiler/mod.rs": "dadfe5af5cd4809e0fa6928abeaca757f5146ca56fe9f33639261ddfc1e1fb38",
+      "src/ops/cargo_worktree/mod.rs": "67bad0a44432051f0191bfb3a80239e60e8fc9cdbc629357c30cecd63115c04d"
+    },
+    "base": "a0c7d08c898d3fdff992f2f431dec57d2486add2",
+    "patches": [
+      {
+        "component": "observer",
+        "head": "9a0170863f70d9a88a8b1d1f4c4e1fded4736a9c",
+        "patch_sha256": "f0d968799ed2c095111dced3a688b025527deb7ac5a0f17ab04bdc6223faf800"
+      }
+    ],
+    "source_files": 3108,
+    "version_stamp_sha256": "4e83718109f1a02195592740c79a8b87a3cb472198db7cde721b0b948daf262d"
+  },
+  "source_recipe_sha256": "e42f0e30fa793836d8fb6b029786475d7090828210a2329ec71d07c1bbb9003b",
+  "subject": "0aa04df8023984b83ef676d1494d43e482472e1b2bccdb82a4d0bd390578a322"
+}

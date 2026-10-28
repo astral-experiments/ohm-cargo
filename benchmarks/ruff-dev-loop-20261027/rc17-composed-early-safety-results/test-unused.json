@@ -1,0 +1,47 @@
+{
+  "actual_integration_rustcs": [
+    {
+      "input": "tests/integration.rs",
+      "pid": 2835816,
+      "raw_line_sha256": "64243e7a9ce776905183673a3a7a58c903ca1bef393aa4c9deaf5f54479a469b",
+      "rustc_sha256": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5"
+    }
+  ],
+  "additional_warm_suite": {
+    "cargo": "813ba8a480bc6047d2effde2edff5fe5990781904ff453815ddc71aeb5e0e754",
+    "cargo_invocations": 41,
+    "command": [
+      "/mnt/devbox-scratch/dev-user/ohm-observer-shipping-20261027/states/raw-rc17/target/debug/build/workspaces/9485faad1cf2e0e7/v2-ad429abf3194aa47/cargo/8d87856c2755e117/out/testsuite-8d87856c2755e117",
+      "--exact",
+      "freshness::early_native_integration_tests_warm_evidence_and_fallback",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "exit": 0,
+    "log_sha256": "47cad4820850bb42bc8732079e995f7972c31408031b9294fe00fbb9860da771",
+    "trace_sha256": "6d81a64697c4a0e8eb7d000ff569e4985973598f3018f9ab8500c4ac1477656f"
+  },
+  "case": "unused",
+  "default_and_fallback": {
+    "cargo": "813ba8a480bc6047d2effde2edff5fe5990781904ff453815ddc71aeb5e0e754",
+    "cargo_invocations": 14,
+    "command": [
+      "/mnt/devbox-scratch/dev-user/ohm-observer-shipping-20261027/states/raw-rc17/target/debug/build/workspaces/9485faad1cf2e0e7/v2-ad429abf3194aa47/cargo/8d87856c2755e117/out/testsuite-8d87856c2755e117",
+      "--exact",
+      "freshness::early_native_integration_tests_default_and_fallback",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "exit": 0,
+    "log_sha256": "863cd43fe1fef2530f9f74b1e0284423892fa8acb0ce43a46391c3d97c94ac63",
+    "trace_sha256": "e260ac68a33ac0389182877bb6749ac6f58b455bfec6c94f96259459dccda34f"
+  },
+  "exact_harness_source_sha256": "eabdbe14bc243f83c2584125c7a738c18b68362eaecacd29ef8666ef2f749f1d",
+  "exit": 0,
+  "expected_integration_compiles": 1,
+  "physical_evidence": {
+    "file": "scheduler-physical.json",
+    "sha256": "249c7d702cdd5e2594499b5bb402b8fc030ff619d9ef6f72cedae47e01f650ba"
+  },
+  "subject": "813ba8a480bc6047d2effde2edff5fe5990781904ff453815ddc71aeb5e0e754"
+}
