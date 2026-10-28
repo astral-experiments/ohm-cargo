@@ -1,0 +1,105 @@
+{
+  "profile": {
+    "instrumented_profile_sha256": "481ada8a40c70dad11b3c7e8871e9a52207d78447ca5e8ace06fc4aec2d2b5a7",
+    "bolt_profile_sha256": "34cd73280713b4cfad9183f5d36ec29e4884b00ec4aac3594d6f1ef194c444f4",
+    "llvm_profdata_sha256": "50c149e74fbd0a399e085a3e2e2892f8e736ca684503fb859c92864b2aa0f233",
+    "instrumentation_records": 142675,
+    "max_block_count_records": 142675,
+    "bolt_branches": 675723,
+    "counts": "Record counts and sum of maximum block counts per instrumented function. Sum of both BOLT sampled branch endpoint weights per symbol; no timing estimate."
+  },
+  "index_sha256": "d60d587a71674c89e932b2b1df22e97408edb90ebe1cd91f9a1cb9b5cd990557",
+  "totals": [
+    137835,
+    142675,
+    65054924465,
+    13885,
+    1325455,
+    344404886404
+  ],
+  "inputs": [
+    {
+      "path": "/mnt/devbox-scratch/dev-user/ohm-observer-shipping-20261027/assets/raw-rc17-final-control/candidate-driver.so",
+      "sha256": "36d1fd142355c3ad9e0ce006c1e92b7e511cba70c431b09eb1e335f572d27d05",
+      "unique_function_symbols": 95003,
+      "instrumentation_names": 75840,
+      "instrumentation_records": 80154,
+      "instrumentation_max_block_sum": 50117533467,
+      "bolt_names": 13056,
+      "bolt_endpoint_count": 1242504,
+      "bolt_endpoint_weight": 318806208140
+    },
+    {
+      "path": "/mnt/devbox-scratch/dev-user/ohm-observer-shipping-20261027/assets/raw-rc17-unicode-fixed/candidate-driver.so",
+      "sha256": "52d5c046f570d3d61ff8bbaeff0d44798df916306110b4a2cac7fe459bc11955",
+      "unique_function_symbols": 94997,
+      "instrumentation_names": 75835,
+      "instrumentation_records": 80149,
+      "instrumentation_max_block_sum": 50117531006,
+      "bolt_names": 13053,
+      "bolt_endpoint_count": 1242414,
+      "bolt_endpoint_weight": 318806195117
+    }
+  ],
+  "all_symbol_pair_difference": {
+    "left_only": 570,
+    "right_only": 564
+  },
+  "original_profile_name_differences": [
+    {
+      "name": "_RINvMsG_CslwfoDbT1Q2U_10rustc_spanNtB6_14SourceFileHash3newQNtNtCsjS3VZJf3kOR_3std2fs4FileECscHySkXJjJ94_15rustc_interface",
+      "present": [
+        true,
+        false
+      ],
+      "inst_records": 1,
+      "inst_max_block": 18,
+      "branch_endpoints": 39,
+      "branch_weight": 756
+    },
+    {
+      "name": "_RINvNtCsfpptKXrREi0_4core3ptr9drop_glueINtNtNtCs9oljiHJcNRf_5alloc3vec9into_iter8IntoIterTNtNtBI_6string6StringINtNtB4_6option6OptionB1q_EEEECscHySkXJjJ94_15rustc_interface",
+      "present": [
+        true,
+        false
+      ],
+      "inst_records": 1,
+      "inst_max_block": 60,
+      "branch_endpoints": 0,
+      "branch_weight": 0
+    },
+    {
+      "name": "_RINvXsb_NtCsapO9hXH0fZT_8indexmap3mapINtB6_8IndexMapNtNtCs9oljiHJcNRf_5alloc6string6StringTyINtNtCsfpptKXrREi0_4core6option6OptionNtCslwfoDbT1Q2U_10rustc_span14SourceFileHashEEEINtNtNtNtB1x_4iter6traits7collect6ExtendTBO_B1q_EE6extendINtNtNtB2W_8adapters3map3MapINtNtNtB2W_7sources4once4OnceBO_ENCINvNvNtCscHySkXJjJ94_15rustc_interface6passes14write_out_deps15hash_iter_filesBO_B4c_E0EEB4S_",
+      "present": [
+        true,
+        false
+      ],
+      "inst_records": 1,
+      "inst_max_block": 0,
+      "branch_endpoints": 0,
+      "branch_weight": 0
+    },
+    {
+      "name": "_RNvMs_NtCsapO9hXH0fZT_8indexmap5innerINtB4_4CoreNtNtCs9oljiHJcNRf_5alloc6string6StringTyINtNtCsfpptKXrREi0_4core6option6OptionNtCslwfoDbT1Q2U_10rustc_span14SourceFileHashEEE7reserveCscHySkXJjJ94_15rustc_interface",
+      "present": [
+        true,
+        false
+      ],
+      "inst_records": 1,
+      "inst_max_block": 2356,
+      "branch_endpoints": 18,
+      "branch_weight": 11916
+    },
+    {
+      "name": "_RNvMsd_CsavaeExAcbB9_6blake3NtB5_6Hasher12final_output",
+      "present": [
+        true,
+        false
+      ],
+      "inst_records": 1,
+      "inst_max_block": 27,
+      "branch_endpoints": 33,
+      "branch_weight": 351
+    }
+  ]
+}

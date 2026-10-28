@@ -1,0 +1,17 @@
+   Compiling cargo v0.100.0 (/mnt/devbox-scratch/dev-user/ohm-observer-shipping-20261027/src-rc17)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 14.82s
+     Running unittests src/lib.rs (/mnt/devbox-scratch/dev-user/ohm-observer-shipping-20261027/states/raw-rc17/target/debug/build/workspaces/9485faad1cf2e0e7/v2-1228bf75a09ccdb6/cargo/0a08bb4b277a1409/out/cargo-0a08bb4b277a1409)
+
+running 9 tests
+test compiler::fingerprint::dep_info::encoded_dep_info::incomplete_observer_cannot_be_changed_to_complete ... ok
+test compiler::fingerprint::dep_info::encoded_dep_info::parse_v0_fingerprint_dep_info ... ok
+test compiler::fingerprint::dep_info::encoded_dep_info::migrate_escaped_path_checksums ... ok
+test compiler::fingerprint::dep_info::encoded_dep_info::round_trip ... ok
+test compiler::fingerprint::dep_info::encoded_dep_info::input_rule_separators_are_independent_of_filename_bytes ... ok
+test compiler::fingerprint::dep_info::encoded_dep_info::round_trip_with_checksums ... ok
+test compiler::fingerprint::dep_info::encoded_dep_info::path_type_is_u8_max ... ok
+test compiler::fingerprint::dep_info::encoded_dep_info::checksummed_alias_is_reopened_by_its_original_name ... ok
+test compiler::fingerprint::dep_info::encoded_dep_info::seed_translation_preserves_absolute_inputs_and_relative_spelling ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 397 filtered out; finished in 0.01s
+

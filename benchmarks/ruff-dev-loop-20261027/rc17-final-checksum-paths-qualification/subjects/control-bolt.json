@@ -1,0 +1,22 @@
+{
+  "rc": 0,
+  "elapsed_s": 162.04394009406678,
+  "minimum_tmpfs_free": 22690635776,
+  "argv": [
+    "/home/dev-user/code/oss/ohm-ruff-current-20261021/work/release14-edge-shipping-v2-20261026/current/bolt/bin/llvm-bolt",
+    "/mnt/devbox-scratch/dev-user/release14-edge-shipping-v2-20261026/current/.tmpkjJIsW",
+    "-data",
+    "/home/dev-user/code/oss/ohm-ruff-current-20261021/work/release14-edge-shipping-v2-20261026/current/rust/build/opt-artifacts/rustc-bolt.profdata",
+    "-o",
+    "/home/dev-user/code/oss/ohm-ruff-current-20261021/work/release14-edge-shipping-v2-20261026/current/rust/build/x86_64-unknown-linux-gnu/stage2/lib/librustc_driver-774a793a844d5500.so",
+    "-reorder-blocks=ext-tsp",
+    "-reorder-functions=cdsort",
+    "-split-functions",
+    "-split-strategy=cdsplit",
+    "-split-all-cold",
+    "-jump-tables=move",
+    "-icf=all",
+    "-update-debug-sections",
+    "-dyno-stats"
+  ]
+}

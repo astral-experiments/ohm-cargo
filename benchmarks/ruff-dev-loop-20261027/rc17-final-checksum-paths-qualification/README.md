@@ -1,0 +1,27 @@
+# Raw checksum paths on the Ohm 1.99.0-17 release-candidate sources
+
+The corrected pair recompiles a reader when its real external library changes under a path containing a space. On a repeat with unchanged inputs it runs zero reader compilers and returns 17. After the change it runs one reader compiler and returns 29, as does an independent empty target. The old pair returned 17 from a Fresh artifact when its saved checksum belonged to the backslash-space decoy.
+
+| Exact candidate sources | Cargo | rustc |
+| --- | --- | --- |
+| Canceled RC | db24aef819477e2fa46a50299bb23d5020dd518a | d6497b5469d81dd23cf010416c82c9443a04c61c |
+| Corrected RC | a0c7d08c898d3fdff992f2f431dec57d2486add2 | 4c0f6097a200ea5bc2209e1dfe3bad506a5e8680 |
+| Control image SHA-256 | e74dddbed648ca90bd5cabab90d9e02517478e40f5552a0a8369d72d15596d33 | 36d1fd142355c3ad9e0ce006c1e92b7e511cba70c431b09eb1e335f572d27d05 |
+| Corrected image SHA-256 | 787ed90b5a14000ac0b1efc1d1aac5d730e0107b2e995cc0471138402759a4d5 | 52d5c046f570d3d61ff8bbaeff0d44798df916306110b4a2cac7fe459bc11955 |
+
+The compiler builds use all differing production compiler files from the RC source and the same historical release PGO/BOLT donor, arguments, paths, standard library and frontend (4fa9a18b…). The donor version string is retained. The resulting binaries are source-matched benchmark builds. The separately fetched released -16 package reproduced the two wrong-cache cases under ordinary Cargo defaults. [Spaced input on published -16](https://github.com/astral-sh/ohm-cargo/tree/dfcbdbd318e5bfa1154ae1537b02df7bdb2d79b0/benchmarks/ruff-dev-loop-20261027/released16-spaced-checksums) · [Two externs on published -16](https://github.com/astral-sh/ohm-cargo/tree/518334642cc4fbf599a8447a347368e1a35b8a7c/benchmarks/ruff-dev-loop-20261027/released16-lossy-extern-checks)
+
+BOLT found 13,384 versus 13,381 profiled functions and 159,565,724,571 versus 159,565,719,144 samples, with 5.3% stale on both. Comparing names from the pinned original LLVM profiles against the actual ELF symbols found 75,840 versus 75,835 PGO symbols, and 13,056 versus 13,053 BOLT symbols. The raw symbol-coverage report retains the unmatched names and weights. These controls establish the build identity for an independent performance study.
+
+| Input and history | Corrected result |
+| --- | --- |
+| Spaced extern, with or without a decoy | Both Cargo versions with corrected rustc become fresh on the unchanged repeat and rebuild after the real edit. Corrected Cargo with old rustc rebuilds on each spaced repeat as its proof is incomplete. The ordinary unspaced input remains fresh. |
+| Retained false-fresh observer record on upgrade | Corrected Cargo returns 29 with old rustc, with either the decoy retained or removed. The changed check reports the same complete E0308 diagnostic as independent clean. Downgrade and return both produce 29. |
+| Non-Unicode path and distinct literal U+FFFD counterpart | Under corrected Rust, both declaration orders omit the ambiguous checksum and the reader recompiles, even with old Cargo. The one genuine U+FFFD input becomes fresh on the unchanged repeat and detects a change. Corrected Cargo paired with old Rust conservatively recompiles all three. |
+| Poisoned format 2 or experimental format 3 | The first corrected Cargo invocation rejects the stale proof in the previously false-fresh argument order, even with the same older compiler and unchanged Cargo paths. Its answer and diagnostics match independent clean. |
+| FIFO, missing input, symlink | Four traced genuine tracked filenames show nonblocking opens. Regular file and symlink give the same checksum, while missing and FIFO give none. The escaped-name FIFO has no writer and the native program returns 17. The ordinary alias matrix covers both a true symlink retarget and replacing its backing bytes. |
+| Checked-in Rust test | Old compiler exits 101, corrected compiler exits 0. The same compiled test checks raw spaced rlib and binary inputs, two lossy extern declaration orders, and the single valid replacement-character path. Both Cargo source bases also passed the nine focused dep-info unit tests. |
+
+The one-extern native build matrix kept the same inode and nanosecond modification time, but the original versus future rlib used different rustc output filenames and all 18 pairs differ in length by 18 bytes. In the false-fresh older result the saved length and checksum match the future decoy. The two-extern check fixture explicitly asserts equal lengths before every change. An independent ordinary binary-include migration also checked equal length and mtime. [Ordinary migration evidence](https://github.com/astral-sh/ohm-cargo/tree/844e69b9b1754ee9d9728f443a5ff7d987313de2/benchmarks/ruff-dev-loop-20261027/ordinary-spaced-checksum-v3-upgrade)
+
+Run `python3 verify.py` to verify the checksums and 22 terminal gates. The compressed raw packet contains 2,599 selected command, source, trace and proof files, including 242 detailed individual Cargo rows and 32 additional alias builds. A native strace counts actual successful reader compiler processes independently of Cargo's Fresh bit. The recorded runner applies the two compiler source bases and separate Cargo artifacts under equivalent logical paths on dedicated storage. For a portable Linux check with an installed Ohm alias, run `python3 reproduce.py /tmp/new-ohm-extern-case`. No registry dependencies are required.
