@@ -1,0 +1,193 @@
+diff --git a/crates/ruff_annotate_snippets/src/renderer/render.rs b/crates/ruff_annotate_snippets/src/renderer/render.rs
+index dd0a199bed3177f2a0f3ae55ca6dc44ee7544a69..877e94185deeb26692d70f8f800f4a9f66ef45af 100644
+--- a/crates/ruff_annotate_snippets/src/renderer/render.rs
++++ b/crates/ruff_annotate_snippets/src/renderer/render.rs
+@@ -1523,7 +1523,7 @@ fn emit_suggestion_default(
+     sm: &SourceMap<'_>,
+     primary_path: Option<&Cow<'_, str>>,
+     matches_previous_suggestion: bool,
+-    is_first: bool,
++    _is_first: bool,
+     is_cont: bool,
+ ) {
+     let buffer_offset = buffer.num_lines();
+@@ -1541,7 +1541,7 @@ fn emit_suggestion_default(
+         for _ in 0..max_line_num_len {
+             buffer.append(row_num - 1, " ", ElementStyle::NoStyle);
+         }
+-        let arrow = renderer.decor_style.file_start(is_first, false);
++        let arrow = renderer.decor_style.secondary_file_start();
+         buffer.append(row_num - 1, arrow, ElementStyle::LineNumber);
+         let origin = Origin {
+             path: suggestion
+diff --git a/crates/ruff_annotate_snippets/tests/color/highlight_first_line_tab_371.ascii.term.svg b/crates/ruff_annotate_snippets/tests/color/highlight_first_line_tab_371.ascii.term.svg
+index 67f544a9a80f385cb90257f7499c72cfc7b56389..a06799a9c9ec5e10fc31d923b25fdcf914c752fa 100644
+--- a/crates/ruff_annotate_snippets/tests/color/highlight_first_line_tab_371.ascii.term.svg
++++ b/crates/ruff_annotate_snippets/tests/color/highlight_first_line_tab_371.ascii.term.svg
+@@ -22,7 +22,7 @@
+   <text xml:space="preserve" class="container fg">
+     <tspan x="10px" y="28px"><tspan class="fg-bright-red bold">error</tspan><tspan class="bold">: &lt;sample error message&gt;</tspan>
+ </tspan>
+-    <tspan x="10px" y="46px"><tspan> </tspan><tspan class="fg-bright-blue bold">--&gt; </tspan><tspan>&lt;sample path&gt;:6:18</tspan>
++    <tspan x="10px" y="46px"><tspan> </tspan><tspan class="fg-bright-blue bold">::: </tspan><tspan>&lt;sample path&gt;:6:18</tspan>
+ </tspan>
+     <tspan x="10px" y="64px"><tspan>  </tspan><tspan class="fg-bright-blue bold">|</tspan>
+ </tspan>
+diff --git a/crates/ruff_annotate_snippets/tests/formatter.rs b/crates/ruff_annotate_snippets/tests/formatter.rs
+index d3afafd6b31594331ffbdfb4f625ff95acff1717..c605d35b2373d82cca2fdce87f7d0668fa476a3c 100644
+--- a/crates/ruff_annotate_snippets/tests/formatter.rs
++++ b/crates/ruff_annotate_snippets/tests/formatter.rs
+@@ -5281,7 +5281,7 @@ error[E0624]: method `five_years` is private
+   |    ---------- private method defined here
+   |
+ help: consider making `bar` public
+- --> other.rs:1:1
++ ::: other.rs:1:1
+   |
+ 1 | pub fn bar(&self) {
+   | +++
+@@ -5302,7 +5302,7 @@ error[E0624]: method `five_years` is private
+   │    ────────── private method defined here
+   ╰╴
+ help: consider making `bar` public
+-  ╭▸ other.rs:1:1
++  ⸬  other.rs:1:1
+   │
+ 1 │ pub fn bar(&self) {
+   ╰╴+++
+diff --git a/crates/ruff_annotate_snippets/tests/ruff.rs b/crates/ruff_annotate_snippets/tests/ruff.rs
+index 0ff112ac2f1fba07398c68b330e0f0eb7842690e..96e6f08673e1b4596fd33213294b86028634a6c5 100644
+--- a/crates/ruff_annotate_snippets/tests/ruff.rs
++++ b/crates/ruff_annotate_snippets/tests/ruff.rs
+@@ -91,7 +91,7 @@ error: oops
+   |        ^^^^ oops
+   |
+ help: remove the entry
+- --> cell 1:2:8
++ ::: cell 1:2:8
+   |
+ 2 - Second oops line
+ 2 + Second line
+@@ -111,7 +111,7 @@ error: oops
+   │        ━━━━ oops
+   ╰╴
+ help: remove the entry
+-  ╭▸ cell 1:2:8
++  ⸬  cell 1:2:8
+   │
+ 2 - Second oops line
+ 2 + Second line
+@@ -157,7 +157,7 @@ error: oops
+   |        ^^^^ oops
+   |
+ help: remove the entry
+- --> cell 1:2:8
++ ::: cell 1:2:8
+   |
+ 2 - Second oops line
+ 2 + Second line
+@@ -178,7 +178,7 @@ error: oops
+   │        ━━━━ oops
+   ╰╴
+ help: remove the entry
+-  ╭▸ cell 1:2:8
++  ⸬  cell 1:2:8
+   │
+ 2 - Second oops line
+ 2 + Second line
+@@ -224,12 +224,12 @@ error: oops
+   |        ^^^^ oops
+   |
+ help: remove the entry
+- --> cell 1:2:8
++ ::: cell 1:2:8
+   |
+ 2 - Second oops line
+ 2 + Second line
+   |
+- --> cell 2:2:12
++ ::: cell 2:2:12
+   |
+ 2 - Second oops line
+ 2 + Second oops
+@@ -247,12 +247,12 @@ error: oops
+   │        ━━━━ oops
+   ╰╴
+ help: remove the entry
+-  ╭▸ cell 1:2:8
++  ⸬  cell 1:2:8
+   │
+ 2 - Second oops line
+ 2 + Second line
+   │
+-  ├▸ cell 2:2:12
++  ⸬  cell 2:2:12
+   │
+ 2 - Second oops line
+ 2 + Second oops
+@@ -291,7 +291,7 @@ error: oops
+   |        ^^^^ oops
+   |
+ help: remove the entry
+- --> cell 2:2:8
++ ::: cell 2:2:8
+   |
+ 2 - Second oops line
+ 2 + Second line
+@@ -311,7 +311,7 @@ error: oops
+   │        ━━━━ oops
+   ╰╴
+ help: remove the entry
+-  ╭▸ cell 2:2:8
++  ⸬  cell 2:2:8
+   │
+ 2 - Second oops line
+ 2 + Second line
+@@ -357,7 +357,7 @@ error: oops
+   |        ^^^^ oops
+   |
+ help: remove the entry
+- --> bar.ipynb:cell 2:2:8
++ ::: bar.ipynb:cell 2:2:8
+   |
+ 2 - Second oops line
+ 2 + Second line
+@@ -378,7 +378,7 @@ error: oops
+   │        ━━━━ oops
+   ╰╴
+ help: remove the entry
+-  ╭▸ bar.ipynb:cell 2:2:8
++  ⸬  bar.ipynb:cell 2:2:8
+   │
+ 2 - Second oops line
+ 2 + Second line
+@@ -424,12 +424,12 @@ error: oops
+   |        ^^^^ oops
+   |
+ help: remove the entry
+- --> bar.ipynb:cell 2:2:8
++ ::: bar.ipynb:cell 2:2:8
+   |
+ 2 - Second oops line
+ 2 + Second line
+   |
+- --> bar.ipynb:cell 3:2:12
++ ::: bar.ipynb:cell 3:2:12
+   |
+ 2 - Second oops line
+ 2 + Second oops
+@@ -447,12 +447,12 @@ error: oops
+   │        ━━━━ oops
+   ╰╴
+ help: remove the entry
+-  ╭▸ bar.ipynb:cell 2:2:8
++  ⸬  bar.ipynb:cell 2:2:8
+   │
+ 2 - Second oops line
+ 2 + Second line
+   │
+-  ├▸ bar.ipynb:cell 3:2:12
++  ⸬  bar.ipynb:cell 3:2:12
+   │
+ 2 - Second oops line
+ 2 + Second oops

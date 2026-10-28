@@ -1,0 +1,25 @@
+{
+  "caller": "f35b5079e0d6b4e2786d13a2fbef40bb929af3ad380842a9a18cdd516647c01e",
+  "cfg_test_byte": 4058,
+  "cfg_test_line": 126,
+  "file_count_in_actual_commit": 30,
+  "files": [
+    "crates/ruff_python_trivia/src/whitespace.rs"
+  ],
+  "patch": "cdaff08fd54e57d0380f1da82284ac4e18d2f5eb9cfe0df3a7b0ea6c04b1f73e",
+  "pin": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "production_prefix_sha": "b7bcbf3fc925a540e27f35af60566199ad38393faae0d0247309a481b6d6b7e4",
+  "qualification": [
+    "With written macro-replay-only and macro+allocation source-equivalent release compiler, separately run ordinary native cargo +ohm build --locked --offline -p ruff_python_trivia --lib in original, warm-edited, warm-restored, independently empty-edited, independently empty-original. Each test exercises an external Rust caller and captures actual Rust compiler argv, native output and exact public/private crate identities. Shared physical toolchain and paths except for arm bindings.",
+    "In each source condition and compiler arm build the actual crate test harness with cargo +ohm test --no-run --lib -p ruff_python_trivia. Outside build metrics run both real tab_expansion tests and record output.",
+    "Only if the original ordinary crate-dirty private source causes a spurious public hash change on the baseline and treatment removes it with correct fresh hashes and native callers, perform full Ruff CLI validation. No wall-time claim from this screen."
+  ],
+  "revision": "88d56e5feb43137d431210b54047ce6d5001682d",
+  "selection": "The entire whitespace.rs file projection of this real broad mechanical change. All three operations (one import and two assertion conversions) are behind the existing final cfg(test) module. Chosen by source and two real direct consumers before exposure, independently of the two prior renderer changes.",
+  "sha_edit": {
+    "crates/ruff_python_trivia/src/whitespace.rs": "67babb7805c9ee638f575c3e64089fa7349371a345eae52e78bec975cf09d13a"
+  },
+  "sha_original": {
+    "crates/ruff_python_trivia/src/whitespace.rs": "0ab4527536c82c2f8578f7e37b65245c32d7d74cba785f3a2a9f829340b0dd35"
+  }
+}

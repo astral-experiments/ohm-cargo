@@ -1,0 +1,92 @@
+{
+  "caller": "274726baa25f21ae772ef52f79e0817abfa0c62c15325d3305c56412afb8c571",
+  "change": "9c53b5de3aae4b1832eb7ee137647dda2466f888",
+  "command": [
+    "cargo",
+    "+ohm",
+    "build",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-p",
+    "{crate}",
+    "--bin",
+    "{crate}"
+  ],
+  "files": [
+    "crates/ruff_annotate_snippets/src/renderer/source_map.rs",
+    "crates/ruff_annotate_snippets/tests/ruff.rs"
+  ],
+  "patch": "01ab24d48079b0ba5ffaafa7c53e8dcae6e8468035973066546227f841c9a55d",
+  "pin": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "release": {
+    "cargo": "42e90992cec21a29956e20fd52ab952472a9dbc1dcc7a3b60c92aad101b5f568",
+    "driver": "c442c2a36e1f37c92f138a8fb367fc09982931b5f1055e9742fb402566ad46a4",
+    "rustc": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+    "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+  },
+  "schedule": [
+    [
+      "original",
+      "ruff"
+    ],
+    [
+      "original",
+      "ty"
+    ],
+    [
+      "original-repeat",
+      "ruff"
+    ],
+    [
+      "original-repeat",
+      "ty"
+    ],
+    [
+      "edited",
+      "ruff"
+    ],
+    [
+      "edited",
+      "ty"
+    ],
+    [
+      "edited-repeat",
+      "ruff"
+    ],
+    [
+      "edited-repeat",
+      "ty"
+    ],
+    [
+      "restored",
+      "ruff"
+    ],
+    [
+      "restored",
+      "ty"
+    ],
+    [
+      "restored-repeat",
+      "ruff"
+    ],
+    [
+      "restored-repeat",
+      "ty"
+    ]
+  ],
+  "selections": [
+    "ruff",
+    "ty"
+  ],
+  "semantic_guard": "Independent ordinary ELF reader built against each real workspace-selected rlib invokes the historical 3-insertion renderer; original and restore render three replacements, reverse must panic. Both normal native CLIs retain the correct Git version and run a real diagnostic. Probe only structural Rust and native inputs; no clock or product shortcut.",
+  "sha_edit": {
+    "crates/ruff_annotate_snippets/src/renderer/source_map.rs": "039cdafb24a352bf1b6f707ad1b9bcccea8eba4b1be13c810a065579c1836566",
+    "crates/ruff_annotate_snippets/tests/ruff.rs": "0021bec4d34b7465a5fd38b193d437c95cdf2322da25be73634a99f9e2de26a5"
+  },
+  "sha_original": {
+    "crates/ruff_annotate_snippets/src/renderer/source_map.rs": "f466e84cbf6bc3d1ac7280685bb73fe3813565801c0ea7fe054926f384a59fb1",
+    "crates/ruff_annotate_snippets/tests/ruff.rs": "d95ed9d60465aafdee0e2e2e465b94fdf5a7335b460d1aaa0366756ff123d217"
+  },
+  "source_scope": "pub(crate) fn SourceMap::splice_lines plus its original multiple_insertions integration regression; no manifest changes"
+}

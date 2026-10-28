@@ -1,0 +1,13 @@
+from pathlib import Path
+import hashlib,json,re,subprocess,tempfile
+d=Path(__file__).resolve().parent;p='93526150df078af7dd8fc4226cdcc469539d2001';c='9c53b5de3aae4b1832eb7ee137647dda2466f888';git=lambda *a:subprocess.check_output(['git','-C','/home/dev-user/code/oss/ruff',*a]);H=lambda x:hashlib.sha256(x).hexdigest()
+patch=git('show','--format=','--full-index','--binary',c);(d/'edit.patch').write_bytes(patch);files=git('diff-tree','--name-only','--no-commit-id','-r',c).decode().splitlines();src=files[0];test=files[1];assert files==['crates/ruff_annotate_snippets/src/renderer/source_map.rs','crates/ruff_annotate_snippets/tests/ruff.rs']
+f=git('show',p+':'+test).decode();raw=f.split('fn multiple_insertions() {\n',1)[1].split('    let expected_ascii',1)[0];reader=('use annotate_snippets::{AnnotationKind, Level, Patch, Renderer, Snippet};\nfn main() {\n'+raw+'print!("{}", Renderer::plain().render(input));\n}\n').encode();(d/'reader.rs').write_bytes(reader)
+with tempfile.TemporaryDirectory()as td:
+ tmp=Path(td)
+ for n in files:
+  dest=tmp/n;dest.parent.mkdir(parents=True,exist_ok=True);dest.write_bytes(git('show',p+':'+n))
+ old={n:H((tmp/n).read_bytes())for n in files};subprocess.run(['git','apply','--reverse','--check','-'],cwd=tmp,input=patch,check=True);subprocess.run(['git','apply','--reverse','-'],cwd=tmp,input=patch,check=True);edited={n:H((tmp/n).read_bytes())for n in files}
+ data={'pin':p,'change':c,'files':files,'sha_original':old,'sha_edit':edited,'patch':H(patch),'caller':H(reader),'source_scope':'pub(crate) fn SourceMap::splice_lines plus its original multiple_insertions integration regression; no manifest changes','selections':['ruff','ty'],'schedule':[['original','ruff'],['original','ty'],['original-repeat','ruff'],['original-repeat','ty'],['edited','ruff'],['edited','ty'],['edited-repeat','ruff'],['edited-repeat','ty'],['restored','ruff'],['restored','ty'],['restored-repeat','ruff'],['restored-repeat','ty']],'command':['cargo','+ohm','build','--locked','--offline','--message-format=json','-p','{crate}','--bin','{crate}'],'semantic_guard':'Independent ordinary ELF reader built against each real workspace-selected rlib invokes the historical 3-insertion renderer; original and restore render three replacements, reverse must panic. Both normal native CLIs retain the correct Git version and run a real diagnostic. Probe only structural Rust and native inputs; no clock or product shortcut.'}
+ data['release']=json.loads((d.parent/'version-heads-build-ops/plan.json').read_bytes())['release'];(d/'plan.json').write_text(json.dumps(data,indent=2,sort_keys=True)+'\n')
+print(H((d/'plan.json').read_bytes()),H(reader))
