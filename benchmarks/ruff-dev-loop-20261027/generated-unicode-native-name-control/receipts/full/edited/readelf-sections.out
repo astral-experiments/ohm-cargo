@@ -1,0 +1,27 @@
+There are 18 section headers, starting at offset 0x3aee0:
+
+Section Headers:
+  [Nr] Name              Type            Address          Off    Size   ES Flg Lk Inf Al
+  [ 0]                   NULL            0000000000000000 000000 000000 00      0   0  0
+  [ 1] .eh_frame         PROGBITS        00000000005ff1c8 0001c8 000144 00   A  0   0  8
+  [ 2] .rodata           PROGBITS        00000000005ff310 000310 033554 01 AMS  0   0  4
+  [ 3] .text             PROGBITS        0000000000633870 033870 00029c 00  AX  0   0 16
+  [ 4] .got              PROGBITS        0000000000634b10 033b10 000010 08  WA  0   0  8
+  [ 5] .relro_padding    NOBITS          0000000000634b20 033b20 0004e0 00  WA  0   0  1
+  [ 6] .data             PROGBITS        0000000000636000 034000 000078 00  WA  0   0  8
+  [ 7] .selected         PROGBITS        0000000000000000 034078 000000 00      0   0  1
+  [ 8] .debug_abbrev     PROGBITS        0000000000000000 034078 0004be 00      0   0  1
+  [ 9] .debug_info       PROGBITS        0000000000000000 034536 00201e 00      0   0  1
+  [10] .debug_aranges    PROGBITS        0000000000000000 036554 0002c0 00      0   0  1
+  [11] .debug_str        PROGBITS        0000000000000000 036814 0010ee 01  MS  0   0  1
+  [12] .debug_line       PROGBITS        0000000000000000 037902 0022fb 00      0   0  1
+  [13] .debug_ranges     PROGBITS        0000000000000000 039bfd 000ca0 00      0   0  1
+  [14] .comment          PROGBITS        0000000000000000 03a89d 000081 01  MS  0   0  1
+  [15] .shstrtab         STRTAB          0000000000000000 03a91e 0000ae 00      0   0  1
+  [16] .symtab           SYMTAB          0000000000000000 03a9d0 000228 18     17  19  8
+  [17] .strtab           STRTAB          0000000000000000 03abf8 0002e8 00      0   0  1
+Key to Flags:
+  W (write), A (alloc), X (execute), M (merge), S (strings), I (info),
+  L (link order), O (extra OS processing required), G (group), T (TLS),
+  C (compressed), x (unknown), o (OS specific), E (exclude),
+  D (mbind), l (large), p (processor specific)
