@@ -711,7 +711,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                 )?;
             }
             if local_proc_macro {
-                paths::write_atomic(
+                paths::write_atomic_no_follow(
                     &namespace.join(crate::compiler::OHM_WORKTREE_SEED_LOCAL_PROC_MACRO_MARKER),
                     b"local procedural-macro outputs require trust at import time\n",
                 )?;

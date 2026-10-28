@@ -1097,6 +1097,43 @@ const AMBIENT_PROC_MACRO_BODY: &str = r#"
     format!("{directory:?}").parse().unwrap()
 "#;
 
+#[cfg(unix)]
+#[cargo_test(nightly, reason = "worktree seed preparation uses checksum freshness")]
+fn local_proc_macro_marker_replaces_symlinks() {
+    let donor = local_proc_macro_project(AMBIENT_PROC_MACRO_BODY);
+    let build = || {
+        seeded_cargo(
+            &donor,
+            "-Zohm-shared-registry-cache -Zohm-worktree-seeds=yes build",
+        )
+        .run();
+    };
+    build();
+
+    let namespace = workspace_caches().pop().unwrap();
+    let marker = fs::read_dir(namespace)
+        .unwrap()
+        .map(Result::unwrap)
+        .find(|entry| {
+            entry
+                .file_name()
+                .as_encoded_bytes()
+                .starts_with(b".ohm-worktree-seed-local-proc-macro-v")
+        })
+        .unwrap()
+        .path();
+    let contents = fs::read(&marker).unwrap();
+    let sentinel = paths::root().join("sentinel");
+    fs::write(&sentinel, "original").unwrap();
+    fs::remove_file(&marker).unwrap();
+    std::os::unix::fs::symlink(&sentinel, &marker).unwrap();
+    build();
+
+    assert_eq!(fs::read(&sentinel).unwrap(), b"original");
+    assert!(marker.symlink_metadata().unwrap().is_file());
+    assert_eq!(fs::read(marker).unwrap(), contents);
+}
+
 #[cargo_test(
     nightly,
     reason = "worktree seeds use checksum freshness and cwd remapping"
