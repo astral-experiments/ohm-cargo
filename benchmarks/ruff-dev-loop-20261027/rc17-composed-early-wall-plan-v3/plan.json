@@ -1,0 +1,250 @@
+{
+  "adopted_seed_v2": {
+    "commit": "e6071415b7117e741293bd029d371b886987d96e",
+    "manifest": "ea38f6d05eb89681e9bca511a4fb0f298ca72e38313323fdcf36a3cd1a0d0f24",
+    "raw_inventory_sha256": "de9828e9bf57bbec38c1dc26c5d8d853f6665d16b51b159f47a684fefdeb70a0",
+    "same_physical_canonical_paths": "ruff-evaluation-v2"
+  },
+  "alpha": 0.025,
+  "bootstrap_draws": 100000,
+  "bootstrap_seed": 2026102807124,
+  "catalog_scope": {
+    "directly_linked": 50,
+    "historical_catalog_roster_sha256": "bd33d7e0e09df9a56480d55e36d5d47d3669a5d2d11d9cc466e24228beab3099",
+    "historical_wild_occurrences": 297,
+    "native_reference": "a75e5f17c07081cfcc9fabfcccd7a5022528641b",
+    "native_result_manifest": "ced75d44a721271455ea923ae40c0f38d693f7b559ad0ea0e40c4f9c42804039",
+    "output_files": 110,
+    "permitted_elf_differences": [
+      ".rodata sh_entsize",
+      "32-byte GNU build-ID descriptor"
+    ],
+    "public_wild_source": "e856d81f6683cad80b9fe0ebf1a0c3c403c6fe11",
+    "registry_exact": 78,
+    "unchanged_exact": 60,
+    "widths": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16
+    ]
+  },
+  "clock_sha256": "4322113422772e6f3ccbed3c02803c396ab0ccc85d31d84995cc3f2d1668770a",
+  "command": [
+    "cargo",
+    "+ohm",
+    "test",
+    "--no-run",
+    "--workspace",
+    "--locked",
+    "--offline",
+    "-j8"
+  ],
+  "composed_ci": {
+    "composed": {
+      "head": "62de9a49872b6369d6246eb1c63603daf473df9a",
+      "number": 260,
+      "parents": [
+        "5bc102b855aeca105a6d4f077047bd7be3fef08d",
+        "9a0170863f70d9a88a8b1d1f4c4e1fded4736a9c"
+      ],
+      "physical_source_sha256": "e8ce9d2d6a846b4d37917e165c5c45db9a521a2247e787740b6642d59c4456f2",
+      "tree": "1723c3e5291b4d229e5be6b70d086d605bc7eb86"
+    },
+    "explicitly_inapplicable_checks": [
+      "Clippy APFS replay"
+    ],
+    "observer": {
+      "head": "9a0170863f70d9a88a8b1d1f4c4e1fded4736a9c",
+      "number": 261,
+      "parents": [
+        "a0c7d08c898d3fdff992f2f431dec57d2486add2"
+      ],
+      "physical_source_sha256": "ba575e3db9849ffae1b8b2e3b8b3ce01b6ed361c93a49cc03b4c01a8fc4f823b",
+      "tree": "4b7d1dec6ffa8282ad14045a58ad1934d0c3e0b5"
+    },
+    "public_qa_ref": "d699d4cc9651cb91e84d1a012eadc9b53883f9ef",
+    "qa_sha256": "bfa3af0d64536cc2a5d59bb27a2f714a6dfd2b89a1943b6697c00e1a3d3c1beb",
+    "required_checks": [
+      "Rustfmt",
+      "Clippy (depot-ubuntu-24.04-8)",
+      "Clippy (depot-macos-15)",
+      "Cargo tests (depot-ubuntu-24.04-16)",
+      "Cargo tests (depot-macos-15)",
+      "Workspace tests",
+      "Resolver tests",
+      "Schema tests"
+    ],
+    "scheduler_files": [
+      "src/compiler/mod.rs",
+      "src/compiler/ohm_early_tests.rs",
+      "tests/testsuite/freshness.rs"
+    ]
+  },
+  "control": "0aa04df8023984b83ef676d1494d43e482472e1b2bccdb82a4d0bd390578a322",
+  "cpu": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+  ],
+  "host": "charlie-ohm-c5-check-1025",
+  "independent_baseline_build": {
+    "actual_duplicate_sha256": "49e68b3427afb4c373dec712c758461255f545f201af5fdab91f8597d37be3fd",
+    "allowed_differences": [
+      "e_shoff",
+      "GNU build ID descriptor",
+      ".symtab",
+      ".strtab"
+    ],
+    "builder_rustc": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+    "comparison_sha256": "82bd34ed6a716b7d8fda0473ee782d13b1a8ff0eb1b24c976cce9fa4d5e7f1a1",
+    "profile_sha256": "481ada8a40c70dad11b3c7e8871e9a52207d78447ca5e8ace06fc4aec2d2b5a7",
+    "whole_file_equal": false
+  },
+  "jobs": 8,
+  "lower_percent_over": 1.0,
+  "minimum_favorable_pairs": 16,
+  "minimum_remaining_bytes": 34359738368,
+  "native_commit": "23ca620a9ac3e16402d566f23670dc954bf638f7",
+  "native_manifest": "a420c1f388cfd5c42aa21632be89f128133acc42fbbfcb4ce1810d5e65495d18",
+  "native_worker": "9c2e4138072679b8ffff20d417fffad8f6bcd3cba1b0dd15309e2d935cbc0813",
+  "order": [
+    "BC",
+    "BC",
+    "CB",
+    "BC",
+    "BC",
+    "BC",
+    "CB",
+    "CB",
+    "CB",
+    "BC",
+    "BC",
+    "BC",
+    "BC",
+    "CB",
+    "BC",
+    "CB",
+    "CB",
+    "CB",
+    "BC",
+    "CB",
+    "CB",
+    "CB",
+    "BC",
+    "CB"
+  ],
+  "predecessor_unscored_native_failure": {
+    "component": "rc17-composed-early-native-plan",
+    "first_run": {
+      "failed_stderr": "b3ecdabe64b3256e4ef7758107f1f15e6d85f54079813d14b7e0373e40d04e4c",
+      "first_cargo_artifacts": 0,
+      "first_status": 101,
+      "offline_registry_config_sha256": "b53c1616e30600e72868bee2d214fd7a5495759368db642698f2af5f38f714d6",
+      "offline_registry_id_sha256": "85e1e016efd01b791bbc91cd0960c7f9de002a7f374d60c2a299adf9ebfa1381",
+      "packages": 498
+    },
+    "manifest": "dae9485957ab20bcc846572369813e9ca8eb75265da35e92cd31b815454f0e11",
+    "registration": "14590f7e73ea008e2cb0990c2de3faa28aeb6b38",
+    "resolved_by": "All 498 locked archives are checksum-verified in each of the two offline registry namespaces."
+  },
+  "previous_release_16_registration": "1844efed56043bca3add46f9ccac806a17af829c/early-tests-completion-wall-plan-v2",
+  "reference_tests": [
+    "early_native_integration_tests_default_and_fallback",
+    "known observer rebuild, ordinary reader, synchronized replacement and old cached-state migration on #261"
+  ],
+  "registry_sha256": "508c6cee5b0f1962ab784ffbd953dc3b06699f51663633cb279d4e1bb4131d53",
+  "schedule_seed": 2026102807123,
+  "sdk": {
+    "archive": "163267d26889b1bd2c467d7db97efee42cd2ac9dc9af2abc3a56ade8da9a9572",
+    "tools": {
+      "cargo": "4e4065390403afbf4fb77b2f41fbc21c59afe3dda2337a5bbe29fda29a47dbb3",
+      "driver": "618ebac16b7d4ec01a2af89661d25b8f26ff347edbb69c6dcaa78f10115914a7",
+      "rustc": "7ec5263869aed2fc9272ea7212aabbe7b272a4685f1b79af75c123daff09c02c",
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+    }
+  },
+  "seed_command": [
+    "cargo",
+    "+ohm",
+    "test",
+    "--no-run",
+    "--workspace",
+    "--exclude",
+    "ty_server",
+    "--locked",
+    "--offline",
+    "-j8",
+    "--message-format=json"
+  ],
+  "source": {
+    "cargo_release_base": "a0c7d08c898d3fdff992f2f431dec57d2486add2",
+    "guard": "5bc102b855aeca105a6d4f077047bd7be3fef08d",
+    "guard_parent": "4c07cbf6bd91e170e3b8904eeb82436a6dbde358",
+    "guard_patch": "2775d92632e88badf8bdbdde266d9e0ac2e38dc54e0883817e5b87469f353f7e",
+    "observer": "9a0170863f70d9a88a8b1d1f4c4e1fded4736a9c",
+    "ruff": "93526150df078af7dd8fc4226cdcc469539d2001",
+    "rust": "bfa236f639034f61ec884c15bd1f4e0b75e508ac"
+  },
+  "source_patch": "1b9310471b7d1178633e58ee63808522609db887",
+  "stopped_v2": {
+    "clocks_excluded": 4,
+    "first_failure_sha256": "3305c7c3ae493d875cd2dd2261796a67e39a90cdfb84a710bc6752b362b61436",
+    "native_admission": "329818680f8d76f26cf15f6c4c5007c69001f6e85bd873c659a7bea283f6177e",
+    "phase": "02-2-B unchanged follow-up",
+    "protocol_manifest": "9d2092c5482a2b63411f6d3357da7e0a95c732b89d1e6548a284bb1e0e286a8d",
+    "protocol_ref": "3a7bba8da2347af0ee04f847ddc786e7be3783f2",
+    "result_manifest": "ade0124b1f079151ccacdb913294c47b05c4b13e01ad89c752d82dc4738631f4",
+    "result_ref": "ae3878f34457a9fdbdafb017b23287020e658d03",
+    "slots_verified": 3,
+    "unadmitted": {
+      "ruff_python_formatter-519c0544e58f942c": "f56d2f9441e7bae586e8ed95bcbaf58b6753337347afb26da1f2a05a305a4701",
+      "ty_project-30613778192a6cff": "a2c3105ef595009ea24961751977d80eca44cca3f7c989d2e3c323ae3428670a"
+    }
+  },
+  "storage_after_unscored_v1": {
+    "clocks": 0,
+    "copy": "never",
+    "errno": 95,
+    "filesystem": "ext4",
+    "first_failure": "356c561b3e5501c815caecd8c788439d0e52efc600e17555ef2cdf8a76092e80",
+    "old_manifest": "d72ba2931a74d09d83d98e6c7d0829a6ad15fa4c756e8c99b6e1b569294e6917",
+    "old_registration": "480e5f2dc1f69866145c98909ed0f327141e2928",
+    "preflight": "cfc945a95889179f62257ca519ee1276f137d9186710139f55e056e5a1d41316"
+  },
+  "study": "Independent replacement of the stopped first full Ruff test selection; #260 atop #261 on released -17",
+  "subject_images": {
+    "B": "0aa04df8023984b83ef676d1494d43e482472e1b2bccdb82a4d0bd390578a322",
+    "C": "813ba8a480bc6047d2effde2edff5fe5990781904ff453815ddc71aeb5e0e754"
+  },
+  "subjects": {
+    "B": "observer",
+    "C": "composed"
+  },
+  "temporary_product_allowance": 6442450944
+}
