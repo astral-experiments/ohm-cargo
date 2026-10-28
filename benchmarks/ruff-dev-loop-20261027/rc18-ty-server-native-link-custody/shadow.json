@@ -1,0 +1,97 @@
+{
+  "cache_executable_record_fields": [
+    "len",
+    "modified_nanos",
+    "path"
+  ],
+  "cache_file_sha256": "5bd5c9ce8f997e8f69d95361b93d3e753e628dcb226580ffdf47407fe5be3282",
+  "cargo_jobserver_forwarded": false,
+  "cpus": [
+    24,
+    25,
+    26,
+    27
+  ],
+  "hook_object": "0cc846474393fcd132f45c67f4983885c470a89749fecc7c009d8c0e8ab1a25a",
+  "name": "e2e-6a4ba41917b202dd",
+  "native_inputs": 412,
+  "phases": [
+    {
+      "artifact_events": 1,
+      "diagnostic_count": 0,
+      "elf_bytes": 227926992,
+      "elf_sha256": "d999e50c36b8655134159400eb23d1e649ac27e6043733ba61c64c37d70a7a13",
+      "list_exit": 0,
+      "list_sha256": "76d24b892727ff181fdf019636ef5e928d741eb8df4f58f06dcc626d0bf67c52",
+      "listed_tests": 200,
+      "overall_trace_sha256": "7b1d649e82e4eeda6520666d7b9b6bb92dce904321a36d8a199cb4922aae358f",
+      "phase": "original",
+      "rustc_exit": 0,
+      "stderr_sha256": "85503e334f7ad001f58351a95e59c6762282bdfb23c1ea89d56450ed07a67d5c",
+      "stock_wild_exec_count": 1,
+      "stock_wild_exec_sha256": "fe18f9442e0dc05764c03cbde35d5d54b26adf0a725797e3789bad17b160e3f3"
+    },
+    {
+      "artifact_events": 1,
+      "diagnostic_count": 0,
+      "elf_bytes": 227927208,
+      "elf_sha256": "93ba29d533b42797df67501c1be77419c619e3ee5f9e60d27967966fc4d8a9c2",
+      "list_exit": 83,
+      "list_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "listed_tests": 0,
+      "overall_trace_sha256": "68944084ea33b6427e5f266bcd18882659b0f3fed4babc35c546ee48759373f6",
+      "phase": "earlier-object",
+      "rustc_exit": 0,
+      "stderr_sha256": "85503e334f7ad001f58351a95e59c6762282bdfb23c1ea89d56450ed07a67d5c",
+      "stock_wild_exec_count": 1,
+      "stock_wild_exec_sha256": "811cc908467682fb05424e3a4b964128c1125ff63d6c178fa34d5f92a397d472"
+    },
+    {
+      "diagnostic_mentions_shadow": true,
+      "overall_trace_sha256": "d1f59ca9e0520277164fe5397aba47e4b81d10956a60352457680001e9820b0d",
+      "phase": "invalid-earlier-file",
+      "rustc_exit": 1,
+      "stderr_sha256": "ffffd07f4f6c3eb7f512a2529b2b4daec349b81a36041e4e89de6ee08f6e5a85",
+      "stock_wild_exec_count": 1,
+      "stock_wild_exec_sha256": "3d661b7c275a29d1c29cf81280d108324646ac97ed99467a9d71ab828e1714d1"
+    },
+    {
+      "artifact_events": 1,
+      "diagnostic_count": 0,
+      "elf_bytes": 227926992,
+      "elf_sha256": "d999e50c36b8655134159400eb23d1e649ac27e6043733ba61c64c37d70a7a13",
+      "list_exit": 0,
+      "list_sha256": "76d24b892727ff181fdf019636ef5e928d741eb8df4f58f06dcc626d0bf67c52",
+      "listed_tests": 200,
+      "overall_trace_sha256": "afdc462e521fabb23e5648a6a8b56c7f129d875af5cc9fb2de369156e2f08f7d",
+      "phase": "restored",
+      "rustc_exit": 0,
+      "stderr_sha256": "85503e334f7ad001f58351a95e59c6762282bdfb23c1ea89d56450ed07a67d5c",
+      "stock_wild_exec_count": 1,
+      "stock_wild_exec_sha256": "827a5b562f945d2fca1aba090a1d2c6838a28413a8e6e6a7a369ae2b4b57d7e8"
+    }
+  ],
+  "previous_exe_sha256": "b9fe6451d64e29a4ec5dd2b07c900821fe90b79fed8380c584bb5d2f92d4f52c",
+  "previous_list_sha256": "76d24b892727ff181fdf019636ef5e928d741eb8df4f58f06dcc626d0bf67c52",
+  "previous_stock_rustc_exec_sha256": "2b607a656a5c19ff6c8f3e5f0d8f632624b14a69798192b8f6c7c10ecedf2948",
+  "previous_stock_wild_exec_sha256": "7c5d6a2d1010dc7fce620a4ea78557a8a0840370500776afe4332dddb7673114",
+  "prior_temp_files_not_read": [
+    "symbols.o",
+    "GCC plugin resolution file (empty in acquisition)"
+  ],
+  "product_worker_count_measured": false,
+  "recipe_bytes": 194809,
+  "recipe_sha256": "27b707b07b9844f86ddd13a222de08d9b9ee41de7c32e1e0f9f727b865047976",
+  "retained_native_default_sha256": {
+    "b9fe6451d64e29a4ec5dd2b07c900821fe90b79fed8380c584bb5d2f92d4f52c": "bodies/b9fe6451d64e29a4ec5dd2b07c900821fe90b79fed8380c584bb5d2f92d4f52c",
+    "d999e50c36b8655134159400eb23d1e649ac27e6043733ba61c64c37d70a7a13": "bodies/d999e50c36b8655134159400eb23d1e649ac27e6043733ba61c64c37d70a7a13"
+  },
+  "rust_object_count": 139,
+  "source_role": "-17 scoped authentic ty_server e2e link-only replay, not a new full Cargo command",
+  "source_ruff": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "still_available_positive_bytes": 615547333,
+  "still_available_positive_files": 410,
+  "stock_wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+  "unchanged_positive_roster_sha256": "8b4d9daa9c76f2e3ccf41c8d32ae82666625299f084d5cd3435b28001ede3813",
+  "whole_donor_before_after": "a104cdf4df40e04a518a1fc45943f76c7ad189fcbb0a51540c4a7ffbfb5a5944"
+}
