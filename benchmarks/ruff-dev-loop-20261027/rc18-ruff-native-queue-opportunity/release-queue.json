@@ -1,0 +1,1411 @@
+{
+  "dirty_executable_roster": 50,
+  "edges": 29419,
+  "graph_units": 689,
+  "intermediate_events": 422,
+  "joblog_sha256": "ea8c2eed13098b301a9160ff7282aff6dbf4e8f27f0e57473babb70b8d60e885",
+  "matched": 50,
+  "records": [
+    {
+      "complete_edges": {
+        "All": 391
+      },
+      "end": 5.813811231,
+      "file": "e2e-ac411c688b27a77a",
+      "first_dispatch_after_all_prerequisites": 4.897755742,
+      "key": "147e59ac821fe70a311d5296dee8aa9fcb249a4897738e102137fdf3412ac37d",
+      "kind": "test",
+      "last_full_dependency_or_start": 4.897178922,
+      "mode": "Test",
+      "package": "ruff_server",
+      "priority": 200,
+      "size": 146310024,
+      "smaller_same_priority_dispatched_first": [],
+      "start": 4.898411069,
+      "target": "e2e"
+    },
+    {
+      "complete_edges": {
+        "All": 206
+      },
+      "end": 5.123658201,
+      "file": "comparable-9839afbef154aade",
+      "first_dispatch_after_all_prerequisites": 4.897755742,
+      "key": "0dbacaa2d2873d85dbbdcc0a992460d6b8d071dbdb38ded61a5d6cec5fe54187",
+      "kind": "test",
+      "last_full_dependency_or_start": 4.897178922,
+      "mode": "Test",
+      "package": "ruff_python_ast_integration_tests",
+      "priority": 200,
+      "size": 15413688,
+      "smaller_same_priority_dispatched_first": [],
+      "start": 4.898592265,
+      "target": "comparable"
+    },
+    {
+      "complete_edges": {
+        "All": 206
+      },
+      "end": 5.10610918,
+      "file": "block_comments-22ebc506abcc73d4",
+      "first_dispatch_after_all_prerequisites": 4.897755742,
+      "key": "dca7b64767535f554f0f37b22eb9f90cde14752f60701a1a3ed83b776220b5c6",
+      "kind": "test",
+      "last_full_dependency_or_start": 4.897178922,
+      "mode": "Test",
+      "package": "ruff_python_trivia_integration_tests",
+      "priority": 200,
+      "size": 15187832,
+      "smaller_same_priority_dispatched_first": [],
+      "start": 4.898794059,
+      "target": "block_comments"
+    },
+    {
+      "complete_edges": {
+        "All": 449
+      },
+      "end": 5.156050884,
+      "file": "resolve_files-035e6057a1040d7e",
+      "first_dispatch_after_all_prerequisites": 4.899845951,
+      "key": "b72abf5eaa1a3b2585443776d2e0d5f7b3ea7079405116fb96507c79ce20fb31",
+      "kind": "test",
+      "last_full_dependency_or_start": 4.899672751,
+      "mode": "Test",
+      "package": "ruff",
+      "priority": 200,
+      "size": 15673904,
+      "smaller_same_priority_dispatched_first": [],
+      "start": 4.899845951,
+      "target": "resolve_files"
+    },
+    {
+      "complete_edges": {
+        "All": 295
+      },
+      "end": 5.206291505,
+      "file": "ruff_python_formatter-6c347a415e685e7c",
+      "first_dispatch_after_all_prerequisites": 4.897755742,
+      "key": "e5e26693879cd16fea48843bc7c95472116ed852cdd2ed46894b9c3e49827804",
+      "kind": "bin",
+      "last_full_dependency_or_start": 4.897178922,
+      "mode": "Test",
+      "package": "ruff_python_formatter",
+      "priority": 200,
+      "size": 36775672,
+      "smaller_same_priority_dispatched_first": [
+        "comparable-9839afbef154aade",
+        "block_comments-22ebc506abcc73d4"
+      ],
+      "start": 4.899030508,
+      "target": "ruff_python_formatter"
+    },
+    {
+      "complete_edges": {
+        "All": 449
+      },
+      "end": 5.945980027,
+      "file": "cli-b62e55d460da2b80",
+      "first_dispatch_after_all_prerequisites": 4.899845951,
+      "key": "6694f6311983e81e0a33b8c7117192657703f081298e65df767661bcf0537cab",
+      "kind": "test",
+      "last_full_dependency_or_start": 4.899672751,
+      "mode": "Test",
+      "package": "ruff",
+      "priority": 200,
+      "size": 89242632,
+      "smaller_same_priority_dispatched_first": [
+        "resolve_files-035e6057a1040d7e"
+      ],
+      "start": 5.393459386,
+      "target": "cli"
+    },
+    {
+      "complete_edges": {
+        "All": 295
+      },
+      "end": 5.39328378,
+      "file": "fixtures-cd4844c322993c53",
+      "first_dispatch_after_all_prerequisites": 4.897755742,
+      "key": "7a7b1091de83db5bf28d806ba6db8bc230de6b5abcf4771510eec9751bbdccfb",
+      "kind": "test",
+      "last_full_dependency_or_start": 4.897178922,
+      "mode": "Test",
+      "package": "ruff_python_formatter",
+      "priority": 200,
+      "size": 59291424,
+      "smaller_same_priority_dispatched_first": [
+        "comparable-9839afbef154aade",
+        "block_comments-22ebc506abcc73d4",
+        "ruff_python_formatter-6c347a415e685e7c"
+      ],
+      "start": 4.899180596,
+      "target": "fixtures"
+    },
+    {
+      "complete_edges": {
+        "All": 381
+      },
+      "end": 5.571064613,
+      "file": "ruff_markdown-9430dd0f015f7fff",
+      "first_dispatch_after_all_prerequisites": 4.897755742,
+      "key": "290180f25b2a86346686cbdbaa108938f77e318f2b69f9c52e27c36710d2827d",
+      "kind": "lib",
+      "last_full_dependency_or_start": 4.897178922,
+      "mode": "Test",
+      "package": "ruff_markdown",
+      "priority": 200,
+      "size": 102750464,
+      "smaller_same_priority_dispatched_first": [
+        "comparable-9839afbef154aade",
+        "block_comments-22ebc506abcc73d4",
+        "ruff_python_formatter-6c347a415e685e7c",
+        "fixtures-cd4844c322993c53"
+      ],
+      "start": 4.899380268,
+      "target": "ruff_markdown"
+    },
+    {
+      "complete_edges": {
+        "All": 206
+      },
+      "end": 6.583711745,
+      "file": "source_order-0dcd7bec5e451519",
+      "first_dispatch_after_all_prerequisites": 4.897755742,
+      "key": "508852fda0da6013f615c6c0076147bbe2c3ac23af7d53229fef693f6ea7a001",
+      "kind": "test",
+      "last_full_dependency_or_start": 4.897178922,
+      "mode": "Test",
+      "package": "ruff_python_ast_integration_tests",
+      "priority": 200,
+      "size": 20954592,
+      "smaller_same_priority_dispatched_first": [
+        "comparable-9839afbef154aade",
+        "block_comments-22ebc506abcc73d4",
+        "resolve_files-035e6057a1040d7e",
+        "analyze_graph-3442fcdf6ac355dc",
+        "direxist_guard-b52833c6d634e45b",
+        "self_environment-86a9154a941e135d",
+        "config-7ead3e5aa50ccfca"
+      ],
+      "start": 6.385845459,
+      "target": "source_order"
+    },
+    {
+      "complete_edges": {
+        "All": 296
+      },
+      "end": 6.792191062,
+      "file": "ty_module_resolver-a5dd8c36e9712444",
+      "first_dispatch_after_all_prerequisites": 4.897755742,
+      "key": "c43eef839360ee48aae9f4de0de0be502a8715bd85b4be8a688da5bca7380aeb",
+      "kind": "lib",
+      "last_full_dependency_or_start": 4.897178922,
+      "mode": "Test",
+      "package": "ty_module_resolver",
+      "priority": 200,
+      "size": 54905352,
+      "smaller_same_priority_dispatched_first": [
+        "comparable-9839afbef154aade",
+        "block_comments-22ebc506abcc73d4",
+        "resolve_files-035e6057a1040d7e",
+        "ruff_python_formatter-6c347a415e685e7c",
+        "source_order-0dcd7bec5e451519",
+        "analyze_graph-3442fcdf6ac355dc",
+        "direxist_guard-b52833c6d634e45b",
+        "self_environment-86a9154a941e135d",
+        "cli-e8249926456311d5",
+        "config-7ead3e5aa50ccfca",
+        "ruff-d6ddb74de333d3e2"
+      ],
+      "start": 6.404986127,
+      "target": "ty_module_resolver"
+    },
+    {
+      "complete_edges": {
+        "All": 392
+      },
+      "end": 5.793957881,
+      "file": "mdtest-2946348e27e3d30f",
+      "first_dispatch_after_all_prerequisites": 5.003516719,
+      "key": "297d6ade34a94152f3e4474c4ddeaf67ba738fbac7436d7e0d97d79ab495cf51",
+      "kind": "test",
+      "last_full_dependency_or_start": 5.00345849,
+      "mode": "Test",
+      "package": "ruff_mdtest",
+      "priority": 200,
+      "size": 133445672,
+      "smaller_same_priority_dispatched_first": [],
+      "start": 5.003516719,
+      "target": "mdtest"
+    },
+    {
+      "complete_edges": {
+        "All": 271
+      },
+      "end": 6.865974027,
+      "file": "ruff_db-0798c77214886b3c",
+      "first_dispatch_after_all_prerequisites": 4.897755742,
+      "key": "7731a5fc38903896569cae04c1c9b345d8a6feedf272c59bb36f2bd439edc908",
+      "kind": "lib",
+      "last_full_dependency_or_start": 4.897178922,
+      "mode": "Test",
+      "package": "ruff_db",
+      "priority": 200,
+      "size": 52313656,
+      "smaller_same_priority_dispatched_first": [
+        "comparable-9839afbef154aade",
+        "block_comments-22ebc506abcc73d4",
+        "resolve_files-035e6057a1040d7e",
+        "ruff_python_formatter-6c347a415e685e7c",
+        "source_order-0dcd7bec5e451519",
+        "analyze_graph-3442fcdf6ac355dc",
+        "direxist_guard-b52833c6d634e45b",
+        "self_environment-86a9154a941e135d",
+        "cli-e8249926456311d5",
+        "config-7ead3e5aa50ccfca",
+        "ruff-d6ddb74de333d3e2"
+      ],
+      "start": 6.478467155,
+      "target": "ruff_db"
+    },
+    {
+      "complete_edges": {
+        "All": 206
+      },
+      "end": 6.765619533,
+      "file": "identifier-bba967788e1b801e",
+      "first_dispatch_after_all_prerequisites": 4.897755742,
+      "key": "36874597c463c3c52c718ba89b8961883f69c2ef1c58f2a9e9595ad4efb5d581",
+      "kind": "test",
+      "last_full_dependency_or_start": 4.897178922,
+      "mode": "Test",
+      "package": "ruff_python_ast_integration_tests",
+      "priority": 200,
+      "size": 15155760,
+      "smaller_same_priority_dispatched_first": [
+        "direxist_guard-b52833c6d634e45b",
+        "config-7ead3e5aa50ccfca"
+      ],
+      "start": 6.58401579,
+      "target": "identifier"
+    },
+    {
+      "complete_edges": {
+        "All": 383
+      },
+      "end": 6.214577312,
+      "file": "ty_python_semantic-0c91f7de1f26917a",
+      "first_dispatch_after_all_prerequisites": 5.0015728,
+      "key": "2596ba13423df340610d2d703703654b4f89a61d57ccda03ced8520d567ab7d0",
+      "kind": "lib",
+      "last_full_dependency_or_start": 5.001401764,
+      "mode": "Test",
+      "package": "ty_python_semantic",
+      "priority": 200,
+      "size": 180773840,
+      "smaller_same_priority_dispatched_first": [
+        "mdtest-2946348e27e3d30f"
+      ],
+      "start": 5.106389441,
+      "target": "ty_python_semantic"
+    },
+    {
+      "complete_edges": {
+        "All": 390
+      },
+      "end": 7.385549569,
+      "file": "ruff_server-b598b3ab69a2d318",
+      "first_dispatch_after_all_prerequisites": 4.897755742,
+      "key": "d75d9da6fa3d14659cd79187ab3f91d60c8939ac64436d19822e7aff1c11d0b9",
+      "kind": "lib",
+      "last_full_dependency_or_start": 4.897178922,
+      "mode": "Test",
+      "package": "ruff_server",
+      "priority": 200,
+      "size": 115387648,
+      "smaller_same_priority_dispatched_first": [
+        "comparable-9839afbef154aade",
+        "block_comments-22ebc506abcc73d4",
+        "resolve_files-035e6057a1040d7e",
+        "ruff_python_formatter-6c347a415e685e7c",
+        "cli-b62e55d460da2b80",
+        "fixtures-cd4844c322993c53",
+        "ruff_markdown-9430dd0f015f7fff",
+        "source_order-0dcd7bec5e451519",
+        "ty_module_resolver-a5dd8c36e9712444",
+        "ruff_db-0798c77214886b3c",
+        "identifier-bba967788e1b801e",
+        "analyze_graph-3442fcdf6ac355dc",
+        "direxist_guard-b52833c6d634e45b",
+        "self_environment-86a9154a941e135d",
+        "cli-e8249926456311d5",
+        "config-7ead3e5aa50ccfca",
+        "ruff-d6ddb74de333d3e2"
+      ],
+      "start": 6.675087107,
+      "target": "ruff_server"
+    },
+    {
+      "complete_edges": {
+        "All": 294
+      },
+      "end": 7.122363541,
+      "file": "ruff_python_formatter-47bc5e53b3953399",
+      "first_dispatch_after_all_prerequisites": 4.897755742,
+      "key": "ba05d34367b0e0e0cabe81b93f56b7100aaf4139183a0df60ae4afc437ecd6f9",
+      "kind": "lib",
+      "last_full_dependency_or_start": 4.897178922,
+      "mode": "Test",
+      "package": "ruff_python_formatter",
+      "priority": 200,
+      "size": 53084032,
+      "smaller_same_priority_dispatched_first": [
+        "comparable-9839afbef154aade",
+        "block_comments-22ebc506abcc73d4",
+        "resolve_files-035e6057a1040d7e",
+        "ruff_python_formatter-6c347a415e685e7c",
+        "source_order-0dcd7bec5e451519",
+        "ruff_db-0798c77214886b3c",
+        "identifier-bba967788e1b801e",
+        "analyze_graph-3442fcdf6ac355dc",
+        "direxist_guard-b52833c6d634e45b",
+        "self_environment-86a9154a941e135d",
+        "cli-e8249926456311d5",
+        "config-7ead3e5aa50ccfca",
+        "ruff-d6ddb74de333d3e2"
+      ],
+      "start": 6.7370792,
+      "target": "ruff_python_formatter"
+    },
+    {
+      "complete_edges": {
+        "All": 353
+      },
+      "end": 6.056351194,
+      "file": "ty_test-bfa1400a52721b59",
+      "first_dispatch_after_all_prerequisites": 4.996823716,
+      "key": "aa4eda2dbbcd6bf3d69ca237d92b5b07a94c41660b74dd473dd280b69b5f18ed",
+      "kind": "lib",
+      "last_full_dependency_or_start": 4.940484523,
+      "mode": "Test",
+      "package": "ty_test",
+      "priority": 200,
+      "size": 166206416,
+      "smaller_same_priority_dispatched_first": [
+        "mdtest-2946348e27e3d30f",
+        "corpus-77b6d8c50ba8d54e"
+      ],
+      "start": 5.206411928,
+      "target": "ty_test"
+    },
+    {
+      "complete_edges": {
+        "All": 391
+      },
+      "end": 7.79737621,
+      "file": "ty_server-4973c777e0baa104",
+      "first_dispatch_after_all_prerequisites": 4.897755742,
+      "key": "6bd477686fbb4e99891b530813ce1ff89c28df22da6d6f7b9c37b3f8a8ad1c25",
+      "kind": "lib",
+      "last_full_dependency_or_start": 4.897178922,
+      "mode": "Test",
+      "package": "ty_server",
+      "priority": 200,
+      "size": 192447848,
+      "smaller_same_priority_dispatched_first": [
+        "e2e-ac411c688b27a77a",
+        "comparable-9839afbef154aade",
+        "block_comments-22ebc506abcc73d4",
+        "resolve_files-035e6057a1040d7e",
+        "ruff_python_formatter-6c347a415e685e7c",
+        "cli-b62e55d460da2b80",
+        "fixtures-cd4844c322993c53",
+        "ruff_markdown-9430dd0f015f7fff",
+        "source_order-0dcd7bec5e451519",
+        "ty_module_resolver-a5dd8c36e9712444",
+        "mdtest-2946348e27e3d30f",
+        "ruff_db-0798c77214886b3c",
+        "identifier-bba967788e1b801e",
+        "ty_python_semantic-0c91f7de1f26917a",
+        "ruff_server-b598b3ab69a2d318",
+        "ruff_python_formatter-47bc5e53b3953399",
+        "ty_test-bfa1400a52721b59",
+        "integration_test-4819140e1d62eda3",
+        "analyze_graph-3442fcdf6ac355dc",
+        "ty-eb87f4f4ad8029dc",
+        "ty-28db247cc67222c0",
+        "direxist_guard-b52833c6d634e45b",
+        "ruff-8dcc02a474b4938c",
+        "corpus-77b6d8c50ba8d54e",
+        "self_environment-86a9154a941e135d",
+        "cli-e8249926456311d5",
+        "config-7ead3e5aa50ccfca",
+        "ruff-d6ddb74de333d3e2",
+        "mdtest-a96fdf0a48ebddd3"
+      ],
+      "start": 6.766812978,
+      "target": "ty_server"
+    },
+    {
+      "complete_edges": {
+        "All": 449
+      },
+      "end": 6.478319431,
+      "file": "integration_test-4819140e1d62eda3",
+      "first_dispatch_after_all_prerequisites": 4.899845951,
+      "key": "4cb40195e835cde667bc4c5470dc8498d180fdefd9c17b252a445cc41e65840c",
+      "kind": "test",
+      "last_full_dependency_or_start": 4.899672751,
+      "mode": "Test",
+      "package": "ruff",
+      "priority": 200,
+      "size": 162820440,
+      "smaller_same_priority_dispatched_first": [
+        "resolve_files-035e6057a1040d7e",
+        "cli-b62e55d460da2b80",
+        "mdtest-2946348e27e3d30f"
+      ],
+      "start": 5.571189094,
+      "target": "integration_test"
+    },
+    {
+      "complete_edges": {
+        "All": 206
+      },
+      "end": 6.95792174,
+      "file": "stmt_if-b3a225ef45b8409b",
+      "first_dispatch_after_all_prerequisites": 4.897755742,
+      "key": "ff58180497cd13fa92ffff705cae4f6e67d68d12fdf9e6e2cdef737928a619fc",
+      "kind": "test",
+      "last_full_dependency_or_start": 4.897178922,
+      "mode": "Test",
+      "package": "ruff_python_ast_integration_tests",
+      "priority": 200,
+      "size": 15150744,
+      "smaller_same_priority_dispatched_first": [
+        "direxist_guard-b52833c6d634e45b",
+        "config-7ead3e5aa50ccfca"
+      ],
+      "start": 6.792415779,
+      "target": "stmt_if"
+    },
+    {
+      "complete_edges": {
+        "All": 235
+      },
+      "end": 6.954114914,
+      "file": "generate_inline_tests-00680913f20a7bbc",
+      "first_dispatch_after_all_prerequisites": 4.897755742,
+      "key": "874efaaa0b88e95d77b1ee96998b1a7a72045d6c56d8ae19f6b44ae6734d113a",
+      "kind": "test",
+      "last_full_dependency_or_start": 4.897178922,
+      "mode": "Test",
+      "package": "ruff_python_parser",
+      "priority": 200,
+      "size": 1901816,
+      "smaller_same_priority_dispatched_first": [],
+      "start": 6.845395165,
+      "target": "generate_inline_tests"
+    },
+    {
+      "complete_edges": {
+        "All": 449
+      },
+      "end": 5.987739617,
+      "file": "analyze_graph-3442fcdf6ac355dc",
+      "first_dispatch_after_all_prerequisites": 4.899845951,
+      "key": "0f04ab189022fdfc50a4b40c0a8eb088b0e11cb7f3b87e8d87b6a097ec6588f0",
+      "kind": "test",
+      "last_full_dependency_or_start": 4.899672751,
+      "mode": "Test",
+      "package": "ruff",
+      "priority": 200,
+      "size": 18729792,
+      "smaller_same_priority_dispatched_first": [
+        "resolve_files-035e6057a1040d7e"
+      ],
+      "start": 5.794089295,
+      "target": "analyze_graph"
+    },
+    {
+      "complete_edges": {
+        "All": 206
+      },
+      "end": 7.062395775,
+      "file": "simple_tokenizer-ae776ba28706b31b",
+      "first_dispatch_after_all_prerequisites": 4.897755742,
+      "key": "04182873eaa6ca1a8217c2e80d1ffae7cf0ef13d3048373e2bc803ad0858bd76",
+      "kind": "test",
+      "last_full_dependency_or_start": 4.897178922,
+      "mode": "Test",
+      "package": "ruff_python_trivia_integration_tests",
+      "priority": 200,
+      "size": 21023448,
+      "smaller_same_priority_dispatched_first": [
+        "comparable-9839afbef154aade",
+        "block_comments-22ebc506abcc73d4",
+        "resolve_files-035e6057a1040d7e",
+        "source_order-0dcd7bec5e451519",
+        "identifier-bba967788e1b801e",
+        "stmt_if-b3a225ef45b8409b",
+        "generate_inline_tests-00680913f20a7bbc",
+        "analyze_graph-3442fcdf6ac355dc",
+        "direxist_guard-b52833c6d634e45b",
+        "self_environment-86a9154a941e135d",
+        "config-7ead3e5aa50ccfca"
+      ],
+      "start": 6.866300023,
+      "target": "simple_tokenizer"
+    },
+    {
+      "complete_edges": {
+        "All": 235
+      },
+      "end": 7.190515835,
+      "file": "fixtures-cfa340005b9ad559",
+      "first_dispatch_after_all_prerequisites": 4.897755742,
+      "key": "693b9c2b8c4d83ea12beedf7e86176cd5bb4a39490de72a0b6c206ecc6070706",
+      "kind": "test",
+      "last_full_dependency_or_start": 4.897178922,
+      "mode": "Test",
+      "package": "ruff_python_parser",
+      "priority": 200,
+      "size": 31306328,
+      "smaller_same_priority_dispatched_first": [
+        "comparable-9839afbef154aade",
+        "block_comments-22ebc506abcc73d4",
+        "resolve_files-035e6057a1040d7e",
+        "source_order-0dcd7bec5e451519",
+        "identifier-bba967788e1b801e",
+        "stmt_if-b3a225ef45b8409b",
+        "generate_inline_tests-00680913f20a7bbc",
+        "analyze_graph-3442fcdf6ac355dc",
+        "simple_tokenizer-ae776ba28706b31b",
+        "direxist_guard-b52833c6d634e45b",
+        "self_environment-86a9154a941e135d",
+        "cli-e8249926456311d5",
+        "config-7ead3e5aa50ccfca"
+      ],
+      "start": 6.932427642,
+      "target": "fixtures"
+    },
+    {
+      "complete_edges": {
+        "All": 428
+      },
+      "end": 6.736943658,
+      "file": "ty-eb87f4f4ad8029dc",
+      "first_dispatch_after_all_prerequisites": 4.899845951,
+      "key": "bcf2fef29f1e7cd7223b77db3b856b60c525d6abeafe846d090ddef81017a209",
+      "kind": "lib",
+      "last_full_dependency_or_start": 4.899672751,
+      "mode": "Test",
+      "package": "ty",
+      "priority": 200,
+      "size": 191693248,
+      "smaller_same_priority_dispatched_first": [
+        "resolve_files-035e6057a1040d7e",
+        "cli-b62e55d460da2b80",
+        "mdtest-2946348e27e3d30f",
+        "ty_python_semantic-0c91f7de1f26917a",
+        "ty_test-bfa1400a52721b59",
+        "integration_test-4819140e1d62eda3",
+        "analyze_graph-3442fcdf6ac355dc",
+        "corpus-77b6d8c50ba8d54e",
+        "mdtest-a96fdf0a48ebddd3"
+      ],
+      "start": 5.814020058,
+      "target": "ty"
+    },
+    {
+      "complete_edges": {
+        "All": 371
+      },
+      "end": 7.67767262,
+      "file": "ruff_linter-011f9d72aba94d50",
+      "first_dispatch_after_all_prerequisites": 4.897755742,
+      "key": "11e243d9013c40aac3c329fe841fa80137036385979a9091a5ba93ca0eed621d",
+      "kind": "lib",
+      "last_full_dependency_or_start": 4.897178922,
+      "mode": "Test",
+      "package": "ruff_linter",
+      "priority": 200,
+      "size": 116320896,
+      "smaller_same_priority_dispatched_first": [
+        "comparable-9839afbef154aade",
+        "block_comments-22ebc506abcc73d4",
+        "resolve_files-035e6057a1040d7e",
+        "ruff_python_formatter-6c347a415e685e7c",
+        "cli-b62e55d460da2b80",
+        "fixtures-cd4844c322993c53",
+        "ruff_markdown-9430dd0f015f7fff",
+        "source_order-0dcd7bec5e451519",
+        "ty_module_resolver-a5dd8c36e9712444",
+        "ruff_db-0798c77214886b3c",
+        "identifier-bba967788e1b801e",
+        "ruff_server-b598b3ab69a2d318",
+        "ruff_python_formatter-47bc5e53b3953399",
+        "stmt_if-b3a225ef45b8409b",
+        "generate_inline_tests-00680913f20a7bbc",
+        "analyze_graph-3442fcdf6ac355dc",
+        "simple_tokenizer-ae776ba28706b31b",
+        "fixtures-cfa340005b9ad559",
+        "direxist_guard-b52833c6d634e45b",
+        "self_environment-86a9154a941e135d",
+        "cli-e8249926456311d5",
+        "config-7ead3e5aa50ccfca",
+        "ruff-d6ddb74de333d3e2"
+      ],
+      "start": 6.954551023,
+      "target": "ruff_linter"
+    },
+    {
+      "complete_edges": {
+        "All": 392
+      },
+      "end": 8.123000434,
+      "file": "e2e-f978f73ba5a3a2ed",
+      "first_dispatch_after_all_prerequisites": 4.897755742,
+      "key": "7c2e04fc19eb59818b0f3c6a398e7b0208ee943daac6589a09219bec12ade762",
+      "kind": "test",
+      "last_full_dependency_or_start": 4.897178922,
+      "mode": "Test",
+      "package": "ty_server",
+      "priority": 200,
+      "size": 226518976,
+      "smaller_same_priority_dispatched_first": [
+        "e2e-ac411c688b27a77a",
+        "comparable-9839afbef154aade",
+        "block_comments-22ebc506abcc73d4",
+        "resolve_files-035e6057a1040d7e",
+        "ruff_python_formatter-6c347a415e685e7c",
+        "cli-b62e55d460da2b80",
+        "fixtures-cd4844c322993c53",
+        "ruff_markdown-9430dd0f015f7fff",
+        "source_order-0dcd7bec5e451519",
+        "ty_module_resolver-a5dd8c36e9712444",
+        "mdtest-2946348e27e3d30f",
+        "ruff_db-0798c77214886b3c",
+        "identifier-bba967788e1b801e",
+        "ty_python_semantic-0c91f7de1f26917a",
+        "ruff_server-b598b3ab69a2d318",
+        "ruff_python_formatter-47bc5e53b3953399",
+        "ty_test-bfa1400a52721b59",
+        "ty_server-4973c777e0baa104",
+        "integration_test-4819140e1d62eda3",
+        "stmt_if-b3a225ef45b8409b",
+        "generate_inline_tests-00680913f20a7bbc",
+        "analyze_graph-3442fcdf6ac355dc",
+        "simple_tokenizer-ae776ba28706b31b",
+        "fixtures-cfa340005b9ad559",
+        "ty-eb87f4f4ad8029dc",
+        "ruff_linter-011f9d72aba94d50",
+        "ty-28db247cc67222c0",
+        "direxist_guard-b52833c6d634e45b",
+        "ruff-8dcc02a474b4938c",
+        "corpus-77b6d8c50ba8d54e",
+        "self_environment-86a9154a941e135d",
+        "file_watching-948302c9aaff6c9f",
+        "cli-e8249926456311d5",
+        "config-7ead3e5aa50ccfca",
+        "ruff-d6ddb74de333d3e2",
+        "mdtest-a96fdf0a48ebddd3"
+      ],
+      "start": 6.958003101,
+      "target": "e2e"
+    },
+    {
+      "complete_edges": {
+        "All": 281
+      },
+      "end": 7.430813767,
+      "file": "mdtest-1a68b28bc535c668",
+      "first_dispatch_after_all_prerequisites": 4.897755742,
+      "key": "c379fec7778a81b4368a9fd5cb8286c32ce8aabd0e9fe3361850a0e000e26339",
+      "kind": "lib",
+      "last_full_dependency_or_start": 4.897178922,
+      "mode": "Test",
+      "package": "mdtest",
+      "priority": 200,
+      "size": 49931528,
+      "smaller_same_priority_dispatched_first": [
+        "comparable-9839afbef154aade",
+        "block_comments-22ebc506abcc73d4",
+        "resolve_files-035e6057a1040d7e",
+        "ruff_python_formatter-6c347a415e685e7c",
+        "source_order-0dcd7bec5e451519",
+        "identifier-bba967788e1b801e",
+        "stmt_if-b3a225ef45b8409b",
+        "generate_inline_tests-00680913f20a7bbc",
+        "analyze_graph-3442fcdf6ac355dc",
+        "simple_tokenizer-ae776ba28706b31b",
+        "fixtures-cfa340005b9ad559",
+        "direxist_guard-b52833c6d634e45b",
+        "self_environment-86a9154a941e135d",
+        "cli-e8249926456311d5",
+        "config-7ead3e5aa50ccfca",
+        "ruff-d6ddb74de333d3e2"
+      ],
+      "start": 7.062678951,
+      "target": "mdtest"
+    },
+    {
+      "complete_edges": {
+        "All": 206
+      },
+      "end": 7.273563413,
+      "file": "match_pattern-1a86ed5e3ff34386",
+      "first_dispatch_after_all_prerequisites": 4.897755742,
+      "key": "cd1c48dc4e5f4243a09a3d30791888f3225e9facf7e52f1ad1f1a4de9ab6386e",
+      "kind": "test",
+      "last_full_dependency_or_start": 4.897178922,
+      "mode": "Test",
+      "package": "ruff_python_ast_integration_tests",
+      "priority": 200,
+      "size": 15130536,
+      "smaller_same_priority_dispatched_first": [
+        "generate_inline_tests-00680913f20a7bbc",
+        "direxist_guard-b52833c6d634e45b",
+        "config-7ead3e5aa50ccfca"
+      ],
+      "start": 7.095186317,
+      "target": "match_pattern"
+    },
+    {
+      "complete_edges": {
+        "All": 234
+      },
+      "end": 7.340884096,
+      "file": "ruff_python_parser-d12bbdee1ece95b3",
+      "first_dispatch_after_all_prerequisites": 4.897755742,
+      "key": "735e85218bcabe60e2e2db124ba1ba78a12b696fad2de61517d78645baab2ecc",
+      "kind": "lib",
+      "last_full_dependency_or_start": 4.897178922,
+      "mode": "Test",
+      "package": "ruff_python_parser",
+      "priority": 200,
+      "size": 21985024,
+      "smaller_same_priority_dispatched_first": [
+        "comparable-9839afbef154aade",
+        "block_comments-22ebc506abcc73d4",
+        "resolve_files-035e6057a1040d7e",
+        "source_order-0dcd7bec5e451519",
+        "identifier-bba967788e1b801e",
+        "stmt_if-b3a225ef45b8409b",
+        "generate_inline_tests-00680913f20a7bbc",
+        "analyze_graph-3442fcdf6ac355dc",
+        "simple_tokenizer-ae776ba28706b31b",
+        "match_pattern-1a86ed5e3ff34386",
+        "direxist_guard-b52833c6d634e45b",
+        "self_environment-86a9154a941e135d",
+        "config-7ead3e5aa50ccfca"
+      ],
+      "start": 7.122646717,
+      "target": "ruff_python_parser"
+    },
+    {
+      "complete_edges": {
+        "All": 206
+      },
+      "end": 7.39629711,
+      "file": "visitor-d89f21071576b5e7",
+      "first_dispatch_after_all_prerequisites": 4.897755742,
+      "key": "c16e282e2f5f13e097765b135593deb4929c8925b7f30d241ef2e21c265e38f8",
+      "kind": "test",
+      "last_full_dependency_or_start": 4.897178922,
+      "mode": "Test",
+      "package": "ruff_python_ast_integration_tests",
+      "priority": 200,
+      "size": 20936776,
+      "smaller_same_priority_dispatched_first": [
+        "comparable-9839afbef154aade",
+        "block_comments-22ebc506abcc73d4",
+        "resolve_files-035e6057a1040d7e",
+        "identifier-bba967788e1b801e",
+        "stmt_if-b3a225ef45b8409b",
+        "generate_inline_tests-00680913f20a7bbc",
+        "analyze_graph-3442fcdf6ac355dc",
+        "match_pattern-1a86ed5e3ff34386",
+        "direxist_guard-b52833c6d634e45b",
+        "self_environment-86a9154a941e135d",
+        "config-7ead3e5aa50ccfca"
+      ],
+      "start": 7.190693795,
+      "target": "visitor"
+    },
+    {
+      "complete_edges": {
+        "All": 429
+      },
+      "end": 6.932290678,
+      "file": "ty-28db247cc67222c0",
+      "first_dispatch_after_all_prerequisites": 4.899845951,
+      "key": "d994b5f69f8e4aacae531cc5a3c2f3edce250bd836c3b932027e87fa9bb23d77",
+      "kind": "bin",
+      "last_full_dependency_or_start": 4.899672751,
+      "mode": "Test",
+      "package": "ty",
+      "priority": 200,
+      "size": 191671472,
+      "smaller_same_priority_dispatched_first": [
+        "resolve_files-035e6057a1040d7e",
+        "cli-b62e55d460da2b80",
+        "mdtest-2946348e27e3d30f",
+        "ty_python_semantic-0c91f7de1f26917a",
+        "ty_test-bfa1400a52721b59",
+        "integration_test-4819140e1d62eda3",
+        "analyze_graph-3442fcdf6ac355dc",
+        "corpus-77b6d8c50ba8d54e",
+        "mdtest-a96fdf0a48ebddd3"
+      ],
+      "start": 5.94610575,
+      "target": "ty"
+    },
+    {
+      "complete_edges": {
+        "All": 237
+      },
+      "end": 7.488468487,
+      "file": "ruff_python_importer-1b81f2a77244ca51",
+      "first_dispatch_after_all_prerequisites": 4.897755742,
+      "key": "9c809540a72894cc6316a7226058f4059f5679ff7aed8b17345e257b305ac3d5",
+      "kind": "lib",
+      "last_full_dependency_or_start": 4.897178922,
+      "mode": "Test",
+      "package": "ruff_python_importer",
+      "priority": 200,
+      "size": 21877928,
+      "smaller_same_priority_dispatched_first": [
+        "comparable-9839afbef154aade",
+        "block_comments-22ebc506abcc73d4",
+        "resolve_files-035e6057a1040d7e",
+        "source_order-0dcd7bec5e451519",
+        "identifier-bba967788e1b801e",
+        "stmt_if-b3a225ef45b8409b",
+        "generate_inline_tests-00680913f20a7bbc",
+        "analyze_graph-3442fcdf6ac355dc",
+        "simple_tokenizer-ae776ba28706b31b",
+        "match_pattern-1a86ed5e3ff34386",
+        "visitor-d89f21071576b5e7",
+        "direxist_guard-b52833c6d634e45b",
+        "self_environment-86a9154a941e135d",
+        "config-7ead3e5aa50ccfca"
+      ],
+      "start": 7.273782589,
+      "target": "ruff_python_importer"
+    },
+    {
+      "complete_edges": {
+        "All": 449
+      },
+      "end": 6.152034108,
+      "file": "direxist_guard-b52833c6d634e45b",
+      "first_dispatch_after_all_prerequisites": 4.899845951,
+      "key": "203034f188728ef7573f24bc451d4a8674297c302e05abedd9054375d279c269",
+      "kind": "test",
+      "last_full_dependency_or_start": 4.899672751,
+      "mode": "Test",
+      "package": "ruff",
+      "priority": 200,
+      "size": 12809920,
+      "smaller_same_priority_dispatched_first": [],
+      "start": 5.987858508,
+      "target": "direxist_guard"
+    },
+    {
+      "complete_edges": {
+        "All": 391
+      },
+      "end": 7.974381329,
+      "file": "document-75b47e0b78e9a682",
+      "first_dispatch_after_all_prerequisites": 4.897755742,
+      "key": "fc3420d8354f3f84addb5f5feed0a06398a34408fc5f34237c0a2721ebdf064b",
+      "kind": "test",
+      "last_full_dependency_or_start": 4.897178922,
+      "mode": "Test",
+      "package": "ruff_server",
+      "priority": 200,
+      "size": 104569032,
+      "smaller_same_priority_dispatched_first": [
+        "comparable-9839afbef154aade",
+        "block_comments-22ebc506abcc73d4",
+        "resolve_files-035e6057a1040d7e",
+        "ruff_python_formatter-6c347a415e685e7c",
+        "cli-b62e55d460da2b80",
+        "fixtures-cd4844c322993c53",
+        "ruff_markdown-9430dd0f015f7fff",
+        "source_order-0dcd7bec5e451519",
+        "ty_module_resolver-a5dd8c36e9712444",
+        "ruff_db-0798c77214886b3c",
+        "identifier-bba967788e1b801e",
+        "ruff_python_formatter-47bc5e53b3953399",
+        "stmt_if-b3a225ef45b8409b",
+        "generate_inline_tests-00680913f20a7bbc",
+        "analyze_graph-3442fcdf6ac355dc",
+        "simple_tokenizer-ae776ba28706b31b",
+        "fixtures-cfa340005b9ad559",
+        "mdtest-1a68b28bc535c668",
+        "match_pattern-1a86ed5e3ff34386",
+        "ruff_python_parser-d12bbdee1ece95b3",
+        "visitor-d89f21071576b5e7",
+        "ruff_python_importer-1b81f2a77244ca51",
+        "direxist_guard-b52833c6d634e45b",
+        "self_environment-86a9154a941e135d",
+        "cli-e8249926456311d5",
+        "config-7ead3e5aa50ccfca",
+        "ruff-d6ddb74de333d3e2"
+      ],
+      "start": 7.341138839,
+      "target": "document"
+    },
+    {
+      "complete_edges": {
+        "All": 382
+      },
+      "end": 8.637645852,
+      "file": "ty_ide-59670cd0e1ca3f51",
+      "first_dispatch_after_all_prerequisites": 4.897755742,
+      "key": "6adb32ba3844b886165791706a873584fcb771f287c4ef35b59f7737d30ab762",
+      "kind": "lib",
+      "last_full_dependency_or_start": 4.897178922,
+      "mode": "Test",
+      "package": "ty_ide",
+      "priority": 200,
+      "size": 209048512,
+      "smaller_same_priority_dispatched_first": [
+        "e2e-ac411c688b27a77a",
+        "comparable-9839afbef154aade",
+        "block_comments-22ebc506abcc73d4",
+        "resolve_files-035e6057a1040d7e",
+        "ruff_python_formatter-6c347a415e685e7c",
+        "cli-b62e55d460da2b80",
+        "fixtures-cd4844c322993c53",
+        "ruff_markdown-9430dd0f015f7fff",
+        "source_order-0dcd7bec5e451519",
+        "ty_module_resolver-a5dd8c36e9712444",
+        "mdtest-2946348e27e3d30f",
+        "ruff_db-0798c77214886b3c",
+        "identifier-bba967788e1b801e",
+        "ty_python_semantic-0c91f7de1f26917a",
+        "ruff_server-b598b3ab69a2d318",
+        "ruff_python_formatter-47bc5e53b3953399",
+        "ty_test-bfa1400a52721b59",
+        "ty_server-4973c777e0baa104",
+        "integration_test-4819140e1d62eda3",
+        "stmt_if-b3a225ef45b8409b",
+        "generate_inline_tests-00680913f20a7bbc",
+        "analyze_graph-3442fcdf6ac355dc",
+        "simple_tokenizer-ae776ba28706b31b",
+        "fixtures-cfa340005b9ad559",
+        "ty-eb87f4f4ad8029dc",
+        "ruff_linter-011f9d72aba94d50",
+        "mdtest-1a68b28bc535c668",
+        "match_pattern-1a86ed5e3ff34386",
+        "ruff_python_parser-d12bbdee1ece95b3",
+        "visitor-d89f21071576b5e7",
+        "ty-28db247cc67222c0",
+        "ruff_python_importer-1b81f2a77244ca51",
+        "direxist_guard-b52833c6d634e45b",
+        "document-75b47e0b78e9a682",
+        "ruff-8dcc02a474b4938c",
+        "corpus-77b6d8c50ba8d54e",
+        "self_environment-86a9154a941e135d",
+        "file_watching-948302c9aaff6c9f",
+        "cli-e8249926456311d5",
+        "config-7ead3e5aa50ccfca",
+        "ruff-d6ddb74de333d3e2",
+        "mdtest-a96fdf0a48ebddd3"
+      ],
+      "start": 7.38574364,
+      "target": "ty_ide"
+    },
+    {
+      "complete_edges": {
+        "All": 206
+      },
+      "end": 7.578555728,
+      "file": "parentheses-d25d191a61bed12a",
+      "first_dispatch_after_all_prerequisites": 4.897755742,
+      "key": "a64eca607890108625734544c9e53e6f41061344d1b7a6cc4d29d87168500baf",
+      "kind": "test",
+      "last_full_dependency_or_start": 4.897178922,
+      "mode": "Test",
+      "package": "ruff_python_ast_integration_tests",
+      "priority": 200,
+      "size": 15363360,
+      "smaller_same_priority_dispatched_first": [
+        "block_comments-22ebc506abcc73d4",
+        "identifier-bba967788e1b801e",
+        "stmt_if-b3a225ef45b8409b",
+        "generate_inline_tests-00680913f20a7bbc",
+        "match_pattern-1a86ed5e3ff34386",
+        "direxist_guard-b52833c6d634e45b",
+        "config-7ead3e5aa50ccfca"
+      ],
+      "start": 7.39645324,
+      "target": "parentheses"
+    },
+    {
+      "complete_edges": {
+        "All": 448
+      },
+      "end": 6.845162873,
+      "file": "ruff-8dcc02a474b4938c",
+      "first_dispatch_after_all_prerequisites": 4.899845951,
+      "key": "c4ddb4239ddb1424156342584f5a602c234650fd4db91bfa61a067e2daaa7445",
+      "kind": "lib",
+      "last_full_dependency_or_start": 4.899672751,
+      "mode": "Test",
+      "package": "ruff",
+      "priority": 200,
+      "size": 143125424,
+      "smaller_same_priority_dispatched_first": [
+        "resolve_files-035e6057a1040d7e",
+        "cli-b62e55d460da2b80",
+        "mdtest-2946348e27e3d30f",
+        "analyze_graph-3442fcdf6ac355dc",
+        "direxist_guard-b52833c6d634e45b"
+      ],
+      "start": 6.009471533,
+      "target": "ruff"
+    },
+    {
+      "complete_edges": {
+        "All": 295
+      },
+      "end": 7.55926802,
+      "file": "normalizer-f1f64f446d159d08",
+      "first_dispatch_after_all_prerequisites": 4.897755742,
+      "key": "4ef9fccfbc4e699d03f79d823264dae24b2181b2977b1507b88db320a46b9f91",
+      "kind": "test",
+      "last_full_dependency_or_start": 4.897178922,
+      "mode": "Test",
+      "package": "ruff_python_formatter",
+      "priority": 200,
+      "size": 6413256,
+      "smaller_same_priority_dispatched_first": [
+        "generate_inline_tests-00680913f20a7bbc"
+      ],
+      "start": 7.431030189,
+      "target": "normalizer"
+    },
+    {
+      "complete_edges": {
+        "All": 206
+      },
+      "end": 7.660075567,
+      "file": "whitespace-ba5afd157cfdeff8",
+      "first_dispatch_after_all_prerequisites": 4.897755742,
+      "key": "b22541179116fb9083610d8f9161721694ec31a1367dd1ed380b0a2b0066c993",
+      "kind": "test",
+      "last_full_dependency_or_start": 4.897178922,
+      "mode": "Test",
+      "package": "ruff_python_trivia_integration_tests",
+      "priority": 200,
+      "size": 15143736,
+      "smaller_same_priority_dispatched_first": [
+        "generate_inline_tests-00680913f20a7bbc",
+        "match_pattern-1a86ed5e3ff34386",
+        "direxist_guard-b52833c6d634e45b",
+        "normalizer-f1f64f446d159d08",
+        "config-7ead3e5aa50ccfca"
+      ],
+      "start": 7.488611723,
+      "target": "whitespace"
+    },
+    {
+      "complete_edges": {
+        "All": 383
+      },
+      "end": 6.009280639,
+      "file": "corpus-77b6d8c50ba8d54e",
+      "first_dispatch_after_all_prerequisites": 5.0015728,
+      "key": "6109c8b497b7230c18639868d5a81bc78aae51203d5c903c0fef9a21e6dc8c60",
+      "kind": "test",
+      "last_full_dependency_or_start": 5.001401764,
+      "mode": "Test",
+      "package": "ty_python_semantic",
+      "priority": 200,
+      "size": 165299400,
+      "smaller_same_priority_dispatched_first": [
+        "mdtest-2946348e27e3d30f"
+      ],
+      "start": 5.123885984,
+      "target": "corpus"
+    },
+    {
+      "complete_edges": {
+        "All": 429
+      },
+      "end": 6.234057186,
+      "file": "self_environment-86a9154a941e135d",
+      "first_dispatch_after_all_prerequisites": 4.899845951,
+      "key": "36d531f3fc22bd73306f91be2016471dd61607615294c5f8d91a3a8429b08049",
+      "kind": "test",
+      "last_full_dependency_or_start": 4.899672751,
+      "mode": "Test",
+      "package": "ty",
+      "priority": 200,
+      "size": 17075400,
+      "smaller_same_priority_dispatched_first": [
+        "resolve_files-035e6057a1040d7e",
+        "direxist_guard-b52833c6d634e45b"
+      ],
+      "start": 6.035900377,
+      "target": "self_environment"
+    },
+    {
+      "complete_edges": {
+        "All": 429
+      },
+      "end": 7.095041799,
+      "file": "file_watching-948302c9aaff6c9f",
+      "first_dispatch_after_all_prerequisites": 4.899845951,
+      "key": "54ea94bdf3f68401d922d1299b9b243dd212fef8f801b37c52bd3f6ede8da9b0",
+      "kind": "test",
+      "last_full_dependency_or_start": 4.899672751,
+      "mode": "Test",
+      "package": "ty",
+      "priority": 200,
+      "size": 195260352,
+      "smaller_same_priority_dispatched_first": [
+        "resolve_files-035e6057a1040d7e",
+        "cli-b62e55d460da2b80",
+        "mdtest-2946348e27e3d30f",
+        "ty_python_semantic-0c91f7de1f26917a",
+        "ty_test-bfa1400a52721b59",
+        "integration_test-4819140e1d62eda3",
+        "analyze_graph-3442fcdf6ac355dc",
+        "ty-eb87f4f4ad8029dc",
+        "ty-28db247cc67222c0",
+        "direxist_guard-b52833c6d634e45b",
+        "ruff-8dcc02a474b4938c",
+        "corpus-77b6d8c50ba8d54e",
+        "self_environment-86a9154a941e135d",
+        "mdtest-a96fdf0a48ebddd3"
+      ],
+      "start": 6.056539824,
+      "target": "file_watching"
+    },
+    {
+      "complete_edges": {
+        "All": 429
+      },
+      "end": 6.404649764,
+      "file": "cli-e8249926456311d5",
+      "first_dispatch_after_all_prerequisites": 4.899845951,
+      "key": "9e7e8a18f8a2de9d3f58fcb7e3f8d4998160fe77cd9ed0a22942e19e4fec5ce8",
+      "kind": "test",
+      "last_full_dependency_or_start": 4.899672751,
+      "mode": "Test",
+      "package": "ty",
+      "priority": 200,
+      "size": 22190968,
+      "smaller_same_priority_dispatched_first": [
+        "resolve_files-035e6057a1040d7e",
+        "analyze_graph-3442fcdf6ac355dc",
+        "direxist_guard-b52833c6d634e45b",
+        "self_environment-86a9154a941e135d"
+      ],
+      "start": 6.1521641,
+      "target": "cli"
+    },
+    {
+      "complete_edges": {
+        "All": 449
+      },
+      "end": 6.385697123,
+      "file": "config-7ead3e5aa50ccfca",
+      "first_dispatch_after_all_prerequisites": 4.899845951,
+      "key": "fb9ba0b7ce1a9b648c08e144434d80344deee38992f33c303685a94ff7a48432",
+      "kind": "test",
+      "last_full_dependency_or_start": 4.899672751,
+      "mode": "Test",
+      "package": "ruff",
+      "priority": 200,
+      "size": 12811280,
+      "smaller_same_priority_dispatched_first": [
+        "direxist_guard-b52833c6d634e45b"
+      ],
+      "start": 6.21468935,
+      "target": "config"
+    },
+    {
+      "complete_edges": {
+        "All": 210
+      },
+      "end": 7.761557189,
+      "file": "ruff_python_semantic-06b9ad6d035c77d0",
+      "first_dispatch_after_all_prerequisites": 4.897755742,
+      "key": "66da6290ebea0694cb106c26a95e603448d00b8eb81d848c0feb40796675a19f",
+      "kind": "lib",
+      "last_full_dependency_or_start": 4.897178922,
+      "mode": "Test",
+      "package": "ruff_python_semantic",
+      "priority": 200,
+      "size": 21242488,
+      "smaller_same_priority_dispatched_first": [
+        "comparable-9839afbef154aade",
+        "block_comments-22ebc506abcc73d4",
+        "resolve_files-035e6057a1040d7e",
+        "source_order-0dcd7bec5e451519",
+        "identifier-bba967788e1b801e",
+        "stmt_if-b3a225ef45b8409b",
+        "generate_inline_tests-00680913f20a7bbc",
+        "analyze_graph-3442fcdf6ac355dc",
+        "simple_tokenizer-ae776ba28706b31b",
+        "match_pattern-1a86ed5e3ff34386",
+        "visitor-d89f21071576b5e7",
+        "direxist_guard-b52833c6d634e45b",
+        "parentheses-d25d191a61bed12a",
+        "normalizer-f1f64f446d159d08",
+        "whitespace-ba5afd157cfdeff8",
+        "self_environment-86a9154a941e135d",
+        "config-7ead3e5aa50ccfca"
+      ],
+      "start": 7.55946717,
+      "target": "ruff_python_semantic"
+    },
+    {
+      "complete_edges": {
+        "All": 206
+      },
+      "end": 7.755472905,
+      "file": "parenthesize-7191b8229aafb7b8",
+      "first_dispatch_after_all_prerequisites": 4.897755742,
+      "key": "bcba5d42f938ec2f350b289243dbc443f858489c02defe9bfe1f10aa8ff44a8d",
+      "kind": "test",
+      "last_full_dependency_or_start": 4.897178922,
+      "mode": "Test",
+      "package": "ruff_python_ast_integration_tests",
+      "priority": 200,
+      "size": 15254912,
+      "smaller_same_priority_dispatched_first": [
+        "block_comments-22ebc506abcc73d4",
+        "identifier-bba967788e1b801e",
+        "stmt_if-b3a225ef45b8409b",
+        "generate_inline_tests-00680913f20a7bbc",
+        "match_pattern-1a86ed5e3ff34386",
+        "direxist_guard-b52833c6d634e45b",
+        "normalizer-f1f64f446d159d08",
+        "whitespace-ba5afd157cfdeff8",
+        "config-7ead3e5aa50ccfca"
+      ],
+      "start": 7.57890212,
+      "target": "parenthesize"
+    },
+    {
+      "complete_edges": {
+        "All": 449
+      },
+      "end": 6.6749597,
+      "file": "ruff-d6ddb74de333d3e2",
+      "first_dispatch_after_all_prerequisites": 4.899845951,
+      "key": "24d01f742e7870c714527b19401d20c6e9476f8df5851749389d552805006333",
+      "kind": "bin",
+      "last_full_dependency_or_start": 4.899672751,
+      "mode": "Test",
+      "package": "ruff",
+      "priority": 200,
+      "size": 46845680,
+      "smaller_same_priority_dispatched_first": [
+        "resolve_files-035e6057a1040d7e",
+        "analyze_graph-3442fcdf6ac355dc",
+        "direxist_guard-b52833c6d634e45b",
+        "self_environment-86a9154a941e135d",
+        "cli-e8249926456311d5",
+        "config-7ead3e5aa50ccfca"
+      ],
+      "start": 6.234292012,
+      "target": "ruff"
+    },
+    {
+      "complete_edges": {
+        "All": 381
+      },
+      "end": 8.03616177,
+      "file": "ty_project-822f142964e86f1b",
+      "first_dispatch_after_all_prerequisites": 4.897755742,
+      "key": "fb224735feedeff3b2d7b656bd1ed018ae6e0b2ef437fe53d30d22d5634e5b7d",
+      "kind": "lib",
+      "last_full_dependency_or_start": 4.897178922,
+      "mode": "Test",
+      "package": "ty_project",
+      "priority": 200,
+      "size": 192839280,
+      "smaller_same_priority_dispatched_first": [
+        "e2e-ac411c688b27a77a",
+        "comparable-9839afbef154aade",
+        "block_comments-22ebc506abcc73d4",
+        "resolve_files-035e6057a1040d7e",
+        "ruff_python_formatter-6c347a415e685e7c",
+        "cli-b62e55d460da2b80",
+        "fixtures-cd4844c322993c53",
+        "ruff_markdown-9430dd0f015f7fff",
+        "source_order-0dcd7bec5e451519",
+        "ty_module_resolver-a5dd8c36e9712444",
+        "mdtest-2946348e27e3d30f",
+        "ruff_db-0798c77214886b3c",
+        "identifier-bba967788e1b801e",
+        "ty_python_semantic-0c91f7de1f26917a",
+        "ruff_server-b598b3ab69a2d318",
+        "ruff_python_formatter-47bc5e53b3953399",
+        "ty_test-bfa1400a52721b59",
+        "ty_server-4973c777e0baa104",
+        "integration_test-4819140e1d62eda3",
+        "stmt_if-b3a225ef45b8409b",
+        "generate_inline_tests-00680913f20a7bbc",
+        "analyze_graph-3442fcdf6ac355dc",
+        "simple_tokenizer-ae776ba28706b31b",
+        "fixtures-cfa340005b9ad559",
+        "ty-eb87f4f4ad8029dc",
+        "ruff_linter-011f9d72aba94d50",
+        "mdtest-1a68b28bc535c668",
+        "match_pattern-1a86ed5e3ff34386",
+        "ruff_python_parser-d12bbdee1ece95b3",
+        "visitor-d89f21071576b5e7",
+        "ty-28db247cc67222c0",
+        "ruff_python_importer-1b81f2a77244ca51",
+        "direxist_guard-b52833c6d634e45b",
+        "document-75b47e0b78e9a682",
+        "parentheses-d25d191a61bed12a",
+        "ruff-8dcc02a474b4938c",
+        "normalizer-f1f64f446d159d08",
+        "whitespace-ba5afd157cfdeff8",
+        "corpus-77b6d8c50ba8d54e",
+        "self_environment-86a9154a941e135d",
+        "cli-e8249926456311d5",
+        "config-7ead3e5aa50ccfca",
+        "ruff_python_semantic-06b9ad6d035c77d0",
+        "parenthesize-7191b8229aafb7b8",
+        "ruff-d6ddb74de333d3e2",
+        "mdtest-a96fdf0a48ebddd3"
+      ],
+      "start": 7.660289233,
+      "target": "ty_project"
+    },
+    {
+      "complete_edges": {
+        "All": 383
+      },
+      "end": 6.0356859,
+      "file": "mdtest-a96fdf0a48ebddd3",
+      "first_dispatch_after_all_prerequisites": 5.0015728,
+      "key": "8bac129a5d3bd26e3c50bf1bb0f4098d731d034d48b3fd3a9cc9493d19349e74",
+      "kind": "test",
+      "last_full_dependency_or_start": 5.001401764,
+      "mode": "Test",
+      "package": "ty_python_semantic",
+      "priority": 200,
+      "size": 184583352,
+      "smaller_same_priority_dispatched_first": [
+        "mdtest-2946348e27e3d30f",
+        "ty_python_semantic-0c91f7de1f26917a",
+        "corpus-77b6d8c50ba8d54e"
+      ],
+      "start": 5.156250044,
+      "target": "mdtest"
+    }
+  ],
+  "unmatched": []
+}

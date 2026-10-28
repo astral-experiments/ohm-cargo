@@ -1,0 +1,2472 @@
+{
+  "command": [
+    "cargo",
+    "+ohm",
+    "test",
+    "--workspace",
+    "--no-run",
+    "--locked",
+    "--offline",
+    "-j8",
+    "--timings",
+    "--message-format=json"
+  ],
+  "images": {
+    "cargo": "02a86ebd2d9e4f237b33f212102b81ed145eb77fae090d67e379cb6f1d70a573",
+    "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+    "rustdoc": "dc6501f27285e927df450d559108a1e5609fc11d266e628d4f1b27d416b84cef",
+    "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+  },
+  "release_archive": "629abab6a87c84bb4d910549ca96a31e437e3dc9de3039fedcbb7b50d198a5e8",
+  "runs": [
+    {
+      "batch": "batch1",
+      "exit": 0,
+      "fresh": 563,
+      "html_sha256": "b5232eb928aaf79b4a8c3445503b3c0d16913e2470210b6f84bbda5cbefdfeaf",
+      "native_units": [
+        {
+          "duration_seconds": 0.19,
+          "file": "match_pattern-1a86ed5e3ff34386",
+          "kind": [
+            "test"
+          ],
+          "name": "match_pattern",
+          "package": "ruff_python_ast_integration_tests#0.0.0",
+          "size": 15130536,
+          "start_seconds": 2.22,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.21,
+          "file": "simple_tokenizer-ae776ba28706b31b",
+          "kind": [
+            "test"
+          ],
+          "name": "simple_tokenizer",
+          "package": "ruff_python_trivia_integration_tests#0.0.0",
+          "size": 21023448,
+          "start_seconds": 2.24,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.24,
+          "file": "fixtures-cfa340005b9ad559",
+          "kind": [
+            "test"
+          ],
+          "name": "fixtures",
+          "package": "ruff_python_parser#0.0.17",
+          "size": 31306328,
+          "start_seconds": 2.24,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.2,
+          "file": "ruff_python_parser-d12bbdee1ece95b3",
+          "kind": [
+            "lib"
+          ],
+          "name": "ruff_python_parser",
+          "package": "ruff_python_parser#0.0.17",
+          "size": 21985024,
+          "start_seconds": 2.24,
+          "test": true
+        },
+        {
+          "duration_seconds": 1.09,
+          "file": "ty-eb87f4f4ad8029dc",
+          "kind": [
+            "lib"
+          ],
+          "name": "ty",
+          "package": "ty#0.0.0",
+          "size": 191693248,
+          "start_seconds": 2.24,
+          "test": true
+        },
+        {
+          "duration_seconds": 1.26,
+          "file": "e2e-f978f73ba5a3a2ed",
+          "kind": [
+            "test"
+          ],
+          "name": "e2e",
+          "package": "ty_server#0.0.0",
+          "size": 226518976,
+          "start_seconds": 2.26,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.77,
+          "file": "mdtest-2946348e27e3d30f",
+          "kind": [
+            "test"
+          ],
+          "name": "mdtest",
+          "package": "ruff_mdtest#0.0.0",
+          "size": 133445672,
+          "start_seconds": 2.28,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.7,
+          "file": "ruff_linter-011f9d72aba94d50",
+          "kind": [
+            "lib"
+          ],
+          "name": "ruff_linter",
+          "package": "ruff_linter#0.17.0",
+          "size": 116320896,
+          "start_seconds": 2.32,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.87,
+          "file": "corpus-77b6d8c50ba8d54e",
+          "kind": [
+            "test"
+          ],
+          "name": "corpus",
+          "package": "ty_python_semantic#0.0.17",
+          "size": 165299400,
+          "start_seconds": 2.42,
+          "test": true
+        },
+        {
+          "duration_seconds": 1.02,
+          "file": "mdtest-a96fdf0a48ebddd3",
+          "kind": [
+            "test"
+          ],
+          "name": "mdtest",
+          "package": "ty_python_semantic#0.0.17",
+          "size": 184583352,
+          "start_seconds": 2.44,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.92,
+          "file": "ty_test-bfa1400a52721b59",
+          "kind": [
+            "lib"
+          ],
+          "name": "ty_test",
+          "package": "ty_test#0.0.0",
+          "size": 166206416,
+          "start_seconds": 2.49,
+          "test": true
+        },
+        {
+          "duration_seconds": 1.18,
+          "file": "ty_python_semantic-0c91f7de1f26917a",
+          "kind": [
+            "lib"
+          ],
+          "name": "ty_python_semantic",
+          "package": "ty_python_semantic#0.0.17",
+          "size": 180773840,
+          "start_seconds": 2.58,
+          "test": true
+        },
+        {
+          "duration_seconds": 1.25,
+          "file": "ty-28db247cc67222c0",
+          "kind": [
+            "bin"
+          ],
+          "name": "ty",
+          "package": "ty#0.0.0",
+          "size": 191671472,
+          "start_seconds": 3.02,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.24,
+          "file": "direxist_guard-b52833c6d634e45b",
+          "kind": [
+            "test"
+          ],
+          "name": "direxist_guard",
+          "package": "ruff#0.17.0",
+          "size": 12809920,
+          "start_seconds": 3.05,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.2,
+          "file": "self_environment-86a9154a941e135d",
+          "kind": [
+            "test"
+          ],
+          "name": "self_environment",
+          "package": "ty#0.0.0",
+          "size": 17075400,
+          "start_seconds": 3.29,
+          "test": true
+        },
+        {
+          "duration_seconds": 1.15,
+          "file": "file_watching-948302c9aaff6c9f",
+          "kind": [
+            "test"
+          ],
+          "name": "file_watching",
+          "package": "ty#0.0.0",
+          "size": 195260352,
+          "start_seconds": 3.31,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.25,
+          "file": "cli-e8249926456311d5",
+          "kind": [
+            "test"
+          ],
+          "name": "cli",
+          "package": "ty#0.0.0",
+          "size": 22190968,
+          "start_seconds": 3.34,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.15,
+          "file": "config-7ead3e5aa50ccfca",
+          "kind": [
+            "test"
+          ],
+          "name": "config",
+          "package": "ruff#0.17.0",
+          "size": 12811280,
+          "start_seconds": 3.42,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.96,
+          "file": "ruff-8dcc02a474b4938c",
+          "kind": [
+            "lib"
+          ],
+          "name": "ruff",
+          "package": "ruff#0.17.0",
+          "size": 143125424,
+          "start_seconds": 3.48,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.17,
+          "file": "resolve_files-035e6057a1040d7e",
+          "kind": [
+            "test"
+          ],
+          "name": "resolve_files",
+          "package": "ruff#0.17.0",
+          "size": 15673904,
+          "start_seconds": 3.5,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.43,
+          "file": "ruff-d6ddb74de333d3e2",
+          "kind": [
+            "bin"
+          ],
+          "name": "ruff",
+          "package": "ruff#0.17.0",
+          "size": 46845680,
+          "start_seconds": 3.53,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.55,
+          "file": "cli-b62e55d460da2b80",
+          "kind": [
+            "test"
+          ],
+          "name": "cli",
+          "package": "ruff#0.17.0",
+          "size": 89242632,
+          "start_seconds": 3.58,
+          "test": true
+        },
+        {
+          "duration_seconds": 1.08,
+          "file": "integration_test-4819140e1d62eda3",
+          "kind": [
+            "test"
+          ],
+          "name": "integration_test",
+          "package": "ruff#0.17.0",
+          "size": 162820440,
+          "start_seconds": 3.6,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.18,
+          "file": "analyze_graph-3442fcdf6ac355dc",
+          "kind": [
+            "test"
+          ],
+          "name": "analyze_graph",
+          "package": "ruff#0.17.0",
+          "size": 18729792,
+          "start_seconds": 3.66,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.18,
+          "file": "visitor-d89f21071576b5e7",
+          "kind": [
+            "test"
+          ],
+          "name": "visitor",
+          "package": "ruff_python_ast_integration_tests#0.0.0",
+          "size": 20936776,
+          "start_seconds": 3.77,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.19,
+          "file": "ruff_python_importer-1b81f2a77244ca51",
+          "kind": [
+            "lib"
+          ],
+          "name": "ruff_python_importer",
+          "package": "ruff_python_importer#0.0.17",
+          "size": 21877928,
+          "start_seconds": 3.84,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.77,
+          "file": "document-75b47e0b78e9a682",
+          "kind": [
+            "test"
+          ],
+          "name": "document",
+          "package": "ruff_server#0.0.17",
+          "size": 104569032,
+          "start_seconds": 3.96,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.46,
+          "file": "mdtest-1a68b28bc535c668",
+          "kind": [
+            "lib"
+          ],
+          "name": "mdtest",
+          "package": "mdtest#0.0.0",
+          "size": 49931528,
+          "start_seconds": 3.97,
+          "test": true
+        },
+        {
+          "duration_seconds": 1.22,
+          "file": "ty_ide-59670cd0e1ca3f51",
+          "kind": [
+            "lib"
+          ],
+          "name": "ty_ide",
+          "package": "ty_ide#0.0.0",
+          "size": 209048512,
+          "start_seconds": 4.07,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.28,
+          "file": "parentheses-d25d191a61bed12a",
+          "kind": [
+            "test"
+          ],
+          "name": "parentheses",
+          "package": "ruff_python_ast_integration_tests#0.0.0",
+          "size": 15363360,
+          "start_seconds": 4.13,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.18,
+          "file": "normalizer-f1f64f446d159d08",
+          "kind": [
+            "test"
+          ],
+          "name": "normalizer",
+          "package": "ruff_python_formatter#0.0.17",
+          "size": 6413256,
+          "start_seconds": 4.28,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.17,
+          "file": "whitespace-ba5afd157cfdeff8",
+          "kind": [
+            "test"
+          ],
+          "name": "whitespace",
+          "package": "ruff_python_trivia_integration_tests#0.0.0",
+          "size": 15143736,
+          "start_seconds": 4.42,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.22,
+          "file": "ruff_python_semantic-06b9ad6d035c77d0",
+          "kind": [
+            "lib"
+          ],
+          "name": "ruff_python_semantic",
+          "package": "ruff_python_semantic#0.0.17",
+          "size": 21242488,
+          "start_seconds": 4.44,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.18,
+          "file": "parenthesize-7191b8229aafb7b8",
+          "kind": [
+            "test"
+          ],
+          "name": "parenthesize",
+          "package": "ruff_python_ast_integration_tests#0.0.0",
+          "size": 15254912,
+          "start_seconds": 4.45,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.95,
+          "file": "e2e-ac411c688b27a77a",
+          "kind": [
+            "test"
+          ],
+          "name": "e2e",
+          "package": "ruff_server#0.0.17",
+          "size": 146310024,
+          "start_seconds": 4.51,
+          "test": true
+        },
+        {
+          "duration_seconds": 2.1,
+          "file": "ty_project-822f142964e86f1b",
+          "kind": [
+            "lib"
+          ],
+          "name": "ty_project",
+          "package": "ty_project#0.0.0",
+          "size": 192839280,
+          "start_seconds": 4.54,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.16,
+          "file": "comparable-9839afbef154aade",
+          "kind": [
+            "test"
+          ],
+          "name": "comparable",
+          "package": "ruff_python_ast_integration_tests#0.0.0",
+          "size": 15413688,
+          "start_seconds": 4.59,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.16,
+          "file": "block_comments-22ebc506abcc73d4",
+          "kind": [
+            "test"
+          ],
+          "name": "block_comments",
+          "package": "ruff_python_trivia_integration_tests#0.0.0",
+          "size": 15187832,
+          "start_seconds": 4.63,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.28,
+          "file": "ruff_python_formatter-6c347a415e685e7c",
+          "kind": [
+            "bin"
+          ],
+          "name": "ruff_python_formatter",
+          "package": "ruff_python_formatter#0.0.17",
+          "size": 36775672,
+          "start_seconds": 4.65,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.62,
+          "file": "ruff_markdown-9430dd0f015f7fff",
+          "kind": [
+            "lib"
+          ],
+          "name": "ruff_markdown",
+          "package": "ruff_markdown#0.0.17",
+          "size": 102750464,
+          "start_seconds": 4.69,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.18,
+          "file": "source_order-0dcd7bec5e451519",
+          "kind": [
+            "test"
+          ],
+          "name": "source_order",
+          "package": "ruff_python_ast_integration_tests#0.0.0",
+          "size": 20954592,
+          "start_seconds": 4.74,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.37,
+          "file": "fixtures-cd4844c322993c53",
+          "kind": [
+            "test"
+          ],
+          "name": "fixtures",
+          "package": "ruff_python_formatter#0.0.17",
+          "size": 59291424,
+          "start_seconds": 4.76,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.35,
+          "file": "ty_module_resolver-a5dd8c36e9712444",
+          "kind": [
+            "lib"
+          ],
+          "name": "ty_module_resolver",
+          "package": "ty_module_resolver#0.0.17",
+          "size": 54905352,
+          "start_seconds": 4.81,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.15,
+          "file": "identifier-bba967788e1b801e",
+          "kind": [
+            "test"
+          ],
+          "name": "identifier",
+          "package": "ruff_python_ast_integration_tests#0.0.0",
+          "size": 15155760,
+          "start_seconds": 4.93,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.34,
+          "file": "ruff_db-0798c77214886b3c",
+          "kind": [
+            "lib"
+          ],
+          "name": "ruff_db",
+          "package": "ruff_db#0.0.17",
+          "size": 52313656,
+          "start_seconds": 4.95,
+          "test": true
+        },
+        {
+          "duration_seconds": 1.54,
+          "file": "ruff_server-b598b3ab69a2d318",
+          "kind": [
+            "lib"
+          ],
+          "name": "ruff_server",
+          "package": "ruff_server#0.0.17",
+          "size": 115387648,
+          "start_seconds": 5.09,
+          "test": true
+        },
+        {
+          "duration_seconds": 1.49,
+          "file": "ruff_python_formatter-47bc5e53b3953399",
+          "kind": [
+            "lib"
+          ],
+          "name": "ruff_python_formatter",
+          "package": "ruff_python_formatter#0.0.17",
+          "size": 53084032,
+          "start_seconds": 5.15,
+          "test": true
+        },
+        {
+          "duration_seconds": 1.46,
+          "file": "ty_server-4973c777e0baa104",
+          "kind": [
+            "lib"
+          ],
+          "name": "ty_server",
+          "package": "ty_server#0.0.0",
+          "size": 192447848,
+          "start_seconds": 5.17,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.18,
+          "file": "stmt_if-b3a225ef45b8409b",
+          "kind": [
+            "test"
+          ],
+          "name": "stmt_if",
+          "package": "ruff_python_ast_integration_tests#0.0.0",
+          "size": 15150744,
+          "start_seconds": 5.29,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.16,
+          "file": "generate_inline_tests-00680913f20a7bbc",
+          "kind": [
+            "test"
+          ],
+          "name": "generate_inline_tests",
+          "package": "ruff_python_parser#0.0.17",
+          "size": 1901816,
+          "start_seconds": 5.3,
+          "test": true
+        }
+      ],
+      "stderr_sha256": "abffac77db7ba6bc0bcb52f7a033603cef4fec0fc96a2f548bbf28ac0663c740",
+      "stdout_sha256": "7a446c0b5d593320480fb7ee3d0489f3def5c40d5c4d0bdea60ecf07ca4fb4ff",
+      "trial": 1,
+      "units": 619
+    },
+    {
+      "batch": "batch1",
+      "exit": 0,
+      "fresh": 563,
+      "html_sha256": "cdb2363922d180241eca29c96075bf02dd50c43fb1b8dba183bb5d384c453216",
+      "native_units": [
+        {
+          "duration_seconds": 0.23,
+          "file": "source_order-0dcd7bec5e451519",
+          "kind": [
+            "test"
+          ],
+          "name": "source_order",
+          "package": "ruff_python_ast_integration_tests#0.0.0",
+          "size": 20954592,
+          "start_seconds": 1.94,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.2,
+          "file": "identifier-bba967788e1b801e",
+          "kind": [
+            "test"
+          ],
+          "name": "identifier",
+          "package": "ruff_python_ast_integration_tests#0.0.0",
+          "size": 15155760,
+          "start_seconds": 1.94,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.46,
+          "file": "ruff-d6ddb74de333d3e2",
+          "kind": [
+            "bin"
+          ],
+          "name": "ruff",
+          "package": "ruff#0.17.0",
+          "size": 46845680,
+          "start_seconds": 1.95,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.62,
+          "file": "ruff_markdown-9430dd0f015f7fff",
+          "kind": [
+            "lib"
+          ],
+          "name": "ruff_markdown",
+          "package": "ruff_markdown#0.0.17",
+          "size": 102750464,
+          "start_seconds": 1.96,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.39,
+          "file": "fixtures-cd4844c322993c53",
+          "kind": [
+            "test"
+          ],
+          "name": "fixtures",
+          "package": "ruff_python_formatter#0.0.17",
+          "size": 59291424,
+          "start_seconds": 1.97,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.78,
+          "file": "mdtest-2946348e27e3d30f",
+          "kind": [
+            "test"
+          ],
+          "name": "mdtest",
+          "package": "ruff_mdtest#0.0.0",
+          "size": 133445672,
+          "start_seconds": 1.99,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.36,
+          "file": "ty_module_resolver-a5dd8c36e9712444",
+          "kind": [
+            "lib"
+          ],
+          "name": "ty_module_resolver",
+          "package": "ty_module_resolver#0.0.17",
+          "size": 54905352,
+          "start_seconds": 2.0,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.37,
+          "file": "ruff_db-0798c77214886b3c",
+          "kind": [
+            "lib"
+          ],
+          "name": "ruff_db",
+          "package": "ruff_db#0.0.17",
+          "size": 52313656,
+          "start_seconds": 2.02,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.79,
+          "file": "corpus-77b6d8c50ba8d54e",
+          "kind": [
+            "test"
+          ],
+          "name": "corpus",
+          "package": "ty_python_semantic#0.0.17",
+          "size": 165299400,
+          "start_seconds": 2.18,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.93,
+          "file": "ty_python_semantic-0c91f7de1f26917a",
+          "kind": [
+            "lib"
+          ],
+          "name": "ty_python_semantic",
+          "package": "ty_python_semantic#0.0.17",
+          "size": 180773840,
+          "start_seconds": 2.28,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.93,
+          "file": "mdtest-a96fdf0a48ebddd3",
+          "kind": [
+            "test"
+          ],
+          "name": "mdtest",
+          "package": "ty_python_semantic#0.0.17",
+          "size": 184583352,
+          "start_seconds": 2.36,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.88,
+          "file": "ty_test-bfa1400a52721b59",
+          "kind": [
+            "lib"
+          ],
+          "name": "ty_test",
+          "package": "ty_test#0.0.0",
+          "size": 166206416,
+          "start_seconds": 2.37,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.51,
+          "file": "cli-b62e55d460da2b80",
+          "kind": [
+            "test"
+          ],
+          "name": "cli",
+          "package": "ruff#0.17.0",
+          "size": 89242632,
+          "start_seconds": 2.39,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.97,
+          "file": "integration_test-4819140e1d62eda3",
+          "kind": [
+            "test"
+          ],
+          "name": "integration_test",
+          "package": "ruff#0.17.0",
+          "size": 162820440,
+          "start_seconds": 2.42,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.17,
+          "file": "analyze_graph-3442fcdf6ac355dc",
+          "kind": [
+            "test"
+          ],
+          "name": "analyze_graph",
+          "package": "ruff#0.17.0",
+          "size": 18729792,
+          "start_seconds": 2.58,
+          "test": true
+        },
+        {
+          "duration_seconds": 1.07,
+          "file": "ty-eb87f4f4ad8029dc",
+          "kind": [
+            "lib"
+          ],
+          "name": "ty",
+          "package": "ty#0.0.0",
+          "size": 191693248,
+          "start_seconds": 2.75,
+          "test": true
+        },
+        {
+          "duration_seconds": 1.13,
+          "file": "ty-28db247cc67222c0",
+          "kind": [
+            "bin"
+          ],
+          "name": "ty",
+          "package": "ty#0.0.0",
+          "size": 191671472,
+          "start_seconds": 2.76,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.19,
+          "file": "direxist_guard-b52833c6d634e45b",
+          "kind": [
+            "test"
+          ],
+          "name": "direxist_guard",
+          "package": "ruff#0.17.0",
+          "size": 12809920,
+          "start_seconds": 2.9,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.25,
+          "file": "self_environment-86a9154a941e135d",
+          "kind": [
+            "test"
+          ],
+          "name": "self_environment",
+          "package": "ty#0.0.0",
+          "size": 17075400,
+          "start_seconds": 2.97,
+          "test": true
+        },
+        {
+          "duration_seconds": 1.17,
+          "file": "file_watching-948302c9aaff6c9f",
+          "kind": [
+            "test"
+          ],
+          "name": "file_watching",
+          "package": "ty#0.0.0",
+          "size": 195260352,
+          "start_seconds": 3.13,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.23,
+          "file": "cli-e8249926456311d5",
+          "kind": [
+            "test"
+          ],
+          "name": "cli",
+          "package": "ty#0.0.0",
+          "size": 22190968,
+          "start_seconds": 3.23,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.16,
+          "file": "config-7ead3e5aa50ccfca",
+          "kind": [
+            "test"
+          ],
+          "name": "config",
+          "package": "ruff#0.17.0",
+          "size": 12811280,
+          "start_seconds": 3.23,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.85,
+          "file": "ruff-8dcc02a474b4938c",
+          "kind": [
+            "lib"
+          ],
+          "name": "ruff",
+          "package": "ruff#0.17.0",
+          "size": 143125424,
+          "start_seconds": 3.28,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.18,
+          "file": "resolve_files-035e6057a1040d7e",
+          "kind": [
+            "test"
+          ],
+          "name": "resolve_files",
+          "package": "ruff#0.17.0",
+          "size": 15673904,
+          "start_seconds": 3.29,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.69,
+          "file": "ruff_server-b598b3ab69a2d318",
+          "kind": [
+            "lib"
+          ],
+          "name": "ruff_server",
+          "package": "ruff_server#0.0.17",
+          "size": 115387648,
+          "start_seconds": 3.4,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.36,
+          "file": "ruff_python_formatter-47bc5e53b3953399",
+          "kind": [
+            "lib"
+          ],
+          "name": "ruff_python_formatter",
+          "package": "ruff_python_formatter#0.0.17",
+          "size": 53084032,
+          "start_seconds": 3.41,
+          "test": true
+        },
+        {
+          "duration_seconds": 1.18,
+          "file": "ty_server-4973c777e0baa104",
+          "kind": [
+            "lib"
+          ],
+          "name": "ty_server",
+          "package": "ty_server#0.0.0",
+          "size": 192447848,
+          "start_seconds": 3.46,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.15,
+          "file": "stmt_if-b3a225ef45b8409b",
+          "kind": [
+            "test"
+          ],
+          "name": "stmt_if",
+          "package": "ruff_python_ast_integration_tests#0.0.0",
+          "size": 15150744,
+          "start_seconds": 3.47,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.08,
+          "file": "generate_inline_tests-00680913f20a7bbc",
+          "kind": [
+            "test"
+          ],
+          "name": "generate_inline_tests",
+          "package": "ruff_python_parser#0.0.17",
+          "size": 1901816,
+          "start_seconds": 3.63,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.18,
+          "file": "simple_tokenizer-ae776ba28706b31b",
+          "kind": [
+            "test"
+          ],
+          "name": "simple_tokenizer",
+          "package": "ruff_python_trivia_integration_tests#0.0.0",
+          "size": 21023448,
+          "start_seconds": 3.72,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.24,
+          "file": "fixtures-cfa340005b9ad559",
+          "kind": [
+            "test"
+          ],
+          "name": "fixtures",
+          "package": "ruff_python_parser#0.0.17",
+          "size": 31306328,
+          "start_seconds": 3.78,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.87,
+          "file": "ruff_linter-011f9d72aba94d50",
+          "kind": [
+            "lib"
+          ],
+          "name": "ruff_linter",
+          "package": "ruff_linter#0.17.0",
+          "size": 116320896,
+          "start_seconds": 3.88,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.16,
+          "file": "match_pattern-1a86ed5e3ff34386",
+          "kind": [
+            "test"
+          ],
+          "name": "match_pattern",
+          "package": "ruff_python_ast_integration_tests#0.0.0",
+          "size": 15130536,
+          "start_seconds": 3.9,
+          "test": true
+        },
+        {
+          "duration_seconds": 1.22,
+          "file": "e2e-f978f73ba5a3a2ed",
+          "kind": [
+            "test"
+          ],
+          "name": "e2e",
+          "package": "ty_server#0.0.0",
+          "size": 226518976,
+          "start_seconds": 3.91,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.3,
+          "file": "ruff_python_parser-d12bbdee1ece95b3",
+          "kind": [
+            "lib"
+          ],
+          "name": "ruff_python_parser",
+          "package": "ruff_python_parser#0.0.17",
+          "size": 21985024,
+          "start_seconds": 4.03,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.29,
+          "file": "visitor-d89f21071576b5e7",
+          "kind": [
+            "test"
+          ],
+          "name": "visitor",
+          "package": "ruff_python_ast_integration_tests#0.0.0",
+          "size": 20936776,
+          "start_seconds": 4.05,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.3,
+          "file": "ruff_python_importer-1b81f2a77244ca51",
+          "kind": [
+            "lib"
+          ],
+          "name": "ruff_python_importer",
+          "package": "ruff_python_importer#0.0.17",
+          "size": 21877928,
+          "start_seconds": 4.09,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.46,
+          "file": "mdtest-1a68b28bc535c668",
+          "kind": [
+            "lib"
+          ],
+          "name": "mdtest",
+          "package": "mdtest#0.0.0",
+          "size": 49931528,
+          "start_seconds": 4.13,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.69,
+          "file": "document-75b47e0b78e9a682",
+          "kind": [
+            "test"
+          ],
+          "name": "document",
+          "package": "ruff_server#0.0.17",
+          "size": 104569032,
+          "start_seconds": 4.31,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.17,
+          "file": "parentheses-d25d191a61bed12a",
+          "kind": [
+            "test"
+          ],
+          "name": "parentheses",
+          "package": "ruff_python_ast_integration_tests#0.0.0",
+          "size": 15363360,
+          "start_seconds": 4.34,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.14,
+          "file": "normalizer-f1f64f446d159d08",
+          "kind": [
+            "test"
+          ],
+          "name": "normalizer",
+          "package": "ruff_python_formatter#0.0.17",
+          "size": 6413256,
+          "start_seconds": 4.39,
+          "test": true
+        },
+        {
+          "duration_seconds": 1.05,
+          "file": "ty_ide-59670cd0e1ca3f51",
+          "kind": [
+            "lib"
+          ],
+          "name": "ty_ide",
+          "package": "ty_ide#0.0.0",
+          "size": 209048512,
+          "start_seconds": 4.4,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.17,
+          "file": "whitespace-ba5afd157cfdeff8",
+          "kind": [
+            "test"
+          ],
+          "name": "whitespace",
+          "package": "ruff_python_trivia_integration_tests#0.0.0",
+          "size": 15143736,
+          "start_seconds": 4.52,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.2,
+          "file": "ruff_python_semantic-06b9ad6d035c77d0",
+          "kind": [
+            "lib"
+          ],
+          "name": "ruff_python_semantic",
+          "package": "ruff_python_semantic#0.0.17",
+          "size": 21242488,
+          "start_seconds": 4.54,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.16,
+          "file": "parenthesize-7191b8229aafb7b8",
+          "kind": [
+            "test"
+          ],
+          "name": "parenthesize",
+          "package": "ruff_python_ast_integration_tests#0.0.0",
+          "size": 15254912,
+          "start_seconds": 4.6,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.91,
+          "file": "ty_project-822f142964e86f1b",
+          "kind": [
+            "lib"
+          ],
+          "name": "ty_project",
+          "package": "ty_project#0.0.0",
+          "size": 192839280,
+          "start_seconds": 4.68,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.79,
+          "file": "e2e-ac411c688b27a77a",
+          "kind": [
+            "test"
+          ],
+          "name": "e2e",
+          "package": "ruff_server#0.0.17",
+          "size": 146310024,
+          "start_seconds": 4.7,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.15,
+          "file": "comparable-9839afbef154aade",
+          "kind": [
+            "test"
+          ],
+          "name": "comparable",
+          "package": "ruff_python_ast_integration_tests#0.0.0",
+          "size": 15413688,
+          "start_seconds": 4.74,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.14,
+          "file": "block_comments-22ebc506abcc73d4",
+          "kind": [
+            "test"
+          ],
+          "name": "block_comments",
+          "package": "ruff_python_trivia_integration_tests#0.0.0",
+          "size": 15187832,
+          "start_seconds": 4.75,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.25,
+          "file": "ruff_python_formatter-6c347a415e685e7c",
+          "kind": [
+            "bin"
+          ],
+          "name": "ruff_python_formatter",
+          "package": "ruff_python_formatter#0.0.17",
+          "size": 36775672,
+          "start_seconds": 4.76,
+          "test": true
+        }
+      ],
+      "stderr_sha256": "fb629586b6eae3d5d8b7919d3e50503fc7b90f4684f484a5e5b7f9ce14950dd5",
+      "stdout_sha256": "f0ae407017163a3c6b0cbc57db248e9e9ce160375cf8fefba0da81dd3c59420d",
+      "trial": 2,
+      "units": 619
+    },
+    {
+      "batch": "batch2",
+      "exit": 0,
+      "fresh": 563,
+      "html_sha256": "4b50b5f846e43a1d65377155ccdcb703fa4b9807c87daff7e755a549cbf38de7",
+      "native_units": [
+        {
+          "duration_seconds": 0.19,
+          "file": "identifier-bba967788e1b801e",
+          "kind": [
+            "test"
+          ],
+          "name": "identifier",
+          "package": "ruff_python_ast_integration_tests#0.0.0",
+          "size": 15155760,
+          "start_seconds": 2.08,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.6,
+          "file": "ruff_markdown-9430dd0f015f7fff",
+          "kind": [
+            "lib"
+          ],
+          "name": "ruff_markdown",
+          "package": "ruff_markdown#0.0.17",
+          "size": 102750464,
+          "start_seconds": 2.1,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.2,
+          "file": "source_order-0dcd7bec5e451519",
+          "kind": [
+            "test"
+          ],
+          "name": "source_order",
+          "package": "ruff_python_ast_integration_tests#0.0.0",
+          "size": 20954592,
+          "start_seconds": 2.1,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.41,
+          "file": "fixtures-cd4844c322993c53",
+          "kind": [
+            "test"
+          ],
+          "name": "fixtures",
+          "package": "ruff_python_formatter#0.0.17",
+          "size": 59291424,
+          "start_seconds": 2.11,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.37,
+          "file": "ty_module_resolver-a5dd8c36e9712444",
+          "kind": [
+            "lib"
+          ],
+          "name": "ty_module_resolver",
+          "package": "ty_module_resolver#0.0.17",
+          "size": 54905352,
+          "start_seconds": 2.12,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.36,
+          "file": "ruff_db-0798c77214886b3c",
+          "kind": [
+            "lib"
+          ],
+          "name": "ruff_db",
+          "package": "ruff_db#0.0.17",
+          "size": 52313656,
+          "start_seconds": 2.12,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.54,
+          "file": "cli-b62e55d460da2b80",
+          "kind": [
+            "test"
+          ],
+          "name": "cli",
+          "package": "ruff#0.17.0",
+          "size": 89242632,
+          "start_seconds": 2.12,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.74,
+          "file": "mdtest-2946348e27e3d30f",
+          "kind": [
+            "test"
+          ],
+          "name": "mdtest",
+          "package": "ruff_mdtest#0.0.0",
+          "size": 133445672,
+          "start_seconds": 2.14,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.81,
+          "file": "corpus-77b6d8c50ba8d54e",
+          "kind": [
+            "test"
+          ],
+          "name": "corpus",
+          "package": "ty_python_semantic#0.0.17",
+          "size": 165299400,
+          "start_seconds": 2.31,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.93,
+          "file": "ty_python_semantic-0c91f7de1f26917a",
+          "kind": [
+            "lib"
+          ],
+          "name": "ty_python_semantic",
+          "package": "ty_python_semantic#0.0.17",
+          "size": 180773840,
+          "start_seconds": 2.38,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.98,
+          "file": "mdtest-a96fdf0a48ebddd3",
+          "kind": [
+            "test"
+          ],
+          "name": "mdtest",
+          "package": "ty_python_semantic#0.0.17",
+          "size": 184583352,
+          "start_seconds": 2.48,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.89,
+          "file": "ty_test-bfa1400a52721b59",
+          "kind": [
+            "lib"
+          ],
+          "name": "ty_test",
+          "package": "ty_test#0.0.0",
+          "size": 166206416,
+          "start_seconds": 2.5,
+          "test": true
+        },
+        {
+          "duration_seconds": 1.02,
+          "file": "integration_test-4819140e1d62eda3",
+          "kind": [
+            "test"
+          ],
+          "name": "integration_test",
+          "package": "ruff#0.17.0",
+          "size": 162820440,
+          "start_seconds": 2.52,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.17,
+          "file": "analyze_graph-3442fcdf6ac355dc",
+          "kind": [
+            "test"
+          ],
+          "name": "analyze_graph",
+          "package": "ruff#0.17.0",
+          "size": 18729792,
+          "start_seconds": 2.66,
+          "test": true
+        },
+        {
+          "duration_seconds": 1.09,
+          "file": "ty-eb87f4f4ad8029dc",
+          "kind": [
+            "lib"
+          ],
+          "name": "ty",
+          "package": "ty#0.0.0",
+          "size": 191693248,
+          "start_seconds": 2.7,
+          "test": true
+        },
+        {
+          "duration_seconds": 1.15,
+          "file": "ty-28db247cc67222c0",
+          "kind": [
+            "bin"
+          ],
+          "name": "ty",
+          "package": "ty#0.0.0",
+          "size": 191671472,
+          "start_seconds": 2.83,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.16,
+          "file": "direxist_guard-b52833c6d634e45b",
+          "kind": [
+            "test"
+          ],
+          "name": "direxist_guard",
+          "package": "ruff#0.17.0",
+          "size": 12809920,
+          "start_seconds": 2.88,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.17,
+          "file": "self_environment-86a9154a941e135d",
+          "kind": [
+            "test"
+          ],
+          "name": "self_environment",
+          "package": "ty#0.0.0",
+          "size": 17075400,
+          "start_seconds": 3.04,
+          "test": true
+        },
+        {
+          "duration_seconds": 1.09,
+          "file": "file_watching-948302c9aaff6c9f",
+          "kind": [
+            "test"
+          ],
+          "name": "file_watching",
+          "package": "ty#0.0.0",
+          "size": 195260352,
+          "start_seconds": 3.13,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.31,
+          "file": "cli-e8249926456311d5",
+          "kind": [
+            "test"
+          ],
+          "name": "cli",
+          "package": "ty#0.0.0",
+          "size": 22190968,
+          "start_seconds": 3.22,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.22,
+          "file": "config-7ead3e5aa50ccfca",
+          "kind": [
+            "test"
+          ],
+          "name": "config",
+          "package": "ruff#0.17.0",
+          "size": 12811280,
+          "start_seconds": 3.32,
+          "test": true
+        },
+        {
+          "duration_seconds": 1.12,
+          "file": "ruff-8dcc02a474b4938c",
+          "kind": [
+            "lib"
+          ],
+          "name": "ruff",
+          "package": "ruff#0.17.0",
+          "size": 143125424,
+          "start_seconds": 3.4,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.18,
+          "file": "resolve_files-035e6057a1040d7e",
+          "kind": [
+            "test"
+          ],
+          "name": "resolve_files",
+          "package": "ruff#0.17.0",
+          "size": 15673904,
+          "start_seconds": 3.47,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.4,
+          "file": "ruff-d6ddb74de333d3e2",
+          "kind": [
+            "bin"
+          ],
+          "name": "ruff",
+          "package": "ruff#0.17.0",
+          "size": 46845680,
+          "start_seconds": 3.53,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.8,
+          "file": "ruff_server-b598b3ab69a2d318",
+          "kind": [
+            "lib"
+          ],
+          "name": "ruff_server",
+          "package": "ruff_server#0.0.17",
+          "size": 115387648,
+          "start_seconds": 3.55,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.36,
+          "file": "ruff_python_formatter-47bc5e53b3953399",
+          "kind": [
+            "lib"
+          ],
+          "name": "ruff_python_formatter",
+          "package": "ruff_python_formatter#0.0.17",
+          "size": 53084032,
+          "start_seconds": 3.56,
+          "test": true
+        },
+        {
+          "duration_seconds": 1.32,
+          "file": "ty_server-4973c777e0baa104",
+          "kind": [
+            "lib"
+          ],
+          "name": "ty_server",
+          "package": "ty_server#0.0.0",
+          "size": 192447848,
+          "start_seconds": 3.66,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.15,
+          "file": "stmt_if-b3a225ef45b8409b",
+          "kind": [
+            "test"
+          ],
+          "name": "stmt_if",
+          "package": "ruff_python_ast_integration_tests#0.0.0",
+          "size": 15150744,
+          "start_seconds": 3.8,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.09,
+          "file": "generate_inline_tests-00680913f20a7bbc",
+          "kind": [
+            "test"
+          ],
+          "name": "generate_inline_tests",
+          "package": "ruff_python_parser#0.0.17",
+          "size": 1901816,
+          "start_seconds": 3.92,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.18,
+          "file": "simple_tokenizer-ae776ba28706b31b",
+          "kind": [
+            "test"
+          ],
+          "name": "simple_tokenizer",
+          "package": "ruff_python_trivia_integration_tests#0.0.0",
+          "size": 21023448,
+          "start_seconds": 3.93,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.23,
+          "file": "fixtures-cfa340005b9ad559",
+          "kind": [
+            "test"
+          ],
+          "name": "fixtures",
+          "package": "ruff_python_parser#0.0.17",
+          "size": 31306328,
+          "start_seconds": 3.95,
+          "test": true
+        },
+        {
+          "duration_seconds": 1.36,
+          "file": "e2e-f978f73ba5a3a2ed",
+          "kind": [
+            "test"
+          ],
+          "name": "e2e",
+          "package": "ty_server#0.0.0",
+          "size": 226518976,
+          "start_seconds": 4.03,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.94,
+          "file": "ruff_linter-011f9d72aba94d50",
+          "kind": [
+            "lib"
+          ],
+          "name": "ruff_linter",
+          "package": "ruff_linter#0.17.0",
+          "size": 116320896,
+          "start_seconds": 4.06,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.3,
+          "file": "match_pattern-1a86ed5e3ff34386",
+          "kind": [
+            "test"
+          ],
+          "name": "match_pattern",
+          "package": "ruff_python_ast_integration_tests#0.0.0",
+          "size": 15130536,
+          "start_seconds": 4.12,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.37,
+          "file": "ruff_python_parser-d12bbdee1ece95b3",
+          "kind": [
+            "lib"
+          ],
+          "name": "ruff_python_parser",
+          "package": "ruff_python_parser#0.0.17",
+          "size": 21985024,
+          "start_seconds": 4.18,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.34,
+          "file": "visitor-d89f21071576b5e7",
+          "kind": [
+            "test"
+          ],
+          "name": "visitor",
+          "package": "ruff_python_ast_integration_tests#0.0.0",
+          "size": 20936776,
+          "start_seconds": 4.22,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.27,
+          "file": "ruff_python_importer-1b81f2a77244ca51",
+          "kind": [
+            "lib"
+          ],
+          "name": "ruff_python_importer",
+          "package": "ruff_python_importer#0.0.17",
+          "size": 21877928,
+          "start_seconds": 4.37,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.4,
+          "file": "mdtest-1a68b28bc535c668",
+          "kind": [
+            "lib"
+          ],
+          "name": "mdtest",
+          "package": "mdtest#0.0.0",
+          "size": 49931528,
+          "start_seconds": 4.43,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.66,
+          "file": "document-75b47e0b78e9a682",
+          "kind": [
+            "test"
+          ],
+          "name": "document",
+          "package": "ruff_server#0.0.17",
+          "size": 104569032,
+          "start_seconds": 4.52,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.17,
+          "file": "parentheses-d25d191a61bed12a",
+          "kind": [
+            "test"
+          ],
+          "name": "parentheses",
+          "package": "ruff_python_ast_integration_tests#0.0.0",
+          "size": 15363360,
+          "start_seconds": 4.56,
+          "test": true
+        },
+        {
+          "duration_seconds": 1.03,
+          "file": "ty_ide-59670cd0e1ca3f51",
+          "kind": [
+            "lib"
+          ],
+          "name": "ty_ide",
+          "package": "ty_ide#0.0.0",
+          "size": 209048512,
+          "start_seconds": 4.59,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.13,
+          "file": "normalizer-f1f64f446d159d08",
+          "kind": [
+            "test"
+          ],
+          "name": "normalizer",
+          "package": "ruff_python_formatter#0.0.17",
+          "size": 6413256,
+          "start_seconds": 4.63,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.16,
+          "file": "whitespace-ba5afd157cfdeff8",
+          "kind": [
+            "test"
+          ],
+          "name": "whitespace",
+          "package": "ruff_python_trivia_integration_tests#0.0.0",
+          "size": 15143736,
+          "start_seconds": 4.74,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.19,
+          "file": "ruff_python_semantic-06b9ad6d035c77d0",
+          "kind": [
+            "lib"
+          ],
+          "name": "ruff_python_semantic",
+          "package": "ruff_python_semantic#0.0.17",
+          "size": 21242488,
+          "start_seconds": 4.77,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.15,
+          "file": "parenthesize-7191b8229aafb7b8",
+          "kind": [
+            "test"
+          ],
+          "name": "parenthesize",
+          "package": "ruff_python_ast_integration_tests#0.0.0",
+          "size": 15254912,
+          "start_seconds": 4.83,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.99,
+          "file": "ty_project-822f142964e86f1b",
+          "kind": [
+            "lib"
+          ],
+          "name": "ty_project",
+          "package": "ty_project#0.0.0",
+          "size": 192839280,
+          "start_seconds": 4.92,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.78,
+          "file": "e2e-ac411c688b27a77a",
+          "kind": [
+            "test"
+          ],
+          "name": "e2e",
+          "package": "ruff_server#0.0.17",
+          "size": 146310024,
+          "start_seconds": 4.96,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.15,
+          "file": "comparable-9839afbef154aade",
+          "kind": [
+            "test"
+          ],
+          "name": "comparable",
+          "package": "ruff_python_ast_integration_tests#0.0.0",
+          "size": 15413688,
+          "start_seconds": 4.97,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.17,
+          "file": "block_comments-22ebc506abcc73d4",
+          "kind": [
+            "test"
+          ],
+          "name": "block_comments",
+          "package": "ruff_python_trivia_integration_tests#0.0.0",
+          "size": 15187832,
+          "start_seconds": 4.98,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.27,
+          "file": "ruff_python_formatter-6c347a415e685e7c",
+          "kind": [
+            "bin"
+          ],
+          "name": "ruff_python_formatter",
+          "package": "ruff_python_formatter#0.0.17",
+          "size": 36775672,
+          "start_seconds": 5.0,
+          "test": true
+        }
+      ],
+      "stderr_sha256": "06c74dcf042343407a9047c0448616dd3fe93a92866540eefe031e12437ec4c4",
+      "stdout_sha256": "ab2f63dbcfa0df30f13c89409e6283967c5d5f7eef62abce781dae504dc385a4",
+      "trial": 1,
+      "units": 619
+    },
+    {
+      "batch": "batch2",
+      "exit": 0,
+      "fresh": 563,
+      "html_sha256": "70988d82e276194989f9ce042ffb3994e3f4d73c84f08ca8e4a74aa95867839f",
+      "native_units": [
+        {
+          "duration_seconds": 0.35,
+          "file": "ruff_python_formatter-6c347a415e685e7c",
+          "kind": [
+            "bin"
+          ],
+          "name": "ruff_python_formatter",
+          "package": "ruff_python_formatter#0.0.17",
+          "size": 36775672,
+          "start_seconds": 2.84,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.2,
+          "file": "block_comments-22ebc506abcc73d4",
+          "kind": [
+            "test"
+          ],
+          "name": "block_comments",
+          "package": "ruff_python_trivia_integration_tests#0.0.0",
+          "size": 15187832,
+          "start_seconds": 2.86,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.2,
+          "file": "comparable-9839afbef154aade",
+          "kind": [
+            "test"
+          ],
+          "name": "comparable",
+          "package": "ruff_python_ast_integration_tests#0.0.0",
+          "size": 15413688,
+          "start_seconds": 2.86,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.2,
+          "file": "resolve_files-035e6057a1040d7e",
+          "kind": [
+            "test"
+          ],
+          "name": "resolve_files",
+          "package": "ruff#0.17.0",
+          "size": 15673904,
+          "start_seconds": 2.87,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.39,
+          "file": "fixtures-cd4844c322993c53",
+          "kind": [
+            "test"
+          ],
+          "name": "fixtures",
+          "package": "ruff_python_formatter#0.0.17",
+          "size": 59291424,
+          "start_seconds": 2.87,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.85,
+          "file": "e2e-ac411c688b27a77a",
+          "kind": [
+            "test"
+          ],
+          "name": "e2e",
+          "package": "ruff_server#0.0.17",
+          "size": 146310024,
+          "start_seconds": 2.87,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.76,
+          "file": "mdtest-2946348e27e3d30f",
+          "kind": [
+            "test"
+          ],
+          "name": "mdtest",
+          "package": "ruff_mdtest#0.0.0",
+          "size": 133445672,
+          "start_seconds": 2.89,
+          "test": true
+        },
+        {
+          "duration_seconds": 1.0,
+          "file": "ty_project-822f142964e86f1b",
+          "kind": [
+            "lib"
+          ],
+          "name": "ty_project",
+          "package": "ty_project#0.0.0",
+          "size": 192839280,
+          "start_seconds": 2.9,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.93,
+          "file": "mdtest-a96fdf0a48ebddd3",
+          "kind": [
+            "test"
+          ],
+          "name": "mdtest",
+          "package": "ty_python_semantic#0.0.17",
+          "size": 184583352,
+          "start_seconds": 3.06,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.82,
+          "file": "corpus-77b6d8c50ba8d54e",
+          "kind": [
+            "test"
+          ],
+          "name": "corpus",
+          "package": "ty_python_semantic#0.0.17",
+          "size": 165299400,
+          "start_seconds": 3.08,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.9,
+          "file": "ty_python_semantic-0c91f7de1f26917a",
+          "kind": [
+            "lib"
+          ],
+          "name": "ty_python_semantic",
+          "package": "ty_python_semantic#0.0.17",
+          "size": 180773840,
+          "start_seconds": 3.17,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.84,
+          "file": "ty_test-bfa1400a52721b59",
+          "kind": [
+            "lib"
+          ],
+          "name": "ty_test",
+          "package": "ty_test#0.0.0",
+          "size": 166206416,
+          "start_seconds": 3.21,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.39,
+          "file": "ruff-d6ddb74de333d3e2",
+          "kind": [
+            "bin"
+          ],
+          "name": "ruff",
+          "package": "ruff#0.17.0",
+          "size": 46845680,
+          "start_seconds": 3.27,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.98,
+          "file": "integration_test-4819140e1d62eda3",
+          "kind": [
+            "test"
+          ],
+          "name": "integration_test",
+          "package": "ruff#0.17.0",
+          "size": 162820440,
+          "start_seconds": 3.66,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.52,
+          "file": "cli-b62e55d460da2b80",
+          "kind": [
+            "test"
+          ],
+          "name": "cli",
+          "package": "ruff#0.17.0",
+          "size": 89242632,
+          "start_seconds": 3.66,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.19,
+          "file": "analyze_graph-3442fcdf6ac355dc",
+          "kind": [
+            "test"
+          ],
+          "name": "analyze_graph",
+          "package": "ruff#0.17.0",
+          "size": 18729792,
+          "start_seconds": 3.73,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.98,
+          "file": "ty-eb87f4f4ad8029dc",
+          "kind": [
+            "lib"
+          ],
+          "name": "ty",
+          "package": "ty#0.0.0",
+          "size": 191693248,
+          "start_seconds": 3.9,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.94,
+          "file": "ty-28db247cc67222c0",
+          "kind": [
+            "bin"
+          ],
+          "name": "ty",
+          "package": "ty#0.0.0",
+          "size": 191671472,
+          "start_seconds": 3.91,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.14,
+          "file": "direxist_guard-b52833c6d634e45b",
+          "kind": [
+            "test"
+          ],
+          "name": "direxist_guard",
+          "package": "ruff#0.17.0",
+          "size": 12809920,
+          "start_seconds": 3.92,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.17,
+          "file": "self_environment-86a9154a941e135d",
+          "kind": [
+            "test"
+          ],
+          "name": "self_environment",
+          "package": "ty#0.0.0",
+          "size": 17075400,
+          "start_seconds": 3.99,
+          "test": true
+        },
+        {
+          "duration_seconds": 1.04,
+          "file": "file_watching-948302c9aaff6c9f",
+          "kind": [
+            "test"
+          ],
+          "name": "file_watching",
+          "package": "ty#0.0.0",
+          "size": 195260352,
+          "start_seconds": 4.05,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.31,
+          "file": "cli-e8249926456311d5",
+          "kind": [
+            "test"
+          ],
+          "name": "cli",
+          "package": "ty#0.0.0",
+          "size": 22190968,
+          "start_seconds": 4.07,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.18,
+          "file": "config-7ead3e5aa50ccfca",
+          "kind": [
+            "test"
+          ],
+          "name": "config",
+          "package": "ruff#0.17.0",
+          "size": 12811280,
+          "start_seconds": 4.08,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.82,
+          "file": "ruff-8dcc02a474b4938c",
+          "kind": [
+            "lib"
+          ],
+          "name": "ruff",
+          "package": "ruff#0.17.0",
+          "size": 143125424,
+          "start_seconds": 4.17,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.57,
+          "file": "ruff_markdown-9430dd0f015f7fff",
+          "kind": [
+            "lib"
+          ],
+          "name": "ruff_markdown",
+          "package": "ruff_markdown#0.0.17",
+          "size": 102750464,
+          "start_seconds": 4.18,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.21,
+          "file": "source_order-0dcd7bec5e451519",
+          "kind": [
+            "test"
+          ],
+          "name": "source_order",
+          "package": "ruff_python_ast_integration_tests#0.0.0",
+          "size": 20954592,
+          "start_seconds": 4.26,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.37,
+          "file": "ty_module_resolver-a5dd8c36e9712444",
+          "kind": [
+            "lib"
+          ],
+          "name": "ty_module_resolver",
+          "package": "ty_module_resolver#0.0.17",
+          "size": 54905352,
+          "start_seconds": 4.39,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.36,
+          "file": "ruff_db-0798c77214886b3c",
+          "kind": [
+            "lib"
+          ],
+          "name": "ruff_db",
+          "package": "ruff_db#0.0.17",
+          "size": 52313656,
+          "start_seconds": 4.49,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.15,
+          "file": "identifier-bba967788e1b801e",
+          "kind": [
+            "test"
+          ],
+          "name": "identifier",
+          "package": "ruff_python_ast_integration_tests#0.0.0",
+          "size": 15155760,
+          "start_seconds": 4.63,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.82,
+          "file": "ruff_server-b598b3ab69a2d318",
+          "kind": [
+            "lib"
+          ],
+          "name": "ruff_server",
+          "package": "ruff_server#0.0.17",
+          "size": 115387648,
+          "start_seconds": 4.77,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.45,
+          "file": "ruff_python_formatter-47bc5e53b3953399",
+          "kind": [
+            "lib"
+          ],
+          "name": "ruff_python_formatter",
+          "package": "ruff_python_formatter#0.0.17",
+          "size": 53084032,
+          "start_seconds": 4.78,
+          "test": true
+        },
+        {
+          "duration_seconds": 1.1,
+          "file": "ty_server-4973c777e0baa104",
+          "kind": [
+            "lib"
+          ],
+          "name": "ty_server",
+          "package": "ty_server#0.0.0",
+          "size": 192447848,
+          "start_seconds": 4.8,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.14,
+          "file": "stmt_if-b3a225ef45b8409b",
+          "kind": [
+            "test"
+          ],
+          "name": "stmt_if",
+          "package": "ruff_python_ast_integration_tests#0.0.0",
+          "size": 15150744,
+          "start_seconds": 4.84,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.08,
+          "file": "generate_inline_tests-00680913f20a7bbc",
+          "kind": [
+            "test"
+          ],
+          "name": "generate_inline_tests",
+          "package": "ruff_python_parser#0.0.17",
+          "size": 1901816,
+          "start_seconds": 4.86,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.21,
+          "file": "simple_tokenizer-ae776ba28706b31b",
+          "kind": [
+            "test"
+          ],
+          "name": "simple_tokenizer",
+          "package": "ruff_python_trivia_integration_tests#0.0.0",
+          "size": 21023448,
+          "start_seconds": 4.88,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.35,
+          "file": "fixtures-cfa340005b9ad559",
+          "kind": [
+            "test"
+          ],
+          "name": "fixtures",
+          "package": "ruff_python_parser#0.0.17",
+          "size": 31306328,
+          "start_seconds": 4.94,
+          "test": true
+        },
+        {
+          "duration_seconds": 1.26,
+          "file": "e2e-f978f73ba5a3a2ed",
+          "kind": [
+            "test"
+          ],
+          "name": "e2e",
+          "package": "ty_server#0.0.0",
+          "size": 226518976,
+          "start_seconds": 5.01,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.82,
+          "file": "ruff_linter-011f9d72aba94d50",
+          "kind": [
+            "lib"
+          ],
+          "name": "ruff_linter",
+          "package": "ruff_linter#0.17.0",
+          "size": 116320896,
+          "start_seconds": 5.04,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.19,
+          "file": "match_pattern-1a86ed5e3ff34386",
+          "kind": [
+            "test"
+          ],
+          "name": "match_pattern",
+          "package": "ruff_python_ast_integration_tests#0.0.0",
+          "size": 15130536,
+          "start_seconds": 5.09,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.21,
+          "file": "ruff_python_parser-d12bbdee1ece95b3",
+          "kind": [
+            "lib"
+          ],
+          "name": "ruff_python_parser",
+          "package": "ruff_python_parser#0.0.17",
+          "size": 21985024,
+          "start_seconds": 5.11,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.21,
+          "file": "visitor-d89f21071576b5e7",
+          "kind": [
+            "test"
+          ],
+          "name": "visitor",
+          "package": "ruff_python_ast_integration_tests#0.0.0",
+          "size": 20936776,
+          "start_seconds": 5.24,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.22,
+          "file": "ruff_python_importer-1b81f2a77244ca51",
+          "kind": [
+            "lib"
+          ],
+          "name": "ruff_python_importer",
+          "package": "ruff_python_importer#0.0.17",
+          "size": 21877928,
+          "start_seconds": 5.28,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.38,
+          "file": "mdtest-1a68b28bc535c668",
+          "kind": [
+            "lib"
+          ],
+          "name": "mdtest",
+          "package": "mdtest#0.0.0",
+          "size": 49931528,
+          "start_seconds": 5.3,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.61,
+          "file": "document-75b47e0b78e9a682",
+          "kind": [
+            "test"
+          ],
+          "name": "document",
+          "package": "ruff_server#0.0.17",
+          "size": 104569032,
+          "start_seconds": 5.32,
+          "test": true
+        },
+        {
+          "duration_seconds": 1.01,
+          "file": "ty_ide-59670cd0e1ca3f51",
+          "kind": [
+            "lib"
+          ],
+          "name": "ty_ide",
+          "package": "ty_ide#0.0.0",
+          "size": 209048512,
+          "start_seconds": 5.47,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.17,
+          "file": "parentheses-d25d191a61bed12a",
+          "kind": [
+            "test"
+          ],
+          "name": "parentheses",
+          "package": "ruff_python_ast_integration_tests#0.0.0",
+          "size": 15363360,
+          "start_seconds": 5.5,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.13,
+          "file": "normalizer-f1f64f446d159d08",
+          "kind": [
+            "test"
+          ],
+          "name": "normalizer",
+          "package": "ruff_python_formatter#0.0.17",
+          "size": 6413256,
+          "start_seconds": 5.59,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.14,
+          "file": "whitespace-ba5afd157cfdeff8",
+          "kind": [
+            "test"
+          ],
+          "name": "whitespace",
+          "package": "ruff_python_trivia_integration_tests#0.0.0",
+          "size": 15143736,
+          "start_seconds": 5.67,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.18,
+          "file": "ruff_python_semantic-06b9ad6d035c77d0",
+          "kind": [
+            "lib"
+          ],
+          "name": "ruff_python_semantic",
+          "package": "ruff_python_semantic#0.0.17",
+          "size": 21242488,
+          "start_seconds": 5.69,
+          "test": true
+        },
+        {
+          "duration_seconds": 0.15,
+          "file": "parenthesize-7191b8229aafb7b8",
+          "kind": [
+            "test"
+          ],
+          "name": "parenthesize",
+          "package": "ruff_python_ast_integration_tests#0.0.0",
+          "size": 15254912,
+          "start_seconds": 5.72,
+          "test": true
+        }
+      ],
+      "stderr_sha256": "9e76ddd39d80abeb6135b6056166afabe6b10fd428c2affeddc91cd295c97b38",
+      "stdout_sha256": "a74f3770f5364a9a6d3a477a9fb57d75de1d863c11ba2ba56dacf8ff77f160b4",
+      "trial": 2,
+      "units": 619
+    }
+  ],
+  "source_sha256": "0d561219bade06c44ad3c295ac669d2c0aa15f3392c205cbea73013023407c1f"
+}
