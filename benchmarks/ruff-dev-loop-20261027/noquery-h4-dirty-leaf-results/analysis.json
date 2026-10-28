@@ -1,0 +1,148 @@
+{
+  "comparisons": [
+    {
+      "endpoint": "check",
+      "candidate_arm": "N",
+      "control_arm": "B",
+      "pairs": 1584,
+      "randomized_blocks": 24,
+      "control_median_ms": 149.729575,
+      "candidate_median_ms": 149.837081,
+      "geomean_overhead_pct": -0.3888660379808294,
+      "mean_overhead_ms": -1.0121745119949495,
+      "ci95_overhead_pct": [
+        -1.4262183860628725,
+        0.7088849569110188
+      ],
+      "ci95_overhead_ms": [
+        -3.9594708724747476,
+        2.0121582380050502
+      ],
+      "extreme": 175380,
+      "assignments": 343000,
+      "two_sided_p": 0.5113119533527697,
+      "small_margin_pass": true
+    },
+    {
+      "endpoint": "check",
+      "candidate_arm": "N",
+      "control_arm": "P",
+      "pairs": 1584,
+      "randomized_blocks": 24,
+      "control_median_ms": 169.50299,
+      "candidate_median_ms": 149.837081,
+      "geomean_overhead_pct": -10.844221194808942,
+      "mean_overhead_ms": -19.190129819444444,
+      "ci95_overhead_pct": [
+        -11.919695650924249,
+        -9.796958798010614
+      ],
+      "ci95_overhead_ms": [
+        -22.704962722222223,
+        -15.782287380050505
+      ],
+      "extreme": 2,
+      "assignments": 343000,
+      "two_sided_p": 5.830903790087464e-06,
+      "holm_p": 2.3323615160349855e-05,
+      "direction_qualified": true
+    },
+    {
+      "endpoint": "check",
+      "candidate_arm": "P",
+      "control_arm": "B",
+      "pairs": 1584,
+      "randomized_blocks": 24,
+      "control_median_ms": 149.729575,
+      "candidate_median_ms": 169.50299,
+      "geomean_overhead_pct": 11.727063906506253,
+      "mean_overhead_ms": 18.177955307449494,
+      "ci95_overhead_pct": [
+        10.497582280131306,
+        12.964062910180724
+      ],
+      "ci95_overhead_ms": [
+        14.856811955808082,
+        21.550478042297982
+      ],
+      "extreme": 2,
+      "assignments": 343000,
+      "two_sided_p": 5.830903790087464e-06,
+      "holm_p": 2.3323615160349855e-05,
+      "direction_qualified": true
+    },
+    {
+      "endpoint": "build",
+      "candidate_arm": "N",
+      "control_arm": "B",
+      "pairs": 144,
+      "randomized_blocks": 24,
+      "control_median_ms": 200.99499550000002,
+      "candidate_median_ms": 203.35433749999999,
+      "geomean_overhead_pct": 0.6227580232840517,
+      "mean_overhead_ms": 2.9125400138888895,
+      "ci95_overhead_pct": [
+        -4.690355832950146,
+        7.675517221464576
+      ],
+      "ci95_overhead_ms": [
+        -15.366383263888887,
+        26.351178611111113
+      ],
+      "extreme": 305104,
+      "assignments": 343000,
+      "two_sided_p": 0.8895160349854228,
+      "small_margin_pass": false
+    },
+    {
+      "endpoint": "build",
+      "candidate_arm": "N",
+      "control_arm": "P",
+      "pairs": 144,
+      "randomized_blocks": 24,
+      "control_median_ms": 221.4581255,
+      "candidate_median_ms": 203.35433749999999,
+      "geomean_overhead_pct": -7.120788186018228,
+      "mean_overhead_ms": -13.880385881944447,
+      "ci95_overhead_pct": [
+        -11.048494869640882,
+        -1.972524967278564
+      ],
+      "ci95_overhead_ms": [
+        -29.632467270833335,
+        6.049257909722221
+      ],
+      "extreme": 2970,
+      "assignments": 343000,
+      "two_sided_p": 0.008658892128279883,
+      "holm_p": 0.011720116618075802,
+      "direction_qualified": true
+    },
+    {
+      "endpoint": "build",
+      "candidate_arm": "P",
+      "control_arm": "B",
+      "pairs": 144,
+      "randomized_blocks": 24,
+      "control_median_ms": 200.99499550000002,
+      "candidate_median_ms": 221.4581255,
+      "geomean_overhead_pct": 8.33722213837369,
+      "mean_overhead_ms": 16.792925895833335,
+      "ci95_overhead_pct": [
+        3.422781963665615,
+        13.410959472275458
+      ],
+      "ci95_overhead_ms": [
+        1.3940902013888907,
+        32.19629095833333
+      ],
+      "extreme": 2010,
+      "assignments": 343000,
+      "two_sided_p": 0.005860058309037901,
+      "holm_p": 0.011720116618075802,
+      "direction_qualified": true
+    }
+  ],
+  "passes_baseline_overhead": false,
+  "reproduces_build_probe_effect": true
+}
