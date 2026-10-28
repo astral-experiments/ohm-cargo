@@ -3,7 +3,6 @@
 
 use crate::util::data_structures::{HashMap, HashSet};
 use cargo_util::paths::normalize_path;
-use std::collections::BTreeSet;
 use std::io::{BufWriter, Write};
 use std::path::{Path, PathBuf};
 
@@ -43,7 +42,7 @@ fn render_filename<P: AsRef<Path>>(path: P, basedir: Option<&str>) -> CargoResul
 ///
 /// [fingerprint dep-info]: super::fingerprint#fingerprint-dep-info-files
 fn add_deps_for_unit(
-    deps: &mut BTreeSet<PathBuf>,
+    deps: &mut Vec<PathBuf>,
     build_runner: &BuildRunner<'_, '_>,
     unit: &Unit,
     visited: &mut HashSet<Unit>,
@@ -61,17 +60,17 @@ fn add_deps_for_unit(
         } else {
             // Add dependencies from rustc dep-info output (stored in fingerprint directory)
             let dep_info_loc = fingerprint::dep_info_loc(build_runner, unit);
-            if let Some(paths) = fingerprint::parse_dep_info(
+            if let Some(paths) = fingerprint::dep_info_paths(
                 unit.pkg.root(),
                 &build_runner.files().build_root(unit),
                 &dep_info_loc,
-            )? {
+            ) {
                 if let Some(cache) = dep_info_cache.as_mut() {
-                    let paths: Vec<_> = paths.files.into_keys().collect();
+                    let paths: Vec<_> = paths.collect();
                     deps.extend(paths.iter().cloned());
                     cache.insert(unit.clone(), paths);
                 } else {
-                    deps.extend(paths.files.into_keys());
+                    deps.extend(paths);
                 }
             } else {
                 debug!(
@@ -106,7 +105,7 @@ fn add_deps_for_unit(
                         package_root.join(path)
                     };
 
-                    deps.insert(path);
+                    deps.push(path);
                 }
             }
         }
@@ -164,10 +163,13 @@ pub fn output_depinfo(
     }
 
     let bcx = build_runner.bcx;
-    let mut deps = BTreeSet::new();
+    let mut deps = Vec::new();
     let mut visited = HashSet::default();
     let success =
         add_deps_for_unit(&mut deps, build_runner, unit, &mut visited, dep_info_cache).is_ok();
+    // A stable sort preserves the first spelling of equivalent paths.
+    deps.sort();
+    deps.dedup();
     let basedir_string;
     let basedir = match bcx.gctx.build_config()?.dep_info_basedir.clone() {
         Some(value) => {

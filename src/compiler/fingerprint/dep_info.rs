@@ -745,12 +745,43 @@ pub fn parse_dep_info(
     build_root: &Path,
     dep_info: &Path,
 ) -> CargoResult<Option<RustcDepInfo>> {
-    let Ok(data) = paths::read_bytes(dep_info) else {
+    let Some(mut info) = read_dep_info(pkg_root, dep_info) else {
         return Ok(None);
     };
+    let mut ret = RustcDepInfo::default();
+    ret.env = std::mem::take(&mut info.env);
+    ret.observed_span_inputs = info.observer.map(|(_, complete)| complete);
+    ret.files.extend(
+        info.into_absolute_paths(pkg_root, build_root)
+            .map(|(path, checksum)| {
+                (
+                    path,
+                    checksum
+                        .and_then(|(len, text)| Checksum::from_str(&text).ok().map(|c| (len, c))),
+                )
+            }),
+    );
+    Ok(Some(ret))
+}
+
+/// Returns the filenames for Cargo's output `.d` file without constructing a checksum map.
+pub(crate) fn dep_info_paths<'a>(
+    pkg_root: &'a Path,
+    build_root: &'a Path,
+    dep_info: &Path,
+) -> Option<impl Iterator<Item = PathBuf> + 'a> {
+    let info = read_dep_info(pkg_root, dep_info)?;
+    Some(
+        info.into_absolute_paths(pkg_root, build_root)
+            .map(|(path, _)| path),
+    )
+}
+
+fn read_dep_info(pkg_root: &Path, dep_info: &Path) -> Option<EncodedDepInfo> {
+    let data = paths::read_bytes(dep_info).ok()?;
     let Some(info) = EncodedDepInfo::parse(&data) else {
         tracing::warn!("failed to parse cargo's dep-info at {:?}", dep_info);
-        return Ok(None);
+        return None;
     };
     if info.files.iter().any(|(ty, path, _)| {
         *ty == DepInfoPathType::PackageRootRelative
@@ -762,30 +793,29 @@ pub fn parse_dep_info(
     {
         // A newly symlinked package root can change where a saved ../ prefix
         // resolves. Recompile and let translation reject further seeding.
-        return Ok(None);
+        return None;
     }
-    let mut ret = RustcDepInfo::default();
-    ret.env = info.env;
-    ret.observed_span_inputs = info.observer.map(|(_, complete)| complete);
-    // Keep the missing input until the producer has emitted a verified binary dependency list.
-    let complete_marker = info
-        .observer
-        .and_then(|(index, complete)| complete.then_some(index));
-    ret.files.extend(
-        info.files
+    Some(info)
+}
+
+impl EncodedDepInfo {
+    fn into_absolute_paths<'a>(
+        self,
+        pkg_root: &'a Path,
+        build_root: &'a Path,
+    ) -> impl Iterator<Item = (PathBuf, Option<(u64, String)>)> + 'a {
+        // Keep the missing input until the producer has emitted a verified binary dependency list.
+        let complete_marker = self
+            .observer
+            .and_then(|(index, complete)| complete.then_some(index));
+        self.files
             .into_iter()
             .enumerate()
-            .filter_map(|(index, item)| (Some(index) != complete_marker).then_some(item))
-            .map(|(ty, path, checksum_info)| {
-                (
-                    make_absolute_path(ty, pkg_root, build_root, path),
-                    checksum_info.and_then(|(file_len, checksum)| {
-                        Checksum::from_str(&checksum).ok().map(|c| (file_len, c))
-                    }),
-                )
-            }),
-    );
-    Ok(Some(ret))
+            .filter_map(move |(index, (ty, path, checksum))| {
+                (Some(index) != complete_marker)
+                    .then(|| (make_absolute_path(ty, pkg_root, build_root, path), checksum))
+            })
+    }
 }
 
 fn make_absolute_path(
