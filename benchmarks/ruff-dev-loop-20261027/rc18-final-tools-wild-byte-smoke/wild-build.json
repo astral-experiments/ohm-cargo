@@ -1,0 +1,35 @@
+{
+  "args": [
+    "docker",
+    "run",
+    "--rm",
+    "-i",
+    "--platform=linux/amd64",
+    "--user",
+    "1000:1000",
+    "--read-only",
+    "--cpus=6",
+    "--memory=16g",
+    "--pids-limit=600",
+    "--tmpfs",
+    "/work:rw,exec,uid=1000,gid=1000,mode=0700,size=12g",
+    "--tmpfs",
+    "/tmp:rw,exec,mode=1777,size=1g",
+    "--workdir=/work",
+    "--env",
+    "CARGO_HOME=/work/cargo",
+    "docker.io/library/rust@sha256:8bf7188ae46ad73b801c8d405eedc13ce63a7852b562885743a56890723549a8",
+    "sh",
+    "-ceu",
+    "tar -xf -; sh build-wild.sh >&2; tar -cf - wild"
+  ],
+  "status": 0,
+  "elapsed": 173.207288980484,
+  "inputs": {
+    "source.tar.gz": "490a7660a6f94b333446c5243a211b94078900b5b1421e59205d1aa8f365eb81",
+    "source.patch": "62debcbfd9042c9b1d79bd27b9ca101c191e15e9dfd949cfc5294f395626072f",
+    "build-wild.sh": "7a1b928cd68ef078263cd639dfe657e140b1fa33722524d9d3306322d84a655e",
+    "build.stderr": "78f6cea57bbdef093fd3045dde1b1e0b19013cd3e89ca5c2120175c3a7f3e58b"
+  },
+  "binary_sha256": "9de3bdd6675f02e08d687045383c097ab0ef6027c779f153a7823153ecf8445e"
+}

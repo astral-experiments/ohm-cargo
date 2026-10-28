@@ -1,0 +1,7 @@
+# Linux package smoke with non-UTF-8 paths
+
+The x86_64 Linux Cargo executable `cfc66a7c…`, Rust driver `22abce69…` and rebuilt Wild `9de3bdd6…` ran the packaging script’s real `ohm-smoke` crate, including its procedural macro, with `TMPDIR` ending in the byte `ff`. The compile and run exited zero. The executable’s `.comment` names Wild. An exec trace records the same Wild executable linking both the procedural macro and the program. The script ran with a fresh target and build directory and the system GCC driver.
+
+Two more ordinary Cargo runs linked against C archives with the same library name. Their directories differ by `ff` versus the UTF-8 bytes `ef bf bd`. Both directories existed for both runs. The raw directory selected the implementation returning 41. Explicitly selecting the Unicode directory returned 99. Each run used a fresh target and build directory and its own final executable.
+
+`native.tar.gz` contains the executed package script, the exact extracted source/stanza, raw successful command traces, all three complete ELF executables, their `.comment` dumps and both C archives. `wild-build.json` identifies the hash of the linker and its native build inputs. `python3 -IB verify.py` recomputes the file hashes, reads the three ELF sections again, and checks the recorded command results and four genuine Wild launches. These runs cover the native Linux packaging stanza and the library lookup controls. The rest of the packaging script was outside this run.
