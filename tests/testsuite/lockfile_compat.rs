@@ -160,6 +160,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [metadata]
 "checksum baz 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)" = "checksum"
 "checksum bar 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)" = "checksum"
+"checksum bar 0.1.0 (registry+https://example.invalid/other-index)" = "checksum"
 "#,
         );
 
