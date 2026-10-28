@@ -2184,7 +2184,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
     }
 
     /// Direct dependencies for the given unit.
-    pub fn unit_deps(&self, unit: &Unit) -> &[UnitDep] {
+    pub fn unit_deps(&self, unit: &Unit) -> &'a [UnitDep] {
         &self.bcx.unit_graph[unit]
     }
 

@@ -2617,13 +2617,11 @@ fn calculate_normal(
         // recompile, they're just dependencies in the sense that they need to be
         // built. The only exception here are artifact dependencies,
         // which is an actual dependency that needs a recompile.
-        //
-        // Create Vec since mutable build_runner is needed in closure.
-        let deps = Vec::from(build_runner.unit_deps(unit));
-        let mut deps = deps
-            .into_iter()
+        let mut deps = build_runner
+            .unit_deps(unit)
+            .iter()
             .filter(|dep| !dep.unit.target.is_bin() || dep.unit.artifact.is_true())
-            .map(|dep| DepFingerprint::new(build_runner, unit, &dep))
+            .map(|dep| DepFingerprint::new(build_runner, unit, dep))
             .collect::<CargoResult<Vec<_>>>()?;
         deps.sort_by(|a, b| a.pkg_id.cmp(&b.pkg_id));
         deps
@@ -2805,10 +2803,10 @@ See https://doc.rust-lang.org/cargo/reference/build-scripts.html#rerun-if-change
         // Overridden build scripts don't need to track deps.
         vec![]
     } else {
-        // Create Vec since mutable build_runner is needed in closure.
-        let deps = Vec::from(build_runner.unit_deps(unit));
-        deps.into_iter()
-            .map(|dep| DepFingerprint::new(build_runner, unit, &dep))
+        build_runner
+            .unit_deps(unit)
+            .iter()
+            .map(|dep| DepFingerprint::new(build_runner, unit, dep))
             .collect::<CargoResult<Vec<_>>>()?
     };
 

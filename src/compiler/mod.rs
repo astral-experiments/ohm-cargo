@@ -493,8 +493,7 @@ fn compile<'gctx>(
     }
 
     // Be sure to compile all dependencies of this target as well.
-    let deps = Vec::from(build_runner.unit_deps(unit)); // Create vec due to mutable borrow.
-    for dep in deps {
+    for dep in build_runner.unit_deps(unit) {
         if build_runner
             .deferred_dev_deps
             .dependencies
