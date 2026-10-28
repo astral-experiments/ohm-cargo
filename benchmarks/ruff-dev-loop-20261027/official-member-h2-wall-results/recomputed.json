@@ -1,0 +1,45 @@
+{
+  "clocks": 24,
+  "external_callers": 26,
+  "native": [
+    {
+      "fresh": 298,
+      "phase": "final/16",
+      "queries": 0,
+      "release": "16",
+      "rustc": {
+        "full": 2
+      },
+      "system": 0,
+      "wild": 1
+    },
+    {
+      "fresh": 304,
+      "phase": "final/17",
+      "queries": 0,
+      "release": "17",
+      "rustc": {},
+      "system": 0,
+      "wild": 0
+    }
+  ],
+  "pairs": 12,
+  "results": {
+    "assignments": 924,
+    "ci95": [
+      70.87637362553933,
+      79.35333837630357
+    ],
+    "extremes": 2,
+    "faster": 12,
+    "medians_s": {
+      "16": 1.675367419,
+      "17": 0.4032392495
+    },
+    "p": 0.0021645021645021645,
+    "pairs": 12,
+    "qualifies": true,
+    "reduction_pct": 75.59484336200396
+  },
+  "trace_files": 155
+}
