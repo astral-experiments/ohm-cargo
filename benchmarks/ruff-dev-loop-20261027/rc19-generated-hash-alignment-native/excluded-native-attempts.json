@@ -1,0 +1,453 @@
+{
+  "decoded_primary_rmeta": {
+    "additional_differing_fields": {
+      "5587825": "local index 0",
+      "5587859": "local index 7",
+      "5588374": "CrateRoot.rdr_hashes.public_global_hash"
+    },
+    "decoded": {
+      "A": {
+        "global": {
+          "hash": "9950423bf6f1e5cf9b9f7a0d8fb73f91",
+          "offset": 5588374
+        },
+        "root": 5587921,
+        "tables": {
+          "expn": {
+            "bitmap": "0x5",
+            "end": 5587921,
+            "entries": {
+              "0": {
+                "hash": "33b1d6538a0aeb19d653e22d649cde82",
+                "offset": 5587888
+              },
+              "2": {
+                "hash": "d2e435401a8e6bffe9fe9eb8c21bbc00",
+                "offset": 5587905
+              }
+            },
+            "start": 5587875
+          },
+          "local": {
+            "bitmap": "0xa1",
+            "end": 5587875,
+            "entries": {
+              "0": {
+                "hash": "5c5d6efc3ff316db920540572e2fb179",
+                "offset": 5587825
+              },
+              "5": {
+                "hash": "ff06d35dc344fb88230dffc91ba8fa85",
+                "offset": 5587842
+              },
+              "7": {
+                "hash": "881f0432c3bb1b3b6cbed3f3910daa44",
+                "offset": 5587859
+              }
+            },
+            "start": 5587812
+          }
+        }
+      },
+      "B": {
+        "global": {
+          "hash": "e9dc9e98c8a0eeb3b68d712c6098c507",
+          "offset": 5588374
+        },
+        "root": 5587921,
+        "tables": {
+          "expn": {
+            "bitmap": "0x5",
+            "end": 5587921,
+            "entries": {
+              "0": {
+                "hash": "33b1d6538a0aeb19d653e22d649cde82",
+                "offset": 5587888
+              },
+              "2": {
+                "hash": "d2e435401a8e6bffe9fe9eb8c21bbc00",
+                "offset": 5587905
+              }
+            },
+            "start": 5587875
+          },
+          "local": {
+            "bitmap": "0xa1",
+            "end": 5587875,
+            "entries": {
+              "0": {
+                "hash": "9fe59aaced91e8ef9bd79477477e3d3c",
+                "offset": 5587825
+              },
+              "5": {
+                "hash": "ff06d35dc344fb88230dffc91ba8fa85",
+                "offset": 5587842
+              },
+              "7": {
+                "hash": "cba730e2705aed4f75902814ab5c3607",
+                "offset": 5587859
+              }
+            },
+            "start": 5587812
+          }
+        }
+      }
+    }
+  },
+  "early_injected_loader": {
+    "arm": "A",
+    "dirty": 177,
+    "physical_Cargo_opens": 3,
+    "preserved": true,
+    "raw_stdout_summary": "242d9b1ed06ab6ecf0dd8dbf192b14d8fa0db90f33c1b4579732e68bde123de9",
+    "work_units": 182
+  },
+  "fixed_sdk_training": {
+    "extra_stock_barrier": "recorded device/inode/mtime/ctime/size for both original physical SDK files and checked all five before and after native controls",
+    "fresh_observation": 182,
+    "why": "hardlinking the rustc and driver files changed their ctime, an input to the shared compiler namespace"
+  },
+  "independent-linux": {
+    "cold_A_to_B_field_differences": 0,
+    "early_raw_console_sha256": "2995aee3c0572a3a5ec8e0825d6d702b763df3355964d6219f225c89c3307f29",
+    "isolated_cold_root_fields": [],
+    "ordered_archive_member_attribution": [
+      {
+        "classification": "identical ordered GNU symbol-to-member offsets and strings",
+        "header": "225982ba5a881d3e086f888a6cd5c0d59d1fbf934b5a0dde84e1515fdaf07cce",
+        "offset": 8,
+        "ordinal": 0,
+        "payload": [
+          "75ee42a57db6a23229e61551cc286d6c985d8a63d4a6e1202e413b0e4435d086",
+          "75ee42a57db6a23229e61551cc286d6c985d8a63d4a6e1202e413b0e4435d086"
+        ],
+        "role": "/",
+        "size": 1140
+      },
+      {
+        "classification": "only exact corresponding CGU names",
+        "header": "a163667389635968e8130794f6c6fab8c4413fee56380b28107428dc13e9e79b",
+        "offset": 1208,
+        "ordinal": 1,
+        "payload": [
+          "96f6e2a35fee30e86b7a4963cee0b8939bc7b2d67c281d5b4f7be4bcc03f7bea",
+          "742fb09e70f645676bbf2120fd00eb5e6f0796cdc18e5daf5383058ee8b79784"
+        ],
+        "role": "//",
+        "size": 214
+      },
+      {
+        "classification": "compiler metadata",
+        "header": "7647021a89c5f5411350d886f0380fdc6a63384604aecfd3f85a8b4568b8f871",
+        "offset": 1482,
+        "ordinal": 2,
+        "payload": [
+          "dc53f09e75421a0c22ff069255a631260d319572fa7a7c703c66b8045c3b8a97",
+          "dc53f09e75421a0c22ff069255a631260d319572fa7a7c703c66b8045c3b8a97"
+        ],
+        "role": "lib.rmeta",
+        "size": 5588968
+      },
+      {
+        "classification": "only exact corresponding CGU names",
+        "header": "a45bb12cb53497f19a0f30dca2ec5960e93f017f7533e6f867a5cd00aa32df22",
+        "offset": 5590510,
+        "ordinal": 3,
+        "payload": [
+          "b92baf6ba35861c0eeb2557606371730628e716112e8409c35c2bc94494b0d26",
+          "a776663bcd824f4d19b138bfa3c53cb4da413a60833ad8846c32a2bb8ca0fe98"
+        ],
+        "role": "lib.rmeta-link",
+        "size": 800
+      },
+      {
+        "classification": "identical ordered codegen member",
+        "header": "450d1f5ee459116ac9ea9435770ad8c489f9d71fdfa67fe957c9ec944d00886a",
+        "offset": 5591370,
+        "ordinal": 4,
+        "payload": [
+          "124bb4ace6953d07b6b5357b7d17405563bae4d715eaeb4dd54e8ae04793a751",
+          "124bb4ace6953d07b6b5357b7d17405563bae4d715eaeb4dd54e8ae04793a751"
+        ],
+        "role": "CGU",
+        "size": 12360
+      },
+      {
+        "classification": "identical ordered codegen member",
+        "header": "d2e6e3b486aa75f68ae5116f6d05a1cc82d13bb4edcab61553fe186ceca3c93a",
+        "offset": 5603790,
+        "ordinal": 5,
+        "payload": [
+          "43aec815960ff5e8efca451b40e8addb2ae55cc6cc3f6f365d9135c1faa37a69",
+          "43aec815960ff5e8efca451b40e8addb2ae55cc6cc3f6f365d9135c1faa37a69"
+        ],
+        "role": "CGU",
+        "size": 5592064
+      },
+      {
+        "classification": "identical ordered codegen member",
+        "header": "f74aafbec36445ce0696d0c5408f7f0e79f427fdd3153893e2162b51dd73b003",
+        "offset": 11195914,
+        "ordinal": 6,
+        "payload": [
+          "ef6f4d92aac572cd825a2bb3612058d2668039a987a45ca7e47a26e61b6c0050",
+          "ef6f4d92aac572cd825a2bb3612058d2668039a987a45ca7e47a26e61b6c0050"
+        ],
+        "role": "CGU",
+        "size": 4352
+      }
+    ],
+    "original_archive_member_names": {
+      "ty_vendored-50708ce5ccb0d8f8.258nm57oda6qifgh1tlstbkth.0ay5pv5.rcgu.o": "ty_vendored-50708ce5ccb0d8f8.258nm57oda6qifgh1tlstbkth.0769u4t.rcgu.o",
+      "ty_vendored-50708ce5ccb0d8f8.2riztjkcf2rh4es8lj16bh7u0.0ay5pv5.rcgu.o": "ty_vendored-50708ce5ccb0d8f8.2riztjkcf2rh4es8lj16bh7u0.0769u4t.rcgu.o",
+      "ty_vendored-50708ce5ccb0d8f8.36lglrem2rofodz4mdft0y62f.0ay5pv5.rcgu.o": "ty_vendored-50708ce5ccb0d8f8.36lglrem2rofodz4mdft0y62f.0769u4t.rcgu.o"
+    },
+    "raw_metadata": {
+      "lib.rmeta": {
+        "attributed": 0,
+        "sha256": [
+          "dc53f09e75421a0c22ff069255a631260d319572fa7a7c703c66b8045c3b8a97",
+          "dc53f09e75421a0c22ff069255a631260d319572fa7a7c703c66b8045c3b8a97"
+        ],
+        "sizes": [
+          5588968,
+          5588968
+        ],
+        "total_differing_bytes": 0
+      },
+      "standalone.rmeta": {
+        "attributed": 0,
+        "sha256": [
+          "8ff5ea39ba34594974618b23c69cb40c97c648a896338a97f3f0ed1a25cc506b",
+          "8ff5ea39ba34594974618b23c69cb40c97c648a896338a97f3f0ed1a25cc506b"
+        ],
+        "sizes": [
+          5588403,
+          5588403
+        ],
+        "total_differing_bytes": 0
+      }
+    },
+    "two_failed_pre_proofs": [
+      "12888acacb3266ca43e0635bd36e98c1f69c0532f191217996269554c9617e05",
+      "0b6d9d8f3848deefdf4523feb6fc32b1c7a30ff1b4451c4f702e1eb39390ccfe"
+    ],
+    "wrong-namespace-control": "2b1e48844af07e006e4d3771754bd9e86e84097c7afb71e32d1d5ccc9db92c17"
+  },
+  "primary-linux": {
+    "cold_A_to_B_field_differences": 272,
+    "early_raw_console_sha256": "9e5850574c0afaa18330e7c63b4d10cd4eb03f19394c83eaccc79ceb2bc21fff",
+    "isolated_cold_root_fields": [
+      [
+        "private hash [hash] stable_crate_id StableCrateId(13624915807476902652)",
+        "dceb970f2aaa4f6fb1cf5e0c6c7f73cc",
+        "5e6fcf32a218126a1547423bd5015395"
+      ],
+      [
+        "public_hash [hash]",
+        "b34b98b48687f8d84caa8d6379419e3f",
+        "feb65062e378e65e71f131cc7cabebe7"
+      ],
+      [
+        "20 ruff_db-22d4e805a0183c4b hash [hash] host_hash None kind Unconditional public",
+        "db6896c9f6bbb74c101a872b7a0bf52b",
+        "45b1e8e8dca393b02b9c42a2c967de5d"
+      ],
+      [
+        "21 ruff_python_ast-e4200247248a1c2d hash [hash] host_hash None kind Unconditional public",
+        "ab8a72c707e2d8aa76de6fe1be23b0b2",
+        "3856a086e8e1de6af3cd6bef7cdbd70f"
+      ],
+      [
+        "22 ruff_text_size-9cf925c5630771d0 hash [hash] host_hash None kind Unconditional public",
+        "fb76438539c9549858b7fb0be10a5913",
+        "5bdc609582dfe2095a1a44219c13802a"
+      ],
+      [
+        "26 get_size2-df92e82b50772a1b hash [hash] host_hash None kind Unconditional public",
+        "44094bb6bc4fba0816b3f256e4d348b3",
+        "1bdaef140b882eaa742c1fdaecc39214"
+      ],
+      [
+        "27 get_size_derive2-9e10e66d08bdf462 hash [hash] host_hash None kind MacrosOnly public",
+        "5502f1d40cb162ef4f253a491732718a",
+        "d16b8b5c4ae1dff0465de4e2f67c334d"
+      ],
+      [
+        "44 ruff_python_trivia-312363768f79f2c7 hash [hash] host_hash None kind Unconditional public",
+        "3914c2866145542b37dd0b5d94b3c8a1",
+        "c734d6f9ffc7d971b772820e088567f5"
+      ],
+      [
+        "47 ruff_source_file-ec3003d79ff67547 hash [hash] host_hash None kind Unconditional public",
+        "7561f706a380bd7f7f489ad4a91ade3f",
+        "790c9ae436c932c96504516d30fc6a34"
+      ],
+      [
+        "54 char_str-a679814016010456 hash [hash] host_hash None kind Unconditional public",
+        "a055621a7597ba3f1da14e165384bb23",
+        "569f1aba9cfb5213601f52653b3f1a0f"
+      ],
+      [
+        "63 ruff_diagnostics-8ea7d2ded78b640f hash [hash] host_hash None kind Unconditional public",
+        "f371b385e2e50a84b989781c1a7588c0",
+        "457ef1c926be79f5c78525146f4f8f1d"
+      ],
+      [
+        "67 ruff_notebook-bd423eea246947f0 hash [hash] host_hash None kind Unconditional public",
+        "dd5939fc54b111f3fd592b7f50353dc9",
+        "401a741c6fe85bae6309a8ccfbb50bba"
+      ],
+      [
+        "102 ruff_python_parser-ba13e51ab72d08c4 hash [hash] host_hash None kind Unconditional public",
+        "2be664e54772a87c7a808872fe26a22b",
+        "22ff04f3f440efe14da31e627d9f54e3"
+      ],
+      [
+        "117 ruff_memory_usage-b8e2d8153bdfa0e6 hash [hash] host_hash None kind Unconditional public",
+        "a50c4bcc8659b2cec015075fbc2493a9",
+        "e4dc9c41522de1b0732b9725b60b9ea4"
+      ]
+    ],
+    "ordered_archive_member_attribution": [
+      {
+        "classification": "identical ordered GNU symbol-to-member offsets and strings",
+        "header": "225982ba5a881d3e086f888a6cd5c0d59d1fbf934b5a0dde84e1515fdaf07cce",
+        "offset": 8,
+        "ordinal": 0,
+        "payload": [
+          "75ee42a57db6a23229e61551cc286d6c985d8a63d4a6e1202e413b0e4435d086",
+          "75ee42a57db6a23229e61551cc286d6c985d8a63d4a6e1202e413b0e4435d086"
+        ],
+        "role": "/",
+        "size": 1140
+      },
+      {
+        "classification": "only exact corresponding CGU names",
+        "header": "a163667389635968e8130794f6c6fab8c4413fee56380b28107428dc13e9e79b",
+        "offset": 1208,
+        "ordinal": 1,
+        "payload": [
+          "6b914c7479be94caf628377bc6653e4909962adb98bca16d80294c0f7edc48f8",
+          "ebf68149beffb1a72bf06829c7f3e7bbf5342ec5992a4fd780c0d59daa218c67"
+        ],
+        "role": "//",
+        "size": 214
+      },
+      {
+        "classification": "compiler metadata",
+        "header": "7647021a89c5f5411350d886f0380fdc6a63384604aecfd3f85a8b4568b8f871",
+        "offset": 1482,
+        "ordinal": 2,
+        "payload": [
+          "9eca955c6be6d7245eb9f71222c8e1f495dc3437b4f6c805465478015d516282",
+          "a97ba49a3c60c4572c019ef9ee6abb2b80081c9bccbbd092883351648ca043a8"
+        ],
+        "role": "lib.rmeta",
+        "size": 5588968
+      },
+      {
+        "classification": "only exact corresponding CGU names",
+        "header": "a45bb12cb53497f19a0f30dca2ec5960e93f017f7533e6f867a5cd00aa32df22",
+        "offset": 5590510,
+        "ordinal": 3,
+        "payload": [
+          "cd7525d2497bf51baad349874a938ea97ac6a6f01a2f0047688311418d7b39f6",
+          "6f93eb64c0b2cc3a75715eb9f4fcf4864248966c3263838ed4ed47b34176ecb2"
+        ],
+        "role": "lib.rmeta-link",
+        "size": 800
+      },
+      {
+        "classification": "identical ordered codegen member",
+        "header": "450d1f5ee459116ac9ea9435770ad8c489f9d71fdfa67fe957c9ec944d00886a",
+        "offset": 5591370,
+        "ordinal": 4,
+        "payload": [
+          "124bb4ace6953d07b6b5357b7d17405563bae4d715eaeb4dd54e8ae04793a751",
+          "124bb4ace6953d07b6b5357b7d17405563bae4d715eaeb4dd54e8ae04793a751"
+        ],
+        "role": "CGU",
+        "size": 12360
+      },
+      {
+        "classification": "identical ordered codegen member",
+        "header": "d2e6e3b486aa75f68ae5116f6d05a1cc82d13bb4edcab61553fe186ceca3c93a",
+        "offset": 5603790,
+        "ordinal": 5,
+        "payload": [
+          "43aec815960ff5e8efca451b40e8addb2ae55cc6cc3f6f365d9135c1faa37a69",
+          "43aec815960ff5e8efca451b40e8addb2ae55cc6cc3f6f365d9135c1faa37a69"
+        ],
+        "role": "CGU",
+        "size": 5592064
+      },
+      {
+        "classification": "identical ordered codegen member",
+        "header": "f74aafbec36445ce0696d0c5408f7f0e79f427fdd3153893e2162b51dd73b003",
+        "offset": 11195914,
+        "ordinal": 6,
+        "payload": [
+          "ef6f4d92aac572cd825a2bb3612058d2668039a987a45ca7e47a26e61b6c0050",
+          "ef6f4d92aac572cd825a2bb3612058d2668039a987a45ca7e47a26e61b6c0050"
+        ],
+        "role": "CGU",
+        "size": 4352
+      }
+    ],
+    "original_archive_member_names": {
+      "ty_vendored-50708ce5ccb0d8f8.258nm57oda6qifgh1tlstbkth.1qyp1yh.rcgu.o": "ty_vendored-50708ce5ccb0d8f8.258nm57oda6qifgh1tlstbkth.1y72jav.rcgu.o",
+      "ty_vendored-50708ce5ccb0d8f8.2riztjkcf2rh4es8lj16bh7u0.1qyp1yh.rcgu.o": "ty_vendored-50708ce5ccb0d8f8.2riztjkcf2rh4es8lj16bh7u0.1y72jav.rcgu.o",
+      "ty_vendored-50708ce5ccb0d8f8.36lglrem2rofodz4mdft0y62f.1qyp1yh.rcgu.o": "ty_vendored-50708ce5ccb0d8f8.36lglrem2rofodz4mdft0y62f.1y72jav.rcgu.o"
+    },
+    "raw_metadata": {
+      "lib.rmeta": {
+        "attributed": 224,
+        "sha256": [
+          "9eca955c6be6d7245eb9f71222c8e1f495dc3437b4f6c805465478015d516282",
+          "a97ba49a3c60c4572c019ef9ee6abb2b80081c9bccbbd092883351648ca043a8"
+        ],
+        "sizes": [
+          5588968,
+          5588968
+        ],
+        "total_differing_bytes": 272
+      },
+      "standalone.rmeta": {
+        "attributed": 224,
+        "sha256": [
+          "f4f63dfe16013ddfe1b7bf0f12587afa52ca975bf02458577be8f5992e09b872",
+          "084015afaf79eba4372593adae11ffed6d27ed1349aab1a16af3a61c1ee010c3"
+        ],
+        "sizes": [
+          5588403,
+          5588403
+        ],
+        "total_differing_bytes": 272
+      }
+    },
+    "two_failed_pre_proofs": [
+      "12888acacb3266ca43e0635bd36e98c1f69c0532f191217996269554c9617e05",
+      "685365a280ce33786a5fbea406fe7b90c139e84fb88e1624e75b88eab2e4d2dc"
+    ],
+    "wrong-namespace-control": "2b1e48844af07e006e4d3771754bd9e86e84097c7afb71e32d1d5ccc9db92c17"
+  },
+  "retained_control_states": {
+    "initial": {
+      "archive_sha256": "416bd1fd6873c3bd1ba62e148aaf297f0d94bc832c7279724f37a3c5c9b57ec5",
+      "bytes": 1097344688,
+      "entries": 78555,
+      "free": 14037925888,
+      "full_tar_compare": true,
+      "qualified": true
+    },
+    "untrusted-home": {
+      "archive_sha256": "e61c39f10e31fea35d052beb894fdd2eb0477f0ae4a79ea1c5a2e87bf836720e",
+      "bytes": 337223840,
+      "entries": 25205,
+      "free": 11748634624,
+      "full_tar_compare": true,
+      "qualified": true
+    }
+  }
+}

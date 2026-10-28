@@ -1,0 +1,17 @@
+{
+  "change": "Two published preparation helpers take the expected hostnames as explicit environment inputs. The functional checks, data, numerical runner and host access comparison are unchanged.",
+  "changed_preparation_sources": {
+    "reproduce/build-product-v4.py": {
+      "original_sha256": "14c284a7fd9d6773ed57aab19a8ddeabb44d8b8076b06ac8c8dcb6714ed7d4c0",
+      "portable_sha256": "6bc9b88509ef2221588b858a127cc24590ec4097f88ffce04f99c4fb240ae23e",
+      "required_environment": "OHM_BENCH_PRIMARY_HOST"
+    },
+    "reproduce/reader-retain.py": {
+      "original_sha256": "798626e973df43615ef53545c427518ee849b47b7f9edec9a0b8a9d6bfde844f",
+      "portable_sha256": "891a3d4e4bbc43d861f658504c1fc81c9cf43775ce0bfad4e38ff0fc0d351625",
+      "required_environment": "OHM_BENCH_INDEPENDENT_HOST"
+    }
+  },
+  "raw_native_manifest_sha256": "a603972c612103939d3cb305260873634c32d8cf3210fae0c5e3698ea4ea31f7",
+  "untouched_wall_worker_sha256": "bd1e5f5f4b5d9ddc3ee51876f9d3feb1a166ec830f5e4043e0c70b1fdedf93ce"
+}

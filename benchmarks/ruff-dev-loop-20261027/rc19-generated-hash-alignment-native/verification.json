@@ -1,0 +1,27 @@
+{
+  "file_digest_cases": 155,
+  "hosts": {
+    "independent-linux": {
+      "cache_hits": 119,
+      "cohorts": 2,
+      "complete_files": 330,
+      "counterfactual_file_controls": 22,
+      "ordinary_warm": 182,
+      "physical_crossovers": 4,
+      "preflight": "38c3d8e271d0cebaf36c93ad4411fc854bcbe6c1578fe46bb137bc51d6656e2e",
+      "raw_different_bytes_cold_A_B": 271
+    },
+    "primary-linux": {
+      "cache_hits": 119,
+      "cohorts": 4,
+      "complete_files": 330,
+      "counterfactual_file_controls": 22,
+      "ordinary_warm": 182,
+      "physical_crossovers": 4,
+      "preflight": "599e27a1d9bc0c4e0806ce3891506eca8bc3e0bdcfb03bc9a8f29625004b3dd2",
+      "raw_different_bytes_cold_A_B": 272
+    }
+  },
+  "native_gates_passed": true,
+  "whole_command_timing": "none"
+}

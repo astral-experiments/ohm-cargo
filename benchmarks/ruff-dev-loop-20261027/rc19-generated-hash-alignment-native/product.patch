@@ -1,0 +1,15 @@
+diff --git a/src/compiler/fingerprint/worktree.rs b/src/compiler/fingerprint/worktree.rs
+index 364e474712..be249bf3dd 100644
+--- a/src/compiler/fingerprint/worktree.rs
++++ b/src/compiler/fingerprint/worktree.rs
+@@ -150,7 +150,9 @@ fn hash_file(hasher: &mut blake3::Hasher, path: &Path) -> CargoResult<()> {
+     hasher.update(&file.metadata()?.len().to_le_bytes());
+     let mut buffer = [0_u8; 16384];
+     loop {
+-        let len = file.read(&mut buffer)?;
++        // Align full reads to BLAKE3 subtrees so it can hash their chunks with SIMD.
++        let read_len = buffer.len() - (hasher.count() as usize % buffer.len());
++        let len = file.read(&mut buffer[..read_len])?;
+         if len == 0 {
+             break;
+         }
