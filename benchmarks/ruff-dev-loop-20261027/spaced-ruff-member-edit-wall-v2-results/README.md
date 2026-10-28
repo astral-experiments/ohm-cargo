@@ -1,0 +1,18 @@
+# Ordinary Ruff builds after a real typeshed edit
+
+Both source-built releases ran `cargo +ohm build --locked --offline -j4` in a member of the pinned Ruff workspace. Each case used its own private trained state with a space in the target path and an unspaced SDK. On `ty_wasm`, the study alternated the seven-line historical typeshed edit and its exact restoration. Median elapsed time and paired percentage reductions answer different questions. A negative reduction means the corrected arm took longer.
+
+| Ordinary build | Canceled -17 sources | Corrected -17 sources | Paired reduction (95% interval) | Corrected faster | Holm p |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Historical edit or restoration, ty_wasm | 3.606 s | 3.775 s | -6.16% (-10.78% to -1.89%) | 9/24 | 0.0142145 |
+| First unchanged after the edit, ty_wasm | 1.948 s | 0.399 s | 76.61% (73.51% to 79.23%) | 24/24 | 9.37014e-06 |
+| Edit plus first unchanged, ty_wasm | 5.462 s | 4.286 s | 22.46% (19.38% to 25.74%) | 24/24 | 9.37014e-06 |
+| Warm unchanged, ty_project | 0.631 s | 0.383 s | 34.41% (24.15% to 43.20%) | 21/24 | 4.73345e-05 |
+
+On the genuine change both subjects compiled `ty_vendored` and `ty_wasm` and ran one real Wild link. The corrected edit alone took 6.16% longer, with a 95% interval from 1.89% to 10.78% longer. On the subsequent unchanged compile, the baseline repeated both full compiler jobs and the link, while the corrected source kept all 304 units fresh. On the separate ordinary `ty_project` build the old repeat ran one extra library compiler and the corrected repeat kept all 275 units fresh. These process counts came from the separate native qualification. The timings use plain Cargo without a tracer, wrapper or JSON.
+
+All 144 Cargo clocks and 112 freshly linked public-caller checks passed. The actual ZIP and library callers returned the current original or historical source bytes. All five within-arm outputs passed their per-source native contracts. During each corrected unchanged command every output retained its inode, size, modification and change times and device. Original archive bytes and names were kept and the archive reader checks all ordered codegen contents, ordinary metadata and indexed providers. Raw rlib files vary when rustc creates new temporary object names. Across arms the cdylib, ZIP and actual caller match; the other four raw products differ between these separately built toolchains. This study measures ordinary Linux builds with the named path condition.
+
+The 24 adjacent pairs for each endpoint were balanced separately within the two edit directions. Statistics use paired geometric effects, the original 100,000 bootstrap draws and exact balanced order randomization over 853,776 assignments on each edit-related endpoint or 2,704,156 on `ty_project`. The four p-values have Holm correction. Every observation entered the calculation, including the significant edited-build regression. Run `python3 -B verify.py` to check all native records and independently regenerate `recomputed.json`.
+
+[Original schedule](https://github.com/astral-sh/ohm-cargo/tree/1d9e079142321b84b8b14253207b435d0a56346f/benchmarks/ruff-dev-loop-20261027/spaced-ruff-member-edit-wall-design) · [Frozen timing worker](https://github.com/astral-sh/ohm-cargo/tree/e00d50660296b2eb08b2d842c034072cc51d723c/benchmarks/ruff-dev-loop-20261027/spaced-ruff-member-edit-wall-plan-v2) · [Native compiler, linker and caller comparison](https://github.com/astral-sh/ohm-cargo/tree/1e5f005cb1156cb441a856e363990882b11e50a5/benchmarks/ruff-dev-loop-20261027/spaced-ruff-member-build-matched-native-results)

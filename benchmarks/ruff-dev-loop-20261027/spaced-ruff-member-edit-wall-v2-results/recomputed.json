@@ -1,0 +1,82 @@
+{
+  "external_callers": 112,
+  "results": {
+    "edit": {
+      "assignments": 853776,
+      "ci95": [
+        -10.776172154243357,
+        -1.885884140488518
+      ],
+      "extremes": 12136,
+      "holm": 0.014214501227488241,
+      "material_regression": true,
+      "medians_s": {
+        "b": 3.6063260135000004,
+        "c": 3.7754582855
+      },
+      "n": 24,
+      "p": 0.014214501227488241,
+      "pairs_faster": 9,
+      "qualifies": false,
+      "reduction_pct": -6.161369926535376
+    },
+    "edit_plus_first": {
+      "assignments": 853776,
+      "ci95": [
+        19.379702407149807,
+        25.744532214057
+      ],
+      "extremes": 2,
+      "holm": 9.37013924026911e-06,
+      "material_regression": false,
+      "medians_s": {
+        "b": 5.462450395,
+        "c": 4.286230866
+      },
+      "n": 24,
+      "p": 2.3425348100672776e-06,
+      "pairs_faster": 24,
+      "qualifies": true,
+      "reduction_pct": 22.456137121544973
+    },
+    "first_unchanged": {
+      "assignments": 853776,
+      "ci95": [
+        73.50594076206447,
+        79.23007361300353
+      ],
+      "extremes": 2,
+      "holm": 9.37013924026911e-06,
+      "material_regression": false,
+      "medians_s": {
+        "b": 1.9479093375,
+        "c": 0.39927246800000005
+      },
+      "n": 24,
+      "p": 2.3425348100672776e-06,
+      "pairs_faster": 24,
+      "qualifies": true,
+      "reduction_pct": 76.61182040469315
+    },
+    "project_unchanged": {
+      "assignments": 2704156,
+      "ci95": [
+        24.15101799740032,
+        43.1981480360283
+      ],
+      "extremes": 64,
+      "holm": 4.7334547267243456e-05,
+      "material_regression": false,
+      "medians_s": {
+        "b": 0.631440789,
+        "c": 0.38292231050000003
+      },
+      "n": 24,
+      "p": 2.3667273633621728e-05,
+      "pairs_faster": 21,
+      "qualifies": true,
+      "reduction_pct": 34.413781512247844
+    }
+  },
+  "scored_commands": 144
+}
