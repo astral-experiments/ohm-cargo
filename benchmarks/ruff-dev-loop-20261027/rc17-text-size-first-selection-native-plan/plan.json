@@ -1,0 +1,62 @@
+{
+  "after_sha256": "f61f9d66ec9dcc29bac8067dd4d5910db6b7e52009ef7cc976ac0478c6800c52",
+  "before_sha256": "097615fdf261460b1c30900d535bb5bde4ab709a402d4850b49820a6923b0771",
+  "cargo": {
+    "B": "0aa04df8023984b83ef676d1494d43e482472e1b2bccdb82a4d0bd390578a322",
+    "C": "813ba8a480bc6047d2effde2edff5fe5990781904ff453815ddc71aeb5e0e754"
+  },
+  "command": [
+    "cargo",
+    "+ohm",
+    "test",
+    "-p",
+    "ruff_text_size",
+    "--no-run",
+    "--locked",
+    "--offline",
+    "-j8"
+  ],
+  "cpus": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "decision": "In both independent ordinary selections per arm require at least two fewer real full test compiler executions and at least two fewer true Wild processes. Require matching Cargo events, native outcomes, complete per-harness listings, raw ELF SHA-256 per output and the same package roster. The immediate repeat must launch zero full compilers or links. Otherwise close this structural screen without a new timing claim.",
+  "expected_harnesses": [
+    "auto_traits",
+    "constructors",
+    "indexing",
+    "main"
+  ],
+  "historical": "61a49c89eb809a238b01616b0a50a0f785702891",
+  "host": "charlie-ohm-relink-b-1024",
+  "jobs": 8,
+  "order": [
+    "B",
+    "C",
+    "C",
+    "B"
+  ],
+  "parent": "da5eb850870c97a256837a217223e1da492e9f88",
+  "patch_sha256": "fbab3072d5ca261360811fb5d410d94c00a8db9815a772e7dc50d9d128f3af46",
+  "path": "crates/ruff_text_size/src/range.rs",
+  "preparation": "Build the older range.rs library, apply the entire historical API addition, and finish building the edited library before first selecting default-feature package tests.",
+  "ruff": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "sdk": {
+    "cargo": "4e4065390403afbf4fb77b2f41fbc21c59afe3dda2337a5bbe29fda29a47dbb3",
+    "driver": "618ebac16b7d4ec01a2af89661d25b8f26ff347edbb69c6dcaa78f10115914a7",
+    "rustc": "7ec5263869aed2fc9272ea7212aabbe7b272a4685f1b79af75c123daff09c02c",
+    "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+  },
+  "source_ref": {
+    "B": "9a0170863f70d9a88a8b1d1f4c4e1fded4736a9c",
+    "C": "62de9a49872b6369d6246eb1c63603daf473df9a"
+  },
+  "stage": "No wall or instruction clocks in this experiment. Tests are listed only for verification.",
+  "tree": "62d3f106c5e41f6022847f26ff8c7dc00139f7b1"
+}
