@@ -1,0 +1,64 @@
+{
+  "early_shadow_exit": 83,
+  "exact_ordinary_receipts_local_archive_sha256": "ca59891f0d42986fb119e00feae2a83dbe4f20f3246c4c1db7f638d02d533ee2",
+  "exercise_sha256": "12b8b44712c8f3f9ed8afb993782963bda4c2dbf7196532e7bb2cbc75784105a",
+  "invalid_shadow_rc": 1,
+  "kernel_reads_sha256": "c04cc1ccede33636fcacc7012cb39c9dd8b109c91f7dbf5731a9e69d301150c2",
+  "native_edits_exit": 0,
+  "native_phases": [
+    [
+      "input-layout",
+      0
+    ],
+    [
+      "two-genuine-sealed-links",
+      0
+    ],
+    [
+      "real-syscalls",
+      0
+    ],
+    [
+      "catalog",
+      0
+    ],
+    [
+      "qa-controls",
+      0
+    ]
+  ],
+  "outcome": {
+    "before_hit": true,
+    "during_hit": false,
+    "expected_original": "be6b9375b66036f898876d7f55d745c7ea11d028f7b106c31a273c26e2cdcef7",
+    "genuine_edit_rlib": "a39876f68f6758fb490d062efbb98771a4c8fa3a6713315d17273636042837d1",
+    "genuine_edit_rlib_size": 33177046,
+    "independent_complete_edited_sha": "d76ef359714fc4339f053598978ec5464829f7d09adb24cdfd6defcae3fb56e8",
+    "native_fallback_listing": {
+      "exit": 0,
+      "listing": "76d24b892727ff181fdf019636ef5e928d741eb8df4f58f06dcc626d0bf67c52",
+      "stdout_size": 12537,
+      "tests": 200
+    },
+    "native_fallback_sha": "d76ef359714fc4339f053598978ec5464829f7d09adb24cdfd6defcae3fb56e8",
+    "original_rlib": "ec6e5ab51cbc5c07782c08e76e15bf07f913c80f18cfee8a167a68d0838b6f5b",
+    "original_rlib_size": 33177182,
+    "restored": "be6b9375b66036f898876d7f55d745c7ea11d028f7b106c31a273c26e2cdcef7",
+    "series": "change only one actual 32MB Rust library to the saved authenticated library from the genuine Ruff notebook edit, leave previous 394 operand names and target CGUs intact, keep original library mtime; separate from complete-workspace edited outputs",
+    "training": "050bdcd9fff94846fd4c69f1212c8b3c66eb412cbdbec8e81138290a57ce25f0"
+  },
+  "public_archive_sha256": "629abab6a87c84bb4d910549ca96a31e437e3dc9de3039fedcbb7b50d198a5e8",
+  "raw_outcome_sha256": "9a88131a6f19cd657b8c7412ba1a4d9570e716fcf6ab7fcbb30ebb2a9073e469",
+  "source_formats": {
+    "ET_REL": 10432,
+    "archive": 269
+  },
+  "source_manifest": "d1f849ced47c8a109dbe9f7c26fd6dcdda8724c022bb7b83ef27ccaca692071b",
+  "true_sealed_links": {
+    "output_blake3": "892631750711fe47d309d4016b3a3d8380a33327562bc172835af62804ee6a77",
+    "output_sha256": "be6b9375b66036f898876d7f55d745c7ea11d028f7b106c31a273c26e2cdcef7",
+    "repeat_training_sha256": "3fb748048b6eba521ed1afb99942f2af5e72ee803cf343378b26259b29457d17",
+    "root_output_equal": true,
+    "training_sha256": "8aba98f14411c7208080d491ba8a68dd0e93be60a8c66124f5a7241d62245cec"
+  }
+}
