@@ -698,13 +698,13 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
             }
             paths::create_dir_all(&namespace)?;
             if denied {
-                paths::write_atomic(
+                paths::write_atomic_no_follow(
                     &namespace.join(crate::compiler::OHM_WORKTREE_SEED_DENY_MARKER),
                     b"untrusted compile-time inputs\n",
                 )?;
             }
             if prepared {
-                paths::write_atomic(&marker, b"5\n")?;
+                paths::write_atomic_no_follow(&marker, b"5\n")?;
             }
         }
         Ok(())

@@ -444,7 +444,7 @@ fn untracked_cargo_path_env(key: &str) -> bool {
 }
 
 fn deny_worktree_seed(namespace: &Path, reason: &str) -> CargoResult<()> {
-    paths::write_atomic(
+    paths::write_atomic_no_follow(
         namespace.join(crate::compiler::OHM_WORKTREE_SEED_DENY_MARKER),
         reason,
     )?;
