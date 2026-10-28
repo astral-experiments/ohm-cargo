@@ -288,6 +288,9 @@ impl EncodedDepInfo {
 ///
 /// The `env_config` argument is a set of environment variables that are
 /// defined in `[env]` table of the `config.toml`.
+///
+/// `worktree_seed_namespace` preserves lexical source paths and manifest-path
+/// environment inputs when preparing mutable artifacts for another checkout.
 pub fn translate_dep_info(
     rustc_dep_info: &Path,
     cargo_dep_info: &Path,
@@ -297,13 +300,41 @@ pub fn translate_dep_info(
     rustc_cmd: &ProcessBuilder,
     allow_package: bool,
     env_config: &Arc<HashMap<String, OsString>>,
+    worktree_seed_namespace: Option<&Path>,
 ) -> CargoResult<()> {
     let depinfo = parse_rustc_dep_info(rustc_dep_info)?;
 
     let build_root = crate::util::try_canonicalize(build_root)?;
+    let original_pkg_root = pkg_root;
     let pkg_root = crate::util::try_canonicalize(pkg_root)?;
     let mut on_disk_info = EncodedDepInfo::default();
     on_disk_info.env = depinfo.env;
+
+    let cwd_from_package =
+        if let Some(namespace) = worktree_seed_namespace.filter(|_| allow_package) {
+            let cwd = crate::util::try_canonicalize(rustc_cwd)?;
+            let relative = (cwd == paths::normalize_path(rustc_cwd)
+                && pkg_root == paths::normalize_path(original_pkg_root))
+            .then(|| pathdiff::diff_paths(&cwd, &pkg_root))
+            .flatten();
+            if relative.is_none() {
+                deny_worktree_seed(namespace, "symlinked or unrelated compiler roots\n")?;
+            }
+            relative
+        } else {
+            None
+        };
+    if let Some(namespace) = worktree_seed_namespace
+        && on_disk_info
+            .env
+            .iter()
+            .any(|(key, _)| rustc_cmd.get_envs().contains_key(key) && untracked_cargo_path_env(key))
+    {
+        // These values identify unit-specific outputs, which cannot be
+        // reconstructed from Package alone during freshness checking. Keep
+        // ordinary local behavior but never import their compiled consumers.
+        deny_worktree_seed(namespace, "untracked Cargo output path in compiled code\n")?;
+    }
 
     // This is a bit of a tricky statement, but here we're *removing* the
     // dependency on environment variables that were defined specifically for
@@ -337,12 +368,28 @@ pub fn translate_dep_info(
     // For cargo#13280, We trace env vars that are defined in the `[env]` config table.
     on_disk_info.env.retain(|(key, _)| {
         ManifestMetadata::should_track(key)
+            || (worktree_seed_namespace.is_some()
+                && matches!(key.as_str(), "CARGO_MANIFEST_DIR" | "CARGO_MANIFEST_PATH"))
             || env_config.contains_key(key)
             || !rustc_cmd.get_envs().contains_key(key)
             || key == CARGO_ENV
     });
 
-    let serialize_path = |file| {
+    let serialize_path = |file: PathBuf| {
+        if let Some(cwd_from_package) = &cwd_from_package {
+            // Preserve what rustc actually opened. Canonicalizing loses a
+            // relative symlink's spelling; absolutizing ../ inputs binds a
+            // sibling source file to the donor. An originally absolute input
+            // may intentionally refer to that donor and must remain absolute.
+            return Some(if file.is_absolute() {
+                (DepInfoPathType::BuildRootRelative, file)
+            } else {
+                (
+                    DepInfoPathType::PackageRootRelative,
+                    cwd_from_package.join(file),
+                )
+            });
+        }
         // The path may be absolute or relative, canonical or not. Make sure
         // it is canonicalized so we are comparing the same kinds of paths.
         let abs_file = rustc_cwd.join(file);
@@ -379,6 +426,28 @@ pub fn translate_dep_info(
         ));
     }
     paths::write(cargo_dep_info, on_disk_info.serialize()?)?;
+    Ok(())
+}
+
+/// Cargo supplies these paths from the current unit, not from package metadata.
+fn untracked_cargo_path_env(key: &str) -> bool {
+    key == paths::dylib_path_envvar()
+        || (key.starts_with("CARGO_")
+            && !matches!(key, "CARGO_MANIFEST_DIR" | "CARGO_MANIFEST_PATH")
+            && (key.starts_with("CARGO_BIN_EXE_")
+                || key == "CARGO_TARGET_TMPDIR"
+                || key.ends_with("_PATH")
+                || key.ends_with("_DIR")
+                || key.ends_with("_FILE")
+                || key.contains("_DIR_")
+                || key.contains("_FILE_")))
+}
+
+fn deny_worktree_seed(namespace: &Path, reason: &str) -> CargoResult<()> {
+    paths::write_atomic_no_follow(
+        namespace.join(crate::compiler::OHM_WORKTREE_SEED_DENY_MARKER),
+        reason,
+    )?;
     Ok(())
 }
 
@@ -483,6 +552,18 @@ pub fn parse_dep_info(
         tracing::warn!("failed to parse cargo's dep-info at {:?}", dep_info);
         return Ok(None);
     };
+    if info.files.iter().any(|(ty, path, _)| {
+        *ty == DepInfoPathType::PackageRootRelative
+            && path
+                .components()
+                .any(|component| component == std::path::Component::ParentDir)
+    }) && !crate::util::try_canonicalize(pkg_root)
+        .is_ok_and(|canonical| canonical == paths::normalize_path(pkg_root))
+    {
+        // A newly symlinked package root can change where a saved ../ prefix
+        // resolves. Recompile and let translation reject further seeding.
+        return Ok(None);
+    }
     let mut ret = RustcDepInfo::default();
     ret.env = info.env;
     ret.files
@@ -701,6 +782,71 @@ pub enum InvalidChecksum {
 #[cfg(test)]
 mod encoded_dep_info {
     use super::*;
+
+    #[test]
+    fn seed_translation_preserves_absolute_inputs_and_relative_spelling() {
+        let temp = tempfile::tempdir().unwrap();
+        let root = temp.path().canonicalize().unwrap();
+        let package = root.join("app");
+        let namespace = root.join("namespace");
+        std::fs::create_dir_all(package.join("src")).unwrap();
+        std::fs::create_dir(&namespace).unwrap();
+        std::fs::write(root.join("shared.txt"), "shared").unwrap();
+        let literal = package.join("literal.txt");
+        std::fs::write(&literal, "literal").unwrap();
+        let rustc_dep_info = root.join("rustc.d");
+        let cargo_dep_info = root.join("cargo.d");
+        std::fs::write(
+            &rustc_dep_info,
+            format!(
+                "result: app/src/../../shared.txt {}\n# env-dep:CARGO_MANIFEST_DIR={}\n",
+                literal.display().to_string().replace(' ', "\\ "),
+                package.display()
+            ),
+        )
+        .unwrap();
+        let mut rustc = ProcessBuilder::new("rustc");
+        rustc.env("CARGO_MANIFEST_DIR", &package);
+        let env = Arc::new(HashMap::default());
+
+        for seeded in [false, true] {
+            translate_dep_info(
+                &rustc_dep_info,
+                &cargo_dep_info,
+                &root,
+                &package,
+                &root,
+                &rustc,
+                true,
+                &env,
+                seeded.then_some(namespace.as_path()),
+            )
+            .unwrap();
+            let info = EncodedDepInfo::parse(&std::fs::read(&cargo_dep_info).unwrap()).unwrap();
+            if seeded {
+                assert!(info.files.contains(&(
+                    DepInfoPathType::PackageRootRelative,
+                    PathBuf::from("../app/src/../../shared.txt"),
+                    None,
+                )));
+                assert!(info.files.contains(&(
+                    DepInfoPathType::BuildRootRelative,
+                    literal.clone(),
+                    None,
+                )));
+                assert_eq!(info.env.len(), 1);
+            } else {
+                // The original translation still canonicalizes source paths
+                // and filters Cargo's injected manifest environment.
+                assert!(info.files.contains(&(
+                    DepInfoPathType::BuildRootRelative,
+                    PathBuf::from("shared.txt"),
+                    None,
+                )));
+                assert!(info.env.is_empty());
+            }
+        }
+    }
 
     #[track_caller]
     fn gen_test(checksum: bool) {

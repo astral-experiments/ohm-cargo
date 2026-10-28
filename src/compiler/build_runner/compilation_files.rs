@@ -156,6 +156,8 @@ struct SharedRegistryCache {
     rustc: String,
     /// Canonical implementation dynamically loaded by the verified compiler launcher.
     compiler_driver: Option<PathBuf>,
+    /// Whether compiler execution satisfies the shared cache's ambient-input checks.
+    trusted_context: bool,
     #[cfg(windows)]
     implicit_native_tools: Vec<String>,
     immutable_units: HashMap<Unit, bool>,
@@ -606,6 +608,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                     workspace: Layout::shared_workspace_namespace(build_runner.bcx.ws),
                     rustc,
                     compiler_driver: compiler_driver_identity.map(|driver| driver.path),
+                    trusted_context,
                     #[cfg(windows)]
                     implicit_native_tools,
                     immutable_units,
@@ -629,9 +632,82 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
             && let Some(cache) = files.shared_registry_cache.as_mut()
         {
             cache.immutable_units.clear();
+            cache.trusted_context = false;
         }
 
         files
+    }
+
+    /// Records the admission policy before any selected compiler can create outputs.
+    ///
+    /// A profile can retain units from older graphs, so discovering an untrusted
+    /// macro or compiler extension permanently taints the whole private namespace.
+    /// Deleting that macro's library later must not make its cached consumers safe.
+    pub(super) fn record_worktree_seed_policy(
+        &self,
+        build_runner: &BuildRunner<'_, '_>,
+    ) -> CargoResult<()> {
+        let prepared = self.ws.gctx().cli_unstable().ohm_worktree_seeds();
+        let Some(cache) = &self.shared_registry_cache else {
+            return Ok(());
+        };
+        if !prepared {
+            let mut previously_prepared = false;
+            for layout in std::iter::once(&self.host).chain(self.target.values()) {
+                previously_prepared |= layout
+                    .build_dir()
+                    .build()
+                    .join("workspaces")
+                    .join(&cache.workspace)
+                    .join(crate::compiler::OHM_WORKTREE_SEED_MARKER)
+                    .try_exists()?;
+            }
+            if !previously_prepared {
+                return Ok(());
+            }
+        }
+        let denied = !cache.trusted_context
+            || build_runner.bcx.rustc().workspace_wrapper.is_some()
+            || self.metas.keys().any(|unit| {
+                (unit.target.proc_macro() && !self.is_shared_registry_unit(unit))
+                    || unit_uses_custom_codegen_backend(unit, build_runner)
+            });
+        if !prepared && !denied {
+            return Ok(());
+        }
+        let mut namespaces = HashSet::default();
+        for unit in self.metas.keys() {
+            if self.is_shared_registry_unit(unit) {
+                continue;
+            }
+            let namespace = self
+                .layout(unit.kind)
+                .build_dir()
+                .build()
+                .join("workspaces")
+                .join(&cache.workspace);
+            if !namespaces.insert(namespace.clone()) {
+                continue;
+            }
+            let marker = namespace.join(crate::compiler::OHM_WORKTREE_SEED_MARKER);
+            // Once prepared, the namespace can retain outputs from ordinary
+            // invocations too. Temporarily disabling the mode cannot make an
+            // opaque compilation disappear from its history.
+            if !prepared && !marker.try_exists()? {
+                continue;
+            }
+            paths::create_dir_all(&namespace)?;
+            if denied {
+                paths::write_atomic_no_follow(
+                    &namespace.join(crate::compiler::OHM_WORKTREE_SEED_DENY_MARKER),
+                    b"untrusted compile-time inputs\n",
+                )?;
+            }
+            if prepared {
+                paths::write_atomic_no_follow(&marker, b"5\n")?;
+            }
+        }
+        Ok(())
     }
 
     /// Checks generated loader paths before selecting shared outputs and again under their leases.
