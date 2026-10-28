@@ -1,0 +1,285 @@
+{
+  "actual_rosters": {
+    "A": "ec76d66a1a62ed5e7825efa05ac41d8fbb3180298bd7c753700ac11f6c9290ac",
+    "B": "609a5050eab8fdb0ffd1fc3cd2cbe9c21ebafe810a2c53eafe9a656127610a96",
+    "C": "609a5050eab8fdb0ffd1fc3cd2cbe9c21ebafe810a2c53eafe9a656127610a96",
+    "O": "ec76d66a1a62ed5e7825efa05ac41d8fbb3180298bd7c753700ac11f6c9290ac"
+  },
+  "against_source_matched_O": {
+    "A": {
+      "cold": {
+        "decoded_jemalloc_source_directory": [],
+        "raw_equal": 110,
+        "registered_wild_width_only": []
+      },
+      "first": {
+        "decoded_jemalloc_source_directory": [],
+        "raw_equal": 109,
+        "registered_wild_width_only": [
+          "target/debug/build/workspaces/38b7ca2992c44384/@verified-compiler@/ruff_python_ast_integration_tests/670b4ec01d8d3735/out/visitor-670b4ec01d8d3735"
+        ]
+      }
+    },
+    "B": {
+      "cold": {
+        "decoded_jemalloc_source_directory": [
+          "target/debug/build/workspaces/38b7ca2992c44384/@verified-compiler@/ruff/9c601305a3f3b4b8/out/ruff-9c601305a3f3b4b8",
+          "target/debug/build/workspaces/38b7ca2992c44384/@verified-compiler@/ty/9f994ba4bc9039c1/out/ty-9f994ba4bc9039c1",
+          "target/debug/ruff",
+          "target/debug/ty"
+        ],
+        "raw_equal": 106,
+        "registered_wild_width_only": []
+      },
+      "first": {
+        "decoded_jemalloc_source_directory": [
+          "target/debug/build/workspaces/38b7ca2992c44384/@verified-compiler@/ruff/9c601305a3f3b4b8/out/ruff-9c601305a3f3b4b8",
+          "target/debug/build/workspaces/38b7ca2992c44384/@verified-compiler@/ty/9f994ba4bc9039c1/out/ty-9f994ba4bc9039c1",
+          "target/debug/ruff",
+          "target/debug/ty"
+        ],
+        "raw_equal": 102,
+        "registered_wild_width_only": [
+          "target/debug/build/workspaces/38b7ca2992c44384/@verified-compiler@/ruff_python_parser/191dc0b897e70ddb/out/fixtures-191dc0b897e70ddb",
+          "target/debug/build/workspaces/38b7ca2992c44384/@verified-compiler@/ruff_python_trivia_integration_tests/c639259863b397fa/out/simple_tokenizer-c639259863b397fa",
+          "target/debug/build/workspaces/38b7ca2992c44384/@verified-compiler@/ty_server/21b174d739dc9351/out/ty_server-21b174d739dc9351",
+          "target/debug/build/workspaces/38b7ca2992c44384/@verified-compiler@/ty_server/8fa23882290527ed/out/e2e-8fa23882290527ed"
+        ]
+      }
+    },
+    "C": {
+      "cold": {
+        "decoded_jemalloc_source_directory": [
+          "target/debug/build/workspaces/38b7ca2992c44384/@verified-compiler@/ruff/9c601305a3f3b4b8/out/ruff-9c601305a3f3b4b8",
+          "target/debug/build/workspaces/38b7ca2992c44384/@verified-compiler@/ty/9f994ba4bc9039c1/out/ty-9f994ba4bc9039c1",
+          "target/debug/ruff",
+          "target/debug/ty"
+        ],
+        "raw_equal": 106,
+        "registered_wild_width_only": []
+      },
+      "first": {
+        "decoded_jemalloc_source_directory": [
+          "target/debug/build/workspaces/38b7ca2992c44384/@verified-compiler@/ruff/9c601305a3f3b4b8/out/ruff-9c601305a3f3b4b8",
+          "target/debug/build/workspaces/38b7ca2992c44384/@verified-compiler@/ty/9f994ba4bc9039c1/out/ty-9f994ba4bc9039c1",
+          "target/debug/ruff",
+          "target/debug/ty"
+        ],
+        "raw_equal": 104,
+        "registered_wild_width_only": [
+          "target/debug/build/workspaces/38b7ca2992c44384/@verified-compiler@/ty_python_semantic/a879b0690f634244/out/ty_python_semantic-a879b0690f634244",
+          "target/debug/build/workspaces/38b7ca2992c44384/@verified-compiler@/ty_server/8fa23882290527ed/out/e2e-8fa23882290527ed"
+        ]
+      }
+    }
+  },
+  "all_619_other_fields_and_typed_output_components_identical": true,
+  "attested_inputs_equal_old_Cargo_forced_new_rustc": true,
+  "literal_roster_admission": false,
+  "native_cargo_commands": 16,
+  "original_failure": "AssertionError: roster",
+  "phases": {
+    "A": [
+      {
+        "fresh": 0,
+        "phase": "cold",
+        "processes": {
+          "queries": 36,
+          "rustc": {
+            "full": 636
+          },
+          "system": 62,
+          "wild": 201
+        },
+        "raw_matches_prev": null
+      },
+      {
+        "fresh": 563,
+        "phase": "first",
+        "processes": {
+          "queries": 0,
+          "rustc": {
+            "full": 1,
+            "link-only": 50
+          },
+          "system": 0,
+          "wild": 50
+        },
+        "raw_matches_prev": 107
+      },
+      {
+        "fresh": 619,
+        "phase": "settled",
+        "processes": {
+          "queries": 0,
+          "rustc": {},
+          "system": 0,
+          "wild": 0
+        },
+        "raw_matches_prev": 110
+      },
+      {
+        "fresh": 619,
+        "phase": "settled2",
+        "processes": {
+          "queries": 0,
+          "rustc": {},
+          "system": 0,
+          "wild": 0
+        },
+        "raw_matches_prev": 110
+      }
+    ],
+    "B": [
+      {
+        "fresh": 0,
+        "phase": "cold",
+        "processes": {
+          "queries": 36,
+          "rustc": {
+            "full": 636
+          },
+          "system": 62,
+          "wild": 201
+        },
+        "raw_matches_prev": null
+      },
+      {
+        "fresh": 563,
+        "phase": "first",
+        "processes": {
+          "queries": 0,
+          "rustc": {
+            "full": 1,
+            "link-only": 50
+          },
+          "system": 0,
+          "wild": 50
+        },
+        "raw_matches_prev": 106
+      },
+      {
+        "fresh": 619,
+        "phase": "settled",
+        "processes": {
+          "queries": 0,
+          "rustc": {},
+          "system": 0,
+          "wild": 0
+        },
+        "raw_matches_prev": 110
+      },
+      {
+        "fresh": 619,
+        "phase": "settled2",
+        "processes": {
+          "queries": 0,
+          "rustc": {},
+          "system": 0,
+          "wild": 0
+        },
+        "raw_matches_prev": 110
+      }
+    ],
+    "C": [
+      {
+        "fresh": 0,
+        "phase": "cold",
+        "processes": {
+          "queries": 36,
+          "rustc": {
+            "full": 636
+          },
+          "system": 62,
+          "wild": 200
+        },
+        "raw_matches_prev": null
+      },
+      {
+        "fresh": 619,
+        "phase": "first",
+        "processes": {
+          "queries": 0,
+          "rustc": {},
+          "system": 0,
+          "wild": 0
+        },
+        "raw_matches_prev": 110
+      },
+      {
+        "fresh": 619,
+        "phase": "settled",
+        "processes": {
+          "queries": 0,
+          "rustc": {},
+          "system": 0,
+          "wild": 0
+        },
+        "raw_matches_prev": 110
+      },
+      {
+        "fresh": 619,
+        "phase": "settled2",
+        "processes": {
+          "queries": 0,
+          "rustc": {},
+          "system": 0,
+          "wild": 0
+        },
+        "raw_matches_prev": 110
+      }
+    ],
+    "O": [
+      {
+        "fresh": 0,
+        "phase": "cold",
+        "processes": {
+          "queries": 36,
+          "rustc": {
+            "full": 636
+          },
+          "system": 62,
+          "wild": 201
+        },
+        "raw_matches_prev": null
+      },
+      {
+        "fresh": 563,
+        "phase": "first",
+        "processes": {
+          "queries": 0,
+          "rustc": {
+            "full": 1,
+            "link-only": 50
+          },
+          "system": 0,
+          "wild": 50
+        },
+        "raw_matches_prev": 108
+      },
+      {
+        "fresh": 619,
+        "phase": "settled",
+        "processes": {
+          "queries": 0,
+          "rustc": {},
+          "system": 0,
+          "wild": 0
+        },
+        "raw_matches_prev": 110
+      },
+      {
+        "fresh": 619,
+        "phase": "settled2",
+        "processes": {
+          "queries": 0,
+          "rustc": {},
+          "system": 0,
+          "wild": 0
+        },
+        "raw_matches_prev": 110
+      }
+    ]
+  },
+  "scored": 0
+}
