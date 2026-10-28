@@ -1,0 +1,49 @@
+{
+  "crc_plan_command": "cargo +ohm build --locked --offline -p ty_vendored",
+  "executed_instructions_last_totals": 313383176,
+  "functions": {
+    "cargo::compiler::fingerprint::worktree::hash_file": {
+      "inclusive": 31609352,
+      "incoming": {
+        "cargo::compiler::fingerprint::worktree::hash_tree": [
+          4,
+          31255615
+        ],
+        "cargo::compiler::fingerprint::worktree::result_digest": [
+          2,
+          353737
+        ]
+      },
+      "outgoing_hash_update": [],
+      "self": 7316
+    },
+    "cargo::compiler::fingerprint::worktree::hash_tree": {
+      "inclusive": 31295287,
+      "incoming": {
+        "cargo::compiler::fingerprint::worktree::result_digest": [
+          2,
+          31295287
+        ]
+      },
+      "outgoing_hash_update": [],
+      "self": 490
+    },
+    "cargo::compiler::fingerprint::worktree::result_digest": {
+      "inclusive": 31657779,
+      "incoming": {
+        "13660": [
+          2,
+          31657779
+        ]
+      },
+      "outgoing_hash_update": [],
+      "self": 172
+    }
+  },
+  "genuine_rust_avx2_symbol": "00000000016e0bc0",
+  "official_cargo": "02a86ebd2d9e4f237b33f212102b81ed145eb77fae090d67e379cb6f1d70a573",
+  "original_observations_packet_manifest": "c9eabe5ea7bfcdb94dba30eec7e2adb68fe0ea3aa743f749499ea821340fed3c",
+  "raw_callgrind": "b10faef02bb41c1007141ccadb82e0d771a50a421be877ed0b373803f841e447",
+  "resolved_whole_Cargo_AVX2_calls": 7162,
+  "resolved_whole_Cargo_AVX2_ir": 59076207
+}
