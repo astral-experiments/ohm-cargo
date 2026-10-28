@@ -1,0 +1,42 @@
+{
+  "ruff": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "commit": "2b1d3c60faafcedc79423661884331eb8834fab7",
+  "path": "crates/ruff_formatter/src/diagnostics.rs",
+  "files_selected": [
+    "crates/ruff_formatter/src/diagnostics.rs"
+  ],
+  "commit_file_count": 32,
+  "file_sha256": {
+    "original": "fb7de7a16ed6fc6cde701b45a1fada1b3515bb0432df765b8e4e2ffc260d559a",
+    "reverse": "6e665b85f25c1e090af48520a8f9301bef8436e6610e249c42c52e62df440741"
+  },
+  "patch": "ae30c4d0d90be58b7299a7958d4bc9118f2f6a2df53aa6053cab11462d9eac40",
+  "sdk": "ohm-1.99.0-17",
+  "sdk_archive": "163267d26889b1bd2c467d7db97efee42cd2ac9dc9af2abc3a56ade8da9a9572",
+  "command": {
+    "build": [
+      "build",
+      "-p",
+      "ruff",
+      "--bin",
+      "ruff"
+    ],
+    "test": [
+      "test",
+      "--no-run",
+      "-p",
+      "ruff_python_formatter"
+    ]
+  },
+  "phases": [
+    "cold",
+    "settle",
+    "settle2",
+    "edit",
+    "edit-repeat",
+    "restore",
+    "restore-repeat"
+  ],
+  "units": "first ordinary build and test selection in independent, initially empty stores on the released -17 SDK, no spaces in paths, four jobs; no run of test bodies; traced native discovery, zero scoring",
+  "checks": "genuine external caller emits both exact changed diagnostics in edited vs restored state; same Cargo roster; inventory all workspace outputs, actual rustc + linker argv/terminal identities, compare first edits and their repeats, formatter CLI or harness listing. Reconsider only actual redundant jobs, then separately prove a sound optimization and register re-timing. Investigate any failed native condition before any positive claim."
+}
