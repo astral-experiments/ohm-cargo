@@ -1,0 +1,95 @@
+{
+  "ruff": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "sdk": "ohm-1.99.0-17",
+  "sdk_archive": "163267d26889b1bd2c467d7db97efee42cd2ac9dc9af2abc3a56ade8da9a9572",
+  "tools": {
+    "cargo": "4e4065390403afbf4fb77b2f41fbc21c59afe3dda2337a5bbe29fda29a47dbb3",
+    "rustc": "7ec5263869aed2fc9272ea7212aabbe7b272a4685f1b79af75c123daff09c02c",
+    "driver": "618ebac16b7d4ec01a2af89661d25b8f26ff347edbb69c6dcaa78f10115914a7",
+    "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+  },
+  "historical": "c0824de94a1c9bf7c0042625c8a46ed5eafe9794",
+  "historical_scope": "one complete file out of 103",
+  "source": {
+    "namespace": "crates/ruff_macros/src/rule_namespace.rs",
+    "newtype": "crates/ruff_macros/src/newtype_index.rs"
+  },
+  "variants": {
+    "base": {},
+    "format": {
+      "namespace": "namespace-before-format.rs"
+    },
+    "diagnostic": {
+      "namespace": "namespace-diagnostic.rs"
+    },
+    "used": {
+      "newtype": "newtype-used.rs"
+    }
+  },
+  "phases": [
+    [
+      "cold",
+      "base"
+    ],
+    [
+      "settled",
+      "base"
+    ],
+    [
+      "format",
+      "format"
+    ],
+    [
+      "format-repeat",
+      "format"
+    ],
+    [
+      "format-restore",
+      "base"
+    ],
+    [
+      "diagnostic",
+      "diagnostic"
+    ],
+    [
+      "diagnostic-repeat",
+      "diagnostic"
+    ],
+    [
+      "diagnostic-restore",
+      "base"
+    ],
+    [
+      "used",
+      "used"
+    ],
+    [
+      "used-repeat",
+      "used"
+    ],
+    [
+      "used-restore",
+      "base"
+    ],
+    [
+      "final",
+      "base"
+    ]
+  ],
+  "commands": {
+    "build": [
+      "build",
+      "-p",
+      "ruff_index",
+      "--lib"
+    ],
+    "test": [
+      "test",
+      "--no-run",
+      "-p",
+      "ruff_index",
+      "--lib"
+    ]
+  },
+  "scoring": "process and product discovery only, no timing, bench measures no test body"
+}
