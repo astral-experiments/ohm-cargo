@@ -1,0 +1,213 @@
+{
+  "as_of": "2026-10-28",
+  "cargo": "a0c7d08c898d3fdff992f2f431dec57d2486add2",
+  "cargo_sha256": "4e4065390403afbf4fb77b2f41fbc21c59afe3dda2337a5bbe29fda29a47dbb3",
+  "driver_sha256": "618ebac16b7d4ec01a2af89661d25b8f26ff347edbb69c6dcaa78f10115914a7",
+  "issues": {
+    "194": {
+      "head": "c12867106c3ba4485f4ea92be8622660d301489d",
+      "is_ancestor": true,
+      "issue": "https://github.com/astral-sh/ohm-cargo/issues/194",
+      "issue_title": "Cached relinking accepts a replaced object and produces the wrong executable",
+      "pr": 197,
+      "pr_state": "OPEN",
+      "status": "binary fixture",
+      "test_only": false,
+      "title": "Verify cached codegen object contents before relinking"
+    },
+    "195": {
+      "head": "df2a307a2aa0a70fe63047b9ff1768dd297d3847",
+      "is_ancestor": true,
+      "issue": "https://github.com/astral-sh/ohm-cargo/issues/195",
+      "issue_title": "An incomplete relink manifest makes a valid dependency edit fail to build",
+      "pr": 198,
+      "pr_state": "OPEN",
+      "status": "binary fixture",
+      "test_only": false,
+      "title": "Check the complete relink cache manifest before reuse"
+    },
+    "196": {
+      "head": "1ec740b59f1d22c7f13ffa938404146262a80814",
+      "is_ancestor": true,
+      "issue": "https://github.com/astral-sh/ohm-cargo/issues/196",
+      "issue_title": "A FIFO in an Ohm cache entry can hang the next build",
+      "pr": 201,
+      "pr_state": "OPEN",
+      "status": "binary fixture",
+      "test_only": false,
+      "title": "Reject non-regular Ohm cache files before reading them"
+    },
+    "199": {
+      "head": "aee65defe45618352d72603e8bbf500423215ce1",
+      "is_ancestor": true,
+      "issue": "https://github.com/astral-sh/ohm-cargo/issues/199",
+      "issue_title": "The objcopy trust test fails under umask 002",
+      "pr": 200,
+      "pr_state": "OPEN",
+      "status": "source ancestry only",
+      "test_only": true,
+      "title": "Set the objcopy trust fixture directory permissions explicitly"
+    },
+    "202": {
+      "head": "2ebade593a16006fd3f63f1613cf4dbf2008dbad",
+      "is_ancestor": true,
+      "issue": "https://github.com/astral-sh/ohm-cargo/issues/202",
+      "issue_title": "A forked child can keep the ThinLTO pruning lock held after pruning finishes",
+      "pr": 203,
+      "pr_state": "OPEN",
+      "status": "source ancestry only",
+      "test_only": false,
+      "title": "Release the ThinLTO pruning lock at scope exit"
+    },
+    "204": {
+      "head": "d778d26148e04ef0179e1e782c7f5e02474304f3",
+      "is_ancestor": true,
+      "issue": "https://github.com/astral-sh/ohm-cargo/issues/204",
+      "issue_title": "GC rollback eligibility test flakes when a collection batch exceeds 10 ms",
+      "pr": 205,
+      "pr_state": "OPEN",
+      "status": "source ancestry only",
+      "test_only": true,
+      "title": "Finish legacy GC metadata after a retirement deadline"
+    },
+    "206": {
+      "head": "a7511f0c2154fbbd8ac835edd02a67e5a4924678",
+      "is_ancestor": true,
+      "issue": "https://github.com/astral-sh/ohm-cargo/issues/206",
+      "issue_title": "Relink cleanup deletes unrelated objects through a symlinked cache directory",
+      "pr": 208,
+      "pr_state": "OPEN",
+      "status": "binary fixture",
+      "test_only": false,
+      "title": "Keep relink object cleanup inside its private directory"
+    },
+    "210": {
+      "head": "6cea8734d3b502ddbad6aca608d1a8b8ad5f2ef2",
+      "is_ancestor": true,
+      "issue": "https://github.com/astral-sh/ohm-cargo/issues/210",
+      "issue_title": "Disabling Ohm defaults can run another workspace\u2019s binary from a shared build directory",
+      "pr": 211,
+      "pr_state": "OPEN",
+      "status": "binary fixture",
+      "test_only": false,
+      "title": "Isolate opt-out workspace artifacts in external build directories"
+    },
+    "212": {
+      "head": "53953414d9a0e0dae513b35aa9cea97697985a08",
+      "is_ancestor": true,
+      "issue": "https://github.com/astral-sh/ohm-cargo/issues/212",
+      "issue_title": "An opt-out cargo clean deletes other projects\u2019 files in a common build directory",
+      "pr": 213,
+      "pr_state": "OPEN",
+      "status": "binary fixture",
+      "test_only": false,
+      "title": "Clean only the calling workspace in an external split build directory"
+    },
+    "214": {
+      "head": "ee52ae9e7f4bc91ef9f49201a6364f946f96925f",
+      "is_ancestor": true,
+      "issue": "https://github.com/astral-sh/ohm-cargo/issues/214",
+      "issue_title": "Build scripts reuse stale output when a tracked non-UTF-8 environment value changes",
+      "pr": 216,
+      "pr_state": "OPEN",
+      "status": "binary fixture",
+      "test_only": false,
+      "title": "Track native values for build-script environment dependencies"
+    },
+    "215": {
+      "head": "9a206984e77e022771fe4cb5971ac829dc2ac828",
+      "is_ancestor": true,
+      "issue": "https://github.com/astral-sh/ohm-cargo/issues/215",
+      "issue_title": "Cargo can track the wrong input or reject a build when parsing rustc dep-info paths",
+      "pr": 217,
+      "pr_state": "OPEN",
+      "status": "binary fixture",
+      "test_only": false,
+      "title": "Preserve literal filenames in rustc dependency information"
+    },
+    "218": {
+      "head": "1bd0b44722825bcbae0168740522a33ad4babe8e",
+      "is_ancestor": true,
+      "issue": "https://github.com/astral-sh/ohm-cargo/issues/218",
+      "issue_title": "Warm option_env! builds accept a non-Unicode value that rustc rejects",
+      "pr": 220,
+      "pr_state": "OPEN",
+      "status": "binary fixture",
+      "test_only": false,
+      "title": "Recheck compiler environment dependencies when a value becomes non-Unicode"
+    },
+    "219": {
+      "head": "359beac9d47bda0d20ef879c1c0b41082745a05a",
+      "is_ancestor": true,
+      "issue": "https://github.com/astral-sh/ohm-cargo/issues/219",
+      "issue_title": "Inherited CARGO_PKG variables can hide manifest changes from a warm build",
+      "pr": 221,
+      "pr_state": "OPEN",
+      "status": "binary fixture",
+      "test_only": false,
+      "title": "Honor package metadata when checking compiler environment dependencies"
+    },
+    "222": {
+      "head": "fdd26156be98618e2e01a9e02703edac71b79a35",
+      "is_ancestor": true,
+      "issue": "https://github.com/astral-sh/ohm-cargo/issues/222",
+      "issue_title": "Debug Cargo panics when upgrading a legacy null build-script fingerprint",
+      "pr": 223,
+      "pr_state": "OPEN",
+      "status": "binary fixture",
+      "test_only": false,
+      "title": "Discard legacy null build-script environment fingerprints on upgrade"
+    },
+    "225": {
+      "head": "e12b8b0c12c992aab3e152518184a08391675828",
+      "is_ancestor": false,
+      "issue": "https://github.com/astral-sh/ohm-cargo/issues/225",
+      "issue_title": "Cache GC can strand dependency bookkeeping after retiring the last registry artifact",
+      "pr": 226,
+      "pr_state": "CLOSED",
+      "shipped_equivalent": {
+        "explanation": "Closed standalone #226 records that #205 contains its fix and regression.",
+        "head": "d778d26148e04ef0179e1e782c7f5e02474304f3",
+        "is_ancestor": true,
+        "pr": 205
+      },
+      "status": "binary fixture",
+      "test_only": false,
+      "title": "fix(gc): Resume cleanup from legacy dependency records"
+    },
+    "228": {
+      "head": "d0d7763a3e644b0908a65d95757bf8d7069f072b",
+      "is_ancestor": true,
+      "issue": "https://github.com/astral-sh/ohm-cargo/issues/228",
+      "issue_title": "Ctrl-C can report a test failure after an early test exits",
+      "pr": 224,
+      "pr_state": "OPEN",
+      "status": "source ancestry only",
+      "test_only": false,
+      "title": "Drain terminal signals before retiring the ready-test relay"
+    },
+    "229": {
+      "head": "461a3d1007ecc997a6d86c7d75e8b518575c8d90",
+      "is_ancestor": true,
+      "issue": "https://github.com/astral-sh/ohm-cargo/issues/229",
+      "issue_title": "GC barrier tests can read WouldBlock on macOS before the child writes",
+      "pr": 230,
+      "pr_state": "OPEN",
+      "status": "source ancestry only",
+      "test_only": true,
+      "title": "test(gc): Use blocking streams for child handshakes"
+    },
+    "34": {
+      "head": "4a5031e074277e0baa2a8eae11efb320f9d287a1",
+      "is_ancestor": true,
+      "issue": "https://github.com/astral-sh/ohm-cargo/issues/34",
+      "issue_title": "Build-to-check reuse panics on inactive WASM dependencies after Linux-only fetch",
+      "pr": 35,
+      "pr_state": "source port",
+      "status": "binary fixture",
+      "test_only": false,
+      "title": "Expand registry reuse across active dependency graphs"
+    }
+  },
+  "rustc_sha256": "7ec5263869aed2fc9272ea7212aabbe7b272a4685f1b79af75c123daff09c02c"
+}
