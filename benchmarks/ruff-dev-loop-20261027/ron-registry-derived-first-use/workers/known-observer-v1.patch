@@ -1,0 +1,15 @@
+diff --git a/src/compiler/mod.rs b/src/compiler/mod.rs
+index 30db83fa5e32e114a89da7cefcc76c15569f061c..4304d815189d6a1f3ebf634ae4a58e4ce503d6ea 100644
+--- a/src/compiler/mod.rs
++++ b/src/compiler/mod.rs
+@@ -1446,6 +1446,10 @@ fn rustc(
+         let observes_foreign_span = fingerprint
+             .as_ref()
+             .is_some_and(|fp| fp.observes_foreign_span());
++        if observes_foreign_span {
++            // A cached derive can retain old native macro output even during a full compile.
++            rustc.arg("-Zcache-proc-macros=no");
++        }
+         if let Some(ref fp) = fingerprint
+             && !observes_foreign_span
+         {
