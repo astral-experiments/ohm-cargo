@@ -1,0 +1,5 @@
+# Standalone Wild jobserver change
+
+At 22:39 UTC on 2026-10-28 Wild #45 closed. By 22:56, #46 had moved from `93600ec375` to `db821991bd` and its new base was upstream Wild 0.11.0, `e856d81f66`. The two ongoing registered 32-core comparisons retain their frozen binaries. In those comparisons the previous linker draft and the jobserver candidate both contain the old #45. [Closed #45](https://github.com/astral-sh/ohm-wild/pull/45) · [Current #46](https://github.com/astral-sh/ohm-wild/pull/46)
+
+The release-only plan tests the jobserver change applied directly to the released Wild source. It will run only if the original 32-core series meets its complete four-comparison criterion. This assignment was frozen before reading either confirmation statistic, building the standalone candidate or creating its fixture roots. Each of two new checkouts will run all 36 three-linker blocks, against both the distributed -18 linker and a matched source rebuild. An independent draft requires all four positive median lower bounds, both exact p-values below .0125 in all four comparisons and no competing builds. [Frozen standalone assignment](registered-standalone.json)
