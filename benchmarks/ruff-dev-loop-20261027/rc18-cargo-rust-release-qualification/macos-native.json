@@ -1,0 +1,82 @@
+{
+  "id": 40730837103,
+  "run_attempt": 1,
+  "head_sha": "a34f48d944280a5de0bcf8a49c3d0cdb24082fd8",
+  "status": "completed",
+  "conclusion": "success",
+  "html_url": "https://github.com/astral-sh/ohm-rust/actions/runs/40730837103",
+  "created_at": "2026-10-28T16:56:14Z",
+  "updated_at": "2026-10-28T17:05:49Z",
+  "artifact": {
+    "id": 12836215731,
+    "name": "native-proc-macro-darwin",
+    "digest": "sha256:0c40fb701af66465108e12da0db851c7c0593d68536c184529b7af2e147a14e0",
+    "size_in_bytes": 17623
+  },
+  "compiler_tree": "47e23eb4bab742e271ca9a3cf1bbd583d5b4a640",
+  "cargo_gitlink": "7181bfa6256f94da142f80fd6af09cee02ec2c78",
+  "values": {
+    "stock": {
+      "edited": "17,17",
+      "edited-empty": "29,29",
+      "original": "17,17",
+      "repeat": "17,17",
+      "restored": "17,17",
+      "restored-empty": "17,17"
+    },
+    "fixed": {
+      "edited": "29,29",
+      "edited-empty": "29,29",
+      "original": "17,17",
+      "repeat": "29,29",
+      "restored": "17,17",
+      "restored-empty": "17,17"
+    }
+  },
+  "host": [
+    "a34f48d944280a5de0bcf8a49c3d0cdb24082fd8",
+    "47e23eb4bab742e271ca9a3cf1bbd583d5b4a640",
+    "7181bfa6256f94da142f80fd6af09cee02ec2c78",
+    "Darwin arm64",
+    "ProductName:\t\tmacOS",
+    "ProductVersion:\t\t15.7.5",
+    "BuildVersion:\t\t24G624",
+    "Apple clang version 16.0.0 (clang-1600.0.26.3)",
+    "Target: arm64-apple-darwin24.6.0",
+    "Thread model: posix",
+    "InstalledDir: /Applications/Xcode_16.0.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin"
+  ],
+  "artifacts_replayed": {
+    "stock": {
+      "commands": 20,
+      "native_runs": 6,
+      "producer_mach_o_text_sha256": {
+        "original": "ed3085721d04722fc54b100ea36d6aae4909f25dd4a2a37f3654ce653a2855ff",
+        "edited": "e5eb2b70e32fe950bffb09fbe23b38f56a052b42187eb2097d669492b3265c67",
+        "restored": "ed3085721d04722fc54b100ea36d6aae4909f25dd4a2a37f3654ce653a2855ff"
+      },
+      "tested_compiler_inputs": {
+        "librustc_driver-cbca6088c2c9ce9d.dylib": "2064e785a8664776df7cb553ad1bedbbde0fb4b8973deeac1a7d13005017c8b5",
+        "native.rs": "a574ad1e6fabcd391afb2e414892fe9b64cabb91b5c34ae83c0ddf3bdf4dbbfa",
+        "reader.rs": "8c4184b22eb64a4f015a19612df777eec26eb14b06ed1f5300add03b59d530b7",
+        "rustc": "c71737b313d65a3040eb36e439d9b9476c3ec01d206c164d9fc404d6b113b3cd"
+      }
+    },
+    "fixed": {
+      "commands": 20,
+      "native_runs": 6,
+      "producer_mach_o_text_sha256": {
+        "original": "4e10f08134097d42939febe3a00aa0baa424b22c7882af8e096b058b575c53c8",
+        "edited": "6eeefaae86fad4790d58d139d0bb23e7c2c015857ef6d563b1ab3e8b82646826",
+        "restored": "4e10f08134097d42939febe3a00aa0baa424b22c7882af8e096b058b575c53c8"
+      },
+      "tested_compiler_inputs": {
+        "librustc_driver-75dd9ab456915d61.dylib": "784154325ac212cdb44ee526fa3901c0b6b7b21d816c9816918afcbff94c0c88",
+        "native.rs": "a574ad1e6fabcd391afb2e414892fe9b64cabb91b5c34ae83c0ddf3bdf4dbbfa",
+        "reader.rs": "8c4184b22eb64a4f015a19612df777eec26eb14b06ed1f5300add03b59d530b7",
+        "rustc": "14f4ff9e168d08aa4744bf2e369fef1d2cb62f4f35c68a078f4893d723cd7708"
+      }
+    }
+  },
+  "checked_in_test_result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 559 filtered out; finished in 563.86ms"
+}

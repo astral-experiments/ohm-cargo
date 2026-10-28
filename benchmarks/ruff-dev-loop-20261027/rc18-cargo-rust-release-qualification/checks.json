@@ -1,0 +1,443 @@
+{
+  "as_of_utc": "2026-10-28T17:07:09.564082+00:00",
+  "coordinator_main": "4649b236138f62be1177a4205824931798ba2361",
+  "latest_published": {
+    "publishedAt": "2026-10-28T02:16:30Z",
+    "tagName": "ohm-1.99.0-17",
+    "url": "https://github.com/astral-sh/ohm/releases/tag/ohm-1.99.0-17"
+  },
+  "pull_requests": [
+    {
+      "baseRefName": "main",
+      "baseRefOid": "4649b236138f62be1177a4205824931798ba2361",
+      "headRefName": "charlie/ohm-qualify-native-derives-rc18-20261028",
+      "headRefOid": "73737405d03f7c9113774ab98400bd33312d26d8",
+      "isDraft": true,
+      "number": 197,
+      "state": "OPEN",
+      "title": "Check the native proc-macro cache default for each release",
+      "url": "https://github.com/astral-sh/ohm/pull/197",
+      "checks": [
+        {
+          "name": "manifest",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/astral-sh/ohm/actions/runs/40723860657/job/122941735793",
+          "workflowName": "CI"
+        },
+        {
+          "name": "lint",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/astral-sh/ohm/actions/runs/40723860657/job/122941735141",
+          "workflowName": "CI"
+        },
+        {
+          "name": "all required jobs passed",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/astral-sh/ohm/actions/runs/40723860657/job/122942208855",
+          "workflowName": "CI"
+        }
+      ]
+    },
+    {
+      "baseRefName": "charlie/ohm-qualify-native-derives-rc18-20261028",
+      "baseRefOid": "73737405d03f7c9113774ab98400bd33312d26d8",
+      "headRefName": "charlie/ohm-qualify-byte-paths-rc18-20261028",
+      "headRefOid": "2b25f863e3b7433a7103de4c315b8cb150413ecc",
+      "isDraft": true,
+      "number": 198,
+      "state": "OPEN",
+      "title": "Prepare Ohm 1.99.0-18 with the Cargo and Rust fixes",
+      "url": "https://github.com/astral-sh/ohm/pull/198",
+      "checks": [
+        {
+          "name": "manifest",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/astral-sh/ohm/actions/runs/40731635561/job/122969200565",
+          "workflowName": "CI"
+        },
+        {
+          "name": "lint",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/astral-sh/ohm/actions/runs/40731635561/job/122969201312",
+          "workflowName": "CI"
+        },
+        {
+          "name": "all required jobs passed",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/astral-sh/ohm/actions/runs/40731635561/job/122970114690",
+          "workflowName": "CI"
+        }
+      ]
+    },
+    {
+      "baseRefName": "charlie/ohm-verify-dep-info-paths-1.99.0-17",
+      "baseRefOid": "bfa236f639034f61ec884c15bd1f4e0b75e508ac",
+      "headRefName": "charlie/ohm-mixed-module-child-locations-20261028",
+      "headRefOid": "14d5456d22418dcb29467bf2fb320eb8a10442e0",
+      "isDraft": true,
+      "number": 243,
+      "state": "OPEN",
+      "title": "Hash identifier spans observed by incremental module readers",
+      "url": "https://github.com/astral-sh/ohm-rust/pull/243",
+      "checks": [
+        {
+          "name": "Formatting and tidy",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/astral-sh/ohm-rust/actions/runs/40642567720/job/122663854288",
+          "workflowName": "CI"
+        },
+        {
+          "name": "Compiler and regression tests",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/astral-sh/ohm-rust/actions/runs/40642567720/job/122663854804",
+          "workflowName": "CI"
+        },
+        {
+          "name": "Compiler and regression tests (macOS)",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/astral-sh/ohm-rust/actions/runs/40642567720/job/122663854817",
+          "workflowName": "CI"
+        }
+      ]
+    },
+    {
+      "baseRefName": "charlie/ohm-mixed-module-child-locations-20261028",
+      "baseRefOid": "14d5456d22418dcb29467bf2fb320eb8a10442e0",
+      "headRefName": "charlie/ohm-rust-native-macro-session-20261028",
+      "headRefOid": "d68dfbfd4911d8d34863c3d460356621b6b8850c",
+      "isDraft": true,
+      "number": 244,
+      "state": "OPEN",
+      "title": "Run native procedural macros on every compilation",
+      "url": "https://github.com/astral-sh/ohm-rust/pull/244",
+      "checks": [
+        {
+          "name": "Formatting and tidy",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/astral-sh/ohm-rust/actions/runs/40722497584/job/122936859774",
+          "workflowName": "CI"
+        },
+        {
+          "name": "Compiler and regression tests",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/astral-sh/ohm-rust/actions/runs/40722497584/job/122936859223",
+          "workflowName": "CI"
+        },
+        {
+          "name": "Compiler and regression tests (macOS)",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/astral-sh/ohm-rust/actions/runs/40722497584/job/122936859789",
+          "workflowName": "CI"
+        }
+      ]
+    },
+    {
+      "baseRefName": "charlie/ohm-rust-native-macro-session-20261028",
+      "baseRefOid": "d68dfbfd4911d8d34863c3d460356621b6b8850c",
+      "headRefName": "charlie/ohm-verify-exported-spans-rc18-20261028",
+      "headRefOid": "a2609bc3f958a565f0279d396bc46db7292b223d",
+      "isDraft": true,
+      "number": 245,
+      "state": "OPEN",
+      "title": "Preserve source locations across incremental crate boundaries",
+      "url": "https://github.com/astral-sh/ohm-rust/pull/245",
+      "checks": [
+        {
+          "name": "Formatting and tidy",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/astral-sh/ohm-rust/actions/runs/40727174053/job/122953455336",
+          "workflowName": "CI"
+        },
+        {
+          "name": "Compiler and regression tests",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/astral-sh/ohm-rust/actions/runs/40727174053/job/122953455667",
+          "workflowName": "CI"
+        },
+        {
+          "name": "Compiler and regression tests (macOS)",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/astral-sh/ohm-rust/actions/runs/40727174053/job/122953455760",
+          "workflowName": "CI"
+        }
+      ]
+    },
+    {
+      "baseRefName": "charlie/ohm-verify-exported-spans-rc18-20261028",
+      "baseRefOid": "a2609bc3f958a565f0279d396bc46db7292b223d",
+      "headRefName": "charlie/ohm-qualify-cargo-pin-rc18-20261028",
+      "headRefOid": "9828b82f475f18bf9077ee25f36de43d4fec8277",
+      "isDraft": true,
+      "number": 246,
+      "state": "OPEN",
+      "title": "Pin the qualified Cargo fixes for Ohm 1.99.0-18",
+      "url": "https://github.com/astral-sh/ohm-rust/pull/246",
+      "checks": [
+        {
+          "name": "Formatting and tidy",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/astral-sh/ohm-rust/actions/runs/40727322917/job/122961140256",
+          "workflowName": "CI"
+        },
+        {
+          "name": "Compiler and regression tests",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/astral-sh/ohm-rust/actions/runs/40727322917/job/122961140991",
+          "workflowName": "CI"
+        },
+        {
+          "name": "Compiler and regression tests (macOS)",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/astral-sh/ohm-rust/actions/runs/40727322917/job/122961142398",
+          "workflowName": "CI"
+        }
+      ]
+    },
+    {
+      "baseRefName": "charlie/ohm-require-consumed-observer-inputs-20261028",
+      "baseRefOid": "9a0170863f70d9a88a8b1d1f4c4e1fded4736a9c",
+      "headRefName": "charlie/ohm-skip-finished-early-test-20261027",
+      "headRefOid": "6468de26179e87d073d606bd6e4e4cbd90c7dbc2",
+      "isDraft": true,
+      "number": 260,
+      "state": "OPEN",
+      "title": "Skip the speculative test compile when its library has finished",
+      "url": "https://github.com/astral-sh/ohm-cargo/pull/260",
+      "checks": [
+        {
+          "name": "Rustfmt",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/astral-sh/ohm-cargo/actions/runs/40721578372/job/122933624945",
+          "workflowName": "CI"
+        },
+        {
+          "name": "Clippy (depot-ubuntu-24.04-8)",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/astral-sh/ohm-cargo/actions/runs/40721578372/job/122933624762",
+          "workflowName": "CI"
+        },
+        {
+          "name": "Clippy (depot-macos-15)",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/astral-sh/ohm-cargo/actions/runs/40721578372/job/122933624759",
+          "workflowName": "CI"
+        },
+        {
+          "name": "Cargo tests (depot-ubuntu-24.04-16)",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/astral-sh/ohm-cargo/actions/runs/40721578372/job/122933624775",
+          "workflowName": "CI"
+        },
+        {
+          "name": "Cargo tests (depot-macos-15)",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/astral-sh/ohm-cargo/actions/runs/40721578372/job/122933624832",
+          "workflowName": "CI"
+        },
+        {
+          "name": "Workspace tests",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/astral-sh/ohm-cargo/actions/runs/40721578372/job/122933625220",
+          "workflowName": "CI"
+        },
+        {
+          "name": "Resolver tests",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/astral-sh/ohm-cargo/actions/runs/40721578372/job/122933625097",
+          "workflowName": "CI"
+        },
+        {
+          "name": "Schema tests",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/astral-sh/ohm-cargo/actions/runs/40721578372/job/122933624395",
+          "workflowName": "CI"
+        },
+        {
+          "name": "Clippy APFS replay",
+          "status": "COMPLETED",
+          "conclusion": "SKIPPED",
+          "detailsUrl": "https://github.com/astral-sh/ohm-cargo/actions/runs/40721578372/job/122933626913",
+          "workflowName": "CI"
+        }
+      ]
+    },
+    {
+      "baseRefName": "charlie/ohm-observer-unicode-rc17-20261027",
+      "baseRefOid": "a0c7d08c898d3fdff992f2f431dec57d2486add2",
+      "headRefName": "charlie/ohm-require-consumed-observer-inputs-20261028",
+      "headRefOid": "857652135b0e7ee03b9c715787056a60ea313183",
+      "isDraft": true,
+      "number": 261,
+      "state": "OPEN",
+      "title": "Prevent stale builds from foreign span inputs and native derives",
+      "url": "https://github.com/astral-sh/ohm-cargo/pull/261",
+      "checks": [
+        {
+          "name": "Rustfmt",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/astral-sh/ohm-cargo/actions/runs/40719252064/job/122925316278",
+          "workflowName": "CI"
+        },
+        {
+          "name": "Clippy (depot-ubuntu-24.04-8)",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/astral-sh/ohm-cargo/actions/runs/40719252064/job/122925316353",
+          "workflowName": "CI"
+        },
+        {
+          "name": "Clippy (depot-macos-15)",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/astral-sh/ohm-cargo/actions/runs/40719252064/job/122925316362",
+          "workflowName": "CI"
+        },
+        {
+          "name": "Cargo tests (depot-ubuntu-24.04-16)",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/astral-sh/ohm-cargo/actions/runs/40719252064/job/122925316656",
+          "workflowName": "CI"
+        },
+        {
+          "name": "Cargo tests (depot-macos-15)",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/astral-sh/ohm-cargo/actions/runs/40719252064/job/122925316384",
+          "workflowName": "CI"
+        },
+        {
+          "name": "Workspace tests",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/astral-sh/ohm-cargo/actions/runs/40719252064/job/122925316607",
+          "workflowName": "CI"
+        },
+        {
+          "name": "Resolver tests",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/astral-sh/ohm-cargo/actions/runs/40719252064/job/122925316683",
+          "workflowName": "CI"
+        },
+        {
+          "name": "Schema tests",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/astral-sh/ohm-cargo/actions/runs/40719252064/job/122925316124",
+          "workflowName": "CI"
+        },
+        {
+          "name": "Clippy APFS replay",
+          "status": "COMPLETED",
+          "conclusion": "SKIPPED",
+          "detailsUrl": "https://github.com/astral-sh/ohm-cargo/actions/runs/40719252064/job/122925318603",
+          "workflowName": "CI"
+        }
+      ]
+    },
+    {
+      "baseRefName": "charlie/ohm-skip-finished-early-test-20261027",
+      "baseRefOid": "6468de26179e87d073d606bd6e4e4cbd90c7dbc2",
+      "headRefName": "charlie/ohm-path-only-output-depinfo",
+      "headRefOid": "7181bfa6256f94da142f80fd6af09cee02ec2c78",
+      "isDraft": true,
+      "number": 262,
+      "state": "OPEN",
+      "title": "Collect only paths when writing Cargo output depfiles",
+      "url": "https://github.com/astral-sh/ohm-cargo/pull/262",
+      "checks": [
+        {
+          "name": "Rustfmt",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/astral-sh/ohm-cargo/actions/runs/40721577307/job/122933622553",
+          "workflowName": "CI"
+        },
+        {
+          "name": "Clippy (depot-ubuntu-24.04-8)",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/astral-sh/ohm-cargo/actions/runs/40721577307/job/122933622843",
+          "workflowName": "CI"
+        },
+        {
+          "name": "Clippy (depot-macos-15)",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/astral-sh/ohm-cargo/actions/runs/40721577307/job/122933622974",
+          "workflowName": "CI"
+        },
+        {
+          "name": "Cargo tests (depot-ubuntu-24.04-16)",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/astral-sh/ohm-cargo/actions/runs/40721577307/job/122933622936",
+          "workflowName": "CI"
+        },
+        {
+          "name": "Cargo tests (depot-macos-15)",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/astral-sh/ohm-cargo/actions/runs/40721577307/job/122933622977",
+          "workflowName": "CI"
+        },
+        {
+          "name": "Workspace tests",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/astral-sh/ohm-cargo/actions/runs/40721577307/job/122933622976",
+          "workflowName": "CI"
+        },
+        {
+          "name": "Resolver tests",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/astral-sh/ohm-cargo/actions/runs/40721577307/job/122933623084",
+          "workflowName": "CI"
+        },
+        {
+          "name": "Schema tests",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/astral-sh/ohm-cargo/actions/runs/40721577307/job/122933623000",
+          "workflowName": "CI"
+        },
+        {
+          "name": "Clippy APFS replay",
+          "status": "COMPLETED",
+          "conclusion": "SKIPPED",
+          "detailsUrl": "https://github.com/astral-sh/ohm-cargo/actions/runs/40721577307/job/122933624869",
+          "workflowName": "CI"
+        }
+      ]
+    }
+  ]
+}
