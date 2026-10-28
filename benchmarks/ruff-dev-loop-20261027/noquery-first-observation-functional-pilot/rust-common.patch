@@ -1,0 +1,464 @@
+diff --git a/compiler/rustc_interface/src/passes.rs b/compiler/rustc_interface/src/passes.rs
+index b72475e7e07929b1703c231f49870339d05d443b..ab0643ade418b32383d12baef612c4df94d316e9 100644
+--- a/compiler/rustc_interface/src/passes.rs
++++ b/compiler/rustc_interface/src/passes.rs
+@@ -43,7 +43,9 @@ use rustc_session::diagnostics::feature_err;
+ use rustc_session::output::{filename_for_input, invalid_output_for_target};
+ use rustc_session::search_paths::PathKind;
+ use rustc_session::{IncrCompSession, Session};
+-use rustc_span::{DUMMY_SP, ErrorGuaranteed, ExpnKind, SourceFileHash, Span, Symbol, sym};
++use rustc_span::{
++    DUMMY_SP, ErrorGuaranteed, ExpnKind, SourceFileHash, SourceFileHashAlgorithm, Span, Symbol, sym,
++};
+ use rustc_trait_selection::{solve, traits};
+ use tracing::{info, instrument};
+ 
+@@ -590,47 +592,88 @@ fn write_out_deps(tcx: TyCtxt<'_>, outputs: &OutputFilenames, out_filenames: &[P
+     let deps_output = outputs.path(OutputType::DepInfo);
+     let deps_filename = deps_output.as_path();
+ 
++    type DepFiles = IndexMap<String, (u64, Option<SourceFileHash>)>;
++    const RAW_PATHS: &[u8] = b"# ohm-raw-checksum-paths-v2\n";
+     let result = try {
++        let observer = sess.proc_macro_observed_foreign_bytes.load(Ordering::Relaxed)
++            && CStore::from_tcx(tcx).has_public_api_hash_dependencies()
++            && matches!(deps_output, OutFileName::Real(_));
++        let trackable = observer && !sess.untrackable_proc_macro_source.load(Ordering::Relaxed);
++        let explicit = trackable && sess.opts.unstable_opts.ohm_observer_dep_info;
++        // A recipient that did not request extra Make prerequisites may still use the
++        // optional receipt. Leave explicitly selected binary dep-info unchanged.
++        let first = trackable
++            && cfg!(unix)
++            && sess.opts.unstable_opts.cache_proc_macros
++            && !explicit
++            && !sess.binary_dep_depinfo()
++            && out_filenames.iter().all(|path| {
++                path.to_str().is_some_and(|s| !s.contains(": ") && !s.contains(['\n', '\r']))
++            });
++        let requested = sess.opts.unstable_opts.checksum_hash_algorithm;
++        let hashing =
++            requested.or_else(|| (explicit || first).then_some(SourceFileHashAlgorithm::Blake3));
++        let hash_source = requested.is_none() && (first || explicit);
++        let mut incomplete = false;
++
+         // Build a list of files used to compile the output and
+         // write Makefile-compatible dependency rules
+         let mut lossy_paths = Vec::new();
+-        let mut escape_path = |path: Cow<'_, str>| {
++        let escape_path = |path: Cow<'_, str>, lossy_paths: &mut Vec<String>| {
+             let escaped = escape_dep_filename(&path);
+             if matches!(path, Cow::Owned(_)) {
+                 lossy_paths.push(escaped.clone());
+             }
+             escaped
+         };
+-        let mut files: IndexMap<String, (u64, Option<SourceFileHash>)> = sess
++        let mut files: DepFiles = sess
+             .source_map()
+             .files()
+             .iter()
+             .filter(|fmap| fmap.is_real_file())
+             .filter(|fmap| !fmap.is_imported())
+             .map(|fmap| {
++                let mut checksum = fmap.checksum_hash;
++                if hash_source {
++                    if let Some(src) = fmap.src.as_deref().filter(|src| {
++                        !src.is_empty()
++                            && fmap.normalized_pos.is_empty()
++                            && src.len() == fmap.unnormalized_source_len as usize
++                    }) {
++                        checksum = Some(SourceFileHash::new_in_memory(
++                            SourceFileHashAlgorithm::Blake3,
++                            src.as_bytes(),
++                        ));
++                    } else {
++                        // A non-UTF-8 include_bytes! input, BOM or CRLF may not have its
++                        // original bytes in the source map. The next explicit capture can.
++                        incomplete = true;
++                    }
++                }
+                 (
+-                    escape_path(fmap.name.prefer_local_unconditionally().to_string_lossy()),
++                    escape_path(
++                        fmap.name.prefer_local_unconditionally().to_string_lossy(),
++                        &mut lossy_paths,
++                    ),
+                     (
+                         // This needs to be unnormalized,
+                         // as external tools wouldn't know how rustc normalizes them
+                         fmap.unnormalized_source_len as u64,
+-                        fmap.checksum_hash,
++                        checksum,
+                     ),
+                 )
+             })
+             .collect();
+ 
+-        let checksum_hash_algo = sess.opts.unstable_opts.checksum_hash_algorithm;
+-
+         // Account for explicitly marked-to-track files
+         // (e.g. accessed in proc macros).
+         let file_depinfo = sess.file_depinfo.borrow();
+ 
+         let normalize_path = |path: PathBuf| escape_dep_filename(&path.to_string_lossy());
+ 
+-        let mut add_file = |path: &Path| {
+-            let escaped = escape_path(path.to_string_lossy());
+-            let checksum = checksum_hash_algo.and_then(|algo| {
++        let mut add_file = |files: &mut DepFiles, lossy_paths: &mut Vec<String>, path: &Path| {
++            let escaped = escape_path(path.to_string_lossy(), lossy_paths);
++            let checksum = hashing.and_then(|algo| {
+                 path.to_str()?;
+                 rustc_session::filesearch::open_regular_file(path)
+                     .and_then(|mut file| SourceFileHash::new(algo, &mut file).map(|h| (file, h)))
+@@ -643,44 +686,56 @@ fn write_out_deps(tcx: TyCtxt<'_>, outputs: &OutputFilenames, out_filenames: &[P
+                     })
+                     .ok()
+             });
+-            files.insert(escaped, checksum.unwrap_or((0, None)));
++            let checksum = checksum.unwrap_or((0, None));
++            if (first || explicit) && files.get(&escaped).is_some_and(|old| *old != checksum) {
++                // A source may also have been tracked by a proc macro after parsing.
++                incomplete = true;
++            }
++            files.insert(escaped, checksum);
+         };
+         for path in file_depinfo.iter() {
+-            add_file(Path::new(path.as_str()));
++            add_file(&mut files, &mut lossy_paths, Path::new(path.as_str()));
+         }
+ 
+         // We also need to track used PGO profile files
+         if let Some(ref profile_instr) = sess.opts.cg.profile_use {
+-            add_file(profile_instr);
++            add_file(&mut files, &mut lossy_paths, profile_instr);
+         }
+         if let Some(ref profile_sample) = sess.opts.unstable_opts.profile_sample_use {
+-            add_file(profile_sample);
++            add_file(&mut files, &mut lossy_paths, profile_sample);
+         }
+ 
+         // Debugger visualizer files
+         for debugger_visualizer in tcx.debugger_visualizers(LOCAL_CRATE) {
+-            add_file(debugger_visualizer.path.as_ref().unwrap());
++            add_file(&mut files, &mut lossy_paths, debugger_visualizer.path.as_ref().unwrap());
+         }
+ 
+-        if sess.binary_dep_depinfo() {
++        let mut ordinary = first.then(|| {
++            let mut original = files.clone();
++            for name in &lossy_paths {
++                original.insert(name.clone(), (0, None));
++            }
++            original
++        });
++        if sess.binary_dep_depinfo() || first || explicit {
+             if let Some(ref backend) = sess.opts.unstable_opts.codegen_backend {
+                 if backend.contains('.') {
+                     // If the backend name contain a `.`, it is the path to an external dynamic
+                     // library. If not, it is not a path.
+-                    add_file(Path::new(backend));
++                    add_file(&mut files, &mut lossy_paths, Path::new(backend));
+                 }
+             }
+ 
+             for &cnum in tcx.crates(()) {
+                 let source = tcx.used_crate_source(cnum);
+                 if let Some(path) = &source.dylib {
+-                    add_file(path);
++                    add_file(&mut files, &mut lossy_paths, path);
+                 }
+                 if let Some(path) = &source.rlib {
+-                    add_file(path);
++                    add_file(&mut files, &mut lossy_paths, path);
+                 }
+                 if let Some(path) = &source.rmeta {
+-                    add_file(path);
++                    add_file(&mut files, &mut lossy_paths, path);
+                 }
+             }
+         }
+@@ -691,10 +746,8 @@ fn write_out_deps(tcx: TyCtxt<'_>, outputs: &OutputFilenames, out_filenames: &[P
+             files.insert(name, (0, None));
+         }
+ 
+-        if sess.proc_macro_observed_foreign_bytes.load(Ordering::Relaxed)
+-            && CStore::from_tcx(tcx).has_public_api_hash_dependencies()
+-            && let OutFileName::Real(path) = &deps_output
+-        {
++        let attest = first && !incomplete && files.values().all(|(_, checksum)| checksum.is_some());
++        if observer && let OutFileName::Real(path) = &deps_output {
+             // Older Cargo can reuse codegen after a dependency rewrites its metadata while
+             // preserving its public hash. A child of this dep-info file cannot exist.
+             let marker = if sess.untrackable_proc_macro_source.load(Ordering::Relaxed) {
+@@ -702,79 +755,113 @@ fn write_out_deps(tcx: TyCtxt<'_>, outputs: &OutputFilenames, out_filenames: &[P
+             } else {
+                 path.join("ohm-foreign-span-bytes")
+             };
+-            files.insert(normalize_path(marker), (0, None));
++            let marker = normalize_path(marker);
++            if let Some(ordinary) = &mut ordinary {
++                ordinary.insert(marker.clone(), (0, None));
++            }
++            files.insert(marker, (0, None));
+         }
+ 
+-        let write_deps_to_file = |file: &mut dyn Write| -> io::Result<()> {
+-            // Older Cargo recognizes the output prefix to handle a colon in its name.
+-            // Preserve that layout when it could mistake the filename for a delimiter.
+-            if checksum_hash_algo.is_some()
+-                && out_filenames
+-                    .first()
+-                    .is_some_and(|p| p.to_str().is_some_and(|p| !p.contains(": ")))
+-            {
+-                writeln!(file, "# ohm-raw-checksum-paths-v2")?;
+-            }
+-            for path in out_filenames {
+-                writeln!(
+-                    file,
+-                    "{}: {}\n",
+-                    path.display(),
+-                    files.keys().map(String::as_str).intersperse(" ").collect::<String>()
+-                )?;
+-            }
++        let write_deps_to_file =
++            |file: &mut dyn Write, files: &DepFiles, checksums: bool| -> io::Result<()> {
++                // Older Cargo recognizes the output prefix to handle a colon in its name.
++                // Preserve that layout when it could mistake the filename for a delimiter.
++                if checksums
++                    && out_filenames
++                        .first()
++                        .is_some_and(|p| p.to_str().is_some_and(|p| !p.contains(": ")))
++                {
++                    file.write_all(RAW_PATHS)?;
++                }
++                for path in out_filenames {
++                    writeln!(
++                        file,
++                        "{}: {}\n",
++                        path.display(),
++                        files.keys().map(String::as_str).intersperse(" ").collect::<String>()
++                    )?;
++                }
+ 
+-            // Emit a fake target for each input file to the compilation. This
+-            // prevents `make` from spitting out an error if a file is later
+-            // deleted. For more info see #28735
+-            for path in files.keys() {
+-                writeln!(file, "{path}:")?;
+-            }
++                // Emit a fake target for each input file to the compilation. This
++                // prevents `make` from spitting out an error if a file is later
++                // deleted. For more info see #28735
++                for path in files.keys() {
++                    writeln!(file, "{path}:")?;
++                }
+ 
+-            // Emit special comments with information about accessed environment variables.
+-            let env_depinfo = sess.env_depinfo.borrow();
+-            if !env_depinfo.is_empty() {
+-                // We will soon sort, so the initial order does not matter.
+-                #[allow(rustc::potential_query_instability)]
+-                let mut envs: Vec<_> = env_depinfo
+-                    .iter()
+-                    .map(|(k, v)| (escape_dep_env(*k), v.map(escape_dep_env)))
+-                    .collect();
+-                envs.sort_unstable();
+-                writeln!(file)?;
+-                for (k, v) in envs {
+-                    write!(file, "# env-dep:{k}")?;
+-                    if let Some(v) = v {
+-                        write!(file, "={v}")?;
+-                    }
++                // Emit special comments with information about accessed environment variables.
++                let env_depinfo = sess.env_depinfo.borrow();
++                if !env_depinfo.is_empty() {
++                    // We will soon sort, so the initial order does not matter.
++                    #[allow(rustc::potential_query_instability)]
++                    let mut envs: Vec<_> = env_depinfo
++                        .iter()
++                        .map(|(k, v)| (escape_dep_env(*k), v.map(escape_dep_env)))
++                        .collect();
++                    envs.sort_unstable();
+                     writeln!(file)?;
++                    for (k, v) in envs {
++                        write!(file, "# env-dep:{k}")?;
++                        if let Some(v) = v {
++                            write!(file, "={v}")?;
++                        }
++                        writeln!(file)?;
++                    }
+                 }
+-            }
+ 
+-            // If caller requested this information, add special comments about source file checksums.
+-            // These are not necessarily the same checksums as was used in the debug files.
+-            if sess.opts.unstable_opts.checksum_hash_algorithm().is_some() {
+-                files
+-                    .iter()
+-                    .filter_map(|(path, (file_len, hash_algo))| {
+-                        hash_algo.map(|hash_algo| (path, file_len, hash_algo))
+-                    })
+-                    .try_for_each(|(path, file_len, checksum_hash)| {
+-                        writeln!(file, "# checksum:{checksum_hash} file_len:{file_len} {path}")
+-                    })?;
+-            }
++                // If caller requested this information, add special comments about source file checksums.
++                // These are not necessarily the same checksums as was used in the debug files.
++                if checksums {
++                    files
++                        .iter()
++                        .filter_map(|(path, (file_len, hash_algo))| {
++                            hash_algo.map(|hash_algo| (path, file_len, hash_algo))
++                        })
++                        .try_for_each(|(path, file_len, checksum_hash)| {
++                            writeln!(file, "# checksum:{checksum_hash} file_len:{file_len} {path}")
++                        })?;
++                }
+ 
+-            Ok(())
+-        };
++                Ok(())
++            };
+ 
++        let emit = |file: &mut dyn Write| -> io::Result<()> {
++            let ordinary = ordinary.as_ref().unwrap_or(&files);
++            let ordinary_checksums = requested.is_some() || (explicit && !incomplete);
++            if !attest {
++                return write_deps_to_file(file, ordinary, ordinary_checksums);
++            }
++            // Encode the complete, ordinary rustc dep-info as one Make comment, and bind
++            // it to this same compilation's public rules. Old tools keep their original
++            // inputs, checksum algorithm and output names.
++            let mut joined = Vec::new();
++            write_deps_to_file(&mut joined, &files, true)?;
++            let proof_len = joined.len();
++            joined.push(0);
++            write_deps_to_file(&mut joined, ordinary, ordinary_checksums)?;
++            let hash = SourceFileHash::new_in_memory(SourceFileHashAlgorithm::Blake3, &joined);
++            let ordinary = &joined[proof_len + 1..];
++            let rest = if let Some(rest) = ordinary.strip_prefix(RAW_PATHS) {
++                file.write_all(RAW_PATHS)?;
++                rest
++            } else {
++                ordinary
++            };
++            write!(file, "# ohm-observer-inputs-v1 {hash} ")?;
++            for byte in &joined[..proof_len] {
++                write!(file, "{byte:02x}")?;
++            }
++            writeln!(file)?;
++            file.write_all(rest)
++        };
+         match deps_output {
+             OutFileName::Stdout => {
+                 let mut file = BufWriter::new(io::stdout());
+-                write_deps_to_file(&mut file)?;
++                emit(&mut file)?;
+             }
+             OutFileName::Real(ref path) => {
+                 let mut file = fs::File::create_buffered(path)?;
+-                write_deps_to_file(&mut file)?;
++                emit(&mut file)?;
+             }
+         }
+     };
+diff --git a/compiler/rustc_session/src/options.rs b/compiler/rustc_session/src/options.rs
+index f9813490ba8bdc5714c253b4617e444afaf81e6b..de80cb7cd1a0937e0f6f6470d8485db9166847aa 100644
+--- a/compiler/rustc_session/src/options.rs
++++ b/compiler/rustc_session/src/options.rs
+@@ -2737,6 +2737,8 @@ options! {
+         "reuse unchanged incremental monomorphization partitions without public API hashing"),
+     ohm_metadata_macro_reuse: bool = (true, parse_bool, [TRACKED],
+         "reuse validated metadata for source-written exported macros (default: yes)"),
++    ohm_observer_dep_info: bool = (false, parse_bool, [UNTRACKED],
++        "include binary inputs and checksums in dep-info on a foreign proc-macro span observation"),
+     ohm_shared_stages: bool = (false, parse_bool, [TRACKED],
+         "reuse frontend incremental queries between metadata and link emission"),
+     ohm_split_large_cgus: bool = (true, parse_bool, [TRACKED],
+diff --git a/tests/run-make/rdr-public-hash-proc-macro-foreign-bytes/rmake.rs b/tests/run-make/rdr-public-hash-proc-macro-foreign-bytes/rmake.rs
+index 5b06a28b1983c52afdd6dc0c963dbbfe69dc4551..6ca37e5b570b0fafc7cfd56640abac659ec1c4cf 100644
+--- a/tests/run-make/rdr-public-hash-proc-macro-foreign-bytes/rmake.rs
++++ b/tests/run-make/rdr-public-hash-proc-macro-foreign-bytes/rmake.rs
+@@ -14,7 +14,7 @@ fn leaf_hash() -> String {
+     rustc().input(rust_lib_name("leaf")).arg("-Zls=public_hash").run().stdout_utf8()
+ }
+ 
+-fn client(mode: &str, crate_type: &str, expects_marker: bool) {
++fn client_with_flags(mode: &str, crate_type: &str, flags: &[&str]) -> String {
+     rustc()
+         .input("client.rs")
+         .edition("2021")
+@@ -24,8 +24,13 @@ fn client(mode: &str, crate_type: &str, expects_marker: bool) {
+         .extern_("leaf", rust_lib_name("leaf"))
+         .emit("dep-info=actual.d,link")
+         .arg("-Zpublic-api-hash")
++        .args(flags)
+         .run();
+-    let deps = rfs::read_to_string("actual.d");
++    rfs::read_to_string("actual.d")
++}
++
++fn client(mode: &str, crate_type: &str, expects_marker: bool) {
++    let deps = client_with_flags(mode, crate_type, &[]);
+     let marker = Path::new("actual.d").join("ohm-foreign-span-bytes");
+     let inputs = deps.lines().find_map(|line| line.strip_prefix("actual.d: ")).unwrap();
+     assert_eq!(inputs.split_whitespace().any(|p| Path::new(p) == marker), expects_marker, "{deps}");
+@@ -34,6 +39,49 @@ fn client(mode: &str, crate_type: &str, expects_marker: bool) {
+     }
+ }
+ 
++fn first_observation() {
++    let first = ["-Zohm-observer-dep-info"];
++    let forced = ["-Zbinary-dep-depinfo", "-Zchecksum-hash-algorithm=blake3"];
++    let has_checksums = |deps: &str| deps.lines().any(|line| line.starts_with("# checksum:"));
++    assert!(!has_checksums(&client_with_flags("clone_only", "rlib", &first)));
++    let proof = client_with_flags("observer", "rlib", &first);
++    assert!(has_checksums(&proof));
++    assert_eq!(proof, client_with_flags("observer", "rlib", &forced));
++
++    // With ordinary proc macro caching, old Make readers still get their original
++    // rules. A cooperating Cargo can read the separately checksummed full input set.
++    #[cfg(unix)]
++    {
++        let cached = ["-Zcache-proc-macros"];
++        let prefix = "# ohm-observer-inputs-v1 ";
++        let ordinary = client_with_flags("observer", "rlib", &[]);
++        let on_demand = client_with_flags("observer", "rlib", &cached);
++        let (header, rules) = on_demand.split_once('\n').unwrap();
++        assert_eq!(rules, ordinary);
++        let (digest, hex) = header.strip_prefix(prefix).unwrap().split_once(' ').unwrap();
++        assert!(digest.starts_with("blake3="));
++        let nested = (0..hex.len())
++            .step_by(2)
++            .map(|i| u8::from_str_radix(&hex[i..i + 2], 16).unwrap())
++            .collect::<Vec<_>>();
++        assert_eq!(nested, proof.as_bytes());
++        assert!(!client_with_flags("clone_only", "rlib", &cached).contains(prefix));
++    }
++
++    // Do not certify normalized text as the original bytes. Explicit checksums on
++    // the next compile can still authenticate both CRLF source and a binary include.
++    let source = rfs::read_to_string("client.rs");
++    rfs::write("payload.bin", [0xff, 0x07]);
++    let edited = format!("{source}\nconst _: &[u8] = include_bytes!(\"payload.bin\");\n");
++    rfs::write("client.rs", edited.replace('\n', "\r\n"));
++    let pending = client_with_flags("observer", "rlib", &first);
++    assert!(pending.contains("ohm-foreign-span-bytes") && !has_checksums(&pending));
++    let trained = client_with_flags("observer", "rlib", &[forced[0], forced[1], first[0]]);
++    assert!(has_checksums(&trained));
++    assert_eq!(trained, client_with_flags("observer", "rlib", &forced));
++    rfs::write("client.rs", source);
++}
++
+ fn observed_byte_start() -> usize {
+     client("observer", "bin", true);
+     let output = run("client").stdout_utf8();
+@@ -44,6 +92,7 @@ fn observed_byte_start() -> usize {
+ fn main() {
+     rustc().input("probe.rs").crate_type("proc-macro").run();
+     let original = leaf_hash();
++    first_observation();
+     client("clone_only", "bin", false);
+     client("local", "bin", false);
+     let before = observed_byte_start();

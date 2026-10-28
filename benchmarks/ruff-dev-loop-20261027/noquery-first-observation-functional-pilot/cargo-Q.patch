@@ -1,0 +1,80 @@
+diff --git a/src/compiler/mod.rs b/src/compiler/mod.rs
+index 4a1faf1d7dbd8d17702cd5abf48185214d587d38..9f3084e50a0a7e8e13d726024f9ee9a93c82ebe4 100644
+--- a/src/compiler/mod.rs
++++ b/src/compiler/mod.rs
+@@ -1354,16 +1354,26 @@ fn rustc(
+     let env_config = Arc::clone(build_runner.bcx.gctx.env_config()?);
+ 
+     let fingerprint = build_runner.fingerprints.get(unit).cloned();
+-    let captures_observer_inputs = fingerprint
+-        .as_ref()
+-        .is_some_and(|fp| fp.observes_span_inputs())
+-        && build_runner.bcx.gctx.cli_unstable().ohm_defaults()
++    let can_capture_observer = build_runner.bcx.gctx.cli_unstable().ohm_defaults()
+         && build_runner.bcx.rustc().wrapper.is_none()
+         && (build_runner.bcx.rustc().workspace_wrapper.is_none()
+             || !build_runner.bcx.ws.is_member(&unit.pkg))
+         && build_runner.bcx.extra_args_for(unit).is_none()
+         && fingerprint::unit_has_exclusive_metadata_access(build_runner, unit);
+-    if captures_observer_inputs {
++    let known_observer = can_capture_observer
++        && fingerprint
++            .as_ref()
++            .is_some_and(|fp| fp.observes_span_inputs());
++    let on_demand = can_capture_observer
++        && build_runner
++            .bcx
++            .rustc()
++            .supports_ohm_observer_dep_info(build_runner.bcx.gctx);
++    if on_demand {
++        rustc.arg("-Zohm-observer-dep-info");
++    }
++    let captures_observer_inputs = known_observer || on_demand;
++    if known_observer {
+         rustc.arg("-Zbinary-dep-depinfo");
+         if !unit_uses_checksum_freshness(build_runner, unit) {
+             rustc.arg("-Zchecksum-hash-algorithm=blake3");
+diff --git a/src/util/rustc.rs b/src/util/rustc.rs
+index ee7557a73fe303787ab62706bf5653ff8b299571..a5b34680470201602fee97738b65f325e1905f4c 100644
+--- a/src/util/rustc.rs
++++ b/src/util/rustc.rs
+@@ -37,6 +37,7 @@ pub struct Rustc {
+     ohm_incremental_codegen: OnceLock<bool>,
+     ohm_incremental_mono_partitions: OnceLock<bool>,
+     ohm_shared_stages: OnceLock<bool>,
++    ohm_observer_dep_info: OnceLock<bool>,
+     ohm_thinlto_cache: OnceLock<bool>,
+     bundled_clippy_wrapper: OnceLock<bool>,
+ }
+@@ -124,6 +125,7 @@ impl Rustc {
+             ohm_incremental_codegen: OnceLock::new(),
+             ohm_incremental_mono_partitions: OnceLock::new(),
+             ohm_shared_stages: OnceLock::new(),
++            ohm_observer_dep_info: OnceLock::new(),
+             ohm_thinlto_cache: OnceLock::new(),
+             bundled_clippy_wrapper: OnceLock::new(),
+         })
+@@ -199,6 +201,23 @@ impl Rustc {
+         })
+     }
+ 
++    /// Whether this compiler can attest observer inputs during the first compilation.
++    pub fn supports_ohm_observer_dep_info(&self, gctx: &GlobalContext) -> bool {
++        *self.ohm_observer_dep_info.get_or_init(|| {
++            let mut process = self.process();
++            if let Err(error) = apply_env_config(gctx, &mut process) {
++                debug!("unable to configure observer dep-info capability probe: {error}");
++                return false;
++            }
++            process
++                .arg("-Zohm-observer-dep-info")
++                .arg("--print=sysroot");
++            // A toolchain can replace its rustc driver without changing the frontend
++            // executable used to key the persistent compiler information cache.
++            process.exec_with_output().is_ok()
++        })
++    }
++
+     /// Older compilers keep their normal backend when they lack the cache option.
+     pub fn supports_ohm_thinlto_cache(&self, gctx: &GlobalContext) -> bool {
+         *self.ohm_thinlto_cache.get_or_init(|| {
