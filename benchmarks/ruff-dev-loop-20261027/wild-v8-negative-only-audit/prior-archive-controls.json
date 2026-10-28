@@ -1,0 +1,136 @@
+[
+  {
+    "case": "ordinary GCC seed",
+    "elf": "30ac02624cedd72db9942608d3183b41e4d46baa5f89a2d9d2b677d0c2f21657",
+    "events": [
+      "miss\te18bf3beba77a7bb26a937c79f228e5828748584e12512a514af87e307cb7870\tplain"
+    ],
+    "exit": 42
+  },
+  {
+    "case": "actual GCC plugin advertised but never loaded",
+    "elf": "30ac02624cedd72db9942608d3183b41e4d46baa5f89a2d9d2b677d0c2f21657",
+    "events": [
+      "hit\te18bf3beba77a7bb26a937c79f228e5828748584e12512a514af87e307cb7870\tplain"
+    ],
+    "exit": 42
+  },
+  {
+    "case": "retained ELF tampered",
+    "elf": "30ac02624cedd72db9942608d3183b41e4d46baa5f89a2d9d2b677d0c2f21657",
+    "events": [
+      "miss\te18bf3beba77a7bb26a937c79f228e5828748584e12512a514af87e307cb7870\tplain"
+    ],
+    "exit": 42
+  },
+  {
+    "case": "authentic 233 MiB Rust producer seed",
+    "elf": "30ac02624cedd72db9942608d3183b41e4d46baa5f89a2d9d2b677d0c2f21657",
+    "events": [
+      "miss\t46e4cff775b6ed24fdbd5b18d4136af4ac226b5a238b845bb129a3cf513c84ef\twithrust"
+    ],
+    "exit": 42
+  },
+  {
+    "case": "same native contents with changed excluded metadata and CGU invocation names",
+    "elf": "30ac02624cedd72db9942608d3183b41e4d46baa5f89a2d9d2b677d0c2f21657",
+    "events": [
+      "hit\t46e4cff775b6ed24fdbd5b18d4136af4ac226b5a238b845bb129a3cf513c84ef\twithrust"
+    ],
+    "exit": 42
+  },
+  {
+    "case": "real native code change with identical symbol index",
+    "elf": "30ac02624cedd72db9942608d3183b41e4d46baa5f89a2d9d2b677d0c2f21657",
+    "events": [
+      "miss\t3effe77e433b84ee5b0d092db25f369f1ce1f7cad6bd1945e5b2aec73b89c2a3\twithrust"
+    ],
+    "exit": 42
+  },
+  {
+    "case": "explicit off overrides bundled compilation feature",
+    "elf": "30ac02624cedd72db9942608d3183b41e4d46baa5f89a2d9d2b677d0c2f21657",
+    "events": [],
+    "exit": 42
+  },
+  {
+    "case": "new search result seed",
+    "elf": "30ac02624cedd72db9942608d3183b41e4d46baa5f89a2d9d2b677d0c2f21657",
+    "events": [
+      "miss\t52b7e49b6838e2f1c8890c0776fd0f8534b32b103013ded0ca751820ea508872\tsearched"
+    ],
+    "exit": 42
+  },
+  {
+    "case": "new earlier archive wins",
+    "elf": "ef22873e062b394d5772515fd12e5542a03cbad7e91700719896ab79239a2b08",
+    "events": [
+      "miss\t7db08d649cb92d3e4739226873eef2b973137548e9e9cec25b7e64e92aa31245\tsearched"
+    ],
+    "exit": 21
+  },
+  {
+    "case": "unchosen member seed",
+    "elf": "30ac02624cedd72db9942608d3183b41e4d46baa5f89a2d9d2b677d0c2f21657",
+    "events": [
+      "miss\t36937a842e96ead6be58b244439f151869f6981fed31117b55420ae852289b53\tsymbols"
+    ],
+    "exit": 42
+  },
+  {
+    "case": "unchosen member gains a symbol",
+    "elf": "8bf5d926b5ad39e87af6cdb5a4270430f52d8d55b3fcb660261f1e8cb3824e6e",
+    "events": [
+      "miss\t520b58aad76a1d3699493eede554765620fe54ea899150fdd7cceba8866d716a\tsymbols"
+    ],
+    "exit": 17
+  },
+  {
+    "case": "unsupported thin archive",
+    "elf": "30ac02624cedd72db9942608d3183b41e4d46baa5f89a2d9d2b677d0c2f21657",
+    "events": [],
+    "exit": 42
+  },
+  {
+    "case": "same thin archive, external member replaced",
+    "elf": "a2baa6d2b9dfb4e071b52ab18ac5abb78b83577429e2b443868a60f339ce43c7",
+    "events": [],
+    "exit": 12
+  },
+  {
+    "case": "auxiliary layout requested",
+    "elf": "a2baa6d2b9dfb4e071b52ab18ac5abb78b83577429e2b443868a60f339ce43c7",
+    "events": [],
+    "exit": 12
+  },
+  {
+    "case": "auxiliary layout rerun",
+    "elf": "a2baa6d2b9dfb4e071b52ab18ac5abb78b83577429e2b443868a60f339ce43c7",
+    "events": [],
+    "exit": 12
+  },
+  {
+    "case": "actual GCC LTO plugin loaded",
+    "elf": "bbfc690df91de6273f39c4f6faf584730350d3340fb0cc241a1467702bd1da47",
+    "events": [],
+    "exit": 37
+  },
+  {
+    "case": "actual GCC LTO plugin repeated",
+    "elf": "bbfc690df91de6273f39c4f6faf584730350d3340fb0cc241a1467702bd1da47",
+    "events": [],
+    "exit": 37
+  },
+  {
+    "case": "filename-dependent script crate.cgu.1old.rcgu.o",
+    "elf": "24b31d5930440c29053c590ca2cf8d602e26832058f1ed8ed238acffcab5ecf1",
+    "events": [],
+    "exit": 42
+  },
+  {
+    "case": "filename-dependent script crate.cgu.2new.rcgu.o",
+    "elf": "e003bcb95ed0bd1a8ba55c7f5f22493147bd1b4245e6cf74d4589ac89586a486",
+    "events": [],
+    "exit": 42
+  }
+]

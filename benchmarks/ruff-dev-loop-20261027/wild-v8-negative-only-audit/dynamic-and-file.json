@@ -1,0 +1,204 @@
+{
+  "capabilities": 0,
+  "dynamic": {
+    "candidate": [
+      {
+        "argc": 8,
+        "cache_events": [
+          "miss"
+        ],
+        "calls_on_verified_output_fd": [
+          {
+            "call": "ftruncate",
+            "writable_mapping": false
+          },
+          {
+            "call": "mmap",
+            "writable_mapping": true
+          },
+          {
+            "call": "fchmod",
+            "writable_mapping": false
+          },
+          {
+            "call": "mmap",
+            "writable_mapping": false
+          }
+        ],
+        "identical_dso_sha256": "ac366815a3e6d87b4a573d1095c87656a0893f16849363f25b3432f2aa36970e",
+        "input": "helper.0123456789abcdef.aaaaaaa.rcgu.o",
+        "link_exit": 0,
+        "loader_named_old_missing": false,
+        "needed": [
+          "helper.0123456789abcdef.aaaaaaa.rcgu.o"
+        ],
+        "program_exit": 42,
+        "program_sha256": "aef9529a403d3a23e6a364cebe7f215cd27808beeaedd1630c827caf8eeea3b6"
+      },
+      {
+        "argc": 8,
+        "cache_events": [
+          "hit"
+        ],
+        "calls_on_verified_output_fd": [
+          {
+            "call": "mmap",
+            "writable_mapping": false
+          },
+          {
+            "call": "utimensat",
+            "writable_mapping": false
+          }
+        ],
+        "identical_dso_sha256": "ac366815a3e6d87b4a573d1095c87656a0893f16849363f25b3432f2aa36970e",
+        "input": "helper.0123456789abcdef.bbbbbbb.rcgu.o",
+        "link_exit": 0,
+        "loader_named_old_missing": true,
+        "needed": [
+          "helper.0123456789abcdef.aaaaaaa.rcgu.o"
+        ],
+        "program_exit": 127,
+        "program_sha256": "aef9529a403d3a23e6a364cebe7f215cd27808beeaedd1630c827caf8eeea3b6"
+      },
+      {
+        "argc": 8,
+        "cache_events": [
+          "hit"
+        ],
+        "calls_on_verified_output_fd": [
+          {
+            "call": "mmap",
+            "writable_mapping": false
+          },
+          {
+            "call": "utimensat",
+            "writable_mapping": false
+          }
+        ],
+        "identical_dso_sha256": "ac366815a3e6d87b4a573d1095c87656a0893f16849363f25b3432f2aa36970e",
+        "input": "helper.0123456789abcdef.bbbbbbb.rcgu.o",
+        "link_exit": 0,
+        "loader_named_old_missing": true,
+        "needed": [
+          "helper.0123456789abcdef.aaaaaaa.rcgu.o"
+        ],
+        "program_exit": 127,
+        "program_sha256": "aef9529a403d3a23e6a364cebe7f215cd27808beeaedd1630c827caf8eeea3b6"
+      }
+    ],
+    "stock": [
+      {
+        "argc": 8,
+        "cache_events": [],
+        "calls_on_verified_output_fd": [
+          {
+            "call": "ftruncate",
+            "writable_mapping": false
+          },
+          {
+            "call": "mmap",
+            "writable_mapping": true
+          },
+          {
+            "call": "fchmod",
+            "writable_mapping": false
+          }
+        ],
+        "identical_dso_sha256": "ac366815a3e6d87b4a573d1095c87656a0893f16849363f25b3432f2aa36970e",
+        "input": "helper.0123456789abcdef.aaaaaaa.rcgu.o",
+        "link_exit": 0,
+        "loader_named_old_missing": false,
+        "needed": [
+          "helper.0123456789abcdef.aaaaaaa.rcgu.o"
+        ],
+        "program_exit": 42,
+        "program_sha256": "aef9529a403d3a23e6a364cebe7f215cd27808beeaedd1630c827caf8eeea3b6"
+      },
+      {
+        "argc": 8,
+        "cache_events": [],
+        "calls_on_verified_output_fd": [
+          {
+            "call": "ftruncate",
+            "writable_mapping": false
+          },
+          {
+            "call": "mmap",
+            "writable_mapping": true
+          },
+          {
+            "call": "fchmod",
+            "writable_mapping": false
+          }
+        ],
+        "identical_dso_sha256": "ac366815a3e6d87b4a573d1095c87656a0893f16849363f25b3432f2aa36970e",
+        "input": "helper.0123456789abcdef.bbbbbbb.rcgu.o",
+        "link_exit": 0,
+        "loader_named_old_missing": false,
+        "needed": [
+          "helper.0123456789abcdef.bbbbbbb.rcgu.o"
+        ],
+        "program_exit": 42,
+        "program_sha256": "d065cd6dfc4dfadfc8a5009419a9e13c016e2c002a9431776be8768cb2645022"
+      },
+      {
+        "argc": 8,
+        "cache_events": [],
+        "calls_on_verified_output_fd": [
+          {
+            "call": "ftruncate",
+            "writable_mapping": false
+          },
+          {
+            "call": "mmap",
+            "writable_mapping": true
+          },
+          {
+            "call": "fchmod",
+            "writable_mapping": false
+          }
+        ],
+        "identical_dso_sha256": "ac366815a3e6d87b4a573d1095c87656a0893f16849363f25b3432f2aa36970e",
+        "input": "helper.0123456789abcdef.bbbbbbb.rcgu.o",
+        "link_exit": 0,
+        "loader_named_old_missing": false,
+        "needed": [
+          "helper.0123456789abcdef.bbbbbbb.rcgu.o"
+        ],
+        "program_exit": 42,
+        "program_sha256": "d065cd6dfc4dfadfc8a5009419a9e13c016e2c002a9431776be8768cb2645022"
+      }
+    ]
+  },
+  "file_updates": {
+    "pwrite": [
+      "0o4755",
+      "0o755",
+      true,
+      true
+    ],
+    "truncate": [
+      "0o4755",
+      "0o755",
+      true,
+      true
+    ],
+    "truncate_and_chmod": [
+      "0o4755",
+      "0o755",
+      true,
+      true
+    ],
+    "utime": [
+      "0o4755",
+      "0o4755",
+      true,
+      true
+    ]
+  },
+  "tools": {
+    "candidate": "c813de15da27872ce0a294a321053674fa8e7c08b4443798b831a6da5d37374c",
+    "stock": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+  },
+  "user_id": 1000
+}
