@@ -1,0 +1,22 @@
+{
+  "ruff": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "real_edit": "83a3afc3156d73ae4296f3fa74ede28e4c72bfcd",
+  "files": {
+    "crates/ruff_linter/resources/mdtest/flake8-return/superfluous-else-return.md": {
+      "original": "2246bd5b5371de66ea1a9572183356961ad9d04f",
+      "reversed": null
+    },
+    "crates/ruff_linter/src/rules/pylint/snapshots/ruff_linter__rules__pylint__tests__collapsible-else-if_collapsible_else_if.py.snap": {
+      "original": "d38943662b25407c6e62e7633934e11631dcc063",
+      "reversed": "7d26d79e5e5c352b636e68b7d5276636cf98f1a6"
+    },
+    "crates/ruff_python_trivia/src/textwrap.rs": {
+      "original": "c9afa786cdf8641587b1b88d6cb151da839ecdf3",
+      "reversed": "df7b1618dea2f8057c7bc6ab729be6c67be055fa"
+    }
+  },
+  "patch_sha256": "1a19c9583a7441e636d52831feb357ee0eb70671a0f0375a3581ff9961689342",
+  "stdin": "def f(condition):\n    if condition:\n        return 1\n    else:  # leading comment\n        # First comment.\n          # Second comment.\n        return 2\n",
+  "original": "def f(condition):\n    if condition:\n        return 1\n    # leading comment\n    # First comment.\n      # Second comment.\n    return 2\n",
+  "reversed": "def f(condition):\n    if condition:\n        return 1\n    # leading comment\n        # First comment.\n    # Second comment.\n        return 2\n"
+}
