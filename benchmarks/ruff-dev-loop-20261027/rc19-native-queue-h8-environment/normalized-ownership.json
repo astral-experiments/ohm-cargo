@@ -1,0 +1,566 @@
+{
+  "A": {
+    "cache_io_sha256": "2bcb98f6ac2173c6b3856ac6f1f55f8fcd8edd7d23254c7de4c0f8af682913fc",
+    "namespace": {
+      "ancestors": {
+        "build": {
+          "gid": 1000,
+          "mode": "0700",
+          "trusted": true,
+          "uid": 1000
+        },
+        "cache_parent": {
+          "gid": 1000,
+          "mode": "0755",
+          "trusted": true,
+          "uid": 1000
+        },
+        "cargo": {
+          "gid": 1000,
+          "mode": "0700",
+          "trusted": true,
+          "uid": 1000
+        },
+        "home": {
+          "gid": 1000,
+          "mode": "0700",
+          "trusted": true,
+          "uid": 1000
+        },
+        "home_parent": {
+          "gid": 0,
+          "mode": "0755",
+          "trusted": true,
+          "uid": 0
+        },
+        "logical": {
+          "gid": 1000,
+          "mode": "0700",
+          "trusted": true,
+          "uid": 1000
+        },
+        "real_home": {
+          "gid": 1000,
+          "mode": "0755",
+          "trusted": true,
+          "uid": 1000
+        },
+        "root": {
+          "gid": 0,
+          "mode": "0755",
+          "trusted": true,
+          "uid": 0
+        },
+        "target": {
+          "gid": 1000,
+          "mode": "0700",
+          "trusted": true,
+          "uid": 1000
+        },
+        "tmp": {
+          "gid": 1000,
+          "mode": "0700",
+          "trusted": true,
+          "uid": 1000
+        },
+        "workspace_root": {
+          "gid": 1000,
+          "mode": "0700",
+          "trusted": true,
+          "uid": 1000
+        }
+      },
+      "caps": {
+        "CapAmb": "0000000000000000",
+        "CapBnd": "0000000000000000",
+        "CapEff": "0000000000000000",
+        "CapInh": "0000000000000000",
+        "CapPrm": "0000000000000000",
+        "NoNewPrivs": "1"
+      },
+      "effective": 1000,
+      "groups": [
+        988,
+        1000
+      ],
+      "ids": {
+        "gid": [
+          "0",
+          "0",
+          "4294967295"
+        ],
+        "uid": [
+          "0",
+          "0",
+          "4294967295"
+        ]
+      },
+      "real": 1000
+    },
+    "phases": [
+      {
+        "fresh": 14,
+        "raw_stderr": "7dd35dc7b7d2098db17eeadd3c4f8b533cda5afe2449a587075e7f597c02cef6",
+        "raw_stdout": "ecaf7690672dc200103e2a99497f49df0df84d21cac673a7ba26c52b88cba4fc",
+        "stamped_entries_after": 409,
+        "stamped_entries_before": 0,
+        "units": 619
+      },
+      {
+        "fresh": 563,
+        "native": {
+          "cargo": 1,
+          "collect2": 50,
+          "gcc": 50,
+          "rustc-full": 1,
+          "rustc-link-only": 50,
+          "stock-wild": 50
+        },
+        "raw_stderr": "1aeffae1bdd8204dd2ebd19edb1ec209e39a2c7fe156d1e0eb843f02635f6219",
+        "raw_stdout": "ce31ca9ce28ea8b6620f6b9fcea8d1abcb4df86a06e2485922ee165483fb2d7a",
+        "receipt": "684a753008cd475e540b50c5b0f9fce20a0c4ada39f6f02066ee6f1662876b15",
+        "stamped_entries_after": 411,
+        "stamped_entries_before": 409,
+        "units": 619
+      },
+      {
+        "fresh": 563,
+        "io_sha256": "2bcb98f6ac2173c6b3856ac6f1f55f8fcd8edd7d23254c7de4c0f8af682913fc",
+        "raw_stderr": "ecd3fe5b5099f95f6f0b1c7afc3e55dbdcfc483b1d8524463b0b56853495fa9d",
+        "raw_stdout": "a3fde316163761f00773e88a888070a564657c86d433633d07167850e06b2066",
+        "sampled_live_cache_reads": {
+          ".ohm-git-index-sha1dc-v1/36f": {
+            "len": 32,
+            "opens": 1,
+            "positive_read_bytes": 32,
+            "raw": "b8362a9ba9f53f8e050459cc3eff62b095ceb8462e7a18c536e8e5720a16dddb",
+            "reads": 1
+          },
+          ".ohm-registry-json-v2/016": {
+            "len": 1304,
+            "opens": 1,
+            "positive_read_bytes": 1304,
+            "raw": "fe65277040afe55533c7a05d5ff9b8f28dbb717bf793395e9f3116dc6659098f",
+            "reads": 1
+          },
+          ".ohm-registry-json-v2/32d": {
+            "len": 1359,
+            "opens": 1,
+            "positive_read_bytes": 1359,
+            "raw": "c62903510663b0db43487222c534715431e2db1524eea80126921e519631682e",
+            "reads": 1
+          },
+          ".ohm-registry-json-v2/651": {
+            "len": 2934,
+            "opens": 1,
+            "positive_read_bytes": 2934,
+            "raw": "7da777726f217ed3e6653b06b19741774fbbc1858512ef3065858e75c78a9dff",
+            "reads": 1
+          },
+          ".ohm-registry-json-v2/96e": {
+            "len": 469,
+            "opens": 1,
+            "positive_read_bytes": 469,
+            "raw": "016b740f13aff149b05fb2fe94600ba5a4164c8f8127f002d764991e3a534a34",
+            "reads": 1
+          },
+          ".ohm-registry-json-v2/cc0": {
+            "len": 1039,
+            "opens": 1,
+            "positive_read_bytes": 1039,
+            "raw": "da01826496c1761eb577b55cd493aef6d10f3e4eeff27509417ec9fa2628b961",
+            "reads": 1
+          },
+          ".ohm-registry-json-v2/fbe": {
+            "len": 1172,
+            "opens": 1,
+            "positive_read_bytes": 1172,
+            "raw": "1b415e1a1757c680fab5cc8085e73e1ab640979b694424ee6a7e558d1c51e8aa",
+            "reads": 1
+          }
+        },
+        "stamped_entries_after": 411,
+        "stamped_entries_before": 411,
+        "units": 619
+      }
+    ],
+    "raw_terminal": "a105612b1546c866b8502afbd020036621bfbb318f6d388aafb7e1be709a2200",
+    "source_mode": "original"
+  },
+  "B": {
+    "cache_io_sha256": "74df201c284c392796c739641bc55f3a412a7b00c467f746bf73ebdb415eef55",
+    "namespace": {
+      "ancestors": {
+        "build": {
+          "gid": 1000,
+          "mode": "0700",
+          "trusted": true,
+          "uid": 1000
+        },
+        "cache_parent": {
+          "gid": 1000,
+          "mode": "0755",
+          "trusted": true,
+          "uid": 1000
+        },
+        "cargo": {
+          "gid": 1000,
+          "mode": "0700",
+          "trusted": true,
+          "uid": 1000
+        },
+        "home": {
+          "gid": 1000,
+          "mode": "0700",
+          "trusted": true,
+          "uid": 1000
+        },
+        "home_parent": {
+          "gid": 0,
+          "mode": "0755",
+          "trusted": true,
+          "uid": 0
+        },
+        "logical": {
+          "gid": 1000,
+          "mode": "0700",
+          "trusted": true,
+          "uid": 1000
+        },
+        "real_home": {
+          "gid": 1000,
+          "mode": "0755",
+          "trusted": true,
+          "uid": 1000
+        },
+        "root": {
+          "gid": 0,
+          "mode": "0755",
+          "trusted": true,
+          "uid": 0
+        },
+        "target": {
+          "gid": 1000,
+          "mode": "0700",
+          "trusted": true,
+          "uid": 1000
+        },
+        "tmp": {
+          "gid": 1000,
+          "mode": "0700",
+          "trusted": true,
+          "uid": 1000
+        },
+        "workspace_root": {
+          "gid": 1000,
+          "mode": "0700",
+          "trusted": true,
+          "uid": 1000
+        }
+      },
+      "caps": {
+        "CapAmb": "0000000000000000",
+        "CapBnd": "0000000000000000",
+        "CapEff": "0000000000000000",
+        "CapInh": "0000000000000000",
+        "CapPrm": "0000000000000000",
+        "NoNewPrivs": "1"
+      },
+      "effective": 1000,
+      "groups": [
+        988,
+        1000
+      ],
+      "ids": {
+        "gid": [
+          "0",
+          "0",
+          "4294967295"
+        ],
+        "uid": [
+          "0",
+          "0",
+          "4294967295"
+        ]
+      },
+      "real": 1000
+    },
+    "phases": [
+      {
+        "fresh": 14,
+        "raw_stderr": "0d7b7e181c593a2e05062ff45f730f34e847298e633bbf20ca59713b935c626f",
+        "raw_stdout": "0dde41e8518f69b651d4d3c3d5ef6d9f2f7b4b2406606267c2708585d6393653",
+        "stamped_entries_after": 409,
+        "stamped_entries_before": 0,
+        "units": 619
+      },
+      {
+        "fresh": 563,
+        "native": {
+          "cargo": 1,
+          "collect2": 50,
+          "gcc": 50,
+          "rustc-full": 1,
+          "rustc-link-only": 50,
+          "stock-wild": 50
+        },
+        "raw_stderr": "0b985bc04a06114ecf994e62bb3b615b36a7cafa6fbeac93586dc5d0903d39da",
+        "raw_stdout": "eb1ed0348f17b89588cfd5d0609f2e743d7544f02826ff62c55cf9672bfcbdfc",
+        "receipt": "f0f9f41995419ca606eac7c0a5aed105fcfdeb9a951da11b6049b5c910f1e9f5",
+        "stamped_entries_after": 411,
+        "stamped_entries_before": 409,
+        "units": 619
+      },
+      {
+        "fresh": 563,
+        "io_sha256": "74df201c284c392796c739641bc55f3a412a7b00c467f746bf73ebdb415eef55",
+        "raw_stderr": "346d3089ce4856cbf9ce82035e27ca57d579d263123f2571f656dd3823a1ce2a",
+        "raw_stdout": "8a2aea3de9caa7dfa92d75406d6ebd837ddb900c7e821d2cb1390d47d250574f",
+        "sampled_live_cache_reads": {
+          ".ohm-git-index-sha1dc-v1/36f": {
+            "len": 32,
+            "opens": 1,
+            "positive_read_bytes": 32,
+            "raw": "b8362a9ba9f53f8e050459cc3eff62b095ceb8462e7a18c536e8e5720a16dddb",
+            "reads": 1
+          },
+          ".ohm-registry-json-v2/016": {
+            "len": 1304,
+            "opens": 1,
+            "positive_read_bytes": 1304,
+            "raw": "fe65277040afe55533c7a05d5ff9b8f28dbb717bf793395e9f3116dc6659098f",
+            "reads": 1
+          },
+          ".ohm-registry-json-v2/32d": {
+            "len": 1359,
+            "opens": 1,
+            "positive_read_bytes": 1359,
+            "raw": "c62903510663b0db43487222c534715431e2db1524eea80126921e519631682e",
+            "reads": 1
+          },
+          ".ohm-registry-json-v2/651": {
+            "len": 2934,
+            "opens": 1,
+            "positive_read_bytes": 2934,
+            "raw": "7da777726f217ed3e6653b06b19741774fbbc1858512ef3065858e75c78a9dff",
+            "reads": 1
+          },
+          ".ohm-registry-json-v2/96e": {
+            "len": 469,
+            "opens": 1,
+            "positive_read_bytes": 469,
+            "raw": "016b740f13aff149b05fb2fe94600ba5a4164c8f8127f002d764991e3a534a34",
+            "reads": 1
+          },
+          ".ohm-registry-json-v2/cc0": {
+            "len": 1039,
+            "opens": 1,
+            "positive_read_bytes": 1039,
+            "raw": "da01826496c1761eb577b55cd493aef6d10f3e4eeff27509417ec9fa2628b961",
+            "reads": 1
+          },
+          ".ohm-registry-json-v2/fbe": {
+            "len": 1172,
+            "opens": 1,
+            "positive_read_bytes": 1172,
+            "raw": "1b415e1a1757c680fab5cc8085e73e1ab640979b694424ee6a7e558d1c51e8aa",
+            "reads": 1
+          }
+        },
+        "stamped_entries_after": 411,
+        "stamped_entries_before": 411,
+        "units": 619
+      }
+    ],
+    "raw_terminal": "d6ab0042c02dfd2e1e183d5f1267b0a419dc56286f2699ed5cf0162dc180b456",
+    "source_mode": "original"
+  },
+  "shipped-18": {
+    "cache_io_sha256": "f0dc41c5068a192e7c37b422b919e4fe964b7b6a5bfff987bef2fa7237c7a6aa",
+    "namespace": {
+      "ancestors": {
+        "build": {
+          "gid": 1000,
+          "mode": "0700",
+          "trusted": true,
+          "uid": 1000
+        },
+        "cache_parent": {
+          "gid": 1000,
+          "mode": "0755",
+          "trusted": true,
+          "uid": 1000
+        },
+        "cargo": {
+          "gid": 1000,
+          "mode": "0700",
+          "trusted": true,
+          "uid": 1000
+        },
+        "home": {
+          "gid": 1000,
+          "mode": "0700",
+          "trusted": true,
+          "uid": 1000
+        },
+        "home_parent": {
+          "gid": 0,
+          "mode": "0755",
+          "trusted": true,
+          "uid": 0
+        },
+        "logical": {
+          "gid": 1000,
+          "mode": "0700",
+          "trusted": true,
+          "uid": 1000
+        },
+        "real_home": {
+          "gid": 1000,
+          "mode": "0755",
+          "trusted": true,
+          "uid": 1000
+        },
+        "root": {
+          "gid": 0,
+          "mode": "0755",
+          "trusted": true,
+          "uid": 0
+        },
+        "target": {
+          "gid": 1000,
+          "mode": "0700",
+          "trusted": true,
+          "uid": 1000
+        },
+        "tmp": {
+          "gid": 1000,
+          "mode": "0700",
+          "trusted": true,
+          "uid": 1000
+        },
+        "workspace_root": {
+          "gid": 1000,
+          "mode": "0700",
+          "trusted": true,
+          "uid": 1000
+        }
+      },
+      "caps": {
+        "CapAmb": "0000000000000000",
+        "CapBnd": "0000000000000000",
+        "CapEff": "0000000000000000",
+        "CapInh": "0000000000000000",
+        "CapPrm": "0000000000000000",
+        "NoNewPrivs": "1"
+      },
+      "effective": 1000,
+      "groups": [
+        988,
+        1000
+      ],
+      "ids": {
+        "gid": [
+          "0",
+          "0",
+          "4294967295"
+        ],
+        "uid": [
+          "0",
+          "0",
+          "4294967295"
+        ]
+      },
+      "real": 1000
+    },
+    "phases": [
+      {
+        "fresh": 14,
+        "raw_stderr": "232d5a11a3ca7311e68b117b009fda6bfefade2a20a5efb522355e2df6614e14",
+        "raw_stdout": "5c07399defdafea0daf7b77701774c2aa27b5c558ef9cecc8d56230c8195701a",
+        "stamped_entries_after": 409,
+        "stamped_entries_before": 0,
+        "units": 619
+      },
+      {
+        "fresh": 563,
+        "native": {
+          "cargo": 1,
+          "collect2": 50,
+          "gcc": 50,
+          "rustc-full": 1,
+          "rustc-link-only": 50,
+          "stock-wild": 50
+        },
+        "raw_stderr": "82e1893eda6f534dbcdb92b105dc7c18735b5b40d9b8cf2968b14101c74f9ad0",
+        "raw_stdout": "470587105b48a5ea5e40d525e6b26cafd0ad933c01da4ce9209997b7cab03b58",
+        "receipt": "7093ab6fa2296bc7d528fcc4c80dca775b1c723b5ae9db470a875f8f52bdaa54",
+        "stamped_entries_after": 411,
+        "stamped_entries_before": 409,
+        "units": 619
+      },
+      {
+        "fresh": 563,
+        "io_sha256": "f0dc41c5068a192e7c37b422b919e4fe964b7b6a5bfff987bef2fa7237c7a6aa",
+        "raw_stderr": "2ccb12c89c5a9e8bed237c7f7fe5a84a15728f5ae07977fe7d262b26af3b2d0e",
+        "raw_stdout": "d11b21a471e7e4257be0ced78835c701c9908b36a3d239410237f9ba6041fa9e",
+        "sampled_live_cache_reads": {
+          ".ohm-git-index-sha1dc-v1/36f": {
+            "len": 32,
+            "opens": 1,
+            "positive_read_bytes": 32,
+            "raw": "b8362a9ba9f53f8e050459cc3eff62b095ceb8462e7a18c536e8e5720a16dddb",
+            "reads": 1
+          },
+          ".ohm-registry-json-v2/004": {
+            "len": 1985,
+            "opens": 1,
+            "positive_read_bytes": 1985,
+            "raw": "923ed235cc0a7a783a4eeee5ce42aa184df964a98da833e25f8200e81b8768c2",
+            "reads": 1
+          },
+          ".ohm-registry-json-v2/323": {
+            "len": 628,
+            "opens": 1,
+            "positive_read_bytes": 628,
+            "raw": "4c9cba16a0115765b53f51cfc7d63f1d2e543937709a3e5947e555b1c3790aad",
+            "reads": 1
+          },
+          ".ohm-registry-json-v2/605": {
+            "len": 1258,
+            "opens": 1,
+            "positive_read_bytes": 1258,
+            "raw": "1d6b6c891ac602d7206e081a3817a81e655c30b39a78fb12e143d2d956ef170c",
+            "reads": 1
+          },
+          ".ohm-registry-json-v2/8e4": {
+            "len": 1667,
+            "opens": 1,
+            "positive_read_bytes": 1667,
+            "raw": "19d9a141c894b9c94c068b2e6ee5851c2342e659a6bbb0c865a3ce8cc4c30b0a",
+            "reads": 1
+          },
+          ".ohm-registry-json-v2/c3e": {
+            "len": 1302,
+            "opens": 1,
+            "positive_read_bytes": 1302,
+            "raw": "83b0ba9231fa502cd95522d01ae011859e03fb334a4f493a0758c7ad3e9cb2cc",
+            "reads": 1
+          },
+          ".ohm-registry-json-v2/ff1": {
+            "len": 975,
+            "opens": 1,
+            "positive_read_bytes": 975,
+            "raw": "046e590457ec72a0c3040a5746d13565eda8e6c6d772207376c64212979def24",
+            "reads": 1
+          }
+        },
+        "stamped_entries_after": 411,
+        "stamped_entries_before": 411,
+        "units": 619
+      }
+    ],
+    "raw_terminal": "4466e58efbcf22b519becf402aaa23ff49c952451ac492091c936fbf107157d9",
+    "source_mode": "original"
+  }
+}
