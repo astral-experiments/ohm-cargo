@@ -1,0 +1,16 @@
+{
+  "qualified": false,
+  "cohorts": {
+    "initial": {
+      "state": "rejected",
+      "problem": {
+        "error": "admission-00-0-native-base: cargo rc 1: strace: test_ptrace_get_syscall_info: PTRACE_TRACEME: Operation not permitted\nstrace: ptrace(PTRACE_TRACEME, ...): Operation not permitted\nstrace: PTRACE_SETOPTIONS: Operation not permitted\nstrace: cleanup: waitpid(-1, __WALL): No child processes\n",
+        "type": "RuntimeError"
+      },
+      "restored": true
+    },
+    "replica": {
+      "state": "pending"
+    }
+  }
+}

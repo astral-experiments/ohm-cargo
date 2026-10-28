@@ -1,0 +1,68 @@
+{
+  "probe": {
+    "raw_files": 1,
+    "bytes": 936,
+    "covered_symbol_matches": 3,
+    "profdata_sha256": "937e48a8893a8e70df45831724b9fd70e0a5f76e2e5862523944ab13944814d1"
+  },
+  "arms": {
+    "base": {
+      "raw_files": 24,
+      "bytes": 233410784,
+      "covered_symbol_matches": 2973,
+      "profdata_sha256": "b9ad568a098bee172bcbdd8c51687bc372973ee528ad1c4898f40edd8a0f4f87",
+      "cargo_commit": "a0c7d08c898d3fdff992f2f431dec57d2486add2",
+      "cargo_files_verified": [
+        "src/compiler/build_runner/mod.rs",
+        "src/compiler/fingerprint/mod.rs",
+        "src/compiler/mod.rs",
+        "src/compiler/output_depinfo.rs",
+        "src/resolver/features.rs",
+        "src/util/semver_ext.rs",
+        "src/workspace/parser/mod.rs"
+      ],
+      "cargo_sha256": "51b59d549a21422809d865449be5a4c5b422989b22f7a314c6f18e7ab92b0855",
+      "remerged_raw_profiles": 24,
+      "training_commands_verified": 24,
+      "frozen_training_files_verified": 270,
+      "patch_backups": {
+        "bitmaps-3.2.1/src/bitmap.rs.orig": "6fbb04ef11ba094b6377c1e124f866990fb223b54b6385b0cca58e2b52e55a36"
+      },
+      "std_rlib_sha256": "bfdb4658d3daf6fcd1e1521e2432bca0b9242280479c0360b87859704d55a172",
+      "profiled_target_units": 315,
+      "unprofiled_std_target_units": 22,
+      "unprofiled_temporary_probes": 2,
+      "unprofiled_host_units": 78,
+      "compiler_unit_graph_sha256": "6818ad750e0b02d9214a66923e48043b38036d72be5bb81a20f8b683b1471181"
+    },
+    "guard-stack": {
+      "raw_files": 24,
+      "bytes": 233427712,
+      "covered_symbol_matches": 2974,
+      "profdata_sha256": "aee78052e26471016fd6df4875cbdcb1bd1125ea005a6859142380de40f85b0b",
+      "cargo_commit": "94c95d6b8ef97b0e63e04b250bc88d1a388a31af",
+      "cargo_files_verified": [
+        "src/compiler/build_runner/mod.rs",
+        "src/compiler/fingerprint/mod.rs",
+        "src/compiler/mod.rs",
+        "src/compiler/output_depinfo.rs",
+        "src/resolver/features.rs",
+        "src/util/semver_ext.rs",
+        "src/workspace/parser/mod.rs"
+      ],
+      "cargo_sha256": "4a61560c17f00e54595122846f5450e7eb6a5ed3da9611ae39f4ecb972ab30d4",
+      "remerged_raw_profiles": 24,
+      "training_commands_verified": 24,
+      "frozen_training_files_verified": 270,
+      "patch_backups": {
+        "bitmaps-3.2.1/src/bitmap.rs.orig": "6fbb04ef11ba094b6377c1e124f866990fb223b54b6385b0cca58e2b52e55a36"
+      },
+      "std_rlib_sha256": "44f7b3d29cbaf8cc8e2c462990afcb1d186c8b5281603d111365819c316efb2e",
+      "profiled_target_units": 315,
+      "unprofiled_std_target_units": 22,
+      "unprofiled_temporary_probes": 2,
+      "unprofiled_host_units": 78,
+      "compiler_unit_graph_sha256": "6818ad750e0b02d9214a66923e48043b38036d72be5bb81a20f8b683b1471181"
+    }
+  }
+}

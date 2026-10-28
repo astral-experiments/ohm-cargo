@@ -1,0 +1,64 @@
+{
+  "uv": "c22e6b71933443e9cd299d4b6ac8de035ed4825b",
+  "edit_path": "crates/uv/src/install_source.rs",
+  "study": "cumulative-wall-replica",
+  "primary": "check",
+  "endpoint": "check",
+  "command": [
+    "/tmp/ohm-uv-bench.0H03f2TH/edit-cumulative-wall-replica-check/bin/cargo",
+    "check",
+    "--locked",
+    "--offline",
+    "-j8"
+  ],
+  "pairs": 8,
+  "seed": 720931,
+  "order": [
+    [
+      "candidate",
+      "base"
+    ],
+    [
+      "candidate",
+      "base"
+    ],
+    [
+      "base",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "base"
+    ],
+    [
+      "base",
+      "candidate"
+    ],
+    [
+      "base",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "base"
+    ],
+    [
+      "base",
+      "candidate"
+    ]
+  ],
+  "source": "/tmp/ohm-uv-bench.0H03f2TH/edit-cumulative-wall-replica-check/source",
+  "visible_target": "/tmp/ohm-uv-bench.0H03f2TH/edit-cumulative-wall-replica-check/target",
+  "cargo_sha256": {
+    "base": "c3a835db202b62a711fcabc7a8185f38de6d290e55f2b6f841f7548c6fae7d38",
+    "candidate": "7473462009bc4e51c8be7cea18c52d94a9d0183498d815219041587d06634eec"
+  },
+  "metric": "native whole-command elapsed nanoseconds including children, time.perf_counter_ns",
+  "edit": "Ohm direct private-body edit with uv-preview-XX varied by zero-based pair",
+  "admission": "both arms succeed, compile/check uv, match compiled/checking package multisets, execute no test, match sorted test-executable lists",
+  "initialization": "Both persistent arm targets are independent copies of a single untouched warmed snapshot.",
+  "inference": "paired proportional saving (1 - candidate/base), two-sided exact sign test and median interval",
+  "mode": "wall",
+  "workspace": true,
+  "cargo_home": "/tmp/ohm-uv-bench.0H03f2TH/cargo-edit-cumulative-wall-replica-check"
+}

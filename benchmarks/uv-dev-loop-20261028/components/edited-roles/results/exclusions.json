@@ -1,0 +1,16 @@
+{
+  "status": "rejected at first real-workload admission",
+  "completed_performance_pairs": 0,
+  "admitted_benchmarks": [],
+  "failed_endpoint": "check",
+  "failed_observation": "check/pilot-01-0-candidate",
+  "native_controls": ["check/pilot-00-0-base", "check/pilot-00-1-candidate"],
+  "native_compiler_crates": ["uv (lib)", "uv (bin)", "uvx (bin)"],
+  "counted_compiler_crates": ["uv (lib)"],
+  "native_and_counted_each_reported": ["Checking uv v0.12.0"],
+  "inference": "No matched role sum or effect size. The first versus subsequent edit and counter mode are confounded in this admission trial.",
+  "build": "not started",
+  "test_no_run": "not started",
+  "source_restored_to_pinned_bytes": true,
+  "visible_target_unoccupied_after_exit": true
+}

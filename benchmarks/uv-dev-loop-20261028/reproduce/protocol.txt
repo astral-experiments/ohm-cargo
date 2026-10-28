@@ -101,3 +101,14 @@ command, settled instrumentation warmups, the same 28-byte source checkout and
 the same Cargo executable path. Use seeds 611040 and 611041. These diagnostic
 comparisons include all package/build differences, so they cannot isolate the
 patch effect; the matched parent/candidate cohorts remain the causal contrasts.
+
+2026-10-28 17:10 UTC. Independently retrain a PGO Cargo for each of the matched
+base and combined five-Cargo-plus-std source states. Use the release compiler,
+ThinLTO, identical absolute build paths and the same release-corpus bitmaps and
+Diesel counter-generating workloads, outside uv. These two workloads are a
+subset of release training. Keep each merged profile and verify executed Cargo
+symbols. After the four clean generation/use builds, measure all three uv warm
+commands using 12 balanced DynamoRIO pairs (28-byte checkout, seed 611390)
+and eight balanced Cachegrind pairs (76-byte checkout, seed 611391). Require
+p < .05/3 initially and p < .05 in the same direction on replication before
+making a PGO-trained instruction claim for an endpoint.

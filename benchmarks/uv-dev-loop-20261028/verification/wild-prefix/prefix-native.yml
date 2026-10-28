@@ -1,0 +1,186 @@
+name: Wild ELF section placement validation
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  native:
+    name: Native ${{ matrix.host }} linker tests
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-24.04
+            host: x86_64
+          - runner: macos-latest
+            host: arm64
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    env:
+      RUSTUP_TOOLCHAIN: '1.99.1'
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7, from the fork's merged #22
+        with:
+          ref: 93600ec375472777043c28c33a5628adfbc0eb9b # exact #46 source
+          persist-credentials: false
+      - name: Verify source and toolchain
+        run: |
+          test "$(git rev-parse HEAD)" = 93600ec375472777043c28c33a5628adfbc0eb9b
+          test "$(uname -m)" = "${{ matrix.host }}"
+          rustup toolchain install "$RUSTUP_TOOLCHAIN" --profile minimal
+          rustc --version --verbose
+      - name: Install the native Linux reference linker
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends lld
+      - name: Install the native Mach-O reference linker
+        if: runner.os == 'macOS'
+        run: |
+          xcrun --show-sdk-path
+          xcrun --find ld
+          brew install lld
+          echo "$(brew --prefix lld)/bin" >> "$GITHUB_PATH"
+      - name: Run linker integration tests
+        run: |
+          if [[ "$RUNNER_OS" == "macOS" ]]; then
+            command -v ld64.lld
+            prefix=macho/aarch64
+            features=(--features macho)
+            groups=(section-identity:1 empty-section:1 data-const-no-got:1 arbitrary-segments:1)
+          else
+            command -v ld.bfd
+            command -v ld.lld
+            prefix=elf/x86_64
+            features=()
+            groups=(custom-section:2 exclude-section:1 linker-script-discard:1 linker-script-filename-match:1 linker-script-short-section-name:1 orphan-handling:26 partial-link-repeated-sections:1 sort-section-name:1 sort-section-alignments:1)
+            unitlog=$(mktemp)
+            cargo test --locked --profile ci -p libwild --lib -- elf::test_default_section_name_prefixes --exact --color never | tee "$unitlog"
+            grep -F 'test result: ok. 1 passed; 0 failed; 0 ignored;' "$unitlog"
+            mkdir -p "$RUNNER_TEMP/no-cet"
+            printf '%s\n' '#!/usr/bin/env bash' 'exec /usr/bin/gcc -fcf-protection=none "$@"' > "$RUNNER_TEMP/no-cet/gcc"
+            chmod +x "$RUNNER_TEMP/no-cet/gcc"
+            ln -s gcc "$RUNNER_TEMP/no-cet/cc"
+          fi
+          for entry in "${groups[@]}"; do
+            name=${entry%:*}
+            n=${entry#*:}
+            results="$RUNNER_TEMP/$name.txt"
+            fixture_env=()
+            if [[ "$name" == orphan-handling ]]; then
+              fixture_env+=("PATH=$RUNNER_TEMP/no-cet:$PATH" "WILD_TEST_BUILD_DIR=$RUNNER_TEMP/orphan-fixtures")
+            fi
+            env "${fixture_env[@]}" cargo test --locked --profile ci -p wild-linker "${features[@]}" --test integration_tests -- "$prefix/$name/" --color never | tee "$results"
+            grep -F "test result: ok. $n passed; 0 failed; 0 ignored;" "$results"
+          done
+
+  aarch64-control:
+    name: Compare AArch64 lit fixtures against the parent
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: read
+    container:
+      # Actual image digest in the affected external-tests job 122962191180.
+      image: ghcr.io/wild-linker/wild/ci-ubuntu-cross-amd64@sha256:ab353551443f0c194c887899d3bcfa91a97c9c539bb8a2fe581623e451af37a9
+    defaults:
+      run:
+        shell: bash
+    env:
+      BASE: a77381c04eb7ad9258cdd0475642815a2a1da711
+      HEAD_SHA: 93600ec375472777043c28c33a5628adfbc0eb9b
+      FIXTURES: 3b0540e63b01f00de1ee4119ce5507a2bbd8a1b6
+      LLVM: /usr/lib/llvm-21/bin
+      RUSTFLAGS: -D warnings
+      CARGO_INCREMENTAL: '0'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ env.HEAD_SHA }}
+          fetch-depth: 2
+          persist-credentials: false
+      - name: Build the base and candidate in the same checkout
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          test "$(git rev-parse HEAD)" = "$HEAD_SHA"
+          test "$(git rev-parse HEAD^)" = "$BASE"
+          mkdir "$RUNNER_TEMP/ohm-lit"
+          echo "QA=$RUNNER_TEMP/ohm-lit" >> "$GITHUB_ENV"
+          rustc -vV
+          "$LLVM/llvm-mc" --version
+          git switch --detach "$BASE"
+          cargo build --locked -p wild-linker --features external_tests
+          cp target/debug/wild "$RUNNER_TEMP/ohm-lit/wild-base"
+          git switch --detach "$HEAD_SHA"
+          cargo clean -p libwild -p wild-linker
+          cargo build --locked -p wild-linker --features external_tests
+          cp target/debug/wild "$RUNNER_TEMP/ohm-lit/wild-head"
+      - name: Fetch the two pinned inputs
+        run: |
+          cd "$QA"
+          for test in global-offset-table-position-aarch64 pack-dyn-relocs-tls-aarch64; do
+            curl --fail --silent --show-error --location \
+              "https://raw.githubusercontent.com/wild-linker/lld-tests/$FIXTURES/test/ELF/$test.s" -o "$test.s"
+          done
+          sha256sum --check <<'HASHES'
+          4049c8f6f104857d22b782208e5738d50e4c32dc91c36e030ed54c49e7f59dd1  global-offset-table-position-aarch64.s
+          ccb761c9ca827d53ab030cee1cbf5d847715e03bebfe04b38b3a9fa5cf9e2767  pack-dyn-relocs-tls-aarch64.s
+          HASHES
+      - name: Run each fixture against both linkers
+        run: |
+          cd "$QA"
+          failed=0
+          for test in global-offset-table-position-aarch64 pack-dyn-relocs-tls-aarch64; do
+            case "$test" in
+              global-*) target=aarch64-linux-gnu; link=(--hash-style=sysv -shared); readarg=--symbols ;;
+              pack-*) target=aarch64-unknown-linux; link=(-shared --pack-dyn-relocs=android); readarg=-r ;;
+            esac
+            "$LLVM/llvm-mc" -filetype=obj -triple="$target" "$test.s" -o "$test.o"
+            for arm in base head; do
+              d="$test/$arm"
+              mkdir -p "$d"
+              ln -sf "$QA/wild-$arm" "$QA/wild"
+              state=PASS
+              ./wild -m aarch64elf "${link[@]}" "$test.o" -o result.so > "$d/link.log" 2>&1 || state="link:$?"
+              if [[ "$state" == PASS ]]; then
+                "$LLVM/llvm-readobj" "$readarg" result.so > "$d/readobj.log" 2>&1 || state="readobj:$?"
+              fi
+              if [[ "$state" == PASS ]]; then
+                "$LLVM/FileCheck" "$test.s" < "$d/readobj.log" > "$d/filecheck.log" 2>&1 || state="FileCheck:$?"
+              fi
+              echo "$state" > "$d/status"
+              echo "::group::$test $arm ($state)"
+              cat "$d"/*.log
+              if [[ -f result.so ]]; then
+                mv result.so "$d/linked.so"
+                sha256sum "$d/linked.so"
+                echo 'ELF bytes (gzip+base64):'
+                gzip -nc "$d/linked.so" | base64 -w0
+                echo
+              fi
+              echo '::endgroup::'
+            done
+            base_state=$(cat "$test/base/status")
+            head_state=$(cat "$test/head/status")
+            if diff -qr "$test/base" "$test/head"; then
+              if [[ "$head_state" == PASS ]]; then
+                result='both pass, identical ELF bytes'
+              else
+                result="shared baseline failure ($head_state), identical diagnostics and outputs"
+              fi
+            elif [[ "$base_state" != PASS && "$head_state" == PASS ]]; then
+              result="candidate passes, base fails ($base_state)"
+            else
+              result="different outcomes, diagnostics or ELF bytes (base $base_state, candidate $head_state)"
+              echo "::error::$test: $result"
+              failed=1
+            fi
+            echo "- $test: $result" | tee -a "$GITHUB_STEP_SUMMARY"
+          done
+          exit "$failed"

@@ -64,6 +64,7 @@ def main():
     parser.add_argument("--seed", type=int, required=True)
     parser.add_argument("--package")
     parser.add_argument("--jobs", type=int, default=16)
+    parser.add_argument("--ordinary", action="store_true", help="use the Cargo subcommand's default job and lock settings")
     parser.add_argument("--settle-counter", action="store_true", help="also warm each arm under the selected instruction counter")
     args = parser.parse_args()
     if args.pairs < 2 or args.pairs % 2:
@@ -72,6 +73,9 @@ def main():
     out = args.result.resolve()
     out.mkdir(parents=True, exist_ok=False)
     source = args.source.resolve()
+    if args.ordinary and (args.package or args.jobs != 16):
+        parser.error("--ordinary requires the default workspace invocation")
+    lock_before = digest(source / 'Cargo.lock') if args.ordinary else None
     slot = WORK / f"bin/measured-{args.target}/cargo"
     slot.parent.mkdir(parents=True, exist_ok=True)
     target = BENCH / f"target-{args.target}"
@@ -90,6 +94,9 @@ def main():
         if args.mode not in ("instructions", "dynamorio"):
             parser.error("--settle-counter requires an instruction counter")
         meta["settle_counter"] = True
+    if args.ordinary:
+        env.pop('CARGO_BUILD_JOBS', None)
+        meta.update(jobs=None, argv={ep: COMMANDS[ep] for ep in args.endpoints}, lock_sha256=lock_before)
     (out / "protocol.json").write_text(json.dumps(meta, indent=2) + "\n")
 
     def select(arm):
@@ -101,7 +108,9 @@ def main():
 
     def run(ep, arm, label, measured, instrument_warmup=False):
         select(arm)
-        cmd = [str(slot), *COMMANDS[ep], "--locked", "--offline", f"-j{args.jobs}"]
+        cmd = [str(slot), *COMMANDS[ep]]
+        if not args.ordinary:
+            cmd.extend(["--locked", "--offline", f"-j{args.jobs}"])
         if args.package:
             cmd.extend(["-p", args.package])
         if (measured or instrument_warmup) and args.mode == "instructions":
@@ -155,6 +164,8 @@ def main():
                     f.flush()
                     rows.append(row)
             report([r for r in rows if r["endpoint"] == ep])
+    if args.ordinary and digest(source / 'Cargo.lock') != lock_before:
+        raise ValueError('Cargo.lock changed during a default-command comparison')
 
 
 if __name__ == "__main__":

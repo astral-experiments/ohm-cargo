@@ -1,0 +1,182 @@
+{
+  "source_uv": "c22e6b71933443e9cd299d4b6ac8de035ed4825b",
+  "edit_path": "crates/uv/src/install_source.rs",
+  "command": [
+    "test",
+    "--no-run",
+    "--locked",
+    "--offline",
+    "-j8"
+  ],
+  "cpus": [
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31
+  ],
+  "source": "/tmp/ohm-uv-bench.0H03f2TH/edit-cumulative-wall-test/source",
+  "target": "/tmp/ohm-uv-bench.0H03f2TH/edit-cumulative-wall-test/target",
+  "private_slots": "/tmp/ohm-uv-bench.0H03f2TH/eight-selected-roles-20261028",
+  "seed": "/tmp/ohm-uv-bench.0H03f2TH/edit-cumulative-wall-test/seed-target",
+  "cargo_home": "/tmp/ohm-uv-bench.0H03f2TH/cargo-edit-cumulative-wall-test",
+  "pristine": {
+    "edit_sha256": "338cddc82f4cc55a1ecdc6b02edd5c28544cd19233d8cb54a7afa9f2b02a7082",
+    "edit_stat": [
+      64769,
+      42223123,
+      33204,
+      1836,
+      1793206700333393301
+    ],
+    "source_dir": [
+      64769,
+      41751614,
+      16832,
+      4096,
+      1793203720671921334
+    ],
+    "cargo_home_dir": [
+      64769,
+      41704255,
+      16832,
+      4096,
+      1793206583855050168
+    ],
+    "prior_cargo_slot": [
+      64769,
+      32834523,
+      33277,
+      44997488,
+      1793202745670781590
+    ],
+    "prior_cargo_sha256": "7473462009bc4e51c8be7cea18c52d94a9d0183498d815219041587d06634eec",
+    "target_absent": true,
+    "seed": {
+      "entries": 36189,
+      "metadata_sha256": "89ed91c03cb5437b34be7e0adb59638ef1b1806c56452de4a0b505a621dd4e61",
+      "markers": {
+        ".rustc_info.json": "0f9c50bd3af8b7b66803952594e2d4666b4c5b79e9da10e10e4f1a842f462cfb",
+        "CACHEDIR.TAG": "6d9d1d216e0f83abc5e5662ca62c92b4f23009466b54fa27321a69acdb778bb2",
+        ".ohm-built-registry-ready": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  },
+  "workspace_lock_sha256": "9625ef26d45043bb2be4a0aa4184cffccec96a4b49344c8c29cbe5cf1fa83194",
+  "workspace_manifest_sha256": "537212a98648c3d127cc8ee9d16cba780366b94ccd0497f4210c5c7f5936de15",
+  "arm_hashes": {
+    "base": {
+      "cargo": "51b59d549a21422809d865449be5a4c5b422989b22f7a314c6f18e7ab92b0855",
+      "wild": "82a927b86f929b67c58be4d37ab8442f32fcdd115d97334dcc5ac190101d8865"
+    },
+    "candidate": {
+      "cargo": "4a61560c17f00e54595122846f5450e7eb6a5ed3da9611ae39f4ecb972ab30d4",
+      "wild": "901b68fc9ca30975d837d45dcf1bdf743a6130ecef5e23d6aef44558b09bd7e1"
+    }
+  },
+  "rustc_sha256": "7ec5263869aed2fc9272ea7212aabbe7b272a4685f1b79af75c123daff09c02c",
+  "rustdoc_sha256": "946b4c7d71af91fa372cfadfca300952024d107ad45b34679d4ac4db77e552f8",
+  "wrapper_sha256": "fe98589559a11680cb792af1e85527c06b5e0e11e0854940507c832ffb80f6e2",
+  "counter_sha256": "5244e9c705d307b9521f793c211b153b525ebf898f6aa37b766b7a55ebec9d23",
+  "previous_calibration_sha256": "cb7f92b870b1b3aa6d3a05d29d7703052dd2dc64c024a650069c95c93b3789f2",
+  "pgo_training_audit_sha256": "80271f7a4dea8a8242b0ba152c1911b529d152b2568c641dfc434d14de025a6b",
+  "cohorts": {
+    "initial": {
+      "letter": "k",
+      "seed": 440813359,
+      "orders": [
+        "AB",
+        "BA",
+        "AB",
+        "AB",
+        "BA",
+        "BA",
+        "AB",
+        "BA"
+      ],
+      "edits": [
+        16,
+        14,
+        11,
+        10,
+        13,
+        15,
+        12,
+        17
+      ],
+      "admission_order": [
+        "native/base",
+        "count/candidate",
+        "native/candidate",
+        "count/base"
+      ],
+      "edits_sha256": {
+        "0": "341c16e4a71d0ca6b828fbd69fefe74eb267e5068f2da88e83163eacbbba4d2d",
+        "1": "48d82619d11935ce92e32402a7ba4be7bde98c0937824061df53647d3ceccf0e",
+        "16": "eb31c3f3efd021dfcf5f73208b90f44b0b20e180d8a7d78bbe16f5120cfd317f",
+        "14": "4d82abf3b04f166d118b71993df98f315924ecf5cb8494a5908ac9a076e033d2",
+        "11": "93263086d83e1cd42b69c6d868cfe7a22c85ae3da9244a59f9f5ca313ee51e86",
+        "10": "9cc0f01986b865d23e7ecd829328ebe116757820ac9337b59672a4a8e4754429",
+        "13": "7cc26812d475db0ee1248455537c83b9df506d0a92c0784fa9fbc889c5898d9c",
+        "15": "692f2af03007de43a63e404b8ad50086046c3f6e71212ea02229ec7a6d33b9ba",
+        "12": "6ca649c666e2dfe7e17dcc16a280cf3c19540dd3e277b31cf8dfd91fd5dfa14d",
+        "17": "f9a54003978dce285b0cc04f9f6654f25e0ab88d3418b4d79baff937ef6805ca"
+      },
+      "source_bytes": 1906
+    },
+    "replica": {
+      "letter": "q",
+      "seed": 440813843,
+      "orders": [
+        "BA",
+        "AB",
+        "BA",
+        "BA",
+        "BA",
+        "AB",
+        "AB",
+        "AB"
+      ],
+      "edits": [
+        44,
+        42,
+        47,
+        43,
+        45,
+        40,
+        46,
+        41
+      ],
+      "admission_order": [
+        "native/candidate",
+        "count/base",
+        "native/base",
+        "count/candidate"
+      ],
+      "edits_sha256": {
+        "0": "872ac794317f5071dc340be1bc16c9d01778d6b3317b9af5468a011efd520a5a",
+        "1": "3d7cedee73110a4402b4e7daf83ab02a3992bd25fb8cc10ce9910ec61224f9eb",
+        "44": "c512f2508d6e6813f6028a433e9cd00415313cde9fdde78d3d874c9a13c2b2df",
+        "42": "c896582fb71e37af203bf1d3d83951036c985c51a78e2a3235a3313b6ea0588d",
+        "47": "6c14c2ff8ce9bb667a6deeb7a499c3b1fe815822aa734c911829f193a312e6c9",
+        "43": "26c75ad757a541cb61b919f69bd2ea7946c4dfc2df25a70ff14d55ff213ae983",
+        "45": "efcbcb2e5b66cc0abec2a582b6a93abda60d707517aae45fd3ba80861ce268b9",
+        "40": "7d5823780313018490204cde48a4ecd644d0919befea1f1c8c374f23f9d14563",
+        "46": "92c9931aafd34f8be6720d1f1ac20963a9dac354b875d9b9f580ec860972a568",
+        "41": "a93771222c88f68fe5489e74993684112cb47e663e08ea4eceefd8d9f1348e9a"
+      },
+      "source_bytes": 1906
+    }
+  },
+  "qualification": "The primary endpoint is total dynamic user-mode instructions in the original Cargo PID, all six invoked rustc PIDs and all five selected Wild PIDs, including all their threads, for one edited uv `cargo test --no-run --locked --offline -j8`. Use the pinned released Ohm rustc and the matched independently trained Cargo binaries, plus the matched release-source Wild baseline versus the combined #46 Wild. Pin all work to CPUs 24\u201331. Wild receives --no-fork in native admission and counted runs. The calibration must reproduce the established fork boundaries, thread aggregation and jobserver descriptor inheritance. Exclude other PIDs, compiler driver, collect2, shell and wrappers, pre-exec work in forked children and kernel work. Elapsed time is not an endpoint.\n\nUse only the retired five-Cargo-change edit-cumulative-wall-test fixture. Each cohort starts from its own fresh copy of the original immutable target seed and private Cargo home. Stable hardlink slots and the target retain one visible path within a cohort. Restore the original source bytes, inode, mode and mtime, original Cargo home, retired Cargo slot, absence of the visible target, and seed marker/content and full metadata checks after each cohort. Warm K00 and Q00 separately with the original released source as a predecessor. Require no work on a repeat warm invocation. Structural edits are outside both admissions and measured pairs.\n\nFor each cohort, give four copies of its structural predecessor the same new K01 or Q01 source bytes and mtime. Run the frozen native/count \u00d7 base/candidate cells. Audit successful native execs using strace, exact rustc argument multisets, the Wild output-path multiset, 72 complete test executable paths, and compilation of just uv. Require one Cargo, six rustc and five Wild PIDs per accepted invocation, no test execution, no package fetching, and zero command status. Require the same workload roster on all four cells and all observations in that cohort. Record full output digests outside counting. Require five byte-identical oracles for the same input across arms/modes, allowing only the previously demonstrated 32-byte GNU build ID plus the low byte of .rodata.sh_entsize (0 or 8) on the 184 MB uv library harness. Report any such differences. A calibration or admission failure stops the experiment with its receipt and no effect claim.\n\nComplete eight fresh same-source pairs per cohort. Pre-shuffle four A-first and four B-first orders independently per cohort. A is the matched base, B is all eight changes. Independently shuffle the eight registered, fixed-length sources within each cohort. Both arms see one write and the same mtime per pair. Record all role PIDs, thread counts, arguments and executable paths. Do not select a cohort or stop early for its observed effect. The second cohort uses the same archived fixture with fresh isolated tools, home and target copies, distinct edits, randomized order and independently settled predecessor. The two cohorts share their original release, archived registry and parameterized workload.\n\nFor each pair compute one minus the candidate role sum divided by the baseline role sum. Report the median paired reduction, its min\u2013max 99.22% distribution-free rank interval (continuous population), sign counts and a two-sided exact sign test excluding ties. As an order-sensitive check, permute the order labels over the 70 possible allocations of four A-first and four B-first pairs, using the absolute sum of signed log ratios. A directional claim requires a positive median, sign p < .05 and restricted permutation p < .05 independently in each complete cohort. Run both cohorts even if the initial effect is inconclusive, provided calibration and workload admissions hold. Never pool source edits for qualification. Any roster, artifact or restoration failure is terminal and reported, and an incomplete cohort cannot qualify.\n",
+  "code_sha256": {
+    "common.py": "1bbd278864c08dd46fbc913bf2076e914712d97d828f73780321d15ea979af99",
+    "run.py": "72ba741098b6a075ef77d15469e332006aba9853b7f12d566f5b608028a0de86",
+    "summarize.py": "76b4909a123a0408af43e686dd2693265de397b91d81879e7bac7e0bbbfa4e9a",
+    "register.py": "e2bf10066f87bd81df3e70da6b8837d6dce0d8dc8df5a8c02b10a385690ea887",
+    "registration.md": "2342b5d2308e9a1144ff443b5c3a51080e1fc5d38e17b0bec2f658449a70a78b"
+  }
+}

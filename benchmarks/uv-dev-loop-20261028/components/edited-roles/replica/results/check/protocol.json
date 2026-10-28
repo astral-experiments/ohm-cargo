@@ -1,0 +1,99 @@
+{
+  "uv": "c22e6b71933443e9cd299d4b6ac8de035ed4825b",
+  "source": "/tmp/ohm-uv-bench.0H03f2TH/edit-cumulative-wall-replica-check/source",
+  "target": "/tmp/ohm-uv-bench.0H03f2TH/edit-cumulative-wall-replica-check/target",
+  "seed": 9140093,
+  "order": [
+    [
+      "base",
+      "candidate"
+    ],
+    [
+      "base",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "base"
+    ],
+    [
+      "base",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "base"
+    ],
+    [
+      "base",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "base"
+    ],
+    [
+      "candidate",
+      "base"
+    ]
+  ],
+  "predecessor": "R00",
+  "admission": "R01 from four fresh R00 copies",
+  "cells": [
+    [
+      "native",
+      "candidate"
+    ],
+    [
+      "count",
+      "base"
+    ],
+    [
+      "native",
+      "base"
+    ],
+    [
+      "count",
+      "candidate"
+    ]
+  ],
+  "measured_edits": [
+    24,
+    27,
+    26,
+    21,
+    23,
+    22,
+    20,
+    25
+  ],
+  "pinned_cpus": [
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+  ],
+  "sha256": {
+    "base": [
+      "744843355906004af366ca616a31bde4d79bced59e00355b71eadd7b4257d00c",
+      "82a927b86f929b67c58be4d37ab8442f32fcdd115d97334dcc5ac190101d8865"
+    ],
+    "candidate": [
+      "42b0c136d6adf60c8bda017451dc847722db0d2304a10af1e3dcf19585e07d52",
+      "435a253fcd8a44061aa0d88748ca12b8e63a092dc9d42593195142d8071ebc81"
+    ]
+  },
+  "rustc_sha256": "7ec5263869aed2fc9272ea7212aabbe7b272a4685f1b79af75c123daff09c02c",
+  "command": [
+    "check",
+    "--locked",
+    "--offline",
+    "-j8"
+  ],
+  "expected": "native strace + role argument rosters and actual uv compilation on every edit",
+  "metric": "sum of original Cargo, rustc, Wild process PID thread totals; Wild --no-fork in both modes"
+}

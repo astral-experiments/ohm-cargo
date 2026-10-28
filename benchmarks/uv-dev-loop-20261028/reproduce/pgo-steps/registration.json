@@ -1,0 +1,17 @@
+{
+  "registered_utc": "2026-10-28T18:03:33Z",
+  "unit": "complete user-space instructions in Cargo and its threads on settled uv",
+  "workload": "uv c22e6b71933443e9cd299d4b6ac8de035ed4825b with the shipped rustc and the default workspace selection, --locked --offline -j16",
+  "comparison": "Each published Cargo change against its preceding source revision with release std. The path change is the sixth increment, measured on the fifth Cargo head. Each source arm is trained independently on the same two non-uv rustc-perf workloads. This is a holdout from all earlier unprofiled measurements.",
+  "statistic": "Median of 1 - candidate / baseline in balanced randomized pairs. Report all six primary and six repeated comparisons regardless of direction. A positive result requires positive median and two-sided exact sign p < 0.05/6 for its first cohort and positive median and exact sign p < 0.05 for its independent cohort.",
+  "primary": {"mode": "dynamorio", "pairs": 12, "source": "28-byte checkout", "alpha": 0.008333333333333333},
+  "repeat": {"mode": "instructions", "pairs": 8, "source": "76-byte checkout", "alpha": 0.05},
+  "stages": [
+    {"name": "unit", "pr": 264, "base": "base", "head": "unit", "endpoint": "test", "primary_seed": 612001, "repeat_seed": 612101},
+    {"name": "warnings", "pr": 267, "base": "unit", "head": "warnings", "endpoint": "check", "primary_seed": 612002, "repeat_seed": 612102},
+    {"name": "feature", "pr": 268, "base": "warnings", "head": "feature", "endpoint": "check", "primary_seed": 612003, "repeat_seed": 612103},
+    {"name": "depfile", "pr": 269, "base": "feature", "head": "depfile", "endpoint": "build", "primary_seed": 612004, "repeat_seed": 612104},
+    {"name": "semver", "pr": 270, "base": "depfile", "head": "semver", "endpoint": "check", "primary_seed": 612005, "repeat_seed": 612105},
+    {"name": "std", "pr": 247, "base": "semver", "head": "guard-stack", "endpoint": "build", "primary_seed": 612006, "repeat_seed": 612106}
+  ]
+}

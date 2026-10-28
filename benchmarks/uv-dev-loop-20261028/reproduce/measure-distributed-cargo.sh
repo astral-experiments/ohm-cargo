@@ -4,6 +4,8 @@ set -euo pipefail
 work=$(cd "$(dirname "$0")" && pwd -P)
 bench=$(cat "$work/bench-home.path")
 cd "$work/.."
+exec 8>"$work/native-wall-measurement.lock"
+flock -x 8
 for row in 'base 611040' 'guard-stack 611041'; do
     read -r driver seed <<< "$row"
     python3 "$work/measure.py" --mode instructions --settle-counter --pairs 8 --seed "$seed" \

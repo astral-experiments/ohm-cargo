@@ -7,6 +7,10 @@ import math
 from pathlib import Path
 import re
 from statistics import median
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from wild_prefix_evidence import block_rows
 
 
 COMMANDS = {"check": "check", "build": "build", "test": "test --no-run"}
@@ -234,6 +238,54 @@ def component_results(root):
                    "An independent Callgrind replay of the largest link saved 1.155%. "
                    "All 20 serial ELF replays and 18 native parallel replays matched their respective "
                    "reference outputs. [Wild #45](https://github.com/astral-sh/ohm-wild/pull/45)"]
+    meta = root / 'wild-prefix/pr.json'
+    if meta.is_file():
+        prefix = root / json.loads(meta.read_text())['directory']
+    else:
+        prefix = root.parent / 'components/wild-prefix'
+        meta = prefix / 'pr.json'
+    if meta.is_file():
+        pr = json.loads(meta.read_text())
+        _, pairs = block_rows(prefix)
+        real = stats([(b['baseline_instructions'], b['candidate_instructions']) for b in pairs])
+        records = [('Edited test builds, five linkers per command', real)]
+        for name, label in [('uv', 'Independent 319 MB uv executable'),
+                            ('uv-c84366b26c530121', 'Independent 10 MB test harness')]:
+            with (prefix / 'links' / f'{name}.csv').open() as stream:
+                raw = list(csv.DictReader(stream))
+            assert len(raw) == 20 and len({v['output_sha256'] for v in raw}) == 1
+            groups = [{r['arm']: int(r['linker_instructions']) for r in raw if int(r['pair']) == i} for i in range(10)]
+            records.append((label, stats([(g['parent'], g['v2']) for g in groups])))
+        with (prefix / 'pilot/samples.csv').open() as stream:
+            pilot = list(csv.DictReader(stream))
+        controls = []
+        for name, label in [('partial', '188-member uv-client archive, partial link'),
+                            ('script', 'Data-heavy object, custom script'), ('data', 'Same object, default rules')]:
+            raw = [r for r in pilot if r['case'] == name]
+            assert len(raw) == 18 and len({r['out_sha256'] for r in raw}) == 1
+            groups = [{r['arm']: int(r['instructions']) for r in raw if int(r['block']) == i} for i in range(6)]
+            controls.append([label, *(f'{median(g[a] / g["parent"] - 1 for g in groups):+.4%}' for a in ('v1', 'v2'))])
+        artifacts = json.loads((prefix / 'actual/artifacts.json').read_text())
+        equal = sum(set(g['observed']['parent']) == set(g['observed']['v2']) for g in artifacts.values())
+        variants = sum(len(g['observed']['parent']) > 1 for g in artifacts.values())
+        restricted = json.loads((prefix / 'actual/summary.json').read_text())['sign_and_permutation_p'][1]
+        blocks += [f"## Second Wild change, on top of #45",
+                   "Wild recognizes the default `.text*` and `.rela*` ELF placement rules from a validated "
+                   "section-name table. Both arms used the same Cargo rebuilt from unmodified release sources "
+                   "and the same shipped rustc. The primary workload executed 32 edited `cargo test --no-run "
+                   "--locked --offline -j4` commands and counted all threads in 160 Wild invocations. The "
+                   f"balanced-order randomization p was {restricted:.6g}. [Wild #{pr['number']}]({pr['url']})",
+                   table(['Workload', 'Wild instruction reduction [rank interval]', 'Improved', 'Sign p'],
+                         [[label, estimate(r), win_count(r), f'{r.p:.6g}'] for label, r in records]),
+                   f"The complete output digest sets matched for {equal}/{len(artifacts)} output and edit "
+                   f"combinations. The parent itself produced multiple complete digests in {variants} combinations. "
+                   "Both reserved replay inputs reproduced their reference bytes on all 40 invocations. "
+                   "[Output digests](components/wild-prefix/actual/artifacts.json) · "
+                   "[Byte comparisons](components/wild-prefix/actual/byte-differences.json)",
+                   "Controls used six complete permutations of parent, first implementation and published "
+                   "implementation. Positive values below are additional instructions relative to #45. "
+                   "[Control samples](components/wild-prefix/pilot/samples.csv)",
+                   table(['Control', 'First implementation', 'Published implementation'], controls)]
     blocks += ["## Combined Cargo and standard-library driver",
                "These direct comparisons use identically built Cargo executables with the parent or "
                "all five Cargo changes plus the standard-library change. A settled workspace invokes "
@@ -256,18 +308,88 @@ def component_results(root):
                "log is retained. Subsequent native and instrumented traces were fresh. The remaining "
                "check and test cohorts required the second instrumented warmup for each arm to be "
                "fresh before collecting their full eight pairs."]
+    if (root / 'distributed-base/pairs.csv').is_file():
+        comparisons = [('Unmodified local build, Cachegrind', 'distributed-base', 'instructions'),
+                       ('Combined local build, Cachegrind', 'distributed-guard-stack', 'instructions')]
+        if (root / 'distributed-pgo-base/pairs.csv').is_file():
+            comparisons += [('Retrained unmodified build, DynamoRIO', 'distributed-pgo-base', 'dynamorio'),
+                            ('Retrained combined build, DynamoRIO', 'distributed-pgo-guard-stack', 'dynamorio')]
+        blocks += ["## Downloaded release binary",
+                   "Each row compares the downloaded Ohm Cargo to a locally built driver at a fixed "
+                   "path. The complete packaging, compiler and profile differences enter this comparison. "
+                   "The matched parent/candidate rows above isolate the changes in this work.",
+                   instruction_table([(label, ep, cohort(root, name, ep, 8, mode))
+                                      for label, name, mode in comparisons for ep in COMMANDS])]
+        if (root / 'distributed-control/pairs.csv').is_file():
+            blocks += ["The negative control put the identical downloaded executable in both arms and "
+                       "ran each default Cargo command with a populated offline registry. Its paired "
+                       "differences show measurement variation on this host.",
+                       instruction_table([('Released binary against itself', ep, cohort(root, 'distributed-control', ep, 8, 'dynamorio'))
+                                          for ep in COMMANDS])]
+    if (root / 'pgo-confirm/pairs.csv').is_file():
+        blocks += ["## Retrained profile-guided builds",
+                   "Both source states were instrumented, trained and rebuilt independently with the "
+                   "released compiler and identical build paths. Each used the same Diesel and bitmaps "
+                   "workloads from the release training corpus. The timed uv checkout was excluded "
+                   "from training. The shipped profile covers additional release workloads. "
+                   "[Training and build provenance](reproduce/pgo-holdout/README.md)",
+                   instruction_table([(label, ep, cohort(root, name, ep, n, mode))
+                                      for label, name, n, mode in [('DynamoRIO, 28-byte checkout', 'pgo-confirm', 12, 'dynamorio'),
+                                                                    ('Cachegrind, 76-byte checkout', 'pgo-replica', 8, 'instructions')]
+                                      for ep in COMMANDS]),
+                   table(['Endpoint', 'Registered primary and replication gate'],
+                         [[f'`{COMMANDS[ep]}`', gate(cohort(root, 'pgo-confirm', ep, 12, 'dynamorio'),
+                                                    cohort(root, 'pgo-replica', ep, 8, 'instructions'), 0.05/3)]
+                          for ep in COMMANDS])]
+        if (root / 'pgo-ordinary/pairs.csv').is_file():
+            blocks += ["The additional default-argument comparison ran `cargo check`, `cargo build` and "
+                       "`cargo test --no-run`. Cargo chose its job count, the populated registry stayed "
+                       "offline through the environment, and the uv lockfile was checked byte-for-byte.",
+                       instruction_table([('Default Cargo arguments', ep, cohort(root, 'pgo-ordinary', ep, 8, 'dynamorio'))
+                                          for ep in COMMANDS])]
+    if (root / 'pgo-unit-confirm/pairs.csv').is_file():
+        rows = []
+        for stage, number, title, ep in [*STEPS, ('std', 247, 'Compare path prefixes by word', 'build')]:
+            first = cohort(root, f'pgo-{stage}-confirm', ep, 12, 'dynamorio')
+            repeat = cohort(root, f'pgo-{stage}-replica', ep, 8, 'instructions')
+            repo = 'ohm-rust' if stage == 'std' else 'ohm-cargo'
+            rows.append([f'[{title} #{number}](https://github.com/astral-sh/{repo}/pull/{number})',
+                         f'`{COMMANDS[ep]}`', estimate(first) if isinstance(first, Stats) else first,
+                         estimate(repeat) if isinstance(repeat, Stats) else repeat, gate(first, repeat, 0.05 / 6)])
+        blocks += ['## Individual changes under profile-guided optimization',
+                   'Each adjacent Cargo revision was trained and rebuilt separately using the same non-uv '
+                   'workload. The last row adds the path change to the fifth Cargo revision. The primary '
+                   'criterion used two-sided sign p < 0.05/6 on 12 DynamoRIO pairs. The independent '
+                   'eight-pair Cachegrind cohort used p < 0.05. Brackets give distribution-free intervals '
+                   'for the median paired reduction. [Frozen protocol](reproduce/pgo-steps/registration.json) · '
+                   '[Driver, profile and standard-library hashes](profile-build/intermediates/driver-index.tsv)',
+                   table(['Change', 'Command', '28-byte checkout', '76-byte checkout', 'Outcome'], rows)]
+        profile_comparison = root / 'pgo-intermediates/guard-vs-semver-block-profiles.json'
+        if not profile_comparison.is_file():
+            profile_comparison = root.parent / 'profile-build/intermediates/guard-vs-semver-block-profiles.json'
+        if profile_comparison.is_file():
+            profile = json.loads(profile_comparison.read_text())
+            blocks.append(f"The final two builds have identical Cargo source and different standard libraries. Their independently "
+                          f"collected Cargo profiles shared {profile['common_cfg_hashes']:,} function names and control-flow hashes. "
+                          f"Of {profile['equal_cfg_total_counters']:,} comparable basic-block counters, {profile['changed_counters']:,} differed "
+                          f"across {profile['functions_with_changed_counters']:,} functions. [Training-profile comparison]"
+                          "(profile-build/intermediates/guard-vs-semver-block-profiles.json)")
     return blocks
 
 
 def render(root):
+    extra_linker = (root / 'wild-prefix/pr.json').is_file() or (root.parent / 'components/wild-prefix/pr.json').is_file()
+    linker_count = 'two stacked Wild changes' if extra_linker else 'one Wild change'
     blocks = ["# Ohm developer-loop performance on uv",
-              "Five stacked Cargo changes, one standard-library change and one Wild change were measured "
+              f"Five stacked Cargo changes, one standard-library change and {linker_count} were measured "
               "on the pinned uv workspace using "
               "Ohm 1.99.0-17. A warm command reuses its settled build artifacts. An edited command "
               "rebuilds after a change to the private installation-source predicate in an archived "
               "copy of uv. All test-construction commands use `--no-run`. "
               "[uv source](https://github.com/astral-sh/uv/tree/c22e6b71933443e9cd299d4b6ac8de035ed4825b) · "
               "[Cargo baseline](https://github.com/astral-sh/ohm-cargo/tree/a0c7d08c898d3fdff992f2f431dec57d2486add2)",
+              "The archive includes the build recipes, original logs, calibration and analysis scripts. "
+              "[Reproduction steps](REPRODUCTION.md) · [Ordered samples](samples.csv) · [Reproduction archive](uv-ohm-benchmarks.zip)",
               "## Five changes together",
               "Dynamic counts cover user-space instructions in the Cargo process and its threads. "
               "Kernel work and executed compiler and linker subprocesses are outside that count. "
@@ -347,7 +469,89 @@ def render(root):
                "use `-j8`. Each edited comparison changes the same source bytes for both arms and "
                "moves each arm's copy of a common warmed target to the same visible path. All reported "
                "comparisons use fixed balanced pair counts. Missing or partial cohorts cannot pass a gate."]
-    return "\n\n".join(blocks) + "\n"
+    major = root / 'tree-count/identical/summary.md'
+    if not major.is_file():
+        major = root.parent / 'components/edited-roles/identical/summary.md'
+    if major.is_file():
+        blocks.append(re.sub(r'^(#{1,5}) ', r'#\1 ', major.read_text().strip(), flags=re.MULTILINE))
+        if (major.parent.parent / 'order-sensitivity-results.md').is_file():
+            blocks.append('The supplemental randomization test was specified after the initial cohorts and before any independent repeat finished. '
+                          'It conditions on the registered balance of baseline-first and candidate-first pairs. '
+                          '[Assignment-conditioned results](components/edited-roles/order-sensitivity-results.md)')
+    complete = root / 'eight-roles/summary.json'
+    if not complete.is_file():
+        complete = root.parent / 'components/eight-roles/summary.json'
+    if complete.is_file():
+        result = json.loads(complete.read_text())
+        role_rows = []
+        for cohort_name, result_row in result['cohorts'].items():
+            if result_row['state'] not in {'qualified', 'inconclusive'}:
+                role_rows.append([cohort_name, '—', '—', '—', '—', '—', result_row['state']])
+                continue
+            arm = result_row['median_instructions_by_role']
+            lo, hi = result_row['rank_interval_99_21875']
+            role_rows.append([cohort_name, f"{arm['base']['total']/1e9:.3f} → {arm['candidate']['total']/1e9:.3f}",
+                              f"{result_row['median_saving']:.3%} [{lo:.3%}, {hi:.3%}]", f"{result_row['wins']}/8",
+                              f"{result_row['two_sided_sign_p']:.6g}", f"{result_row['balanced_order_randomization_p']:.6g}", result_row['state']])
+        blocks += ['## Edited test-build instructions with all eight changes',
+                   'The two arms use separately trained Cargo binaries, the same released rustc, and the parent or stacked Wild. '
+                   'The count sums all threads of Cargo, six rustc processes and five Wild processes during each edited '
+                   '`cargo test --no-run --locked --offline -j8`. The registration requires both an exact sign test and an '
+                   'order-conditioned randomization test to pass in each independent cohort. [Protocol and raw counts](components/eight-roles/)',
+                   table(['Cohort', 'Parent → candidate (G instructions)', 'Paired reduction [rank interval]',
+                          'Improved', 'Sign p', 'Order p', 'Gate'], role_rows)]
+    timing = root / 'eight-wall/summary.md'
+    if not timing.is_file():
+        timing = root.parent / 'components/eight-wall/summary.md'
+    if timing.is_file():
+        blocks.append(re.sub(r'^(#{1,5}) ', r'#\1 ', timing.read_text().strip(), flags=re.MULTILINE))
+        if (timing.parent / 'order-sensitivity-results.md').is_file():
+            blocks.append('The elapsed-time sensitivity analysis was specified before timing and enumerates the 2,704,156 balanced arm allocations in each cohort. '
+                          '[Assignment-conditioned results](components/eight-wall/order-sensitivity-results.md)')
+        if (timing.parent / 'host-observations.json').is_file():
+            blocks.append('The repeat waited 30 seconds for residual writeback before its two clean preflight windows. '
+                          'Median I/O wait on the reserved CPUs was 0.252% initially and 0.220% in the repeat. '
+                          'Foreign-process checks ran during preflights. The in-window host monitor recorded aggregate counters. '
+                          '[Host observations](components/eight-wall/host-observations.json) · '
+                          '[Source, process and executable audit](components/eight-wall/complete-audit.json)')
+    snapshot = root / 'ci-snapshot.json'
+    if not snapshot.is_file():
+        snapshot = root.parent / 'verification/ci-snapshot.json'
+    if snapshot.is_file():
+        ci = json.loads(snapshot.read_text())
+        passed = lambda checks: sum(check['conclusion'] == 'SUCCESS' for check in checks)
+        cargo = [draft for draft in ci['drafts'] if draft['number'] in {264, 267, 268, 269, 270}]
+        rust, = [draft for draft in ci['drafts'] if draft['number'] == 247]
+        wild, = [draft for draft in ci['drafts'] if draft['number'] == 45]
+        native = ci['wild_native']
+        blocks += ['## Correctness and CI',
+                   f"The five Cargo drafts have {sum(passed(d['checks']) for d in cargo)} passing checks "
+                   f"in total. The Rust draft has {passed(rust['checks'])} passing checks. Wild's release "
+                   f"workflow has {sum(c['conclusion'] == 'FAILURE' for c in wild['checks'])} setup failures "
+                   "before source checkout because its action references do not satisfy the organization's "
+                   f"full-SHA policy. A separate workflow checked out the exact Wild PR head and passed "
+                   f"{passed(native['jobs'])} jobs. It covers 12 selected x86-64 ELF cases, four native arm64 "
+                   "Mach-O cases, and two AArch64 LLVM 21 fixtures whose release and PR output bytes matched. "
+                   f"[Wild CI validation]({native['url']}) · [Recorded checks](verification/ci-snapshot.json)"]
+        if 'wild_prefix_native' in ci:
+            prefix, = [d for d in ci['drafts'] if '/ohm-wild/' in d['url'] and d['number'] != 45]
+            run = ci['wild_prefix_native']
+            blocks.append(f"Wild #{prefix['number']} also inherits the release workflow. Its PR checks include "
+                          f"{sum(c['conclusion'] == 'FAILURE' for c in prefix['checks'])} setup failures. "
+                          f"The native workflow checked out `{prefix['headRefOid'][:12]}` and passed "
+                          f"{passed(run['jobs'])} of {len(run['jobs'])} jobs. The suites cover 35 x86-64 ELF fixtures, "
+                          "the new ELF regression test, four native arm64 Mach-O fixtures and byte comparisons of two "
+                          f"AArch64 LLVM 21 fixtures. [Native run]({run['url']}) · [Test receipts](verification/wild-prefix/prefix-results.txt)")
+    document = "\n\n".join(blocks) + "\n"
+    introduction, *sections = re.split(r'(?m)(?=^## )', document)
+    first = ['## Native edited test-build time with all eight changes',
+             '## Edited test-build instructions with all eight changes',
+             '## Retrained profile-guided builds',
+             '## Edited uv instruction sums',
+             '## Individual changes under profile-guided optimization']
+    ranks = {title: i for i, title in enumerate(first)}
+    sections.sort(key=lambda section: ranks.get(section.splitlines()[0], len(first)))
+    return introduction + '\n\n'.join(section.rstrip() for section in sections) + '\n'
 
 
 if __name__ == "__main__":

@@ -1,10 +1,14 @@
 # Reproducing the Ohm and uv measurements
 
+The [full report](README.md) distinguishes time for the entire command from instructions in Cargo, rustc and Wild. Run the archived analysis with `python3 -B reproduce/render_results.py --runs runs --output regenerated.md`. The review branch includes `SHA256SUMS` for both the long-form CSV and the complete archive.
+
 The workspace is [uv at c22e6b719](https://github.com/astral-sh/uv/tree/c22e6b71933443e9cd299d4b6ac8de035ed4825b). The driver baseline is [Cargo at a0c7d08c8](https://github.com/astral-sh/ohm-cargo/tree/a0c7d08c898d3fdff992f2f431dec57d2486add2). Every uv compilation uses the Linux x86-64 Ohm 1.99.0-17 rustc. The Cargo-only cohorts use its bundled Wild 0.11.0. The linker-specific and complete-toolchain cohorts substitute matched parent and patched Wild builds. The host had 32 AMD EPYC Milan vCPUs and 98 GiB RAM.
 
-`samples.csv` contains each measured Cargo invocation in its original order within the pair. One row records the change, cohort, workload, command, pair index, position in the pair, arm, value and unit. A test-build row means `cargo test --no-run`. The Wild serial-replay rows count a single linker invocation. In the Wild edited-command rows, the value is the sum of five linker processes in each of two commands per arm and `order` gives the full four-command block. The individual process totals are in `components/wild/edited/samples.csv`. The contents of `runs/` preserve the original Cargo measurements, including the edit logs and source hashes.
+`samples.csv` retains the recorded pair or block, arm order, metric and units. A test build means `cargo test --no-run`. Cargo-only rows measure the driver. The edited role-count cohorts record separate Cargo, rustc and Wild totals plus their sum. The two Wild experiments include paired link replays and four-command blocks. The eight-change wall-time rows measure seconds from native Cargo launch through exit. Use the `change`, `cohort`, `scope` and `unit` columns to select a single comparison before aggregating.
 
 ## Reproduce the Cargo results
+
+The Git evidence directory exposes the reproduction scripts, protocols and ordered pairs in the archive's layout. Unpack `uv-ohm-benchmarks.zip` for individual command logs and profiles. `samples.csv` combines the measurements for analysis.
 
 Start with the setup instructions and release hashes in [the five-change reproduction guide](reproduce/first-five.md). It installs the shipped Ohm compiler and bundled linker, creates private registry and target directories, prepares the two uv checkout layouts, and identifies the exact matched driver revisions. The primary drivers use stable rustc 1.99.1. The release-style builds use Ohm's shipped compiler, ThinLTO, one codegen unit and static native libraries. The distribution's original merged PGO profile was unavailable in the release assets.
 
@@ -29,9 +33,23 @@ Compute the paired reduction as `1 - candidate / parent`, then take the median o
 
 ## Rebuild the standard library and linker
 
+The supplemental PGO holdout uses two clean, independently trained drivers. Follow [the end-to-end reproduction steps](reproduce/repro-pgo.md) with the [training protocol](reproduce/pgo-holdout/README.md). The profile hashes, per-crate instrumentation records and build commands are under `profile-build/`.
+
+The six incremental PGO comparisons train each intermediate revision separately and verify its complete build record before measuring the adjacent pair. The first five rows follow the Cargo stack. The sixth adds the standard-library change to the fifth Cargo revision. The primary comparisons use 12 DynamoRIO pairs, a 28-byte checkout and a six-way corrected significance threshold. The repeats use eight Cachegrind pairs in a 76-byte checkout. [Training each intermediate](reproduce/pgo-intermediates/recipe/INTERMEDIATES.md) · [Registered comparisons](reproduce/pgo-steps/registration.json)
+
+For an ordinary-command rerun on the retained devbox, run `bash outputs/rerun-uv-warm.sh` from the original task directory. The script verifies the frozen PGO binaries and uv revision, measures fresh randomized pairs for `cargo check`, `cargo build` and `cargo test --no-run`, and prints the new results directory. The registry is prepopulated and offline. Rebuilding this setup on another host requires the training guide above. [Rerun script](reproduce/rerun-uv-warm.sh)
+
 The standard-library parent is `bfa236f639034f61ec884c15bd1f4e0b75e508ac` and the PR head is `395a878a9ea634f84319d2c04653ec1e79e38f16`. Extract `components/standard-library/guard-stack-evidence.zip` and follow its README. `build/build-one.sh` builds Cargo against each std at identical paths using `-Zbuild-std`. The archive contains input manifests, driver and rlib hashes, the recorded path corpus, oracle tests and build commands. The added public ordering test and its result are under `verification/`. [Rust #247](https://github.com/astral-sh/ohm-rust/pull/247)
 
 The Wild parent is `e856d81f6683cad80b9fe0ebf1a0c3c403c6fe11` and the PR head is `a77381c04eb7ad9258cdd0475642815a2a1da711`. Extract `components/wild/wild-undefined-evidence.zip` and follow its README for the fixed-path release builds, real link captures, jobserver-preserving instrumentation and ELF comparisons. Its expectation of five linker processes per edited `cargo test --no-run` is specific to the pinned uv revision and target configuration. [Wild #45](https://github.com/astral-sh/ohm-wild/pull/45)
+
+The second Wild change is stacked on #45. Its component packet includes both patch variants, the registered real-edit run, independent link replay counts, corpus and fallback measurements, output digest sets, disassembly-level attribution and verification instructions. [Wild #46](https://github.com/astral-sh/ohm-wild/pull/46) · [Component packet](components/wild-prefix/evidence.zip) · [Exact source](components/wild-prefix/source.json)
+
+The seven-change edited instruction study measures all threads of Cargo, rustc and Wild in the same command. Its admission checks require identical rustc and Wild work in both arms. The component directory includes the first excluded admission, all raw accepted samples and the separately scheduled repeat. [Role-counter protocol](components/edited-roles/INDEX.md)
+
+The all-eight edited instruction study uses both stacked Wild changes and the independently trained Cargo drivers. Its two test-build cohorts start from independently prepared target snapshots. The standalone verifier checks per-process thread counts, native exec traces, source and output hashes, both exact p-values, and the arm order. Run `python3 components/eight-roles/verify.py` from the unpacked archive. [Registered protocol](components/eight-roles/registration.md) · [Replay instructions](components/eight-roles/reproduce.md)
+
+The eight-change native test-build study uses self-trained parent and candidate Cargo, the same shipped rustc, and matched release-source Wild binaries. It measures two independently ordered 24-pair cohorts on a quiet host after confirming all six rustc and five Wild invocations. [Protocol and replay steps](reproduce/eight-wall/reproduce.md) · [Paired times and audits](components/eight-wall/results/)
 
 For end-to-end timings, see `reproduce/toolchain-wall-reproduction.md`, the sealed schedules in `reproduce/toolchain-wall-plan.json` and the per-command readiness data under `verification/`. The baseline and candidate use separate parked copies of the same initial target and the same visible source, target, compiler and linker paths. Every measurement edits both arms with the same bytes and verifies the rebuilt crate and the test-executable roster. The archived uv source is restored after each run.
 

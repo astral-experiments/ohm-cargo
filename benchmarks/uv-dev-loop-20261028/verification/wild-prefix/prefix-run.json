@@ -1,0 +1,331 @@
+{
+  "run": {
+    "id": 40745398550,
+    "name": "Wild ELF section placement validation",
+    "html_url": "https://github.com/astral-sh/ohm-wild/actions/runs/40745398550",
+    "event": "workflow_dispatch",
+    "run_attempt": 1,
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-10-28T18:28:09Z",
+    "updated_at": "2026-10-28T18:33:17Z",
+    "head_branch": "charlie/ohm-wild-uv-prefix-ci-20261028",
+    "head_sha": "dec14f53d66d8169368c71663f72b27fc4ba98a8",
+    "workflow_id": 351864744
+  },
+  "tested_source": "93600ec375472777043c28c33a5628adfbc0eb9b",
+  "paired_control": "a77381c04eb7ad9258cdd0475642815a2a1da711",
+  "validation_diff": {
+    "status": "ahead",
+    "merge_base": "93600ec375472777043c28c33a5628adfbc0eb9b",
+    "ahead": 1,
+    "behind": 0,
+    "paths": [
+      ".github/workflows/ci.yml"
+    ]
+  },
+  "jobs": [
+    {
+      "id": 123017727664,
+      "name": "Compare AArch64 lit fixtures against the parent",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-28T18:28:15Z",
+      "completed_at": "2026-10-28T18:33:17Z",
+      "html_url": "https://github.com/astral-sh/ohm-wild/actions/runs/40745398550/job/123017727664",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "steps": [
+        {
+          "number": 1,
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 2,
+          "name": "Initialize containers",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 3,
+          "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 4,
+          "name": "Build the base and candidate in the same checkout",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 5,
+          "name": "Fetch the two pinned inputs",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 6,
+          "name": "Run each fixture against both linkers",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 11,
+          "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 12,
+          "name": "Stop containers",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 13,
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "local_log": "prefix-123017727664.log",
+      "log_sha256": "4ce600229eab3c757529b867e7f265836d70ebcdef91ce076978d0a601e21369",
+      "compared_fixtures": {
+        "global-offset-table-position-aarch64": {
+          "base": {
+            "fixture_status": "PASS",
+            "output_sha256": "dbed8a9a3ee0e7258a3295998d9eebc3a865c433a97c34a654cace1c38f76292",
+            "decoded_output_size": 2992,
+            "decoded_output_sha256": "dbed8a9a3ee0e7258a3295998d9eebc3a865c433a97c34a654cace1c38f76292"
+          },
+          "head": {
+            "fixture_status": "PASS",
+            "output_sha256": "dbed8a9a3ee0e7258a3295998d9eebc3a865c433a97c34a654cace1c38f76292",
+            "decoded_output_size": 2992,
+            "decoded_output_sha256": "dbed8a9a3ee0e7258a3295998d9eebc3a865c433a97c34a654cace1c38f76292"
+          }
+        },
+        "pack-dyn-relocs-tls-aarch64": {
+          "base": {
+            "fixture_status": "PASS",
+            "output_sha256": "49b876dbf9413c712438d5d1996b6d8a9c2aec5ab34b2a4dc335abaa138122d7",
+            "decoded_output_size": 7664,
+            "decoded_output_sha256": "49b876dbf9413c712438d5d1996b6d8a9c2aec5ab34b2a4dc335abaa138122d7"
+          },
+          "head": {
+            "fixture_status": "PASS",
+            "output_sha256": "49b876dbf9413c712438d5d1996b6d8a9c2aec5ab34b2a4dc335abaa138122d7",
+            "decoded_output_size": 7664,
+            "decoded_output_sha256": "49b876dbf9413c712438d5d1996b6d8a9c2aec5ab34b2a4dc335abaa138122d7"
+          }
+        }
+      },
+      "fixture_summaries": [
+        {
+          "fixture": "global-offset-table-position-aarch64",
+          "result": "both pass, identical ELF bytes"
+        },
+        {
+          "fixture": "pack-dyn-relocs-tls-aarch64",
+          "result": "both pass, identical ELF bytes"
+        }
+      ]
+    },
+    {
+      "id": 123017727916,
+      "name": "Native arm64 linker tests",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-28T18:28:15Z",
+      "completed_at": "2026-10-28T18:29:16Z",
+      "html_url": "https://github.com/astral-sh/ohm-wild/actions/runs/40745398550/job/123017727916",
+      "labels": [
+        "macos-latest"
+      ],
+      "steps": [
+        {
+          "number": 1,
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 2,
+          "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 3,
+          "name": "Verify source and toolchain",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 4,
+          "name": "Install the native Linux reference linker",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 5,
+          "name": "Install the native Mach-O reference linker",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 6,
+          "name": "Run linker integration tests",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 12,
+          "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 13,
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "local_log": "prefix-123017727916.log",
+      "log_sha256": "44087e8f096d23bb7385c422136f6047d0093489b18c64899ed0296f5c79e3aa",
+      "passing_cases": [
+        "macho/aarch64/section-identity/default",
+        "macho/aarch64/empty-section/default",
+        "macho/aarch64/data-const-no-got/default",
+        "macho/aarch64/arbitrary-segments/default"
+      ],
+      "counts": {
+        "section-identity": 1,
+        "empty-section": 1,
+        "data-const-no-got": 1,
+        "arbitrary-segments": 1
+      },
+      "source_sha_asserted": true
+    },
+    {
+      "id": 123017728136,
+      "name": "Native x86_64 linker tests",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-28T18:28:15Z",
+      "completed_at": "2026-10-28T18:30:42Z",
+      "html_url": "https://github.com/astral-sh/ohm-wild/actions/runs/40745398550/job/123017728136",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "steps": [
+        {
+          "number": 1,
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 2,
+          "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 3,
+          "name": "Verify source and toolchain",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 4,
+          "name": "Install the native Linux reference linker",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 5,
+          "name": "Install the native Mach-O reference linker",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 6,
+          "name": "Run linker integration tests",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 12,
+          "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 13,
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "local_log": "prefix-123017728136.log",
+      "log_sha256": "fa087cc4088557cd37db0c2fb17e5595fc3b34502989d57c199ad568b65438b9",
+      "passing_cases": [
+        "elf::test_default_section_name_prefixes",
+        "elf/x86_64/custom-section/object",
+        "elf/x86_64/custom-section/archive",
+        "elf/x86_64/exclude-section/default",
+        "elf/x86_64/linker-script-discard/default",
+        "elf/x86_64/linker-script-filename-match/default",
+        "elf/x86_64/linker-script-short-section-name/default",
+        "elf/x86_64/orphan-handling/orphan-place",
+        "elf/x86_64/orphan-handling/orphan-warn",
+        "elf/x86_64/orphan-handling/orphan-error",
+        "elf/x86_64/orphan-handling/orphan-discard",
+        "elf/x86_64/orphan-handling/orphan-debug-place",
+        "elf/x86_64/orphan-handling/orphan-debug-discard",
+        "elf/x86_64/orphan-handling/orphan-eh-frame-place",
+        "elf/x86_64/orphan-handling/orphan-eh-frame-warn",
+        "elf/x86_64/orphan-handling/orphan-eh-frame-error",
+        "elf/x86_64/orphan-handling/orphan-eh-frame-discard",
+        "elf/x86_64/orphan-handling/no-orphan-eh-frame-discard",
+        "elf/x86_64/orphan-handling/filtered-eh-frame-place",
+        "elf/x86_64/orphan-handling/filtered-eh-frame-warn",
+        "elf/x86_64/orphan-handling/filtered-eh-frame-error",
+        "elf/x86_64/orphan-handling/filtered-eh-frame-discard",
+        "elf/x86_64/orphan-handling/orphan-partial-place",
+        "elf/x86_64/orphan-handling/orphan-partial-warn",
+        "elf/x86_64/orphan-handling/orphan-partial-error",
+        "elf/x86_64/orphan-handling/orphan-partial-discard",
+        "elf/x86_64/orphan-handling/no-script-place",
+        "elf/x86_64/orphan-handling/no-script-error",
+        "elf/x86_64/orphan-handling/no-script-warn",
+        "elf/x86_64/orphan-handling/no-script-discard",
+        "elf/x86_64/orphan-handling/no-orphans-error",
+        "elf/x86_64/orphan-handling/no-orphans-warn",
+        "elf/x86_64/orphan-handling/no-orphans-discard",
+        "elf/x86_64/partial-link-repeated-sections/default",
+        "elf/x86_64/sort-section-name/x86_64",
+        "elf/x86_64/sort-section-alignments/x86_64"
+      ],
+      "counts": {
+        "elf::test_default_section_name_prefixes": 1,
+        "custom-section": 2,
+        "exclude-section": 1,
+        "linker-script-discard": 1,
+        "linker-script-filename-match": 1,
+        "linker-script-short-section-name": 1,
+        "orphan-handling": 26,
+        "partial-link-repeated-sections": 1,
+        "sort-section-name": 1,
+        "sort-section-alignments": 1
+      },
+      "source_sha_asserted": true
+    }
+  ]
+}

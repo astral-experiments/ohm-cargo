@@ -1,0 +1,26 @@
+# Selected-process instruction sum on an edited uv workspace
+
+This optional experiment sums user-mode instructions across the original Cargo PID, every compiler invocation and every Wild invocation, including all their threads. Both arms compile uv with the released Ohm rustc. Each linker receives `--no-fork` in native admission and counted runs to keep linking and finalization in its measured PID. The sum excludes run-time work in other processes, including wrappers, `cc`, `collect2`, pre-exec work in forked children, and the kernel. It measures a different quantity from the native whole-command elapsed-time experiment.
+
+The stock DynamoRIO offline count filter writes each thread's final count on exit. On Linux its 11.3 release notes in `include/dr_events.h` say `execve` never produces a process-exit callback and may omit a thread-exit callback. A native fork may generate additional per-PID trace directories even with `-no_follow_children`. The strict single-PID reader in `../edit-link-profile/native-instrument/count.py` requires a complete footer and a matching PID for every thread record. Its `close_fds=False` preserves the Cargo jobserver descriptors. It already calibrates in isolation. Here, an independent launcher surrounds each measured role and attributes the original PID only. Summing every directory produced under child following would allow missing or double-counted work across fork and exec.
+
+## Frozen protocol
+
+1. `calibrate.py` launches a Cargo-like process which forks and execs a compiler-like process which forks and execs a two-thread linker-like process. These small programs use the actual per-role launcher. A descriptor inherited through all three layers must stay open. Raising the x86 `decq` / `jnz` loop by 800,000 iterations must add 1.6 million instructions in each single-threaded role and 3.2 million in the two-threaded role. Raising only the two forked children's pre-exec work must leave each measured count within 4,096 instructions of control. A missing process, thread or marker rejects calibration.
+2. `edited.py pilot` works on the retired five-Cargo-change instruction fixture for the chosen endpoint. Its pristine seed remains untouched. The two fresh private arm targets receive the same wrapped, native warm cache and run at the exact original absolute target path. `cc` changes only rustc's release Wild `-B` directory and hands its command to the system compiler driver. Cargo and Wild switch via hard links at stable private executable paths. The common released Rust sysroot stays read-only. Only one endpoint process may claim its retired fixture at a time.
+3. For both arms, one actual edit (prefix `uv-preview-D00`) is built natively under `strace -ff -e trace=execve,execveat`. The audit joins successful Cargo, rustc and Wild execs to role records and rejects unexpected Cargo/compiler/linker paths. All native path frequencies, exact rustc arguments, selected link outputs, compiler diagnostics and test-executable paths are kept. A second novel edit (`D01`) runs counted in the opposite arm order. Each arm and both modes must match the native compilation/package and executable rosters, exact compiler argv and Wild output path multiset. The baseline and candidate must each compile or check only `uv`. `test --no-run` must produce the integration-test executable. Every run rejects test execution or network activity.
+4. If the pilot passes, eight held-out source contents (`D02`–`D09`) are built on persistent arm targets. Four baseline-first and four candidate-first pairs are shuffled with endpoint-specific seeds 1903241 (check), 1903243 (build) and 1903253 (test). Each pair uses the same source bytes and the same visible source, target, compiler and linker paths in both arms. Counts are saved separately by role before addition. The sign test uses the sum within each paired source edit. A family-wise directional result requires an improving median and two-sided exact sign p < .05/3. This study alone has no independent confirmatory repeat. Admission failures are excluded from performance claims and do not shorten the fixed eight-pair cohort.
+
+## Running
+
+From the task workspace after the native timing window has ended and all retired fixture users are idle, run the calibration, then pilots. A working x86-64 Linux `strace`, the pinned offline Cargo registry, DynamoRIO 11.3.0 and its known-good jobserver-safe single-process reader are needed. The `edit-cumulative-*` seeds and prior protocol files are produced by the existing cumulative edited instruction replay.
+
+```sh
+chmod +x work/tree-count/wrap.py
+python3 -B work/tree-count/calibrate.py work/tree-count/calibration
+for ep in check build test; do python3 -B work/tree-count/edited.py pilot "$ep" || break; done
+# Only after admission for the selected endpoints
+for ep in check build test; do python3 -B work/tree-count/edited.py samples "$ep" || break; done
+```
+
+Raw records live in `results/<endpoint>`, including `native-execs.json`, per-invocation `*/*.json`, the full compilation logs and paired CSVs. The old source's original bytes and timestamp are restored at the end of each pilot or measurement phase, including upon rejection. The copied targets are retained under `edit-cumulative-<endpoint>/role-sum`. The six ordinary native timing fixtures have different paths.

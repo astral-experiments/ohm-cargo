@@ -1,0 +1,293 @@
+{
+  "qualified": true,
+  "cohorts": {
+    "initial": {
+      "state": "qualified",
+      "n_pairs": 8,
+      "counted_commands": 16,
+      "counted_role_processes": 192,
+      "additional_admission_commands": 4,
+      "num_distinct_emitted": 72,
+      "mean_by_arm": {
+        "base": 29291664441.75,
+        "candidate": 28686000720.125
+      },
+      "median_instructions_by_role": {
+        "base": {
+          "cargo": 1520106068.0,
+          "rustc": 14504672722.0,
+          "wild": 12172773891.5,
+          "total": 28196855757.0
+        },
+        "candidate": {
+          "cargo": 1481250222.5,
+          "rustc": 14507329734.5,
+          "wild": 11605785221.5,
+          "total": 27594055262.0
+        }
+      },
+      "median_saving": 0.021334880018968272,
+      "rank_interval_99_21875": [
+        0.01908644614701782,
+        0.02175674553160456
+      ],
+      "wins": 8,
+      "losses": 0,
+      "ties": 0,
+      "two_sided_sign_p": 0.0078125,
+      "balanced_order_randomization_p": 0.02857142857142857,
+      "raw_pair_summaries": [
+        {
+          "literal": 16,
+          "source_sha256": "eb31c3f3efd021dfcf5f73208b90f44b0b20e180d8a7d78bbe16f5120cfd317f",
+          "order": [
+            "base",
+            "candidate"
+          ],
+          "totals": {
+            "base": 31603201788,
+            "candidate": 31000008979
+          },
+          "saving": 0.01908644614701782
+        },
+        {
+          "literal": 14,
+          "source_sha256": "4d82abf3b04f166d118b71993df98f315924ecf5cb8494a5908ac9a076e033d2",
+          "order": [
+            "candidate",
+            "base"
+          ],
+          "totals": {
+            "candidate": 27524069815,
+            "base": 28136222447
+          },
+          "saving": 0.02175674553160456
+        },
+        {
+          "literal": 11,
+          "source_sha256": "93263086d83e1cd42b69c6d868cfe7a22c85ae3da9244a59f9f5ca313ee51e86",
+          "order": [
+            "base",
+            "candidate"
+          ],
+          "totals": {
+            "base": 28195629756,
+            "candidate": 27594055953
+          },
+          "saving": 0.021335710824901377
+        },
+        {
+          "literal": 10,
+          "source_sha256": "9cc0f01986b865d23e7ecd829328ebe116757820ac9337b59672a4a8e4754429",
+          "order": [
+            "base",
+            "candidate"
+          ],
+          "totals": {
+            "base": 30939817074,
+            "candidate": 30334323200
+          },
+          "saving": 0.01957005345415641
+        },
+        {
+          "literal": 13,
+          "source_sha256": "7cc26812d475db0ee1248455537c83b9df506d0a92c0784fa9fbc889c5898d9c",
+          "order": [
+            "candidate",
+            "base"
+          ],
+          "totals": {
+            "candidate": 27531949241,
+            "base": 28135189524
+          },
+          "saving": 0.021440775527224454
+        },
+        {
+          "literal": 15,
+          "source_sha256": "692f2af03007de43a63e404b8ad50086046c3f6e71212ea02229ec7a6d33b9ba",
+          "order": [
+            "candidate",
+            "base"
+          ],
+          "totals": {
+            "candidate": 27594054571,
+            "base": 28198081758
+          },
+          "saving": 0.021420860900533856
+        },
+        {
+          "literal": 12,
+          "source_sha256": "6ca649c666e2dfe7e17dcc16a280cf3c19540dd3e277b31cf8dfd91fd5dfa14d",
+          "order": [
+            "base",
+            "candidate"
+          ],
+          "totals": {
+            "base": 30984642573,
+            "candidate": 30369364853
+          },
+          "saving": 0.01985750581277168
+        },
+        {
+          "literal": 17,
+          "source_sha256": "f9a54003978dce285b0cc04f9f6654f25e0ab88d3418b4d79baff937ef6805ca",
+          "order": [
+            "candidate",
+            "base"
+          ],
+          "totals": {
+            "candidate": 27540179149,
+            "base": 28140530614
+          },
+          "saving": 0.021334049213035167
+        }
+      ],
+      "full_digest_variant_combinations": {},
+      "restored": true
+    },
+    "replica": {
+      "state": "qualified",
+      "n_pairs": 8,
+      "counted_commands": 16,
+      "counted_role_processes": 192,
+      "additional_admission_commands": 4,
+      "num_distinct_emitted": 72,
+      "mean_by_arm": {
+        "base": 29290070657.875,
+        "candidate": 28686821349.625
+      },
+      "median_instructions_by_role": {
+        "base": {
+          "cargo": 1519678067.5,
+          "rustc": 14505273037.5,
+          "wild": 12173235370.0,
+          "total": 28199424236.0
+        },
+        "candidate": {
+          "cargo": 1481385536.5,
+          "rustc": 14505685344.0,
+          "wild": 11606879771.0,
+          "total": 27593468704.5
+        }
+      },
+      "median_saving": 0.021350832518281182,
+      "rank_interval_99_21875": [
+        0.018868133817893207,
+        0.02158992672121074
+      ],
+      "wins": 8,
+      "losses": 0,
+      "ties": 0,
+      "two_sided_sign_p": 0.0078125,
+      "balanced_order_randomization_p": 0.02857142857142857,
+      "raw_pair_summaries": [
+        {
+          "literal": 44,
+          "source_sha256": "c512f2508d6e6813f6028a433e9cd00415313cde9fdde78d3d874c9a13c2b2df",
+          "order": [
+            "candidate",
+            "base"
+          ],
+          "totals": {
+            "candidate": 30998495304,
+            "base": 31606911470
+          },
+          "saving": 0.019249465945999966
+        },
+        {
+          "literal": 42,
+          "source_sha256": "c896582fb71e37af203bf1d3d83951036c985c51a78e2a3235a3313b6ea0588d",
+          "order": [
+            "base",
+            "candidate"
+          ],
+          "totals": {
+            "base": 28131825549,
+            "candidate": 27524607969
+          },
+          "saving": 0.021584720086591958
+        },
+        {
+          "literal": 47,
+          "source_sha256": "6c14c2ff8ce9bb667a6deeb7a499c3b1fe815822aa734c911829f193a312e6c9",
+          "order": [
+            "candidate",
+            "base"
+          ],
+          "totals": {
+            "candidate": 27595125321,
+            "base": 28198186151
+          },
+          "saving": 0.021386511414976717
+        },
+        {
+          "literal": 43,
+          "source_sha256": "26c75ad757a541cb61b919f69bd2ea7946c4dfc2df25a70ff14d55ff213ae983",
+          "order": [
+            "candidate",
+            "base"
+          ],
+          "totals": {
+            "candidate": 30353808970,
+            "base": 30937542665
+          },
+          "saving": 0.018868133817893207
+        },
+        {
+          "literal": 45,
+          "source_sha256": "efcbcb2e5b66cc0abec2a582b6a93abda60d707517aae45fd3ba80861ce268b9",
+          "order": [
+            "candidate",
+            "base"
+          ],
+          "totals": {
+            "candidate": 27536954621,
+            "base": 28136692545
+          },
+          "saving": 0.021315153621585647
+        },
+        {
+          "literal": 40,
+          "source_sha256": "7d5823780313018490204cde48a4ecd644d0919befea1f1c8c374f23f9d14563",
+          "order": [
+            "base",
+            "candidate"
+          ],
+          "totals": {
+            "base": 28200662321,
+            "candidate": 27591812088
+          },
+          "saving": 0.02158992672121074
+        },
+        {
+          "literal": 46,
+          "source_sha256": "92c9931aafd34f8be6720d1f1ac20963a9dac354b875d9b9f580ec860972a568",
+          "order": [
+            "base",
+            "candidate"
+          ],
+          "totals": {
+            "base": 30968095774,
+            "candidate": 30359766034
+          },
+          "saving": 0.019643756737239837
+        },
+        {
+          "literal": 41,
+          "source_sha256": "a93771222c88f68fe5489e74993684112cb47e663e08ea4eceefd8d9f1348e9a",
+          "order": [
+            "base",
+            "candidate"
+          ],
+          "totals": {
+            "base": 28140648788,
+            "candidate": 27534000490
+          },
+          "saving": 0.021557722516287292
+        }
+      ],
+      "full_digest_variant_combinations": {},
+      "restored": true
+    }
+  }
+}

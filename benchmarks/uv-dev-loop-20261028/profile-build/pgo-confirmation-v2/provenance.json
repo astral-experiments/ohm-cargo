@@ -1,0 +1,42 @@
+{
+  "rustc_perf_commit": "0a054b0ead56e41a4584bfab6fdc1a5fad2aedc3",
+  "training_trees": {
+    "bitmaps-3.2.1": "fffc6646daa4b2ba80ae2ebcf91d1e67716f2a39",
+    "diesel-2.2.10": "df8341fa205001163fa3e51b1c412f88a850f3e7"
+  },
+  "llvm_tools": "https://static.rust-lang.org/dist/2026-10-15/llvm-tools-1.99.1-x86_64-unknown-linux-gnu.tar.xz",
+  "llvm_tools_archive_sha256": "8429c5117debfb45c22cf2f97712ef00e0e94976c96cf92f661974a458ca7e84",
+  "llvm_version": "LLVM (http://llvm.org/):\n  LLVM version 23.1.1-rust-1.99.1-stable\n  Optimized build.\n",
+  "arms": [
+    "base",
+    "guard-stack"
+  ],
+  "jobs": 8,
+  "cargo": "a0c7d08c898d3fdff992f2f431dec57d2486add2",
+  "stack": "94c95d6b8ef97b0e63e04b250bc88d1a388a31af",
+  "rust": "bfa236f639034f61ec884c15bd1f4e0b75e508ac",
+  "std_patch": "ff2dcc74dfc56fb366422c29de08dc1baae4ec4efc91171069358b838177b795",
+  "profiler": "/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libprofiler_builtins-fabb0bf1a9c3ebba.rlib",
+  "argv": [
+    "work/pgo-holdout/run.py",
+    "--scratch",
+    "work/pgo-confirmation-v2",
+    "--materials",
+    "work/pgo-materials",
+    "--cargo-repo",
+    "work/ohm-cargo",
+    "--toolchain",
+    "work/toolchain",
+    "--std-patch",
+    "work/path-compare/std-path-mismatch-guarded.patch",
+    "--seed-home",
+    "work/path-compare/build/cargo-home",
+    "--training-seed",
+    "work/pgo-confirmation/seed-home",
+    "--arms",
+    "base",
+    "guard-stack",
+    "--jobs",
+    "8"
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "plan_sha256": "acc341a0e4a0b04b04496cc54f7700e257c8b02cf5a8021eb6716ca0c5c1d684",
+  "command": [
+    "/tmp/ohm-uv-bench.0H03f2TH/edit-toolchain-wall-replica-test/bin/cargo",
+    "test",
+    "--no-run",
+    "--locked",
+    "--offline",
+    "-j8"
+  ],
+  "source": "/tmp/ohm-uv-bench.0H03f2TH/edit-toolchain-wall-replica-test/source",
+  "target": "/tmp/ohm-uv-bench.0H03f2TH/edit-toolchain-wall-replica-test/target",
+  "private_toolchain": "/tmp/ohm-uv-bench.0H03f2TH/sysroot-edit-toolchain-wall-replica-test",
+  "cargo_home": "/tmp/ohm-uv-bench.0H03f2TH/cargo-edit-toolchain-wall-replica-test",
+  "inputs": {
+    "base": {
+      "cargo": "51b59d549a21422809d865449be5a4c5b422989b22f7a314c6f18e7ab92b0855",
+      "wild": "82a927b86f929b67c58be4d37ab8442f32fcdd115d97334dcc5ac190101d8865"
+    },
+    "candidate": {
+      "cargo": "4a61560c17f00e54595122846f5450e7eb6a5ed3da9611ae39f4ecb972ab30d4",
+      "wild": "901b68fc9ca30975d837d45dcf1bdf743a6130ecef5e23d6aef44558b09bd7e1"
+    }
+  },
+  "rustc_sha256": "7ec5263869aed2fc9272ea7212aabbe7b272a4685f1b79af75c123daff09c02c",
+  "original_cargo_sha256": "744843355906004af366ca616a31bde4d79bced59e00355b71eadd7b4257d00c",
+  "original_private_wild_sha256": "82a927b86f929b67c58be4d37ab8442f32fcdd115d97334dcc5ac190101d8865",
+  "environment": {
+    "HOME": "/home/dev-user",
+    "PATH": "/tmp/ohm-uv-bench.0H03f2TH/sysroot-edit-toolchain-wall-replica-test/bin:/home/dev-user/.cache/dotslash/b6/f20a15650e28d27b19de2868a8bfe32841b554/codex-path:/usr/local/bin:/home/dev-user/.nvm/versions/node/v22.23.3/bin:/home/dev-user/.bun/bin:/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:/home/dev-user/.local/bin:/home/dev-user/.openai/bin:/home/dev-user/.virtualenvs/openai/bin:/home/dev-user/code/openai/project/dotslash-gen/bin:/usr/local/bin:/home/dev-user/.codex/tmp/arg0-linux/codex-arg0lAO6HV:/home/dev-user/.cache/dotslash/b6/f20a15650e28d27b19de2868a8bfe32841b554/codex-path:/home/dev-user/.cargo/bin:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin",
+    "LANG": "C.UTF-8",
+    "LC_ALL": "C.UTF-8",
+    "TZ": "UTC",
+    "CARGO_HOME": "/tmp/ohm-uv-bench.0H03f2TH/cargo-edit-toolchain-wall-replica-test",
+    "CARGO_TARGET_DIR": "/tmp/ohm-uv-bench.0H03f2TH/edit-toolchain-wall-replica-test/target",
+    "RUSTC": "/tmp/ohm-uv-bench.0H03f2TH/sysroot-edit-toolchain-wall-replica-test/bin/rustc",
+    "RUSTDOC": "/tmp/ohm-uv-bench.0H03f2TH/sysroot-edit-toolchain-wall-replica-test/bin/rustdoc",
+    "CARGO_NET_OFFLINE": "true",
+    "CARGO_TERM_COLOR": "never",
+    "SSL_CERT_DIR": "/etc/ssl/certs"
+  },
+  "original_seed": "/tmp/ohm-uv-bench.0H03f2TH/edit-toolchain-wall-replica-test/seed-target",
+  "common": "/tmp/ohm-uv-bench.0H03f2TH/edit-toolchain-wall-replica-test/eight-wall/predecessor",
+  "predecessor_literal": "Z00",
+  "admission_literal": "Z01"
+}

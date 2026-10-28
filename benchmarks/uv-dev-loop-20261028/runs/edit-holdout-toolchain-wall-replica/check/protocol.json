@@ -1,0 +1,76 @@
+{
+  "uv": "c22e6b71933443e9cd299d4b6ac8de035ed4825b",
+  "edit_path": "crates/uv/src/install_source.rs",
+  "study": "toolchain-wall-replica",
+  "primary": "check",
+  "endpoint": "check",
+  "command": [
+    "/tmp/ohm-uv-bench.0H03f2TH/edit-toolchain-wall-replica-check/bin/cargo",
+    "check",
+    "--locked",
+    "--offline",
+    "-j8"
+  ],
+  "pairs": 8,
+  "seed": 930411,
+  "order": [
+    [
+      "base",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "base"
+    ],
+    [
+      "base",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "base"
+    ],
+    [
+      "base",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "base"
+    ],
+    [
+      "base",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "base"
+    ]
+  ],
+  "source": "/tmp/ohm-uv-bench.0H03f2TH/edit-toolchain-wall-replica-check/source",
+  "visible_target": "/tmp/ohm-uv-bench.0H03f2TH/edit-toolchain-wall-replica-check/target",
+  "cargo_sha256": {
+    "base": "744843355906004af366ca616a31bde4d79bced59e00355b71eadd7b4257d00c",
+    "candidate": null
+  },
+  "metric": "native whole-command elapsed nanoseconds including children, time.perf_counter_ns",
+  "edit": "Ohm direct private-body edit with uv-preview-XX varied by zero-based pair",
+  "admission": "both arms succeed, compile/check uv, match compiled/checking package multisets, execute no test, match sorted test-executable lists",
+  "initialization": "Both persistent arm targets are independent copies of a single untouched warmed snapshot.",
+  "inference": "paired proportional saving (1 - candidate/base), two-sided exact sign test and median interval",
+  "mode": "wall",
+  "workspace": true,
+  "cargo_home": "/tmp/ohm-uv-bench.0H03f2TH/cargo-edit-toolchain-wall-replica-check",
+  "toolchain_plan_sha256": "73480623f7f71e9caf1e21f7973a20b74da8e341980525fe635d391f6b8bb9f4",
+  "rustc": "/tmp/ohm-uv-bench.0H03f2TH/sysroot-edit-toolchain-wall-replica-check/bin/rustc",
+  "rustdoc": "/tmp/ohm-uv-bench.0H03f2TH/sysroot-edit-toolchain-wall-replica-check/bin/rustdoc",
+  "linker": "/tmp/ohm-uv-bench.0H03f2TH/sysroot-edit-toolchain-wall-replica-check/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld/ld.bfd",
+  "wild_sha256": {
+    "base": "82a927b86f929b67c58be4d37ab8442f32fcdd115d97334dcc5ac190101d8865",
+    "candidate": "435a253fcd8a44061aa0d88748ca12b8e63a092dc9d42593195142d8071ebc81"
+  },
+  "binary_seal": "seal.json",
+  "gate": "Exact two-sided paired sign test, positive median reduction in both cohorts",
+  "alpha_initial": "0.05/3",
+  "alpha_replicate": "0.05"
+}

@@ -1,0 +1,105 @@
+{
+  "cohorts": {
+    "initial": {
+      "five_second_preflight_windows": 2,
+      "threshold_failures": {
+        "cpu_busy": 0,
+        "iowait": 0,
+        "dirty": 0,
+        "writeback": 0,
+        "foreign_tools": 0
+      },
+      "final_two_windows": [
+        {
+          "utc": "2026-10-28T20:12:14.704151+00:00",
+          "busy_fraction": "0.0038779084313234928",
+          "iowait_fraction": "0.0002501876407305479",
+          "dirty_kib": "3404",
+          "writeback_kib": "0",
+          "foreign_tools": "[]",
+          "consecutive_quiet": "1"
+        },
+        {
+          "utc": "2026-10-28T20:12:19.729196+00:00",
+          "busy_fraction": "0.019529792262719243",
+          "iowait_fraction": "0.0",
+          "dirty_kib": "1012",
+          "writeback_kib": "0",
+          "foreign_tools": "[]",
+          "consecutive_quiet": "2"
+        }
+      ],
+      "preflight_foreign_tools": [],
+      "in_window_samples": 71,
+      "in_window": {
+        "busy_fraction": {
+          "median": 0.16148445336008024,
+          "maximum": 0.20083102493074792
+        },
+        "iowait_fraction": {
+          "median": 0.002516039753428104,
+          "maximum": 0.032994605444737174
+        },
+        "dirty_kib": {
+          "median": 2060452.0,
+          "maximum": 2472748.0
+        },
+        "writeback_kib": {
+          "median": 0.0,
+          "maximum": 320.0
+        }
+      }
+    },
+    "replica": {
+      "five_second_preflight_windows": 8,
+      "threshold_failures": {
+        "cpu_busy": 0,
+        "iowait": 0,
+        "dirty": 6,
+        "writeback": 1,
+        "foreign_tools": 0
+      },
+      "final_two_windows": [
+        {
+          "utc": "2026-10-28T20:18:54.850098+00:00",
+          "busy_fraction": "0.0007446940548591287",
+          "iowait_fraction": "0.00012411567580985477",
+          "dirty_kib": "500",
+          "writeback_kib": "0",
+          "foreign_tools": "[]",
+          "consecutive_quiet": "1"
+        },
+        {
+          "utc": "2026-10-28T20:18:59.908957+00:00",
+          "busy_fraction": "0.0012410027302060065",
+          "iowait_fraction": "0.00037230081906180194",
+          "dirty_kib": "548",
+          "writeback_kib": "0",
+          "foreign_tools": "[]",
+          "consecutive_quiet": "2"
+        }
+      ],
+      "preflight_foreign_tools": [],
+      "in_window_samples": 78,
+      "in_window": {
+        "busy_fraction": {
+          "median": 0.14917077971278186,
+          "maximum": 0.2188014696566578
+        },
+        "iowait_fraction": {
+          "median": 0.0021977708911986756,
+          "maximum": 0.031336174479819505
+        },
+        "dirty_kib": {
+          "median": 2079418.0,
+          "maximum": 2551588.0
+        },
+        "writeback_kib": {
+          "median": 0.0,
+          "maximum": 141264.0
+        }
+      }
+    }
+  },
+  "scope": "Busy and iowait cover the registered native CPUs. Dirty and writeback are system-wide. Foreign-process scans ran during preflight; the periodic in-window monitor collected aggregate host counters. No timing rows are removed by this descriptive summary."
+}

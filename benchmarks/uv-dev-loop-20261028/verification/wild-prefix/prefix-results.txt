@@ -1,0 +1,36 @@
+Exact-source run 40745398550, attempt 1 | completed / success
+https://github.com/astral-sh/ohm-wild/actions/runs/40745398550
+Tested PR source 93600ec375472777043c28c33a5628adfbc0eb9b
+Paired parent a77381c04eb7ad9258cdd0475642815a2a1da711
+Workflow source dec14f53d66d8169368c71663f72b27fc4ba98a8 differs only in .github/workflows/ci.yml.
+
+Compare AArch64 lit fixtures against the parent | success | job 123017727664
+https://github.com/astral-sh/ohm-wild/actions/runs/40745398550/job/123017727664
+  global-offset-table-position-aarch64: both pass, identical ELF bytes
+    base PASS | ELF 2992 bytes, SHA-256 dbed8a9a3ee0e7258a3295998d9eebc3a865c433a97c34a654cace1c38f76292
+    head PASS | ELF 2992 bytes, SHA-256 dbed8a9a3ee0e7258a3295998d9eebc3a865c433a97c34a654cace1c38f76292
+  pack-dyn-relocs-tls-aarch64: both pass, identical ELF bytes
+    base PASS | ELF 7664 bytes, SHA-256 49b876dbf9413c712438d5d1996b6d8a9c2aec5ab34b2a4dc335abaa138122d7
+    head PASS | ELF 7664 bytes, SHA-256 49b876dbf9413c712438d5d1996b6d8a9c2aec5ab34b2a4dc335abaa138122d7
+
+Native arm64 linker tests | success | job 123017727916
+https://github.com/astral-sh/ohm-wild/actions/runs/40745398550/job/123017727916
+4 distinct passing cases. Exact checkout True.
+  section-identity = 1
+  empty-section = 1
+  data-const-no-got = 1
+  arbitrary-segments = 1
+
+Native x86_64 linker tests | success | job 123017728136
+https://github.com/astral-sh/ohm-wild/actions/runs/40745398550/job/123017728136
+36 distinct passing cases. Exact checkout True.
+  elf::test_default_section_name_prefixes = 1
+  custom-section = 2
+  exclude-section = 1
+  linker-script-discard = 1
+  linker-script-filename-match = 1
+  linker-script-short-section-name = 1
+  orphan-handling = 26
+  partial-link-repeated-sections = 1
+  sort-section-name = 1
+  sort-section-alignments = 1

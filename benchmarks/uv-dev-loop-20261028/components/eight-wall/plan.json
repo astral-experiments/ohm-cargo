@@ -1,0 +1,428 @@
+{
+  "uv": "c22e6b71933443e9cd299d4b6ac8de035ed4825b",
+  "command": [
+    "test",
+    "--no-run",
+    "--locked",
+    "--offline",
+    "-j8"
+  ],
+  "pairs": 24,
+  "native_cpus": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+  ],
+  "preparation_cpus": [
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31
+  ],
+  "rustc_sha256": "7ec5263869aed2fc9272ea7212aabbe7b272a4685f1b79af75c123daff09c02c",
+  "release_wild_sha256": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+  "wild_prefix_patch_sha256": "a75c1cf2d966ddd1217e33f8879070afe4a9e20ce94d01465a8df109ca69b65c",
+  "linker_slot": "lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld/ld.bfd",
+  "arms": {
+    "base": {
+      "cargo": [
+        "pgo-confirmation-v2/bin/base",
+        "51b59d549a21422809d865449be5a4c5b422989b22f7a314c6f18e7ab92b0855"
+      ],
+      "wild": [
+        "bin/wild-baseline",
+        "82a927b86f929b67c58be4d37ab8442f32fcdd115d97334dcc5ac190101d8865"
+      ]
+    },
+    "candidate": {
+      "cargo": [
+        "pgo-confirmation-v2/bin/guard-stack",
+        "4a61560c17f00e54595122846f5450e7eb6a5ed3da9611ae39f4ecb972ab30d4"
+      ],
+      "wild": [
+        "wild-prefix-v2/v2-wild",
+        "901b68fc9ca30975d837d45dcf1bdf743a6130ecef5e23d6aef44558b09bd7e1"
+      ]
+    }
+  },
+  "gate": "24 admitted pairs per cohort, positive median reduction and two-sided exact sign p < .05 in each, first cohort rank 7 lower bound > 0",
+  "cohorts": {
+    "initial": {
+      "fixture": "toolchain-wall",
+      "prefix": "M",
+      "order_seed": 3110819,
+      "edit_seed": 431021,
+      "admission_order": [
+        "base",
+        "candidate"
+      ],
+      "schedule": [
+        {
+          "literal": "M25",
+          "arms": [
+            "candidate",
+            "base"
+          ]
+        },
+        {
+          "literal": "M28",
+          "arms": [
+            "candidate",
+            "base"
+          ]
+        },
+        {
+          "literal": "M26",
+          "arms": [
+            "candidate",
+            "base"
+          ]
+        },
+        {
+          "literal": "M29",
+          "arms": [
+            "base",
+            "candidate"
+          ]
+        },
+        {
+          "literal": "M14",
+          "arms": [
+            "base",
+            "candidate"
+          ]
+        },
+        {
+          "literal": "M24",
+          "arms": [
+            "candidate",
+            "base"
+          ]
+        },
+        {
+          "literal": "M17",
+          "arms": [
+            "candidate",
+            "base"
+          ]
+        },
+        {
+          "literal": "M13",
+          "arms": [
+            "base",
+            "candidate"
+          ]
+        },
+        {
+          "literal": "M20",
+          "arms": [
+            "base",
+            "candidate"
+          ]
+        },
+        {
+          "literal": "M18",
+          "arms": [
+            "candidate",
+            "base"
+          ]
+        },
+        {
+          "literal": "M19",
+          "arms": [
+            "base",
+            "candidate"
+          ]
+        },
+        {
+          "literal": "M33",
+          "arms": [
+            "candidate",
+            "base"
+          ]
+        },
+        {
+          "literal": "M31",
+          "arms": [
+            "base",
+            "candidate"
+          ]
+        },
+        {
+          "literal": "M10",
+          "arms": [
+            "candidate",
+            "base"
+          ]
+        },
+        {
+          "literal": "M12",
+          "arms": [
+            "base",
+            "candidate"
+          ]
+        },
+        {
+          "literal": "M32",
+          "arms": [
+            "candidate",
+            "base"
+          ]
+        },
+        {
+          "literal": "M11",
+          "arms": [
+            "base",
+            "candidate"
+          ]
+        },
+        {
+          "literal": "M16",
+          "arms": [
+            "base",
+            "candidate"
+          ]
+        },
+        {
+          "literal": "M22",
+          "arms": [
+            "base",
+            "candidate"
+          ]
+        },
+        {
+          "literal": "M23",
+          "arms": [
+            "candidate",
+            "base"
+          ]
+        },
+        {
+          "literal": "M27",
+          "arms": [
+            "base",
+            "candidate"
+          ]
+        },
+        {
+          "literal": "M21",
+          "arms": [
+            "candidate",
+            "base"
+          ]
+        },
+        {
+          "literal": "M15",
+          "arms": [
+            "candidate",
+            "base"
+          ]
+        },
+        {
+          "literal": "M30",
+          "arms": [
+            "base",
+            "candidate"
+          ]
+        }
+      ]
+    },
+    "replica": {
+      "fixture": "toolchain-wall-replica",
+      "prefix": "Z",
+      "order_seed": 9905287,
+      "edit_seed": 730061,
+      "admission_order": [
+        "candidate",
+        "base"
+      ],
+      "schedule": [
+        {
+          "literal": "Z48",
+          "arms": [
+            "base",
+            "candidate"
+          ]
+        },
+        {
+          "literal": "Z53",
+          "arms": [
+            "base",
+            "candidate"
+          ]
+        },
+        {
+          "literal": "Z57",
+          "arms": [
+            "candidate",
+            "base"
+          ]
+        },
+        {
+          "literal": "Z55",
+          "arms": [
+            "candidate",
+            "base"
+          ]
+        },
+        {
+          "literal": "Z62",
+          "arms": [
+            "base",
+            "candidate"
+          ]
+        },
+        {
+          "literal": "Z59",
+          "arms": [
+            "candidate",
+            "base"
+          ]
+        },
+        {
+          "literal": "Z58",
+          "arms": [
+            "candidate",
+            "base"
+          ]
+        },
+        {
+          "literal": "Z49",
+          "arms": [
+            "candidate",
+            "base"
+          ]
+        },
+        {
+          "literal": "Z54",
+          "arms": [
+            "candidate",
+            "base"
+          ]
+        },
+        {
+          "literal": "Z46",
+          "arms": [
+            "base",
+            "candidate"
+          ]
+        },
+        {
+          "literal": "Z47",
+          "arms": [
+            "base",
+            "candidate"
+          ]
+        },
+        {
+          "literal": "Z42",
+          "arms": [
+            "base",
+            "candidate"
+          ]
+        },
+        {
+          "literal": "Z51",
+          "arms": [
+            "candidate",
+            "base"
+          ]
+        },
+        {
+          "literal": "Z52",
+          "arms": [
+            "base",
+            "candidate"
+          ]
+        },
+        {
+          "literal": "Z56",
+          "arms": [
+            "base",
+            "candidate"
+          ]
+        },
+        {
+          "literal": "Z43",
+          "arms": [
+            "base",
+            "candidate"
+          ]
+        },
+        {
+          "literal": "Z50",
+          "arms": [
+            "base",
+            "candidate"
+          ]
+        },
+        {
+          "literal": "Z63",
+          "arms": [
+            "base",
+            "candidate"
+          ]
+        },
+        {
+          "literal": "Z41",
+          "arms": [
+            "candidate",
+            "base"
+          ]
+        },
+        {
+          "literal": "Z60",
+          "arms": [
+            "candidate",
+            "base"
+          ]
+        },
+        {
+          "literal": "Z44",
+          "arms": [
+            "candidate",
+            "base"
+          ]
+        },
+        {
+          "literal": "Z45",
+          "arms": [
+            "candidate",
+            "base"
+          ]
+        },
+        {
+          "literal": "Z61",
+          "arms": [
+            "candidate",
+            "base"
+          ]
+        },
+        {
+          "literal": "Z40",
+          "arms": [
+            "base",
+            "candidate"
+          ]
+        }
+      ]
+    }
+  }
+}
