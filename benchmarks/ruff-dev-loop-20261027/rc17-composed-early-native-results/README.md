@@ -1,0 +1,25 @@
+# Removing a duplicate integration compile on the corrected Rust observer path
+
+With the released Ohm 1.99.0-17 Linux SDK and Cargo #261, Ruff's first full workspace test selection compiled and linked the same ty_server integration executable twice. Applying Cargo #260 to the same source reduced two successful rustc processes with identical argv to one, and two real Wild processes writing that executable to one. The other full compilations were ron and the ty_server unit-test harness. Both arms used the same normal ty_server library that was already present before the test-only edit. [Native qualification plan](https://github.com/astral-sh/ohm-cargo/tree/23ca620a9ac3e16402d566f23670dc954bf638f7/benchmarks/ruff-dev-loop-20261027/rc17-composed-early-native-workspace-plan)
+
+| Whole-workspace command | Full rustcs | Link-only rustcs | Wild links | Fresh Cargo units |
+| --- | ---: | ---: | ---: | ---: |
+| First selection, #261 | 4 | 48 | 51 | 563 of 619 |
+| First selection, #261 + #260 | 3 | 48 | 50 | 563 of 619 |
+| Repeat, each arm | 1 | 50 | 50 | 563 of 619 |
+
+The workspace was pinned at Ruff 93526150df. One excluded selection and two unchanged excluded repeats produced 617 units, 100 runnable outputs and 108 workspace ELF files. Each arm independently copied the same completed seed, then selected the entire workspace with the complete 1b9310471b test-only edit reversed. Both returned the same 102 executables, the same 200-test e2e listing and the same existing dead-code warning. The repeat ran a real ron compiler and 50 real relinks in both arms. These seven ordinary Cargo runs collected no elapsed-time samples. A separate 24-pair protocol measures only the first full selection. [Timing protocol](https://github.com/astral-sh/ohm-cargo/tree/480e5f2dc1f69866145c98909ed0f327141e2928/benchmarks/ruff-dev-loop-20261027/rc17-composed-early-wall-plan)
+
+## Exact native outputs
+
+All 78 registry ELF files matched the seed byte-for-byte in every native command. Of 110 workspace products, 109 matched raw bytes across the two first selections. The one differing executable was the ty_server unit-test harness. Across the two unchanged repeats, 109 matched, with ty_ide as the one differing unit-test executable. Comparing all four commands also exposed two raw layouts of the ty_server e2e binary.
+
+On the same official stock Wild, ten concrete existing Rust cached-link recipes were replayed using each explicit worker width from 1 through 16. For every width a plain Wild invocation and one emitting an actual dependency file produced the same full ELF hash. The complete resolved input paths and file bytes, plus literal file operands, were checked before and after the sweep. The identical argument vector, common input bytes, source RLINK digest, tool image, return code and per-width output digests are attested for each case. The ten input sets covered 96,372,465 to 615,586,261 bytes apiece.
+
+Six targets had exactly two observed raw hashes. Two separate fixtures binaries differed in .rodata sh_entsize 0 versus 1, while simple_tokenizer, ty_ide, ty_server and its e2e harness differed in 0 versus 8. In each pair the only other difference was the 32-byte GNU build ID. The artifact records preserve the changed field values and positions, plus separate checksums for the three intervals covering every other file byte. The four remaining targets yielded one raw hash apiece. This admits only the actual raw hashes recorded for those six named products. Any new raw hash, unrelated code or data change, or registry mismatch stops the wall study.
+
+The first unscored replay harness exited before completing any width. It mishandled its own linker-shim argument and attempted to reopen the read-only state. The packet includes that failed harness, its terminal status and the SHA-256 of its original compiler error. The corrected attempt used a different directory and mounted both real Cargo states read-only. All 320 real Wild invocations returned success. The exact frozen timing proposal's independent native reader then rechecked both sets of first-selection snapshots, all four native product maps, the process rosters, and the finite raw-hash references. The separate seed-copy, storage and CI checks and published timing grant precede any clocks.
+
+## Offline verification
+
+Run `python3 -IB verify.py`. It rebuilds the comparisons from the per-phase product and process evidence, checks every worker width and the three byte ranges outside the observed ELF fields, and rejects an unknown raw hash and an altered range. The portable records store hashes for the original exec lines, argument vectors, raw native Cargo messages and input path strings. They retain the actual test listing, diagnostic identity and per-file digest without shipping toolchain binaries, private environments or registry configuration. On the original host the exporters compare each compact result with its source bytes. The checked-in capture uses the original H5 layout and runs the released linker without a Cargo timing wrapper.
