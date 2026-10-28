@@ -1172,10 +1172,10 @@ impl<'gctx> Workspace<'gctx> {
             self.member_ids.insert(pkg.package_id());
             pkg.dependencies()
                 .iter()
-                .map(|d| (d.source_id(), d.package_name()))
-                .filter(|(s, _)| s.is_path())
-                .filter_map(|(s, n)| s.url().to_file_path().ok().map(|p| (p, n)))
-                .map(|(p, n)| (p.join("Cargo.toml"), n))
+                .filter_map(|dep| {
+                    let path = dep.source_id().local_path_ref().ok()?;
+                    Some((path.join("Cargo.toml"), dep.package_name()))
+                })
                 .collect::<Vec<_>>()
         };
         for (path, name) in candidates {

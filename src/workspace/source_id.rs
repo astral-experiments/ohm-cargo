@@ -43,7 +43,7 @@ pub struct SourceId {
 
 /// The interned version of [`SourceId`] to avoid excessive clones and borrows.
 /// Values are cached in `SOURCE_ID_CACHE` once created.
-#[derive(Eq, Clone, Debug)]
+#[derive(Eq, Clone)]
 struct SourceIdInner {
     /// The source URL.
     url: Url,
@@ -59,6 +59,20 @@ struct SourceIdInner {
     /// WARNING: this is not always set when the name is not known,
     /// e.g. registry coming from `--index` or Cargo.lock
     registry_key: Option<KeyOf>,
+    /// The decoded URL for path sources. Set only on an interner miss.
+    local_path: Option<Box<Path>>,
+}
+
+impl fmt::Debug for SourceIdInner {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        f.debug_struct("SourceIdInner")
+            .field("url", &self.url)
+            .field("canonical_url", &self.canonical_url)
+            .field("kind", &self.kind)
+            .field("precise", &self.precise)
+            .field("registry_key", &self.registry_key)
+            .finish()
+    }
 }
 
 #[derive(Eq, PartialEq, Clone, Debug, Hash)]
@@ -114,17 +128,21 @@ impl SourceId {
             url,
             precise: None,
             registry_key: key,
+            local_path: None,
         });
         Ok(source_id)
     }
 
     /// Interns the value and returns the wrapped type.
-    fn wrap(inner: SourceIdInner) -> SourceId {
+    fn wrap(mut inner: SourceIdInner) -> SourceId {
         let mut cache = SOURCE_ID_CACHE
             .get_or_init(|| Default::default())
             .lock()
             .unwrap();
         let inner = cache.get(&inner).cloned().unwrap_or_else(|| {
+            if inner.kind == SourceKind::Path && inner.local_path.is_none() {
+                inner.local_path = inner.url.to_file_path().ok().map(PathBuf::into_boxed_path);
+            }
             let inner = Box::leak(Box::new(inner));
             cache.insert(inner);
             inner
@@ -351,7 +369,12 @@ impl SourceId {
             return None;
         }
 
-        Some(self.inner.url.to_file_path().unwrap())
+        Some(self.local_path_ref().unwrap().to_path_buf())
+    }
+
+    /// Borrows the decoded path when this is a path source with a local URL.
+    pub(crate) fn local_path_ref(self) -> Result<&'static Path, ()> {
+        self.inner.local_path.as_deref().ok_or(())
     }
 
     pub fn kind(&self) -> &SourceKind {
@@ -394,14 +417,12 @@ impl SourceId {
             SourceKind::Git(..) => Ok(Box::new(GitSource::new(self, gctx)?)),
             SourceKind::Path => {
                 let path = self
-                    .inner
-                    .url
-                    .to_file_path()
+                    .local_path_ref()
                     .expect("path sources cannot be remote");
-                if crate::workspace::parser::is_embedded(&path) && path.is_file() {
+                if crate::workspace::parser::is_embedded(path) && path.is_file() {
                     anyhow::bail!("single file packages cannot be used as dependencies")
                 }
-                Ok(Box::new(PathSource::new(&path, self, gctx)))
+                Ok(Box::new(PathSource::new(path, self, gctx)))
             }
             SourceKind::Registry | SourceKind::SparseRegistry => {
                 Ok(Box::new(RegistrySource::remote(self, gctx)?))
@@ -552,13 +573,7 @@ impl SourceId {
     /// same hash in different locations, helping reproducible builds.
     pub fn stable_hash<S: hash::Hasher>(self, workspace: &Path, into: &mut S) {
         if self.is_path() {
-            if let Ok(p) = self
-                .inner
-                .url
-                .to_file_path()
-                .unwrap()
-                .strip_prefix(workspace)
-            {
+            if let Ok(p) = self.local_path_ref().unwrap().strip_prefix(workspace) {
                 self.inner.kind.hash(into);
                 p.to_str().unwrap().hash(into);
                 return;
@@ -752,6 +767,22 @@ impl KeyOf {
 mod tests {
     use super::{GitReference, SourceId, SourceKind};
     use crate::util::{GlobalContext, IntoUrl};
+
+    #[test]
+    fn local_path_preserves_url_decoding() {
+        let path = std::env::temp_dir().join("dependency #100%");
+        let id = SourceId::for_path(&path).unwrap();
+        let decoded = id.url().to_file_path().unwrap();
+        assert_eq!(id.local_path_ref(), Ok(decoded.as_path()));
+        assert_eq!(id.local_path().as_deref(), Some(decoded.as_path()));
+
+        let registry = SourceId::for_registry(id.url()).unwrap();
+        assert!(registry.local_path_ref().is_err());
+        assert!(registry.local_path().is_none());
+
+        let remote = SourceId::from_url("path+https://example.org/dep").unwrap();
+        assert!(remote.local_path_ref().is_err());
+    }
 
     #[test]
     fn github_sources_equal() {

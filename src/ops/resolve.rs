@@ -684,15 +684,8 @@ fn register_previous_locks(
     dev_deps: bool,
 ) {
     let path_pkg = |id: SourceId| {
-        if !id.is_path() {
-            return None;
-        }
-        if let Ok(path) = id.url().to_file_path() {
-            if let Ok(pkg) = ws.load(&path.join("Cargo.toml")) {
-                return Some(pkg);
-            }
-        }
-        None
+        let path = id.local_path_ref().ok()?;
+        ws.load(&path.join("Cargo.toml")).ok()
     };
 
     // Ok so we've been passed in a `keep` function which basically says "if I
