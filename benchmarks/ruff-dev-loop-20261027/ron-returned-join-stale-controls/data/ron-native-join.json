@@ -1,0 +1,53 @@
+{
+  "raw_sha256": "e5ce34a67c082debe227745f334ee6ef6f4603ea18616b6abe2e1e595e1d8bdc",
+  "hit_counts": {
+    "join": 3
+  },
+  "native_stack": [
+    "<rustc_expand::proc_macro_server::Rustc as rustc_proc_macro::bridge::server::Server>::span_join",
+    "<rustc_proc_macro::bridge::server::Dispatcher<rustc_expand::proc_macro_server::Rustc>>::dispatch",
+    "<rustc_proc_macro::bridge::closure::Closure as core::convert::From<&mut _>>::from::call::<<rustc_proc_macro::bridge::server::MaybeCrossThread as rustc_proc_macro::bridge::server::ExecutionStrategy>::run_bridge_and_client<rustc_expand::proc_macro_server::Rustc>::{closure#1}>",
+    "<proc_macro::Span>::join",
+    "proc_macro2::probe::proc_macro_span::join",
+    "<proc_macro2::imp::Span>::join",
+    "<proc_macro2::Span>::join",
+    "quote::spanned::join_spans::{closure#2}",
+    "<core::option::Option<proc_macro2::Span>>::and_then::<proc_macro2::Span, quote::spanned::join_spans::{closure#2}>",
+    "quote::spanned::join_spans",
+    "<syn::data::Field as quote::spanned::Spanned>::__span",
+    "<syn::data::Field as syn::spanned::Spanned>::span",
+    "serde_derive::ser::serialize_newtype_struct",
+    "serde_derive::ser::serialize_body",
+    "serde_derive::ser::expand_derive_serialize"
+  ],
+  "span_registers": [
+    {
+      "r14": 164381420760773613,
+      "r15": 164381390696002488
+    },
+    {
+      "r14": 164381420760773613,
+      "r15": 164381390696002488
+    },
+    {
+      "r14": 164381420760773613,
+      "r15": 164381390696002488
+    }
+  ],
+  "diagnostic_driver_sha256": "6a35f2144ec130945312822792a2e3f622f343369b7018946d1987d80fbf4b12",
+  "initial_register_saves": [
+    "push   %r15",
+    "push   %r14",
+    "mov    %rcx,%r14",
+    "mov    %rdx,%r15",
+    "mov    %r15d,0x1c(%rsp)"
+  ],
+  "locked_bitflags": {
+    "file_sha256": "1237676ca4687d8eb8364eb52b23c5f284f73f4d4113ee833fa3470c8b512be9",
+    "first_relative": 549,
+    "last_relative": 602
+  },
+  "saved_call_stacks_for_join": 1,
+  "register_pairs_for_join": 3,
+  "backtrace_capture": "first hit only at each marked operation"
+}

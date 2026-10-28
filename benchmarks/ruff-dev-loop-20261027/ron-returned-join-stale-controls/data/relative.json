@@ -1,0 +1,109 @@
+{
+  "bitflags": {
+    "base": {
+      "lines": [
+        "bitflags/src/public.rs:17:37-17:38",
+        "bitflags/src/public.rs:17:90-17:98",
+        "bitflags/src/public.rs:17:37-17:98"
+      ],
+      "file_sha256": "1237676ca4687d8eb8364eb52b23c5f284f73f4d4113ee833fa3470c8b512be9",
+      "s": 549,
+      "e": 602
+    },
+    "prefix_line": {
+      "lines": [
+        "bitflags/src/public.rs:18:37-18:38",
+        "bitflags/src/public.rs:18:90-18:98",
+        "bitflags/src/public.rs:18:37-18:98"
+      ],
+      "file_sha256": "b20470aa6f6bf630710103fb1b26bc5b6428dd294b33b26727d24dbc995094da",
+      "s": 573,
+      "e": 626
+    },
+    "interior_space": {
+      "lines": [
+        "bitflags/src/public.rs:17:37-17:38",
+        "bitflags/src/public.rs:17:93-17:101",
+        "bitflags/src/public.rs:17:37-17:101"
+      ],
+      "file_sha256": "7f487cea6ce3f77a924bb6625553fd92170347a73f35ff8df396c61010c4ac56",
+      "s": 549,
+      "e": 605
+    },
+    "same_byte_coordinates_new_line": {
+      "lines": [
+        "bitflags/src/public.rs:18:36-18:37",
+        "bitflags/src/public.rs:18:89-18:97",
+        "bitflags/src/public.rs:18:36-18:97"
+      ],
+      "file_sha256": "2dfe121e0374a718e2bfd5f52837b929d83365b96f7d9eb54853ce7f40c05d34",
+      "s": 549,
+      "e": 602
+    },
+    "restore": {
+      "lines": [
+        "bitflags/src/public.rs:17:37-17:38",
+        "bitflags/src/public.rs:17:90-17:98",
+        "bitflags/src/public.rs:17:37-17:98"
+      ],
+      "file_sha256": "1237676ca4687d8eb8364eb52b23c5f284f73f4d4113ee833fa3470c8b512be9",
+      "s": 549,
+      "e": 602
+    }
+  },
+  "fixture": {
+    "base": [
+      "fixtures/producer.rs:2:42-2:52",
+      "different-files"
+    ],
+    "prefix_line": [
+      "fixtures/producer.rs:3:42-3:52",
+      "different-files"
+    ],
+    "interior_space": [
+      "fixtures/producer.rs:2:42-2:55",
+      "different-files"
+    ],
+    "restore": [
+      "fixtures/producer.rs:2:42-2:52",
+      "different-files"
+    ]
+  },
+  "preceding_local_source": {
+    "relative": {
+      "before": [
+        "bitflags/src/public.rs:17:37-17:38",
+        "bitflags/src/public.rs:17:90-17:98",
+        "bitflags/src/public.rs:17:37-17:98"
+      ],
+      "after": [
+        "bitflags/src/public.rs:17:37-17:38",
+        "bitflags/src/public.rs:17:90-17:98",
+        "bitflags/src/public.rs:17:37-17:98"
+      ],
+      "restore": [
+        "bitflags/src/public.rs:17:37-17:38",
+        "bitflags/src/public.rs:17:90-17:98",
+        "bitflags/src/public.rs:17:37-17:98"
+      ]
+    },
+    "absolute": {
+      "before": [
+        "bitflags/src/public.rs:17:37-17:38 #6 bytes(312238..312239)",
+        "bitflags/src/public.rs:17:90-17:98 #6 bytes(312291..312299)",
+        "bitflags/src/public.rs:17:37-17:98 #6 bytes(312238..312299)"
+      ],
+      "after": [
+        "bitflags/src/public.rs:17:37-17:38 #6 bytes(312286..312287)",
+        "bitflags/src/public.rs:17:90-17:98 #6 bytes(312339..312347)",
+        "bitflags/src/public.rs:17:37-17:98 #6 bytes(312286..312347)"
+      ],
+      "restore": [
+        "bitflags/src/public.rs:17:37-17:38 #6 bytes(312238..312239)",
+        "bitflags/src/public.rs:17:90-17:98 #6 bytes(312291..312299)",
+        "bitflags/src/public.rs:17:37-17:98 #6 bytes(312238..312299)"
+      ]
+    }
+  },
+  "compile_and_reader_commands": 42
+}
