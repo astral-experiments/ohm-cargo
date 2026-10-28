@@ -1,0 +1,496 @@
+{
+  "sources": [
+    {
+      "arm": "old",
+      "revision": "7181bfa6256f94da142f80fd6af09cee02ec2c78",
+      "blob": "15bd0c4ff45111463dd6756492b04d20c67b8433",
+      "file_sha256": "7693e744f5cc70bae81ec66901ff64126d9925ea1ae06cafef2115177433be53"
+    },
+    {
+      "arm": "new",
+      "revision": "7caf39914da1e28a67744ecbc963a5f26361474d",
+      "blob": "9a69083eb7080e21bb6787e257ecb9a2a7be9092",
+      "file_sha256": "66c4f802294aa5782f46203ab866b403b318a65341be87fcfdc09ac3dcdcb05e"
+    }
+  ],
+  "comparisons": [
+    {
+      "repo": "ohm-cargo",
+      "before": "7181bfa6256f94da142f80fd6af09cee02ec2c78",
+      "after": "7caf39914da1e28a67744ecbc963a5f26361474d",
+      "files": [
+        {
+          "filename": "src/workspace/workspace.rs",
+          "patch": "@@ -2173,23 +2173,10 @@ impl WorkspaceRootConfig {\n             custom_metadata: custom_metadata.clone(),\n         }\n     }\n-    /// Checks the path against the `excluded` list.\n-    ///\n-    /// This method does **not** consider the `members` list.\n+    /// Checks whether the path is excluded. Explicit members take precedence.\n     fn is_excluded(&self, manifest_path: &Path) -> bool {\n-        let excluded = self\n-            .exclude\n-            .iter()\n-            .any(|ex| manifest_path.starts_with(self.root_dir.join(ex)));\n-\n-        let explicit_member = match self.members {\n-            Some(ref members) => members\n-                .iter()\n-                .any(|mem| manifest_path.starts_with(self.root_dir.join(mem))),\n-            None => false,\n-        };\n-\n-        !explicit_member && excluded\n+        let matches_path = |path: &String| manifest_path.starts_with(self.root_dir.join(path));\n+        self.exclude.iter().any(matches_path) && !self.members.iter().flatten().any(matches_path)\n     }\n \n     /// Checks if the path is explicitly listed as a workspace member."
+        }
+      ]
+    },
+    {
+      "repo": "ohm-rust",
+      "before": "9828b82f475f18bf9077ee25f36de43d4fec8277",
+      "after": "a4fa11bcd38280639cb94daacc125472657db6c3",
+      "files": [
+        {
+          "filename": "src/tools/cargo",
+          "patch": "@@ -1 +1 @@\n-Subproject commit 7181bfa6256f94da142f80fd6af09cee02ec2c78\n+Subproject commit 7caf39914da1e28a67744ecbc963a5f26361474d"
+        }
+      ]
+    },
+    {
+      "repo": "ohm",
+      "before": "2b25f863e3b7433a7103de4c315b8cb150413ecc",
+      "after": "5e5ae7b76b927fbd1ca9a3e9a83f6dc8f6a72bf1",
+      "files": [
+        {
+          "filename": "toolchains/1.99.0/18.json",
+          "patch": "@@ -10,11 +10,11 @@\n   \"sources\": {\n     \"rust\": {\n       \"repository\": \"https://github.com/astral-sh/ohm-rust\",\n-      \"revision\": \"9828b82f475f18bf9077ee25f36de43d4fec8277\"\n+      \"revision\": \"a4fa11bcd38280639cb94daacc125472657db6c3\"\n     },\n     \"cargo\": {\n       \"repository\": \"https://github.com/astral-sh/ohm-cargo\",\n-      \"revision\": \"7181bfa6256f94da142f80fd6af09cee02ec2c78\"\n+      \"revision\": \"7caf39914da1e28a67744ecbc963a5f26361474d\"\n     },\n     \"clippy\": {\n       \"repository\": \"https://github.com/astral-sh/ohm-rust-clippy\","
+        }
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "baseRefOid": "4649b236138f62be1177a4205824931798ba2361",
+      "headRefOid": "73737405d03f7c9113774ab98400bd33312d26d8",
+      "isDraft": true,
+      "state": "OPEN",
+      "title": "Check the native proc-macro cache default for each release",
+      "url": "https://github.com/astral-sh/ohm/pull/197",
+      "checks": [
+        [
+          "manifest",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "lint",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "all required jobs passed",
+          "COMPLETED",
+          "SUCCESS"
+        ]
+      ]
+    },
+    {
+      "baseRefOid": "73737405d03f7c9113774ab98400bd33312d26d8",
+      "headRefOid": "5e5ae7b76b927fbd1ca9a3e9a83f6dc8f6a72bf1",
+      "isDraft": true,
+      "state": "OPEN",
+      "title": "Prepare Ohm 1.99.0-18 with the Cargo and Rust fixes",
+      "url": "https://github.com/astral-sh/ohm/pull/198",
+      "checks": [
+        [
+          "manifest",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "lint",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "all required jobs passed",
+          "COMPLETED",
+          "SUCCESS"
+        ]
+      ]
+    },
+    {
+      "baseRefOid": "a0c7d08c898d3fdff992f2f431dec57d2486add2",
+      "headRefOid": "857652135b0e7ee03b9c715787056a60ea313183",
+      "isDraft": true,
+      "state": "OPEN",
+      "title": "Prevent stale builds from foreign span inputs and native derives",
+      "url": "https://github.com/astral-sh/ohm-cargo/pull/261",
+      "checks": [
+        [
+          "Rustfmt",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "Clippy (depot-ubuntu-24.04-8)",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "Clippy (depot-macos-15)",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "Cargo tests (depot-ubuntu-24.04-16)",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "Cargo tests (depot-macos-15)",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "Workspace tests",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "Resolver tests",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "Schema tests",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "Clippy APFS replay",
+          "COMPLETED",
+          "SKIPPED"
+        ]
+      ]
+    },
+    {
+      "baseRefOid": "9a0170863f70d9a88a8b1d1f4c4e1fded4736a9c",
+      "headRefOid": "6468de26179e87d073d606bd6e4e4cbd90c7dbc2",
+      "isDraft": true,
+      "state": "OPEN",
+      "title": "Skip the speculative test compile when its library has finished",
+      "url": "https://github.com/astral-sh/ohm-cargo/pull/260",
+      "checks": [
+        [
+          "Rustfmt",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "Clippy (depot-ubuntu-24.04-8)",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "Clippy (depot-macos-15)",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "Cargo tests (depot-ubuntu-24.04-16)",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "Cargo tests (depot-macos-15)",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "Workspace tests",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "Resolver tests",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "Schema tests",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "Clippy APFS replay",
+          "COMPLETED",
+          "SKIPPED"
+        ]
+      ]
+    },
+    {
+      "baseRefOid": "6468de26179e87d073d606bd6e4e4cbd90c7dbc2",
+      "headRefOid": "7181bfa6256f94da142f80fd6af09cee02ec2c78",
+      "isDraft": true,
+      "state": "OPEN",
+      "title": "Collect only paths when writing Cargo output depfiles",
+      "url": "https://github.com/astral-sh/ohm-cargo/pull/262",
+      "checks": [
+        [
+          "Rustfmt",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "Clippy (depot-ubuntu-24.04-8)",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "Clippy (depot-macos-15)",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "Cargo tests (depot-ubuntu-24.04-16)",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "Cargo tests (depot-macos-15)",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "Workspace tests",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "Resolver tests",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "Schema tests",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "Clippy APFS replay",
+          "COMPLETED",
+          "SKIPPED"
+        ]
+      ]
+    },
+    {
+      "baseRefOid": "105fe8286bef83e1ad1b62b3a2c015a6ace57ee7",
+      "headRefOid": "7caf39914da1e28a67744ecbc963a5f26361474d",
+      "isDraft": true,
+      "state": "OPEN",
+      "title": "Skip the workspace member scan when no exclusion matches",
+      "url": "https://github.com/astral-sh/ohm-cargo/pull/263",
+      "checks": [
+        [
+          "Rustfmt",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "Clippy (depot-ubuntu-24.04-8)",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "Clippy (depot-macos-15)",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "Cargo tests (depot-ubuntu-24.04-16)",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "Cargo tests (depot-macos-15)",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "Workspace tests",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "Resolver tests",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "Schema tests",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "Clippy APFS replay",
+          "COMPLETED",
+          "SKIPPED"
+        ]
+      ]
+    },
+    {
+      "baseRefOid": "bfa236f639034f61ec884c15bd1f4e0b75e508ac",
+      "headRefOid": "14d5456d22418dcb29467bf2fb320eb8a10442e0",
+      "isDraft": true,
+      "state": "OPEN",
+      "title": "Hash identifier spans observed by incremental module readers",
+      "url": "https://github.com/astral-sh/ohm-rust/pull/243",
+      "checks": [
+        [
+          "Formatting and tidy",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "Compiler and regression tests",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "Compiler and regression tests (macOS)",
+          "COMPLETED",
+          "SUCCESS"
+        ]
+      ]
+    },
+    {
+      "baseRefOid": "14d5456d22418dcb29467bf2fb320eb8a10442e0",
+      "headRefOid": "d68dfbfd4911d8d34863c3d460356621b6b8850c",
+      "isDraft": true,
+      "state": "OPEN",
+      "title": "Run native procedural macros on every compilation",
+      "url": "https://github.com/astral-sh/ohm-rust/pull/244",
+      "checks": [
+        [
+          "Formatting and tidy",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "Compiler and regression tests",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "Compiler and regression tests (macOS)",
+          "COMPLETED",
+          "SUCCESS"
+        ]
+      ]
+    },
+    {
+      "baseRefOid": "d68dfbfd4911d8d34863c3d460356621b6b8850c",
+      "headRefOid": "a2609bc3f958a565f0279d396bc46db7292b223d",
+      "isDraft": true,
+      "state": "OPEN",
+      "title": "Preserve source locations across incremental crate boundaries",
+      "url": "https://github.com/astral-sh/ohm-rust/pull/245",
+      "checks": [
+        [
+          "Formatting and tidy",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "Compiler and regression tests",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "Compiler and regression tests (macOS)",
+          "COMPLETED",
+          "SUCCESS"
+        ]
+      ]
+    },
+    {
+      "baseRefOid": "a2609bc3f958a565f0279d396bc46db7292b223d",
+      "headRefOid": "a4fa11bcd38280639cb94daacc125472657db6c3",
+      "isDraft": true,
+      "state": "OPEN",
+      "title": "Pin the qualified Cargo fixes for Ohm 1.99.0-18",
+      "url": "https://github.com/astral-sh/ohm-rust/pull/246",
+      "checks": [
+        [
+          "Formatting and tidy",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "Compiler and regression tests",
+          "COMPLETED",
+          "SUCCESS"
+        ],
+        [
+          "Compiler and regression tests (macOS)",
+          "COMPLETED",
+          "SUCCESS"
+        ]
+      ]
+    }
+  ],
+  "cargo_ci": [
+    {
+      "os": "Linux",
+      "job": 122987717594,
+      "url": "https://github.com/astral-sh/ohm-cargo/actions/runs/40736884346/job/122987717594",
+      "full_log_sha256": "3d4c30b0fe3b29995c7b75f24552fea83eb038b7d36385a8046ad127146cc964",
+      "workspace_exclusion_tests": [
+        {
+          "test": "workspaces::excluded_default_members_still_must_be_members",
+          "result": "ok"
+        },
+        {
+          "test": "workspaces::exclude_members_preferred",
+          "result": "ok"
+        },
+        {
+          "test": "workspaces::excluded_simple",
+          "result": "ok"
+        },
+        {
+          "test": "workspaces::exclude_but_also_depend",
+          "result": "ok"
+        },
+        {
+          "test": "workspaces::excluded_default_members_not_crate_glob",
+          "result": "ok"
+        },
+        {
+          "test": "workspaces::excluded_default_members_crate_glob",
+          "result": "ok"
+        }
+      ]
+    },
+    {
+      "os": "macOS",
+      "job": 122987717994,
+      "url": "https://github.com/astral-sh/ohm-cargo/actions/runs/40736884346/job/122987717994",
+      "full_log_sha256": "810c835c1d786bff50c8517a91ad928130ae4f8840805dff1f23d9e9034123f3",
+      "workspace_exclusion_tests": [
+        {
+          "test": "workspaces::excluded_default_members_still_must_be_members",
+          "result": "ok"
+        },
+        {
+          "test": "workspaces::exclude_members_preferred",
+          "result": "ok"
+        },
+        {
+          "test": "workspaces::exclude_but_also_depend",
+          "result": "ok"
+        },
+        {
+          "test": "workspaces::excluded_simple",
+          "result": "ok"
+        },
+        {
+          "test": "workspaces::excluded_default_members_not_crate_glob",
+          "result": "ok"
+        },
+        {
+          "test": "workspaces::excluded_default_members_crate_glob",
+          "result": "ok"
+        }
+      ]
+    }
+  ],
+  "compiler_tree": "47e23eb4bab742e271ca9a3cf1bbd583d5b4a640",
+  "manifest": "5e5ae7b76b927fbd1ca9a3e9a83f6dc8f6a72bf1",
+  "ruff": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "ruff_workspace_members": [
+    "crates/*"
+  ],
+  "ruff_workspace_exclude": []
+}

@@ -1,0 +1,60 @@
+use std::ffi::OsString;
+use std::os::unix::ffi::OsStringExt;
+use std::path::{Path, PathBuf};
+
+struct Workspace {
+    root_dir: PathBuf,
+    members: Option<Vec<String>>,
+    exclude: Vec<String>,
+}
+
+impl Workspace {
+OLD_PREDICATE
+
+NEW_PREDICATE
+}
+
+fn main() {
+    let members: Vec<Option<Vec<String>>> = [
+        None, Some(vec![]), Some(vec!["crates/*"]), Some(vec!["crates/a"]),
+        Some(vec!["crates", "../other"]), Some(vec!["/absolute/crate"]), Some(vec!["."]),
+    ].into_iter().map(|v| v.map(|items| items.into_iter().map(str::to_owned).collect())).collect();
+    let excludes: &[&[&str]] = &[
+        &[], &["crates"], &["crates/a"], &["crates/*"], &["./crates", "../other"],
+        &["crates/a", "crates"], &["/absolute"], &["."], &[""],
+    ];
+    let mut paths = include_str!("ruff-manifests.txt").lines().map(PathBuf::from).collect::<Vec<_>>();
+    paths.extend(["crates/a/Cargo.toml", "crates/ab/Cargo.toml", "crates/../other/Cargo.toml",
+                  "crates/*/Cargo.toml", "../other/Cargo.toml", "/absolute/crate/Cargo.toml",
+                  "x/./Cargo.toml", "crates//a/Cargo.toml", ""].map(PathBuf::from));
+    paths.push(PathBuf::from(OsString::from_vec(b"crates/\xff/Cargo.toml".to_vec())));
+    let mut total = 0;
+    let mut accepted = 0;
+    let mut excluded = 0;
+    let mut actual_ruff = 0;
+    for root in [Path::new("/qa/ruff"), Path::new("relative/ruff")] {
+        for (i, mem) in members.iter().enumerate() {
+            for (j, exclude) in excludes.iter().enumerate() {
+                let w = Workspace {
+                    root_dir: root.to_owned(), members: mem.clone(),
+                    exclude: exclude.iter().map(|v| (*v).to_owned()).collect(),
+                };
+                for (k, path) in paths.iter().enumerate() {
+                    let manifest = root.join(path);
+                    let before = w.prior(&manifest);
+                    let after = w.next(&manifest);
+                    assert_eq!(before, after, "root={root:?}, member={mem:?}, exclude={exclude:?}, path={path:?}");
+                    if i == 2 && j == 0 && k < 57 {
+                        assert!(!after);
+                        actual_ruff += 1;
+                    }
+                    total += 1;
+                    if before { excluded += 1; } else { accepted += 1; }
+                }
+            }
+        }
+    }
+    assert!(accepted > 0 && excluded > 0);
+    assert_eq!(actual_ruff, 114);
+    println!("{{\"cases\":{total},\"kept\":{accepted},\"excluded\":{excluded},\"actual_ruff_config\":{actual_ruff}}}");
+}
