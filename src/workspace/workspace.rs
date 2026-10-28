@@ -27,6 +27,7 @@ use crate::sources::{CRATES_IO_INDEX, CRATES_IO_REGISTRY, PathSource, SourceConf
 use crate::util::edit_distance;
 use crate::util::errors::{CargoResult, ManifestError};
 use crate::util::interning::InternedString;
+use crate::util::restricted_names::is_glob_pattern;
 use crate::util::{Filesystem, GlobalContext, IntoUrl, closest_msg};
 use crate::workspace::features::Features;
 use crate::workspace::parser::{InheritableFields, read_manifest};
@@ -2234,6 +2235,16 @@ impl WorkspaceRootConfig {
 
         for glob in globs {
             let pathbuf = self.root_dir.join(glob);
+            // A literal directory needs no component-by-component glob traversal.
+            // Keep the glob's spelling in diagnostics for non-normalized paths.
+            if cfg!(unix)
+                && pathbuf.to_str().is_some_and(|path| !is_glob_pattern(path))
+                && pathbuf.as_os_str() == normalize_path(&pathbuf).as_os_str()
+                && pathbuf.is_dir()
+            {
+                expanded_list.push((pathbuf, None));
+                continue;
+            }
             let expanded_paths = Self::expand_member_path(&pathbuf)?;
 
             // If glob does not find any valid paths, then put the original
