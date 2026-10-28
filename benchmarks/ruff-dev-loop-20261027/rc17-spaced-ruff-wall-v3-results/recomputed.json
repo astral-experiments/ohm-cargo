@@ -1,0 +1,55 @@
+{
+  "commands": 96,
+  "outputs": {
+    "package": {
+      "baseline_differences_across_slots": 0,
+      "bound_debug_pairs": 0,
+      "native_count": 4
+    },
+    "workspace": {
+      "baseline_differences_across_slots": 4,
+      "bound_debug_pairs": 4,
+      "native_count": 110
+    }
+  },
+  "results": {
+    "package": {
+      "assignments": 2704156,
+      "ci95": [
+        76.5142482949135,
+        81.22600321845134
+      ],
+      "extreme": 2,
+      "favorable": 24,
+      "holm": 1.479204602101358e-06,
+      "material_regression": false,
+      "medians_s": {
+        "B": 2.2518480235,
+        "C": 0.421219803
+      },
+      "p_two_sided": 7.39602301050679e-07,
+      "paired_reduction_pct": 79.147792217195,
+      "pairs": 24,
+      "qualifies": true
+    },
+    "workspace": {
+      "assignments": 2704156,
+      "ci95": [
+        87.5725863146328,
+        89.81957867757316
+      ],
+      "extreme": 2,
+      "favorable": 24,
+      "holm": 1.479204602101358e-06,
+      "material_regression": false,
+      "medians_s": {
+        "B": 9.400016634,
+        "C": 1.0589582445
+      },
+      "p_two_sided": 7.39602301050679e-07,
+      "paired_reduction_pct": 88.71768070939541,
+      "pairs": 24,
+      "qualifies": true
+    }
+  }
+}
