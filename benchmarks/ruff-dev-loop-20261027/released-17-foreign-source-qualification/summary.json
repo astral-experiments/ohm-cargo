@@ -1,0 +1,477 @@
+{
+  "cases": {
+    "first-current": {
+      "after": {
+        "bytes": 105,
+        "inode": 4231320,
+        "mtime_ns": 1793160878458416940,
+        "sha256": "4799d43b5ee896b8a47116c9f0a04e91c84fbae61fd466e496a246d89f7866a1"
+      },
+      "argv": [
+        "cargo",
+        "+ohm",
+        "build",
+        "--offline",
+        "-p",
+        "hold_direct",
+        "--message-format=json"
+      ],
+      "before": {
+        "bytes": 105,
+        "inode": 4231188,
+        "mtime_ns": 1793160876273984954,
+        "sha256": "ca292f132a23081988d7c6cffe55ca47a3904c87e3646dbb772eed7bc5d59255"
+      },
+      "external_rlib_sha256": "38ff49efbbc5dab780500d5ade5ded29e654dcc14bfa72498854e260f0346226",
+      "kind": "foreign-text",
+      "rows": {
+        "again": {
+          "caller_fresh": true,
+          "claim_complete": true,
+          "dep_sha256": "d61a4c3f3430c2d51293162ed41e3d3a49955f0299d0645a30144a59ff3ce62e",
+          "elf_sha256": "a4113d46bcb77edd5856fffb8ab0427b2e70f0a1fed5b80f1af58120bcff4a14",
+          "fingerprint_sha256": "2379e65d3debdfc715bb4d3347bd69b6bc60892c4254b0c2f7ac04890aea706b",
+          "full_calls": 0,
+          "input_checksum": [
+            "# checksum:blake3=8006d69bcb8296e7afb07ed9f8e046acb92da5b9e5d8547822c1979cc4f676db file_len:105 /mnt/devbox-scratch/dev-user/ohm-official-17-foreign-source-audit-20261028/first-current/foreign.rs"
+          ],
+          "observer": true,
+          "observer_trailer": true,
+          "optional": false,
+          "status": 0,
+          "stdio": "sample=29\n19 #14 bytes(375501..375523)\n",
+          "untrackable": false,
+          "value": 29,
+          "wire": 4
+        },
+        "clean": {
+          "caller_fresh": false,
+          "claim_complete": false,
+          "dep_sha256": "aec1275fb78f97c1840448bf58cee55d1ad5fbbb19b0726451795762fd3a0b3e",
+          "elf_sha256": "a4113d46bcb77edd5856fffb8ab0427b2e70f0a1fed5b80f1af58120bcff4a14",
+          "fingerprint_sha256": "fc126d05123f7e6173dbcf4f7f29509681965f02d8897043914a84eb430d5d2c",
+          "full_calls": 0,
+          "input_checksum": [
+            "# checksum:blake3=8006d69bcb8296e7afb07ed9f8e046acb92da5b9e5d8547822c1979cc4f676db file_len:105 /mnt/devbox-scratch/dev-user/ohm-official-17-foreign-source-audit-20261028/first-current/foreign.rs"
+          ],
+          "observer": true,
+          "observer_trailer": true,
+          "optional": false,
+          "status": 0,
+          "stdio": "sample=29\n19 #14 bytes(375501..375523)\n",
+          "untrackable": false,
+          "value": 29,
+          "wire": 4
+        },
+        "initial": {
+          "caller_fresh": false,
+          "claim_complete": false,
+          "dep_sha256": "91876a1ad7e78bd1d12711b18ecba9b445c36edc344a0c8659b01efd99d8228a",
+          "elf_sha256": "ff6845e589945f4b51d44bb97857ddb2bf008330f0dc0c05f080f9c9c9a0361d",
+          "fingerprint_sha256": "15a5076ca45e3b705224f6e148a7f93d0cf37fd730273ff169c88051826202b7",
+          "full_calls": 0,
+          "input_checksum": [
+            "# checksum:blake3=8006d69bcb8296e7afb07ed9f8e046acb92da5b9e5d8547822c1979cc4f676db file_len:105 /mnt/devbox-scratch/dev-user/ohm-official-17-foreign-source-audit-20261028/first-current/foreign.rs"
+          ],
+          "observer": true,
+          "observer_trailer": true,
+          "optional": false,
+          "status": 0,
+          "stdio": "sample=17\n19 #14 bytes(375501..375523)\n",
+          "untrackable": false,
+          "value": 17,
+          "wire": 4
+        },
+        "repeat": {
+          "caller_fresh": false,
+          "claim_complete": true,
+          "dep_sha256": "d61a4c3f3430c2d51293162ed41e3d3a49955f0299d0645a30144a59ff3ce62e",
+          "elf_sha256": "a4113d46bcb77edd5856fffb8ab0427b2e70f0a1fed5b80f1af58120bcff4a14",
+          "fingerprint_sha256": "2379e65d3debdfc715bb4d3347bd69b6bc60892c4254b0c2f7ac04890aea706b",
+          "full_calls": 0,
+          "input_checksum": [
+            "# checksum:blake3=8006d69bcb8296e7afb07ed9f8e046acb92da5b9e5d8547822c1979cc4f676db file_len:105 /mnt/devbox-scratch/dev-user/ohm-official-17-foreign-source-audit-20261028/first-current/foreign.rs"
+          ],
+          "observer": true,
+          "observer_trailer": true,
+          "optional": false,
+          "status": 0,
+          "stdio": "sample=29\n19 #14 bytes(375501..375523)\n",
+          "untrackable": false,
+          "value": 29,
+          "wire": 4
+        }
+      },
+      "seeds": {},
+      "stamp": "current",
+      "training": "first"
+    },
+    "first-preserved": {
+      "after": {
+        "bytes": 105,
+        "inode": 4875976,
+        "mtime_ns": 1793160883025311615,
+        "sha256": "4799d43b5ee896b8a47116c9f0a04e91c84fbae61fd466e496a246d89f7866a1"
+      },
+      "argv": [
+        "cargo",
+        "+ohm",
+        "build",
+        "--offline",
+        "-p",
+        "hold_direct",
+        "--message-format=json"
+      ],
+      "before": {
+        "bytes": 105,
+        "inode": 4875467,
+        "mtime_ns": 1793160883025311615,
+        "sha256": "ca292f132a23081988d7c6cffe55ca47a3904c87e3646dbb772eed7bc5d59255"
+      },
+      "external_rlib_sha256": "46f0073afec45142c07d25b520ceba4ad7afefc797111ab38bf9a9b49cdc722a",
+      "kind": "foreign-text",
+      "rows": {
+        "again": {
+          "caller_fresh": true,
+          "claim_complete": true,
+          "dep_sha256": "6f82c67061e12b34e1ae7c7ad6bb4985f735190bde9fd5c3c8d0093c331ce932",
+          "elf_sha256": "a4113d46bcb77edd5856fffb8ab0427b2e70f0a1fed5b80f1af58120bcff4a14",
+          "fingerprint_sha256": "e518260c37833e21a43405ac59428ed211d6df9bf221f355a18a44d0af8960fd",
+          "full_calls": 0,
+          "input_checksum": [
+            "# checksum:blake3=8006d69bcb8296e7afb07ed9f8e046acb92da5b9e5d8547822c1979cc4f676db file_len:105 /mnt/devbox-scratch/dev-user/ohm-official-17-foreign-source-audit-20261028/first-preserved/foreign.rs"
+          ],
+          "observer": true,
+          "observer_trailer": true,
+          "optional": false,
+          "status": 0,
+          "stdio": "sample=29\n19 #14 bytes(375501..375523)\n",
+          "untrackable": false,
+          "value": 29,
+          "wire": 4
+        },
+        "clean": {
+          "caller_fresh": false,
+          "claim_complete": false,
+          "dep_sha256": "dac311ff963d500cc70d358023f8d7b88234e0906dca97171c2f503ee23d1e6c",
+          "elf_sha256": "a4113d46bcb77edd5856fffb8ab0427b2e70f0a1fed5b80f1af58120bcff4a14",
+          "fingerprint_sha256": "98a3ff81bdc04eb79948fcf93d6025a72fd6557eb4d3a10c1abc015d4cb95db0",
+          "full_calls": 0,
+          "input_checksum": [
+            "# checksum:blake3=8006d69bcb8296e7afb07ed9f8e046acb92da5b9e5d8547822c1979cc4f676db file_len:105 /mnt/devbox-scratch/dev-user/ohm-official-17-foreign-source-audit-20261028/first-preserved/foreign.rs"
+          ],
+          "observer": true,
+          "observer_trailer": true,
+          "optional": false,
+          "status": 0,
+          "stdio": "sample=29\n19 #14 bytes(375501..375523)\n",
+          "untrackable": false,
+          "value": 29,
+          "wire": 4
+        },
+        "initial": {
+          "caller_fresh": false,
+          "claim_complete": false,
+          "dep_sha256": "10fce4116023e49f67f7929e08dadc5022bed25b73b22d99cae087808826531e",
+          "elf_sha256": "ff6845e589945f4b51d44bb97857ddb2bf008330f0dc0c05f080f9c9c9a0361d",
+          "fingerprint_sha256": "ddffedf58ce08669c10b674cd184aedef617cc043db653e96653d1e502d7b21f",
+          "full_calls": 0,
+          "input_checksum": [
+            "# checksum:blake3=8006d69bcb8296e7afb07ed9f8e046acb92da5b9e5d8547822c1979cc4f676db file_len:105 /mnt/devbox-scratch/dev-user/ohm-official-17-foreign-source-audit-20261028/first-preserved/foreign.rs"
+          ],
+          "observer": true,
+          "observer_trailer": true,
+          "optional": false,
+          "status": 0,
+          "stdio": "sample=17\n19 #14 bytes(375501..375523)\n",
+          "untrackable": false,
+          "value": 17,
+          "wire": 4
+        },
+        "repeat": {
+          "caller_fresh": false,
+          "claim_complete": true,
+          "dep_sha256": "6f82c67061e12b34e1ae7c7ad6bb4985f735190bde9fd5c3c8d0093c331ce932",
+          "elf_sha256": "a4113d46bcb77edd5856fffb8ab0427b2e70f0a1fed5b80f1af58120bcff4a14",
+          "fingerprint_sha256": "e518260c37833e21a43405ac59428ed211d6df9bf221f355a18a44d0af8960fd",
+          "full_calls": 0,
+          "input_checksum": [
+            "# checksum:blake3=8006d69bcb8296e7afb07ed9f8e046acb92da5b9e5d8547822c1979cc4f676db file_len:105 /mnt/devbox-scratch/dev-user/ohm-official-17-foreign-source-audit-20261028/first-preserved/foreign.rs"
+          ],
+          "observer": true,
+          "observer_trailer": true,
+          "optional": false,
+          "status": 0,
+          "stdio": "sample=29\n19 #14 bytes(375501..375523)\n",
+          "untrackable": false,
+          "value": 29,
+          "wire": 4
+        }
+      },
+      "seeds": {},
+      "stamp": "preserved",
+      "training": "first"
+    },
+    "known-current": {
+      "after": {
+        "bytes": 105,
+        "inode": 4877345,
+        "mtime_ns": 1793160894341842262,
+        "sha256": "4799d43b5ee896b8a47116c9f0a04e91c84fbae61fd466e496a246d89f7866a1"
+      },
+      "argv": [
+        "cargo",
+        "+ohm",
+        "build",
+        "--offline",
+        "-p",
+        "hold_direct",
+        "--message-format=json"
+      ],
+      "before": {
+        "bytes": 105,
+        "inode": 4876726,
+        "mtime_ns": 1793160890222968876,
+        "sha256": "ca292f132a23081988d7c6cffe55ca47a3904c87e3646dbb772eed7bc5d59255"
+      },
+      "external_rlib_sha256": "c250796e8621450d110551323d33b978338f00312514343a7663b0edf9336c1c",
+      "kind": "foreign-text",
+      "rows": {
+        "again": {
+          "caller_fresh": true,
+          "claim_complete": true,
+          "dep_sha256": "e7760f89622172586147b3a387b708a52cd3380a69ec943283929e699b7f9337",
+          "elf_sha256": "e48f9b8395833701e60ac186f033d742d9d31d607a0c7799afc9d68cb401fe37",
+          "fingerprint_sha256": "89be0237a10adc812cadc7f0a1e0fa8be7e267530f376d2550fddc058a00f625",
+          "full_calls": 0,
+          "input_checksum": [
+            "# checksum:blake3=8006d69bcb8296e7afb07ed9f8e046acb92da5b9e5d8547822c1979cc4f676db file_len:105 /mnt/devbox-scratch/dev-user/ohm-official-17-foreign-source-audit-20261028/known-current/foreign.rs"
+          ],
+          "observer": true,
+          "observer_trailer": true,
+          "optional": false,
+          "status": 0,
+          "stdio": "sample=17\n19 #14 bytes(375548..375570)\n",
+          "untrackable": false,
+          "value": 17,
+          "wire": 4
+        },
+        "clean": {
+          "caller_fresh": false,
+          "claim_complete": false,
+          "dep_sha256": "17e864c395db8a8c389ee4cef8fa436a9ba75c1db8baae3f5a267252debb00df",
+          "elf_sha256": "fc321be708bb9b4eb5f2044da10e1a3f24509bb2769261c36de3b41b4c31d15e",
+          "fingerprint_sha256": "81a3487b0d0cd6654248f1757376fc7048c8bfb018d2c983a40646af62595d74",
+          "full_calls": 0,
+          "input_checksum": [
+            "# checksum:blake3=8006d69bcb8296e7afb07ed9f8e046acb92da5b9e5d8547822c1979cc4f676db file_len:105 /mnt/devbox-scratch/dev-user/ohm-official-17-foreign-source-audit-20261028/known-current/foreign.rs"
+          ],
+          "observer": true,
+          "observer_trailer": true,
+          "optional": false,
+          "status": 0,
+          "stdio": "sample=29\n19 #14 bytes(375548..375570)\n",
+          "untrackable": false,
+          "value": 29,
+          "wire": 4
+        },
+        "initial": {
+          "caller_fresh": false,
+          "claim_complete": true,
+          "dep_sha256": "e7760f89622172586147b3a387b708a52cd3380a69ec943283929e699b7f9337",
+          "elf_sha256": "e48f9b8395833701e60ac186f033d742d9d31d607a0c7799afc9d68cb401fe37",
+          "fingerprint_sha256": "89be0237a10adc812cadc7f0a1e0fa8be7e267530f376d2550fddc058a00f625",
+          "full_calls": 0,
+          "input_checksum": [
+            "# checksum:blake3=8006d69bcb8296e7afb07ed9f8e046acb92da5b9e5d8547822c1979cc4f676db file_len:105 /mnt/devbox-scratch/dev-user/ohm-official-17-foreign-source-audit-20261028/known-current/foreign.rs"
+          ],
+          "observer": true,
+          "observer_trailer": true,
+          "optional": false,
+          "status": 0,
+          "stdio": "sample=17\n19 #14 bytes(375548..375570)\n",
+          "untrackable": false,
+          "value": 17,
+          "wire": 4
+        },
+        "repeat": {
+          "caller_fresh": true,
+          "claim_complete": true,
+          "dep_sha256": "e7760f89622172586147b3a387b708a52cd3380a69ec943283929e699b7f9337",
+          "elf_sha256": "e48f9b8395833701e60ac186f033d742d9d31d607a0c7799afc9d68cb401fe37",
+          "fingerprint_sha256": "89be0237a10adc812cadc7f0a1e0fa8be7e267530f376d2550fddc058a00f625",
+          "full_calls": 0,
+          "input_checksum": [
+            "# checksum:blake3=8006d69bcb8296e7afb07ed9f8e046acb92da5b9e5d8547822c1979cc4f676db file_len:105 /mnt/devbox-scratch/dev-user/ohm-official-17-foreign-source-audit-20261028/known-current/foreign.rs"
+          ],
+          "observer": true,
+          "observer_trailer": true,
+          "optional": false,
+          "status": 0,
+          "stdio": "sample=17\n19 #14 bytes(375548..375570)\n",
+          "untrackable": false,
+          "value": 17,
+          "wire": 4
+        }
+      },
+      "seeds": {
+        "learn": {
+          "claim_complete": true,
+          "fresh": false,
+          "status": 0,
+          "value": 17
+        },
+        "seed": {
+          "claim_complete": false,
+          "fresh": false,
+          "status": 0,
+          "value": 17
+        },
+        "stable": {
+          "claim_complete": true,
+          "fresh": true,
+          "status": 0,
+          "value": 17
+        }
+      },
+      "stamp": "current",
+      "training": "known"
+    },
+    "known-preserved": {
+      "after": {
+        "bytes": 105,
+        "inode": 4878001,
+        "mtime_ns": 1793160898370296234,
+        "sha256": "4799d43b5ee896b8a47116c9f0a04e91c84fbae61fd466e496a246d89f7866a1"
+      },
+      "argv": [
+        "cargo",
+        "+ohm",
+        "build",
+        "--offline",
+        "-p",
+        "hold_direct",
+        "--message-format=json"
+      ],
+      "before": {
+        "bytes": 105,
+        "inode": 4877799,
+        "mtime_ns": 1793160898370296234,
+        "sha256": "ca292f132a23081988d7c6cffe55ca47a3904c87e3646dbb772eed7bc5d59255"
+      },
+      "external_rlib_sha256": "33134464adfa151330aae177617d7dc6ec3a4a8850bb61f8675890cedd1dae86",
+      "kind": "foreign-text",
+      "rows": {
+        "again": {
+          "caller_fresh": true,
+          "claim_complete": true,
+          "dep_sha256": "1ab44cd60f51950355bed554b1e2381d1e78ae46f35ffb997da9b15eaa10eec3",
+          "elf_sha256": "e48f9b8395833701e60ac186f033d742d9d31d607a0c7799afc9d68cb401fe37",
+          "fingerprint_sha256": "999f8acd38b10e353f9d35a3bb4c02bda625ffd71d591575a7598251527c69d8",
+          "full_calls": 0,
+          "input_checksum": [
+            "# checksum:blake3=8006d69bcb8296e7afb07ed9f8e046acb92da5b9e5d8547822c1979cc4f676db file_len:105 /mnt/devbox-scratch/dev-user/ohm-official-17-foreign-source-audit-20261028/known-preserved/foreign.rs"
+          ],
+          "observer": true,
+          "observer_trailer": true,
+          "optional": false,
+          "status": 0,
+          "stdio": "sample=17\n19 #14 bytes(375548..375570)\n",
+          "untrackable": false,
+          "value": 17,
+          "wire": 4
+        },
+        "clean": {
+          "caller_fresh": false,
+          "claim_complete": false,
+          "dep_sha256": "45c6d8fb48eab88d5c06adc1baed80aaaa97089a336ac614d17436887bc5ff5b",
+          "elf_sha256": "fc321be708bb9b4eb5f2044da10e1a3f24509bb2769261c36de3b41b4c31d15e",
+          "fingerprint_sha256": "299696d9d590c862352b1b3dfb10e51d3907adbed2d03520399cb93c9471aa9a",
+          "full_calls": 0,
+          "input_checksum": [
+            "# checksum:blake3=8006d69bcb8296e7afb07ed9f8e046acb92da5b9e5d8547822c1979cc4f676db file_len:105 /mnt/devbox-scratch/dev-user/ohm-official-17-foreign-source-audit-20261028/known-preserved/foreign.rs"
+          ],
+          "observer": true,
+          "observer_trailer": true,
+          "optional": false,
+          "status": 0,
+          "stdio": "sample=29\n19 #14 bytes(375548..375570)\n",
+          "untrackable": false,
+          "value": 29,
+          "wire": 4
+        },
+        "initial": {
+          "caller_fresh": false,
+          "claim_complete": true,
+          "dep_sha256": "1ab44cd60f51950355bed554b1e2381d1e78ae46f35ffb997da9b15eaa10eec3",
+          "elf_sha256": "e48f9b8395833701e60ac186f033d742d9d31d607a0c7799afc9d68cb401fe37",
+          "fingerprint_sha256": "999f8acd38b10e353f9d35a3bb4c02bda625ffd71d591575a7598251527c69d8",
+          "full_calls": 0,
+          "input_checksum": [
+            "# checksum:blake3=8006d69bcb8296e7afb07ed9f8e046acb92da5b9e5d8547822c1979cc4f676db file_len:105 /mnt/devbox-scratch/dev-user/ohm-official-17-foreign-source-audit-20261028/known-preserved/foreign.rs"
+          ],
+          "observer": true,
+          "observer_trailer": true,
+          "optional": false,
+          "status": 0,
+          "stdio": "sample=17\n19 #14 bytes(375548..375570)\n",
+          "untrackable": false,
+          "value": 17,
+          "wire": 4
+        },
+        "repeat": {
+          "caller_fresh": true,
+          "claim_complete": true,
+          "dep_sha256": "1ab44cd60f51950355bed554b1e2381d1e78ae46f35ffb997da9b15eaa10eec3",
+          "elf_sha256": "e48f9b8395833701e60ac186f033d742d9d31d607a0c7799afc9d68cb401fe37",
+          "fingerprint_sha256": "999f8acd38b10e353f9d35a3bb4c02bda625ffd71d591575a7598251527c69d8",
+          "full_calls": 0,
+          "input_checksum": [
+            "# checksum:blake3=8006d69bcb8296e7afb07ed9f8e046acb92da5b9e5d8547822c1979cc4f676db file_len:105 /mnt/devbox-scratch/dev-user/ohm-official-17-foreign-source-audit-20261028/known-preserved/foreign.rs"
+          ],
+          "observer": true,
+          "observer_trailer": true,
+          "optional": false,
+          "status": 0,
+          "stdio": "sample=17\n19 #14 bytes(375548..375570)\n",
+          "untrackable": false,
+          "value": 17,
+          "wire": 4
+        }
+      },
+      "seeds": {
+        "learn": {
+          "claim_complete": true,
+          "fresh": false,
+          "status": 0,
+          "value": 17
+        },
+        "seed": {
+          "claim_complete": false,
+          "fresh": false,
+          "status": 0,
+          "value": 17
+        },
+        "stable": {
+          "claim_complete": true,
+          "fresh": true,
+          "status": 0,
+          "value": 17
+        }
+      },
+      "stamp": "preserved",
+      "training": "known"
+    }
+  },
+  "native_members": 198,
+  "ordinary_cargo_builds": 22,
+  "sdk": {
+    "files": {
+      "bin/cargo": "4e4065390403afbf4fb77b2f41fbc21c59afe3dda2337a5bbe29fda29a47dbb3",
+      "bin/rustc": "7ec5263869aed2fc9272ea7212aabbe7b272a4685f1b79af75c123daff09c02c",
+      "lib/librustc_driver-b03bf00bec23bb9a.so": "618ebac16b7d4ec01a2af89661d25b8f26ff347edbb69c6dcaa78f10115914a7"
+    },
+    "inputs": "695db5bcbda9e65787f9bfacab57050d99f5ae85d22cf5a5eec48a52b738b8b0",
+    "sdk": "/dev/shm/ohm-published-member-h2-20261028/installed17"
+  }
+}
