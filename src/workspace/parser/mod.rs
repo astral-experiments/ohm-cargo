@@ -2142,6 +2142,10 @@ fn validate_dependencies(
     };
 
     for (name_in_toml, v) in dependencies.iter() {
+        let unused_keys = v.unused_keys();
+        if unused_keys.is_empty() {
+            continue;
+        }
         let kind_name = match kind {
             Some(k) => k.kind_table(),
             None => "dependencies",
@@ -2151,7 +2155,7 @@ fn validate_dependencies(
         } else {
             kind_name.to_string()
         };
-        unused_dep_keys(name_in_toml, &table_in_toml, v.unused_keys(), warnings);
+        unused_dep_keys(name_in_toml, &table_in_toml, unused_keys, warnings);
     }
     Ok(())
 }
