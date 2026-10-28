@@ -1,0 +1,91 @@
+{
+  "clocks_block_slot_arm_ns_exit": [
+    [
+      1,
+      1,
+      "B",
+      13328905452,
+      0
+    ],
+    [
+      1,
+      2,
+      "C",
+      13777622047,
+      0
+    ],
+    [
+      2,
+      1,
+      "C",
+      11280051827,
+      0
+    ],
+    [
+      2,
+      2,
+      "B",
+      13160326318,
+      0
+    ]
+  ],
+  "commitment_only_text": [],
+  "complete_pair_checkpoints": 1,
+  "exceptions": {
+    "launcher/score.stderr": "108b279b012b92fb76a6a4454f2d46da03a4a7cf4d18bbabaf1ba5e927873d5b",
+    "result/first-failure.txt": "3305c7c3ae493d875cd2dd2261796a67e39a90cdfb84a710bc6752b362b61436"
+  },
+  "failed_slot_products": {
+    "02-2-B": {
+      "first_registry": {
+        "missing": [],
+        "reported": 78,
+        "unadmitted": {},
+        "unexpected": []
+      },
+      "first_workspace": {
+        "missing": [],
+        "reported": 110,
+        "unadmitted": {},
+        "unexpected": []
+      },
+      "follow_registry": {
+        "missing": [],
+        "reported": 78,
+        "unadmitted": {},
+        "unexpected": []
+      },
+      "follow_workspace": {
+        "missing": [],
+        "reported": 110,
+        "unadmitted": {
+          "/mnt/devbox-scratch/dev-user/ohm-combined-prs-20261028/ruff-evaluation-v2/canonical/target/debug/build/workspaces/88ed51a59715ff20/v2-440b30f8251b1ee7/ruff_python_formatter/519c0544e58f942c/out/ruff_python_formatter-519c0544e58f942c": "f56d2f9441e7bae586e8ed95bcbaf58b6753337347afb26da1f2a05a305a4701",
+          "/mnt/devbox-scratch/dev-user/ohm-combined-prs-20261028/ruff-evaluation-v2/canonical/target/debug/build/workspaces/88ed51a59715ff20/v2-440b30f8251b1ee7/ty_project/30613778192a6cff/out/ty_project-30613778192a6cff": "a2c3105ef595009ea24961751977d80eca44cca3f7c989d2e3c323ae3428670a"
+        },
+        "unexpected": []
+      },
+      "terminal_snapshot": {
+        "missing": [],
+        "reported": 188,
+        "unadmitted": {
+          "/mnt/devbox-scratch/dev-user/ohm-combined-prs-20261028/ruff-evaluation-v2/canonical/target/debug/build/workspaces/88ed51a59715ff20/v2-440b30f8251b1ee7/ruff_python_formatter/519c0544e58f942c/out/ruff_python_formatter-519c0544e58f942c": "f56d2f9441e7bae586e8ed95bcbaf58b6753337347afb26da1f2a05a305a4701",
+          "/mnt/devbox-scratch/dev-user/ohm-combined-prs-20261028/ruff-evaluation-v2/canonical/target/debug/build/workspaces/88ed51a59715ff20/v2-440b30f8251b1ee7/ty_project/30613778192a6cff/out/ty_project-30613778192a6cff": "a2c3105ef595009ea24961751977d80eca44cca3f7c989d2e3c323ae3428670a"
+        },
+        "unexpected": []
+      }
+    }
+  },
+  "launcher": {
+    "admit": 0,
+    "score": 1,
+    "verify": null
+  },
+  "observed_clocks": 4,
+  "qualified": false,
+  "retained_private_states": [
+    "02-2-B"
+  ],
+  "statistics": null,
+  "terminal": "score-failed",
+  "verified_slots": 3
+}
