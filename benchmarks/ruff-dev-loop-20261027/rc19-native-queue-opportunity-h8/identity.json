@@ -1,0 +1,33 @@
+{
+  "cargo_base": "7caf39914da1e28a67744ecbc963a5f26361474d",
+  "cargo_command": [
+    "cargo",
+    "+ohm",
+    "test",
+    "--workspace",
+    "--no-run",
+    "--locked",
+    "--offline",
+    "-j8",
+    "--message-format=json"
+  ],
+  "compilation_external_inputs_different": [
+    45,
+    22
+  ],
+  "diagnostic_cargo": "cbc553f7ce00c8177b342fa551913f5a5dd8a5e5989526a981dec3005deb347b",
+  "diagnostic_source": {
+    "src/compiler/job_queue/mod.rs": "c0d659087dab57b5efa78ef246517529acc9c72b0ae978491f744c512874b130"
+  },
+  "final_elf_hashes_were_not_part_of_this_scheduler_opportunity_gate": true,
+  "old_release_artifact_word_for_word": false,
+  "raw_build_gate_failure": "8bb0752db08b7b98ccdf0cb6082dc0d5333f36fe0dd2747231d0b0bf8d2c6887",
+  "raw_compiler_exec": "a6a8b1be5fba38de34ab5e22a73b8acc8b59d010312f94f8273983bd7b1f6659",
+  "ruff": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "rust_toolchain": "released Linux Ohm 1.99.0-18",
+  "same_flags_except_one_build_directory_namespace": [
+    "v2-1228bf75a09ccdb6",
+    "v2-01725796da5d06bf"
+  ],
+  "same_profile_previous_cargo": "a20b7097d6c0591464583de00bea1ee8d39bddfe461d56318532fb57991a8db7"
+}
