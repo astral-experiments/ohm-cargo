@@ -4361,6 +4361,7 @@ fn generate_good_d_files() {
                 fn main() {
                     println!("cargo::rerun-if-changed=build.rs");
                     println!("cargo::rerun-if-changed=barkbarkbark");
+                    println!("cargo::rerun-if-changed=./barkbarkbark");
                 }
             "#,
         )
