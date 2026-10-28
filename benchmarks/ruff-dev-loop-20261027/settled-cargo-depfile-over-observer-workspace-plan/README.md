@@ -1,0 +1,5 @@
+# Independent full-workspace replication over Cargo #261
+
+H7 finished its original linter acquisition before this second study was proposed. Only its terminal success and its archive sizes had been reported when this independent H8 schedule, complete release images, source edit, safety gates and joint Holm interpretation were frozen. The H7 instruction counts and outcomes remained unopened. H8 uses a distinct fresh workspace, build directory, Cargo home and registry proof store, and an exclusive host. No test-build or wall-time endpoint is included.
+
+The software, source edit, gates, masked host and schedule are in plan.json. Failure will preserve all completed rows and exclude continued scoring. H7 retains its previously specified individual interpretation. The two new results will only be described together if each passes every effect and uncertainty requirement and both pass Holm. [H7 registration](https://github.com/astral-sh/ohm-cargo/tree/38f11dc6fbba542725ea87bbf2c5a819670d9b91/benchmarks/ruff-dev-loop-20261027/settled-cargo-depfile-over-observer-plan)
