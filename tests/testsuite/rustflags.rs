@@ -145,12 +145,67 @@ fn headstart_preserves_ohm_default_suppression() {
     assert_eq!(frontend_threads(&invocation), ["8", "1"]);
     assert_eq!(
         ohm_rustflags(&invocation),
-        [
-            "-Zpublic-api-hash",
-            "-Zcache-proc-macros",
-            "-Zpublic-api-hash=no",
-        ]
+        ["-Zpublic-api-hash", "-Zpublic-api-hash=no",]
     );
+}
+
+#[cfg(unix)]
+#[cargo_test(requires = "cc")]
+fn ohm_defaults_reexpand_derive_after_native_input_changes() {
+    if !crate::build_dir::selected_compiler_supports_ohm_defaults() {
+        return;
+    }
+    let p = project()
+        .file(
+            "Cargo.toml",
+            &format!(
+                "{}\n[dependencies]\nnative = {{ path = 'native' }}",
+                basic_manifest("reader", "0.1.0")
+            ),
+        )
+        .file(
+            "src/main.rs",
+            "extern crate native; #[derive(native::Value)] struct Marker; fn main() { let _ = Marker; println!(\"{VALUE}\"); }",
+        )
+        .file(
+            "native/Cargo.toml",
+            &format!("{}\n[lib]\nproc-macro = true", basic_manifest("native", "0.1.0")),
+        )
+        .file(
+            "native/build.rs",
+            r#"
+                fn main() {
+                    let object = std::path::PathBuf::from(std::env::var_os("OUT_DIR").unwrap()).join("value.o");
+                    assert!(std::process::Command::new("cc").args(["-fPIC", "-c", "value.c", "-o"])
+                        .arg(&object).status().unwrap().success());
+                    println!("cargo:rustc-link-arg={}", object.display());
+                    println!("cargo:rerun-if-changed=value.c");
+                }
+            "#,
+        )
+        .file("native/value.c", "int value(void) { return 17; }")
+        .file(
+            "native/src/lib.rs",
+            r#"
+                extern crate proc_macro;
+                extern "C" { fn value() -> i32; }
+                #[proc_macro_derive(Value)]
+                pub fn expand(_: proc_macro::TokenStream) -> proc_macro::TokenStream {
+                    format!("const VALUE: i32 = {};", unsafe { value() }).parse().unwrap()
+                }
+            "#,
+        )
+        .build();
+    let run = |expected| {
+        p.cargo("-Zohm-defaults run --quiet")
+            .masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("CARGO_INCREMENTAL", "1")
+            .with_stdout_data(expected)
+            .run();
+    };
+    run("17\n");
+    p.change_file("native/value.c", "int value(void) { return 29; }");
+    run("29\n");
 }
 
 #[cargo_test]
@@ -200,7 +255,7 @@ fn ohm_defaults_apply_to_host_and_target_units() {
     for crate_name in ["build_script_build", "dep"] {
         let invocation = rustc_invocation(&invocations, crate_name);
         assert!(invocation.contains(&"-Zpublic-api-hash"));
-        assert!(invocation.contains(&"-Zcache-proc-macros"));
+        assert!(!invocation.contains(&"-Zcache-proc-macros"));
         assert_eq!(frontend_threads(&invocation), ["8"]);
         assert!(!invocation.contains(&"-Zpublic-api-hash=no"));
         assert!(ohm_incremental_codegen_rustflags(&invocation).is_empty());
@@ -211,11 +266,7 @@ fn ohm_defaults_apply_to_host_and_target_units() {
     );
     assert_eq!(
         ohm_rustflags(&rustc_invocation(&invocations, "foo")),
-        [
-            "-Zpublic-api-hash",
-            "-Zcache-proc-macros",
-            "-Zpublic-api-hash=no",
-        ]
+        ["-Zpublic-api-hash", "-Zpublic-api-hash=no",]
     );
 
     p.cargo("clean").run();
@@ -263,11 +314,7 @@ fn ohm_defaults_apply_to_host_and_target_units() {
         assert_eq!(frontend_threads(&invocation), ["8"]);
         assert_eq!(
             ohm_rustflags(&invocation),
-            [
-                "-Zpublic-api-hash",
-                "-Zcache-proc-macros",
-                "-Zpublic-api-hash=no",
-            ],
+            ["-Zpublic-api-hash", "-Zpublic-api-hash=no",],
             "terminal test target `{crate_name}` should not hash an unconsumed public API"
         );
     }
@@ -428,14 +475,14 @@ fn ohm_defaults_apply_to_host_and_target_units() {
         .arg(rustc_host())
         .env("RUSTC_WRAPPER", &wrapper)
         .env("OHM_DEFAULTS_LOG", &log)
-        .env("RUSTFLAGS", "-Zpublic-api-hash=yes")
+        .env("RUSTFLAGS", "-Zpublic-api-hash=yes -Zcache-proc-macros")
         .run();
     assert_eq!(
         ohm_rustflags(&rustc_invocation(&fs::read_to_string(&log).unwrap(), "foo")),
         [
             "-Zpublic-api-hash",
-            "-Zcache-proc-macros",
             "-Zpublic-api-hash=yes",
+            "-Zcache-proc-macros",
         ]
     );
 
@@ -465,11 +512,7 @@ fn ohm_defaults_apply_to_host_and_target_units() {
                 .unwrap_or_else(|| panic!("missing test invocation for {crate_name}"));
             assert_eq!(
                 ohm_rustflags(&invocation),
-                [
-                    "-Zpublic-api-hash",
-                    "-Zcache-proc-macros",
-                    public_api_hash_flag,
-                ],
+                ["-Zpublic-api-hash", public_api_hash_flag,],
                 "explicit public API hashing must override the terminal test default"
             );
         }
@@ -502,7 +545,6 @@ fn ohm_defaults_apply_to_host_and_target_units() {
         ohm_rustflags(&rustc_invocation(&invocations, "foo")),
         [
             "-Zpublic-api-hash",
-            "-Zcache-proc-macros",
             "-Zpublic-api-hash=no",
             "-Zcache-proc-macros=no",
         ]
@@ -519,7 +561,6 @@ fn ohm_defaults_apply_to_host_and_target_units() {
         ohm_rustflags(&rustc_invocation(&fs::read_to_string(&log).unwrap(), "foo",)),
         [
             "-Zpublic-api-hash",
-            "-Zcache-proc-macros",
             "-Zpublic-api-hash=no",
             "-Zcache-proc-macros=no",
         ]
@@ -603,7 +644,7 @@ fn ohm_defaults_apply_to_host_and_target_units() {
     let invocations = fs::read_to_string(&log).unwrap();
     let invocation = rustc_invocation(&invocations, "foo");
     assert!(invocation.contains(&"-Zpublic-api-hash"));
-    assert!(invocation.contains(&"-Zcache-proc-macros"));
+    assert!(!invocation.contains(&"-Zcache-proc-macros"));
     assert_eq!(frontend_threads(&invocation), ["8"]);
 
     p.cargo("clean").run();
@@ -873,15 +914,9 @@ fn ohm_parallel_frontend_flags_are_fingerprinted() {
     assert_eq!(
         rustflags,
         [
+            vec!["-Zpublic-api-hash", "-Zthreads=8", "-Zohm-early-metadata",],
             vec![
                 "-Zpublic-api-hash",
-                "-Zcache-proc-macros",
-                "-Zthreads=8",
-                "-Zohm-early-metadata",
-            ],
-            vec![
-                "-Zpublic-api-hash",
-                "-Zcache-proc-macros",
                 "-Zthreads=8",
                 "-Zohm-early-metadata",
                 "-Zthreads=1",
