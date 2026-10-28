@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/rc17-spaced-full-test-h5-v1/protocol/worker.py", line 250, in <module>
+    try:main()
+        ^^^^^^
+  File "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/rc17-spaced-full-test-h5-v1/protocol/worker.py", line 246, in main
+    qualify()
+  File "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/rc17-spaced-full-test-h5-v1/protocol/worker.py", line 208, in qualify
+    state=read(regpath(b,a));assert state['guards']==first['guards'] and state['oracle']==first['oracle']
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

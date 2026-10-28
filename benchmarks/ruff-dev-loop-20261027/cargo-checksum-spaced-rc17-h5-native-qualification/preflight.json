@@ -1,0 +1,67 @@
+{
+  "common_sdk_ledger": "19754fceb4be0f2349b75b2fd16b150b1d4c2e187bd2f9195059d85001afe67b",
+  "cpus": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "elf_selftest": {
+    "different_text_rejected": true,
+    "identical_control": true,
+    "two_permitted_fields": true
+  },
+  "floor": {
+    "/dev/shm": 52731404288,
+    "/home/dev-user": 213746372608,
+    "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027": 72401674240
+  },
+  "kernel": "7.0.0-38-generic",
+  "logical": {
+    "build": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/rc17-spaced-full-test-h5-v1/work/shared",
+    "registry": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/rc17-spaced-full-test-h5-v1/work/cargo",
+    "rustup": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/rc17-spaced-full-test-h5-v1/work/rustup",
+    "sdk": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/rc17-spaced-full-test-h5-v1/work/Ohm SDK",
+    "source": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027",
+    "target": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/rc17-spaced-full-test-h5-v1/work/ruff-target"
+  },
+  "lscpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           48 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  32\nOn-line CPU(s) list:                     0-31\nVendor ID:                               AuthenticAMD\nModel name:                              AMD EPYC-Genoa Processor\nCPU family:                              25\nModel:                                   17\nThread(s) per core:                      1\nCore(s) per socket:                      32\nSocket(s):                               1\nStepping:                                0\nBogoMIPS:                                5192.28\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm rep_good nopl xtopology cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves clzero xsaveerptr arat umip vaes vpclmulqdq rdpid overflow_recov succor fsrm\nHypervisor vendor:                       KVM\nVirtualization type:                     full\nL1d cache:                               1 MiB (32 instances)\nL1i cache:                               1 MiB (32 instances)\nL2 cache:                                32 MiB (32 instances)\nL3 cache:                                32 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-31\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Vulnerable: Safe RET, no microcode\nVulnerability Spec store bypass:         Vulnerable\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; Retpolines; STIBP disabled; RSB filling; PBRSB-eIBRS Not affected; BHI Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Vulnerable: No microcode\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n",
+  "paths": {
+    "block1": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/rc17-spaced-full-test-h5-v1/states/block-1",
+    "block2": "/home/dev-user/.cache/ohm-rc17-spaced-full-test-h5-v1/states/block-2"
+  },
+  "registry": {
+    "bytes": 163117023,
+    "files": 1576,
+    "private_manifest_sha": "12a9be5b69360b972d906853b13c3bb7971df7e2046c4e4b2ad8f026d611f871"
+  },
+  "release_inputs": {
+    "B": {
+      "cargo_sha": "e74dddbed648ca90bd5cabab90d9e02517478e40f5552a0a8369d72d15596d33",
+      "driver": "36d1fd142355c3ad9e0ce006c1e92b7e511cba70c431b09eb1e335f572d27d05",
+      "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+    },
+    "C": {
+      "cargo_sha": "787ed90b5a14000ac0b1efc1d1aac5d730e0107b2e995cc0471138402759a4d5",
+      "driver": "52d5c046f570d3d61ff8bbaeff0d44798df916306110b4a2cac7fe459bc11955",
+      "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+    }
+  },
+  "runtime_ledger": "20b7c12df9d4a24f161f1d08f0003ebe2eeba719d0d0ced0f34ded1b001e923b",
+  "source_index": "fc84f15ac7401cd9bdc362e4574c6d395529766c16be2e6b032ac47fa63d21cd",
+  "source_lock": "c9e345325bec5ff08dbbe3916edd39ad0c3d1c7797a8c241ae32f62754e764bf",
+  "tool_auth": {
+    "bwrap": "e318903862396f96de3df57264e0158682b952fd3fb53ac23d876413e7b30f71",
+    "cc": "1b99826121ae6682a634e5efe09bd3e3df58ce58e0b28f849114ab5b89139c26",
+    "git": "eb54b535467e0975c1284d4c4d08eea779aeb248a5d34b02e2ee171382e22201",
+    "python3": "e50d468e8b0adfb05733f5b87b3cff34829c4a8c1aea50c865aa8bdfe4bb150f",
+    "rustup": "5be191e8c70a5007074254cb74d78dbfdd25cd5a61c27de7b8e5410122ec24f4",
+    "strace": "28f957c227012de0b18d1bd7fff2d396cb693ea60ed8013be68de071e84b5001"
+  }
+}
