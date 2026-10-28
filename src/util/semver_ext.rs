@@ -89,7 +89,7 @@ impl OptVersionReq {
         let version = version.clone();
         *self = match self {
             Any => Locked(version, VersionReq::STAR),
-            Req(req) | Locked(_, req) | Precise(_, req) => Locked(version, req.clone()),
+            Req(req) | Locked(_, req) | Precise(_, req) => Locked(version, std::mem::take(req)),
         };
     }
 
@@ -101,7 +101,7 @@ impl OptVersionReq {
         let version = version.clone();
         *self = match self {
             Any => Precise(version, VersionReq::STAR),
-            Req(req) | Locked(_, req) | Precise(_, req) => Precise(version, req.clone()),
+            Req(req) | Locked(_, req) | Precise(_, req) => Precise(version, std::mem::take(req)),
         };
     }
 
