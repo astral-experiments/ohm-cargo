@@ -967,6 +967,7 @@ unstable_cli_options!(
     ohm_linker: Option<OhmLinker> = ("Select a bundled linker for native Linux x86-64 builds: wild or lld"),
     ohm_native_tool_trust: OhmNativeToolTrust = ("Set native-tool trust for shared registry artifacts: strict (default), build-scripts, or all (potentially unsound)"),
     ohm_proc_macro_trust: OhmProcMacroTrust = ("Set procedural-macro trust for registry sharing and workspace artifact reuse: audited (default) or all (potentially unsound)"),
+    ohm_ready_tests: Option<bool> = ("Run ready test binaries during compilation (opt-in)"),
     ohm_reuse_built_deps: bool = ("Reuse built dependencies and native integration-test compilations during checks"),
     ohm_shared_registry_cache: bool = ("Share deterministic registry artifacts across isolated workspaces without global compiler wrappers"),
     ohm_shared_stages: Option<bool> = ("Reuse compatible frontend queries between check and build (enabled by Ohm defaults)"),
@@ -1326,6 +1327,11 @@ impl CliUnstable {
         self.ohm_early_tests.unwrap_or_else(|| self.ohm_defaults())
     }
 
+    /// Whether supported test binaries may run while other targets compile.
+    pub fn ohm_ready_tests(&self) -> bool {
+        self.ohm_ready_tests.unwrap_or(false)
+    }
+
     /// Whether compatible checks and builds share frontend incremental state.
     pub fn ohm_shared_stages(&self) -> bool {
         self.ohm_shared_stages
@@ -1590,6 +1596,7 @@ impl CliUnstable {
             "no-index-update" => self.no_index_update = parse_empty(k, v)?,
             "ohm-defaults" => self.ohm_defaults = Some(parse_bool(k, v)?),
             "ohm-early-tests" => self.ohm_early_tests = Some(parse_bool(k, v)?),
+            "ohm-ready-tests" => self.ohm_ready_tests = Some(parse_bool(k, v)?),
             "ohm-thinlto-cache" => self.ohm_thinlto_cache = Some(parse_bool(k, v)?),
             "ohm-shared-stages" => self.ohm_shared_stages = Some(parse_bool(k, v)?),
             "ohm-focused-tests" => self.ohm_focused_tests = parse_empty(k, v)?,

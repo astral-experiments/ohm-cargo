@@ -2099,6 +2099,44 @@ that existing ordinary namespace from seeding. Re-enabling isolation does not
 remove that history. `cargo clean` clears owned current and legacy namespaces;
 subsequent normal builds prepare fresh state.
 
+## ohm-ready-tests
+
+Ohm's `cargo test` can run a completed test binary while other targets compile.
+This is enabled by Ohm defaults for supported Unix host builds, including normal
+terminal invocations. Cargo waits
+for confirmed compiler completion and for the queued build scripts, application
+executables, and dynamic libraries that supply runtime inputs. It preserves the
+ordinary test arguments, environment, and working directory, runs only one test
+binary at a time, and never executes an already completed test again.
+
+Use `-Zohm-ready-tests=no` to disable overlap for one invocation, or set
+`ohm-ready-tests = false` in the `[unstable]` configuration table.
+`CARGO_UNSTABLE_OHM_READY_TESTS=false` also disables it. `-Zohm-defaults=no`
+disables it with the other Ohm defaults unless explicitly enabled with
+`-Zohm-ready-tests`. External Cargo subcommands inherit explicit overrides;
+a nested Cargo command can override the inherited setting with its own flag.
+This changes scheduling without changing compiler options or artifact identity.
+
+An early test receives the terminal while it runs. A short-lived signal relay
+forwards Ctrl-C and job-control signals to Cargo and the compiling processes.
+Ctrl-Z suspends the job, `fg` restores terminal input, and `bg` leaves the job in
+the background. Cargo reclaims the terminal when the test finishes or is
+cancelled. The relay exits with the test; there is no resident service.
+
+Explicit targets, custom runners, unsupported platforms or signal handlers,
+inaccessible controlling terminals, terminals using `stty tostop` (which stops
+background terminal output), terminal invocations with redirected I/O or shared
+job control, and Cargo JSON build output retain ordinary execution. `--no-run`,
+benchmarks, and doctests also retain their usual behavior.
+If an early process cannot start, Cargo retries it on the ordinary path after
+compilation. Build failure or interruption cancels the active test process group.
+Tests may run in a different order and produce side effects before a later build
+failure; those side effects cannot be undone. Fail-fast stops further tests,
+while compilation already in progress finishes. `--no-fail-fast` continues
+running the remaining tests and preserves their failure status.
+Overlap can be slower when tests compete with compilation for CPU, memory, or
+disk bandwidth, or when little compilation remains to overlap.
+
 ## ohm-linker
 
 Ohm selects the bundled Wild linker by default for native

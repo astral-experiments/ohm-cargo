@@ -995,7 +995,7 @@ impl<'gctx> DrainState<'gctx> {
     }
 
     // This will also tick the progress bar as appropriate
-    fn wait_for_events(&mut self) -> Vec<Message> {
+    fn wait_for_events(&mut self, poll_ready_tests: bool) -> Vec<Message> {
         // Drain all events at once to avoid displaying the progress bar
         // unnecessarily. If there's no events we actually block waiting for
         // an event, but we keep a "heartbeat" going to allow `record_cpu`
@@ -1007,11 +1007,18 @@ impl<'gctx> DrainState<'gctx> {
             loop {
                 self.tick_progress();
                 self.tokens.truncate(self.active.len() - 1);
-                match self.messages.pop(Duration::from_millis(500)) {
+                match self
+                    .messages
+                    .pop(Duration::from_millis(if poll_ready_tests {
+                        50
+                    } else {
+                        500
+                    })) {
                     Some(message) => {
                         events.push(message);
                         break;
                     }
+                    None if poll_ready_tests => break,
                     None => continue,
                 }
             }
@@ -1055,6 +1062,10 @@ impl<'gctx> DrainState<'gctx> {
                 }
             }
 
+            if let Err(error) = crate::ops::ReadyTests::poll(build_runner, errors.count != 0) {
+                self.handle_error(&mut build_runner.bcx.gctx.shell(), &mut errors, error);
+            }
+
             // If after all that we're not actually running anything then we're
             // done!
             if self.active.is_empty() {
@@ -1066,7 +1077,7 @@ impl<'gctx> DrainState<'gctx> {
             // jobserver interface is architected we may acquire a token that we
             // don't actually use, and if this happens just relinquish it back
             // to the jobserver itself.
-            for event in self.wait_for_events() {
+            for event in self.wait_for_events(build_runner.compilation.ready_tests.is_some()) {
                 if let Err(event_err) = self.handle_event(build_runner, event) {
                     self.handle_error(&mut build_runner.bcx.gctx.shell(), &mut errors, event_err);
                 }
@@ -1508,7 +1519,10 @@ impl<'gctx> DrainState<'gctx> {
         }
         let unblocked = self.queue.finish(unit, &artifact);
         match artifact {
-            Artifact::All => self.timings.unit_finished(build_runner, id, unblocked),
+            Artifact::All => {
+                self.timings.unit_finished(build_runner, id, unblocked);
+                crate::ops::ReadyTests::unit_finished(build_runner, unit)?;
+            }
             Artifact::Metadata => self
                 .timings
                 .unit_rmeta_finished(build_runner, id, unblocked),

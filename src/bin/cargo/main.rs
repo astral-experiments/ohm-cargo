@@ -15,6 +15,10 @@ mod commands;
 use crate::command_prelude::*;
 
 fn main() {
+    #[cfg(unix)]
+    if cargo::ops::run_ready_test_relay() {
+        return;
+    }
     let _guard = setup_logger();
 
     let mut gctx = match GlobalContext::default() {
@@ -322,6 +326,12 @@ fn execute_subcommand(
     if let Some(enabled) = gctx.cli_unstable().ohm_early_tests {
         cmd.env(
             cargo::CARGO_INHERITED_OHM_EARLY_TESTS_ENV,
+            if enabled { "yes" } else { "no" },
+        );
+    }
+    if let Some(enabled) = gctx.cli_unstable().ohm_ready_tests {
+        cmd.env(
+            cargo::CARGO_INHERITED_OHM_READY_TESTS_ENV,
             if enabled { "yes" } else { "no" },
         );
     }

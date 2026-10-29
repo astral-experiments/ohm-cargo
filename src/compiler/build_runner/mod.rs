@@ -834,34 +834,11 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             fingerprint.clear_memoized();
         }
 
+        crate::ops::ReadyTests::prepare(&mut self);
         // Now that we've figured out everything that we're going to do, do it!
         queue.execute(&mut self)?;
 
-        // Add `OUT_DIR` to env vars if unit has a build script.
-        let units_with_build_script = &self
-            .bcx
-            .roots
-            .iter()
-            .filter(|unit| self.build_scripts.contains_key(unit))
-            .dedup_by(|x, y| x.pkg.package_id() == y.pkg.package_id())
-            .collect::<Vec<_>>();
-        for unit in units_with_build_script {
-            for dep in &self.bcx.unit_graph[unit] {
-                if dep.unit.mode.is_run_custom_build() {
-                    let out_dir = if self.bcx.gctx.cli_unstable().build_dir_new_layout {
-                        self.files().out_dir_new_layout(&dep.unit)
-                    } else {
-                        self.files().build_script_out_dir(&dep.unit)
-                    };
-                    let script_meta = self.get_run_build_script_metadata(&dep.unit);
-                    self.compilation
-                        .extra_env
-                        .entry(script_meta)
-                        .or_insert_with(Vec::new)
-                        .push(("OUT_DIR".to_string(), out_dir.display().to_string()));
-                }
-            }
-        }
+        self.collect_runtime_environment();
 
         self.collect_doc_merge_info()?;
 
@@ -928,6 +905,39 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             super::output_depinfo(&mut self, unit)?;
         }
 
+        Ok(self.compilation)
+    }
+
+    /// Collect the same runtime environment for early and ordinary test execution.
+    pub(crate) fn collect_runtime_environment(&mut self) {
+        self.compilation.extra_env.clear();
+        self.compilation.native_dirs.clear();
+        // Add `OUT_DIR` to env vars if unit has a build script.
+        let units_with_build_script = &self
+            .bcx
+            .roots
+            .iter()
+            .filter(|unit| self.build_scripts.contains_key(unit))
+            .dedup_by(|x, y| x.pkg.package_id() == y.pkg.package_id())
+            .collect::<Vec<_>>();
+        for unit in units_with_build_script {
+            for dep in &self.bcx.unit_graph[unit] {
+                if dep.unit.mode.is_run_custom_build() {
+                    let out_dir = if self.bcx.gctx.cli_unstable().build_dir_new_layout {
+                        self.files().out_dir_new_layout(&dep.unit)
+                    } else {
+                        self.files().build_script_out_dir(&dep.unit)
+                    };
+                    let script_meta = self.get_run_build_script_metadata(&dep.unit);
+                    self.compilation
+                        .extra_env
+                        .entry(script_meta)
+                        .or_insert_with(Vec::new)
+                        .push(("OUT_DIR".to_string(), out_dir.display().to_string()));
+                }
+            }
+        }
+
         for (script_meta, output) in self.build_script_outputs.lock().unwrap().iter() {
             self.compilation
                 .extra_env
@@ -941,7 +951,6 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
                     .insert(dir.clone().into_path_buf());
             }
         }
-        Ok(self.compilation)
     }
 
     /// Discovers all missing writer reservations before any fingerprint is invalidated.
