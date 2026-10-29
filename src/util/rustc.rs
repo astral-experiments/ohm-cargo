@@ -35,6 +35,7 @@ pub struct Rustc {
     cache: Mutex<Cache>,
     transparent_unused_externs: OnceLock<bool>,
     ohm_relink_inputs: OnceLock<bool>,
+    ohm_workspace_relink_inputs: OnceLock<bool>,
     ohm_incremental_codegen: OnceLock<bool>,
     ohm_incremental_mono_partitions: OnceLock<bool>,
     ohm_shared_stages: OnceLock<bool>,
@@ -123,6 +124,7 @@ impl Rustc {
             cache: Mutex::new(cache),
             transparent_unused_externs: OnceLock::new(),
             ohm_relink_inputs: OnceLock::new(),
+            ohm_workspace_relink_inputs: OnceLock::new(),
             ohm_incremental_codegen: OnceLock::new(),
             ohm_incremental_mono_partitions: OnceLock::new(),
             ohm_shared_stages: OnceLock::new(),
@@ -151,9 +153,23 @@ impl Rustc {
     }
 
     /// Whether rustc marks native units whose assembler may open untracked files.
-    pub fn supports_relink_input_checks(&self, gctx: &GlobalContext) -> bool {
-        *self.ohm_relink_inputs.get_or_init(|| {
-            let mut process = self.workspace_process();
+    pub(crate) fn supports_relink_input_checks(
+        &self,
+        gctx: &GlobalContext,
+        workspace: bool,
+    ) -> bool {
+        let wrapped = workspace && self.workspace_wrapper.is_some();
+        let cache = if wrapped {
+            &self.ohm_workspace_relink_inputs
+        } else {
+            &self.ohm_relink_inputs
+        };
+        *cache.get_or_init(|| {
+            let mut process = if wrapped {
+                self.workspace_process()
+            } else {
+                self.process()
+            };
             if let Err(error) = apply_env_config(gctx, &mut process) {
                 debug!("unable to configure relink input probe: {error}");
                 return false;
