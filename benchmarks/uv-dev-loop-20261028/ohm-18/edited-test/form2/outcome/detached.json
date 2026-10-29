@@ -1,0 +1,35 @@
+{
+  "custody": {
+    "child_exit": 0,
+    "minimum_free_bytes": 170977353728,
+    "supervisor": {
+      "chunk": "bfcc4f",
+      "closure_sha256": "8efe4b28e66a9c093db0bc2e51a922c142a2eed17c0813f7c2629eb7964d931d",
+      "exit_status": 0,
+      "session": 79900,
+      "worker_returncode": 0
+    }
+  },
+  "kind": "outcome",
+  "outcome": {
+    "disposition": "passes primary/replica threshold",
+    "gate": true,
+    "state": "complete"
+  },
+  "prior_gate": null,
+  "prior_rows": 0,
+  "recorded_arms": 16,
+  "registration": "b2490310d1a7ff445a86e4033d32f90c900c71f2278822085d341b5dbd40342e",
+  "stats": {
+    "balanced_order_randomization_p": 0.02857142857142857,
+    "losses": 0,
+    "median_paired_reduction": 0.020579515516436664,
+    "n_pairs": 8,
+    "rank_interval_99_21875": [
+      0.01831075210158606,
+      0.022752727584538834
+    ],
+    "two_sided_sign_p": 0.0078125,
+    "wins": 8
+  }
+}
