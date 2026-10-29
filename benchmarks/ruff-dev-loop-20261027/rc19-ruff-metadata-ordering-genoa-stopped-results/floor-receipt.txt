@@ -1,0 +1,22 @@
+WARNING: cannot read default subvolume id: Operation not permitted
+WARNING: cannot read default subvolume id: Operation not permitted
+WARNING: cannot read default subvolume id: Operation not permitted
+WARNING: cannot read default subvolume id: Operation not permitted
+WARNING: cannot read default subvolume id: Operation not permitted
+Traceback (most recent call last):
+  File "<run>/genoa-supplement-v1/proof.py", line 30, in <module>
+    if __name__=="__main__":main()
+                            ^^^^^^
+  File "<run>/genoa-supplement-v1/proof.py", line 13, in main
+    target.mkdir(exist_ok=True);raw=target/"raw-objects";require_admin_namespace();assert os.statvfs(live).f_flag & os.ST_RDONLY
+                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<run>/admin-pgo-ops/admin_ctl.py", line 31, in require_admin_namespace
+    return prior.in_namespace()
+           ^^^^^^^^^^^^^^^^^^^^
+  File "<run>/stable-pgo-ops/pgo.py", line 36, in in_namespace
+    return floors()
+           ^^^^^^^^
+  File "<run>/stable-pgo-ops/common.py", line 27, in floors
+    assert s[str(Path.home())]>=6*2**30 and s[str(P)]>=6*2**30 and s[str(volume)]>=2**30,s
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'<home>': 11354525696, '<scratch>': 14197665792, '<volume>': 1047527424}

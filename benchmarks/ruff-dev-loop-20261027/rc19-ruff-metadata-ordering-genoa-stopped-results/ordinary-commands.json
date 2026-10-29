@@ -1,0 +1,536 @@
+[
+  {
+    "arm": "B",
+    "case": "pair-00-visit-0-B",
+    "closed_pair": true,
+    "commands_sha": "2225886c76b9606131df8b08fedd9f09624fc8fe96aed28d3eb8b5e0b4501f29",
+    "cpus": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "direction": "parent-to-child",
+    "floor_after": {
+      "home": 13071446016,
+      "scratch": 14197665792,
+      "volume": 4092018688
+    },
+    "floor_before": {
+      "home": 13365567488,
+      "scratch": 14197665792,
+      "volume": 4341407744
+    },
+    "git_control_after": [
+      "cac8894e7fd2811d1fbaa93c45565876d14c1d7350fbe5c0c86fcdacbeb0c29d",
+      "cac8894e7fd2811d1fbaa93c45565876d14c1d7350fbe5c0c86fcdacbeb0c29d"
+    ],
+    "git_control_before": "cac8894e7fd2811d1fbaa93c45565876d14c1d7350fbe5c0c86fcdacbeb0c29d",
+    "input_ledger": "ba24bb7f8f1a97ba3aa9f64145620ea0a6a64f739a34b4766fd1380eb324f4dc",
+    "input_snapshot": "Subvolume ID: 271\nUUID: bd7a4d5f-e8c4-f842-8693-df95cd0ec7a9\nParent UUID: 2b8f221d-d39b-8145-99d7-333cba15dae7\n",
+    "metadata": {
+      "libruff_python_ast-98ec24b9d64d5496.rmeta": {
+        "bytes": 3961522,
+        "sha256": "08616e086102c8430390df283e17e7b7c33f55551490d71f2988d69a0186e007"
+      },
+      "libruff_python_index-26cfa97e490770a3.rmeta": {
+        "bytes": 28161,
+        "sha256": "625153260f531179114c3b2c69c1dec87ab581a2948099c55a2b0b05beb41158"
+      }
+    },
+    "order": "BA",
+    "pair": 0,
+    "real_cargo": "51eb6c59a38151fbf1a252d7bc39cb45dfa67482a95b526e1301046bbf593ce9",
+    "sources": [
+      "716260bf10d7ae1d965ed9b22653e57fbc960582",
+      "2d6ce561250a464e1fa231ef30e54d0f029f76a4"
+    ],
+    "status": {
+      "edit": {
+        "dirty": 56,
+        "raw_stderr": "2c7c7037f60822019d8ceb4ded2e690cb43efebef53bf891bd00e03fcc1c0da0",
+        "raw_stdout": "dd6123923a33d25cd4d17f6bf25a1442107c9e95c46ae2376be7517f0d47e38a",
+        "returncode": 0,
+        "stderr_bytes": 5584,
+        "stdout_bytes": 606628,
+        "typed_roster": "200fb2477680d510136f291bc4e855b11a8d271e9ac081851fcd67b5888c6c79",
+        "units": 510
+      },
+      "repeat": {
+        "dirty": 12,
+        "raw_stderr": "d6c03c2aad3d07a84d7097d46b6d87102eb3ce04603e54d92c409618069bd93a",
+        "raw_stdout": "1158f4fa66528142d6676abdf1e4d0608ce503b80c3d61b1621a5b451e739da7",
+        "returncode": 0,
+        "stderr_bytes": 1309,
+        "stdout_bytes": 606584,
+        "typed_roster": "200fb2477680d510136f291bc4e855b11a8d271e9ac081851fcd67b5888c6c79",
+        "units": 510
+      }
+    },
+    "stopwatches": [
+      {
+        "elapsed_ns": 14875498220,
+        "from_ns": 405026718092521,
+        "status": 0,
+        "step": "edit",
+        "to_ns": 405041593590741
+      },
+      {
+        "elapsed_ns": 6812406123,
+        "from_ns": 405041594955508,
+        "status": 0,
+        "step": "repeat",
+        "to_ns": 405048407361631
+      }
+    ]
+  },
+  {
+    "arm": "A",
+    "case": "pair-00-visit-1-A",
+    "closed_pair": true,
+    "commands_sha": "3b5227b01b665e3667d15f28e52032a6dfc0f1ee361954365f7090e78508bb93",
+    "cpus": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "direction": "parent-to-child",
+    "floor_after": {
+      "home": 11748724736,
+      "scratch": 14197665792,
+      "volume": 3349151744
+    },
+    "floor_before": {
+      "home": 12613046272,
+      "scratch": 14197665792,
+      "volume": 3676651520
+    },
+    "git_control_after": [
+      "709114ce51cbd0c1aa0caa247f2bf5203c0bb7ddab28136a7b57c932b5b26bc2",
+      "709114ce51cbd0c1aa0caa247f2bf5203c0bb7ddab28136a7b57c932b5b26bc2"
+    ],
+    "git_control_before": "709114ce51cbd0c1aa0caa247f2bf5203c0bb7ddab28136a7b57c932b5b26bc2",
+    "input_ledger": "ba24bb7f8f1a97ba3aa9f64145620ea0a6a64f739a34b4766fd1380eb324f4dc",
+    "input_snapshot": "Subvolume ID: 271\nUUID: bd7a4d5f-e8c4-f842-8693-df95cd0ec7a9\nParent UUID: 2b8f221d-d39b-8145-99d7-333cba15dae7\n",
+    "metadata": {
+      "libruff_python_ast-98ec24b9d64d5496.rmeta": {
+        "bytes": 3961522,
+        "sha256": "08616e086102c8430390df283e17e7b7c33f55551490d71f2988d69a0186e007"
+      },
+      "libruff_python_index-26cfa97e490770a3.rmeta": {
+        "bytes": 28161,
+        "sha256": "625153260f531179114c3b2c69c1dec87ab581a2948099c55a2b0b05beb41158"
+      }
+    },
+    "order": "BA",
+    "pair": 0,
+    "real_cargo": "3a94265b0d3c80afd228f575190a8c291506951b1a77e45bb9bac2aa89387df7",
+    "sources": [
+      "716260bf10d7ae1d965ed9b22653e57fbc960582",
+      "2d6ce561250a464e1fa231ef30e54d0f029f76a4"
+    ],
+    "status": {
+      "edit": {
+        "dirty": 56,
+        "raw_stderr": "bd4d08e88aec3900965fb64ba64eb2355ac222905d221c5c98eb49c75ad6b122",
+        "raw_stdout": "3838ece2afe6204d07f5ba320282c0c9b91275848c64989470c4a4766975de7e",
+        "returncode": 0,
+        "stderr_bytes": 5584,
+        "stdout_bytes": 606628,
+        "typed_roster": "200fb2477680d510136f291bc4e855b11a8d271e9ac081851fcd67b5888c6c79",
+        "units": 510
+      },
+      "repeat": {
+        "dirty": 21,
+        "raw_stderr": "59c7e2317ca77b63a608f5e8f2401c95082c8026ea2bbdc1751f0da64a34df64",
+        "raw_stdout": "c2e483be93ba1e2dd931a3687d1c7994b5c2645e37c7468dcd78f28e6b378d30",
+        "returncode": 0,
+        "stderr_bytes": 2219,
+        "stdout_bytes": 606593,
+        "typed_roster": "200fb2477680d510136f291bc4e855b11a8d271e9ac081851fcd67b5888c6c79",
+        "units": 510
+      }
+    },
+    "stopwatches": [
+      {
+        "elapsed_ns": 16424500299,
+        "from_ns": 405055550946763,
+        "status": 0,
+        "step": "edit",
+        "to_ns": 405071975447062
+      },
+      {
+        "elapsed_ns": 12253474038,
+        "from_ns": 405071979466517,
+        "status": 0,
+        "step": "repeat",
+        "to_ns": 405084232940555
+      }
+    ]
+  },
+  {
+    "arm": "A",
+    "case": "pair-01-visit-0-A",
+    "closed_pair": true,
+    "commands_sha": "1d7fd2256daa700e722f284312b16bb9536595ef23a692661af3a429c66bd6d5",
+    "cpus": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "direction": "child-to-parent",
+    "floor_after": {
+      "home": 12200656896,
+      "scratch": 14197665792,
+      "volume": 3978117120
+    },
+    "floor_before": {
+      "home": 11665166336,
+      "scratch": 14197665792,
+      "volume": 3802996736
+    },
+    "git_control_after": [
+      "709114ce51cbd0c1aa0caa247f2bf5203c0bb7ddab28136a7b57c932b5b26bc2",
+      "709114ce51cbd0c1aa0caa247f2bf5203c0bb7ddab28136a7b57c932b5b26bc2"
+    ],
+    "git_control_before": "709114ce51cbd0c1aa0caa247f2bf5203c0bb7ddab28136a7b57c932b5b26bc2",
+    "input_ledger": "e0db8fb803e5f8475fe5c648a20e384b5af19f312800a18655924ffc2026d674",
+    "input_snapshot": "Subvolume ID: 269\nUUID: 17e9b85d-f19b-f242-ada9-202bdad1ecd4\nParent UUID: 0664d410-2c45-ee49-a3bb-4f8e9e32bfe8\n",
+    "metadata": {
+      "libruff_python_ast-98ec24b9d64d5496.rmeta": {
+        "bytes": 3961522,
+        "sha256": "08616e086102c8430390df283e17e7b7c33f55551490d71f2988d69a0186e007"
+      },
+      "libruff_python_index-26cfa97e490770a3.rmeta": {
+        "bytes": 28161,
+        "sha256": "625153260f531179114c3b2c69c1dec87ab581a2948099c55a2b0b05beb41158"
+      }
+    },
+    "order": "AB",
+    "pair": 1,
+    "real_cargo": "3a94265b0d3c80afd228f575190a8c291506951b1a77e45bb9bac2aa89387df7",
+    "sources": [
+      "2d6ce561250a464e1fa231ef30e54d0f029f76a4",
+      "716260bf10d7ae1d965ed9b22653e57fbc960582"
+    ],
+    "status": {
+      "edit": {
+        "dirty": 56,
+        "raw_stderr": "85dfaa1910cf158e483b8644b10009da9621ab13f11186348958250cbb5dbea8",
+        "raw_stdout": "7a318164db67bb76dd9d6d8197b63617ef241d6e3fe7f803191376e7992e5160",
+        "returncode": 0,
+        "stderr_bytes": 5584,
+        "stdout_bytes": 606594,
+        "typed_roster": "374278712369fcc579ea6fb7c073e71bb59549c953e2134a632a6d67d1001b68",
+        "units": 510
+      },
+      "repeat": {
+        "dirty": 21,
+        "raw_stderr": "36ccc59fa134fcad9cb81fb3f74d35706c8f10a7bfde06b1eb0fcf85e01312d7",
+        "raw_stdout": "20d294d10afeac4d31209091ed01b7ff3995508b2becdca5f9de2a8da23621da",
+        "returncode": 0,
+        "stderr_bytes": 2219,
+        "stdout_bytes": 606559,
+        "typed_roster": "374278712369fcc579ea6fb7c073e71bb59549c953e2134a632a6d67d1001b68",
+        "units": 510
+      }
+    },
+    "stopwatches": [
+      {
+        "elapsed_ns": 16390902236,
+        "from_ns": 405103643369701,
+        "status": 0,
+        "step": "edit",
+        "to_ns": 405120034271937
+      },
+      {
+        "elapsed_ns": 11946146639,
+        "from_ns": 405120035744124,
+        "status": 0,
+        "step": "repeat",
+        "to_ns": 405131981890763
+      }
+    ]
+  },
+  {
+    "arm": "B",
+    "case": "pair-01-visit-1-B",
+    "closed_pair": true,
+    "commands_sha": "5dcb852e361405b4d5c8b04caedcf48046bc071d2981bcfd257ff8372a6bbdbd",
+    "cpus": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "direction": "child-to-parent",
+    "floor_after": {
+      "home": 12062109696,
+      "scratch": 14197665792,
+      "volume": 2749607936
+    },
+    "floor_before": {
+      "home": 12159442944,
+      "scratch": 14197665792,
+      "volume": 3678875648
+    },
+    "git_control_after": [
+      "709114ce51cbd0c1aa0caa247f2bf5203c0bb7ddab28136a7b57c932b5b26bc2",
+      "709114ce51cbd0c1aa0caa247f2bf5203c0bb7ddab28136a7b57c932b5b26bc2"
+    ],
+    "git_control_before": "709114ce51cbd0c1aa0caa247f2bf5203c0bb7ddab28136a7b57c932b5b26bc2",
+    "input_ledger": "e0db8fb803e5f8475fe5c648a20e384b5af19f312800a18655924ffc2026d674",
+    "input_snapshot": "Subvolume ID: 269\nUUID: 17e9b85d-f19b-f242-ada9-202bdad1ecd4\nParent UUID: 0664d410-2c45-ee49-a3bb-4f8e9e32bfe8\n",
+    "metadata": {
+      "libruff_python_ast-98ec24b9d64d5496.rmeta": {
+        "bytes": 3961522,
+        "sha256": "08616e086102c8430390df283e17e7b7c33f55551490d71f2988d69a0186e007"
+      },
+      "libruff_python_index-26cfa97e490770a3.rmeta": {
+        "bytes": 28161,
+        "sha256": "625153260f531179114c3b2c69c1dec87ab581a2948099c55a2b0b05beb41158"
+      }
+    },
+    "order": "AB",
+    "pair": 1,
+    "real_cargo": "51eb6c59a38151fbf1a252d7bc39cb45dfa67482a95b526e1301046bbf593ce9",
+    "sources": [
+      "2d6ce561250a464e1fa231ef30e54d0f029f76a4",
+      "716260bf10d7ae1d965ed9b22653e57fbc960582"
+    ],
+    "status": {
+      "edit": {
+        "dirty": 56,
+        "raw_stderr": "08632ad1bfcab73538401cd445acaa9809c56e954bc826595b0a1c8085afb3b9",
+        "raw_stdout": "d1cecc89451c5626139130dc89c0fb9f1d47c73125ee4baf9abff4e032f31813",
+        "returncode": 0,
+        "stderr_bytes": 5584,
+        "stdout_bytes": 606594,
+        "typed_roster": "374278712369fcc579ea6fb7c073e71bb59549c953e2134a632a6d67d1001b68",
+        "units": 510
+      },
+      "repeat": {
+        "dirty": 12,
+        "raw_stderr": "429aeea506ad943303931c5d2b906ca8a48fb21b68db6789aa19bb0e8e73a20c",
+        "raw_stdout": "5c9849fcb2192d067db4e6b4b5f23ca0f8a750f32bde8f31b660e23b171d5065",
+        "returncode": 0,
+        "stderr_bytes": 1309,
+        "stdout_bytes": 606550,
+        "typed_roster": "374278712369fcc579ea6fb7c073e71bb59549c953e2134a632a6d67d1001b68",
+        "units": 510
+      }
+    },
+    "stopwatches": [
+      {
+        "elapsed_ns": 13682885832,
+        "from_ns": 405135646767039,
+        "status": 0,
+        "step": "edit",
+        "to_ns": 405149329652871
+      },
+      {
+        "elapsed_ns": 7405865588,
+        "from_ns": 405149334266671,
+        "status": 0,
+        "step": "repeat",
+        "to_ns": 405156740132259
+      }
+    ]
+  },
+  {
+    "arm": "A",
+    "case": "pair-02-visit-0-A",
+    "closed_pair": false,
+    "commands_sha": "7c3048c57bfd3baa3d0ec65e519c307a0e4db201e0be6460f79c337570953124",
+    "cpus": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "direction": "parent-to-child",
+    "floor_after": {
+      "home": 11754426368,
+      "scratch": 14197665792,
+      "volume": 3688460288
+    },
+    "floor_before": {
+      "home": 11789266944,
+      "scratch": 14197665792,
+      "volume": 3804536832
+    },
+    "git_control_after": [
+      "709114ce51cbd0c1aa0caa247f2bf5203c0bb7ddab28136a7b57c932b5b26bc2",
+      "709114ce51cbd0c1aa0caa247f2bf5203c0bb7ddab28136a7b57c932b5b26bc2"
+    ],
+    "git_control_before": "709114ce51cbd0c1aa0caa247f2bf5203c0bb7ddab28136a7b57c932b5b26bc2",
+    "input_ledger": "ba24bb7f8f1a97ba3aa9f64145620ea0a6a64f739a34b4766fd1380eb324f4dc",
+    "input_snapshot": "Subvolume ID: 271\nUUID: bd7a4d5f-e8c4-f842-8693-df95cd0ec7a9\nParent UUID: 2b8f221d-d39b-8145-99d7-333cba15dae7\n",
+    "metadata": {
+      "libruff_python_ast-98ec24b9d64d5496.rmeta": {
+        "bytes": 3961522,
+        "sha256": "08616e086102c8430390df283e17e7b7c33f55551490d71f2988d69a0186e007"
+      },
+      "libruff_python_index-26cfa97e490770a3.rmeta": {
+        "bytes": 28161,
+        "sha256": "625153260f531179114c3b2c69c1dec87ab581a2948099c55a2b0b05beb41158"
+      }
+    },
+    "order": "AB",
+    "pair": 2,
+    "real_cargo": "3a94265b0d3c80afd228f575190a8c291506951b1a77e45bb9bac2aa89387df7",
+    "sources": [
+      "716260bf10d7ae1d965ed9b22653e57fbc960582",
+      "2d6ce561250a464e1fa231ef30e54d0f029f76a4"
+    ],
+    "status": {
+      "edit": {
+        "dirty": 56,
+        "raw_stderr": "fd10dde7f299310f2aff8f241edc46573d231c4768b9f3ab6f97c61913d5a98f",
+        "raw_stdout": "757b514aca1cc1420f48054a53392ef559e21a4e60bd4a4c784a622e83ffe20b",
+        "returncode": 0,
+        "stderr_bytes": 5584,
+        "stdout_bytes": 606628,
+        "typed_roster": "200fb2477680d510136f291bc4e855b11a8d271e9ac081851fcd67b5888c6c79",
+        "units": 510
+      },
+      "repeat": {
+        "dirty": 21,
+        "raw_stderr": "77932a717b79f5c6e5d58aaf3ad343e9df7838608537c5910fe190f01e61dda4",
+        "raw_stdout": "5020e360735e5e118e38fe95caf1982e07e87ab64d1b2e684ddbad055453df77",
+        "returncode": 0,
+        "stderr_bytes": 2219,
+        "stdout_bytes": 606593,
+        "typed_roster": "200fb2477680d510136f291bc4e855b11a8d271e9ac081851fcd67b5888c6c79",
+        "units": 510
+      }
+    },
+    "stopwatches": [
+      {
+        "elapsed_ns": 14408542268,
+        "from_ns": 405172395208383,
+        "status": 0,
+        "step": "edit",
+        "to_ns": 405186803750651
+      },
+      {
+        "elapsed_ns": 10641064197,
+        "from_ns": 405186804891880,
+        "status": 0,
+        "step": "repeat",
+        "to_ns": 405197445956077
+      }
+    ]
+  },
+  {
+    "arm": "B",
+    "case": "pair-02-visit-1-B",
+    "closed_pair": false,
+    "commands_sha": "739d0c3dd6ce538d51bc04b3777bcf13faac6dbde4293c6388c1d810e5a8d03f",
+    "cpus": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "direction": "parent-to-child",
+    "floor_after": {
+      "home": 11468537856,
+      "scratch": 14197665792,
+      "volume": 2976059392
+    },
+    "floor_before": {
+      "home": 11473104896,
+      "scratch": 14197665792,
+      "volume": 3136188416
+    },
+    "git_control_after": [
+      "709114ce51cbd0c1aa0caa247f2bf5203c0bb7ddab28136a7b57c932b5b26bc2",
+      "709114ce51cbd0c1aa0caa247f2bf5203c0bb7ddab28136a7b57c932b5b26bc2"
+    ],
+    "git_control_before": "709114ce51cbd0c1aa0caa247f2bf5203c0bb7ddab28136a7b57c932b5b26bc2",
+    "input_ledger": "ba24bb7f8f1a97ba3aa9f64145620ea0a6a64f739a34b4766fd1380eb324f4dc",
+    "input_snapshot": "Subvolume ID: 271\nUUID: bd7a4d5f-e8c4-f842-8693-df95cd0ec7a9\nParent UUID: 2b8f221d-d39b-8145-99d7-333cba15dae7\n",
+    "metadata": {
+      "libruff_python_ast-98ec24b9d64d5496.rmeta": {
+        "bytes": 3961522,
+        "sha256": "08616e086102c8430390df283e17e7b7c33f55551490d71f2988d69a0186e007"
+      },
+      "libruff_python_index-26cfa97e490770a3.rmeta": {
+        "bytes": 28161,
+        "sha256": "625153260f531179114c3b2c69c1dec87ab581a2948099c55a2b0b05beb41158"
+      }
+    },
+    "order": "AB",
+    "pair": 2,
+    "real_cargo": "51eb6c59a38151fbf1a252d7bc39cb45dfa67482a95b526e1301046bbf593ce9",
+    "sources": [
+      "716260bf10d7ae1d965ed9b22653e57fbc960582",
+      "2d6ce561250a464e1fa231ef30e54d0f029f76a4"
+    ],
+    "status": {
+      "edit": {
+        "dirty": 56,
+        "raw_stderr": "c741cb26166649c224746edc7173f2b93501999b95a4f636a3684de5edff07e8",
+        "raw_stdout": "9ae21465cf635305e22536d17e9187f9a4ba799b08e705e1328206c9b5328c29",
+        "returncode": 0,
+        "stderr_bytes": 5584,
+        "stdout_bytes": 606628,
+        "typed_roster": "200fb2477680d510136f291bc4e855b11a8d271e9ac081851fcd67b5888c6c79",
+        "units": 510
+      },
+      "repeat": {
+        "dirty": 12,
+        "raw_stderr": "0a625db0ab30001a257062bb45cbd8394efcea6ca23bf8b846e841374d4f5d89",
+        "raw_stdout": "c29e1fff05196c04496465f440a978400d560a0baf3a07c52679b8038ffe5975",
+        "returncode": 0,
+        "stderr_bytes": 1309,
+        "stdout_bytes": 606584,
+        "typed_roster": "200fb2477680d510136f291bc4e855b11a8d271e9ac081851fcd67b5888c6c79",
+        "units": 510
+      }
+    },
+    "stopwatches": [
+      {
+        "elapsed_ns": 14501392735,
+        "from_ns": 405203969930947,
+        "status": 0,
+        "step": "edit",
+        "to_ns": 405218471323682
+      },
+      {
+        "elapsed_ns": 5522318420,
+        "from_ns": 405218471761551,
+        "status": 0,
+        "step": "repeat",
+        "to_ns": 405223994079971
+      }
+    ]
+  }
+]
