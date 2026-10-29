@@ -1,0 +1,167 @@
+{
+ "first": {
+  "control_sha256": "f4e53da2aea8ac2b47aee071be0660dc60383ea9a28017a42d36c9141761e15f",
+  "phases": {
+   "edited": {
+    "errors": [
+     [
+      "client",
+      "E0034"
+     ]
+    ],
+    "fresh": [
+     "api"
+    ],
+    "stderr_sha256": "04b1f70d7060d27bf97234e919987734bd3e84f7f39f32c51b99956058f54b49",
+    "stdout_sha256": "bec617bc232afe624b3b57e7aeb36e42e7e6c49110ef1f067286d7d389c1376f",
+    "success": false
+   },
+   "edited-clean": {
+    "errors": [
+     [
+      "client",
+      "E0034"
+     ]
+    ],
+    "fresh": [],
+    "stderr_sha256": "faf6b1559dca342b5a75c68a2c4af474082d70b29a89c8d97384cfe2f534b97b",
+    "stdout_sha256": "249e480c51ba60366a4d8498cf017ccb04a4987c074f8f692352b15d706dcc7b",
+    "success": false
+   },
+   "edited-repeat": {
+    "errors": [
+     [
+      "client",
+      "E0034"
+     ]
+    ],
+    "fresh": [
+     "api",
+     "provider",
+     "reader"
+    ],
+    "stderr_sha256": "4965cf0ab90fe7960f03af7ee6c0837962bd987dc1d6896e2fbecefb253f1b54",
+    "stdout_sha256": "ea99d49b8d13fc80636bdb0f943c6f79557feffddb1f507a73f61a703c8833d2",
+    "success": false
+   },
+   "original": {
+    "errors": [],
+    "fresh": [],
+    "stderr_sha256": "2bf32ef59d40d0b63480e4b1fd81aab1e9d7367de4a268a96ce5be32eccde4c9",
+    "stdout_sha256": "ed86874c4fd2acfdb0c4cf2bd16c73a5f00e57a94743e6e6834188b0b02eb094",
+    "success": true
+   },
+   "original-repeat": {
+    "errors": [],
+    "fresh": [
+     "api",
+     "client",
+     "provider",
+     "reader"
+    ],
+    "stderr_sha256": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e",
+    "stdout_sha256": "58c7fe63a67ed04f1099ca3a8b49b0dc4aa5f8dd9451f7240f3c650a037870be",
+    "success": true
+   },
+   "restore": {
+    "errors": [],
+    "fresh": [
+     "api"
+    ],
+    "stderr_sha256": "697ed82e10fe7652950036ee72d2c046e0c9493fdb6f4758d501862def575588",
+    "stdout_sha256": "9baf9facfe1ba8e090150f93580593d4051cf1d75a0cde4d842fe1c6a1f4c3cc",
+    "success": true
+   },
+   "restore-repeat": {
+    "errors": [],
+    "fresh": [
+     "api",
+     "client",
+     "provider",
+     "reader"
+    ],
+    "stderr_sha256": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e",
+    "stdout_sha256": "58c7fe63a67ed04f1099ca3a8b49b0dc4aa5f8dd9451f7240f3c650a037870be",
+    "success": true
+   }
+  }
+ },
+ "late": {
+  "control_sha256": "fc76223e1012992352ab0fefc275c416ed3d70dfd040080f6d84cc179f43a5ec",
+  "phases": {
+   "edited": {
+    "errors": [],
+    "fresh": [
+     "api"
+    ],
+    "stderr_sha256": "77e905f124e6d07d73e7cbbb8974dc94a7af43e8f58c6d61faf59140746a2f79",
+    "stdout_sha256": "3534a91bce815977b2cd7917b36789a776a032431ce01b82a82043fbab9dcb5f",
+    "success": true
+   },
+   "edited-clean": {
+    "errors": [
+     [
+      "client",
+      "E0034"
+     ]
+    ],
+    "fresh": [],
+    "stderr_sha256": "f73a6547445c6f39162d2c5ef5996184fac81c4aec3bc7cfd34f2d38fc798c29",
+    "stdout_sha256": "b780a3da1875eaadb11544d7740bba74beb40183ee457a483304cc8dbb1e4867",
+    "success": false
+   },
+   "edited-repeat": {
+    "errors": [],
+    "fresh": [
+     "api",
+     "client",
+     "provider",
+     "reader"
+    ],
+    "stderr_sha256": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e",
+    "stdout_sha256": "bcfb05a3e8af6abc7d9cd8c927800f945bef8e3c23a7ea4a9f73dee0de06f36d",
+    "success": true
+   },
+   "original": {
+    "errors": [],
+    "fresh": [],
+    "stderr_sha256": "1826349a0c21a505f1730817ce7e54470ff83d80cd916c0ca1505de36718d6ae",
+    "stdout_sha256": "a13215c02fc3f179b7a238e2c3eedc558849d269d05a2175cc128ab0bba4f37e",
+    "success": true
+   },
+   "original-repeat": {
+    "errors": [],
+    "fresh": [
+     "api",
+     "client",
+     "provider",
+     "reader"
+    ],
+    "stderr_sha256": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e",
+    "stdout_sha256": "bcfb05a3e8af6abc7d9cd8c927800f945bef8e3c23a7ea4a9f73dee0de06f36d",
+    "success": true
+   },
+   "restore": {
+    "errors": [],
+    "fresh": [
+     "api"
+    ],
+    "stderr_sha256": "02d2d19eba8ba4395b669afbd68690990ad45645b57e84a3e9850086c0533f89",
+    "stdout_sha256": "3534a91bce815977b2cd7917b36789a776a032431ce01b82a82043fbab9dcb5f",
+    "success": true
+   },
+   "restore-repeat": {
+    "errors": [],
+    "fresh": [
+     "api",
+     "client",
+     "provider",
+     "reader"
+    ],
+    "stderr_sha256": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e",
+    "stdout_sha256": "bcfb05a3e8af6abc7d9cd8c927800f945bef8e3c23a7ea4a9f73dee0de06f36d",
+    "success": true
+   }
+  }
+ }
+}
