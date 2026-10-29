@@ -1,0 +1,59 @@
+{
+  "candidate": "78bedbdaafd7cda72bee7c844888b44f3b902c61",
+  "cases": [
+    "inlay_hints::default_inlay_hints",
+    "notebook::hover_past_end_of_cell",
+    "notebook::inlay_hints_range_past_end_of_cell"
+  ],
+  "command": [
+    "cargo",
+    "+ohm",
+    "test",
+    "--locked",
+    "--offline",
+    "--no-run",
+    "-j4",
+    "-p",
+    "ty_server",
+    "--test",
+    "e2e",
+    "--message-format=json"
+  ],
+  "compound_new_treatment": false,
+  "cpus": [
+    8,
+    9,
+    10,
+    11
+  ],
+  "eligibility": "identical compiler pool, stock Native linker, real previous empty edits, same-history absolute cfg, per-source ELF, source-local cfg fields only across different histories, full inverse recipe check",
+  "historical_edit": "1b9310471b7d1178633e58ee63808522609db887",
+  "historical_parent": "ca8b1938d698061c740af5c3d58c94a1fdd35516",
+  "home_floor": 48318382080,
+  "inventory": 200,
+  "new_sources_mandatory": true,
+  "parent": "8dc33c9cc641e2b641c5b8e7075652a3e9e1f70b",
+  "parent_prefix": "8dc33c9cc",
+  "pooled": false,
+  "previous_failure": "8236ec658b1f8e855f87efe751e5efeebf3ced3be17b68adf3393769b0de802a",
+  "primary_endpoint": "untraced full ordinary cargo command, ns",
+  "primary_pairs": 32,
+  "replacements": 0,
+  "ruff": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "rust": "ca780121cea38bb9b0538d020d4bcce76ca30cbc",
+  "schema": 2,
+  "scratch_floor": 42949672960,
+  "secondary_endpoint": null,
+  "secondary_pairs": 0,
+  "source_publication": "1d9c6ad6bf85bae5af3447063add7ac67f78140c",
+  "source_sha256": {
+    "edited": "24d443ea2c65e5879884b32e761fea2d5e0f3cd198fd0ea9a44bd27e52078fad",
+    "invalid": "b0c839216b204903f687d177f8669b6e3601683217cfd460c4ff112916296d57",
+    "original": "a025b90170c496d6336023fa8857c4d2cb2ef77c2e601bf119e9feb3c1a71624",
+    "patch": "38509c41c31d5484a92f7ddfa76fd9916eaf3e1aa57500058d53b2eb5286c09e"
+  },
+  "stock_wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+  "study": "proofless-root-inlay-ordinary-wall-v2",
+  "times_permitted": "only with separate hash-bound native admission and explicit clock grant",
+  "typed": 300
+}
