@@ -1,0 +1,171 @@
+{
+  "actual_new_rustc_inodes_verified": true,
+  "actual_uid": 1000,
+  "all_private_mounts_detached": true,
+  "bolt": false,
+  "bootstrap_cargo": "cargo 1.99.0-dev (5e5d271d7 2026-10-20) (ohm-1.99.0-6)",
+  "bootstrap_configuration_sha256": "d96f73fd1f4f2a2a0e1a129b77be9d09ff9017b91d5961fe5c212edbd62368b5",
+  "bootstrap_lower_manifest_sha256": "cc17bb2a68bdb0950498e272d2974c12c64cbd17361e0359d0ae8c901a53233b",
+  "bootstrap_lower_verified_names": 85286,
+  "bootstrap_rustc": "rustc 1.99.0-dev (6d4a7ee32 2026-10-20) (ohm-1.99.0-6)",
+  "build_exit": 0,
+  "build_upper_cap_bytes": 12884901888,
+  "cargo_commit": "235f9228651b74c591e6f62cae4c9b761448dd2d",
+  "compiled_cache": {
+    "compressed_bytes": 1390947066,
+    "sha256": "9d945a6322fe8e449639bcffdb5031e73ff8ca4f0f1c0307a8a54396e3dce8ad",
+    "verified_frame": true
+  },
+  "compiler_commit": "5cf1bf9cd196046897a7aeeaf128833d6a464dfe",
+  "compiler_tree": "47e23eb4bab742e271ca9a3cf1bbd583d5b4a640",
+  "compiler_version": "rustc 1.99.0-dev (5cf1bf9cd 2026-10-28) (ohm-ruff-lint-scout)\nbinary: rustc\ncommit-hash: 5cf1bf9cd196046897a7aeeaf128833d6a464dfe\ncommit-date: 2026-10-28\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-dev\nLLVM version: 23.1.1\n",
+  "driver_sha256": "93bfd62d92833653fd08fbe8744654f0ab0224c271fee3f21d0d245702e8a0d3",
+  "driver_soname": "librustc_driver-15d35e5526bb94f8.so",
+  "final_packaging_exit": 0,
+  "first_packaging_probe_exit": 127,
+  "frontend_sha256": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+  "llvm_sha256": "43bac9749e539cd5988a4d5452b64582cf07ac9e7c059fde29c7bee76e106c51",
+  "matching_loaded_driver_and_llvm": true,
+  "minimum_free": {
+    "home": 73502101504,
+    "scratch": 39134461952,
+    "upper": 10372874240
+  },
+  "original_stock_wild_same_inode": true,
+  "parent_compiler_commit": "a4fa11bcd38280639cb94daacc125472657db6c3",
+  "pgo": false,
+  "raw_ledger_sha256": "a5ee6914dc0a4b8d76d358fcd9300cd506a8180a5131665b9d313dd0fe9a24aa",
+  "reserve_abort": null,
+  "root_owned_ancestors": true,
+  "smoke": {
+    "edited": {
+      "actual_stock_wild": 1,
+      "ar_members": [
+        "lib.rmeta",
+        "lib.rmeta-link",
+        "archive_smoke_leaf-209d982a2b887942.dch0r4blcltbxbqoupmd1g67r.0hcqrxe.rcgu.o"
+      ],
+      "artifacts": {
+        "archive_smoke_leaf": false,
+        "archive_smoke_reader": false
+      },
+      "cargo_argv": [
+        "cargo",
+        "+ohm",
+        "build",
+        "--workspace",
+        "--offline",
+        "--message-format=json"
+      ],
+      "elf_sha256": "baa4eabd0d0f727db0a538f72ef353e606217ed85976bdd6a8364789071cc439",
+      "exit": 0,
+      "full_rustcs": 1,
+      "link_only_rustcs": 1,
+      "native": [
+        "cc",
+        "collect2",
+        "ld.bfd"
+      ],
+      "rlib_sha256": "d449f5189d1838482bd2cd4e41ca9624d937635d5f9ac3414df9b5359d9243ea",
+      "rlib_size": 6264,
+      "runtime": 29,
+      "stderr_sha256": "cc4f9e6ce77d2ca3d771438e0b6fbe8a994c06e14c459f0843221cea35e71dd9",
+      "stdout_sha256": "a420c16a1dcbd930fda6b8a53f3eedb3b6a82ddb94600de4ada3da24bb0f83fb",
+      "trace_sha256": "fe34565f04c905fbe1632dfe4aefb255c442c67971bccd8c8af0f1d5741efa2b"
+    },
+    "initial": {
+      "actual_stock_wild": 1,
+      "ar_members": [
+        "lib.rmeta",
+        "lib.rmeta-link",
+        "archive_smoke_leaf-209d982a2b887942.dch0r4blcltbxbqoupmd1g67r.0h9v2e5.rcgu.o"
+      ],
+      "artifacts": {
+        "archive_smoke_leaf": false,
+        "archive_smoke_reader": false
+      },
+      "cargo_argv": [
+        "cargo",
+        "+ohm",
+        "build",
+        "--workspace",
+        "--offline",
+        "--message-format=json"
+      ],
+      "elf_sha256": "a3e085241955cd1124b4733d5f034f8edbd6397ef02008e5e26ce19663b18f33",
+      "exit": 0,
+      "full_rustcs": 2,
+      "link_only_rustcs": 0,
+      "native": [
+        "cc",
+        "collect2",
+        "ld.bfd"
+      ],
+      "rlib_sha256": "6173980d371666efd10e968f4d03ed7a1327dd38d27dfba6c5cfa2a6e855b2d8",
+      "rlib_size": 6264,
+      "runtime": 17,
+      "stderr_sha256": "af8b4e0e3aa3465024a3a2b506763cb897ad0f75ff5c175467d5ab93ab85d3b7",
+      "stdout_sha256": "a420c16a1dcbd930fda6b8a53f3eedb3b6a82ddb94600de4ada3da24bb0f83fb",
+      "trace_sha256": "bc0fb01501de3bac45bebb06447b398ed0aa07047533fddbbe20117ad89c8a37"
+    },
+    "repeat": {
+      "actual_stock_wild": 0,
+      "ar_members": [
+        "lib.rmeta",
+        "lib.rmeta-link",
+        "archive_smoke_leaf-209d982a2b887942.dch0r4blcltbxbqoupmd1g67r.0hcqrxe.rcgu.o"
+      ],
+      "artifacts": {
+        "archive_smoke_leaf": true,
+        "archive_smoke_reader": true
+      },
+      "cargo_argv": [
+        "cargo",
+        "+ohm",
+        "build",
+        "--workspace",
+        "--offline",
+        "--message-format=json"
+      ],
+      "elf_sha256": "baa4eabd0d0f727db0a538f72ef353e606217ed85976bdd6a8364789071cc439",
+      "exit": 0,
+      "full_rustcs": 0,
+      "link_only_rustcs": 0,
+      "native": [],
+      "rlib_sha256": "d449f5189d1838482bd2cd4e41ca9624d937635d5f9ac3414df9b5359d9243ea",
+      "rlib_size": 6264,
+      "runtime": 29,
+      "stderr_sha256": "8c233a54790c4800d3dd585436af679aa838da259bfdb129412e2d51cdb75cdc",
+      "stdout_sha256": "24baf9da72859ceeebb5d3cf243ca28e7611892df835f9b53f53923927e46055",
+      "trace_sha256": "78c7e422b759b76cec168b8e07b59aab5a05b4f3547d900e8c0bb1d564d3042d"
+    }
+  },
+  "source_tar": {
+    "cargo19": {
+      "bytes": 23275520,
+      "commit": "235f9228651b74c591e6f62cae4c9b761448dd2d",
+      "prefix": "cargo/",
+      "sha256": "d3c53bb7c9a71a310fbef793ed2b3dd3e8a8116a52a004a4389fa45990550281",
+      "tree": "b42209a5876acbaaa7ec1c6b6cfa627ac207b573"
+    },
+    "rust18": {
+      "bytes": 276879360,
+      "commit": "a4fa11bcd38280639cb94daacc125472657db6c3",
+      "prefix": "source/",
+      "sha256": "aa8242493f9371e8542a655b506f5207bececdbec5df0eb6613f3c55b32a6626",
+      "tree": "b0ac0e8d6933e8dcaae96b9e7788c5321ce90774"
+    },
+    "rust19": {
+      "bytes": 276879360,
+      "commit": "5cf1bf9cd196046897a7aeeaf128833d6a464dfe",
+      "prefix": "source/",
+      "sha256": "b9585beed7dc4622f050e95847e01e7bfbacb0cc71c2312f92a39aba05b3ed31",
+      "tree": "d397b2d1efa958129a8caf1f00e2c09e5df203c6"
+    }
+  },
+  "stage": 1,
+  "std_file_count": 53,
+  "stock_cargo_sha256": "998a208821e4ae7a44175267aaaac08a135e93eab733e879f5b0663a4e923056",
+  "stock_wild_sha256": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+  "terminal_raw_sha256": "5b6918c037c00925101af445d3241cb994a178437321de4a8e8e140825d052c0"
+}
