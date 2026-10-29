@@ -6634,6 +6634,79 @@ fn unused_workspace_integration_relinks_transitive_native_archive() {
     );
 }
 
+#[cfg(unix)]
+#[cargo_test(requires = "cc", requires = "ar")]
+fn unused_package_library_relinks_with_dependency_search_path() {
+    let wrapper = relink_only_wrapper();
+    let p = project()
+        .file(
+            "Cargo.toml",
+            &format!(
+                "{}\n[dependencies]\nprovider = {{ path = 'provider' }}",
+                basic_manifest("app", "0.1.0")
+            ),
+        )
+        .file("src/lib.rs", "pub fn value() -> i32 { 1 }")
+        .file("provider/Cargo.toml", &basic_lib_manifest("provider"))
+        .file("provider/src/lib.rs", "")
+        .file(
+            "provider/build.rs",
+            r#"fn main() {
+                println!("cargo::rerun-if-changed=build.rs");
+                println!("cargo::rustc-link-search=native={}", env!("CARGO_MANIFEST_DIR"));
+            }"#,
+        )
+        .file(
+            "tests/integration.rs",
+            r#"
+                #[link(name = "choice", kind = "static")]
+                unsafe extern "C" { fn choice() -> i32; }
+                #[test]
+                fn reads_native_provider() {
+                    let expected: i32 = std::env::var("EXPECTED").unwrap().parse().unwrap();
+                    assert_eq!(unsafe { choice() }, expected);
+                }
+            "#,
+        )
+        .build();
+    let run = |value: &str| {
+        let mut cmd = p.cargo("-Zohm-defaults test --test integration");
+        cmd.masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("RUSTC_WRAPPER", &wrapper)
+            .env("RELINK_WRAPPER_LOG", p.root().join("compiler.log"))
+            .env("UNUSED_INTEGRATION_DEPENDENCY_PROOF", "1")
+            .env("EXPECTED", value);
+        cmd
+    };
+    for value in ["17", "29"] {
+        // The native library is supplied independently of the build script.
+        p.change_file(
+            "choice.c",
+            &format!("int choice(void) {{ return {value}; }}"),
+        );
+        p.process("cc")
+            .args(&["-c", "choice.c", "-o", "choice.o"])
+            .run();
+        p.process("ar")
+            .args(&["crs", "provider/libchoice.a", "choice.o"])
+            .run();
+        p.change_file(
+            "src/lib.rs",
+            &format!("pub fn value() -> i32 {{ {value} }}"),
+        );
+        run(value).run();
+        if is_coarse_mtime() {
+            sleep_ms(1000);
+        }
+    }
+    p.change_file("provider/libchoice.a", "malformed archive");
+    p.change_file("src/lib.rs", "pub fn value() -> i32 { 0 }");
+    run("29")
+        .with_status(101)
+        .with_stderr_contains("[..]linking with [..] failed[..]")
+        .run();
+}
+
 #[cargo_test]
 #[cfg(not(windows))]
 fn unused_workspace_integration_rejects_root_native_link() {

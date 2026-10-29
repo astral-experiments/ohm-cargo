@@ -1400,20 +1400,24 @@ fn rustc(
                 return true;
             };
             let script_outputs = build_script_outputs.lock().unwrap();
-            build_scripts
-                .to_link
-                .iter()
-                .filter(|(package_id, _)| *package_id == current_id)
-                .all(|(_, metadata)| {
-                    script_outputs.get(*metadata).is_some_and(|output| {
-                        output.library_paths.is_empty()
-                            && output.library_links.is_empty()
-                            && !output
-                                .linker_args
-                                .iter()
-                                .any(|(link_target, _)| link_target.applies_to(&target, mode))
-                    })
+            build_scripts.to_link.iter().all(|(package_id, metadata)| {
+                if *package_id != current_id {
+                    // add_native_deps forwards every dependency's search paths to
+                    // the linker, even when the test does not use its Rust library.
+                    return mode != CompileMode::Test
+                        || script_outputs
+                            .get(*metadata)
+                            .is_some_and(|output| output.library_paths.is_empty());
+                }
+                script_outputs.get(*metadata).is_some_and(|output| {
+                    output.library_paths.is_empty()
+                        && output.library_links.is_empty()
+                        && !output
+                            .linker_args
+                            .iter()
+                            .any(|(link_target, _)| link_target.applies_to(&target, mode))
                 })
+            })
         });
         let early_test = if let Some((completion, _)) = &early_test
             && (unused_integration_dependency.is_none() || completion.is_finished())
