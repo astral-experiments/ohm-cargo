@@ -389,7 +389,7 @@ use std::ffi::{OsStr, OsString};
 use std::fs;
 use std::fs::File;
 use std::hash::{self, Hash, Hasher};
-use std::io::{self};
+use std::io::{self, Read as _};
 use std::ops::Not;
 use std::path::{Path, PathBuf};
 #[cfg(unix)]
@@ -2566,7 +2566,7 @@ fn calculate(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
     {
         let loc = build_runner.files().fingerprint_file_path(unit, "");
         let hash = fingerprint.hash_u64();
-        if !paths::read(&loc).is_ok_and(|old| old == util::to_hex(hash)) {
+        if !short_fingerprint_matches(&loc, hash) {
             *fingerprint.fs_status.get_mut().unwrap() = FsStatus::Stale;
         } else if unit_has_exclusive_metadata_access(build_runner, unit) {
             *fingerprint.memoized_hash.get_mut().unwrap() = Some(MemoizedHash {
@@ -3159,6 +3159,17 @@ fn compare_old_fingerprint(
     }
 }
 
+/// Speculatively compares a short file without waiting on a FIFO or reading unbounded data.
+fn short_fingerprint_matches(path: &Path, hash: u64) -> bool {
+    let mut contents = [0; 16];
+    let Some(mut file) = open_regular_file_of_size(path, contents.len() as u64) else {
+        return false;
+    };
+    file.read_exact(&mut contents).is_ok()
+        && contents.as_slice() == util::to_hex(hash).as_bytes()
+        && matches!(file.read(&mut [0]), Ok(0))
+}
+
 fn _compare_old_fingerprint(
     old_hash_path: &Path,
     new_fingerprint: &Fingerprint,
@@ -3423,7 +3434,7 @@ fn read_checksum(
 }
 
 /// Rechecks the opened file because a regular input can be replaced after the path lookup.
-fn open_regular_checksum_file(path: &Path, expected: u64) -> Option<File> {
+fn open_regular_file_of_size(path: &Path, expected: u64) -> Option<File> {
     let mut options = File::options();
     options.read(true);
     #[cfg(unix)]
@@ -3451,7 +3462,7 @@ fn prefetch_checksum(
     if !metadata.is_file() {
         return None;
     }
-    let file = open_regular_checksum_file(path, expected)?;
+    let file = open_regular_file_of_size(path, expected)?;
     // A speculative nonblocking read may fail where an ordinary read succeeds.
     // Retry all read errors in the original ordered consumer.
     read_checksum(path, prior, file, buffer).ok().map(Ok)
@@ -3585,8 +3596,15 @@ mod parallel_checksum_tests {
         let link = directory.path().join("link");
         fs::write(&target, b"").unwrap();
         std::os::unix::fs::symlink(&target, &link).unwrap();
-        assert!(open_regular_checksum_file(&link, 0).is_some());
-        assert!(open_regular_checksum_file(&link, 1).is_none());
+        assert!(open_regular_file_of_size(&link, 0).is_some());
+        assert!(open_regular_file_of_size(&link, 1).is_none());
+
+        let hash = 123;
+        fs::write(&target, util::to_hex(hash)).unwrap();
+        assert!(short_fingerprint_matches(&link, hash));
+        assert!(!short_fingerprint_matches(&link, hash + 1));
+        fs::write(&target, format!("{}0", util::to_hex(hash))).unwrap();
+        assert!(!short_fingerprint_matches(&link, hash));
 
         let fifo = directory.path().join("fifo");
         let name = std::ffi::CString::new(fifo.as_os_str().as_bytes()).unwrap();
@@ -3594,7 +3612,8 @@ mod parallel_checksum_tests {
         fs::rename(fifo, target).unwrap();
         let (tx, rx) = std::sync::mpsc::channel();
         std::thread::spawn(move || {
-            let rejected = open_regular_checksum_file(&link, 0).is_none();
+            let rejected = open_regular_file_of_size(&link, 0).is_none()
+                && !short_fingerprint_matches(&link, hash);
             tx.send(rejected).unwrap();
         });
         assert!(rx.recv_timeout(std::time::Duration::from_secs(5)).unwrap());
