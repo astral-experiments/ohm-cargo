@@ -1,0 +1,159 @@
+{
+  "cargo": "8c1717fa9786e16d3bec0c3181c02c1803484ed857d262580ce88d54056504c5",
+  "flags": [
+    "-Zrelink-only=yes"
+  ],
+  "raw_result_sha256": "b5b3aed0871986827401c61ef58d3e5bcebfe4fdf3e5e61d1da76cb57e13c99b",
+  "rows": {
+    "independent": {
+      "current_input": [
+        29
+      ],
+      "elf": "431969afc3592428c0738909a1eed1137141e1881d5529158803d435e6d9c2c7",
+      "observed_cargo_execs": [
+        "ca1323d96d530411236ae4805914dcd2bab91da91210a36f3d5c37a1a141d592"
+      ],
+      "physical_payload_reads": [
+        [
+          "present",
+          "43ecaa29e1355742c6f1f2b039cb67c96f42b2418efbec649253aa585f09da5c"
+        ]
+      ],
+      "physical_rustcs": [
+        [
+          "___",
+          false
+        ],
+        [
+          "app",
+          false
+        ],
+        [
+          "engine",
+          false
+        ],
+        [
+          "revision",
+          false
+        ]
+      ],
+      "physical_wild": [
+        "f38b2a48f416aae279cb7990e53e27ca90fce37f04e6a9ca5687d3a9d9122b99"
+      ],
+      "raw": {
+        "physical.json": "fdcd62e70b338829a3ad82073f709e5c42d6a7435060e4481034a547c6c5d7bd",
+        "program.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "program.stdout": "e394e3e35210c4ab591873c0a979f24d03024445ca5015bf5e1b4fc74dea8025",
+        "stderr": "7bc858ba08855d880dd99fc5800da70f3e1b5cb5620975830feed91912286e1a",
+        "stdout": "48b4d9851adb84085e0405c10792b1dc048a78b0ec9f4685f48d1728b8412daa"
+      },
+      "sources": {
+        "app/src/main.rs": "b79487394a251dd473d8f2dd3b658046c252a5da806cfe305d17628911cc520d",
+        "engine/src/lib.rs": "98e2422a5f5c1135cfed9f73567b35394b3aa4e64fa3329d02b94959198b3df3",
+        "revision/src/lib.rs": "177ac5372f39bff99f6b4a9ea0a46b2c7dffe6a4a09945aa62991d9cd7e3b587"
+      },
+      "status": 0,
+      "successful": true,
+      "target_fresh": false,
+      "trace_files": 76,
+      "trace_identity_sha256": "8ca82ecf30cdf3b8fd3aecc9685a334de5bbcd2b3d58c22ab9e938b8e923ece0",
+      "value": "9:29"
+    },
+    "initial": {
+      "current_input": [
+        17
+      ],
+      "elf": "86d9dcd34c4b610a074d9b8d01cc5c28e86fce25e4f56ad2cb0d8cb45b5b1867",
+      "observed_cargo_execs": [
+        "be811f0ea73001a641361e298116fe96d2e2cd76b318cf861ae118c82eb7fdf6"
+      ],
+      "physical_payload_reads": [
+        [
+          "present",
+          "43ecaa29e1355742c6f1f2b039cb67c96f42b2418efbec649253aa585f09da5c"
+        ]
+      ],
+      "physical_rustcs": [
+        [
+          "___",
+          false
+        ],
+        [
+          "app",
+          false
+        ],
+        [
+          "engine",
+          false
+        ],
+        [
+          "revision",
+          false
+        ]
+      ],
+      "physical_wild": [
+        "2d1a71c249f71d5991975ae498b0e86d2f2d8ba8f7228d041e038b1ee0a8e77d"
+      ],
+      "raw": {
+        "physical.json": "96e867f899fb53d9b798cbc450134b9c7921b6b1306a5f849d71b45b45520bd2",
+        "program.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "program.stdout": "fc252baaffc0077b1ed90756e50055182f12ab4e6077a7c2298b72ecc08b37ed",
+        "stderr": "e43a02f4830e3730c99e2bebe7464f3f704d8a609e9b3834a39c5df9b75a1501",
+        "stdout": "839e7ae2af5c59390a8c564eac68d5add4466fe0b807cae77d01e65757595346"
+      },
+      "sources": {
+        "app/src/main.rs": "b79487394a251dd473d8f2dd3b658046c252a5da806cfe305d17628911cc520d",
+        "engine/src/lib.rs": "98e2422a5f5c1135cfed9f73567b35394b3aa4e64fa3329d02b94959198b3df3",
+        "revision/src/lib.rs": "56646136888c3c205dd8c48826675c501710b30526c03850dd3cb3465ee620d0"
+      },
+      "status": 0,
+      "successful": true,
+      "target_fresh": false,
+      "trace_files": 76,
+      "trace_identity_sha256": "6743d176b963617564b1ac8c42b91ee0b5ea519566db2bb00621a52dc74fda22",
+      "value": "5:17"
+    },
+    "updated": {
+      "current_input": [
+        29
+      ],
+      "elf": "76e9b63230fe7c7b1588d3ded038d4c171e0a9d9f91e4852bbffdb5327062beb",
+      "observed_cargo_execs": [
+        "0e28eca63391c0c01cf69f153765be8d22f256f069c1c0480a6abe0365eb8fdb"
+      ],
+      "physical_payload_reads": [],
+      "physical_rustcs": [
+        [
+          "app",
+          true
+        ],
+        [
+          "revision",
+          false
+        ]
+      ],
+      "physical_wild": [
+        "32926e92b6a91aa5595f2e7d7ed89a703ff3aee5e3383a2203af9acfc4dd8521"
+      ],
+      "raw": {
+        "physical.json": "01ba882ddfcf222e4b76b280f58b3cf66dc92a33018707f7ed5e331aea6aa182",
+        "program.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "program.stdout": "65919e4d14b0ae7a2a9c662ba577cbb184c46a397c80ef5ba674977dc07a2f90",
+        "stderr": "5c027b1d7acbcbfe226a47e9e10fb0cdb663e2498df8be6f8f002836f9c1bc9f",
+        "stdout": "453c2d4971c0ba07510f5d1a4a207d57ac013e5a71b6dbb00fd3dc586e390e67"
+      },
+      "sources": {
+        "app/src/main.rs": "b79487394a251dd473d8f2dd3b658046c252a5da806cfe305d17628911cc520d",
+        "engine/src/lib.rs": "98e2422a5f5c1135cfed9f73567b35394b3aa4e64fa3329d02b94959198b3df3",
+        "revision/src/lib.rs": "177ac5372f39bff99f6b4a9ea0a46b2c7dffe6a4a09945aa62991d9cd7e3b587"
+      },
+      "status": 0,
+      "successful": true,
+      "target_fresh": false,
+      "trace_files": 40,
+      "trace_identity_sha256": "6f336ff152ba67ee6416a055522fb49623c4103953a8c026ae4f64503626fc66",
+      "value": "9:17"
+    }
+  },
+  "rustc": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512"
+}

@@ -1,0 +1,1251 @@
+{
+  "arm": "sdk",
+  "assembler": {
+    "fixture_source": "eebd066f852f85b3d7605fb6ae8f1263230b9371b949d4536fc2e83b6cb5a487",
+    "new_cargo": "8c1717fa9786e16d3bec0c3181c02c1803484ed857d262580ce88d54056504c5",
+    "new_rustc": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+    "old_cargo": "789c2f116732ed642565d0f92c500838f8cd53664fbe60f205a5621c43cbecf1",
+    "old_rustc": "5694abe50767a22cebeccb767143f7404d5e81c4b1760cff4426466bf410e511",
+    "pass": true,
+    "raw_result_sha256": "125e41cdc2bcf74de3cd0334361609c1bd1ca473e4c27092764e1351f25f2fd0",
+    "rows": {
+      "new-empty-missing": {
+        "current_input": null,
+        "missing": true,
+        "observed_cargo_execs": [
+          "f9794a6fcb7c941232f7bdea790fcda426dbd068d3fdde8b2a27505d354b6605"
+        ],
+        "physical_payload_reads": [
+          [
+            "absent",
+            "acb5ca0181e72d6ddd514d206dd72ffd5ff4d64d3d2819b0c5275a93d4209662"
+          ]
+        ],
+        "physical_rustcs": [
+          [
+            "___",
+            false
+          ],
+          [
+            "app",
+            false
+          ],
+          [
+            "engine",
+            false
+          ],
+          [
+            "revision",
+            false
+          ]
+        ],
+        "physical_wild": [],
+        "raw": {
+          "physical.json": "1e1cd92b7ef2196ca719535305a82938dcf5b34b5a0bf67715a7460bebc73b97",
+          "stderr": "b53652a7297c5003cbfbdf88dda9ab5cd75a1537a1f680049805e783b59f380f",
+          "stdout": "8d1f181c5f0a8475e5255807c52ee067382da2f6c74e5bf9d26b633b7724e368"
+        },
+        "sources": {
+          "app/src/main.rs": "b79487394a251dd473d8f2dd3b658046c252a5da806cfe305d17628911cc520d",
+          "engine/src/lib.rs": "98e2422a5f5c1135cfed9f73567b35394b3aa4e64fa3329d02b94959198b3df3",
+          "revision/src/lib.rs": "f7557dee548176d8bd8b9dd7d12a30d11de79d07e1ed8e3fb69cf0d95c427cb2"
+        },
+        "status": 101,
+        "successful": false,
+        "trace_files": 70,
+        "trace_identity_sha256": "36467b723fc5dc68cd6107723efd03ada416db41f8f3349336f65ac775591bc7"
+      },
+      "new-independent": {
+        "current_input": [
+          29
+        ],
+        "elf": "431969afc3592428c0738909a1eed1137141e1881d5529158803d435e6d9c2c7",
+        "observed_cargo_execs": [
+          "7690c3f2adcc86596fc69b31166857566e59e7f9a1b5e8f9bbce17eb29a19bd0"
+        ],
+        "physical_payload_reads": [
+          [
+            "present",
+            "43ecaa29e1355742c6f1f2b039cb67c96f42b2418efbec649253aa585f09da5c"
+          ]
+        ],
+        "physical_rustcs": [
+          [
+            "___",
+            false
+          ],
+          [
+            "app",
+            false
+          ],
+          [
+            "engine",
+            false
+          ],
+          [
+            "revision",
+            false
+          ]
+        ],
+        "physical_wild": [
+          "73741eb1e84d029a5e5155867ba59e2909fc9d20c41bab29cc7f09234a644982"
+        ],
+        "raw": {
+          "physical.json": "ac1689eecf2a598db7805d473b99148572f2d16e2ad4201700b6912ba5d12a58",
+          "program.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "program.stdout": "e394e3e35210c4ab591873c0a979f24d03024445ca5015bf5e1b4fc74dea8025",
+          "stderr": "f3a21ef8abe91c15ad55569d7e201ea509714929bc923e8f1fa42df01a97b5f7",
+          "stdout": "21df7969ae7a68b6bd62381a6bbeff82de61ee01705f318aa5582a57f88282f0"
+        },
+        "sources": {
+          "app/src/main.rs": "b79487394a251dd473d8f2dd3b658046c252a5da806cfe305d17628911cc520d",
+          "engine/src/lib.rs": "98e2422a5f5c1135cfed9f73567b35394b3aa4e64fa3329d02b94959198b3df3",
+          "revision/src/lib.rs": "177ac5372f39bff99f6b4a9ea0a46b2c7dffe6a4a09945aa62991d9cd7e3b587"
+        },
+        "status": 0,
+        "successful": true,
+        "target_fresh": false,
+        "trace_files": 76,
+        "trace_identity_sha256": "3a8d2b5b755cadfdfbbbe3928fa34de99a98088c74d76e3fd890089164e0cb7d",
+        "value": "9:29"
+      },
+      "new-missing": {
+        "current_input": null,
+        "missing": true,
+        "observed_cargo_execs": [
+          "e05a5663380c34bf44d2f97c9b6f0275806223718ded7a33f28dcdc444975841"
+        ],
+        "physical_payload_reads": [
+          [
+            "absent",
+            "acb5ca0181e72d6ddd514d206dd72ffd5ff4d64d3d2819b0c5275a93d4209662"
+          ]
+        ],
+        "physical_rustcs": [
+          [
+            "app",
+            false
+          ],
+          [
+            "revision",
+            false
+          ]
+        ],
+        "physical_wild": [],
+        "raw": {
+          "physical.json": "fd0eba46ed4b687b96519a7d58ceec009f1d74ff813ed3c4cf0547c08681cb9e",
+          "stderr": "6957221dd3dce3866fc0470d6c1937bc0344b29c7e01a6850ec5aa6c4013ba48",
+          "stdout": "214d70289358af4bdd9ac13b2a48c7da611b3f4e5dbe9589270575c3cc76fd6b"
+        },
+        "sources": {
+          "app/src/main.rs": "b79487394a251dd473d8f2dd3b658046c252a5da806cfe305d17628911cc520d",
+          "engine/src/lib.rs": "98e2422a5f5c1135cfed9f73567b35394b3aa4e64fa3329d02b94959198b3df3",
+          "revision/src/lib.rs": "f7557dee548176d8bd8b9dd7d12a30d11de79d07e1ed8e3fb69cf0d95c427cb2"
+        },
+        "status": 101,
+        "successful": false,
+        "trace_files": 37,
+        "trace_identity_sha256": "3febbcace6c96dd0ab8796b21ea154c57695811e0a54b6f8026a8b6482503e8c"
+      },
+      "new-repeat": {
+        "current_input": [
+          29
+        ],
+        "elf": "431969afc3592428c0738909a1eed1137141e1881d5529158803d435e6d9c2c7",
+        "observed_cargo_execs": [
+          "dbfee30ed2bf6c04641f4bef76c503a09ab6bf06c6e39cc97331c56cd77f87de"
+        ],
+        "physical_payload_reads": [],
+        "physical_rustcs": [],
+        "physical_wild": [],
+        "raw": {
+          "physical.json": "53438b96776070d6a54cb86a5ade74eb659132ebd53fee731542802bc3205d3a",
+          "program.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "program.stdout": "e394e3e35210c4ab591873c0a979f24d03024445ca5015bf5e1b4fc74dea8025",
+          "stderr": "5a84b8743f2bf706664fae12be736afd8cff96659b5aa9db1b8e18677838f347",
+          "stdout": "6e189309421f704dfc624a9cb8e26dcfcd5715d96820357a4910eb82ad04ea7f"
+        },
+        "sources": {
+          "app/src/main.rs": "b79487394a251dd473d8f2dd3b658046c252a5da806cfe305d17628911cc520d",
+          "engine/src/lib.rs": "98e2422a5f5c1135cfed9f73567b35394b3aa4e64fa3329d02b94959198b3df3",
+          "revision/src/lib.rs": "177ac5372f39bff99f6b4a9ea0a46b2c7dffe6a4a09945aa62991d9cd7e3b587"
+        },
+        "status": 0,
+        "successful": true,
+        "target_fresh": true,
+        "trace_files": 7,
+        "trace_identity_sha256": "93bae62736466190c8e43b7276ca919ced01b08bdd761143ed1022d7d28b75cd",
+        "value": "9:29"
+      },
+      "new-restore": {
+        "current_input": [
+          17
+        ],
+        "elf": "86d9dcd34c4b610a074d9b8d01cc5c28e86fce25e4f56ad2cb0d8cb45b5b1867",
+        "observed_cargo_execs": [
+          "e5c169847c796ec882cd7009a33be461ce3b9f007bdcdc681ab6cd9ddd20ed45"
+        ],
+        "physical_payload_reads": [
+          [
+            "present",
+            "43ecaa29e1355742c6f1f2b039cb67c96f42b2418efbec649253aa585f09da5c"
+          ]
+        ],
+        "physical_rustcs": [
+          [
+            "app",
+            false
+          ],
+          [
+            "revision",
+            false
+          ]
+        ],
+        "physical_wild": [
+          "14558608037b8cfefbb0b9dc8b19f29403eb3549f74ae3eb411610efb1b63d0d"
+        ],
+        "raw": {
+          "physical.json": "74b2a395732846320002459db1ed5a67752012d107da4ca5befd143d0823f714",
+          "program.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "program.stdout": "fc252baaffc0077b1ed90756e50055182f12ab4e6077a7c2298b72ecc08b37ed",
+          "stderr": "270d7e38584ac40c313fa5ecb3de23650b6b948dc946c419af8a8a29f2d0a1cc",
+          "stdout": "2b404c9df835593e96a9854441c20afe006a3822d1b5ef4ad8d23e6752f39fc1"
+        },
+        "sources": {
+          "app/src/main.rs": "b79487394a251dd473d8f2dd3b658046c252a5da806cfe305d17628911cc520d",
+          "engine/src/lib.rs": "98e2422a5f5c1135cfed9f73567b35394b3aa4e64fa3329d02b94959198b3df3",
+          "revision/src/lib.rs": "56646136888c3c205dd8c48826675c501710b30526c03850dd3cb3465ee620d0"
+        },
+        "status": 0,
+        "successful": true,
+        "target_fresh": false,
+        "trace_files": 43,
+        "trace_identity_sha256": "938adf82895c407d256b6a7432c62243ff502b1a6412431de1bb9de47d8462f8",
+        "value": "5:17"
+      },
+      "new-restore-repeat": {
+        "current_input": [
+          17
+        ],
+        "elf": "86d9dcd34c4b610a074d9b8d01cc5c28e86fce25e4f56ad2cb0d8cb45b5b1867",
+        "observed_cargo_execs": [
+          "67d0943841a72d633d04b2ee176f77619af50b6818c8e717ed13f2f25766ce2c"
+        ],
+        "physical_payload_reads": [],
+        "physical_rustcs": [],
+        "physical_wild": [],
+        "raw": {
+          "physical.json": "93b23f8b609e73384527e479d89120cad2a06d8267ee70b0b2107d843b07e637",
+          "program.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "program.stdout": "fc252baaffc0077b1ed90756e50055182f12ab4e6077a7c2298b72ecc08b37ed",
+          "stderr": "a000470e0f8f7746933a887f31e0f9aa055d579f27ac2834b395bc4541b22ee4",
+          "stdout": "6e189309421f704dfc624a9cb8e26dcfcd5715d96820357a4910eb82ad04ea7f"
+        },
+        "sources": {
+          "app/src/main.rs": "b79487394a251dd473d8f2dd3b658046c252a5da806cfe305d17628911cc520d",
+          "engine/src/lib.rs": "98e2422a5f5c1135cfed9f73567b35394b3aa4e64fa3329d02b94959198b3df3",
+          "revision/src/lib.rs": "56646136888c3c205dd8c48826675c501710b30526c03850dd3cb3465ee620d0"
+        },
+        "status": 0,
+        "successful": true,
+        "target_fresh": true,
+        "trace_files": 7,
+        "trace_identity_sha256": "0a3a37a1b5b8511e9bf5de1f7e712b97cfa57cd309e9223ab91625b1df6217e2",
+        "value": "5:17"
+      },
+      "new-unchanged-after-upgrade": {
+        "current_input": [
+          29
+        ],
+        "elf": "431969afc3592428c0738909a1eed1137141e1881d5529158803d435e6d9c2c7",
+        "observed_cargo_execs": [
+          "76e979315b79674e758fe608ed7135ac08de273ac6f6694e91945f0f51ea4a96"
+        ],
+        "physical_payload_reads": [
+          [
+            "present",
+            "43ecaa29e1355742c6f1f2b039cb67c96f42b2418efbec649253aa585f09da5c"
+          ]
+        ],
+        "physical_rustcs": [
+          [
+            "___",
+            false
+          ],
+          [
+            "app",
+            false
+          ],
+          [
+            "engine",
+            false
+          ],
+          [
+            "revision",
+            false
+          ]
+        ],
+        "physical_wild": [
+          "310af4be43d9a7bf2ab811935863862470e3f0ca3094df9ad865b5ee9bd09111"
+        ],
+        "raw": {
+          "physical.json": "95398f28b6bce51de15f2a61845111eea034e3e921a41c13f871e85e4827a168",
+          "program.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "program.stdout": "e394e3e35210c4ab591873c0a979f24d03024445ca5015bf5e1b4fc74dea8025",
+          "stderr": "059da6e7d5cea6a136ef8ddcfaa411a8c819d03e0487e4a382152a9b566f96eb",
+          "stdout": "236e16dde924040ec2fea889083fd59629b989f46cb10e2550e065e1aa223056"
+        },
+        "sources": {
+          "app/src/main.rs": "b79487394a251dd473d8f2dd3b658046c252a5da806cfe305d17628911cc520d",
+          "engine/src/lib.rs": "98e2422a5f5c1135cfed9f73567b35394b3aa4e64fa3329d02b94959198b3df3",
+          "revision/src/lib.rs": "177ac5372f39bff99f6b4a9ea0a46b2c7dffe6a4a09945aa62991d9cd7e3b587"
+        },
+        "status": 0,
+        "successful": true,
+        "target_fresh": false,
+        "trace_files": 76,
+        "trace_identity_sha256": "aa9ca2c2760d0c88a26323b13633a77b8cd3bc6970f9818cb9d899eb4a9b77a7",
+        "value": "9:29"
+      },
+      "old-edited": {
+        "current_input": [
+          29
+        ],
+        "elf": "80da4991ceed26d219afd6e347fa911c150599ba9129f26d5091e47c28f85c75",
+        "observed_cargo_execs": [
+          "db43dba09f1d099328838087f9efaa97e69cdc4261fe7cf8fea4b3b85bd8efb3"
+        ],
+        "physical_payload_reads": [],
+        "physical_rustcs": [
+          [
+            "app",
+            true
+          ],
+          [
+            "revision",
+            false
+          ]
+        ],
+        "physical_wild": [
+          "d3a147b84de8039e9913d477f2afe72ed82518689db9d801b5e2252713a5b2e4"
+        ],
+        "raw": {
+          "physical.json": "8f7f148f97fd7aac0662eb15a9ddd84cc798f23faf638cdb81fb94c90cac76db",
+          "program.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "program.stdout": "65919e4d14b0ae7a2a9c662ba577cbb184c46a397c80ef5ba674977dc07a2f90",
+          "stderr": "741353dd61df60c914a50816d163e4e1a09153248b5420b2ee6e4e69e7e0095a",
+          "stdout": "77db2472fb8b776f822b187889b5967705c440c254be9d0d98ed810cf39fe291"
+        },
+        "sources": {
+          "app/src/main.rs": "b79487394a251dd473d8f2dd3b658046c252a5da806cfe305d17628911cc520d",
+          "engine/src/lib.rs": "98e2422a5f5c1135cfed9f73567b35394b3aa4e64fa3329d02b94959198b3df3",
+          "revision/src/lib.rs": "177ac5372f39bff99f6b4a9ea0a46b2c7dffe6a4a09945aa62991d9cd7e3b587"
+        },
+        "status": 0,
+        "successful": true,
+        "target_fresh": false,
+        "trace_files": 40,
+        "trace_identity_sha256": "561bfa4e7e2615468905db34745072650ec5cb901a7aeeac97c084cf95bd9b39",
+        "value": "9:17"
+      },
+      "old-empty": {
+        "current_input": [
+          29
+        ],
+        "elf": "ded4888da1a32b9aac71a8a4e3c04dd04b44a0654679034704d5fc039b2fc301",
+        "observed_cargo_execs": [
+          "f18d3bbc78405b661a7ecdfe663af7fb8a307cf012da6f8a6de6460909e6b2a1"
+        ],
+        "physical_payload_reads": [
+          [
+            "present",
+            "43ecaa29e1355742c6f1f2b039cb67c96f42b2418efbec649253aa585f09da5c"
+          ]
+        ],
+        "physical_rustcs": [
+          [
+            "___",
+            false
+          ],
+          [
+            "app",
+            false
+          ],
+          [
+            "engine",
+            false
+          ],
+          [
+            "revision",
+            false
+          ]
+        ],
+        "physical_wild": [
+          "a5de42c32767a4104db443cb5d11f6d90b54c204b0ace69dd2b588b4569f2ade"
+        ],
+        "raw": {
+          "physical.json": "b2a320f0efa0e2c39198ee8cbbc2d39530dcc5eb5bae164e352ae4ac208f74aa",
+          "program.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "program.stdout": "e394e3e35210c4ab591873c0a979f24d03024445ca5015bf5e1b4fc74dea8025",
+          "stderr": "ac3606298f6b6aaf8f86ea1b0a7443cc3837564381674a685cb858b1e9b1f21d",
+          "stdout": "03d810a27a0b2a19f1e6497234fa389755e6733a1e92d6f4a5b9822c32814a11"
+        },
+        "sources": {
+          "app/src/main.rs": "b79487394a251dd473d8f2dd3b658046c252a5da806cfe305d17628911cc520d",
+          "engine/src/lib.rs": "98e2422a5f5c1135cfed9f73567b35394b3aa4e64fa3329d02b94959198b3df3",
+          "revision/src/lib.rs": "177ac5372f39bff99f6b4a9ea0a46b2c7dffe6a4a09945aa62991d9cd7e3b587"
+        },
+        "status": 0,
+        "successful": true,
+        "target_fresh": false,
+        "trace_files": 76,
+        "trace_identity_sha256": "6d21213794a293d950082dd889cf26e9506626d4d14c8249df0fdbef2fd4b66e",
+        "value": "9:29"
+      },
+      "old-original": {
+        "current_input": [
+          17
+        ],
+        "elf": "83baffa384f641608d63a941f7f9263e8e3b51277ada6a66279fc553d9b7086e",
+        "observed_cargo_execs": [
+          "d94bda0e244a0283c67d7e93424312c1a0239e2a87d11a6796184f2838c2c913"
+        ],
+        "physical_payload_reads": [
+          [
+            "present",
+            "43ecaa29e1355742c6f1f2b039cb67c96f42b2418efbec649253aa585f09da5c"
+          ]
+        ],
+        "physical_rustcs": [
+          [
+            "___",
+            false
+          ],
+          [
+            "app",
+            false
+          ],
+          [
+            "engine",
+            false
+          ],
+          [
+            "revision",
+            false
+          ]
+        ],
+        "physical_wild": [
+          "aa819f30bc5e90db3ee15ea288a99eeb1f598e550b9330aa2aec4c3db37911db"
+        ],
+        "raw": {
+          "physical.json": "cea1d4d48ee1e91bcc4ceaeeaff88562db055d89e45e42f0deb1deb271b8017b",
+          "program.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "program.stdout": "fc252baaffc0077b1ed90756e50055182f12ab4e6077a7c2298b72ecc08b37ed",
+          "stderr": "2e59979dcf9c6102c812a5ab0af745f752f5c621df7ff83147b3e930eecf7604",
+          "stdout": "37d2ac70fe61e34c964ea7cce64d7bf01e8b2dece57c2ee10359ab31a54dd996"
+        },
+        "sources": {
+          "app/src/main.rs": "b79487394a251dd473d8f2dd3b658046c252a5da806cfe305d17628911cc520d",
+          "engine/src/lib.rs": "98e2422a5f5c1135cfed9f73567b35394b3aa4e64fa3329d02b94959198b3df3",
+          "revision/src/lib.rs": "56646136888c3c205dd8c48826675c501710b30526c03850dd3cb3465ee620d0"
+        },
+        "status": 0,
+        "successful": true,
+        "target_fresh": false,
+        "trace_files": 76,
+        "trace_identity_sha256": "7a2d279b9549711d2abd06f38ac20cba3036412c132403f3a84913a475bb877c",
+        "value": "5:17"
+      },
+      "old-repeat": {
+        "current_input": [
+          29
+        ],
+        "elf": "80da4991ceed26d219afd6e347fa911c150599ba9129f26d5091e47c28f85c75",
+        "observed_cargo_execs": [
+          "c62348aee3d575c54d80b428c2a37c31f0266349c95baa9d70d22194ac6c8e4f"
+        ],
+        "physical_payload_reads": [],
+        "physical_rustcs": [],
+        "physical_wild": [],
+        "raw": {
+          "physical.json": "793b21369f23c79c5a61f97ac21e2b4a80f1a6dc2442a1d51dba6aaea6dbe9ec",
+          "program.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "program.stdout": "65919e4d14b0ae7a2a9c662ba577cbb184c46a397c80ef5ba674977dc07a2f90",
+          "stderr": "d4ba333e5e4951b9060be9790fe05690acb79df7e817665b4706e0c132f314bd",
+          "stdout": "fba7ca3ca0e5722ca86cd57d6a5563cc54cda47fc0ec2ce46f534fbb0fba2a0c"
+        },
+        "sources": {
+          "app/src/main.rs": "b79487394a251dd473d8f2dd3b658046c252a5da806cfe305d17628911cc520d",
+          "engine/src/lib.rs": "98e2422a5f5c1135cfed9f73567b35394b3aa4e64fa3329d02b94959198b3df3",
+          "revision/src/lib.rs": "177ac5372f39bff99f6b4a9ea0a46b2c7dffe6a4a09945aa62991d9cd7e3b587"
+        },
+        "status": 0,
+        "successful": true,
+        "target_fresh": true,
+        "trace_files": 7,
+        "trace_identity_sha256": "95330a7b741941347400ef5d7a7aea4d4878c74f9a15d54783cda2d241dbfd77",
+        "value": "9:17"
+      }
+    },
+    "snapshot": {
+      "bytes": 992171,
+      "files": 62,
+      "sha256": "ec5c848e7c635af8e2966e1455c25eae464a9134d1ff7c2f72c7281fed674cb5"
+    }
+  },
+  "dirty_check": {
+    "ordered_commit_control": "8f970e48340218609670cb0affa3f58c6c5d7975dbd278de913923f690fbd0c3",
+    "phases": {
+      "edited": {
+        "errors": [],
+        "fresh": [
+          "api"
+        ],
+        "stderr_sha256": "156ae5363be3fead4cd9e4e26ea6378242050fa36bc402ccfa78d93ff1217a83",
+        "stdout_sha256": "1750b156dd7007c15d19bca0efe230b693479f4c51d15ccfd629370eec2df71e",
+        "success": true
+      },
+      "edited-clean": {
+        "errors": [
+          {
+            "error": "E0034",
+            "spans": [
+              {
+                "byte_end": 99,
+                "byte_start": 91,
+                "column_end": 38,
+                "column_start": 30,
+                "expansion": null,
+                "file_name": "client/src/main.rs",
+                "is_primary": true,
+                "label": "multiple `priority` found",
+                "line_end": 3,
+                "line_start": 3,
+                "suggested_replacement": null,
+                "suggestion_applicability": null,
+                "text": [
+                  {
+                    "highlight_end": 38,
+                    "highlight_start": 30,
+                    "text": "fn main() { assert_eq!(Token.priority(), 17); }"
+                  }
+                ]
+              }
+            ],
+            "target": "client"
+          }
+        ],
+        "fresh": [],
+        "stderr_sha256": "3880648c02d7ac89201502ddf89ecec9e3e90fadd42f28cbb8d2a2fdad79f78c",
+        "stdout_sha256": "3aeb90dcf06c1ecd53db1747479c28fc059c24f211c1e842c7986ade6c4b8b5a",
+        "success": false
+      },
+      "edited-repeat": {
+        "errors": [],
+        "fresh": [
+          "api",
+          "client",
+          "provider",
+          "reader"
+        ],
+        "stderr_sha256": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e",
+        "stdout_sha256": "f775126471a2314c6c4fc5407a4b574cb0c539a05b787f58dfdf04a9ca1864eb",
+        "success": true
+      },
+      "first-after-upgrade": {
+        "errors": [
+          {
+            "error": "E0034",
+            "spans": [
+              {
+                "byte_end": 99,
+                "byte_start": 91,
+                "column_end": 38,
+                "column_start": 30,
+                "expansion": null,
+                "file_name": "client/src/main.rs",
+                "is_primary": true,
+                "label": "multiple `priority` found",
+                "line_end": 3,
+                "line_start": 3,
+                "suggested_replacement": null,
+                "suggestion_applicability": null,
+                "text": [
+                  {
+                    "highlight_end": 38,
+                    "highlight_start": 30,
+                    "text": "fn main() { assert_eq!(Token.priority(), 17); }"
+                  }
+                ]
+              }
+            ],
+            "target": "client"
+          }
+        ],
+        "fresh": [],
+        "stderr_sha256": "3880648c02d7ac89201502ddf89ecec9e3e90fadd42f28cbb8d2a2fdad79f78c",
+        "stdout_sha256": "3e4c573fd0214795270afadfec9deba19962db711d5e166638d9863abf6d74b3",
+        "success": false
+      },
+      "independent-after-upgrade": {
+        "errors": [
+          {
+            "error": "E0034",
+            "spans": [
+              {
+                "byte_end": 99,
+                "byte_start": 91,
+                "column_end": 38,
+                "column_start": 30,
+                "expansion": null,
+                "file_name": "client/src/main.rs",
+                "is_primary": true,
+                "label": "multiple `priority` found",
+                "line_end": 3,
+                "line_start": 3,
+                "suggested_replacement": null,
+                "suggestion_applicability": null,
+                "text": [
+                  {
+                    "highlight_end": 38,
+                    "highlight_start": 30,
+                    "text": "fn main() { assert_eq!(Token.priority(), 17); }"
+                  }
+                ]
+              }
+            ],
+            "target": "client"
+          }
+        ],
+        "fresh": [],
+        "stderr_sha256": "3880648c02d7ac89201502ddf89ecec9e3e90fadd42f28cbb8d2a2fdad79f78c",
+        "stdout_sha256": "e68fe2879c0bb14cf9982235ea46a0ffe621758d8b846df863ef570d9f0aeb70",
+        "success": false
+      },
+      "original": {
+        "errors": [],
+        "fresh": [],
+        "stderr_sha256": "74ba55dc45142d06f7fb0a1c3fdfe19d65474e6125b3443ee41f46abca345453",
+        "stdout_sha256": "befc4bd5b1da35ca2b2c49c42830f265f0d571cf00938695a2e77f120882185f",
+        "success": true
+      },
+      "original-repeat": {
+        "errors": [],
+        "fresh": [
+          "api",
+          "client",
+          "provider",
+          "reader"
+        ],
+        "stderr_sha256": "23b9a21bbaf189889e08dc27ed8eba521021280c5852db22205f721db08b2c7c",
+        "stdout_sha256": "f775126471a2314c6c4fc5407a4b574cb0c539a05b787f58dfdf04a9ca1864eb",
+        "success": true
+      },
+      "restore": {
+        "errors": [],
+        "fresh": [
+          "api"
+        ],
+        "stderr_sha256": "45766379a8d20d8395526994022b7cda96f90640b78775113c7a96f405aeef9f",
+        "stdout_sha256": "d1eff30fbc12c09000026eb9c7dbaf6eea43b70380ed84ce17a4f76834f84a87",
+        "success": true
+      },
+      "restore-repeat": {
+        "errors": [],
+        "fresh": [
+          "api",
+          "client",
+          "provider",
+          "reader"
+        ],
+        "stderr_sha256": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e",
+        "stdout_sha256": "b8e776bbf3aade559efdac5262732a5db485b5a9c836a8b9415d1c95437269d8",
+        "success": true
+      },
+      "second-after-upgrade": {
+        "errors": [
+          {
+            "error": "E0034",
+            "spans": [
+              {
+                "byte_end": 99,
+                "byte_start": 91,
+                "column_end": 38,
+                "column_start": 30,
+                "expansion": null,
+                "file_name": "client/src/main.rs",
+                "is_primary": true,
+                "label": "multiple `priority` found",
+                "line_end": 3,
+                "line_start": 3,
+                "suggested_replacement": null,
+                "suggestion_applicability": null,
+                "text": [
+                  {
+                    "highlight_end": 38,
+                    "highlight_start": 30,
+                    "text": "fn main() { assert_eq!(Token.priority(), 17); }"
+                  }
+                ]
+              }
+            ],
+            "target": "client"
+          }
+        ],
+        "fresh": [
+          "api",
+          "provider",
+          "reader"
+        ],
+        "stderr_sha256": "d7408393fbfefb6596d7c62ab61306534be0e5016c44d3a694cdee5e57afd175",
+        "stdout_sha256": "ce0044716bcd344f2091efe8ca407fca7200b6acf43a45d846c8f69a6b244aac",
+        "success": false
+      }
+    },
+    "unchanged_during_upgrade": {
+      "after": {
+        "cargo": "8c1717fa9786e16d3bec0c3181c02c1803484ed857d262580ce88d54056504c5",
+        "rustc": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512"
+      },
+      "before": {
+        "cargo": "789c2f116732ed642565d0f92c500838f8cd53664fbe60f205a5621c43cbecf1",
+        "rustc": "5694abe50767a22cebeccb767143f7404d5e81c4b1760cff4426466bf410e511"
+      },
+      "state_files": 105,
+      "state_identity_and_digest": "20ba5bcd5ae96bac92d26fd6a29c36940061302a875d2bb03e3c6d73ebd2ec21"
+    }
+  },
+  "providers": {
+    "malformed": {
+      "new": {
+        "cargo": {
+          "sha256": "8c1717fa9786e16d3bec0c3181c02c1803484ed857d262580ce88d54056504c5",
+          "version": "cargo 1.99.0 (8dc33c9cc 2026-10-29)\nrelease: 1.99.0\ncommit-hash: 8dc33c9cc641e2b641c5b8e7075652a3e9e1f70b\ncommit-date: 2026-10-29\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.0.13)\nos: Ubuntu 24.4.0 (noble) [64-bit]\n"
+        },
+        "rustc": {
+          "sha256": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+          "version": "rustc 1.99.0-dev (ca780121c 2026-10-29) (ohm-ruff-lint-scout)\nbinary: rustc\ncommit-hash: ca780121cea38bb9b0538d020d4bcce76ca30cbc\ncommit-date: 2026-10-29\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-dev\nLLVM version: 23.1.1\n"
+        }
+      },
+      "old": {
+        "cargo": {
+          "sha256": "789c2f116732ed642565d0f92c500838f8cd53664fbe60f205a5621c43cbecf1",
+          "version": "cargo 1.99.0-dev (235f92286 2026-10-28) (ohm-1.99.0-19)\nrelease: 1.99.0-dev\ncommit-hash: 235f9228651b74c591e6f62cae4c9b761448dd2d\ncommit-date: 2026-10-28\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.6.3)\nssl: OpenSSL 3.6.3 9 Jun 2026\nos: Ubuntu 24.4.0 (noble) [64-bit]\n"
+        },
+        "rustc": {
+          "sha256": "5694abe50767a22cebeccb767143f7404d5e81c4b1760cff4426466bf410e511",
+          "version": "rustc 1.99.0-dev (eef2f3425 2026-10-28) (ohm-1.99.0-19)\nbinary: rustc\ncommit-hash: eef2f3425c1c6f7fddfb4555769a9f90fe1e0f53\ncommit-date: 2026-10-28\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-dev\nLLVM version: 23.1.1\n"
+        }
+      },
+      "poison": "malformed",
+      "raw_sha256": "7ed105ca43af1b333fca800f8ac5a4849f973a701a6e2a4ee9f9222489ef04d3",
+      "restored_regular_elf": {
+        "regular_file": true,
+        "sha256": "198b71a01f49f14ad7022b9d0bb22278f69fc057ed37a80633a414e7bcbe8092",
+        "size": 1095128
+      },
+      "rows": [
+        {
+          "cargo": 0,
+          "fresh": false,
+          "hash": "f39f638d466926c0c8d4b4276b7c5b2e2f000a32679b20648c31b4cfd655cec4",
+          "lib": 1,
+          "native_exit": 0,
+          "outputs": {
+            "exec.log": "9658a6cf067d6fc27bbdd8ea73d90949d013cf0ab0f54798abc91c3e5bcf461e",
+            "native.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "native.stdout": "352276f8c058998ce9faf0449a065a537b6ade394e50b64ea98a52250c3fe709",
+            "stderr": "0ff37bda48fbe79ff4330797be0125c897a4843379080e83a905a7831988a376",
+            "stdout": "8c9f4414c5ad6cfb85c3b0be8fa712893e99b7103ebc7f70da11635e66664a2f"
+          },
+          "phase": "initial",
+          "rustc": [
+            "___",
+            "build_script_build",
+            "provider",
+            "middle",
+            "app",
+            "probe"
+          ],
+          "state": "absent",
+          "value": 17,
+          "wild": 2
+        },
+        {
+          "cargo": 0,
+          "fresh": false,
+          "hash": "f39f638d466926c0c8d4b4276b7c5b2e2f000a32679b20648c31b4cfd655cec4",
+          "lib": 2,
+          "native_exit": 0,
+          "outputs": {
+            "exec.log": "1e5d94fee7a1f16a17467d77b3fedaf8e72e53a8d983e13bbda0fb24efa648ba",
+            "native.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "native.stdout": "352276f8c058998ce9faf0449a065a537b6ade394e50b64ea98a52250c3fe709",
+            "stderr": "6c780b796fdbcb9535bebde6d4084e61490fe7e3d397d9f242e41aff43f69519",
+            "stdout": "be5b43900d8c8c74854fc4bc0931fdcb61a8b93283710ea4189811c289eb2c61"
+          },
+          "phase": "poison",
+          "rustc": [
+            "app"
+          ],
+          "state": "malformed",
+          "value": 17,
+          "wild": 0
+        },
+        {
+          "cargo": 0,
+          "fresh": true,
+          "hash": "f39f638d466926c0c8d4b4276b7c5b2e2f000a32679b20648c31b4cfd655cec4",
+          "lib": 2,
+          "native_exit": 0,
+          "outputs": {
+            "exec.log": "a6f54be1d633bc0dbac24dc4dc39fd600e2393199d55c94681ee307f4a0efcf1",
+            "native.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "native.stdout": "352276f8c058998ce9faf0449a065a537b6ade394e50b64ea98a52250c3fe709",
+            "stderr": "7a3a93393451f165198a7ffd4f4f8f4b70644a5c076e8b10f7a0d71bc6368674",
+            "stdout": "d58c736460b2b40c35e3ae29b79a5a6330d4d135d91bac9353e6001cc8d8bc27"
+          },
+          "phase": "poison-confirm",
+          "rustc": [],
+          "state": "malformed",
+          "value": 17,
+          "wild": 0
+        },
+        {
+          "cargo": 101,
+          "failure_selected_earlier_native_archive": true,
+          "lib": 2,
+          "link_error": true,
+          "outputs": {
+            "exec.log": "e72a7e82a35efd175d4bde40fa8b8ae03488b3dddbe9a6030ca2c4a00bd38b08",
+            "stderr": "b40a46455b2c894eb09ebca633512cb680eab851c84de6438d0b3c2561028123",
+            "stdout": "a8f60fac3816835c9bc026ba8a0298ce50dc4f25d7413ce5266da45e26eeafa9"
+          },
+          "phase": "first-after-upgrade",
+          "rustc": [
+            "___",
+            "build_script_build",
+            "provider",
+            "middle",
+            "app",
+            "probe"
+          ],
+          "state": "malformed",
+          "wild": 2
+        },
+        {
+          "cargo": 101,
+          "failure_selected_earlier_native_archive": true,
+          "lib": 2,
+          "link_error": true,
+          "outputs": {
+            "exec.log": "a070f21bdbabae4eb8f6085f12c4b1be371cba79c7ddbeef0cfa21ed58087919",
+            "stderr": "b310232b2654fa76c4b662af7f7eee77c073c442b5ee9f751b51168b5328d82b",
+            "stdout": "1c565f8810a2d18144122fcf22b59cb0e55e1a7b9e2dd05a5d6b7efcbe4295a6"
+          },
+          "phase": "repeat-after-upgrade",
+          "rustc": [
+            "probe"
+          ],
+          "state": "malformed",
+          "wild": 1
+        },
+        {
+          "cargo": 0,
+          "fresh": false,
+          "hash": "c34cb1581e7aa8fff21e443565e8456f1644d1754eb1875c596ca31e7a17df28",
+          "lib": 3,
+          "native_exit": 0,
+          "outputs": {
+            "exec.log": "10c6a6e770ce095884e9769ef1ef5704a6d79c44c98c5bea81053736da79bb37",
+            "native.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "native.stdout": "4656bb28b85b1302ec7f8e46262273815e36c727c7168440fa432861cbb318bf",
+            "stderr": "3732a4754614e0f5597483d5ae2f511ed1dd42396b20b63a1dc4344c89aca277",
+            "stdout": "1eef22187db9fcda473d6168dcb35e8a58821d7fe3a00643a29e779191964cbb"
+          },
+          "phase": "opposite-edit-after-upgrade",
+          "rustc": [
+            "app",
+            "probe"
+          ],
+          "state": "valid",
+          "value": 29,
+          "wild": 1
+        },
+        {
+          "cargo": 0,
+          "fresh": true,
+          "hash": "c34cb1581e7aa8fff21e443565e8456f1644d1754eb1875c596ca31e7a17df28",
+          "lib": 3,
+          "native_exit": 0,
+          "outputs": {
+            "exec.log": "81a2c843d44fada2006fbb1799a42bab8a1073ff066d6590b04805d76a6c68bb",
+            "native.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "native.stdout": "4656bb28b85b1302ec7f8e46262273815e36c727c7168440fa432861cbb318bf",
+            "stderr": "7a3a93393451f165198a7ffd4f4f8f4b70644a5c076e8b10f7a0d71bc6368674",
+            "stdout": "a4bb88e7f15d4220d10dda45315bdd0604d61b3b4aa18287a64acc7a7519e23c"
+          },
+          "phase": "repeat-opposite",
+          "rustc": [],
+          "state": "valid",
+          "value": 29,
+          "wild": 0
+        },
+        {
+          "cargo": 0,
+          "fresh": false,
+          "hash": "198b71a01f49f14ad7022b9d0bb22278f69fc057ed37a80633a414e7bcbe8092",
+          "lib": 1,
+          "native_exit": 0,
+          "outputs": {
+            "exec.log": "c03401d82a69c349963335b594a6a9c5d4b7076031945892a24d357b4d1e92c9",
+            "native.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "native.stdout": "352276f8c058998ce9faf0449a065a537b6ade394e50b64ea98a52250c3fe709",
+            "stderr": "14001afa39c9a27b17b29eddaafe66d05e6209701aad7c69cd63e707d78d7f93",
+            "stdout": "1eef22187db9fcda473d6168dcb35e8a58821d7fe3a00643a29e779191964cbb"
+          },
+          "phase": "restored-after-upgrade",
+          "rustc": [
+            "app",
+            "probe"
+          ],
+          "state": "absent",
+          "value": 17,
+          "wild": 1
+        }
+      ],
+      "unchanged_target_and_source_snapshot": {
+        "bytes": 3551228,
+        "files": 242,
+        "sha256": "d715e8ab1dd97217f946c6401ced51879e4a8cf7d051150f23a03ab42cd8c68e"
+      }
+    },
+    "valid": {
+      "new": {
+        "cargo": {
+          "sha256": "8c1717fa9786e16d3bec0c3181c02c1803484ed857d262580ce88d54056504c5",
+          "version": "cargo 1.99.0 (8dc33c9cc 2026-10-29)\nrelease: 1.99.0\ncommit-hash: 8dc33c9cc641e2b641c5b8e7075652a3e9e1f70b\ncommit-date: 2026-10-29\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.0.13)\nos: Ubuntu 24.4.0 (noble) [64-bit]\n"
+        },
+        "rustc": {
+          "sha256": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+          "version": "rustc 1.99.0-dev (ca780121c 2026-10-29) (ohm-ruff-lint-scout)\nbinary: rustc\ncommit-hash: ca780121cea38bb9b0538d020d4bcce76ca30cbc\ncommit-date: 2026-10-29\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-dev\nLLVM version: 23.1.1\n"
+        }
+      },
+      "old": {
+        "cargo": {
+          "sha256": "789c2f116732ed642565d0f92c500838f8cd53664fbe60f205a5621c43cbecf1",
+          "version": "cargo 1.99.0-dev (235f92286 2026-10-28) (ohm-1.99.0-19)\nrelease: 1.99.0-dev\ncommit-hash: 235f9228651b74c591e6f62cae4c9b761448dd2d\ncommit-date: 2026-10-28\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.6.3)\nssl: OpenSSL 3.6.3 9 Jun 2026\nos: Ubuntu 24.4.0 (noble) [64-bit]\n"
+        },
+        "rustc": {
+          "sha256": "5694abe50767a22cebeccb767143f7404d5e81c4b1760cff4426466bf410e511",
+          "version": "rustc 1.99.0-dev (eef2f3425 2026-10-28) (ohm-1.99.0-19)\nbinary: rustc\ncommit-hash: eef2f3425c1c6f7fddfb4555769a9f90fe1e0f53\ncommit-date: 2026-10-28\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-dev\nLLVM version: 23.1.1\n"
+        }
+      },
+      "poison": "valid",
+      "raw_sha256": "2cb63b8dc5d4a060d1255b63ca02d646ad100faf1362c1c7e75fb8fb90e000fa",
+      "restored_regular_elf": {
+        "regular_file": true,
+        "sha256": "198b71a01f49f14ad7022b9d0bb22278f69fc057ed37a80633a414e7bcbe8092",
+        "size": 1095128
+      },
+      "rows": [
+        {
+          "cargo": 0,
+          "fresh": false,
+          "hash": "f39f638d466926c0c8d4b4276b7c5b2e2f000a32679b20648c31b4cfd655cec4",
+          "lib": 1,
+          "native_exit": 0,
+          "outputs": {
+            "exec.log": "b6a217ad7a6610aedcc31f807e2cc95b6549129bb099af58e87e02a28668db32",
+            "native.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "native.stdout": "352276f8c058998ce9faf0449a065a537b6ade394e50b64ea98a52250c3fe709",
+            "stderr": "1f2dc2a642fa97954e648a7a94d813230e1c3ff6af8416274512aebf4617b54d",
+            "stdout": "59546ff5f1284bb44c65213f7d910e7b2f12eb0fad08571d4e0116978d4cbe80"
+          },
+          "phase": "initial",
+          "rustc": [
+            "___",
+            "build_script_build",
+            "provider",
+            "middle",
+            "app",
+            "probe"
+          ],
+          "state": "absent",
+          "value": 17,
+          "wild": 2
+        },
+        {
+          "cargo": 0,
+          "fresh": false,
+          "hash": "f39f638d466926c0c8d4b4276b7c5b2e2f000a32679b20648c31b4cfd655cec4",
+          "lib": 2,
+          "native_exit": 0,
+          "outputs": {
+            "exec.log": "72d4ca47c9f582db49639b38ebe18e3a131ead355554eb83a0402ffb91bf04e6",
+            "native.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "native.stdout": "352276f8c058998ce9faf0449a065a537b6ade394e50b64ea98a52250c3fe709",
+            "stderr": "33fb5e3b35bc80eca1c5bf3f174041e406a585f39b5fadd49280e000883b326f",
+            "stdout": "e0b2923ae1475f28bf56172ab1f5733d8173e7b50f0bca421a236c4f6b510074"
+          },
+          "phase": "poison",
+          "rustc": [
+            "app"
+          ],
+          "state": "valid",
+          "value": 17,
+          "wild": 0
+        },
+        {
+          "cargo": 0,
+          "fresh": true,
+          "hash": "f39f638d466926c0c8d4b4276b7c5b2e2f000a32679b20648c31b4cfd655cec4",
+          "lib": 2,
+          "native_exit": 0,
+          "outputs": {
+            "exec.log": "6c3df75d052c91813b59a17e78a10c2e9040b2f9b8d26e3fe2d0e80fdbb5c31d",
+            "native.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "native.stdout": "352276f8c058998ce9faf0449a065a537b6ade394e50b64ea98a52250c3fe709",
+            "stderr": "df594e2c7a96c81a8b33f89b748f3a9b6daf189f7636596d342bb5c0f1ebd9d4",
+            "stdout": "a87aae1298dc2c80f46eab3b72c3a0a65bb2ae255afa60bbd6758e0d213733db"
+          },
+          "phase": "poison-confirm",
+          "rustc": [],
+          "state": "valid",
+          "value": 17,
+          "wild": 0
+        },
+        {
+          "cargo": 0,
+          "fresh": false,
+          "hash": "c34cb1581e7aa8fff21e443565e8456f1644d1754eb1875c596ca31e7a17df28",
+          "lib": 2,
+          "native_exit": 0,
+          "outputs": {
+            "exec.log": "f3459b7d52d6cfc88c9235639059d475abe8e8291877b7e37ca77c8ad9067410",
+            "native.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "native.stdout": "4656bb28b85b1302ec7f8e46262273815e36c727c7168440fa432861cbb318bf",
+            "stderr": "7c7a15aa4a22638d1e4ab491e760dfba8e89c92a8fe147eeda69e63d9d78887b",
+            "stdout": "4858a81636e96f0878d86c118bc33343bcdae31231477c6c82324ed92b5a9054"
+          },
+          "phase": "first-after-upgrade",
+          "rustc": [
+            "___",
+            "build_script_build",
+            "provider",
+            "middle",
+            "app",
+            "probe"
+          ],
+          "state": "valid",
+          "value": 29,
+          "wild": 2
+        },
+        {
+          "cargo": 0,
+          "fresh": true,
+          "hash": "c34cb1581e7aa8fff21e443565e8456f1644d1754eb1875c596ca31e7a17df28",
+          "lib": 2,
+          "native_exit": 0,
+          "outputs": {
+            "exec.log": "6cf187771856fc728b72300c8a150833101bbd3314dcec879eb8500622c072d5",
+            "native.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "native.stdout": "4656bb28b85b1302ec7f8e46262273815e36c727c7168440fa432861cbb318bf",
+            "stderr": "75cb446e7b5d32b9b195d5bdcc720df2a0823171d7615d9c53ec7b1e4ae8e5ee",
+            "stdout": "c4cd1e15dc95f2d3527218ce11a6b249a4cca89b561a0ef72599368ae6b8fb03"
+          },
+          "phase": "repeat-after-upgrade",
+          "rustc": [],
+          "state": "valid",
+          "value": 29,
+          "wild": 0
+        },
+        {
+          "cargo": 101,
+          "failure_selected_earlier_native_archive": true,
+          "lib": 3,
+          "link_error": true,
+          "outputs": {
+            "exec.log": "c4e63e0a36b3c3ada1e0bbf371e0bb841fc65a11a9afb21c1bfd5bfb3307e10b",
+            "stderr": "41d84393835e1b2ca3c75052db21513543dbb5a56675da65a883c0b35c51abb6",
+            "stdout": "3c40bff0f944f11cbd8a8033cdbbd1e7d087ae2498e1a68429b337cb3ad39439"
+          },
+          "phase": "opposite-edit-after-upgrade",
+          "rustc": [
+            "app",
+            "probe"
+          ],
+          "state": "malformed",
+          "wild": 1
+        },
+        {
+          "cargo": 101,
+          "failure_selected_earlier_native_archive": true,
+          "lib": 3,
+          "link_error": true,
+          "outputs": {
+            "exec.log": "3fb084c3245f4e938ae51c6003c93f0497c7b4b58a5c89b964663eca2e39b6ee",
+            "stderr": "18e3831bf1c498924becb421d578a014119fa1efa20edc309c2213be2c0beef5",
+            "stdout": "028c79264cae5e6585830ce955eff1dcc0085345602a56bbbebcd4747450ec0d"
+          },
+          "phase": "repeat-opposite",
+          "rustc": [
+            "probe"
+          ],
+          "state": "malformed",
+          "wild": 1
+        },
+        {
+          "cargo": 0,
+          "fresh": false,
+          "hash": "198b71a01f49f14ad7022b9d0bb22278f69fc057ed37a80633a414e7bcbe8092",
+          "lib": 1,
+          "native_exit": 0,
+          "outputs": {
+            "exec.log": "445eec2ffdcda887205d25f0cbc4b30cacc20afb68fc33a308ea021bad730f53",
+            "native.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "native.stdout": "352276f8c058998ce9faf0449a065a537b6ade394e50b64ea98a52250c3fe709",
+            "stderr": "2dafe30ae68f524bfd973c98116be9193e5e7b1f82f4f86ca88fe14a3276e704",
+            "stdout": "dece1490eac484ad009574aa4c97335c24d648cce80b6b656c25e3aaee493c0a"
+          },
+          "phase": "restored-after-upgrade",
+          "rustc": [
+            "app",
+            "probe"
+          ],
+          "state": "absent",
+          "value": 17,
+          "wild": 1
+        }
+      ],
+      "unchanged_target_and_source_snapshot": {
+        "bytes": 3554257,
+        "files": 244,
+        "sha256": "6d11f0e4440a54bc7cac694f70da087da02812e14d3b62481c48d086c5ef9af8"
+      }
+    }
+  },
+  "reverted_build": {
+    "cargo_sha256": "8c1717fa9786e16d3bec0c3181c02c1803484ed857d262580ce88d54056504c5",
+    "eligible_program": {
+      "regular_file": true,
+      "sha256": "de1837df17666a68d3f5353380a9b18163272e067250b3bcced01b2335ba713b",
+      "size": 436728
+    },
+    "first_success": "reverted",
+    "mode": "default",
+    "phases": {
+      "final-program": {
+        "errors": [],
+        "exit": 0,
+        "files": {
+          "exec.log": "5ba1df08f79f97f602a1daa26e4308704d43ce2bc67728ee5e9ce94b060761ba",
+          "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+        },
+        "rustcs": []
+      },
+      "forced-failure": {
+        "errors": [],
+        "exit": 101,
+        "files": {
+          "exec.log": "15f003e5e88b051857fa1b9ea6379a4b5c9e7a35a5eb19b7cad98b5dc879890e",
+          "stderr": "c94d4da969e73554d2fe7f70890689f1832ccd52345bab77b3537161a20b0552",
+          "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "rustcs": [
+          [
+            "dep",
+            "lib"
+          ],
+          [
+            "app",
+            "lib"
+          ]
+        ]
+      },
+      "make-wrapper": {
+        "errors": [],
+        "exit": 0,
+        "files": {
+          "exec.log": "58e0cf60cd358fd95e754e382ea9efaa39a9f5c4ec1c3d28ce7c0419a7d24c9a",
+          "stderr": "00af508540022ee9adab46c0b66ff2d426e18155dd351b207111ab6eaef0c63b",
+          "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "rustcs": []
+      },
+      "prime": {
+        "errors": [],
+        "exit": 0,
+        "files": {
+          "exec.log": "6710966f392ab0b701692370bcaa26951496f0c0a934c167d18c299fa27d3330",
+          "stderr": "992aafe225a7da200c21a0b0517c4b141b3ec10c52c47dae26fc37311ed1a8b9",
+          "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "rustcs": [
+          [
+            "dep",
+            "lib"
+          ],
+          [
+            "app",
+            "lib"
+          ],
+          [
+            "app",
+            "bin"
+          ]
+        ]
+      },
+      "prime-program": {
+        "errors": [],
+        "exit": 0,
+        "files": {
+          "exec.log": "d545b15d6971b2c9cc8350a5845499de67f106cbe1ab7817073e7190145c8c1b",
+          "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+        },
+        "rustcs": []
+      },
+      "reverted": {
+        "errors": [],
+        "exit": 0,
+        "files": {
+          "exec.log": "a45cc48446ca849797c3a587e3fdd4a463db42ec56207f6c07e6329d477a8269",
+          "stderr": "3c75f6cc116867de7d390e6a378a3c8a10ba7994625b915b254ceb9685ba3440",
+          "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "rustcs": [
+          [
+            "dep",
+            "lib"
+          ],
+          [
+            "app",
+            "lib"
+          ],
+          [
+            "app",
+            "bin"
+          ]
+        ]
+      }
+    },
+    "raw_sha256": "5cf4ac6a03403fa074bce418d8546ac73a50ee1173a0b2eb63fcbc3665e3ea77",
+    "rustc_sha256": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+    "unchanged_during_upgrade": {
+      "after": {
+        "cargo": "8c1717fa9786e16d3bec0c3181c02c1803484ed857d262580ce88d54056504c5",
+        "rustc": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512"
+      },
+      "before": {
+        "cargo": "789c2f116732ed642565d0f92c500838f8cd53664fbe60f205a5621c43cbecf1",
+        "rustc": "5694abe50767a22cebeccb767143f7404d5e81c4b1760cff4426466bf410e511"
+      },
+      "state_files": 41,
+      "state_identity_and_digest": "e1a636c0bb4686135da3e491544757c643cd9cbdbf8157ab272007244057deb4"
+    },
+    "value": 1
+  },
+  "verified_source_sha256": "cd7147f323e771bac0529591b6d147edd6c651d171cbeb8ab52c08d3777d64ff"
+}

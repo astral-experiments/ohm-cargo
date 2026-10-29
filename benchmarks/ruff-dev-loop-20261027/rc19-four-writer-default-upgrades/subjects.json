@@ -1,0 +1,121 @@
+{
+  "actual_affinity": [
+    24,
+    25,
+    26,
+    27
+  ],
+  "base_scripts": {
+    "native-link-poisoned-upgrade.py": "8fbafa220597461e97aed1a446db65ce46fb66227b6498a6e8181d1ff29ed115",
+    "official19-upgrade-drivers/build/replay.py": "5ccafa9448118df31b94837e90918ad3b5fcdbdabb58dd394c5e2d62c52e8999",
+    "official19-upgrade-drivers/check/replay.py": "058e15eed6e678fc44a67c4f10553676b0c4e5d00a08e31f57385cb712b5a1f9",
+    "run-asm-rc20-existing-targets.py": "c5a3a2e4e37455917f3b8433f51791233f9ba977ba3782fa0b8c1ee049578b1b"
+  },
+  "initial_free_bytes": [
+    50702385152,
+    46489825280
+  ],
+  "inputs": {
+    "sdk": {
+      "cargo": "8c1717fa9786e16d3bec0c3181c02c1803484ed857d262580ce88d54056504c5",
+      "driver": "d8adcc610bdae225344ed1310ff9708784634d1fecafa600f7758a5d48d2cc95",
+      "rustc": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+      "rustc_version": "rustc 1.99.0-dev (ca780121c 2026-10-29) (ohm-ruff-lint-scout)\nbinary: rustc\ncommit-hash: ca780121cea38bb9b0538d020d4bcce76ca30cbc\ncommit-date: 2026-10-29\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-dev\nLLVM version: 23.1.1\n",
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+    },
+    "sdk-on-official19": {
+      "cargo": "8c1717fa9786e16d3bec0c3181c02c1803484ed857d262580ce88d54056504c5",
+      "driver": "f772b49abec18759edbd9cb7f9f2930097d6ba64d9a2b82837edf4451acc3014",
+      "rustc": "5694abe50767a22cebeccb767143f7404d5e81c4b1760cff4426466bf410e511",
+      "rustc_version": "rustc 1.99.0-dev (eef2f3425 2026-10-28) (ohm-1.99.0-19)\nbinary: rustc\ncommit-hash: eef2f3425c1c6f7fddfb4555769a9f90fe1e0f53\ncommit-date: 2026-10-28\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-dev\nLLVM version: 23.1.1\n",
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+    }
+  },
+  "launches": {
+    "asm-sdk": {
+      "disk_stop": null,
+      "exit": 0,
+      "home_floor_bytes": 48318382080,
+      "minimum_observed_home_free": 49962844160,
+      "minimum_scratch_free": 46430703616,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "24607fe27c23b9e5f43f9f7673dab9e3e61eb4d88d6bb10e3d66340a5cc0b129"
+    },
+    "asm-sdk-on-official19": {
+      "disk_stop": null,
+      "exit": 0,
+      "home_floor_bytes": 48318382080,
+      "minimum_observed_home_free": 50028236800,
+      "minimum_scratch_free": 46436323328,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "08ae776e76384311ca2aa0a835f078b447d58db7e961e1e9c9c22eeba697bc6d"
+    },
+    "optin": {
+      "disk_stop": null,
+      "exit": 0,
+      "home_floor_bytes": 48318382080,
+      "minimum_observed_home_free": 49526796288,
+      "minimum_scratch_free": 46428209152,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "6e718c26ad7b6cfed1043d572665eb10d79e377d7e95cbf0e14cf2fe6e8d0548"
+    },
+    "sdk": {
+      "disk_stop": null,
+      "exit": 0,
+      "home_floor_bytes": 48318382080,
+      "minimum_observed_home_free": 50411266048,
+      "minimum_scratch_free": 46463913984,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "b0671585bf5f50cc19c8e1e96abd68ae3e354e2a3d57583ae794bb48008b5bcf"
+    },
+    "sdk-on-official19": {
+      "disk_stop": null,
+      "exit": 0,
+      "home_floor_bytes": 48318382080,
+      "minimum_observed_home_free": 50207408128,
+      "minimum_scratch_free": 46441902080,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "b0671585bf5f50cc19c8e1e96abd68ae3e354e2a3d57583ae794bb48008b5bcf"
+    }
+  },
+  "new_cargo_h4_record": {
+    "archive_sha256": "5e1e5c390cc6cdf1d62125c67d7d7d2d380815b6d670adf1c29c2d225b9b5c4f",
+    "binary_sha256": "8c1717fa9786e16d3bec0c3181c02c1803484ed857d262580ce88d54056504c5",
+    "build_log_sha256": "19cca99349944cff516704f3f73785f22d9b855089ab5446be79921d7d12af3a",
+    "commit": "8dc33c9cc641e2b641c5b8e7075652a3e9e1f70b",
+    "complete_sha256": "567606a6da19a31ea0a4bc785fb262b637c2a6a10fa635485b5743770be651c2",
+    "git_parent": "5394ce8817e224971230b80a9066cc28d504ff94",
+    "linker_inputs": 335,
+    "ordered_externs": 239,
+    "parent": "a8f0c9aa0412aa259c686416a48aa8d2cf92da72",
+    "parent_binary": "ad893345f66ade1c886309b0fc2f98ec5b225d206c176e356531f0e3467eff81",
+    "parent_complete": "04d03548052c93ec14b72562ca404763df245834f3cf8ac16d8c7a8e0cab422c",
+    "profile_sha256": "481ada8a40c70dad11b3c7e8871e9a52207d78447ca5e8ace06fc4aec2d2b5a7",
+    "rlibs": 326,
+    "size": 43360264,
+    "terminal_sha256": "3c8f731d5f0d0e85836fd90fe3d61eb04d266d4a4f5c051b00355c3419d32079",
+    "trace_sha256": "7d15dc7162ac4bfb757677b362861a8cfb8596ad635dfcccfdd510a5c4c23608",
+    "tree": "feecb81aec0dd64d4ecb8622729605f01177c3f8",
+    "version": "cargo 1.99.0 (8dc33c9cc 2026-10-29)\nrelease: 1.99.0\ncommit-hash: 8dc33c9cc641e2b641c5b8e7075652a3e9e1f70b\ncommit-date: 2026-10-29\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.0.13)\nos: Ubuntu 24.4.0 (noble) [64-bit]\n"
+  },
+  "original_assembler_probe_source_sha256": "81b3bb04d17232f28eca14603c9cbf565dacd2259f2755e85d2904410330e486",
+  "original_optin_probe_source_sha256": "b5ca285da315d4b6bea03ec7ad8ac09d55ea4171bbfec596ecccd3cfa24f4742",
+  "receipted_cargo": "cfac7fee21bc97eb45ccaccccc1ec0e86a75dadb9261ed3334107bf6ba85170b",
+  "released_19": {
+    "archive": "ef21d83519bc376479811a7e01fa5ac8915ac0a500c6859bc22a1e0b4913d812",
+    "images": {
+      "cargo": "789c2f116732ed642565d0f92c500838f8cd53664fbe60f205a5621c43cbecf1",
+      "driver": "f772b49abec18759edbd9cb7f9f2930097d6ba64d9a2b82837edf4451acc3014",
+      "rustc": "5694abe50767a22cebeccb767143f7404d5e81c4b1760cff4426466bf410e511",
+      "rustdoc": "a368ad0fdc5a72d5832d0425c00ee41cf1368908eae4835d303262dd8b266cf0",
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+    },
+    "release": "ohm-1.99.0-19",
+    "versions": {
+      "cargo": "cargo 1.99.0-dev (235f92286 2026-10-28) (ohm-1.99.0-19)\nrelease: 1.99.0-dev\ncommit-hash: 235f9228651b74c591e6f62cae4c9b761448dd2d\ncommit-date: 2026-10-28\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.6.3)\nssl: OpenSSL 3.6.3 9 Jun 2026\nos: Ubuntu 24.4.0 (noble) [64-bit]\n",
+      "rustc": "rustc 1.99.0-dev (eef2f3425 2026-10-28) (ohm-1.99.0-19)\nbinary: rustc\ncommit-hash: eef2f3425c1c6f7fddfb4555769a9f90fe1e0f53\ncommit-date: 2026-10-28\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-dev\nLLVM version: 23.1.1\n"
+    }
+  },
+  "staged_native": "48275a7633294533f13c90623237c443c8726eeffa4bafe46e86c5da97f78ae5",
+  "staged_top": "19103e553f10f30cc83be9c3000a9e0d4b042385cf84a9cb3f95c423e8bcb2c9"
+}
