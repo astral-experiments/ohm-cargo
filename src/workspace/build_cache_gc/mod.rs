@@ -16,6 +16,7 @@ use crate::CargoResult;
 use crate::compiler::Layout;
 use crate::util::data_structures::{HashMap, HashSet};
 use crate::util::flock::try_lock_exclusive;
+use crate::workspace::build_cache_gc_roots::GcAge;
 
 pub(crate) const DIRECTORY: &str = ".ohm-gc-v1";
 pub(crate) const CONSUMERS_LOCK: &str = "consumers.lock";
@@ -24,6 +25,7 @@ const TRASH: &str = ".ohm-gc-trash-v1";
 const METADATA_TRASH: &str = ".ohm-gc-metadata-trash-v1";
 const DELETE_BUDGET: usize = 256;
 const RENAME_BUDGET: usize = 8;
+#[cfg(test)]
 const CONTEXT_MAX_IDLE: Duration = Duration::from_secs(60 * 60);
 const LAST_USED: &str = "last-used"; // Legacy file-based bookkeeping.
 
@@ -124,7 +126,7 @@ impl Drop for ContextUse {
 }
 
 /// Missing or ambiguous usage records never establish inactivity.
-fn context_expired(directory: &Path, context: &str, now: SystemTime) -> bool {
+fn context_expired(directory: &Path, context: &str, age: &GcAge) -> bool {
     let usage = directory.join(LAST_USED);
     if !plain_directory(&usage) {
         return false;
@@ -133,8 +135,7 @@ fn context_expired(directory: &Path, context: &str, now: SystemTime) -> bool {
         .ok()
         .filter(|metadata| metadata.is_file())
         .and_then(|metadata| metadata.modified().ok())
-        .and_then(|modified| now.duration_since(modified).ok())
-        .is_some_and(|idle| idle >= CONTEXT_MAX_IDLE)
+        .is_some_and(|modified| age.expired(modified))
 }
 
 /// The same concrete compiler-file identity used to partition shared artifacts.
@@ -452,6 +453,7 @@ impl CollectionLocks {
         profiles: &[PathBuf],
         namespace: &Namespace,
         dry_run: bool,
+        age: &mut GcAge,
         summary: &mut Summary<'_>,
     ) -> CargoResult<bool> {
         let context = namespace.scoped_context().map(str::to_owned);
@@ -498,6 +500,7 @@ impl CollectionLocks {
             self.domains.insert(context, None);
             return Ok(false);
         }
+        age.recheck();
         if dry_run {
             guards.clear();
         }
@@ -537,10 +540,11 @@ impl FileCounts {
     }
 }
 
-/// Retires legacy layouts, obsolete compilers, and contexts or dependencies idle for an hour.
+/// Retires legacy layouts, obsolete compilers, and idle contexts, dependencies, or backend objects.
 pub(crate) fn collect(
     root: &Path,
     dry_run: bool,
+    age: &mut GcAge,
     current_ohm: Option<&str>,
     state: &mut CollectionState,
     summary: &mut Summary<'_>,
@@ -548,7 +552,7 @@ pub(crate) fn collect(
     collect_with_lock_budget(
         root,
         dry_run,
-        SystemTime::now(),
+        age,
         Duration::from_millis(10),
         current_ohm,
         state,
@@ -560,7 +564,7 @@ pub(crate) fn collect(
 fn collect_with_lock_budget(
     root: &Path,
     dry_run: bool,
-    now: SystemTime,
+    age: &mut GcAge,
     lock_budget: Duration,
     current_ohm: Option<&str>,
     state: &mut CollectionState,
@@ -618,14 +622,16 @@ fn collect_with_lock_budget(
     for namespace in namespaces(root, &profiles, tracker.as_ref(), summary)? {
         summary.tick();
         if namespace
-            .detail(root, &profiles, now, current_ohm, tracker.as_ref())
+            .detail(root, &profiles, age, current_ohm, tracker.as_ref())
             .is_none()
         {
             summary.retained += 1;
-            if let Namespace::Context(context) = &namespace {
+            if let Namespace::Context(context) = &namespace
+                && age.cutoff().is_some()
+            {
                 if state.dependencies.is_none() {
                     discovered_dependencies.extend(
-                        idle_dependencies(root, &profiles, context, now, tracker.as_ref(), summary)
+                        idle_dependencies(root, &profiles, context, age, tracker.as_ref(), summary)
                             .unwrap_or_default(),
                     );
                 }
@@ -635,9 +641,9 @@ fn collect_with_lock_budget(
                 } else {
                     DELETE_BUDGET + 1
                 };
-                for entry in thinlto_entries(root, context, now, limit, state, summary)? {
+                for entry in thinlto_entries(root, context, age, limit, state, summary)? {
                     if entry
-                        .detail(root, &profiles, now, current_ohm, tracker.as_ref())
+                        .detail(root, &profiles, age, current_ohm, tracker.as_ref())
                         .is_some()
                     {
                         let paths = entry.paths(root, &profiles);
@@ -662,11 +668,11 @@ fn collect_with_lock_budget(
         });
         for (namespace, paths) in ready.into_iter().chain(dependencies) {
             summary.tick();
-            if !locks.acquire(root, &profiles, &namespace, true, summary)? {
+            if !locks.acquire(root, &profiles, &namespace, true, age, summary)? {
                 continue;
             }
             let Some(detail) =
-                namespace.detail(root, &profiles, now, current_ohm, tracker.as_ref())
+                namespace.detail(root, &profiles, age, current_ohm, tracker.as_ref())
             else {
                 continue;
             };
@@ -749,7 +755,7 @@ fn collect_with_lock_budget(
                 let paths = dependency.paths(root, &profiles);
                 (dependency, paths)
             });
-            if !locks.acquire(root, &profiles, &namespace, false, summary)? {
+            if !locks.acquire(root, &profiles, &namespace, false, age, summary)? {
                 summary.advanced |= namespace.defer(&mut state.deferred);
                 continue;
             }
@@ -792,12 +798,15 @@ fn collect_with_lock_budget(
             records_remaining -= 1;
             // Recheck usage while consumers of this namespace are excluded.
             let Some(detail) =
-                namespace.detail(root, &profiles, now, current_ohm, tracker.as_ref())
+                namespace.detail(root, &profiles, age, current_ohm, tracker.as_ref())
             else {
                 if let Some((source, _)) = paths.first()
                     && !safely_absent(root, source)
                 {
-                    summary.skip_path(source, "usage or compiler metadata changed during cleanup");
+                    summary.skip_path(
+                        source,
+                        "no longer eligible after rechecking last use and compiler metadata",
+                    );
                 }
                 summary.advanced |= namespace.defer(&mut state.deferred);
                 continue;
@@ -885,7 +894,7 @@ enum Namespace {
 fn thinlto_entries(
     root: &Path,
     context: &str,
-    now: SystemTime,
+    age: &GcAge,
     limit: usize,
     state: &CollectionState,
     summary: &mut Summary<'_>,
@@ -911,7 +920,7 @@ fn thinlto_entries(
             {
                 if !entry
                     .metadata()
-                    .is_ok_and(|metadata| thinlto_expired(&metadata, now))
+                    .is_ok_and(|metadata| thinlto_expired(&metadata, age))
                 {
                     continue;
                 }
@@ -938,12 +947,8 @@ fn thinlto_key(name: &str) -> bool {
 }
 
 /// Rustc refreshes object mtimes on backend cache hits, including read-only reuse.
-fn thinlto_expired(metadata: &Metadata, now: SystemTime) -> bool {
-    metadata
-        .modified()
-        .ok()
-        .and_then(|used| now.duration_since(used).ok())
-        .is_some_and(|idle| idle >= CONTEXT_MAX_IDLE)
+fn thinlto_expired(metadata: &Metadata, age: &GcAge) -> bool {
+    metadata.modified().is_ok_and(|used| age.expired(used))
 }
 
 /// Selects expired rows outside build locks and validates their artifact paths.
@@ -951,13 +956,13 @@ fn idle_dependencies(
     root: &Path,
     profiles: &[PathBuf],
     context: &str,
-    now: SystemTime,
+    age: &GcAge,
     tracker: Option<&Tracker>,
     summary: &mut Summary<'_>,
 ) -> Option<Vec<Namespace>> {
     let tracker = tracker?;
     let state = tracker.supported_context(context)?;
-    let cutoff = tracker::timestamp(now.checked_sub(CONTEXT_MAX_IDLE)?).ok()?;
+    let cutoff = tracker::timestamp(age.cutoff()?).ok()?;
     if state.all_used.is_some_and(|used| used > cutoff) {
         return None;
     }
@@ -1051,7 +1056,7 @@ impl Namespace {
         &self,
         root: &Path,
         profiles: &[PathBuf],
-        now: SystemTime,
+        age: &GcAge,
         current_ohm: Option<&str>,
         tracker: Option<&Tracker>,
     ) -> Option<String> {
@@ -1068,15 +1073,15 @@ impl Namespace {
                 if !metadata.is_file() && !metadata.is_dir() {
                     return None;
                 }
-                thinlto_expired(&metadata, now).then(|| {
-                    format!("ThinLTO objects for context {context} (unused for at least 1 hour)")
+                thinlto_expired(&metadata, age).then(|| {
+                    format!("ThinLTO objects for context {context} (unused for at least {age})")
                 })
             }
             Self::LegacyThinLto(id) => {
                 Some(format!("legacy ThinLTO context {id} (no usage records)"))
             }
             Self::Dependency { context, entry } => {
-                let cutoff = tracker::timestamp(now.checked_sub(CONTEXT_MAX_IDLE)?).ok()?;
+                let cutoff = tracker::timestamp(age.cutoff()?).ok()?;
                 let tracker = tracker?;
                 tracker.supported_context(context)?;
                 let profile = root.join(entry.ancestors().nth(5)?);
@@ -1088,12 +1093,7 @@ impl Namespace {
                 tracker
                     .dependency_expired(context, entry, cutoff)
                     .ok()?
-                    .then(|| {
-                        format!(
-                            "dependency {} (unused for at least 1 hour)",
-                            entry.display()
-                        )
-                    })
+                    .then(|| format!("dependency {} (unused for at least {age})", entry.display()))
             }
             Self::Context(id) => {
                 let path = directory.join("contexts").join(format!("{id}.json"));
@@ -1107,8 +1107,8 @@ impl Namespace {
                         .into_iter()
                         .chain(legacy_usage(root, id)?)
                         .max();
-                    let expired = now
-                        .checked_sub(CONTEXT_MAX_IDLE)
+                    let expired = age
+                        .cutoff()
                         .and_then(|cutoff| tracker::timestamp(cutoff).ok())
                         .is_some_and(|cutoff| last_used.is_some_and(|used| used <= cutoff));
                     (state.record, expired)
@@ -1129,7 +1129,7 @@ impl Namespace {
                     }
                     (
                         read_record::<ContextRecord>(&path)?,
-                        context_expired(&directory, id, now),
+                        context_expired(&directory, id, age),
                     )
                 };
                 if !record.supported() || record.context != *id {
@@ -1153,7 +1153,7 @@ impl Namespace {
                         "context {id} (compiler or driver changed or removed)"
                     ))
                 } else if expired {
-                    Some(format!("context {id} (unused for at least 1 hour)"))
+                    Some(format!("context {id} (unused for at least {age})"))
                 } else {
                     None
                 }
@@ -1840,7 +1840,7 @@ mod tests {
         super::collect_with_lock_budget(
             root,
             dry_run,
-            now,
+            &mut GcAge::simulated(now, CONTEXT_MAX_IDLE),
             lock_budget,
             current_ohm,
             state,
@@ -2123,7 +2123,7 @@ mod tests {
         deferred.deferred.extend(thinlto_entries(
             &cache.root,
             "abcdef",
-            now,
+            &GcAge::new(now, CONTEXT_MAX_IDLE),
             DELETE_BUDGET + 1,
             &CollectionState::default(),
             &mut Summary::default(),
@@ -2132,7 +2132,7 @@ mod tests {
             thinlto_entries(
                 &cache.root,
                 "abcdef",
-                now,
+                &GcAge::new(now, CONTEXT_MAX_IDLE),
                 DELETE_BUDGET + 1,
                 &deferred,
                 &mut Summary::default()
@@ -2329,6 +2329,35 @@ mod tests {
     }
 
     #[test]
+    fn rollback_preserves_newly_used_objects_in_preview_and_cleanup() -> CargoResult<()> {
+        let cache = Cache::new()?;
+        let now = SystemTime::now();
+        cache.enroll()?;
+        cache.age_context("abcdef", now + Duration::from_hours(3))?;
+        let recent = cache.thinlto("abcdef", 0, now)?;
+        let legacy = cache.artifact("build/registries/0000000000000001")?;
+
+        for dry_run in [true, false] {
+            // GC starts two hours ahead, then the clock rolls back before taking the lease.
+            let mut age = GcAge::new(now + Duration::from_hours(2), Duration::from_hours(1));
+            assert!(age.expired(now));
+            let mut summary = Summary::default();
+            super::collect(
+                &cache.root,
+                dry_run,
+                &mut age,
+                None,
+                &mut CollectionState::default(),
+                &mut summary,
+            )?;
+            assert_eq!(summary.retired, 1, "legacy data is immediately eligible");
+            assert!(recent.is_file());
+            assert_eq!(legacy.exists(), dry_run);
+        }
+        Ok(())
+    }
+
+    #[test]
     fn idle_dependency_variants_expire_while_overlapping_graphs_stay_warm() -> CargoResult<()> {
         let cache = Cache::new()?;
         cache.enroll()?;
@@ -2450,7 +2479,7 @@ mod tests {
             &cache.root,
             &profiles,
             "abcdef",
-            now,
+            &GcAge::new(now, CONTEXT_MAX_IDLE),
             Some(&tracker),
             &mut Summary::default(),
         )
@@ -2460,7 +2489,13 @@ mod tests {
         let mut usage = ContextUse::new(cache.tracker()?, "abcdef", Some(vec![entry.into()]))?;
         assert!(
             candidates[0]
-                .detail(&cache.root, &profiles, now, None, Some(&tracker))
+                .detail(
+                    &cache.root,
+                    &profiles,
+                    &GcAge::new(now, CONTEXT_MAX_IDLE),
+                    None,
+                    Some(&tracker)
+                )
                 .is_none()
         );
         dependency_use(&cache, &[entry], now - CONTEXT_MAX_IDLE * 2)?;

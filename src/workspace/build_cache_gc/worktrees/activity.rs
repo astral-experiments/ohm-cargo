@@ -10,8 +10,8 @@ use std::time::SystemTime;
 
 use crate::compiler::Layout;
 use crate::util::{CargoResult, flock};
-use crate::workspace::build_cache_gc::CONTEXT_MAX_IDLE;
 use crate::workspace::build_cache_gc::tracker::used_through;
+use crate::workspace::build_cache_gc_roots::GcAge;
 
 use super::at;
 
@@ -87,7 +87,7 @@ fn stamp(metadata: &Metadata) -> Option<SystemTime> {
 }
 
 /// A missing or untrusted marker, or a clock that moved backwards, cannot establish age.
-pub(crate) fn idle(root: &Path, now: SystemTime) -> bool {
+pub(crate) fn idle(root: &Path, age: &GcAge) -> bool {
     let path = root.join(MARKER);
     // Use the collector's effective credentials without opening for write, even in dry-run.
     let Ok(name) = CString::new(path.as_os_str().as_bytes()) else {
@@ -106,8 +106,7 @@ pub(crate) fn idle(root: &Path, now: SystemTime) -> bool {
         && fs::symlink_metadata(&path)
             .ok()
             .and_then(|metadata| stamp(&metadata))
-            .and_then(|used| now.duration_since(used).ok())
-            .is_some_and(|age| age >= CONTEXT_MAX_IDLE)
+            .is_some_and(|used| age.expired(used))
 }
 
 fn record(directory: &File, now: SystemTime) -> CargoResult<Option<SystemTime>> {
@@ -198,9 +197,14 @@ fn unlink_marker(directory: &File, name: &OsStr) -> io::Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::workspace::build_cache_gc::CONTEXT_MAX_IDLE;
     use crate::workspace::global_cache_tracker::UPDATE_RESOLUTION;
     use std::os::unix::fs::symlink;
     use std::time::{Duration, UNIX_EPOCH};
+
+    fn idle(root: &Path, now: SystemTime) -> bool {
+        super::idle(root, &GcAge::new(now, CONTEXT_MAX_IDLE))
+    }
 
     #[test]
     fn fresh_builds_share_a_bucket_and_long_builds_extend_it() -> CargoResult<()> {

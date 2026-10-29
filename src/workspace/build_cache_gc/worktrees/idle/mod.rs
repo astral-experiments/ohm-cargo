@@ -5,7 +5,6 @@ use std::fs;
 use std::io::{self, Read as _};
 use std::os::unix::fs::{DirEntryExt as _, MetadataExt as _, OpenOptionsExt as _};
 use std::path::{Path, PathBuf};
-use std::time::SystemTime;
 
 use super::collector::target_guard;
 use super::{activity, at, mounts::Mounts, provenance, registry::ManagedTarget};
@@ -13,6 +12,7 @@ use crate::compiler::Layout;
 use crate::util::CargoResult;
 use crate::util::data_structures::{HashMap, HashSet};
 use crate::workspace::build_cache_gc::{CollectorLock, Summary, absent, regular};
+use crate::workspace::build_cache_gc_roots::GcAge;
 
 const PROFILE_LOCKS: [&str; 3] = [".cargo-build-lock", ".cargo-lock", ".cargo-artifact-lock"];
 
@@ -25,10 +25,12 @@ pub(super) fn collect(
     targets: &[ManagedTarget],
     shared_roots: &[PathBuf],
     dry_run: bool,
+    age: &mut GcAge,
     summary: &mut Summary<'_>,
 ) -> CargoResult<bool> {
     let root = &owner.target;
-    if !activity::idle(root, SystemTime::now()) {
+    age.recheck();
+    if !activity::idle(root, age) {
         return Ok(false);
     }
     let default_target = targets
@@ -55,9 +57,8 @@ pub(super) fn collect(
         let Some(_guard) = target_guard(owner, true, summary)? else {
             break;
         };
-        if !activity::idle(root, SystemTime::now())
-            || !dedicated_target(root, default_target, shared_roots)
-        {
+        age.recheck();
+        if !activity::idle(root, age) || !dedicated_target(root, default_target, shared_roots) {
             return Ok(false);
         }
         let mounts = Mounts::read(root)?;
@@ -70,7 +71,7 @@ pub(super) fn collect(
         };
         if plan.remove_batch(batch, dry_run, &mounts, &mut checked, summary)? && !reported {
             summary.details.push(format!(
-                "workspace target {} (unused for at least 1 hour)",
+                "workspace target {} (unused for at least {age})",
                 root.display()
             ));
             reported = true;

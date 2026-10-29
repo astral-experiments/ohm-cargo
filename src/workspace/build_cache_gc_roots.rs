@@ -1,8 +1,10 @@
 //! Root registration and explicit collection of Ohm shared build caches.
 
+use std::fmt;
 use std::fs::{self, File, OpenOptions};
 use std::io::Read as _;
 use std::path::{Path, PathBuf};
+use std::time::{Duration, Instant, SystemTime};
 
 use anyhow::{Context as _, ensure};
 use cargo_util_terminal::Verbosity;
@@ -12,6 +14,77 @@ use crate::compiler::Layout;
 use crate::util::{CargoResult, GlobalContext, HumanBytes, Progress, ProgressStyle};
 
 const ROOTS: &str = ".ohm-build-roots-v1";
+
+/// A cutoff that never advances during collection, even when a later batch starts.
+pub(crate) struct GcAge {
+    cutoff: Option<SystemTime>,
+    max_age: Duration,
+    started: Option<Instant>,
+    label: String,
+}
+
+impl GcAge {
+    pub(crate) fn new(now: SystemTime, max_age: Duration) -> Self {
+        use jiff::fmt::friendly::{Designator, Spacing, SpanPrinter};
+
+        let started = Instant::now();
+        let printer = SpanPrinter::new()
+            .designator(Designator::Verbose)
+            .spacing(Spacing::BetweenUnitsAndDesignators);
+        let units = jiff::SpanRound::new()
+            .largest(jiff::Unit::Week)
+            .days_are_24_hours();
+        let label = jiff::Span::try_from(max_age)
+            .and_then(|span| span.round(units))
+            .map(|span| printer.span_to_string(&span))
+            .unwrap_or_else(|_| printer.unsigned_duration_to_string(&max_age));
+        let cutoff = now.checked_sub(max_age);
+        Self {
+            cutoff,
+            max_age,
+            started: cutoff.map(|_| started),
+            label,
+        }
+    }
+
+    /// Recheck under the lease. After a clock change, a build made since GC
+    /// started must still fall after the cutoff in the new clock epoch.
+    pub(crate) fn recheck(&mut self) {
+        if let Some(started) = self.started {
+            self.recheck_at(SystemTime::now(), started.elapsed());
+        }
+    }
+
+    fn recheck_at(&mut self, now: SystemTime, elapsed: Duration) {
+        let start = now.checked_sub(elapsed);
+        self.cutoff = self
+            .cutoff
+            .min(start.and_then(|time| time.checked_sub(self.max_age)));
+    }
+
+    /// Tests that supply their own wall time can freeze it between collection batches.
+    #[cfg(test)]
+    pub(crate) fn simulated(now: SystemTime, max_age: Duration) -> Self {
+        Self {
+            started: None,
+            ..Self::new(now, max_age)
+        }
+    }
+
+    pub(crate) fn cutoff(&self) -> Option<SystemTime> {
+        self.cutoff
+    }
+
+    pub(crate) fn expired(&self, last_used: SystemTime) -> bool {
+        self.cutoff.is_some_and(|cutoff| last_used <= cutoff)
+    }
+}
+
+impl fmt::Display for GcAge {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str(&self.label)
+    }
+}
 
 /// Registers a canonical root once, so later invocations can maintain old roots.
 pub(crate) fn register_root(gctx: &GlobalContext, root: &Path) -> CargoResult<()> {
@@ -92,7 +165,13 @@ fn validate_directory(directory: &Path) -> CargoResult<fs::Metadata> {
 }
 
 /// Collects registered and discoverable legacy roots without loading a workspace.
-pub fn collect(gctx: &GlobalContext, root: Option<&Path>, dry_run: bool) -> CargoResult<()> {
+pub fn collect(
+    gctx: &GlobalContext,
+    root: Option<&Path>,
+    dry_run: bool,
+    max_age: Duration,
+) -> CargoResult<()> {
+    let mut age = GcAge::new(SystemTime::now(), max_age);
     ensure!(
         cfg!(any(target_os = "linux", target_os = "macos")),
         "Ohm build-cache cleanup requires Linux or macOS file locks"
@@ -206,6 +285,7 @@ pub fn collect(gctx: &GlobalContext, root: Option<&Path>, dry_run: bool) -> Carg
             .map(Cache::Private),
     );
     let explicit_root = root.is_some();
+    age.recheck();
     for cache in caches {
         let root = match &cache {
             Cache::Shared(root) => *root,
@@ -232,13 +312,20 @@ pub fn collect(gctx: &GlobalContext, root: Option<&Path>, dry_run: bool) -> Carg
             ..Default::default()
         };
         let result = match &cache {
-            Cache::Shared(_) => collect_root(root, dry_run, current_ohm.as_deref(), &mut summary),
+            Cache::Shared(_) => collect_root(
+                root,
+                dry_run,
+                &mut age,
+                current_ohm.as_deref(),
+                &mut summary,
+            ),
             #[cfg(any(target_os = "linux", target_os = "macos"))]
             Cache::Private(owners) => build_cache_gc::worktrees::collect(
                 owners,
                 &targets,
                 &roots,
                 dry_run,
+                &mut age,
                 moving_release.as_ref(),
                 &mut summary,
             ),
@@ -342,12 +429,13 @@ fn discover_roots(
 fn collect_root(
     root: &Path,
     dry_run: bool,
+    age: &mut GcAge,
     current_ohm: Option<&str>,
     total: &mut build_cache_gc::Summary<'_>,
 ) -> CargoResult<()> {
     let mut state = build_cache_gc::CollectionState::default();
     if dry_run {
-        return build_cache_gc::collect(root, true, current_ohm, &mut state, total);
+        return build_cache_gc::collect(root, true, age, current_ohm, &mut state, total);
     }
     loop {
         let mut summary = build_cache_gc::Summary {
@@ -355,7 +443,8 @@ fn collect_root(
             progress: total.progress.take(),
             ..Default::default()
         };
-        let result = build_cache_gc::collect(root, false, current_ohm, &mut state, &mut summary);
+        let result =
+            build_cache_gc::collect(root, false, age, current_ohm, &mut state, &mut summary);
         let progress = summary.retired > 0 || summary.deleted_entries > 0 || summary.advanced;
         total.retired += summary.retired;
         total.deleted_entries += summary.deleted_entries;
@@ -424,6 +513,25 @@ mod tests {
     use std::os::unix::fs::symlink;
 
     #[test]
+    fn the_cutoff_only_moves_earlier_and_includes_the_exact_boundary() {
+        let hour = Duration::from_hours(1);
+        let start = SystemTime::UNIX_EPOCH + hour * 4;
+        let mut age = GcAge::new(start, hour);
+        assert!(age.expired(start - hour));
+        assert!(!age.expired(start - hour + Duration::from_nanos(1)));
+        for (now, elapsed, expected) in [
+            (start + hour * 2, hour, start - hour),
+            // Half an hour of scanning elapsed when a two-hour rollback became visible.
+            (start - hour * 3 / 2, hour / 2, start - hour * 3),
+            (start + hour, hour, start - hour * 3),
+        ] {
+            age.recheck_at(now, elapsed);
+            assert_eq!(age.cutoff(), Some(expected));
+        }
+        assert_eq!(GcAge::new(start, Duration::MAX).cutoff(), None);
+    }
+
+    #[test]
     fn reports_payload_counts_during_each_cleanup_batch() -> CargoResult<()> {
         let directory = tempfile::tempdir()?;
         let root = directory.path();
@@ -456,7 +564,8 @@ mod tests {
                 progress: Some(&mut update),
                 ..Default::default()
             };
-            collect_root(root, dry_run, None, &mut summary)?;
+            let mut age = GcAge::new(SystemTime::now(), Duration::from_hours(1));
+            collect_root(root, dry_run, &mut age, None, &mut summary)?;
             assert_eq!((summary.counts.files, summary.counts.bytes), (301, 610));
             readings.dedup();
             assert_eq!(
