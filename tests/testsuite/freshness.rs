@@ -4690,9 +4690,21 @@ fn terminal_test_harness_reuses_codegen_without_public_api_hash() {
     );
 }
 
+#[cfg(not(windows))]
+fn assert_integration_was_only_relinked(invocations: &str) {
+    assert_eq!(
+        invocations
+            .lines()
+            .filter(|line| line.ends_with(":integration"))
+            .collect::<Vec<_>>(),
+        ["link:integration"],
+        "compiler invocations: {invocations}"
+    );
+}
+
 #[cargo_test]
 #[cfg(not(windows))]
-fn unused_package_library_does_not_relink_integration_test() {
+fn unused_package_library_relinks_without_recompiling_integration_test() {
     let wrapper = relink_only_wrapper();
     let p = project()
         .at("unused-integration-package-library")
@@ -4787,13 +4799,7 @@ fn unused_package_library_does_not_relink_integration_test() {
     let invocations = fs::read_to_string(&log).expect("wrapper log");
     assert!(invocations.lines().any(|line| line == "compile:app"));
     assert!(invocations.lines().any(|line| line == "link:app"));
-    assert!(
-        !invocations
-            .lines()
-            .any(|line| line.ends_with(":integration")),
-        "an unused package library must not recompile or relink the integration executable: \
-         {invocations}"
-    );
+    assert_integration_was_only_relinked(&invocations);
 
     let mut cache: serde_json::Value =
         serde_json::from_slice(&fs::read(&manifest).expect("relink cache contents"))
@@ -5194,11 +5200,7 @@ fn assert_workspace_integration_dependency_reuse(case: WorkspaceIntegrationReuse
         WorkspaceIntegrationReuse::Unlinked
             | WorkspaceIntegrationReuse::HarmlessTransitiveBuildScript
     ) {
-        assert!(
-            !integration_rebuilt,
-            "an actually unlinked workspace library must not rebuild the integration \
-             executable: {invocations}"
-        );
+        assert_integration_was_only_relinked(&invocations);
 
         fs::write(&log, "").expect("clear wrapper log");
         run("2");
@@ -5295,7 +5297,7 @@ fn assert_workspace_integration_dependency_reuse(case: WorkspaceIntegrationReuse
 
 #[cargo_test]
 #[cfg(not(windows))]
-fn unused_workspace_integration_skips_unlinked_library() {
+fn unused_workspace_integration_relinks_without_recompilation() {
     assert_workspace_integration_dependency_reuse(WorkspaceIntegrationReuse::Unlinked);
 }
 
@@ -5331,6 +5333,71 @@ fn unused_workspace_integration_relinks_transitive_native_archive() {
     assert_workspace_integration_dependency_reuse(
         WorkspaceIntegrationReuse::NativeTransitiveBuildScript,
     );
+}
+
+#[cfg(all(target_os = "linux", target_env = "gnu"))]
+#[cargo_test(requires = "cc", requires = "ar")]
+fn unused_package_library_relinks_native_input_from_driver_environment() {
+    let wrapper = relink_only_wrapper();
+    let p = project()
+        .file("Cargo.toml", &basic_manifest("app", "0.1.0"))
+        .file(
+            ".cargo/config.toml",
+            r#"[env]
+LIBRARY_PATH = { value = "vendor", relative = true, force = true }
+"#,
+        )
+        .file("src/lib.rs", "pub struct Original;")
+        .file("vendor/choice.c", "int choice(void) { return 17; }")
+        .file(
+            "tests/integration.rs",
+            r#"
+                #[link(name = "ohm_native_choice", kind = "static", modifiers = "-bundle")]
+                unsafe extern "C" { fn choice() -> i32; }
+                #[test]
+                fn reads_current_native_input() {
+                    let expected: i32 = std::env::var("EXPECTED").unwrap().parse().unwrap();
+                    assert_eq!(unsafe { choice() }, expected);
+                }
+            "#,
+        )
+        .build();
+    let archive = || {
+        p.process("cc")
+            .args(&["-c", "vendor/choice.c", "-o", "vendor/choice.o"])
+            .run();
+        p.process("ar")
+            .args(&["crs", "vendor/libohm_native_choice.a", "vendor/choice.o"])
+            .run();
+    };
+    let test = |expected| {
+        let mut cmd = p.cargo("-Zohm-defaults test --test integration");
+        cmd.masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("RUSTC_WRAPPER", &wrapper)
+            .env("RELINK_WRAPPER_LOG", p.root().join("compiler.log"))
+            .env("UNUSED_INTEGRATION_DEPENDENCY_PROOF", "1")
+            .env("EXPECTED", expected);
+        cmd
+    };
+
+    archive();
+    test("17").run();
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    p.change_file("vendor/choice.c", "int choice(void) { return 29; }");
+    archive();
+    p.change_file("src/lib.rs", "pub struct Edited;");
+    test("29").run();
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    p.change_file("vendor/libohm_native_choice.a", "malformed native input");
+    p.change_file("src/lib.rs", "pub struct Original;");
+    test("29")
+        .with_status(101)
+        .with_stderr_contains("[..]linking with [..] failed[..]")
+        .run();
 }
 
 #[cfg(unix)]
@@ -5759,11 +5826,7 @@ fn assert_changed_public_integration_dependency(case: ChangedPublicIntegrationRe
         return;
     }
 
-    assert!(
-        !integration_rebuilt,
-        "an unused package library must not rebuild its black-box integration test after a \
-         public item was added: {invocations}"
-    );
+    assert_integration_was_only_relinked(&invocations);
 
     fs::write(&log, "").expect("clear generic-provider log");
     if is_coarse_mtime() {
@@ -5778,13 +5841,7 @@ fn assert_changed_public_integration_dependency(case: ChangedPublicIntegrationRe
     let invocations = fs::read_to_string(&log).expect("generic-provider wrapper log");
     assert!(invocations.lines().any(|line| line == "compile:app"));
     assert!(invocations.lines().any(|line| line == "compile-link:app"));
-    assert!(
-        !invocations
-            .lines()
-            .any(|line| line.ends_with(":integration")),
-        "adding and removing exported generic providers must not rebuild an unlinked test: \
-         {invocations}"
-    );
+    assert_integration_was_only_relinked(&invocations);
 
     fs::write(&log, "").expect("clear removed-public-item log");
     if is_coarse_mtime() {
@@ -5795,12 +5852,7 @@ fn assert_changed_public_integration_dependency(case: ChangedPublicIntegrationRe
     let invocations = fs::read_to_string(&log).expect("removed-public-item wrapper log");
     assert!(invocations.lines().any(|line| line == "compile:app"));
     assert!(invocations.lines().any(|line| line == "compile-link:app"));
-    assert!(
-        !invocations
-            .lines()
-            .any(|line| line.ends_with(":integration")),
-        "removing a public item must not rebuild an unlinked integration executable: {invocations}"
-    );
+    assert_integration_was_only_relinked(&invocations);
 
     fs::write(&log, "").expect("clear producer-failure log");
     if is_coarse_mtime() {
@@ -5849,7 +5901,7 @@ fn assert_changed_public_integration_dependency(case: ChangedPublicIntegrationRe
 
 #[cargo_test]
 #[cfg(not(windows))]
-fn changed_unused_package_public_api_does_not_rebuild_integration_test() {
+fn changed_unused_package_public_api_relinks_without_recompiling_integration_test() {
     assert_changed_public_integration_dependency(ChangedPublicIntegrationReuse::Unused);
 }
 
@@ -6426,7 +6478,7 @@ fn early_native_integration_tests_default_and_fallback() {
             "{case}: {calls}"
         );
         if case == "unused" {
-            // An existing executable keeps ordinary freshness and native reuse.
+            // The accepted executable is fresh on the next unchanged command.
             fs::write(&log, "").unwrap();
             p.cargo("-Zohm-defaults -Zheadstart -Zsection-timings test --test integration -j2")
                 .masquerade_as_nightly_cargo(&["ohm-defaults", "headstart", "section-timings"])
@@ -6435,8 +6487,7 @@ fn early_native_integration_tests_default_and_fallback() {
                 .env("UNUSED_INTEGRATION_DEPENDENCY_PROOF", "1")
                 .run();
             assert!(fs::read_to_string(&log).unwrap().is_empty());
-            // The earlier executable must not look older than its accepted
-            // producer when a later, unused library change is considered.
+            // A later unused library change still requires a real native link.
             p.change_file("src/lib.rs", "pub fn value() -> u32 { 11 }");
             p.cargo("-Zohm-defaults -Zheadstart -Zsection-timings test --test integration -j2")
                 .masquerade_as_nightly_cargo(&["ohm-defaults", "headstart", "section-timings"])
@@ -6444,12 +6495,7 @@ fn early_native_integration_tests_default_and_fallback() {
                 .env("RELINK_WRAPPER_LOG", &log)
                 .env("UNUSED_INTEGRATION_DEPENDENCY_PROOF", "1")
                 .run();
-            assert!(
-                !fs::read_to_string(&log)
-                    .unwrap()
-                    .lines()
-                    .any(|line| line.ends_with(":integration"))
-            );
+            assert_integration_was_only_relinked(&fs::read_to_string(&log).unwrap());
         }
     }
 }
