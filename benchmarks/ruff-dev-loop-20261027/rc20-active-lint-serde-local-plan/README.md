@@ -1,0 +1,7 @@
+# Independent serde test-build replication
+
+This prospective Linux study uses the matched PGO Cargo pair with the independently enrolled official -18 Rust compiler and stock Wild. It repeats the active Ruff lint history on a different host after the previous host’s 16-pair reversing-direction repeat interval spanned both a regression and a small improvement. The two machines are analyzed separately. [Earlier complete run](../rc20-active-workspace-lint-wall/)
+
+The single primary is the paired time of the first edit and its next unchanged command together. There are 32 balanced pairs of `cargo +ohm test -p ruff_text_size --features serde --test serde --no-run --locked --offline`. Modeled separately, both the reverse and restore unchanged intervals must demonstrate the preregistered 3% and 5 ms noninferiority bounds. Each arm gets a new empty writable filesystem layer over a qualified donor built at that single source state. All three actual tests, exact test ELF, exact standalone metadata, complete archive witness, current compiler flags and physical linking are required before and after timing.
+
+The protocol digest sent before native setup was `fa4482ec1786dbaf6256f2e322b6450a3f5ee1e975cdc73b1167f9bdd8e263f9`. The CPU affinity, 3-GiB private tmpfs cap, 45-GiB home floor, 40-GiB archive floor, 16-GiB available-memory floor, immutable random order and no-discard rules are part of the registration. The earlier host’s results are not an input to the analysis.
