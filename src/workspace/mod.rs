@@ -5,6 +5,7 @@ pub use self::manifest::{Manifest, Target, TargetKind};
 pub use self::package::{Package, PackageSet};
 pub use self::package_id::PackageId;
 pub use self::package_id_spec::PackageIdSpecQuery;
+pub(crate) use self::package_id_spec::query_package_id_spec;
 pub use self::registry::Registry;
 pub use self::source_id::SourceId;
 pub use self::summary::{FeatureMap, FeatureValue, Summary};

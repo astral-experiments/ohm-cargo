@@ -6,6 +6,7 @@ use crate::util::data_structures::{HashMap, HashSet};
 use crate::util::errors::CargoResult;
 use crate::util::interning::InternedString;
 use crate::workspace::dependency::DepKind;
+use crate::workspace::query_package_id_spec;
 use crate::workspace::{Dependency, PackageId, PackageIdSpec, PackageIdSpecQuery, Summary, Target};
 use cargo_util_schemas::lockfile::TomlLockfileMetadata;
 use std::borrow::Borrow;
@@ -387,7 +388,14 @@ unable to verify that `{0}` is the same as when the lockfile was generated
     }
 
     pub fn specs_to_ids(&self, specs: &[PackageIdSpec]) -> CargoResult<Vec<PackageId>> {
-        specs.iter().map(|s| s.query(self.iter())).collect()
+        if specs.is_empty() {
+            return Ok(Vec::new());
+        }
+        let package_ids: Vec<_> = self.iter().collect();
+        specs
+            .iter()
+            .map(|spec| query_package_id_spec(spec, &package_ids))
+            .collect()
     }
 
     pub fn unused_patches(&self) -> &[PackageId] {
