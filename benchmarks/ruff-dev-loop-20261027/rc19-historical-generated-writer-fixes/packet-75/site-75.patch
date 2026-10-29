@@ -1,0 +1,13 @@
+diff --git a/src/compiler/mod.rs b/src/compiler/mod.rs
+index cec3ed2764..8502d28144 100644
+--- a/src/compiler/mod.rs
++++ b/src/compiler/mod.rs
+@@ -1412,7 +1412,7 @@ fn rustc(
+         if let Some((path, provenance)) = &message_provenance {
+             let mut provenance = provenance.clone();
+             provenance.capture_messages(&cached_output_path)?;
+-            paths::write_atomic(path, serde_json::to_vec(&provenance)?)?;
++            paths::write_atomic_no_follow(path, serde_json::to_vec(&provenance)?)?;
+ 
+             if let Some(readiness_path) = &registry_reuse_readiness_path
+                 && let Err(error) = fs::OpenOptions::new()

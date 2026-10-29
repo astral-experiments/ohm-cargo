@@ -1,0 +1,67 @@
+{
+  "active_ancestor_of": "5394ce8817e224971230b80a9066cc28d504ff94",
+  "base_branch": "charlie/codex-early-test-compilation",
+  "base_head_when_queried": "a10e3b6dc0225a747ad6d265f228988a270a5877",
+  "context": [
+    {
+      "line": 99,
+      "text": "    pub(crate) fn record(&self, unused: Option<&BTreeSet<InternedString>>) {"
+    },
+    {
+      "line": 100,
+      "text": "        if !unused.is_some_and(|unused| !unused.contains(&self.library)) {"
+    },
+    {
+      "line": 101,
+      "text": "            return;"
+    },
+    {
+      "line": 102,
+      "text": "        }"
+    },
+    {
+      "line": 103,
+      "text": "        let result = paths::create_dir_all(self.path.parent().unwrap())"
+    },
+    {
+      "line": 104,
+      "text": "            .and_then(|()| paths::write_atomic(&self.path, b\"uses-library\\n\"));"
+    },
+    {
+      "line": 105,
+      "text": "        if let Err(error) = result {"
+    },
+    {
+      "line": 106,
+      "text": "            tracing::debug!(?error, \"could not record early-test check hint\");"
+    },
+    {
+      "line": 107,
+      "text": "        }"
+    }
+  ],
+  "current_line": 109,
+  "direct_parent": "4004e6b7428bc14a0dd2688621c28f408813f9df",
+  "draft": false,
+  "introduced_blob": {
+    "bytes": 8696,
+    "git_blob": "9444848dedfb423d632648a50c8f33f514a761ec",
+    "sha256": "5056a803a34989773f4a50edbc05cf94f2db4abfb859afcb335c49f4c8f52768"
+  },
+  "introducing_commit": "8b17025201e2e8b29b199a0dc5748dae34a73dae",
+  "introducing_line": 104,
+  "number": 147,
+  "parent_blob": {
+    "bytes": 6544,
+    "git_blob": "0e9909760010b867eb0ce587821a8f8e4e03d64f",
+    "sha256": "0c76fe54ae2bbe202e3d2af2a60d40426291318f85fff857f388d5370e6dd682"
+  },
+  "parent_had_writer": false,
+  "path": "src/compiler/ohm_early_tests.rs",
+  "source_branch": "charlie/codex-warm-early-test-compilation",
+  "source_url": "https://github.com/astral-sh/ohm-cargo/blob/8b17025201e2e8b29b199a0dc5748dae34a73dae/src/compiler/ohm_early_tests.rs#L104",
+  "state": "open",
+  "title": "Enable warm early integration-test compilation by default",
+  "url": "https://github.com/astral-sh/ohm-cargo/pull/147",
+  "writer": "paths::write_atomic(&self.path, b\"uses-library\\n\")"
+}

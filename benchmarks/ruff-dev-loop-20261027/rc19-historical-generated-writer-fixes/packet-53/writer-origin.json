@@ -1,0 +1,67 @@
+{
+  "active_ancestor_of": "5394ce8817e224971230b80a9066cc28d504ff94",
+  "base_branch": "ohm-1.99.0",
+  "base_head_when_queried": "21a17895f9aa6ef0ae85bc8239a1667c0206e596",
+  "context": [
+    {
+      "line": 2394,
+      "text": ") -> CargoResult<()> {"
+    },
+    {
+      "line": 2395,
+      "text": "    write_fingerprint(loc, fingerprint)?;"
+    },
+    {
+      "line": 2396,
+      "text": "    match public_api_hash_update {"
+    },
+    {
+      "line": 2397,
+      "text": "        PublicApiHashUpdate::Preserve => {}"
+    },
+    {
+      "line": 2398,
+      "text": "        PublicApiHashUpdate::Write(public_api_hash) => {"
+    },
+    {
+      "line": 2399,
+      "text": "            paths::write_atomic(public_api_hash_path, serde_json::to_vec(&public_api_hash)?)?;"
+    },
+    {
+      "line": 2400,
+      "text": "        }"
+    },
+    {
+      "line": 2401,
+      "text": "        PublicApiHashUpdate::Remove => {"
+    },
+    {
+      "line": 2402,
+      "text": "            if public_api_hash_path.exists() {"
+    }
+  ],
+  "current_line": 3063,
+  "direct_parent": "21a17895f9aa6ef0ae85bc8239a1667c0206e596",
+  "draft": false,
+  "introduced_blob": {
+    "bytes": 126519,
+    "git_blob": "fccd2f8c0bf1b3ff27847181ee23874f115fd7bc",
+    "sha256": "c1dee92dc4afa58a0593e670f268f86c53b27d16ac15cf6cf27556f3ac009ad2"
+  },
+  "introducing_commit": "1aa523118aad2b32eb365589956a96587e527f92",
+  "introducing_line": 2399,
+  "number": 53,
+  "parent_blob": {
+    "bytes": 93849,
+    "git_blob": "172165dca405d1aa5bf303e613983b4dad75a66a",
+    "sha256": "1d38986fa39dd821ff58a9812f69c614278564079cda04fc3fa29d79b9f84979"
+  },
+  "parent_had_writer": false,
+  "path": "src/compiler/fingerprint/mod.rs",
+  "source_branch": "charlie/1.98/rdr-hash-transport",
+  "source_url": "https://github.com/astral-sh/ohm-cargo/blob/1aa523118aad2b32eb365589956a96587e527f92/src/compiler/fingerprint/mod.rs#L2399",
+  "state": "open",
+  "title": "Prototype reduced dependency rebuilds with public API hashes",
+  "url": "https://github.com/astral-sh/ohm-cargo/pull/53",
+  "writer": "paths::write_atomic(public_api_hash_path, serde_json::to_vec(&public_api_hash)?)?"
+}

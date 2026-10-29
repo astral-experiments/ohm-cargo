@@ -1,0 +1,111 @@
+{
+  "case": "check-hint",
+  "disabled": false,
+  "headstart_off": true,
+  "command": [
+    "+ohm",
+    "-Zheadstart=no",
+    "check",
+    "--test",
+    "witness",
+    "--offline",
+    "--message-format=json",
+    "-j1"
+  ],
+  "cargo": "d3e7c8dd0b42343fb5725e6b5b87495336b988d0463d30d2952a2e9d56f7cbfd",
+  "compiler": "e173035a5dd384e17ca6a178e1987a0a746260c3669459cfab3af580880927ba",
+  "rows": [
+    {
+      "phase": "cold",
+      "exit": 0,
+      "verdict": "checked",
+      "typed": [
+        [
+          "cache_probe",
+          false
+        ],
+        [
+          "witness",
+          false
+        ]
+      ],
+      "prior": "c00061bf47e5ae88388ec9d6e16adc97da024f951c4529e15a390e34ae76525a",
+      "after": "c00061bf47e5ae88388ec9d6e16adc97da024f951c4529e15a390e34ae76525a",
+      "inode_preserved": true,
+      "changed": false,
+      "record_is_symlink": false,
+      "record_sha": "1eab5423cb8d78f2d0fcee7928d2bc6785c67b26cc42a5d4956bee02f7d22317",
+      "stdout": "e5a51e31d0635ab5f0e9c2e89f2c6973f9560e3efd22b23c9af3874768e143f9",
+      "stderr": "af70ffbec134a00da0a089c39360f985444bf773db15a725c0ae0dc57554b8f4"
+    },
+    {
+      "phase": "during",
+      "exit": 0,
+      "verdict": "checked",
+      "typed": [
+        [
+          "cache_probe",
+          false
+        ],
+        [
+          "witness",
+          false
+        ]
+      ],
+      "prior": "81c35c39c3b570d7683eb5ca75618399c68babd0bba726300f291e9f4a33b5f7",
+      "after": "1eab5423cb8d78f2d0fcee7928d2bc6785c67b26cc42a5d4956bee02f7d22317",
+      "inode_preserved": false,
+      "changed": true,
+      "record_is_symlink": true,
+      "record_sha": "1eab5423cb8d78f2d0fcee7928d2bc6785c67b26cc42a5d4956bee02f7d22317",
+      "stdout": "e5a51e31d0635ab5f0e9c2e89f2c6973f9560e3efd22b23c9af3874768e143f9",
+      "stderr": "9adcfc3a47d26a78a73a3b42811d36757e2da00ded1655a7b14b5483dc0c7621"
+    },
+    {
+      "phase": "before",
+      "exit": 0,
+      "verdict": "checked",
+      "typed": [
+        [
+          "cache_probe",
+          false
+        ],
+        [
+          "witness",
+          false
+        ]
+      ],
+      "prior": "50c7226a7b228fed95420ab563e2af29e14d10830ef1dcbe6a0e653e4532a222",
+      "after": "50c7226a7b228fed95420ab563e2af29e14d10830ef1dcbe6a0e653e4532a222",
+      "inode_preserved": true,
+      "changed": false,
+      "record_is_symlink": false,
+      "record_sha": "1eab5423cb8d78f2d0fcee7928d2bc6785c67b26cc42a5d4956bee02f7d22317",
+      "stdout": "e5a51e31d0635ab5f0e9c2e89f2c6973f9560e3efd22b23c9af3874768e143f9",
+      "stderr": "f11f12d2b6edc78580b3ca76de11b069c0a29c0ee35de43c16f6ce3e18e0619a"
+    },
+    {
+      "phase": "repeat",
+      "exit": 0,
+      "verdict": "checked",
+      "typed": [
+        [
+          "cache_probe",
+          true
+        ],
+        [
+          "witness",
+          true
+        ]
+      ],
+      "prior": "4ad63d5cb4d993190a597d727e36b062ef3288ce98e3640464568d8dcb11c967",
+      "after": "4ad63d5cb4d993190a597d727e36b062ef3288ce98e3640464568d8dcb11c967",
+      "inode_preserved": true,
+      "changed": false,
+      "record_is_symlink": false,
+      "record_sha": "1eab5423cb8d78f2d0fcee7928d2bc6785c67b26cc42a5d4956bee02f7d22317",
+      "stdout": "97aa7cd389d2ccbef99ff1328b8d58b1251655a3e833193ada808a2d01d60d1c",
+      "stderr": "736e2582f563605dd272e5fb977840b0c0767377d27b6940c440caf75eec7157"
+    }
+  ]
+}

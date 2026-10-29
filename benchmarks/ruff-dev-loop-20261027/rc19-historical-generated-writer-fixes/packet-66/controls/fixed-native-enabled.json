@@ -1,0 +1,78 @@
+{
+  "command": [
+    "+ohm",
+    "build",
+    "--offline",
+    "-j1",
+    "--message-format=json",
+    "-p",
+    "cache_witness_app"
+  ],
+  "case": "resolve",
+  "cargo": "9be80b41c8867978339f5e055617bbb20a34c1ecbadd16d7adc49ee1e23a2881",
+  "compiler": "e173035a5dd384e17ca6a178e1987a0a746260c3669459cfab3af580880927ba",
+  "cache_name": ".cargo-resolve-cache-v1",
+  "dangling": false,
+  "victim_existed_after": true,
+  "before_sha": "3e3ba3a927c7cd1c1497c37ec2f46c3da9c455721e666efd04bcc2706ec36e0e",
+  "after_sha": "3e3ba3a927c7cd1c1497c37ec2f46c3da9c455721e666efd04bcc2706ec36e0e",
+  "sentinel_replaced": false,
+  "inode_preserved": true,
+  "cache_symlink": false,
+  "records": [
+    {
+      "phase": "cold",
+      "exit": 0,
+      "value": 17,
+      "executable": "0e935251ad3ebfec5c01c328229cf6dca7cbfc745fb57a118fe7934bd76bfd1f",
+      "typed": [
+        [
+          "cache_witness_lib",
+          false
+        ],
+        [
+          "cache_witness_app",
+          false
+        ]
+      ],
+      "stdout": "70606edda396a4f387fafcabac00c339cea70a8e9a30361a33a81005050c0f20",
+      "stderr": "536714c350dc11eb1c0d882fd2b3f7a5fa74b66a4c5ee66814225cbb3728c06a"
+    },
+    {
+      "phase": "changed",
+      "exit": 0,
+      "value": 29,
+      "executable": "ec8d451d3e7d6fa64068e8a8ee82b596bc25f1921d90b91b1d11d376caab910c",
+      "typed": [
+        [
+          "cache_witness_lib",
+          false
+        ],
+        [
+          "cache_witness_app",
+          false
+        ]
+      ],
+      "stdout": "70606edda396a4f387fafcabac00c339cea70a8e9a30361a33a81005050c0f20",
+      "stderr": "d0ef7662f4ab27fd2b28ced9785c7f0fc08bbabb35111dda4b7eaafb60866c46"
+    },
+    {
+      "phase": "repeat",
+      "exit": 0,
+      "value": 29,
+      "executable": "ec8d451d3e7d6fa64068e8a8ee82b596bc25f1921d90b91b1d11d376caab910c",
+      "typed": [
+        [
+          "cache_witness_lib",
+          true
+        ],
+        [
+          "cache_witness_app",
+          true
+        ]
+      ],
+      "stdout": "ee8cdf0bd5939bfe3e8369129142d6e8b80f05ef4825f5fc9825b692bbb6afb9",
+      "stderr": "736e2582f563605dd272e5fb977840b0c0767377d27b6940c440caf75eec7157"
+    }
+  ]
+}

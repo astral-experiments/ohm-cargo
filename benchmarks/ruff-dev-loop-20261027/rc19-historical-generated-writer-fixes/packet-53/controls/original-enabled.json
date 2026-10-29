@@ -1,0 +1,80 @@
+{
+  "command": [
+    "+ohm",
+    "--config",
+    "build.rustflags=[\"-Zpublic-api-hash\"]",
+    "build",
+    "--offline",
+    "-j1",
+    "--message-format=json",
+    "-p",
+    "cache_witness_app"
+  ],
+  "case": "public-api",
+  "cargo": "3f41f6ce7e4b2c690edd941d41d71df243bd7c60e64148af22461db3fee2b7c9",
+  "compiler": "e173035a5dd384e17ca6a178e1987a0a746260c3669459cfab3af580880927ba",
+  "cache_name": "lib-cache_witness_lib.public-api-hash",
+  "dangling": false,
+  "victim_existed_after": true,
+  "before_sha": "3e3ba3a927c7cd1c1497c37ec2f46c3da9c455721e666efd04bcc2706ec36e0e",
+  "after_sha": "24e4411a14c1b22ac51881b71caba158bfa6462e7124c19feebffa131c85ea2f",
+  "sentinel_replaced": true,
+  "inode_preserved": false,
+  "cache_symlink": true,
+  "records": [
+    {
+      "phase": "cold",
+      "exit": 0,
+      "value": 17,
+      "executable": "572614d5e97cd43265ec657f436e0cf682f1d002bf807473e77e5d01afebed8c",
+      "typed": [
+        [
+          "cache_witness_lib",
+          false
+        ],
+        [
+          "cache_witness_app",
+          false
+        ]
+      ],
+      "stdout": "e1f0ada49a6d2a2c961cfc58d7dae9090bdfff742d6b0e6760b9430145d61a63",
+      "stderr": "c6fbe72a5ac2ff4e95c10fc3b8e5042f4be103944e190883aa9fb561cd4c96ce"
+    },
+    {
+      "phase": "changed",
+      "exit": 0,
+      "value": 29,
+      "executable": "156384ba759d8424b1b01e2025e5a4cbf689306a56a68396bede676b0b4164a7",
+      "typed": [
+        [
+          "cache_witness_lib",
+          false
+        ],
+        [
+          "cache_witness_app",
+          false
+        ]
+      ],
+      "stdout": "e1f0ada49a6d2a2c961cfc58d7dae9090bdfff742d6b0e6760b9430145d61a63",
+      "stderr": "0b921afdfc8481a5fcf6816d97d03553437c6bb76384fd0f9b03dc165763e594"
+    },
+    {
+      "phase": "repeat",
+      "exit": 0,
+      "value": 29,
+      "executable": "156384ba759d8424b1b01e2025e5a4cbf689306a56a68396bede676b0b4164a7",
+      "typed": [
+        [
+          "cache_witness_lib",
+          true
+        ],
+        [
+          "cache_witness_app",
+          true
+        ]
+      ],
+      "stdout": "8feaad82604575edcc103518b29a686546f897a3b88b1db7a47c4053f0af4748",
+      "stderr": "736e2582f563605dd272e5fb977840b0c0767377d27b6940c440caf75eec7157"
+    }
+  ]
+}

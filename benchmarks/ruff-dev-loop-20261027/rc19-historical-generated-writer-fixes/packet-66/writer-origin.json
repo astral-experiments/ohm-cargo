@@ -1,0 +1,63 @@
+{
+  "active_ancestor_of": "5394ce8817e224971230b80a9066cc28d504ff94",
+  "base_branch": "charlie/1.98/ohm-single-pass-relink",
+  "base_head_when_queried": "9994dd055848a06165837f05a7dd6ae505f17ba1",
+  "context": [
+    {
+      "line": 43,
+      "text": "        let cache_path = cache_path(workspace);"
+    },
+    {
+      "line": 44,
+      "text": "        if let Some(parent) = cache_path.parent() {"
+    },
+    {
+      "line": 45,
+      "text": "            paths::create_dir_all(parent)?;"
+    },
+    {
+      "line": 46,
+      "text": "        }"
+    },
+    {
+      "line": 47,
+      "text": ""
+    },
+    {
+      "line": 48,
+      "text": "        paths::write_atomic(cache_path, format!(\"{fingerprint:016x}\"))?;"
+    },
+    {
+      "line": 49,
+      "text": "        Ok(())"
+    },
+    {
+      "line": 50,
+      "text": "    })?;"
+    },
+    {
+      "line": 51,
+      "text": "    Ok(())"
+    }
+  ],
+  "current_line": 48,
+  "direct_parent": "9994dd055848a06165837f05a7dd6ae505f17ba1",
+  "draft": false,
+  "introduced_blob": {
+    "bytes": 5696,
+    "git_blob": "c7d83edc220d25f93b994070a26092b6363e14b0",
+    "sha256": "5fc7d84f37dd95131bb6af579f6582345c9fc8f27b15d02d0ba0372be9dc00d4"
+  },
+  "introducing_commit": "c512a35365c5de427107d7886056516b4948d46e",
+  "introducing_line": 48,
+  "number": 66,
+  "parent_blob": null,
+  "parent_had_writer": false,
+  "path": "src/ops/resolve_cache.rs",
+  "source_branch": "charlie/1.98/ohm-cargo-workspace-resolution-cache",
+  "source_url": "https://github.com/astral-sh/ohm-cargo/blob/c512a35365c5de427107d7886056516b4948d46e/src/ops/resolve_cache.rs#L48",
+  "state": "open",
+  "title": "Cache workspace resolution across Cargo invocations",
+  "url": "https://github.com/astral-sh/ohm-cargo/pull/66",
+  "writer": "paths::write_atomic(cache_path, format!(\"{fingerprint:016x}\"))?"
+}

@@ -1,0 +1,78 @@
+{
+  "command": [
+    "+ohm",
+    "build",
+    "--offline",
+    "-j1",
+    "--message-format=json",
+    "-p",
+    "cache_witness_app"
+  ],
+  "case": "resolve",
+  "cargo": "106085490cf4c13af54c1c27c2e4351e14a5f923b279a867e3725b3a8d3439ee",
+  "compiler": "e173035a5dd384e17ca6a178e1987a0a746260c3669459cfab3af580880927ba",
+  "cache_name": ".cargo-resolve-cache-v1",
+  "dangling": true,
+  "victim_existed_after": true,
+  "before_sha": null,
+  "after_sha": "a899ca3984c066b08d7661427f6e1bf8d7fb022886cf033aced3fa533ed60901",
+  "sentinel_replaced": true,
+  "inode_preserved": null,
+  "cache_symlink": true,
+  "records": [
+    {
+      "phase": "cold",
+      "exit": 0,
+      "value": 17,
+      "executable": "df94130b97b29d9eed80c97d8c09cf24f8bee916db55244caf5d0c77f4986699",
+      "typed": [
+        [
+          "cache_witness_lib",
+          false
+        ],
+        [
+          "cache_witness_app",
+          false
+        ]
+      ],
+      "stdout": "504d5bf1e411bf47541ec13296c16176e8ea07ff50d525a4b02267f6235b989b",
+      "stderr": "9b9429bf74948c7639ade374819f336005055b85e8c6741dfe2eef971b8c48ac"
+    },
+    {
+      "phase": "changed",
+      "exit": 0,
+      "value": 29,
+      "executable": "84a2421d6f19c1ba459e82bdeee1b50a4528df29ad8271e19280761f404b6e39",
+      "typed": [
+        [
+          "cache_witness_lib",
+          false
+        ],
+        [
+          "cache_witness_app",
+          false
+        ]
+      ],
+      "stdout": "504d5bf1e411bf47541ec13296c16176e8ea07ff50d525a4b02267f6235b989b",
+      "stderr": "c861553dd5fd1f050902351bf92dabac4a4f891461d79d1f81cf33c00077e7c7"
+    },
+    {
+      "phase": "repeat",
+      "exit": 0,
+      "value": 29,
+      "executable": "84a2421d6f19c1ba459e82bdeee1b50a4528df29ad8271e19280761f404b6e39",
+      "typed": [
+        [
+          "cache_witness_lib",
+          true
+        ],
+        [
+          "cache_witness_app",
+          true
+        ]
+      ],
+      "stdout": "e09a87bb4fd18e4c0c958e2ff2b64066eec31ee8f0267bbcde074a4ef8cce12c",
+      "stderr": "736e2582f563605dd272e5fb977840b0c0767377d27b6940c440caf75eec7157"
+    }
+  ]
+}

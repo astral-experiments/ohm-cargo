@@ -1,0 +1,928 @@
+{
+  "cargo": "a9bde578e138c33fc011729a913f507480f5fc77895bf5686d7713163a14fd15",
+  "free": 43166584832,
+  "historical-rust": "e173035a5dd384e17ca6a178e1987a0a746260c3669459cfab3af580880927ba",
+  "metadata": [
+    {
+      "case": "historical-unavailable",
+      "order": "provider-late",
+      "phases": [
+        {
+          "diag": null,
+          "phase": "original",
+          "stderr_sha256": "224451e1d6079bd9ff8f43cf3cbea5e0484c27bdb15dcc1832c5fadd1c6b7a4f",
+          "stdout_sha256": "e8dff3ee874bcc24f36a496048d947bea8f9be04848d19667e2483bc182a780d",
+          "success": true,
+          "units": [
+            [
+              "api",
+              false
+            ],
+            [
+              "provider",
+              false
+            ],
+            [
+              "reader",
+              false
+            ],
+            [
+              "client",
+              false
+            ]
+          ]
+        },
+        {
+          "diag": null,
+          "phase": "original-repeat",
+          "stderr_sha256": "736e2582f563605dd272e5fb977840b0c0767377d27b6940c440caf75eec7157",
+          "stdout_sha256": "07fbf49e59d37ce5f5788cf6b64e90908482eacf3e637cac3736c6161ddbc2b0",
+          "success": true,
+          "units": [
+            [
+              "api",
+              true
+            ],
+            [
+              "provider",
+              true
+            ],
+            [
+              "reader",
+              true
+            ],
+            [
+              "client",
+              true
+            ]
+          ]
+        },
+        {
+          "diag": {
+            "code": "E0034",
+            "columns": [
+              30,
+              38
+            ],
+            "crate": "client/src/main.rs",
+            "line": 3,
+            "rendered_sha256": "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56",
+            "text": "multiple applicable items in scope"
+          },
+          "phase": "edited",
+          "stderr_sha256": "76a98116f4f0e291effae021b652995ea4b1b8fa71d6b87917ba0ad5e94c8988",
+          "stdout_sha256": "7bcd677515b1352c29745563408b3bd6fce18a1852957422f5736b2d8672f167",
+          "success": false,
+          "units": [
+            [
+              "api",
+              true
+            ],
+            [
+              "provider",
+              false
+            ],
+            [
+              "reader",
+              false
+            ]
+          ]
+        },
+        {
+          "diag": {
+            "code": "E0034",
+            "columns": [
+              30,
+              38
+            ],
+            "crate": "client/src/main.rs",
+            "line": 3,
+            "rendered_sha256": "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56",
+            "text": "multiple applicable items in scope"
+          },
+          "phase": "edited-repeat",
+          "stderr_sha256": "47ef6775217436ff02be25477fcf246ebfb7efea24fdf72dd4e023be2494964a",
+          "stdout_sha256": "31cf9df9ffce235c1fe31d832d7686188850cc9c5dc9ca48448f2e82e2436b1d",
+          "success": false,
+          "units": [
+            [
+              "api",
+              true
+            ],
+            [
+              "provider",
+              true
+            ],
+            [
+              "reader",
+              true
+            ]
+          ]
+        },
+        {
+          "diag": {
+            "code": "E0034",
+            "columns": [
+              30,
+              38
+            ],
+            "crate": "client/src/main.rs",
+            "line": 3,
+            "rendered_sha256": "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56",
+            "text": "multiple applicable items in scope"
+          },
+          "phase": "edited-clean",
+          "stderr_sha256": "786c2a8457408cc151ba527f8948bb1a6f3e41b5b289216efda5198ae2fa5fa6",
+          "stdout_sha256": "ac1b918bec4f2c9fd77774cf607e921c0aff3bdfc5f0eda5a40c420d44efc017",
+          "success": false,
+          "units": [
+            [
+              "api",
+              false
+            ],
+            [
+              "provider",
+              false
+            ],
+            [
+              "reader",
+              false
+            ]
+          ]
+        },
+        {
+          "diag": null,
+          "phase": "restore",
+          "stderr_sha256": "75b3431e70539722b82f4fb94c74deedace1b9c1f6b51f9d7b144738bd8c98a6",
+          "stdout_sha256": "117fde1e70c3c416b450495aaec0c24097d21e09b8f640706e0168e216cbc094",
+          "success": true,
+          "units": [
+            [
+              "api",
+              true
+            ],
+            [
+              "provider",
+              false
+            ],
+            [
+              "reader",
+              false
+            ],
+            [
+              "client",
+              false
+            ]
+          ]
+        },
+        {
+          "diag": null,
+          "phase": "restore-repeat",
+          "stderr_sha256": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+          "stdout_sha256": "07fbf49e59d37ce5f5788cf6b64e90908482eacf3e637cac3736c6161ddbc2b0",
+          "success": true,
+          "units": [
+            [
+              "api",
+              true
+            ],
+            [
+              "provider",
+              true
+            ],
+            [
+              "reader",
+              true
+            ],
+            [
+              "client",
+              true
+            ]
+          ]
+        }
+      ],
+      "process_sha256": "be94ca61763e7e4877ad5c71a16eba439329a977d06898fd6d427041a6e254e9",
+      "trace": "77bcb54cfacbdaf13426c2af6f7fb4f4c405e3a8f2006e0695313bf87cd65df9"
+    },
+    {
+      "case": "historical-reproduce",
+      "order": "provider-first",
+      "phases": [
+        {
+          "diag": null,
+          "phase": "original",
+          "stderr_sha256": "9b22d75b0eda62e9caadacfac9ee7c91646c75afbedec4ea30426d30f7a4d6ee",
+          "stdout_sha256": "01d50c939c49d224e5cea211a6d37df55188664b519eed8db08e25a7e98f94e7",
+          "success": true,
+          "units": [
+            [
+              "api",
+              false
+            ],
+            [
+              "provider",
+              false
+            ],
+            [
+              "reader",
+              false
+            ],
+            [
+              "client",
+              false
+            ]
+          ]
+        },
+        {
+          "diag": null,
+          "phase": "original-repeat",
+          "stderr_sha256": "736e2582f563605dd272e5fb977840b0c0767377d27b6940c440caf75eec7157",
+          "stdout_sha256": "2d35bd78f92e349e32bffcf633dbc27bfe7f96ec7e2b92dbb9f71cd61104e8a7",
+          "success": true,
+          "units": [
+            [
+              "api",
+              true
+            ],
+            [
+              "provider",
+              true
+            ],
+            [
+              "reader",
+              true
+            ],
+            [
+              "client",
+              true
+            ]
+          ]
+        },
+        {
+          "diag": {
+            "code": "E0034",
+            "columns": [
+              30,
+              38
+            ],
+            "crate": "client/src/main.rs",
+            "line": 3,
+            "rendered_sha256": "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56",
+            "text": "multiple applicable items in scope"
+          },
+          "phase": "edited",
+          "stderr_sha256": "54bd1892ef10c086b0fd747e907beebca8b951b2c5811ba63ab303c4271a1e0f",
+          "stdout_sha256": "38ee225995486bfaffdc8a59e1d11e93c9fb6a26de7b0127a598b5ecbc22490e",
+          "success": false,
+          "units": [
+            [
+              "api",
+              true
+            ],
+            [
+              "provider",
+              false
+            ],
+            [
+              "reader",
+              false
+            ]
+          ]
+        },
+        {
+          "diag": {
+            "code": "E0034",
+            "columns": [
+              30,
+              38
+            ],
+            "crate": "client/src/main.rs",
+            "line": 3,
+            "rendered_sha256": "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56",
+            "text": "multiple applicable items in scope"
+          },
+          "phase": "edited-repeat",
+          "stderr_sha256": "bab24cae9ae6213c90dca355070e6d8f8b78ad502a75fbcd6a12560059b63812",
+          "stdout_sha256": "f85241ceead8875cc77f6316929f4a4fd82908cd5943ab6f2df97cba346b1843",
+          "success": false,
+          "units": [
+            [
+              "api",
+              true
+            ],
+            [
+              "provider",
+              true
+            ],
+            [
+              "reader",
+              true
+            ]
+          ]
+        },
+        {
+          "diag": {
+            "code": "E0034",
+            "columns": [
+              30,
+              38
+            ],
+            "crate": "client/src/main.rs",
+            "line": 3,
+            "rendered_sha256": "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56",
+            "text": "multiple applicable items in scope"
+          },
+          "phase": "edited-clean",
+          "stderr_sha256": "f599894843460f5da55da9f7a3b2783277013ec42626738e055718953332dba6",
+          "stdout_sha256": "70ddbbfa039e5eee8b3ff4c8660de8b48cd0cf39066c94672c5546da890b8d52",
+          "success": false,
+          "units": [
+            [
+              "api",
+              false
+            ],
+            [
+              "provider",
+              false
+            ],
+            [
+              "reader",
+              false
+            ]
+          ]
+        },
+        {
+          "diag": null,
+          "phase": "restore",
+          "stderr_sha256": "40f03d216b37a3715beb487047034c5be311539b149978a33c397c7bd4a46d09",
+          "stdout_sha256": "ab52b8afdeea8bf2a703ad42cd7edd6726e9e29b84edc14b802d7ace04b7e3eb",
+          "success": true,
+          "units": [
+            [
+              "api",
+              true
+            ],
+            [
+              "provider",
+              false
+            ],
+            [
+              "reader",
+              false
+            ],
+            [
+              "client",
+              false
+            ]
+          ]
+        },
+        {
+          "diag": null,
+          "phase": "restore-repeat",
+          "stderr_sha256": "736e2582f563605dd272e5fb977840b0c0767377d27b6940c440caf75eec7157",
+          "stdout_sha256": "2d35bd78f92e349e32bffcf633dbc27bfe7f96ec7e2b92dbb9f71cd61104e8a7",
+          "success": true,
+          "units": [
+            [
+              "api",
+              true
+            ],
+            [
+              "provider",
+              true
+            ],
+            [
+              "reader",
+              true
+            ],
+            [
+              "client",
+              true
+            ]
+          ]
+        }
+      ],
+      "process_sha256": "92d1aba391d227de7cfb248e1188776440e151a3df8080f24b7818fc62f13591",
+      "trace": "c1b2ac4a1082d6eb491794dcd7fdebb57deda3041da7ba58773b303c65dba52a"
+    },
+    {
+      "case": "historical-ordinary",
+      "order": "provider-late",
+      "phases": [
+        {
+          "diag": null,
+          "phase": "original",
+          "stderr_sha256": "a2f7bcb122d299be088c725ffe23785f8aa652a322273e677877c9f37ee7aea8",
+          "stdout_sha256": "8d5f965cd93e6760ddda6843332f61fc2b48d6f63e034bb9ce4605b2734bfac3",
+          "success": true,
+          "units": [
+            [
+              "api",
+              false
+            ],
+            [
+              "provider",
+              false
+            ],
+            [
+              "reader",
+              false
+            ],
+            [
+              "client",
+              false
+            ]
+          ]
+        },
+        {
+          "diag": null,
+          "phase": "original-repeat",
+          "stderr_sha256": "736e2582f563605dd272e5fb977840b0c0767377d27b6940c440caf75eec7157",
+          "stdout_sha256": "644d8cc0089fc5651972ce32aa9489bf7c34590d81c2f981e0459872ced1b580",
+          "success": true,
+          "units": [
+            [
+              "api",
+              true
+            ],
+            [
+              "provider",
+              true
+            ],
+            [
+              "reader",
+              true
+            ],
+            [
+              "client",
+              true
+            ]
+          ]
+        },
+        {
+          "diag": {
+            "code": "E0034",
+            "columns": [
+              30,
+              38
+            ],
+            "crate": "client/src/main.rs",
+            "line": 3,
+            "rendered_sha256": "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56",
+            "text": "multiple applicable items in scope"
+          },
+          "phase": "edited",
+          "stderr_sha256": "d86ce8577cacb2f3e3c7dfb8b4f833f14bc51fc656f0c6f05012c42961f09ff4",
+          "stdout_sha256": "b44024460862cb56908ed019959b8c795093607caaf00767445254861142fee7",
+          "success": false,
+          "units": [
+            [
+              "api",
+              true
+            ],
+            [
+              "provider",
+              false
+            ],
+            [
+              "reader",
+              false
+            ]
+          ]
+        },
+        {
+          "diag": {
+            "code": "E0034",
+            "columns": [
+              30,
+              38
+            ],
+            "crate": "client/src/main.rs",
+            "line": 3,
+            "rendered_sha256": "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56",
+            "text": "multiple applicable items in scope"
+          },
+          "phase": "edited-repeat",
+          "stderr_sha256": "e095a43ed3367a3e3737324f6f0dd05a023ef75aaaeec0215c88fed7973aafd6",
+          "stdout_sha256": "ad235e13fc58b825b421f2732f371476c0371f4ea63c4de0c803c0d38f8efe87",
+          "success": false,
+          "units": [
+            [
+              "api",
+              true
+            ],
+            [
+              "provider",
+              true
+            ],
+            [
+              "reader",
+              true
+            ]
+          ]
+        },
+        {
+          "diag": {
+            "code": "E0034",
+            "columns": [
+              30,
+              38
+            ],
+            "crate": "client/src/main.rs",
+            "line": 3,
+            "rendered_sha256": "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56",
+            "text": "multiple applicable items in scope"
+          },
+          "phase": "edited-clean",
+          "stderr_sha256": "91953ae0f0a18a7c2cab054a8b28c5b50b5dc6d36ad26d918beef54ff1b9a9c3",
+          "stdout_sha256": "30930744f5be5d84d673a62ca61dbbbc49d68a8b902c758781d04e50db4e8ac6",
+          "success": false,
+          "units": [
+            [
+              "api",
+              false
+            ],
+            [
+              "provider",
+              false
+            ],
+            [
+              "reader",
+              false
+            ]
+          ]
+        },
+        {
+          "diag": null,
+          "phase": "restore",
+          "stderr_sha256": "78611f7c13d07b1ea336d4fb3b1f3919bf777e2ff03ddf7aec8a11789ad92f2e",
+          "stdout_sha256": "a69befbe89bb7bbce2d21884a6984e327e05ca7a71fcd1d1f73e20637c66d01c",
+          "success": true,
+          "units": [
+            [
+              "api",
+              true
+            ],
+            [
+              "provider",
+              false
+            ],
+            [
+              "reader",
+              false
+            ],
+            [
+              "client",
+              false
+            ]
+          ]
+        },
+        {
+          "diag": null,
+          "phase": "restore-repeat",
+          "stderr_sha256": "736e2582f563605dd272e5fb977840b0c0767377d27b6940c440caf75eec7157",
+          "stdout_sha256": "644d8cc0089fc5651972ce32aa9489bf7c34590d81c2f981e0459872ced1b580",
+          "success": true,
+          "units": [
+            [
+              "api",
+              true
+            ],
+            [
+              "provider",
+              true
+            ],
+            [
+              "reader",
+              true
+            ],
+            [
+              "client",
+              true
+            ]
+          ]
+        }
+      ],
+      "process_sha256": "ce7d353c991d83bb99036ff8f22dd5d09907d7d638ec2969fa669e6d5bf0e817",
+      "trace": null
+    }
+  ],
+  "parents": [
+    "613667eadce39c044ec1cf4327a985619de636f7",
+    "d387f81545e84fc0937556e55e5e9c4737c4159d"
+  ],
+  "post-release-rust": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+  "sidecars": [
+    {
+      "case": {
+        "after_sha": "3e3ba3a927c7cd1c1497c37ec2f46c3da9c455721e666efd04bcc2706ec36e0e",
+        "before_sha": "3e3ba3a927c7cd1c1497c37ec2f46c3da9c455721e666efd04bcc2706ec36e0e",
+        "cache_name": "lib-cache_witness_lib.public-api-hash",
+        "cache_symlink": false,
+        "cargo": "a9bde578e138c33fc011729a913f507480f5fc77895bf5686d7713163a14fd15",
+        "case": "public-api",
+        "command": [
+          "+ohm",
+          "--config",
+          "build.rustflags=[\"-Zpublic-api-hash\"]",
+          "build",
+          "--offline",
+          "-j1",
+          "--message-format=json",
+          "-p",
+          "cache_witness_app"
+        ],
+        "compiler": "e173035a5dd384e17ca6a178e1987a0a746260c3669459cfab3af580880927ba",
+        "dangling": false,
+        "inode_preserved": true,
+        "records": [
+          {
+            "executable": "e65d9b31e473c8506f9cf70c56ef83df35633c698ecdaff9dac1bcf2cf6ac1ad",
+            "exit": 0,
+            "phase": "cold",
+            "stderr": "c38c6b65fd38acfb218fc2985bbeb5841ea11165036d58cd00316a0a6dd91bb7",
+            "stdout": "2d886c963c346b57e0fc6f6d3b18c9736b1737093a2c94dfda3343a0d8fbc5cf",
+            "typed": [
+              [
+                "cache_witness_lib",
+                false
+              ],
+              [
+                "cache_witness_app",
+                false
+              ]
+            ],
+            "value": 17
+          },
+          {
+            "executable": "8f8f5f16ced39ce6997cbc03ba6c8b5cf2a3ebb738909095e1a7a9a2077a9173",
+            "exit": 0,
+            "phase": "changed",
+            "stderr": "384dd445ad6959b33f9812d06bb796b471ea7864d3ab62c8649adbcb7230a1fb",
+            "stdout": "2d886c963c346b57e0fc6f6d3b18c9736b1737093a2c94dfda3343a0d8fbc5cf",
+            "typed": [
+              [
+                "cache_witness_lib",
+                false
+              ],
+              [
+                "cache_witness_app",
+                false
+              ]
+            ],
+            "value": 29
+          },
+          {
+            "executable": "8f8f5f16ced39ce6997cbc03ba6c8b5cf2a3ebb738909095e1a7a9a2077a9173",
+            "exit": 0,
+            "phase": "repeat",
+            "stderr": "736e2582f563605dd272e5fb977840b0c0767377d27b6940c440caf75eec7157",
+            "stdout": "635de6874a8e9dc1b79d29836b9bce4ad7856bd4de92952ad8383d935127ee6f",
+            "typed": [
+              [
+                "cache_witness_lib",
+                true
+              ],
+              [
+                "cache_witness_app",
+                true
+              ]
+            ],
+            "value": 29
+          }
+        ],
+        "sentinel_replaced": false,
+        "victim_existed_after": true
+      },
+      "name": "enabled",
+      "result": "220adacef92bdc5ebcc5ba6c8a096471b43bb527959e0faefc59fbba7b3f7f51"
+    },
+    {
+      "case": {
+        "after_sha": null,
+        "before_sha": null,
+        "cache_name": "lib-cache_witness_lib.public-api-hash",
+        "cache_symlink": false,
+        "cargo": "a9bde578e138c33fc011729a913f507480f5fc77895bf5686d7713163a14fd15",
+        "case": "public-api",
+        "command": [
+          "+ohm",
+          "--config",
+          "build.rustflags=[\"-Zpublic-api-hash\"]",
+          "build",
+          "--offline",
+          "-j1",
+          "--message-format=json",
+          "-p",
+          "cache_witness_app"
+        ],
+        "compiler": "e173035a5dd384e17ca6a178e1987a0a746260c3669459cfab3af580880927ba",
+        "dangling": true,
+        "inode_preserved": null,
+        "records": [
+          {
+            "executable": "fcc4397a518cf76f6796e0183a99ed165753a771bf2016a8182fbf605809cc2c",
+            "exit": 0,
+            "phase": "cold",
+            "stderr": "d58375440449386c52dbc3fb6b190b08816402d3964aded6cb43fa4f090b842a",
+            "stdout": "0b309876ef445bed40dfb5756790f2824282e53c5ac5c434a7939f1d389ea224",
+            "typed": [
+              [
+                "cache_witness_lib",
+                false
+              ],
+              [
+                "cache_witness_app",
+                false
+              ]
+            ],
+            "value": 17
+          },
+          {
+            "executable": "fbe6b9e081382156f7ef0fe31d57dee98b922ba9b5f37282d223dcc986f2c6b6",
+            "exit": 0,
+            "phase": "changed",
+            "stderr": "597ed0b1ad28a4f05dbc40cb9134b745caed3a35a4db2413efc52c4ff4f65f8a",
+            "stdout": "0b309876ef445bed40dfb5756790f2824282e53c5ac5c434a7939f1d389ea224",
+            "typed": [
+              [
+                "cache_witness_lib",
+                false
+              ],
+              [
+                "cache_witness_app",
+                false
+              ]
+            ],
+            "value": 29
+          },
+          {
+            "executable": "fbe6b9e081382156f7ef0fe31d57dee98b922ba9b5f37282d223dcc986f2c6b6",
+            "exit": 0,
+            "phase": "repeat",
+            "stderr": "736e2582f563605dd272e5fb977840b0c0767377d27b6940c440caf75eec7157",
+            "stdout": "704445739e77e1f471205e455efbc7c26af27e65c4e0ce2362aa095c8a2c539b",
+            "typed": [
+              [
+                "cache_witness_lib",
+                true
+              ],
+              [
+                "cache_witness_app",
+                true
+              ]
+            ],
+            "value": 29
+          }
+        ],
+        "sentinel_replaced": false,
+        "victim_existed_after": false
+      },
+      "name": "dangling",
+      "result": "0e716353948de49548fcf873f42256a36502931af331f3f4a17cab2c5ba19fd5"
+    },
+    {
+      "case": {
+        "cargo": "a9bde578e138c33fc011729a913f507480f5fc77895bf5686d7713163a14fd15",
+        "case": "public-api",
+        "compiler": "e173035a5dd384e17ca6a178e1987a0a746260c3669459cfab3af580880927ba",
+        "disabled": true,
+        "rows": [
+          {
+            "executable": "3c8f69ccc475197173ca3619a33b192a0aea81aacc62f10de791ece1f6e0f4bd",
+            "exit": 0,
+            "phase": "cold",
+            "stderr": "e3e2b4eed8a9bd7b0534bd044c68c975248eb8634a0b6e798a10dc65cf15b673",
+            "stdout": "c1b6395a6b19e51f26e0a42166fb57639bfe8eb4fc7dba77074adb28c6a15401",
+            "typed": [
+              [
+                "cache_witness_lib",
+                false
+              ],
+              [
+                "cache_witness_app",
+                false
+              ]
+            ],
+            "value": 17
+          },
+          {
+            "executable": "a861811dc30bad84be40dca316b9af83d71b6a4e6f8220ffc13bd0924ee8074a",
+            "exit": 0,
+            "phase": "changed",
+            "stderr": "8fefb07c3206b904fbb30818d29c6e6fdccb7210ec34e8393b4b5cdf5809349a",
+            "stdout": "c1b6395a6b19e51f26e0a42166fb57639bfe8eb4fc7dba77074adb28c6a15401",
+            "typed": [
+              [
+                "cache_witness_lib",
+                false
+              ],
+              [
+                "cache_witness_app",
+                false
+              ]
+            ],
+            "value": 29
+          },
+          {
+            "executable": "a861811dc30bad84be40dca316b9af83d71b6a4e6f8220ffc13bd0924ee8074a",
+            "exit": 0,
+            "phase": "repeat",
+            "stderr": "736e2582f563605dd272e5fb977840b0c0767377d27b6940c440caf75eec7157",
+            "stdout": "dd7046b12a43b462b362aa6cb6f2c9f6c89781d4112bb9be1a9b85e0a943531b",
+            "typed": [
+              [
+                "cache_witness_lib",
+                true
+              ],
+              [
+                "cache_witness_app",
+                true
+              ]
+            ],
+            "value": 29
+          }
+        ]
+      },
+      "name": "disabled",
+      "result": "902c41368f7bfab0bb5e24d0e1304856226d0d6210f14542e2fe1db512872a47"
+    }
+  ],
+  "source": "ae0256548547cc6f5490097cad6362e13358d274",
+  "tree": "1eb329d8d137cd35b0b510c100c60676fa29b091",
+  "units": {
+    "cargo": {
+      "stderr": "20d5d2afca1e24ba66fe7b65f19db36773bc3c1392a269b3fd115a25a4d31b90",
+      "stdout": "05a642cb4482dd3cdcf3bf90ca93e8ebc0b32f7cfdf569a645c402109539a4a5",
+      "tests": [
+        "compiler::fingerprint::dep_info::encoded_dep_info::parse_v0_fingerprint_dep_info",
+        "compiler::fingerprint::dep_info::encoded_dep_info::path_type_is_u8_max",
+        "compiler::fingerprint::dep_info::encoded_dep_info::round_trip",
+        "compiler::fingerprint::dep_info::encoded_dep_info::round_trip_with_checksums",
+        "compiler::fingerprint::dirty_reason::json_schema::checksum_use_changed",
+        "compiler::fingerprint::dirty_reason::json_schema::dep_info_output_changed",
+        "compiler::fingerprint::dirty_reason::json_schema::env_var_changed_both_some",
+        "compiler::fingerprint::dirty_reason::json_schema::env_var_changed_old_none",
+        "compiler::fingerprint::dirty_reason::json_schema::features_changed",
+        "compiler::fingerprint::dirty_reason::json_schema::forced",
+        "compiler::fingerprint::dirty_reason::json_schema::fresh_build",
+        "compiler::fingerprint::dirty_reason::json_schema::fs_status_changed_checksum",
+        "compiler::fingerprint::dirty_reason::json_schema::fs_status_changed_env",
+        "compiler::fingerprint::dirty_reason::json_schema::fs_status_changed_file",
+        "compiler::fingerprint::dirty_reason::json_schema::fs_status_failed_to_read_metadata",
+        "compiler::fingerprint::dirty_reason::json_schema::fs_status_file_size_changed",
+        "compiler::fingerprint::dirty_reason::json_schema::fs_status_missing_checksum",
+        "compiler::fingerprint::dirty_reason::json_schema::fs_status_missing_file",
+        "compiler::fingerprint::dirty_reason::json_schema::fs_status_stale",
+        "compiler::fingerprint::dirty_reason::json_schema::fs_status_stale_dep_fingerprint",
+        "compiler::fingerprint::dirty_reason::json_schema::fs_status_stale_dependency",
+        "compiler::fingerprint::dirty_reason::json_schema::fs_status_unable_to_read_file",
+        "compiler::fingerprint::dirty_reason::json_schema::local_fingerprint_type_changed",
+        "compiler::fingerprint::dirty_reason::json_schema::nothing_obvious",
+        "compiler::fingerprint::dirty_reason::json_schema::number_of_dependencies_changed",
+        "compiler::fingerprint::dirty_reason::json_schema::rerun_if_changed_output_paths_changed",
+        "compiler::fingerprint::dirty_reason::json_schema::rustc_changed",
+        "compiler::fingerprint::dirty_reason::json_schema::rustflags_changed",
+        "compiler::fingerprint::dirty_reason::json_schema::unit_dependency_info_changed",
+        "compiler::fingerprint::dirty_reason::json_schema::unit_dependency_name_changed",
+        "compiler::fingerprint::early_cutoff_tests::changed_full_artifact_dependency_does_not_propagate_metadata_only_state",
+        "compiler::fingerprint::early_cutoff_tests::changed_or_pending_metadata_dependency_propagates_through_unchanged_public_api",
+        "compiler::fingerprint::early_cutoff_tests::dep_built_changed_should_not_cutoff",
+        "compiler::fingerprint::early_cutoff_tests::dep_built_unchanged_should_cutoff",
+        "compiler::fingerprint::early_cutoff_tests::dep_fresh_alone_should_not_cutoff",
+        "compiler::fingerprint::early_cutoff_tests::dep_pending_should_not_cutoff",
+        "compiler::fingerprint::early_cutoff_tests::dep_skipped_early_cutoff_should_cutoff",
+        "compiler::fingerprint::early_cutoff_tests::diamond_dependency_all_unchanged",
+        "compiler::fingerprint::early_cutoff_tests::diamond_dependency_one_changed",
+        "compiler::fingerprint::early_cutoff_tests::mixed_deps_fresh_and_built_unchanged_should_cutoff",
+        "compiler::fingerprint::early_cutoff_tests::mixed_deps_with_one_changed_should_not_cutoff",
+        "compiler::fingerprint::early_cutoff_tests::mixed_deps_with_one_pending_should_not_cutoff",
+        "compiler::fingerprint::early_cutoff_tests::no_deps_should_not_cutoff",
+        "compiler::fingerprint::early_cutoff_tests::non_dependency_dirty_reason_is_not_a_candidate",
+        "compiler::fingerprint::early_cutoff_tests::previously_changed_metadata_dependency_propagates_through_unchanged_public_api",
+        "compiler::fingerprint::early_cutoff_tests::public_api_hash_format",
+        "compiler::fingerprint::early_cutoff_tests::public_api_hash_is_not_advanced_before_fingerprint_commit",
+        "compiler::fingerprint::early_cutoff_tests::public_api_hash_replaces_a_symlink",
+        "compiler::fingerprint::early_cutoff_tests::public_api_hash_rustflags",
+        "compiler::fingerprint::early_cutoff_tests::rebuilt_full_artifact_dependency_should_not_cutoff",
+        "compiler::fingerprint::early_cutoff_tests::simultaneous_local_and_dependency_changes_are_not_candidates",
+        "compiler::fingerprint::early_cutoff_tests::transitive_chain_all_unchanged",
+        "compiler::fingerprint::early_cutoff_tests::transitive_early_cutoff_propagates",
+        "compiler::fingerprint::early_cutoff_tests::transitive_with_changed_dep_does_not_propagate",
+        "compiler::fingerprint::early_cutoff_tests::unchanged_metadata_dependency_does_not_propagate_changed_state",
+        "compiler::fingerprint::early_cutoff_tests::unit_not_stale_due_to_dep_should_not_cutoff",
+        "compiler::fingerprint::early_cutoff_tests::unit_stale_item_should_not_cutoff",
+        "compiler::fingerprint::early_cutoff_tests::up_to_date_unit_should_not_cutoff"
+      ]
+    },
+    "cargo-util": {
+      "stderr": "e7fb00c8034731d8af0f0c82fa6639e8e048b2fcd58ed0fac0521fc9ad26c3d1",
+      "stdout": "59d43f0b1c6b17d0d39bd58b3f50d02e78d821d728d0bf5a7b2a2bef60c7a94d",
+      "tests": [
+        "paths::tests::write_atomic_permissions",
+        "paths::tests::write_atomic_symlink",
+        "paths::tests::write_atomic_works"
+      ]
+    }
+  }
+}

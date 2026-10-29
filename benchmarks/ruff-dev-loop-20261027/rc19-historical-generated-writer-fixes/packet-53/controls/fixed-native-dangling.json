@@ -1,0 +1,80 @@
+{
+  "command": [
+    "+ohm",
+    "--config",
+    "build.rustflags=[\"-Zpublic-api-hash\"]",
+    "build",
+    "--offline",
+    "-j1",
+    "--message-format=json",
+    "-p",
+    "cache_witness_app"
+  ],
+  "case": "public-api",
+  "cargo": "b58f797c207a2a3d932284ae6ec726f6c9fdff622c2aa01a5e51a47073725ce0",
+  "compiler": "e173035a5dd384e17ca6a178e1987a0a746260c3669459cfab3af580880927ba",
+  "cache_name": "lib-cache_witness_lib.public-api-hash",
+  "dangling": true,
+  "victim_existed_after": false,
+  "before_sha": null,
+  "after_sha": null,
+  "sentinel_replaced": false,
+  "inode_preserved": null,
+  "cache_symlink": false,
+  "records": [
+    {
+      "phase": "cold",
+      "exit": 0,
+      "value": 17,
+      "executable": "5fa1806ff05796d7715e74f3e388ad25d4e202656bf55db8a4fa4be5ca4c98e7",
+      "typed": [
+        [
+          "cache_witness_lib",
+          false
+        ],
+        [
+          "cache_witness_app",
+          false
+        ]
+      ],
+      "stdout": "bb33035e0f478257d13478735b1ea6e9586c1cf74102cfd44f7d433f3ec533d8",
+      "stderr": "e1f1bc7dc7f07ef3e5bd8d2865431fe05a017db2b0fc6baf53fe42f746ec6a76"
+    },
+    {
+      "phase": "changed",
+      "exit": 0,
+      "value": 29,
+      "executable": "ecf95549848b7306a6e62134922b89c63c166afd6e3014cc2ddd6ff5a66ced0f",
+      "typed": [
+        [
+          "cache_witness_lib",
+          false
+        ],
+        [
+          "cache_witness_app",
+          false
+        ]
+      ],
+      "stdout": "bb33035e0f478257d13478735b1ea6e9586c1cf74102cfd44f7d433f3ec533d8",
+      "stderr": "0bcacc0ba512e2f65277ec9069e0224896b80a7993efa36595aa8f0906b3640c"
+    },
+    {
+      "phase": "repeat",
+      "exit": 0,
+      "value": 29,
+      "executable": "ecf95549848b7306a6e62134922b89c63c166afd6e3014cc2ddd6ff5a66ced0f",
+      "typed": [
+        [
+          "cache_witness_lib",
+          true
+        ],
+        [
+          "cache_witness_app",
+          true
+        ]
+      ],
+      "stdout": "ffcf2f014cc7e2d19b822cf657b2df8995fe8b3802e8927c5df739722bd81ef8",
+      "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126"
+    }
+  ]
+}

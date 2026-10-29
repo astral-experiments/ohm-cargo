@@ -1,0 +1,62 @@
+{
+  "case": "resolve",
+  "disabled": true,
+  "cargo": "106085490cf4c13af54c1c27c2e4351e14a5f923b279a867e3725b3a8d3439ee",
+  "compiler": "e173035a5dd384e17ca6a178e1987a0a746260c3669459cfab3af580880927ba",
+  "rows": [
+    {
+      "phase": "cold",
+      "exit": 0,
+      "value": 17,
+      "executable": "fcbe905e56137b47e2c399c144cb6b703646f4cfa8ced316aba01a1386f13d42",
+      "typed": [
+        [
+          "cache_witness_lib",
+          false
+        ],
+        [
+          "cache_witness_app",
+          false
+        ]
+      ],
+      "stdout": "8e978a0b6a874c4865d6f51923a8b5f6bc9c515a6850324356a8001f0541941d",
+      "stderr": "5c56725f61038c71aa32815188fe746130fd5169eedb7b6c150939cf7f488326"
+    },
+    {
+      "phase": "changed",
+      "exit": 0,
+      "value": 29,
+      "executable": "a45851bb062dd93c05f28b240021566d99b28e71c88f69e89ed86dbac670395d",
+      "typed": [
+        [
+          "cache_witness_lib",
+          false
+        ],
+        [
+          "cache_witness_app",
+          false
+        ]
+      ],
+      "stdout": "8e978a0b6a874c4865d6f51923a8b5f6bc9c515a6850324356a8001f0541941d",
+      "stderr": "c6dbe430765b809881171ecdcdea8caed52ac2829755eb0fd30d146209ac4d77"
+    },
+    {
+      "phase": "repeat",
+      "exit": 0,
+      "value": 29,
+      "executable": "a45851bb062dd93c05f28b240021566d99b28e71c88f69e89ed86dbac670395d",
+      "typed": [
+        [
+          "cache_witness_lib",
+          true
+        ],
+        [
+          "cache_witness_app",
+          true
+        ]
+      ],
+      "stdout": "da084a584e83bf23c1f47c03c8506d08fce252e3395c4d10d59ffbe40aa59525",
+      "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126"
+    }
+  ]
+}

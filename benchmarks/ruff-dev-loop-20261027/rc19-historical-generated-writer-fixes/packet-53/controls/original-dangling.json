@@ -1,0 +1,80 @@
+{
+  "command": [
+    "+ohm",
+    "--config",
+    "build.rustflags=[\"-Zpublic-api-hash\"]",
+    "build",
+    "--offline",
+    "-j1",
+    "--message-format=json",
+    "-p",
+    "cache_witness_app"
+  ],
+  "case": "public-api",
+  "cargo": "3f41f6ce7e4b2c690edd941d41d71df243bd7c60e64148af22461db3fee2b7c9",
+  "compiler": "e173035a5dd384e17ca6a178e1987a0a746260c3669459cfab3af580880927ba",
+  "cache_name": "lib-cache_witness_lib.public-api-hash",
+  "dangling": true,
+  "victim_existed_after": true,
+  "before_sha": null,
+  "after_sha": "24e4411a14c1b22ac51881b71caba158bfa6462e7124c19feebffa131c85ea2f",
+  "sentinel_replaced": true,
+  "inode_preserved": null,
+  "cache_symlink": true,
+  "records": [
+    {
+      "phase": "cold",
+      "exit": 0,
+      "value": 17,
+      "executable": "2fecffa2d677fe07cdf2f4d2626867db20b50b17fb0595f03de6195289462322",
+      "typed": [
+        [
+          "cache_witness_lib",
+          false
+        ],
+        [
+          "cache_witness_app",
+          false
+        ]
+      ],
+      "stdout": "325aedf18b1fd76b406045b2e8aada075890525b5f1f836b510cb0558294a210",
+      "stderr": "a6612abc070bbcb6b9e064ca76c154ad57fc3086d8c6ca4f6418eed45c819123"
+    },
+    {
+      "phase": "changed",
+      "exit": 0,
+      "value": 29,
+      "executable": "fbb321c305747c50fdaa0344e271c1489bd4b8efa97055fa74b9fc149c012178",
+      "typed": [
+        [
+          "cache_witness_lib",
+          false
+        ],
+        [
+          "cache_witness_app",
+          false
+        ]
+      ],
+      "stdout": "325aedf18b1fd76b406045b2e8aada075890525b5f1f836b510cb0558294a210",
+      "stderr": "bc583be75acb777e860697de7a1e7d2abc932706c6db1741c5f1386bfaf4f334"
+    },
+    {
+      "phase": "repeat",
+      "exit": 0,
+      "value": 29,
+      "executable": "fbb321c305747c50fdaa0344e271c1489bd4b8efa97055fa74b9fc149c012178",
+      "typed": [
+        [
+          "cache_witness_lib",
+          true
+        ],
+        [
+          "cache_witness_app",
+          true
+        ]
+      ],
+      "stdout": "61b759f188a7b1825ce52bbc0ff0b8f66e1b9e289c18c2e41eb26ec860815244",
+      "stderr": "736e2582f563605dd272e5fb977840b0c0767377d27b6940c440caf75eec7157"
+    }
+  ]
+}

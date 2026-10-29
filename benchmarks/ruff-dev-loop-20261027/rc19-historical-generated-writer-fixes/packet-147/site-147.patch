@@ -1,0 +1,37 @@
+diff --git a/src/compiler/ohm_early_tests.rs b/src/compiler/ohm_early_tests.rs
+index 9444848ded..7f2e4404ee 100644
+--- a/src/compiler/ohm_early_tests.rs
++++ b/src/compiler/ohm_early_tests.rs
+@@ -101,7 +101,7 @@ impl CheckHint {
+             return;
+         }
+         let result = paths::create_dir_all(self.path.parent().unwrap())
+-            .and_then(|()| paths::write_atomic(&self.path, b"uses-library\n"));
++            .and_then(|()| paths::write_atomic_no_follow(&self.path, b"uses-library\n"));
+         if let Err(error) = result {
+             tracing::debug!(?error, "could not record early-test check hint");
+         }
+@@ -223,6 +223,23 @@ fn proves_unused(lines: &[String], name: InternedString) -> bool {
+ mod tests {
+     use super::*;
+ 
++    #[cfg(unix)]
++    #[test]
++    fn recording_a_check_hint_replaces_a_symlink() {
++        let dir = tempfile::tempdir().unwrap();
++        let sentinel = dir.path().join("sentinel");
++        let hint = CheckHint {
++            path: dir.path().join("hint"),
++            library: InternedString::new("library"),
++        };
++        std::fs::write(&sentinel, b"keep").unwrap();
++        std::os::unix::fs::symlink(&sentinel, &hint.path).unwrap();
++        hint.record(Some(&BTreeSet::new()));
++        assert_eq!(std::fs::read(sentinel).unwrap(), b"keep");
++        assert!(!hint.path.is_symlink());
++        assert!(hint.vetoes_speculation());
++    }
++
+     #[test]
+     fn provisional_output_requires_consistent_bounded_proof() {
+         let proof = r#"{"$message_type":"unused_extern","unused_extern_names":["app"]}"#;

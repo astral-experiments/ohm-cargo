@@ -1,0 +1,42 @@
+diff --git a/src/ops/resolve_cache.rs b/src/ops/resolve_cache.rs
+index c7d83edc22..c02399e785 100644
+--- a/src/ops/resolve_cache.rs
++++ b/src/ops/resolve_cache.rs
+@@ -45,7 +45,7 @@ pub(super) fn mark_workspace_resolve_fresh(
+             paths::create_dir_all(parent)?;
+         }
+ 
+-        paths::write_atomic(cache_path, format!("{fingerprint:016x}"))?;
++        paths::write_atomic_no_follow(cache_path, format!("{fingerprint:016x}"))?;
+         Ok(())
+     })?;
+     Ok(())
+diff --git a/tests/testsuite/workspaces.rs b/tests/testsuite/workspaces.rs
+index bfbc1fac31..7f57f030e2 100644
+--- a/tests/testsuite/workspaces.rs
++++ b/tests/testsuite/workspaces.rs
+@@ -3036,6 +3036,24 @@ fn workspace_resolve_cache_reuses_unchanged_workspace() {
+         .run();
+ }
+ 
++#[cfg(unix)]
++#[cargo_test]
++fn workspace_resolve_cache_replaces_a_symlink() {
++    let project = workspace_resolve_cache_project();
++    let target = project.root().join("sentinel");
++    let cache = project.build_dir().join(".cargo-resolve-cache-v1");
++    fs::create_dir_all(project.build_dir()).unwrap();
++    fs::write(&target, "keep").unwrap();
++    std::os::unix::fs::symlink(&target, &cache).unwrap();
++
++    workspace_resolve_cache_command(&project, "check --package selected").run();
++    assert_eq!(fs::read(target).unwrap(), b"keep");
++    assert!(!cache.is_symlink());
++    workspace_resolve_cache_command(&project, "check --package selected")
++        .with_stderr_contains(WORKSPACE_RESOLVE_CACHE_HIT)
++        .run();
++}
++
+ #[cargo_test]
+ fn workspace_resolve_cache_reuses_metadata_resolution_for_check() {
+     let project = workspace_resolve_cache_project();

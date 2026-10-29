@@ -1,0 +1,67 @@
+{
+  "active_ancestor_of": "5394ce8817e224971230b80a9066cc28d504ff94",
+  "base_branch": "charlie/1.98/ohm-default-incremental-codegen",
+  "base_head_when_queried": "4eebe9d1f7ba3738ba157668aef961d1bfc7216b",
+  "context": [
+    {
+      "line": 1410,
+      "text": "        debug_assert_eq!(output_options.errors_seen, 0);"
+    },
+    {
+      "line": 1411,
+      "text": ""
+    },
+    {
+      "line": 1412,
+      "text": "        if let Some((path, provenance)) = &message_provenance {"
+    },
+    {
+      "line": 1413,
+      "text": "            let mut provenance = provenance.clone();"
+    },
+    {
+      "line": 1414,
+      "text": "            provenance.capture_messages(&cached_output_path)?;"
+    },
+    {
+      "line": 1415,
+      "text": "            paths::write_atomic(path, serde_json::to_vec(&provenance)?)?;"
+    },
+    {
+      "line": 1416,
+      "text": ""
+    },
+    {
+      "line": 1417,
+      "text": "            if let Some(readiness_path) = &registry_reuse_readiness_path"
+    },
+    {
+      "line": 1418,
+      "text": "                && let Err(error) = fs::OpenOptions::new()"
+    }
+  ],
+  "current_line": 1891,
+  "direct_parent": "4eebe9d1f7ba3738ba157668aef961d1bfc7216b",
+  "draft": false,
+  "introduced_blob": {
+    "bytes": 138588,
+    "git_blob": "cec3ed2764d5561a46f865100a2709297712e2b7",
+    "sha256": "511a9ec2991a9b609d7929aa6911c53ef10bbad729bef8804e4b16cf2ecb37e0"
+  },
+  "introducing_commit": "e42a45efcab3cf44489a071493f6d2aeafb826d2",
+  "introducing_line": 1415,
+  "number": 75,
+  "parent_blob": {
+    "bytes": 133302,
+    "git_blob": "2d0a58be5477f5f85d2029103f2e7588ba06d6aa",
+    "sha256": "a2d2a8cc7002a49425f83b131ccadeb12c87f52dc86f6f5258bb357a1907fc75"
+  },
+  "parent_had_writer": false,
+  "path": "src/compiler/mod.rs",
+  "source_branch": "charlie/1.98/ohm-reuse-built-check-dependencies",
+  "source_url": "https://github.com/astral-sh/ohm-cargo/blob/e42a45efcab3cf44489a071493f6d2aeafb826d2/src/compiler/mod.rs#L1415",
+  "state": "open",
+  "title": "Reuse built registry dependencies during checks",
+  "url": "https://github.com/astral-sh/ohm-cargo/pull/75",
+  "writer": "paths::write_atomic(path, serde_json::to_vec(&provenance)?)?"
+}

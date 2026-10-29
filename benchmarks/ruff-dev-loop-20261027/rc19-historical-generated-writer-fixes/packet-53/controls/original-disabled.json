@@ -1,0 +1,62 @@
+{
+  "case": "public-api",
+  "disabled": true,
+  "cargo": "3f41f6ce7e4b2c690edd941d41d71df243bd7c60e64148af22461db3fee2b7c9",
+  "compiler": "e173035a5dd384e17ca6a178e1987a0a746260c3669459cfab3af580880927ba",
+  "rows": [
+    {
+      "phase": "cold",
+      "exit": 0,
+      "value": 17,
+      "executable": "ee9a4cb7628f685d1e9dd86b5b970d7fce035e0ae9c29add551e5196102748ed",
+      "typed": [
+        [
+          "cache_witness_lib",
+          false
+        ],
+        [
+          "cache_witness_app",
+          false
+        ]
+      ],
+      "stdout": "000f7b3b8fa8f387676509b34f66ffa41f4286464e34c9a17014cb7bdcb464dc",
+      "stderr": "c19dbf421711fc02b31fdbbc59b4338e028c0e9ca1ce37be581599828926203b"
+    },
+    {
+      "phase": "changed",
+      "exit": 0,
+      "value": 29,
+      "executable": "1b90a3fb40d20f9267f4d362e75ebba3864bea7f56b80284899e1ec281c70714",
+      "typed": [
+        [
+          "cache_witness_lib",
+          false
+        ],
+        [
+          "cache_witness_app",
+          false
+        ]
+      ],
+      "stdout": "000f7b3b8fa8f387676509b34f66ffa41f4286464e34c9a17014cb7bdcb464dc",
+      "stderr": "1d33397697c05aeddaf1a5173b0ca23a991fe73f1a3bc49ee02d16e628955da0"
+    },
+    {
+      "phase": "repeat",
+      "exit": 0,
+      "value": 29,
+      "executable": "1b90a3fb40d20f9267f4d362e75ebba3864bea7f56b80284899e1ec281c70714",
+      "typed": [
+        [
+          "cache_witness_lib",
+          true
+        ],
+        [
+          "cache_witness_app",
+          true
+        ]
+      ],
+      "stdout": "858bec6d7deedb884664043f6c27bb359d73bff23672fe97f13c3c3364373417",
+      "stderr": "736e2582f563605dd272e5fb977840b0c0767377d27b6940c440caf75eec7157"
+    }
+  ]
+}
