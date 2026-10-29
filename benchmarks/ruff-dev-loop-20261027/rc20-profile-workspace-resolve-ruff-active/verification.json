@@ -1,0 +1,64 @@
+{
+  "arm_totals": {
+    "A": {
+      "build_scripts": 16,
+      "cache_lookups_hit": 8,
+      "collect2": 24,
+      "commands": 16,
+      "compiles": 66,
+      "expected_failures": 2,
+      "full_resolutions": 9,
+      "gcc": 24,
+      "harnesses": 7,
+      "rustc_processes": 118,
+      "split_completed_execs": 30,
+      "stock_wild": 24,
+      "successful_execs": 238,
+      "test_cases_passed": 21
+    },
+    "B": {
+      "build_scripts": 16,
+      "cache_lookups_hit": 12,
+      "collect2": 24,
+      "commands": 16,
+      "compiles": 66,
+      "expected_failures": 2,
+      "full_resolutions": 5,
+      "gcc": 24,
+      "harnesses": 7,
+      "rustc_processes": 118,
+      "split_completed_execs": 28,
+      "stock_wild": 24,
+      "successful_execs": 238,
+      "test_cases_passed": 21
+    }
+  },
+  "complete_typed_multisets_matched": 16,
+  "edited_test_elf_sha256": "a2a35c107b1ea2ed5891cf759effdedeeac0b0d044cc762a70c3e1822b2ffe09",
+  "exact_diagnostics_including_rendering": 4,
+  "full_product_comparisons": 36,
+  "original_test_elf_sha256": "fe73259b0f12928fcce37ab700ff2b52656b7a18c1c45f075c7b4272955f2dee",
+  "recorded_raw_files": {
+    "v1": 0,
+    "v2": 25,
+    "v3": 161
+  },
+  "rejected_mutations": {
+    "cold ELF substituted for the observed edited product": "original/edited/clean whole executable",
+    "discarded a source stage": "complete command set",
+    "earlier full resolution hidden behind a later cache hit": "every full/hit event",
+    "negative span moved": "negative source location",
+    "one successful stock process removed": "native event count",
+    "raw intermediate mismatch normalized": "bijective typed paths and whole-file raw SHA",
+    "test run falsely passed with one missing name": "actual three executed tests"
+  },
+  "unsuccessful_setup": {
+    "v1_recorded_cargo_study_commands": 0,
+    "v1_returned_stderr_retained_as_file": false,
+    "v2_last_full_and_cached_lines": [
+      1,
+      1108
+    ],
+    "v2_recorded_cargo_study_commands": 5
+  }
+}

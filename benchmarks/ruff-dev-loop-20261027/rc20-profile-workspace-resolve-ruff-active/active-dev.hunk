@@ -1,0 +1,6 @@
+[profile.dev]
+opt-level = 1
+debug = "line-tables-only"
+# Avoid the local ThinLTO that Cargo enables at nonzero optimization levels.
+lto = "off"
+
