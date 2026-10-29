@@ -1,0 +1,63 @@
+diff --git a/src/compiler/fingerprint/mod.rs b/src/compiler/fingerprint/mod.rs
+index 3fb2defcb7c2299744d4d981cdf24e7f87ea0e7e..22af3bc64e14f73c83f41ae3d66f8ed45833471a 100644
+--- a/src/compiler/fingerprint/mod.rs
++++ b/src/compiler/fingerprint/mod.rs
+@@ -2714,11 +2714,13 @@ fn calculate_normal(
+         ("ohm-terminal-check-public-api-hash", 1_u8).hash(&mut config);
+     }
+     if unit_can_use_relink_only(build_runner, unit) {
+-        // Older Cargo could mark a stale executable fresh. Rebuild it once on
+-        // upgrade and when switching between full and cached codegen.
++        // Cache collection changes the rustc arguments even when both modes
++        // use full codegen. A proc macro can observe those arguments.
++        let unstable = build_runner.bcx.gctx.cli_unstable();
+         (
+             "ohm-native-codegen-reuse",
+-            build_runner.bcx.gctx.cli_unstable().relink_only(),
++            unstable.relink_only(),
++            unstable.collect_relink_cache(),
+         )
+             .hash(&mut config);
+     }
+diff --git a/tests/testsuite/freshness.rs b/tests/testsuite/freshness.rs
+index 34524732647a6d547b808b4e35a4dc4dddea98df..a33a748e00564a609e71443240f0b5b233d34b3e 100644
+--- a/tests/testsuite/freshness.rs
++++ b/tests/testsuite/freshness.rs
+@@ -5716,6 +5716,37 @@ fn dependency_edit_reassembles_native_targets_by_default() {
+         .run();
+ }
+ 
++#[cargo_test]
++#[cfg(not(windows))]
++fn changing_relink_cache_collection_rebuilds_the_binary() {
++    let wrapper = relink_only_wrapper();
++    let p = project()
++        .file("Cargo.toml", &basic_manifest("app", "0.1.0"))
++        .file("src/main.rs", "fn main() {}")
++        .build();
++    let log = p.root().join("relink-wrapper.log");
++
++    for (collect, expected) in [
++        (true, "compile-link:app\n"),
++        (false, "compile:app\n"),
++        (false, ""),
++        (true, "compile-link:app\n"),
++        (true, ""),
++    ] {
++        fs::write(&log, "").unwrap();
++        let mut build = p.cargo("-Zohm-defaults build");
++        if !collect {
++            build.arg("-Zrelink-only=no");
++        }
++        build
++            .masquerade_as_nightly_cargo(&["ohm-defaults", "relink-only"])
++            .env("RUSTC_WRAPPER", &wrapper)
++            .env("RELINK_WRAPPER_LOG", &log)
++            .run();
++        assert_eq!(fs::read_to_string(&log).unwrap(), expected);
++    }
++}
++
+ #[cargo_test]
+ #[cfg(not(windows))]
+ fn relink_only_reuses_root_codegen() {
