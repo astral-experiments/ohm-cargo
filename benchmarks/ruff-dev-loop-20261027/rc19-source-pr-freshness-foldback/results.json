@@ -1,0 +1,3031 @@
+{
+  "arms": {
+    "fixed-101": {
+      "fifo": {
+        "default/parent-error": {
+          "opens": {
+            "fifo": [
+              {
+                "flags": [
+                  "O_RDONLY",
+                  "O_NOCTTY",
+                  "O_NONBLOCK",
+                  "O_CLOEXEC"
+                ],
+                "returned": true,
+                "unfinished": false
+              }
+            ],
+            "parent": [
+              {
+                "flags": [
+                  "O_RDONLY",
+                  "O_CLOEXEC"
+                ],
+                "returned": true,
+                "unfinished": false
+              },
+              {
+                "flags": [
+                  "O_RDONLY",
+                  "O_CLOEXEC"
+                ],
+                "returned": true,
+                "unfinished": false
+              },
+              {
+                "flags": [
+                  "O_WRONLY",
+                  "O_CREAT",
+                  "O_TRUNC",
+                  "O_CLOEXEC"
+                ],
+                "returned": false,
+                "unfinished": false
+              }
+            ]
+          },
+          "original_receipt": "f14810596422be28a2441f9a285f8f04602fd3c02a298d1098f518dc65fa058d",
+          "prime_stderr": {
+            "bytes": 718,
+            "sha256": "d334cb30b6b67a9662fad9242c18d9b09cccac232ef7c3524ed4a133b3eb7f16"
+          },
+          "prime_stdout": {
+            "bytes": 4227,
+            "sha256": "f1ca85237586f2724584e9d1fd93b55b13740cddf9e93e3e85c0259d4ea82fc8"
+          },
+          "result": {
+            "cargo": "0baaacbd2d62887171b5ee7183c0fe1450dde0659498725931164f61574a698f",
+            "deadline": false,
+            "fifo_open_calls": 1,
+            "mode": "default",
+            "parent_eisdir": true,
+            "rc": 101,
+            "root_open_calls": 3,
+            "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+            "stderr": "a714769f654043b71451bbea65c2ca0650483a30c44b42f29f5313dc51f25fc1",
+            "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "subject": "fixed-101",
+            "timeout_seconds": 4,
+            "trace": "34d11b78507b2565b82c6a3d108d4a9c3ccbe39617e75f964fb8c8a34b164727",
+            "variant": "parent-error",
+            "writer_processes": 0
+          }
+        },
+        "no-ohm/parent-error": {
+          "opens": {
+            "fifo": [
+              {
+                "flags": [
+                  "O_RDONLY",
+                  "O_NOCTTY",
+                  "O_NONBLOCK",
+                  "O_CLOEXEC"
+                ],
+                "returned": true,
+                "unfinished": false
+              }
+            ],
+            "parent": [
+              {
+                "flags": [
+                  "O_RDONLY",
+                  "O_CLOEXEC"
+                ],
+                "returned": true,
+                "unfinished": false
+              },
+              {
+                "flags": [
+                  "O_WRONLY",
+                  "O_CREAT",
+                  "O_TRUNC",
+                  "O_CLOEXEC"
+                ],
+                "returned": false,
+                "unfinished": false
+              }
+            ]
+          },
+          "original_receipt": "ca01586a2d386e8ce86086c29d217834940942f39503f2e2391e0d6f5943d0e4",
+          "prime_stderr": {
+            "bytes": 714,
+            "sha256": "08ffc5b6fb77aad7a559dcbf7e92f9f4193016188de6e0fa7449c79624595d3f"
+          },
+          "prime_stdout": {
+            "bytes": 3916,
+            "sha256": "8adb354f435f65eb998c332d0d1b0e89f3701d689a2a3ee477d72f0121a503ea"
+          },
+          "result": {
+            "cargo": "0baaacbd2d62887171b5ee7183c0fe1450dde0659498725931164f61574a698f",
+            "deadline": false,
+            "fifo_open_calls": 1,
+            "mode": "no-ohm",
+            "parent_eisdir": true,
+            "rc": 101,
+            "root_open_calls": 2,
+            "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+            "stderr": "d49bb08af406a76d5b545e6af3e05fdfd295d93de5655304138249bae1d60c8b",
+            "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "subject": "fixed-101",
+            "timeout_seconds": 4,
+            "trace": "0038a0f3c277442ea4369814a04e118867df62e4dfdb71126c717666c8b0f3c2",
+            "variant": "parent-error",
+            "writer_processes": 0
+          }
+        }
+      },
+      "image": {
+        "artifacts": 380,
+        "build_script_stamp": {
+          "CARGO_COMMIT_DATE": "2026-10-28",
+          "CARGO_COMMIT_HASH": "62afc4ab5acf699478f72b8fdbd5927db1da26bb",
+          "CARGO_COMMIT_SHORT_HASH": "62afc4ab5"
+        },
+        "build_stderr": {
+          "bytes": 152,
+          "sha256": "3419f892828a1b9825c1285f413c0e6ff808e12e1ff868d9804d1e7b324621e0"
+        },
+        "cargo_vv": "5c4bec3838340fd0a1b532f6cd37f3709f7195769ff7469d4441972f827abd9a",
+        "commit_reported": "62afc4ab5acf699478f72b8fdbd5927db1da26bb",
+        "declaration": {
+          "cargo": "0baaacbd2d62887171b5ee7183c0fe1450dde0659498725931164f61574a698f",
+          "cargo_messages": "8bde146651055f05adbdb0743860c81134c30bb864837760cf381084496d1323",
+          "features": [
+            "default",
+            "http-transport-curl",
+            "ohm-defaults"
+          ],
+          "pr": "101",
+          "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+          "source": "f12e6b41ad880c69c38c7f36bdd3ac219d538b1a",
+          "stage": "fixed",
+          "tree": "ac6345569f35ac475bf7e5cb4a0a5bac170bca41"
+        },
+        "original_build_receipt": "dfbc1acad1d3a68aede619d99ac5af655cc6b5d5be2f53c8b0ed2c02777b725b",
+        "physical_size": 111277888,
+        "reported_cargo": "cargo 1.99.0 (62afc4ab5 2026-10-28)",
+        "version_lines": [
+          "cargo 1.99.0 (62afc4ab5 2026-10-28)",
+          "release: 1.99.0",
+          "commit-hash: 62afc4ab5acf699478f72b8fdbd5927db1da26bb",
+          "commit-date: 2026-10-28",
+          "host: x86_64-unknown-linux-gnu",
+          "libgit2: 1.9.6 (sys:0.21.0 vendored)",
+          "libcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.0.13)",
+          "os: Ubuntu 24.4.0 (noble) [64-bit]"
+        ]
+      },
+      "recovery": {
+        "forced_parent_started": true,
+        "forced_producer_failed": true,
+        "original_receipt": "3672318183e1e61ff294cda9d37a5ad591b543b8891c13c67c8c8ab8a4a8f8c1",
+        "program_stdout": {
+          "final": "1\n",
+          "prime": "1\n"
+        },
+        "result": {
+          "cargo_sha256": "0baaacbd2d62887171b5ee7183c0fe1450dde0659498725931164f61574a698f",
+          "first_success": "reverted",
+          "mode": "default",
+          "phases": {
+            "final-program": {
+              "errors": [],
+              "exit": 0,
+              "files": {
+                "exec.log": "b452b996f12f2e06af2076e9970fdbbe4807c7e764d3520e8968018be4db65d8",
+                "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                "stdout": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+              },
+              "rustcs": []
+            },
+            "forced-failure": {
+              "errors": [],
+              "exit": 101,
+              "files": {
+                "exec.log": "3b42722ff107d54abc2d3de62cc77eebdad84ac15af88d134a18774ce8f9745c",
+                "stderr": "2a57388dc08e55618e2708c147be9fa792b2c27a640099f8f4cb007f4fdf32d7",
+                "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "rustcs": [
+                [
+                  "dep",
+                  "lib"
+                ],
+                [
+                  "app",
+                  "lib"
+                ]
+              ]
+            },
+            "make-wrapper": {
+              "errors": [],
+              "exit": 0,
+              "files": {
+                "exec.log": "725ffa800683416dc3948363487805322e50d23c04889ff330123006eef8f1a6",
+                "stderr": "1eb4f414a64f134346083d0a416dfd5210c89603168c675a46b82902f898bac3",
+                "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "rustcs": []
+            },
+            "prime": {
+              "errors": [],
+              "exit": 0,
+              "files": {
+                "exec.log": "d1e14d46ee9c9a792505aa08e6ec0f8eeab9b0b3051dcc20537b10b034bebc59",
+                "stderr": "9dcaadc57a7945c6a58a7908c3ce63f80103e8ec3252f277e07e0dc1906df785",
+                "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "rustcs": [
+                [
+                  "dep",
+                  "lib"
+                ],
+                [
+                  "app",
+                  "lib"
+                ],
+                [
+                  "app",
+                  "bin"
+                ]
+              ]
+            },
+            "prime-program": {
+              "errors": [],
+              "exit": 0,
+              "files": {
+                "exec.log": "d87fe7bb421eecbcc50b2ae51b8bbceace385c62d38a72554281ca208380c0b8",
+                "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                "stdout": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+              },
+              "rustcs": []
+            },
+            "reverted": {
+              "errors": [],
+              "exit": 0,
+              "files": {
+                "exec.log": "fce99761ebd12cb6f9f300c2a1b7c3a07f989e2ecb2422073f2e74de3b57bd29",
+                "stderr": "56d302e092e19ce5c55c4029075daedaeca8916ac20ae6368d5b0ca38fd8a8fe",
+                "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "rustcs": [
+                [
+                  "dep",
+                  "lib"
+                ],
+                [
+                  "app",
+                  "lib"
+                ],
+                [
+                  "app",
+                  "bin"
+                ]
+              ]
+            }
+          },
+          "rustc_sha256": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+          "value": 1
+        },
+        "reverted_source_sha256": "00b5327bfb380b8c7b5743b134f675179b0df8e90f87a41c1c874a25d057b423"
+      },
+      "suites": {
+        "build_jsonl": {
+          "bytes": 481495,
+          "sha256": "907221d7252749a45cd9f9fd90a26befa1022b028aa5e544fa230256819ed40c"
+        },
+        "build_stderr": {
+          "bytes": 61,
+          "sha256": "5865df3b4ac3c5ed5da7b19dd7fbd0ed2f6109b4c044d888b3856f99d2854ed1"
+        },
+        "original_receipt": "d9efddfe606fdc9df8a8d763edf2b32ab055e8216efab1628cbcffdee6154adb",
+        "sets": {
+          "conditional": {
+            "harness": "522d855bb288deea9dcdd77b8843bdf76aaf5f7829ef4433146d94f623f6c90f",
+            "native_cargo_events": [
+              "bacf21f79b4e070e0c239d90dc50dd49909750670491ab8485cf77bccc4792aa",
+              "a1918cff857b540201d7412b9bbed3972175961ed3b9026af2b1dce6f8148a7a",
+              "bc9e0e75f3e31219bf6ec59e5882bf136bf5024295e87b6c2b0cf9a27965c3d1",
+              "8b229e00ac7c1e73ebc8e5ae771d3edc54629cf00460f69c590b2e644b839426",
+              "3519834f0e46e2b27609059a9189a156e17011711c9f3a658480be4ab313aa97",
+              "a5ff03479484b33329b6a72d27230ddef680e7bf655911789fdb36f3af3da16a",
+              "30ce12eafade066be559d7d4c97ac705a874d0510bccb13ae56cbf4080184cc5",
+              "68fd42ce4d3c8c5623fa03fea4382e9726e3a830e3af79e7c4ce22b8c3259db4",
+              "1da74f57f36ab4b09bfc3cd463cdf2ce59b6dc9b2bc82d2715a047b51e86d62f",
+              "a3e078754ee79180e000ae4c52a034242f665a72bdd060af0837790b50cf8f8f",
+              "b796c418a78ee0435cd77ae9d0b5f6c9764fb1f934f4283e7657c7aaa3e1d049",
+              "0bd1eef79b0cda4906511e03a58225300f79afc2fa0bc5c8054fed9c71fb9147",
+              "a1ad0c7e2cc6013c3d58723be300db8263aa9e26f973907b0d03b621954081c4",
+              "8abec1681fc321b5d68a5acb42c4a713cdb582ceb2e999f3366d2eee31ffbd8a",
+              "c4a56bf29ce5bf518fb02019ccedf2847c786bbdd51aece31cdaa290c43f2a31",
+              "c1f84008c4db99eb54887d3a48d4eed180fc3529457f13094a9e68087f75e10f",
+              "ccccae39fe9925e9bd1e1b9666680519da906cba6ce08017e001a3cb2af480c7",
+              "60dce4cf23db7bcd92a9afbd54547053cc67f0e98b7afdf4a785f4adf714d578",
+              "f54791db3963544c3c048ca6cf14c3978ebf67db2fcc56a50571231a311c78ae",
+              "337ca2c9e6cd6355828822410ab23ffd75871eeb94a592fd9db7e92d62c4cc82",
+              "5978b9e5dcebf3f5d32f537c401e34ba807d0caa8553b38a8c6037287a1496a4",
+              "7c4f1706c35faddad2dbed8ad4f82969ca9e927a8939b8aa8113235ed8253d2a",
+              "e81b7a3dd0e2f99bce29e29c3478da9e53fc946bd940d6461213064c5eaa0588"
+            ],
+            "passed": 7,
+            "physical_cargo_calls": 23,
+            "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout": "aa295be70078ba1bb4f1782f8a1f283c6c34ad9d6007ca94d5932bb0cafe31d1",
+            "tests": [
+              "test freshness::conditional_metadata_pipelines_changed_check_before_compiler_finishes ... ok",
+              "test freshness::conditional_metadata_pipelines_changed_rlib_before_codegen_finishes ... ok",
+              "test freshness::conditional_metadata_preserves_transitive_binary_object_barriers ... ok",
+              "test freshness::conditional_metadata_rebuilds_committed_dependent_after_failed_producer_is_reverted ... ok",
+              "test freshness::conditional_metadata_recovers_when_dependency_fails_after_metadata ... ok",
+              "test freshness::conditional_metadata_waits_for_unchanged_hash_and_preserves_early_cutoff ... ok",
+              "test freshness::conditional_metadata_waits_when_unchanged_middle_has_changed_dependency ... ok"
+            ],
+            "trace": "a2d9509bd84719704b7f6cad6e7f93940318d924c4ad490852fe04e2b770376e"
+          },
+          "fingerprints": {
+            "harness": "d8037aef6ee62d1a4bd73744276bacba6dd6d7c86b8b0c233b4bb7a4ee4c9021",
+            "native_cargo_events": [],
+            "passed": 73,
+            "physical_cargo_calls": 0,
+            "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout": "53bc897ccdc823ea64361d5516c4c9a2b3a6ca81619732c73eae73b6f7979b40",
+            "tests": [
+              "test compiler::fingerprint::dep_info::encoded_dep_info::parse_v0_fingerprint_dep_info ... ok",
+              "test compiler::fingerprint::dep_info::encoded_dep_info::path_type_is_u8_max ... ok",
+              "test compiler::fingerprint::dep_info::encoded_dep_info::round_trip ... ok",
+              "test compiler::fingerprint::dep_info::encoded_dep_info::round_trip_with_checksums ... ok",
+              "test compiler::fingerprint::dep_info::encoded_dep_info::seed_translation_preserves_absolute_inputs_and_relative_spelling ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::checksum_use_changed ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::dep_info_output_changed ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::env_var_changed_both_some ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::env_var_changed_old_none ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::features_changed ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::forced ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fresh_build ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_changed_checksum ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_changed_env ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_changed_file ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_failed_to_read_metadata ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_file_size_changed ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_missing_checksum ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_missing_file ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_stale ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_stale_dep_fingerprint ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_stale_dependency ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_unable_to_read_file ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::local_fingerprint_type_changed ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::nothing_obvious ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::number_of_dependencies_changed ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::rerun_if_changed_output_paths_changed ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::rustc_changed ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::rustflags_changed ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::unit_dependency_info_changed ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::unit_dependency_name_changed ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::changed_full_artifact_dependency_does_not_propagate_metadata_only_state ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::changed_metadata_dependency_propagates_through_unchanged_public_api ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::changed_workspace_dependency_cannot_skip_unused_integration_target ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::committed_short_hash_only_validates_one_current_comparison ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::dep_built_changed_should_not_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::dep_built_unchanged_should_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::dep_fresh_alone_should_not_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::dep_pending_should_not_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::dep_skipped_early_cutoff_should_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::diamond_dependency_all_unchanged ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::diamond_dependency_one_changed ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::fresh_library_dependency_can_relink_newer_transitive_artifacts ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::fresh_library_dependency_with_different_stale_unit_cannot_relink ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::fresh_library_dependency_with_newer_metadata_cannot_relink ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::fresh_non_library_dependency_cannot_relink_newer_transitive_artifacts ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::mixed_deps_fresh_and_built_unchanged_should_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::mixed_deps_with_one_changed_should_not_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::mixed_deps_with_one_pending_should_not_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::no_deps_should_not_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::non_dependency_dirty_reason_is_not_a_candidate ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::previously_changed_metadata_dependency_propagates_through_unchanged_public_api ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::public_api_hash_format ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::public_api_hash_is_not_advanced_before_fingerprint_commit ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::public_api_hash_rustflags ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::rebuilt_changed_dependency_prevents_fresh_transitive_relink ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::rebuilt_full_artifact_dependency_should_not_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::rebuilt_library_dependency_can_relink ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::rebuilt_non_library_dependency_cannot_relink ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::simultaneous_local_and_dependency_changes_are_not_candidates ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::skipped_library_dependency_can_relink_transitive_artifacts ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::speculative_short_fingerprint_follows_regular_symlinks_and_rejects_fifos ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::transitive_chain_all_unchanged ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::transitive_early_cutoff_propagates ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::transitive_with_changed_dep_does_not_propagate ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::unchanged_metadata_dependency_does_not_propagate_changed_state ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::unit_not_stale_due_to_dep_should_not_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::unit_stale_item_should_not_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::unproven_skipped_workspace_dependency_cannot_skip_integration_target ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::unused_workspace_dependency_with_skipped_unused_root_can_skip ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::up_to_date_unit_should_not_cutoff ... ok",
+              "test compiler::fingerprint::worktree_seed_tests::seed_identity_preserves_other_paths_and_checksum_policy ... ok",
+              "test compiler::fingerprint::worktree_seed_tests::seeded_dep_info_identity_survives_relocation_and_serialization ... ok"
+            ],
+            "trace": "930e1134e0a5369e927619f3f77618cee19b1bbf2014aa4e37cc19652a7ca00b"
+          },
+          "markers": {
+            "harness": "522d855bb288deea9dcdd77b8843bdf76aaf5f7829ef4433146d94f623f6c90f",
+            "native_cargo_events": [
+              "b66dd0a0dc71dff15620f120fe35808f0f1a93cdad4ab166197a0d96279ee490",
+              "fb22e6a80aea1dfc9a761057a3e0d99cb3ba9db642e0cdd852cf84c60583ab27"
+            ],
+            "passed": 1,
+            "physical_cargo_calls": 2,
+            "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout": "674d4a31037f334d4d44552f1a217df266a1f874acf3776f09ba90c31f18149c",
+            "tests": [
+              "test ohm_worktree::seed_markers_replace_symlinks ... ok"
+            ],
+            "trace": "88125f201c74a7145769643884d4c93e9e48e2e386927ebaed68bc0cc8908fb7"
+          }
+        }
+      }
+    },
+    "fixed-103": {
+      "fifo": {
+        "default/parent-error": {
+          "opens": {
+            "fifo": [
+              {
+                "flags": [
+                  "O_RDONLY",
+                  "O_NOCTTY",
+                  "O_NONBLOCK",
+                  "O_CLOEXEC"
+                ],
+                "returned": true,
+                "unfinished": false
+              }
+            ],
+            "parent": [
+              {
+                "flags": [
+                  "O_RDONLY",
+                  "O_CLOEXEC"
+                ],
+                "returned": true,
+                "unfinished": false
+              },
+              {
+                "flags": [
+                  "O_RDONLY",
+                  "O_CLOEXEC"
+                ],
+                "returned": true,
+                "unfinished": false
+              },
+              {
+                "flags": [
+                  "O_WRONLY",
+                  "O_CREAT",
+                  "O_TRUNC",
+                  "O_CLOEXEC"
+                ],
+                "returned": false,
+                "unfinished": false
+              }
+            ]
+          },
+          "original_receipt": "848701feb93a4a4377621552b37400819bd884735d6cef60fabc613d82b7e362",
+          "prime_stderr": {
+            "bytes": 718,
+            "sha256": "9dbf1a4f8d27bd541dfb949e038223c14a9931507a50a835dab92fa36e0be6e0"
+          },
+          "prime_stdout": {
+            "bytes": 4227,
+            "sha256": "5f9d6839ee4727fabca1fec22c1d71652088b21f59c68666bc4198d5caeaa990"
+          },
+          "result": {
+            "cargo": "d50a228167720353d9144cd7923e8b93e56f781d91662c9be0774fe42dd48014",
+            "deadline": false,
+            "fifo_open_calls": 1,
+            "mode": "default",
+            "parent_eisdir": true,
+            "rc": 101,
+            "root_open_calls": 3,
+            "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+            "stderr": "331e803f681501ca56c4763ea237a1187b14552cf532940a564a29e0b69f6334",
+            "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "subject": "fixed-103",
+            "timeout_seconds": 4,
+            "trace": "2d667e2e2a7d9404433412fc708ed8d1b0b2918cb5b35d65f798d5666233533e",
+            "variant": "parent-error",
+            "writer_processes": 0
+          }
+        },
+        "no-ohm/parent-error": {
+          "opens": {
+            "fifo": [
+              {
+                "flags": [
+                  "O_RDONLY",
+                  "O_NOCTTY",
+                  "O_NONBLOCK",
+                  "O_CLOEXEC"
+                ],
+                "returned": true,
+                "unfinished": false
+              }
+            ],
+            "parent": [
+              {
+                "flags": [
+                  "O_RDONLY",
+                  "O_CLOEXEC"
+                ],
+                "returned": true,
+                "unfinished": false
+              },
+              {
+                "flags": [
+                  "O_WRONLY",
+                  "O_CREAT",
+                  "O_TRUNC",
+                  "O_CLOEXEC"
+                ],
+                "returned": false,
+                "unfinished": false
+              }
+            ]
+          },
+          "original_receipt": "5a8bb365a8377620f919b5932f924daa43827da274a0b3830a7f1defb04a47aa",
+          "prime_stderr": {
+            "bytes": 714,
+            "sha256": "ab333a7b13bdb791ea4ca8469d368d57c562f094811c8e16aafc0787370327e8"
+          },
+          "prime_stdout": {
+            "bytes": 3916,
+            "sha256": "b8b665b658e20109d6cae07a42b61d0746cba13211d3bb1745dfbc5aa785a7d8"
+          },
+          "result": {
+            "cargo": "d50a228167720353d9144cd7923e8b93e56f781d91662c9be0774fe42dd48014",
+            "deadline": false,
+            "fifo_open_calls": 1,
+            "mode": "no-ohm",
+            "parent_eisdir": true,
+            "rc": 101,
+            "root_open_calls": 2,
+            "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+            "stderr": "e4050b12d4168188737b3b623ac11beaa3d0b64350b676ab08eb6ecd19e2e27d",
+            "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "subject": "fixed-103",
+            "timeout_seconds": 4,
+            "trace": "0cc3c7bd13711a1bbb56d430725d0cfa864415767b8033dc6a04d4c300df46e4",
+            "variant": "parent-error",
+            "writer_processes": 0
+          }
+        }
+      },
+      "image": {
+        "artifacts": 380,
+        "build_script_stamp": {
+          "CARGO_COMMIT_DATE": "2026-10-28",
+          "CARGO_COMMIT_HASH": "1a84f8f36f0ff9f283337bfcce856b4b54c47281",
+          "CARGO_COMMIT_SHORT_HASH": "1a84f8f36"
+        },
+        "build_stderr": {
+          "bytes": 152,
+          "sha256": "2e2e3bdd78a8f4c4f8c7ef3c1cd0dcf10cd5cde38fbbf32efc695cbd23cc77c6"
+        },
+        "cargo_vv": "6db5095562f1449c1a7748f43c5f70b62dfb1059cb61767699636297324e5fb0",
+        "commit_reported": "1a84f8f36f0ff9f283337bfcce856b4b54c47281",
+        "declaration": {
+          "cargo": "d50a228167720353d9144cd7923e8b93e56f781d91662c9be0774fe42dd48014",
+          "cargo_messages": "8e41223d33b58d8891df21d2a9dbfd48d5d7126f2f5092e1a0f6409069cfd962",
+          "features": [
+            "default",
+            "http-transport-curl",
+            "ohm-defaults"
+          ],
+          "pr": "103",
+          "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+          "source": "1cbb910d0011480d7e4fcaf5cec8e2513cf6550c",
+          "stage": "fixed",
+          "tree": "3d4037d3621fd5f22e28bb18b7bd7513b1fed5a9"
+        },
+        "original_build_receipt": "bec79799983aab0f84d694e6d7f8391d5a106da01fc68e3ca80f81f27b38705c",
+        "physical_size": 111307616,
+        "reported_cargo": "cargo 1.99.0 (1a84f8f36 2026-10-28)",
+        "version_lines": [
+          "cargo 1.99.0 (1a84f8f36 2026-10-28)",
+          "release: 1.99.0",
+          "commit-hash: 1a84f8f36f0ff9f283337bfcce856b4b54c47281",
+          "commit-date: 2026-10-28",
+          "host: x86_64-unknown-linux-gnu",
+          "libgit2: 1.9.6 (sys:0.21.0 vendored)",
+          "libcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.0.13)",
+          "os: Ubuntu 24.4.0 (noble) [64-bit]"
+        ]
+      },
+      "recovery": {
+        "forced_parent_started": true,
+        "forced_producer_failed": true,
+        "original_receipt": "ec8335ffcf666c4a6d3442016e4f6ef166ecebb6e3078480e56a6d7808a8233f",
+        "program_stdout": {
+          "final": "1\n",
+          "prime": "1\n"
+        },
+        "result": {
+          "cargo_sha256": "d50a228167720353d9144cd7923e8b93e56f781d91662c9be0774fe42dd48014",
+          "first_success": "reverted",
+          "mode": "default",
+          "phases": {
+            "final-program": {
+              "errors": [],
+              "exit": 0,
+              "files": {
+                "exec.log": "2cd44804f28e6bb88e6e0dfe4b7a15d94d3ab194e151ab6e775c3355c5b7d709",
+                "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                "stdout": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+              },
+              "rustcs": []
+            },
+            "forced-failure": {
+              "errors": [],
+              "exit": 101,
+              "files": {
+                "exec.log": "1ad15c42cab739e9ff6d74f5a37c6bed2044f855c211fd21f2d32de331ea5fee",
+                "stderr": "13619468844a5fb491fe617c7d76c75bd35adf9ebc691203a563115911cd7f08",
+                "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "rustcs": [
+                [
+                  "dep",
+                  "lib"
+                ],
+                [
+                  "app",
+                  "lib"
+                ]
+              ]
+            },
+            "make-wrapper": {
+              "errors": [],
+              "exit": 0,
+              "files": {
+                "exec.log": "ff37e245e4375aaaadc7c8209e2eae3b958f4ec60d0edfc195ce27b2d0de9a1d",
+                "stderr": "b660a152a9d8fa40d644b7b1bcd1773d2b2e0bc87b841de0fcde9118f8152f34",
+                "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "rustcs": []
+            },
+            "prime": {
+              "errors": [],
+              "exit": 0,
+              "files": {
+                "exec.log": "eba72e34d9895f12de7fc04112a139696e350ee794b1ac32eb55bfa96cc89291",
+                "stderr": "ecc3b977f24611de7c304fea5d706209cbfc2b0461965632133ede753bbb907a",
+                "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "rustcs": [
+                [
+                  "dep",
+                  "lib"
+                ],
+                [
+                  "app",
+                  "lib"
+                ],
+                [
+                  "app",
+                  "bin"
+                ]
+              ]
+            },
+            "prime-program": {
+              "errors": [],
+              "exit": 0,
+              "files": {
+                "exec.log": "5e505f0a96f8afd20066b8b02a0f405d708df3e237c5174afca4a1acebcedd05",
+                "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                "stdout": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+              },
+              "rustcs": []
+            },
+            "reverted": {
+              "errors": [],
+              "exit": 0,
+              "files": {
+                "exec.log": "366fa67d7b5a3b7c31d7ae4fbc3534a0ef95c75bb99965960bf99ab1e715ed61",
+                "stderr": "f7f2c726554948e4cfd816ee07d294ab82ba868348e5b37e911811b05ea12580",
+                "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "rustcs": [
+                [
+                  "dep",
+                  "lib"
+                ],
+                [
+                  "app",
+                  "lib"
+                ],
+                [
+                  "app",
+                  "bin"
+                ]
+              ]
+            }
+          },
+          "rustc_sha256": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+          "value": 1
+        },
+        "reverted_source_sha256": "00b5327bfb380b8c7b5743b134f675179b0df8e90f87a41c1c874a25d057b423"
+      },
+      "suites": {
+        "build_jsonl": {
+          "bytes": 481891,
+          "sha256": "f50e27c32eaf797ab2f3f936282641ef79efc727c9540abca6740caa5dd66d3b"
+        },
+        "build_stderr": {
+          "bytes": 12052,
+          "sha256": "735fe5752a2c4b88482a90fd123e3db9d0f1999d1ac9be135b1a08bcadec403f"
+        },
+        "original_receipt": "077dcd6aa2bc8c5dab9fbed81d9d8a03029626f3f467e9e04b3451fce0762b87",
+        "sets": {
+          "conditional": {
+            "harness": "f4b476901df0a72afaec89a75ad396a9643be5b2263dba7474b1ac3f4867cee8",
+            "native_cargo_events": [
+              "fa423042130a810b2aeb5c9e0efb148dd1d58dccdc21c93cead8f5b84113e9de",
+              "431b9acce7f17132f00f197ff6f8b507e9d7242bcfec2c0e10992a468080049f",
+              "475aed06053d74b8b8d8d949ac01faede8a3519071bf1b7df558416313ecc9b4",
+              "7aff0509ab4b8773ed30c9bfc3d81b8e319e60fda2552719fc9ef4213e699651",
+              "f48c73090755d48530a656f0eff974e90f6b22b705ff68a6f44d34584a340020",
+              "570fbdcfb5747a035169c6d296612a519085e490fd74bb46f9f3f644620473b0",
+              "648d806aa19394de6f838f50e294dfc91b673fa1b2249e22536385bd34cfc5ee",
+              "59897b492c5fb61902ef140f28dc98a934faeba7db42d42321f04ffdce470f48",
+              "a462f7518e1f844527dce4c7d19e441598be3cb98fc006c52f09d537b9317100",
+              "dea7bd870bb75eca80052fbe07d5984dae52dd8a19abef60b5b189858b28a94d",
+              "325c34ae0c8f295f03b6b7a238fb32f0b3d359b0f00c0264752345487c8ea5b3",
+              "75bbc6fc72e1a4eb8ac9924740b46d7634eac369d12b9b4b7451266ca4dca7ac",
+              "57c0d80c28c6fb0971919aeae51b1e83d01f66e5a7a6cccc48e1cb0f787f8138",
+              "0322b58cde7e60e657b614339117d0244d04ec9974dbfcbf4f7662e28ef44d10",
+              "69c7d8337bc8611aa345f6ecfd61f91ca1ecda11c8665983a8aeedaf47fd44d0",
+              "cbf3fabc95820ab662447b52d20c8f244f27ec48aea13c895af9334500cd6378",
+              "920b82b30b3c322704f5b86fe0ae94ecb7462077740c03d50cc8307cbd7eef31",
+              "2680159b8a53f70f80703409c9f8dc0bbad08492e4c212bef9e7041156cdf249",
+              "f8f3cb9598dd87dd6a99cff0ea1b46e2d3a32c912b93152bed5ed5fbd370e827",
+              "d7d2bcd7244c0566153c4d073d33db99928f3ca6f0a7a0c774d0e35c3e6cda78",
+              "707dd58de207889806f7b82d2fe844d073bc9735c0296bd6415f899782e61b44",
+              "7aca831fc96e74065cd8db05bdc8979ed09d69969fc289e4d20b4eb5a97b1c94",
+              "c19173c4146735190eb97ba2a2ff50dc52d79ac484e3072c4760b5bebc501851"
+            ],
+            "passed": 7,
+            "physical_cargo_calls": 23,
+            "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout": "49540e99829300205cc6c042cd143fd46848ab486b4585c1ca970dc3090011a3",
+            "tests": [
+              "test freshness::conditional_metadata_pipelines_changed_check_before_compiler_finishes ... ok",
+              "test freshness::conditional_metadata_pipelines_changed_rlib_before_codegen_finishes ... ok",
+              "test freshness::conditional_metadata_preserves_transitive_binary_object_barriers ... ok",
+              "test freshness::conditional_metadata_rebuilds_committed_dependent_after_failed_producer_is_reverted ... ok",
+              "test freshness::conditional_metadata_recovers_when_dependency_fails_after_metadata ... ok",
+              "test freshness::conditional_metadata_waits_for_unchanged_hash_and_preserves_early_cutoff ... ok",
+              "test freshness::conditional_metadata_waits_when_unchanged_middle_has_changed_dependency ... ok"
+            ],
+            "trace": "91decbfe7e0f58e539c8fec6092bdc041d431711c5d1a1eac4c6a4fdb2b17319"
+          },
+          "fingerprints": {
+            "harness": "8c83fd1465a7a9c717000b9be26eb564e0d3a31f54fc84bd16e36d58afb6885a",
+            "native_cargo_events": [],
+            "passed": 73,
+            "physical_cargo_calls": 0,
+            "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout": "c2c116176569888bf4aec4c771b2f3627ec63ab4ddef4bb07002fffb6d8c90a8",
+            "tests": [
+              "test compiler::fingerprint::dep_info::encoded_dep_info::parse_v0_fingerprint_dep_info ... ok",
+              "test compiler::fingerprint::dep_info::encoded_dep_info::path_type_is_u8_max ... ok",
+              "test compiler::fingerprint::dep_info::encoded_dep_info::round_trip ... ok",
+              "test compiler::fingerprint::dep_info::encoded_dep_info::round_trip_with_checksums ... ok",
+              "test compiler::fingerprint::dep_info::encoded_dep_info::seed_translation_preserves_absolute_inputs_and_relative_spelling ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::checksum_use_changed ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::dep_info_output_changed ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::env_var_changed_both_some ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::env_var_changed_old_none ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::features_changed ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::forced ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fresh_build ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_changed_checksum ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_changed_env ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_changed_file ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_failed_to_read_metadata ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_file_size_changed ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_missing_checksum ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_missing_file ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_stale ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_stale_dep_fingerprint ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_stale_dependency ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_unable_to_read_file ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::local_fingerprint_type_changed ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::nothing_obvious ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::number_of_dependencies_changed ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::rerun_if_changed_output_paths_changed ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::rustc_changed ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::rustflags_changed ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::unit_dependency_info_changed ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::unit_dependency_name_changed ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::changed_full_artifact_dependency_does_not_propagate_metadata_only_state ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::changed_metadata_dependency_propagates_through_unchanged_public_api ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::changed_workspace_dependency_cannot_skip_unused_integration_target ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::committed_short_hash_only_validates_one_current_comparison ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::dep_built_changed_should_not_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::dep_built_unchanged_should_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::dep_fresh_alone_should_not_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::dep_pending_should_not_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::dep_skipped_early_cutoff_should_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::diamond_dependency_all_unchanged ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::diamond_dependency_one_changed ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::fresh_library_dependency_can_relink_newer_transitive_artifacts ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::fresh_library_dependency_with_different_stale_unit_cannot_relink ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::fresh_library_dependency_with_newer_metadata_cannot_relink ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::fresh_non_library_dependency_cannot_relink_newer_transitive_artifacts ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::mixed_deps_fresh_and_built_unchanged_should_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::mixed_deps_with_one_changed_should_not_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::mixed_deps_with_one_pending_should_not_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::no_deps_should_not_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::non_dependency_dirty_reason_is_not_a_candidate ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::previously_changed_metadata_dependency_propagates_through_unchanged_public_api ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::public_api_hash_format ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::public_api_hash_is_not_advanced_before_fingerprint_commit ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::public_api_hash_rustflags ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::rebuilt_changed_dependency_prevents_fresh_transitive_relink ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::rebuilt_full_artifact_dependency_should_not_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::rebuilt_library_dependency_can_relink ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::rebuilt_non_library_dependency_cannot_relink ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::simultaneous_local_and_dependency_changes_are_not_candidates ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::skipped_library_dependency_can_relink_transitive_artifacts ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::speculative_short_fingerprint_follows_regular_symlinks_and_rejects_fifos ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::transitive_chain_all_unchanged ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::transitive_early_cutoff_propagates ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::transitive_with_changed_dep_does_not_propagate ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::unchanged_metadata_dependency_does_not_propagate_changed_state ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::unit_not_stale_due_to_dep_should_not_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::unit_stale_item_should_not_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::unproven_skipped_workspace_dependency_cannot_skip_integration_target ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::unused_workspace_dependency_with_skipped_unused_root_can_skip ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::up_to_date_unit_should_not_cutoff ... ok",
+              "test compiler::fingerprint::worktree_seed_tests::seed_identity_preserves_other_paths_and_checksum_policy ... ok",
+              "test compiler::fingerprint::worktree_seed_tests::seeded_dep_info_identity_survives_relocation_and_serialization ... ok"
+            ],
+            "trace": "b2aacbc9aa9910bd97d2570f475857af29f2bbf125ac830040466c83e971b3aa"
+          },
+          "macro-marker": {
+            "harness": "f4b476901df0a72afaec89a75ad396a9643be5b2263dba7474b1ac3f4867cee8",
+            "native_cargo_events": [
+              "b4fe8603ae3f0d7441dee947171bd5a3fd8cbd967671c782d471abf80a68c433",
+              "cc9f7140fea21bba7315475e465b55c92a8639ba4a6cdc6eb05ca57035b98267"
+            ],
+            "passed": 1,
+            "physical_cargo_calls": 2,
+            "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout": "fb8eff8d3fa3323d24dc1a21359af2e9494b488ed3898e976ddce8b139fe2fe2",
+            "tests": [
+              "test ohm_worktree::local_proc_macro_marker_replaces_symlinks ... ok"
+            ],
+            "trace": "a83187f6427e5c397ec475404373fe0be111b8cfea41d815914fc9537bd2eaa9"
+          },
+          "markers": {
+            "harness": "f4b476901df0a72afaec89a75ad396a9643be5b2263dba7474b1ac3f4867cee8",
+            "native_cargo_events": [
+              "1979177ae8da30a62f914ca03200bb2fbe5e5314498efd99db60afb50f1b04f8",
+              "9c853d6cfd55204a85d5cf889a1369dfc171227a6ffba0a0a1df30c6cc4140b2"
+            ],
+            "passed": 1,
+            "physical_cargo_calls": 2,
+            "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout": "8feac2a755c2c2121f97cd4f3463fba01b628ba990068a1c766b2e0136b64070",
+            "tests": [
+              "test ohm_worktree::seed_markers_replace_symlinks ... ok"
+            ],
+            "trace": "90bd257ce0b8f86053b1b0b89f659fc061464ce2d153f2681404ed34dbc31198"
+          }
+        }
+      }
+    },
+    "prior-101": {
+      "fifo": {
+        "default/parent-error": {
+          "opens": {
+            "fifo": [],
+            "parent": [
+              {
+                "flags": [
+                  "O_RDONLY",
+                  "O_CLOEXEC"
+                ],
+                "returned": true,
+                "unfinished": false
+              },
+              {
+                "flags": [
+                  "O_RDONLY",
+                  "O_CLOEXEC"
+                ],
+                "returned": true,
+                "unfinished": false
+              },
+              {
+                "flags": [
+                  "O_WRONLY",
+                  "O_CREAT",
+                  "O_TRUNC",
+                  "O_CLOEXEC"
+                ],
+                "returned": false,
+                "unfinished": false
+              }
+            ]
+          },
+          "original_receipt": "ad99d1f49760820d6e5d862a0d2991aa7624cff6a7be225caa9239f25e06fbc1",
+          "prime_stderr": {
+            "bytes": 718,
+            "sha256": "419eee7a86ea415e67a4f2045ce95a80eb91c3969e33144089077c079fbc69d4"
+          },
+          "prime_stdout": {
+            "bytes": 4227,
+            "sha256": "bcafd0edf2773d0ac5eeb32264361a6f61395e13bf4cb0f349dabf648156aa9f"
+          },
+          "result": {
+            "cargo": "1fca071fbd2bdf8ab380b51fdcce4544c7bce487df85d4bd99c8bedd21437aaf",
+            "deadline": false,
+            "fifo_open_calls": 0,
+            "mode": "default",
+            "parent_eisdir": true,
+            "rc": 101,
+            "root_open_calls": 3,
+            "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+            "stderr": "7914067110912d6f497ae3f8c80fffe20278afa6f4e03700a47d489c6412a444",
+            "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "subject": "prior-101",
+            "timeout_seconds": 4,
+            "trace": "974849261317cd31dec9b4afacf3b40ff0b542302206dfecdf07d3d7b71644af",
+            "variant": "parent-error",
+            "writer_processes": 0
+          }
+        },
+        "no-ohm/parent-error": {
+          "opens": {
+            "fifo": [],
+            "parent": [
+              {
+                "flags": [
+                  "O_RDONLY",
+                  "O_CLOEXEC"
+                ],
+                "returned": true,
+                "unfinished": false
+              },
+              {
+                "flags": [
+                  "O_WRONLY",
+                  "O_CREAT",
+                  "O_TRUNC",
+                  "O_CLOEXEC"
+                ],
+                "returned": false,
+                "unfinished": false
+              }
+            ]
+          },
+          "original_receipt": "fbb7e2a1b4fecc435f91850e4ba840b8ae523cc94f83ef1d86fc53ea3572f73e",
+          "prime_stderr": {
+            "bytes": 714,
+            "sha256": "b4051d0369c6a61ff329708f31bc5222d66bd1bbc08340bfc8e2aa50214c0972"
+          },
+          "prime_stdout": {
+            "bytes": 3916,
+            "sha256": "a52a22e17ecb863faf4436f496becc912e197b071230a52ebb0d1ab6d7f4ae6b"
+          },
+          "result": {
+            "cargo": "1fca071fbd2bdf8ab380b51fdcce4544c7bce487df85d4bd99c8bedd21437aaf",
+            "deadline": false,
+            "fifo_open_calls": 0,
+            "mode": "no-ohm",
+            "parent_eisdir": true,
+            "rc": 101,
+            "root_open_calls": 2,
+            "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+            "stderr": "1bf2793a0179141dd22af5cf24cd2c4e6fc3c4a3f7b909d91b01a99b602fd4f3",
+            "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "subject": "prior-101",
+            "timeout_seconds": 4,
+            "trace": "91f67787ae68db871267a45262028d099548ea9e9ba6c51b10a4923fb48eb7f8",
+            "variant": "parent-error",
+            "writer_processes": 0
+          }
+        }
+      },
+      "image": {
+        "artifacts": 380,
+        "build_script_stamp": {
+          "CARGO_COMMIT_DATE": "2026-10-28",
+          "CARGO_COMMIT_HASH": "62afc4ab5acf699478f72b8fdbd5927db1da26bb",
+          "CARGO_COMMIT_SHORT_HASH": "62afc4ab5"
+        },
+        "build_stderr": {
+          "bytes": 11443,
+          "sha256": "9c7eed377f18284782ec948769d8757ffcf26b42aca7c6befb32c2a96a9ec294"
+        },
+        "cargo_vv": "5c4bec3838340fd0a1b532f6cd37f3709f7195769ff7469d4441972f827abd9a",
+        "commit_reported": "62afc4ab5acf699478f72b8fdbd5927db1da26bb",
+        "declaration": {
+          "cargo": "1fca071fbd2bdf8ab380b51fdcce4544c7bce487df85d4bd99c8bedd21437aaf",
+          "cargo_messages": "ff4ecf09fb6de78eefbb8475c3c01afc2df1b681ae5a219c451646ff7eba5712",
+          "features": [
+            "default",
+            "http-transport-curl",
+            "ohm-defaults"
+          ],
+          "pr": "101",
+          "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+          "source": "62afc4ab5acf699478f72b8fdbd5927db1da26bb",
+          "stage": "prior",
+          "tree": "363cef32f88626e439b76d9778a9695cc1324509"
+        },
+        "original_build_receipt": "257bebc0aed07f5b3b7d3fb48850fd754f0ced511d0a0de32795f6e561dc3a1a",
+        "physical_size": 111286832,
+        "reported_cargo": "cargo 1.99.0 (62afc4ab5 2026-10-28)",
+        "version_lines": [
+          "cargo 1.99.0 (62afc4ab5 2026-10-28)",
+          "release: 1.99.0",
+          "commit-hash: 62afc4ab5acf699478f72b8fdbd5927db1da26bb",
+          "commit-date: 2026-10-28",
+          "host: x86_64-unknown-linux-gnu",
+          "libgit2: 1.9.6 (sys:0.21.0 vendored)",
+          "libcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.0.13)",
+          "os: Ubuntu 24.4.0 (noble) [64-bit]"
+        ]
+      },
+      "recovery": {
+        "forced_parent_started": true,
+        "forced_producer_failed": true,
+        "original_receipt": "f6f435cc5f1faa5584ca3179b2c353b9e2c0970a947f57ae2972fbbc389df7f3",
+        "program_stdout": {
+          "final": "1\n",
+          "prime": "1\n"
+        },
+        "result": {
+          "cargo_sha256": "1fca071fbd2bdf8ab380b51fdcce4544c7bce487df85d4bd99c8bedd21437aaf",
+          "first_success": "untouched-1",
+          "mode": "default",
+          "phases": {
+            "final-program": {
+              "errors": [],
+              "exit": 0,
+              "files": {
+                "exec.log": "316841a51fd9806b81dd9d8c9a71df13bf479d670300316a99ba26b8ccc38962",
+                "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                "stdout": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+              },
+              "rustcs": []
+            },
+            "forced-failure": {
+              "errors": [],
+              "exit": 101,
+              "files": {
+                "exec.log": "bbeae2b306334629b2186fe6086d7789ef0bd001bd6b1b5ae388b5f13467a815",
+                "stderr": "e4ced1476e9d5bd0e52881b6fb322c41d5a3d7490fa062a1660b1204b9076d53",
+                "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "rustcs": [
+                [
+                  "dep",
+                  "lib"
+                ],
+                [
+                  "app",
+                  "lib"
+                ]
+              ]
+            },
+            "make-wrapper": {
+              "errors": [],
+              "exit": 0,
+              "files": {
+                "exec.log": "c088f9de11aeb418ffda5e535b05a98c830d036de080ba2bc81b7945b46d4af2",
+                "stderr": "cbd8c76d43a40071a8e261f15294988452d6565ecdc84684a6518c973a298eba",
+                "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "rustcs": []
+            },
+            "prime": {
+              "errors": [],
+              "exit": 0,
+              "files": {
+                "exec.log": "4aeaf25ff516f108c8d8a31233846aa7a1d3158a967326fae0cd348afa2a8f93",
+                "stderr": "5d3347188feff790675efa623f1a23ebeb3a3c01bf5c6f28db0085a3c23b937b",
+                "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "rustcs": [
+                [
+                  "dep",
+                  "lib"
+                ],
+                [
+                  "app",
+                  "lib"
+                ],
+                [
+                  "app",
+                  "bin"
+                ]
+              ]
+            },
+            "prime-program": {
+              "errors": [],
+              "exit": 0,
+              "files": {
+                "exec.log": "d9b42645b94d549b4c52194d9c10e7cf611b9b0a02357f68c7f9f57ca48d764f",
+                "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                "stdout": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+              },
+              "rustcs": []
+            },
+            "reverted": {
+              "errors": [
+                "E0460"
+              ],
+              "exit": 101,
+              "files": {
+                "exec.log": "26a2730f066401a880c38d4c0e5ea321f8864d0d87b02b799cf7287352ab356c",
+                "stderr": "ffcb990e1c03b9b0fc1ad7ca1ec59cec0bf52223f615fa74def4573a8a9f7293",
+                "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "rustcs": [
+                [
+                  "dep",
+                  "lib"
+                ],
+                [
+                  "app",
+                  "bin"
+                ]
+              ]
+            },
+            "untouched-1": {
+              "errors": [],
+              "exit": 0,
+              "files": {
+                "exec.log": "7e135f5225e693fc4bc401ea307d313fec528da3e0eedb09b5cf6525c34a96ea",
+                "stderr": "ecab4703d724eb0577fa17c9caa9452c1deaca6ac2e438b4b0983cc64bd7f7cc",
+                "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "rustcs": [
+                [
+                  "app",
+                  "lib"
+                ],
+                [
+                  "app",
+                  "bin"
+                ]
+              ]
+            }
+          },
+          "rustc_sha256": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+          "value": 1
+        },
+        "reverted_source_sha256": "00b5327bfb380b8c7b5743b134f675179b0df8e90f87a41c1c874a25d057b423"
+      },
+      "suites": null
+    },
+    "prior-103": {
+      "fifo": {
+        "default/parent-error": {
+          "opens": {
+            "fifo": [],
+            "parent": [
+              {
+                "flags": [
+                  "O_RDONLY",
+                  "O_CLOEXEC"
+                ],
+                "returned": true,
+                "unfinished": false
+              },
+              {
+                "flags": [
+                  "O_RDONLY",
+                  "O_CLOEXEC"
+                ],
+                "returned": true,
+                "unfinished": false
+              },
+              {
+                "flags": [
+                  "O_WRONLY",
+                  "O_CREAT",
+                  "O_TRUNC",
+                  "O_CLOEXEC"
+                ],
+                "returned": false,
+                "unfinished": false
+              }
+            ]
+          },
+          "original_receipt": "3e47ca21e9885e92560ddc4c4f8a693af309c0138c28ff0c9aec96166e8844c1",
+          "prime_stderr": {
+            "bytes": 718,
+            "sha256": "03448111bab2789b7a2ef32bc53a8cd8d86fc7dff38e15b38764a9141c66365d"
+          },
+          "prime_stdout": {
+            "bytes": 4227,
+            "sha256": "cb7d14bf767fa18b9a9d31b05b15c9004917e602f18ef10041ae087c03b77803"
+          },
+          "result": {
+            "cargo": "5be54b31d64daf863c6b4461d39f84a786f78d6157257c775930591baf87b9d0",
+            "deadline": false,
+            "fifo_open_calls": 0,
+            "mode": "default",
+            "parent_eisdir": true,
+            "rc": 101,
+            "root_open_calls": 3,
+            "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+            "stderr": "877847d17747afc32a59e82d3e2111d94a71b0d0817798af16692d062a87483a",
+            "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "subject": "prior-103",
+            "timeout_seconds": 4,
+            "trace": "2cc59dc3355b932d9964f46a99e649b2e68a6dcf2d49c5b98cd11c8b31cf8827",
+            "variant": "parent-error",
+            "writer_processes": 0
+          }
+        },
+        "no-ohm/parent-error": {
+          "opens": {
+            "fifo": [],
+            "parent": [
+              {
+                "flags": [
+                  "O_RDONLY",
+                  "O_CLOEXEC"
+                ],
+                "returned": true,
+                "unfinished": false
+              },
+              {
+                "flags": [
+                  "O_WRONLY",
+                  "O_CREAT",
+                  "O_TRUNC",
+                  "O_CLOEXEC"
+                ],
+                "returned": false,
+                "unfinished": false
+              }
+            ]
+          },
+          "original_receipt": "052134d6dc1b7c00292d8229801596eae53d142f2cbdbb1eab91931608690cd0",
+          "prime_stderr": {
+            "bytes": 714,
+            "sha256": "809154a9729b2445b9ba1e797e3e35f7d6d3a02b5d25d7089c9af4cbfcdc50ee"
+          },
+          "prime_stdout": {
+            "bytes": 3916,
+            "sha256": "189125e002f236a825bc45877c5c3e176d3e004375cd3d1eda0bc4a519a748b5"
+          },
+          "result": {
+            "cargo": "5be54b31d64daf863c6b4461d39f84a786f78d6157257c775930591baf87b9d0",
+            "deadline": false,
+            "fifo_open_calls": 0,
+            "mode": "no-ohm",
+            "parent_eisdir": true,
+            "rc": 101,
+            "root_open_calls": 2,
+            "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+            "stderr": "6dbba0f2400e9372efa0c0e168ccb35f858af251cfa6d667a9f57d0b280f525e",
+            "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "subject": "prior-103",
+            "timeout_seconds": 4,
+            "trace": "f4868e77a21f5af0b0749e8b39e06aafef78b7f3549a4fb4df9675c099cff857",
+            "variant": "parent-error",
+            "writer_processes": 0
+          }
+        }
+      },
+      "image": {
+        "artifacts": 380,
+        "build_script_stamp": {
+          "CARGO_COMMIT_DATE": "2026-10-28",
+          "CARGO_COMMIT_HASH": "1a84f8f36f0ff9f283337bfcce856b4b54c47281",
+          "CARGO_COMMIT_SHORT_HASH": "1a84f8f36"
+        },
+        "build_stderr": {
+          "bytes": 11443,
+          "sha256": "5fd8c6b39141e193194bb00ba20a6cc798f1f724c972b527a587e419bdc93ee0"
+        },
+        "cargo_vv": "6db5095562f1449c1a7748f43c5f70b62dfb1059cb61767699636297324e5fb0",
+        "commit_reported": "1a84f8f36f0ff9f283337bfcce856b4b54c47281",
+        "declaration": {
+          "cargo": "5be54b31d64daf863c6b4461d39f84a786f78d6157257c775930591baf87b9d0",
+          "cargo_messages": "1ca6e9aeea6e1d5304ff9e02c8d507776e1382052fb096367a9f9a38798ca7ec",
+          "features": [
+            "default",
+            "http-transport-curl",
+            "ohm-defaults"
+          ],
+          "pr": "103",
+          "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+          "source": "1a84f8f36f0ff9f283337bfcce856b4b54c47281",
+          "stage": "prior",
+          "tree": "952692976d576d0995c1dabf58b19e0d98d50bc7"
+        },
+        "original_build_receipt": "9ddb258547835af8e5d103ba724c1956dd6a662454244325d8d199a745be31eb",
+        "physical_size": 111297360,
+        "reported_cargo": "cargo 1.99.0 (1a84f8f36 2026-10-28)",
+        "version_lines": [
+          "cargo 1.99.0 (1a84f8f36 2026-10-28)",
+          "release: 1.99.0",
+          "commit-hash: 1a84f8f36f0ff9f283337bfcce856b4b54c47281",
+          "commit-date: 2026-10-28",
+          "host: x86_64-unknown-linux-gnu",
+          "libgit2: 1.9.6 (sys:0.21.0 vendored)",
+          "libcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.0.13)",
+          "os: Ubuntu 24.4.0 (noble) [64-bit]"
+        ]
+      },
+      "recovery": {
+        "forced_parent_started": true,
+        "forced_producer_failed": true,
+        "original_receipt": "f378bf377e9c3a839192385335b348ada15d30ba5f478e4c75e156de813f6645",
+        "program_stdout": {
+          "final": "1\n",
+          "prime": "1\n"
+        },
+        "result": {
+          "cargo_sha256": "5be54b31d64daf863c6b4461d39f84a786f78d6157257c775930591baf87b9d0",
+          "first_success": "untouched-1",
+          "mode": "default",
+          "phases": {
+            "final-program": {
+              "errors": [],
+              "exit": 0,
+              "files": {
+                "exec.log": "9920f90db71b68d782e28f74272c8403cdb0026ce0a3bfab827c198409b079bd",
+                "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                "stdout": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+              },
+              "rustcs": []
+            },
+            "forced-failure": {
+              "errors": [],
+              "exit": 101,
+              "files": {
+                "exec.log": "e109ae453bb59d644c85b42799389cebec14500fd70769a1951caf7dcd5cfab1",
+                "stderr": "01ceedec2dc1c4f2b54cecb6d46ecb828bcd887ce6e0e60e7802ced8a48679c3",
+                "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "rustcs": [
+                [
+                  "dep",
+                  "lib"
+                ],
+                [
+                  "app",
+                  "lib"
+                ]
+              ]
+            },
+            "make-wrapper": {
+              "errors": [],
+              "exit": 0,
+              "files": {
+                "exec.log": "57b9d997cf83b1694e703241214da9164f1d9e237b1968debc5493e70ace4cff",
+                "stderr": "a13c101095925024926a9f1dea55f5417b55fa6b3c8c1f4522a0829e95b49c6d",
+                "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "rustcs": []
+            },
+            "prime": {
+              "errors": [],
+              "exit": 0,
+              "files": {
+                "exec.log": "83f5ab1e8b7e2f2bfd72234bd328204711b917e4687ce72b0be39af13b2cc144",
+                "stderr": "d2b2938960ed4ddd1ecf41e4e4af065e51b88c612ffc787506a4ec81062155d9",
+                "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "rustcs": [
+                [
+                  "dep",
+                  "lib"
+                ],
+                [
+                  "app",
+                  "lib"
+                ],
+                [
+                  "app",
+                  "bin"
+                ]
+              ]
+            },
+            "prime-program": {
+              "errors": [],
+              "exit": 0,
+              "files": {
+                "exec.log": "b9bf10c5dd6bf82e3b8c8b98783a6507190f726ad4a4de54b86a61c61c39a25f",
+                "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                "stdout": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+              },
+              "rustcs": []
+            },
+            "reverted": {
+              "errors": [
+                "E0460"
+              ],
+              "exit": 101,
+              "files": {
+                "exec.log": "c18a9ff0d4d33919f61ebfc3bf33b02ebfd879f38fa77c98a38d0645af8aabd1",
+                "stderr": "078113b4b0a915164a0cc9b407bbf398955bbae585acb84ac5abef93375f1584",
+                "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "rustcs": [
+                [
+                  "dep",
+                  "lib"
+                ],
+                [
+                  "app",
+                  "bin"
+                ]
+              ]
+            },
+            "untouched-1": {
+              "errors": [],
+              "exit": 0,
+              "files": {
+                "exec.log": "126b8ec74e1efae094f66cd09077378b9ef3e20b64c00c085954a6078e729f4a",
+                "stderr": "2913116e5d9a5920025d5ad94eb60fa922b0a6286e80ba08f285e939365db6f3",
+                "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "rustcs": [
+                [
+                  "app",
+                  "lib"
+                ],
+                [
+                  "app",
+                  "bin"
+                ]
+              ]
+            }
+          },
+          "rustc_sha256": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+          "value": 1
+        },
+        "reverted_source_sha256": "00b5327bfb380b8c7b5743b134f675179b0df8e90f87a41c1c874a25d057b423"
+      },
+      "suites": null
+    },
+    "stamped-101": {
+      "fifo": {
+        "default/parent-error": {
+          "opens": {
+            "fifo": [
+              {
+                "flags": [
+                  "O_RDONLY",
+                  "O_NOCTTY",
+                  "O_NONBLOCK",
+                  "O_CLOEXEC"
+                ],
+                "returned": true,
+                "unfinished": false
+              }
+            ],
+            "parent": [
+              {
+                "flags": [
+                  "O_RDONLY",
+                  "O_CLOEXEC"
+                ],
+                "returned": true,
+                "unfinished": false
+              },
+              {
+                "flags": [
+                  "O_RDONLY",
+                  "O_CLOEXEC"
+                ],
+                "returned": true,
+                "unfinished": false
+              },
+              {
+                "flags": [
+                  "O_WRONLY",
+                  "O_CREAT",
+                  "O_TRUNC",
+                  "O_CLOEXEC"
+                ],
+                "returned": false,
+                "unfinished": false
+              }
+            ]
+          },
+          "original_receipt": "c229f4ecd569990d6fe1558f7e09c574bb9c3cac4da7b0aeab91284a5f6c8d0b",
+          "prime_stderr": {
+            "bytes": 726,
+            "sha256": "f3817200685fae8410b0d628c0f5663a25951013be8deaa4042e6d3a8782395a"
+          },
+          "prime_stdout": {
+            "bytes": 4259,
+            "sha256": "0405ca71c67bf292b49432a5a649ab8d4ab14a719f9673726c27b15c2d9a49f4"
+          },
+          "result": {
+            "cargo": "79fd954d8d328fa0287a6a7c95e415dea1ad98e029bb42f0dd41135e58424ed7",
+            "deadline": false,
+            "fifo_open_calls": 1,
+            "mode": "default",
+            "parent_eisdir": true,
+            "rc": 101,
+            "root_open_calls": 3,
+            "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+            "stderr": "61cb85c49c19c5fde3c457acef1a1df9c476c3d9d22b558032899c327ea22ea2",
+            "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "subject": "stamped-101",
+            "timeout_seconds": 4,
+            "trace": "e8b28b9d3e794e0daeb34f79a649da5a406515eb7459bc28689f1e9a10c969d3",
+            "variant": "parent-error",
+            "writer_processes": 0
+          }
+        },
+        "default/single-fifo": {
+          "opens": {
+            "fifo": [
+              {
+                "flags": [
+                  "O_RDONLY",
+                  "O_NOCTTY",
+                  "O_NONBLOCK",
+                  "O_CLOEXEC"
+                ],
+                "returned": true,
+                "unfinished": false
+              },
+              {
+                "flags": [
+                  "O_RDONLY",
+                  "O_CLOEXEC"
+                ],
+                "returned": false,
+                "unfinished": false
+              }
+            ],
+            "parent": [
+              {
+                "flags": [
+                  "O_RDONLY",
+                  "O_CLOEXEC"
+                ],
+                "returned": true,
+                "unfinished": false
+              },
+              {
+                "flags": [
+                  "O_RDONLY",
+                  "O_CLOEXEC"
+                ],
+                "returned": true,
+                "unfinished": false
+              },
+              {
+                "flags": [
+                  "O_WRONLY",
+                  "O_CREAT",
+                  "O_TRUNC",
+                  "O_CLOEXEC"
+                ],
+                "returned": true,
+                "unfinished": false
+              }
+            ]
+          },
+          "original_receipt": "ece9fa2004fe46b3ae2bb1817703e3d1514f2133ee0e0b3ecf88289aab1a743c",
+          "prime_stderr": {
+            "bytes": 722,
+            "sha256": "1b37c22869a3f163b6e16426963035d0415c6f0b0d057d242a645cbcc8825374"
+          },
+          "prime_stdout": {
+            "bytes": 4243,
+            "sha256": "c0023086cda130f8b9b925591d1b02ae9e1dd5749f40707e2c6cb7bdf590921b"
+          },
+          "result": {
+            "cargo": "79fd954d8d328fa0287a6a7c95e415dea1ad98e029bb42f0dd41135e58424ed7",
+            "deadline": true,
+            "fifo_open_calls": 2,
+            "mode": "default",
+            "parent_eisdir": false,
+            "rc": -15,
+            "root_open_calls": 3,
+            "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+            "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "subject": "stamped-101",
+            "timeout_seconds": 4,
+            "trace": "e15d95bfc5c8d0779180295ab3e92e2beb41ec36523008830925d47b5726a5a6",
+            "variant": "single-fifo",
+            "writer_processes": 0
+          }
+        },
+        "no-ohm/parent-error": {
+          "opens": {
+            "fifo": [
+              {
+                "flags": [
+                  "O_RDONLY",
+                  "O_NOCTTY",
+                  "O_NONBLOCK",
+                  "O_CLOEXEC"
+                ],
+                "returned": true,
+                "unfinished": false
+              }
+            ],
+            "parent": [
+              {
+                "flags": [
+                  "O_RDONLY",
+                  "O_CLOEXEC"
+                ],
+                "returned": true,
+                "unfinished": false
+              },
+              {
+                "flags": [
+                  "O_WRONLY",
+                  "O_CREAT",
+                  "O_TRUNC",
+                  "O_CLOEXEC"
+                ],
+                "returned": false,
+                "unfinished": false
+              }
+            ]
+          },
+          "original_receipt": "3a12cd644b0cb852c15515f8785ac8756a311ecd012b7527735349c1b33cb50d",
+          "prime_stderr": {
+            "bytes": 722,
+            "sha256": "9a7f6b427aff080fd745d72699a46969c075ee9350dea4e5dfc8bbccaddcd352"
+          },
+          "prime_stdout": {
+            "bytes": 3948,
+            "sha256": "bdaaa583c835de6c7d926f881f1cc47887f145cd76f1e5129e05ea3cd7f2355d"
+          },
+          "result": {
+            "cargo": "79fd954d8d328fa0287a6a7c95e415dea1ad98e029bb42f0dd41135e58424ed7",
+            "deadline": false,
+            "fifo_open_calls": 1,
+            "mode": "no-ohm",
+            "parent_eisdir": true,
+            "rc": 101,
+            "root_open_calls": 2,
+            "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+            "stderr": "7059c493ed816f1deecb5e12133b5018a6553def3a9bdad6537768e2c47eae19",
+            "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "subject": "stamped-101",
+            "timeout_seconds": 4,
+            "trace": "0122649edee59bea6115c296c33610a514fa2181dfe77fd1c9a4b17d16a1d295",
+            "variant": "parent-error",
+            "writer_processes": 0
+          }
+        },
+        "no-ohm/single-fifo": {
+          "opens": {
+            "fifo": [
+              {
+                "flags": [
+                  "O_RDONLY",
+                  "O_NOCTTY",
+                  "O_NONBLOCK",
+                  "O_CLOEXEC"
+                ],
+                "returned": true,
+                "unfinished": false
+              },
+              {
+                "flags": [
+                  "O_RDONLY",
+                  "O_CLOEXEC"
+                ],
+                "returned": false,
+                "unfinished": false
+              }
+            ],
+            "parent": [
+              {
+                "flags": [
+                  "O_RDONLY",
+                  "O_CLOEXEC"
+                ],
+                "returned": true,
+                "unfinished": false
+              },
+              {
+                "flags": [
+                  "O_WRONLY",
+                  "O_CREAT",
+                  "O_TRUNC",
+                  "O_CLOEXEC"
+                ],
+                "returned": true,
+                "unfinished": false
+              }
+            ]
+          },
+          "original_receipt": "82a3d6b1fc7946b7b72afc8ac671b9ff114d5d4152ad9c0204a5b67da0615d8c",
+          "prime_stderr": {
+            "bytes": 718,
+            "sha256": "c25bdb7db27b418756f77800869d022e66253c576c3b530e53a35488ffda2c65"
+          },
+          "prime_stdout": {
+            "bytes": 3932,
+            "sha256": "c40bbd327a15f6b02722c40710f3ad1e8affaf06d398cdb83eba2bb996458016"
+          },
+          "result": {
+            "cargo": "79fd954d8d328fa0287a6a7c95e415dea1ad98e029bb42f0dd41135e58424ed7",
+            "deadline": true,
+            "fifo_open_calls": 2,
+            "mode": "no-ohm",
+            "parent_eisdir": false,
+            "rc": -15,
+            "root_open_calls": 2,
+            "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+            "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "subject": "stamped-101",
+            "timeout_seconds": 4,
+            "trace": "9e4eebaf052a80c9451a1a484e8aff0a035043b968a721666e0de61e7cdc79a3",
+            "variant": "single-fifo",
+            "writer_processes": 0
+          }
+        }
+      },
+      "image": {
+        "artifacts": 380,
+        "build_script_stamp": {
+          "CARGO_COMMIT_DATE": "2026-10-29",
+          "CARGO_COMMIT_HASH": "f12e6b41ad880c69c38c7f36bdd3ac219d538b1a",
+          "CARGO_COMMIT_SHORT_HASH": "f12e6b41a"
+        },
+        "build_stderr": {
+          "bytes": 11448,
+          "sha256": "c2f0ff2cb4bf5154a61cc26a98637a61482cae2567fbdf9dcb2019089dd2a8e3"
+        },
+        "cargo_vv": "0fe7986ddc76b09cd59288da5b1cad8b0523c757bd88dfc04444ecaeeeb5ae15",
+        "commit_reported": "f12e6b41ad880c69c38c7f36bdd3ac219d538b1a",
+        "compile_execves": [
+          {
+            "kind": "lib",
+            "line_sha256": "fc5c57d447de90aa3d02f89f93502c0de8992fae6d6be361805702daeccb89fc"
+          },
+          {
+            "kind": "bin",
+            "line_sha256": "270c0dda602ca647e63529fffc072fb97dcd46ecac903d508dfbcd3a69e2755c"
+          }
+        ],
+        "declaration": {
+          "build_stderr": "c2f0ff2cb4bf5154a61cc26a98637a61482cae2567fbdf9dcb2019089dd2a8e3",
+          "build_trace": "4a77b9acbfa18b120d2940761f520c06e28f8c794d2d99f40b8d8152b8e38700",
+          "cargo": "79fd954d8d328fa0287a6a7c95e415dea1ad98e029bb42f0dd41135e58424ed7",
+          "cargo_messages": "cc41f555b76dbb915b333474de3cb3ea827c7482b3a1bc3f4d25101a85d0f6b1",
+          "compile_artifacts": 380,
+          "features": [
+            "default",
+            "http-transport-curl",
+            "ohm-defaults"
+          ],
+          "launch_sha256": "7fa14a845c0e14d0aeb874a6f70db9e468bcddf79a49896101d80c30cfe76c69",
+          "legacy_fixed_binary": "0baaacbd2d62887171b5ee7183c0fe1450dde0659498725931164f61574a698f",
+          "legacy_stamp": "62afc4ab5acf699478f72b8fdbd5927db1da26bb",
+          "pr": "101",
+          "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+          "source": "f12e6b41ad880c69c38c7f36bdd3ac219d538b1a",
+          "stage": "stamped",
+          "stdout_vv": "0fe7986ddc76b09cd59288da5b1cad8b0523c757bd88dfc04444ecaeeeb5ae15",
+          "tree": "ac6345569f35ac475bf7e5cb4a0a5bac170bca41"
+        },
+        "git_queries": [
+          "fd2487cc446f8d2ae2074a7405670d6b0f33d25f47ddfedb6778209c1cb48fe4",
+          "f824cda82538013799daa5e5e6269d3750a7a85a75affbfcedc4b49ef8af881e",
+          "8d260138bd8ed78c2cbd422dd3d5adb2c82558fd7a7f511b7d4d0d6e83974fff",
+          "c220225002aae84f900000e44f90caa6a34fc15324018d2a416f5e81fbc13b9e"
+        ],
+        "launch": {
+          "cmd": [
+            "+ohm",
+            "-Zohm-defaults=no",
+            "--config",
+            "profile.foldback.inherits=\"dev\"",
+            "build",
+            "--profile",
+            "foldback",
+            "--offline",
+            "--locked",
+            "-j4",
+            "-p",
+            "cargo",
+            "--features",
+            "ohm-defaults",
+            "--bin",
+            "cargo",
+            "--message-format=json"
+          ],
+          "cpus": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "parents": [
+            "62afc4ab5acf699478f72b8fdbd5927db1da26bb"
+          ],
+          "root_uid": 0,
+          "source": "f12e6b41ad880c69c38c7f36bdd3ac219d538b1a",
+          "source_tree": "ac6345569f35ac475bf7e5cb4a0a5bac170bca41",
+          "uid": 1000
+        },
+        "original_build_receipt": "75e2363355f247c31b527c687fce2c5c91488e919c74d9d6a92c1cff26de99c6",
+        "physical_size": 112872256,
+        "reported_cargo": "cargo 1.99.0 (f12e6b41a 2026-10-29)",
+        "trace": {
+          "bytes": 29558117,
+          "sha256": "4a77b9acbfa18b120d2940761f520c06e28f8c794d2d99f40b8d8152b8e38700"
+        },
+        "version_lines": [
+          "cargo 1.99.0 (f12e6b41a 2026-10-29)",
+          "release: 1.99.0",
+          "commit-hash: f12e6b41ad880c69c38c7f36bdd3ac219d538b1a",
+          "commit-date: 2026-10-29",
+          "host: x86_64-unknown-linux-gnu",
+          "libgit2: 1.9.6 (sys:0.21.0 vendored)",
+          "libcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.0.13)",
+          "os: Ubuntu 24.4.0 (noble) [64-bit]"
+        ]
+      },
+      "recovery": {
+        "forced_parent_started": true,
+        "forced_producer_failed": true,
+        "original_receipt": "4621d656bf6e8a6220503b3d3171f95d1cec0c62696a278db2ddb095207a128a",
+        "program_stdout": {
+          "final": "1\n",
+          "prime": "1\n"
+        },
+        "result": {
+          "cargo_sha256": "79fd954d8d328fa0287a6a7c95e415dea1ad98e029bb42f0dd41135e58424ed7",
+          "first_success": "reverted",
+          "mode": "default",
+          "phases": {
+            "final-program": {
+              "errors": [],
+              "exit": 0,
+              "files": {
+                "exec.log": "dd1e2424770947f62a9bbd6c546e14c2653d3aeb1563931669d456d7a8a8eb46",
+                "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                "stdout": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+              },
+              "rustcs": []
+            },
+            "forced-failure": {
+              "errors": [],
+              "exit": 101,
+              "files": {
+                "exec.log": "c290b49278c0cf7d3720fc2846dfad338a1d97fdeed82117d79543f7d43aa51f",
+                "stderr": "5602e34d79f34f228d94d948e293c6d0f611540e5b0b46a2e67f4d91a43bd04c",
+                "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "rustcs": [
+                [
+                  "dep",
+                  "lib"
+                ],
+                [
+                  "app",
+                  "lib"
+                ]
+              ]
+            },
+            "make-wrapper": {
+              "errors": [],
+              "exit": 0,
+              "files": {
+                "exec.log": "5a1fcff0cadaa63d82a35054ca5b07c7f43dcac444230fddc8ad2ee537b3660e",
+                "stderr": "4e66e60162f96cb760d1b7b68054d73ebd61de94974bee03668a4aea868388a4",
+                "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "rustcs": []
+            },
+            "prime": {
+              "errors": [],
+              "exit": 0,
+              "files": {
+                "exec.log": "6f3ae11ac793d69a722f34dc0c64c8a2ab44e839e3949a5343cafa1ccd3366c3",
+                "stderr": "fe73715c9a10531ca3f02e288684d5cfeb27cdd69b30dbe043124cfdfcc0cff5",
+                "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "rustcs": [
+                [
+                  "dep",
+                  "lib"
+                ],
+                [
+                  "app",
+                  "lib"
+                ],
+                [
+                  "app",
+                  "bin"
+                ]
+              ]
+            },
+            "prime-program": {
+              "errors": [],
+              "exit": 0,
+              "files": {
+                "exec.log": "8354cb02aba5cb6380167f203114965bda69581e80edfd20635102c75223d99f",
+                "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                "stdout": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+              },
+              "rustcs": []
+            },
+            "reverted": {
+              "errors": [],
+              "exit": 0,
+              "files": {
+                "exec.log": "2b7850f44f365897cf221a93a4595b9bca19256d6f5497f0ed684c8ad77aa7de",
+                "stderr": "cd763b5a6c1495154773822f7aa281c298a1b5148617187f5140c69056a8f6c2",
+                "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "rustcs": [
+                [
+                  "dep",
+                  "lib"
+                ],
+                [
+                  "app",
+                  "lib"
+                ],
+                [
+                  "app",
+                  "bin"
+                ]
+              ]
+            }
+          },
+          "rustc_sha256": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+          "value": 1
+        },
+        "reverted_source_sha256": "00b5327bfb380b8c7b5743b134f675179b0df8e90f87a41c1c874a25d057b423"
+      },
+      "suites": {
+        "build_jsonl": {
+          "bytes": 483879,
+          "sha256": "a5fdc4d0639e228f1ef14939be06778dea470b4b9f41943140bb3dc719113bde"
+        },
+        "build_selection": {
+          "earlier_gate": "test build produced a different Cargo ELF before the first test",
+          "first_suite_test_processes": 0,
+          "product_binary": "79fd954d8d328fa0287a6a7c95e415dea1ad98e029bb42f0dd41135e58424ed7",
+          "reused_build_messages": "a5fdc4d0639e228f1ef14939be06778dea470b4b9f41943140bb3dc719113bde",
+          "test_build_binary": "9c3fd0762f821fbfc267be508604e9ffc74ae4b2839d10d5ff36ca572ee06ccc",
+          "test_build_version_sha256": "0fe7986ddc76b09cd59288da5b1cad8b0523c757bd88dfc04444ecaeeeb5ae15"
+        },
+        "build_stderr": {
+          "bytes": 1185,
+          "sha256": "1b8d223f7d9136515c280a4c62ae66a11b8a0dd94686712c2d172d9a85cf5461"
+        },
+        "original_receipt": "fb31d9ee22c2babe01fc9cbb886270e75d5dc92ebda1be2d4a2b0d61edc4d773",
+        "sets": {
+          "conditional": {
+            "harness": "a7622dfda09b65999eb4daf34fb3f324cf14bd88021c8d7aed45746cd8b55059",
+            "mount_witness": {
+              "caps": {
+                "CapBnd": "0000000000000000",
+                "CapEff": "0000000000000000",
+                "NoNewPrivs": "1"
+              },
+              "commit": "f12e6b41ad880c69c38c7f36bdd3ac219d538b1a",
+              "mounted_product_sha256": "79fd954d8d328fa0287a6a7c95e415dea1ad98e029bb42f0dd41135e58424ed7",
+              "root_uid": 0,
+              "same_inode": true,
+              "uid": 1000,
+              "version_sha256": "0fe7986ddc76b09cd59288da5b1cad8b0523c757bd88dfc04444ecaeeeb5ae15"
+            },
+            "mounted": "cbbe449292c09a5c85302dc304e49dd9efe6409cc2820c6f26ebc5abc0d0f222",
+            "native_cargo_events": [
+              "1167ce8de7f7a903cac603fd17bb146146154bbfb496dfc66660bb89eaea4a1f",
+              "ff078a99b161b9a821d8b98cc7531b3c844a648154ead4d95897fdce405ef9f7",
+              "1a609c59ffa4ab0f03248c6950959ead3debe6d829f7f930f7014af8e7b7eb78",
+              "0711d07e69faeb5351b87f2d12d969e9091fb2e064cc2f7f17b0e5eadef00997",
+              "332558024ebc35b952ebaea540018aa5eebbc9817853a806898ed2439505fda2",
+              "cdcc2f6e22ab2d61825ab7f0e36182c5d09e3ed40350e7c619f5b61d1260b495",
+              "42e7cc0149d9c6ce4430f4308c9db440539426d7b293f67df25d70d46071165b",
+              "ed9dfba650eba7335f472712c73b0b566018f74c2308ff641e4f4e7e0e3815a7",
+              "263b22b4fd1b6a1e93353fbb83ea4c281992fec09656a763d0c3039c8b0bff5b",
+              "c5a419924de0fee29867bbfe3ac79e7d2ff0b84e5824bd9510ed411abfb18312",
+              "f020e61890283ae71c42997a84c80084cd642bf8ca4a17b35e0b0528f8894636",
+              "55623996c5120379a4c2067613d31256fcf9aa02ce8cb4d8017c99960488d43f",
+              "e865ee218f095c4a5015f5d65f3c7c138bfbcf287f1c64f468536e1922971b0c",
+              "09790691124f44e96f5889fba069417b927c1ac850d0a56ae53bb350ea0f4925",
+              "38d9b34648cf43154fcc4bad122b308d99f956dc91f3e4728f863c3fe1399214",
+              "6be9c5ff13851aee8451552a349c8f649c8ead07096e18029aef578234b8a4cb",
+              "17f13ca9265714dbb344dec27a35b9a375f0df2c9468aae3733458ea82841f73",
+              "ede166f8211951d9760e76f3a02a80b32ae1b96f85ce08c339d6b95b2b19c219",
+              "f62449453899fa5071d3c529848cd3e915165bdbb06ebfba928cb5c0b30719eb",
+              "f741434d1812534a98fc2502a39d08887242617dfb6518ab0dcacb07bc003972",
+              "49119fc602c71cf328a37c87cbed57c3850ab07b96eb474012b4e885cf93c086",
+              "379f9d1f0db5fe42fdc90a22b0f1aacbbfb180cf89eed746786b67dceabc7a6a",
+              "ec8dcd677ada372bb109722c7eb28678b8904d9addfad9377c2d88a2a874d37b"
+            ],
+            "passed": 7,
+            "physical_cargo_calls": 23,
+            "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout": "d8ee01e06c0fd8dcb729a1ab3f5b571ebda5a5348280b4cbe43be9c2eabc021e",
+            "tests": [
+              "test freshness::conditional_metadata_pipelines_changed_check_before_compiler_finishes ... ok",
+              "test freshness::conditional_metadata_pipelines_changed_rlib_before_codegen_finishes ... ok",
+              "test freshness::conditional_metadata_preserves_transitive_binary_object_barriers ... ok",
+              "test freshness::conditional_metadata_rebuilds_committed_dependent_after_failed_producer_is_reverted ... ok",
+              "test freshness::conditional_metadata_recovers_when_dependency_fails_after_metadata ... ok",
+              "test freshness::conditional_metadata_waits_for_unchanged_hash_and_preserves_early_cutoff ... ok",
+              "test freshness::conditional_metadata_waits_when_unchanged_middle_has_changed_dependency ... ok"
+            ],
+            "trace": "afd9e67439874ac0433bb37103a154b5439cbb403de429d16a948f89e75d3579"
+          },
+          "fingerprints": {
+            "harness": "d8037aef6ee62d1a4bd73744276bacba6dd6d7c86b8b0c233b4bb7a4ee4c9021",
+            "mount_witness": {
+              "caps": {
+                "CapBnd": "0000000000000000",
+                "CapEff": "0000000000000000",
+                "NoNewPrivs": "1"
+              },
+              "commit": "f12e6b41ad880c69c38c7f36bdd3ac219d538b1a",
+              "mounted_product_sha256": "79fd954d8d328fa0287a6a7c95e415dea1ad98e029bb42f0dd41135e58424ed7",
+              "root_uid": 0,
+              "same_inode": true,
+              "uid": 1000,
+              "version_sha256": "0fe7986ddc76b09cd59288da5b1cad8b0523c757bd88dfc04444ecaeeeb5ae15"
+            },
+            "mounted": "cbbe449292c09a5c85302dc304e49dd9efe6409cc2820c6f26ebc5abc0d0f222",
+            "native_cargo_events": [],
+            "passed": 73,
+            "physical_cargo_calls": 0,
+            "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout": "53bc897ccdc823ea64361d5516c4c9a2b3a6ca81619732c73eae73b6f7979b40",
+            "tests": [
+              "test compiler::fingerprint::dep_info::encoded_dep_info::parse_v0_fingerprint_dep_info ... ok",
+              "test compiler::fingerprint::dep_info::encoded_dep_info::path_type_is_u8_max ... ok",
+              "test compiler::fingerprint::dep_info::encoded_dep_info::round_trip ... ok",
+              "test compiler::fingerprint::dep_info::encoded_dep_info::round_trip_with_checksums ... ok",
+              "test compiler::fingerprint::dep_info::encoded_dep_info::seed_translation_preserves_absolute_inputs_and_relative_spelling ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::checksum_use_changed ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::dep_info_output_changed ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::env_var_changed_both_some ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::env_var_changed_old_none ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::features_changed ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::forced ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fresh_build ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_changed_checksum ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_changed_env ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_changed_file ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_failed_to_read_metadata ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_file_size_changed ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_missing_checksum ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_missing_file ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_stale ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_stale_dep_fingerprint ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_stale_dependency ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_unable_to_read_file ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::local_fingerprint_type_changed ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::nothing_obvious ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::number_of_dependencies_changed ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::rerun_if_changed_output_paths_changed ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::rustc_changed ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::rustflags_changed ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::unit_dependency_info_changed ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::unit_dependency_name_changed ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::changed_full_artifact_dependency_does_not_propagate_metadata_only_state ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::changed_metadata_dependency_propagates_through_unchanged_public_api ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::changed_workspace_dependency_cannot_skip_unused_integration_target ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::committed_short_hash_only_validates_one_current_comparison ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::dep_built_changed_should_not_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::dep_built_unchanged_should_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::dep_fresh_alone_should_not_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::dep_pending_should_not_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::dep_skipped_early_cutoff_should_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::diamond_dependency_all_unchanged ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::diamond_dependency_one_changed ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::fresh_library_dependency_can_relink_newer_transitive_artifacts ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::fresh_library_dependency_with_different_stale_unit_cannot_relink ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::fresh_library_dependency_with_newer_metadata_cannot_relink ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::fresh_non_library_dependency_cannot_relink_newer_transitive_artifacts ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::mixed_deps_fresh_and_built_unchanged_should_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::mixed_deps_with_one_changed_should_not_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::mixed_deps_with_one_pending_should_not_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::no_deps_should_not_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::non_dependency_dirty_reason_is_not_a_candidate ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::previously_changed_metadata_dependency_propagates_through_unchanged_public_api ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::public_api_hash_format ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::public_api_hash_is_not_advanced_before_fingerprint_commit ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::public_api_hash_rustflags ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::rebuilt_changed_dependency_prevents_fresh_transitive_relink ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::rebuilt_full_artifact_dependency_should_not_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::rebuilt_library_dependency_can_relink ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::rebuilt_non_library_dependency_cannot_relink ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::simultaneous_local_and_dependency_changes_are_not_candidates ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::skipped_library_dependency_can_relink_transitive_artifacts ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::speculative_short_fingerprint_follows_regular_symlinks_and_rejects_fifos ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::transitive_chain_all_unchanged ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::transitive_early_cutoff_propagates ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::transitive_with_changed_dep_does_not_propagate ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::unchanged_metadata_dependency_does_not_propagate_changed_state ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::unit_not_stale_due_to_dep_should_not_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::unit_stale_item_should_not_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::unproven_skipped_workspace_dependency_cannot_skip_integration_target ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::unused_workspace_dependency_with_skipped_unused_root_can_skip ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::up_to_date_unit_should_not_cutoff ... ok",
+              "test compiler::fingerprint::worktree_seed_tests::seed_identity_preserves_other_paths_and_checksum_policy ... ok",
+              "test compiler::fingerprint::worktree_seed_tests::seeded_dep_info_identity_survives_relocation_and_serialization ... ok"
+            ],
+            "trace": "8f7bc97007783fe7ff897e51b0505ede858eee75ac31e1eb30d957d2763e5f9e"
+          },
+          "markers": {
+            "harness": "a7622dfda09b65999eb4daf34fb3f324cf14bd88021c8d7aed45746cd8b55059",
+            "mount_witness": {
+              "caps": {
+                "CapBnd": "0000000000000000",
+                "CapEff": "0000000000000000",
+                "NoNewPrivs": "1"
+              },
+              "commit": "f12e6b41ad880c69c38c7f36bdd3ac219d538b1a",
+              "mounted_product_sha256": "79fd954d8d328fa0287a6a7c95e415dea1ad98e029bb42f0dd41135e58424ed7",
+              "root_uid": 0,
+              "same_inode": true,
+              "uid": 1000,
+              "version_sha256": "0fe7986ddc76b09cd59288da5b1cad8b0523c757bd88dfc04444ecaeeeb5ae15"
+            },
+            "mounted": "cbbe449292c09a5c85302dc304e49dd9efe6409cc2820c6f26ebc5abc0d0f222",
+            "native_cargo_events": [
+              "7e322c129307a107d4378472c91953cf49c59083c669ef14c265f2956a50da46",
+              "8c83ebe3bd5543d17da13c2761cd2d9852f76b3a475d2957b5fecf9a8bf13e0c"
+            ],
+            "passed": 1,
+            "physical_cargo_calls": 2,
+            "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout": "252d3b92b171ad0bd97bfc807a16b0b31bd1479e29fc477262243b4bc72784d3",
+            "tests": [
+              "test ohm_worktree::seed_markers_replace_symlinks ... ok"
+            ],
+            "trace": "dfe23a78310ed8396e140dd2b4246360839618dea0bbde0966c3219e546a7b6e"
+          }
+        },
+        "userns_preflight": {
+          "prior_exit": 1,
+          "reason": "ordinary-user-only mapping did not map host root",
+          "stderr_sha256": "937455dd18ec12aa074837a6c01e3d5aa0f52ce60c73a2623de2fbc02a2df9a9",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "test_processes": 0
+        }
+      }
+    },
+    "stamped-103": {
+      "fifo": {
+        "default/parent-error": {
+          "opens": {
+            "fifo": [
+              {
+                "flags": [
+                  "O_RDONLY",
+                  "O_NOCTTY",
+                  "O_NONBLOCK",
+                  "O_CLOEXEC"
+                ],
+                "returned": true,
+                "unfinished": false
+              }
+            ],
+            "parent": [
+              {
+                "flags": [
+                  "O_RDONLY",
+                  "O_CLOEXEC"
+                ],
+                "returned": true,
+                "unfinished": false
+              },
+              {
+                "flags": [
+                  "O_RDONLY",
+                  "O_CLOEXEC"
+                ],
+                "returned": true,
+                "unfinished": false
+              },
+              {
+                "flags": [
+                  "O_WRONLY",
+                  "O_CREAT",
+                  "O_TRUNC",
+                  "O_CLOEXEC"
+                ],
+                "returned": false,
+                "unfinished": false
+              }
+            ]
+          },
+          "original_receipt": "596ef5e5ae2bc1e0dfe4a3511321b282a7e4cc4ba55d0a230914f3f2ce30702b",
+          "prime_stderr": {
+            "bytes": 726,
+            "sha256": "1b283300ff14b564c3ebd47c0448a43e32d76c3d27efd9a7122dacb25afdbc96"
+          },
+          "prime_stdout": {
+            "bytes": 4259,
+            "sha256": "687580bd663fe9aeeb468aa181569e1e94d7e89b4841b8a154e8729c36fa1b67"
+          },
+          "result": {
+            "cargo": "f5fec208cee22abefde41ca56a438e653111762a0ee5806e9eb46ee79ce487e0",
+            "deadline": false,
+            "fifo_open_calls": 1,
+            "mode": "default",
+            "parent_eisdir": true,
+            "rc": 101,
+            "root_open_calls": 3,
+            "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+            "stderr": "55553cf97e0e8a77da936a92b06f838dcfdf40b74b7f166db7fe19d9fb73b34b",
+            "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "subject": "stamped-103",
+            "timeout_seconds": 4,
+            "trace": "5a2a519f17bb0ee98a1fbafd85b8edd98eb7259d3ab037156648b5b483db8686",
+            "variant": "parent-error",
+            "writer_processes": 0
+          }
+        },
+        "default/single-fifo": {
+          "opens": {
+            "fifo": [
+              {
+                "flags": [
+                  "O_RDONLY",
+                  "O_NOCTTY",
+                  "O_NONBLOCK",
+                  "O_CLOEXEC"
+                ],
+                "returned": true,
+                "unfinished": false
+              },
+              {
+                "flags": [
+                  "O_RDONLY",
+                  "O_CLOEXEC"
+                ],
+                "returned": false,
+                "unfinished": false
+              }
+            ],
+            "parent": [
+              {
+                "flags": [
+                  "O_RDONLY",
+                  "O_CLOEXEC"
+                ],
+                "returned": true,
+                "unfinished": false
+              },
+              {
+                "flags": [
+                  "O_RDONLY",
+                  "O_CLOEXEC"
+                ],
+                "returned": true,
+                "unfinished": false
+              },
+              {
+                "flags": [
+                  "O_WRONLY",
+                  "O_CREAT",
+                  "O_TRUNC",
+                  "O_CLOEXEC"
+                ],
+                "returned": true,
+                "unfinished": false
+              }
+            ]
+          },
+          "original_receipt": "2ce4956430949482bc7f6ae1d735bb5041d02e003a80b156705c64a9bd74bdf2",
+          "prime_stderr": {
+            "bytes": 722,
+            "sha256": "1b53a70df921c4829c6f143abc752ad05c93ba6decdabadbaea5d589245c8b5d"
+          },
+          "prime_stdout": {
+            "bytes": 4243,
+            "sha256": "6c61a0786d607e319bb551ed2c6c39b30a6c62e2391f267d366eae178a274628"
+          },
+          "result": {
+            "cargo": "f5fec208cee22abefde41ca56a438e653111762a0ee5806e9eb46ee79ce487e0",
+            "deadline": true,
+            "fifo_open_calls": 2,
+            "mode": "default",
+            "parent_eisdir": false,
+            "rc": -15,
+            "root_open_calls": 3,
+            "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+            "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "subject": "stamped-103",
+            "timeout_seconds": 4,
+            "trace": "990652ce949df7e2981f8617c429f8701aea8fc84cd57e815c11a8c5880ad2a5",
+            "variant": "single-fifo",
+            "writer_processes": 0
+          }
+        },
+        "no-ohm/parent-error": {
+          "opens": {
+            "fifo": [
+              {
+                "flags": [
+                  "O_RDONLY",
+                  "O_NOCTTY",
+                  "O_NONBLOCK",
+                  "O_CLOEXEC"
+                ],
+                "returned": true,
+                "unfinished": false
+              }
+            ],
+            "parent": [
+              {
+                "flags": [
+                  "O_RDONLY",
+                  "O_CLOEXEC"
+                ],
+                "returned": true,
+                "unfinished": false
+              },
+              {
+                "flags": [
+                  "O_WRONLY",
+                  "O_CREAT",
+                  "O_TRUNC",
+                  "O_CLOEXEC"
+                ],
+                "returned": false,
+                "unfinished": false
+              }
+            ]
+          },
+          "original_receipt": "9525712b616780c4b4d773ee87ab23f808851f1defdad1a14cfadd81b0915621",
+          "prime_stderr": {
+            "bytes": 722,
+            "sha256": "394b6bc96b6a76a1355656789d0f15a88bf51a8d759f3daaf1f9588b60ff343c"
+          },
+          "prime_stdout": {
+            "bytes": 3948,
+            "sha256": "7932f87e707a876f5db89dc989fe9ca926149a82b1047fc394d01236cb65a5ee"
+          },
+          "result": {
+            "cargo": "f5fec208cee22abefde41ca56a438e653111762a0ee5806e9eb46ee79ce487e0",
+            "deadline": false,
+            "fifo_open_calls": 1,
+            "mode": "no-ohm",
+            "parent_eisdir": true,
+            "rc": 101,
+            "root_open_calls": 2,
+            "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+            "stderr": "bf2e169addd57d2efa74f9d473fa6e633faa9136189e62d94fc9c75784673f02",
+            "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "subject": "stamped-103",
+            "timeout_seconds": 4,
+            "trace": "6298fdea437f7f535bf3218f1b0ee559941bfbcea46c5cdc9d597228646b1843",
+            "variant": "parent-error",
+            "writer_processes": 0
+          }
+        },
+        "no-ohm/single-fifo": {
+          "opens": {
+            "fifo": [
+              {
+                "flags": [
+                  "O_RDONLY",
+                  "O_NOCTTY",
+                  "O_NONBLOCK",
+                  "O_CLOEXEC"
+                ],
+                "returned": true,
+                "unfinished": false
+              },
+              {
+                "flags": [
+                  "O_RDONLY",
+                  "O_CLOEXEC"
+                ],
+                "returned": false,
+                "unfinished": false
+              }
+            ],
+            "parent": [
+              {
+                "flags": [
+                  "O_RDONLY",
+                  "O_CLOEXEC"
+                ],
+                "returned": true,
+                "unfinished": false
+              },
+              {
+                "flags": [
+                  "O_WRONLY",
+                  "O_CREAT",
+                  "O_TRUNC",
+                  "O_CLOEXEC"
+                ],
+                "returned": true,
+                "unfinished": false
+              }
+            ]
+          },
+          "original_receipt": "097ba31777300f588920e5d0f5c3081f70bb37ab5222f78eb92bb8c199d395a8",
+          "prime_stderr": {
+            "bytes": 718,
+            "sha256": "06ba590d9c3a3312d1dd944103bf74f4c967a5b0ea896bab79da69d423378073"
+          },
+          "prime_stdout": {
+            "bytes": 3932,
+            "sha256": "45cad1db51c4c313bdaba3978fec7afb20c2a66c1a21c6a6e172fa6a749ab5bb"
+          },
+          "result": {
+            "cargo": "f5fec208cee22abefde41ca56a438e653111762a0ee5806e9eb46ee79ce487e0",
+            "deadline": true,
+            "fifo_open_calls": 2,
+            "mode": "no-ohm",
+            "parent_eisdir": false,
+            "rc": -15,
+            "root_open_calls": 2,
+            "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+            "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "subject": "stamped-103",
+            "timeout_seconds": 4,
+            "trace": "0a114a5e96ecf0f6719f526470054714101744069422b5cf73d20889e7075f05",
+            "variant": "single-fifo",
+            "writer_processes": 0
+          }
+        }
+      },
+      "image": {
+        "artifacts": 380,
+        "build_script_stamp": {
+          "CARGO_COMMIT_DATE": "2026-10-29",
+          "CARGO_COMMIT_HASH": "1cbb910d0011480d7e4fcaf5cec8e2513cf6550c",
+          "CARGO_COMMIT_SHORT_HASH": "1cbb910d0"
+        },
+        "build_stderr": {
+          "bytes": 11448,
+          "sha256": "9dce8d3cb0684ed56d8cd64213483903b7b9bb4cf02c0dc3c2916d035b913356"
+        },
+        "cargo_vv": "3a5fbd147f7352eb05450a7265c4f5a29a966e89f63458229f707381256cb1c5",
+        "commit_reported": "1cbb910d0011480d7e4fcaf5cec8e2513cf6550c",
+        "compile_execves": [
+          {
+            "kind": "lib",
+            "line_sha256": "9beb806c0e796e63314017272c28069057dadf3431d666234fdbf02a3a82f468"
+          },
+          {
+            "kind": "bin",
+            "line_sha256": "c15db4681679715626f5bd44978bf734d8303a000ba5bc6d0615e484afc0bf66"
+          }
+        ],
+        "declaration": {
+          "build_stderr": "9dce8d3cb0684ed56d8cd64213483903b7b9bb4cf02c0dc3c2916d035b913356",
+          "build_trace": "bff4d4bd8040e87b806499f56c2e2abaecd86d932b66742de889ac7420631ca7",
+          "cargo": "f5fec208cee22abefde41ca56a438e653111762a0ee5806e9eb46ee79ce487e0",
+          "cargo_messages": "8f6ef68ea2f52528b84fad263a3f2f3ab5df341c7fd85873480ca1bd0e9e4387",
+          "compile_artifacts": 380,
+          "features": [
+            "default",
+            "http-transport-curl",
+            "ohm-defaults"
+          ],
+          "launch_sha256": "4f59b1999856e922fb7d94f475c2bffa467704cea2bf67782c950b5d60fbd69e",
+          "legacy_fixed_binary": "d50a228167720353d9144cd7923e8b93e56f781d91662c9be0774fe42dd48014",
+          "legacy_stamp": "1a84f8f36f0ff9f283337bfcce856b4b54c47281",
+          "pr": "103",
+          "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+          "source": "1cbb910d0011480d7e4fcaf5cec8e2513cf6550c",
+          "stage": "stamped",
+          "stdout_vv": "3a5fbd147f7352eb05450a7265c4f5a29a966e89f63458229f707381256cb1c5",
+          "tree": "3d4037d3621fd5f22e28bb18b7bd7513b1fed5a9"
+        },
+        "git_queries": [
+          "45559c3bcc1940d483fa7388c48dd20a8ed6cc00a6f4e301047fc11a31e7efe0",
+          "5f35ef910d5d922433cc582faf22c96b339a6363c100fa92ea66b7aa4bee9689",
+          "87da52c7c2db6be19eba56be87cf10c771752161a3ff9e2689800648c3af6b86",
+          "616da0340b10bb7c7e5c24bc8cd779a7f2bd84e8e4bad1a93d176f455aac5bf5"
+        ],
+        "launch": {
+          "cmd": [
+            "+ohm",
+            "-Zohm-defaults=no",
+            "--config",
+            "profile.foldback.inherits=\"dev\"",
+            "build",
+            "--profile",
+            "foldback",
+            "--offline",
+            "--locked",
+            "-j4",
+            "-p",
+            "cargo",
+            "--features",
+            "ohm-defaults",
+            "--bin",
+            "cargo",
+            "--message-format=json"
+          ],
+          "cpus": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "parents": [
+            "1a84f8f36f0ff9f283337bfcce856b4b54c47281",
+            "f12e6b41ad880c69c38c7f36bdd3ac219d538b1a"
+          ],
+          "root_uid": 0,
+          "source": "1cbb910d0011480d7e4fcaf5cec8e2513cf6550c",
+          "source_tree": "3d4037d3621fd5f22e28bb18b7bd7513b1fed5a9",
+          "uid": 1000
+        },
+        "original_build_receipt": "b9188797d21b5cf4888c589d049344936e88e2e73aa913c41479cfdcbf07be07",
+        "physical_size": 112877544,
+        "reported_cargo": "cargo 1.99.0 (1cbb910d0 2026-10-29)",
+        "trace": {
+          "bytes": 29550764,
+          "sha256": "bff4d4bd8040e87b806499f56c2e2abaecd86d932b66742de889ac7420631ca7"
+        },
+        "version_lines": [
+          "cargo 1.99.0 (1cbb910d0 2026-10-29)",
+          "release: 1.99.0",
+          "commit-hash: 1cbb910d0011480d7e4fcaf5cec8e2513cf6550c",
+          "commit-date: 2026-10-29",
+          "host: x86_64-unknown-linux-gnu",
+          "libgit2: 1.9.6 (sys:0.21.0 vendored)",
+          "libcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.0.13)",
+          "os: Ubuntu 24.4.0 (noble) [64-bit]"
+        ]
+      },
+      "recovery": {
+        "forced_parent_started": true,
+        "forced_producer_failed": true,
+        "original_receipt": "ab47a6196e1b16e82b4ebc40eb0a2bb4ac022b41d96e2ac12e683c93a925d738",
+        "program_stdout": {
+          "final": "1\n",
+          "prime": "1\n"
+        },
+        "result": {
+          "cargo_sha256": "f5fec208cee22abefde41ca56a438e653111762a0ee5806e9eb46ee79ce487e0",
+          "first_success": "reverted",
+          "mode": "default",
+          "phases": {
+            "final-program": {
+              "errors": [],
+              "exit": 0,
+              "files": {
+                "exec.log": "0f83d5804a001054ca3eaae7f63631cc279d3460357d9c412c9e3d274cae1b64",
+                "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                "stdout": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+              },
+              "rustcs": []
+            },
+            "forced-failure": {
+              "errors": [],
+              "exit": 101,
+              "files": {
+                "exec.log": "473b146e9cf5f621d785f7210112a119e373bf0cefddfe9e6ae76cf33747e698",
+                "stderr": "1edc0fc0ea56dc9870945918d181f17f83bdf9a600cb3f4cca989a6344132693",
+                "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "rustcs": [
+                [
+                  "dep",
+                  "lib"
+                ],
+                [
+                  "app",
+                  "lib"
+                ]
+              ]
+            },
+            "make-wrapper": {
+              "errors": [],
+              "exit": 0,
+              "files": {
+                "exec.log": "d1531bd85e07d6dc3e0ede4545599dff71a8e73f15ff002bdc71f63a02a91b6b",
+                "stderr": "84aeeb5b8c23a2c6928dbeada870e09028c68515d0a23f09ff70c035c49a71da",
+                "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "rustcs": []
+            },
+            "prime": {
+              "errors": [],
+              "exit": 0,
+              "files": {
+                "exec.log": "59291ac28bec09ef9c5cbcb839ec2b7ccc8d79b216f4408b6fb6f7c17373550a",
+                "stderr": "70d958c71e1a6c432276e96e042cb8a3a0fb9f9a44debe7dd7002352cb9f7c35",
+                "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "rustcs": [
+                [
+                  "dep",
+                  "lib"
+                ],
+                [
+                  "app",
+                  "lib"
+                ],
+                [
+                  "app",
+                  "bin"
+                ]
+              ]
+            },
+            "prime-program": {
+              "errors": [],
+              "exit": 0,
+              "files": {
+                "exec.log": "8d9a19e3bc54676587145cf1e00cbff6fea07410b6a9c3e8b2884a350def16e0",
+                "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                "stdout": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+              },
+              "rustcs": []
+            },
+            "reverted": {
+              "errors": [],
+              "exit": 0,
+              "files": {
+                "exec.log": "6509f655ac22f2b11aa22eec56781e71276a7f3c6349462d5df79240072acd25",
+                "stderr": "63801f8a2d9d0f8bd77078147dfb45862a5aa3f88ca49b991c62e892b09380b5",
+                "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "rustcs": [
+                [
+                  "dep",
+                  "lib"
+                ],
+                [
+                  "app",
+                  "lib"
+                ],
+                [
+                  "app",
+                  "bin"
+                ]
+              ]
+            }
+          },
+          "rustc_sha256": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+          "value": 1
+        },
+        "reverted_source_sha256": "00b5327bfb380b8c7b5743b134f675179b0df8e90f87a41c1c874a25d057b423"
+      },
+      "suites": {
+        "build_jsonl": {
+          "bytes": 483879,
+          "sha256": "32bc27a1423114682c29e7387c186bade888351846f865f21e8a277555eb55e7"
+        },
+        "build_selection": {
+          "earlier_gate": "test build produced a different Cargo ELF before the first test",
+          "first_suite_test_processes": 0,
+          "product_binary": "f5fec208cee22abefde41ca56a438e653111762a0ee5806e9eb46ee79ce487e0",
+          "reused_build_messages": "32bc27a1423114682c29e7387c186bade888351846f865f21e8a277555eb55e7",
+          "test_build_binary": "df2c016441bc5959690e8fc2bfa46d554781aa28048f9449e4f22471cea74ad1",
+          "test_build_version_sha256": "3a5fbd147f7352eb05450a7265c4f5a29a966e89f63458229f707381256cb1c5"
+        },
+        "build_stderr": {
+          "bytes": 1185,
+          "sha256": "5f8e8a12219f343c0784de4cee5f7aa6e65a7d6502b5018ffb841e4b488bd009"
+        },
+        "original_receipt": "f9e2fbd57163f60e113c3f125e500d8836394e840b7ed6f98d02634c076af157",
+        "sets": {
+          "conditional": {
+            "harness": "1666da6738a9aae0f032ee79b975c51849c5d0b763677f9a05384eb87f526230",
+            "mount_witness": {
+              "caps": {
+                "CapBnd": "0000000000000000",
+                "CapEff": "0000000000000000",
+                "NoNewPrivs": "1"
+              },
+              "commit": "1cbb910d0011480d7e4fcaf5cec8e2513cf6550c",
+              "mounted_product_sha256": "f5fec208cee22abefde41ca56a438e653111762a0ee5806e9eb46ee79ce487e0",
+              "root_uid": 0,
+              "same_inode": true,
+              "uid": 1000,
+              "version_sha256": "3a5fbd147f7352eb05450a7265c4f5a29a966e89f63458229f707381256cb1c5"
+            },
+            "mounted": "9f66c36e090e98f818b61bd8bcbd29b37ed74b942ccf3efb01be63a1e0124da3",
+            "native_cargo_events": [
+              "82ffb7e2c91ac216ea5d50bcfb5421e0c92adbc219381d89d8184687c95f47ea",
+              "979c972381b2c551f204c2b28bb731867cd23aa50bea9b66cb6e9f943b24dd88",
+              "6b6287ec72d9f7dae9b6e1a705f30523ca66488a2f43aa9d9ca4c96e06e9dfa2",
+              "7cabfe8ca89a21d97fa1772ab48d5db36dffc9dd2aba998ed09425893adacc28",
+              "4d7cc2b55649d1c96632a52827b92ae8b0a629475b121d580d43aae657dcef1c",
+              "3a4ff43f325777b7e483893b4bedc8feb3bef9eea8fd47842c05df7f94f36121",
+              "9bf5587c17e0ce9d90dd4bc490911476e1b395f145e5ac7e96b405b913d8c4ba",
+              "a27edf7cfe16196d48133b3bdc1850693567d12bd39567486386177e7a6cbf64",
+              "391d037d575e7f1d60a6d67c47c715b5ef0b7c77c9a8fe32de5e040a6e6c4825",
+              "3a04d5a092a4be79694e4e0d832cfe3f64ac4503c067ab97a83ff12b89c69f0c",
+              "04e2e860685a96c6c3e7d8c5d26b20783dba80304168fd713782e9c5f5797523",
+              "9f3512914f966f65a06f73752caf71d4783f8910635f0d0679bd287d7d6b4b5d",
+              "0e70f31172d613ccdfde75c4d584eaf5bc8057a6a6157232b12f59afa0c12e94",
+              "8a2bef2219417d99608f4c304880fbbccac6ea12d74596c189979e93c0f2458f",
+              "e3cac274d57e4e5bf048281ba489eda917160acf74b7d4c2dd23a373c780017b",
+              "7e3dd01bdc893943e15f9dd1c330fd9d8f28bc0aa5f1c7997c2e09991f22ca3b",
+              "e1cc8e96b4ec533e35982f27533b1b115de6a3512fcf50ab1bcb87f4517c09a6",
+              "83e69d997e4015081179585af395f65ab6dfa3549c68ee4bf270d034a116f410",
+              "b0892072cf137967b421e57bbf62d79393944d75ca2244dd0428d51f4822debd",
+              "5b13e52820e55b862d37444c4eea002962896ac5f20cc1b7c7b16b0acee1b269",
+              "914c0b9def26c0227fa0a62be8049cbf8b2ac0eef93e2e7bd64baaeae00a267d",
+              "77676c2860f22187fd565ae2c85b9ae90faae463c8a111346728a15be04a31c8",
+              "df8533bd4d9ed6b6ce294eba0896be71b9752354faa78a63efa83045a3325232"
+            ],
+            "passed": 7,
+            "physical_cargo_calls": 23,
+            "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout": "a51b4c891008485f122fb9ae166f137534eeba689cb260462da492070927ea7b",
+            "tests": [
+              "test freshness::conditional_metadata_pipelines_changed_check_before_compiler_finishes ... ok",
+              "test freshness::conditional_metadata_pipelines_changed_rlib_before_codegen_finishes ... ok",
+              "test freshness::conditional_metadata_preserves_transitive_binary_object_barriers ... ok",
+              "test freshness::conditional_metadata_rebuilds_committed_dependent_after_failed_producer_is_reverted ... ok",
+              "test freshness::conditional_metadata_recovers_when_dependency_fails_after_metadata ... ok",
+              "test freshness::conditional_metadata_waits_for_unchanged_hash_and_preserves_early_cutoff ... ok",
+              "test freshness::conditional_metadata_waits_when_unchanged_middle_has_changed_dependency ... ok"
+            ],
+            "trace": "ee54b11489f390d71c4a1267a5c59af971642ccd42ab25213fdfcf84c4c7c222"
+          },
+          "fingerprints": {
+            "harness": "8c83fd1465a7a9c717000b9be26eb564e0d3a31f54fc84bd16e36d58afb6885a",
+            "mount_witness": {
+              "caps": {
+                "CapBnd": "0000000000000000",
+                "CapEff": "0000000000000000",
+                "NoNewPrivs": "1"
+              },
+              "commit": "1cbb910d0011480d7e4fcaf5cec8e2513cf6550c",
+              "mounted_product_sha256": "f5fec208cee22abefde41ca56a438e653111762a0ee5806e9eb46ee79ce487e0",
+              "root_uid": 0,
+              "same_inode": true,
+              "uid": 1000,
+              "version_sha256": "3a5fbd147f7352eb05450a7265c4f5a29a966e89f63458229f707381256cb1c5"
+            },
+            "mounted": "9f66c36e090e98f818b61bd8bcbd29b37ed74b942ccf3efb01be63a1e0124da3",
+            "native_cargo_events": [],
+            "passed": 73,
+            "physical_cargo_calls": 0,
+            "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout": "1f69e951b8e72ff5a9364c12ab6ff497ac711beb5a92e0e7903bd916f2fad8ee",
+            "tests": [
+              "test compiler::fingerprint::dep_info::encoded_dep_info::parse_v0_fingerprint_dep_info ... ok",
+              "test compiler::fingerprint::dep_info::encoded_dep_info::path_type_is_u8_max ... ok",
+              "test compiler::fingerprint::dep_info::encoded_dep_info::round_trip ... ok",
+              "test compiler::fingerprint::dep_info::encoded_dep_info::round_trip_with_checksums ... ok",
+              "test compiler::fingerprint::dep_info::encoded_dep_info::seed_translation_preserves_absolute_inputs_and_relative_spelling ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::checksum_use_changed ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::dep_info_output_changed ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::env_var_changed_both_some ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::env_var_changed_old_none ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::features_changed ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::forced ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fresh_build ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_changed_checksum ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_changed_env ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_changed_file ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_failed_to_read_metadata ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_file_size_changed ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_missing_checksum ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_missing_file ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_stale ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_stale_dep_fingerprint ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_stale_dependency ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::fs_status_unable_to_read_file ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::local_fingerprint_type_changed ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::nothing_obvious ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::number_of_dependencies_changed ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::rerun_if_changed_output_paths_changed ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::rustc_changed ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::rustflags_changed ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::unit_dependency_info_changed ... ok",
+              "test compiler::fingerprint::dirty_reason::json_schema::unit_dependency_name_changed ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::changed_full_artifact_dependency_does_not_propagate_metadata_only_state ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::changed_metadata_dependency_propagates_through_unchanged_public_api ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::changed_workspace_dependency_cannot_skip_unused_integration_target ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::committed_short_hash_only_validates_one_current_comparison ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::dep_built_changed_should_not_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::dep_built_unchanged_should_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::dep_fresh_alone_should_not_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::dep_pending_should_not_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::dep_skipped_early_cutoff_should_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::diamond_dependency_all_unchanged ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::diamond_dependency_one_changed ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::fresh_library_dependency_can_relink_newer_transitive_artifacts ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::fresh_library_dependency_with_different_stale_unit_cannot_relink ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::fresh_library_dependency_with_newer_metadata_cannot_relink ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::fresh_non_library_dependency_cannot_relink_newer_transitive_artifacts ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::mixed_deps_fresh_and_built_unchanged_should_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::mixed_deps_with_one_changed_should_not_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::mixed_deps_with_one_pending_should_not_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::no_deps_should_not_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::non_dependency_dirty_reason_is_not_a_candidate ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::previously_changed_metadata_dependency_propagates_through_unchanged_public_api ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::public_api_hash_format ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::public_api_hash_is_not_advanced_before_fingerprint_commit ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::public_api_hash_rustflags ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::rebuilt_changed_dependency_prevents_fresh_transitive_relink ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::rebuilt_full_artifact_dependency_should_not_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::rebuilt_library_dependency_can_relink ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::rebuilt_non_library_dependency_cannot_relink ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::simultaneous_local_and_dependency_changes_are_not_candidates ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::skipped_library_dependency_can_relink_transitive_artifacts ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::speculative_short_fingerprint_follows_regular_symlinks_and_rejects_fifos ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::transitive_chain_all_unchanged ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::transitive_early_cutoff_propagates ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::transitive_with_changed_dep_does_not_propagate ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::unchanged_metadata_dependency_does_not_propagate_changed_state ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::unit_not_stale_due_to_dep_should_not_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::unit_stale_item_should_not_cutoff ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::unproven_skipped_workspace_dependency_cannot_skip_integration_target ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::unused_workspace_dependency_with_skipped_unused_root_can_skip ... ok",
+              "test compiler::fingerprint::early_cutoff_tests::up_to_date_unit_should_not_cutoff ... ok",
+              "test compiler::fingerprint::worktree_seed_tests::seed_identity_preserves_other_paths_and_checksum_policy ... ok",
+              "test compiler::fingerprint::worktree_seed_tests::seeded_dep_info_identity_survives_relocation_and_serialization ... ok"
+            ],
+            "trace": "43559e3a5e0dd1ecfb8bfbe0e00dbd69a59b0b3ece13e0e40680f87a1534cd97"
+          },
+          "macro-marker": {
+            "harness": "1666da6738a9aae0f032ee79b975c51849c5d0b763677f9a05384eb87f526230",
+            "mount_witness": {
+              "caps": {
+                "CapBnd": "0000000000000000",
+                "CapEff": "0000000000000000",
+                "NoNewPrivs": "1"
+              },
+              "commit": "1cbb910d0011480d7e4fcaf5cec8e2513cf6550c",
+              "mounted_product_sha256": "f5fec208cee22abefde41ca56a438e653111762a0ee5806e9eb46ee79ce487e0",
+              "root_uid": 0,
+              "same_inode": true,
+              "uid": 1000,
+              "version_sha256": "3a5fbd147f7352eb05450a7265c4f5a29a966e89f63458229f707381256cb1c5"
+            },
+            "mounted": "9f66c36e090e98f818b61bd8bcbd29b37ed74b942ccf3efb01be63a1e0124da3",
+            "native_cargo_events": [
+              "c6aaf1dd328149a6bece1d3d74c1858cb6d11738b9778781fdb2e06fa8a807b3",
+              "17fd8dbf42d075177cb3339a66f5405658c550475e7b4b1ca75bf254c4f211ae"
+            ],
+            "passed": 1,
+            "physical_cargo_calls": 2,
+            "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout": "4665b747b2c5e60e2c4c8f1fe350398da3540bc860f82647621348d8b8e127a2",
+            "tests": [
+              "test ohm_worktree::local_proc_macro_marker_replaces_symlinks ... ok"
+            ],
+            "trace": "d9c7b8aae034d568018a6c8f00bcd2e1b0c9e1c962b6a3c5382e6e569fbac00d"
+          },
+          "markers": {
+            "harness": "1666da6738a9aae0f032ee79b975c51849c5d0b763677f9a05384eb87f526230",
+            "mount_witness": {
+              "caps": {
+                "CapBnd": "0000000000000000",
+                "CapEff": "0000000000000000",
+                "NoNewPrivs": "1"
+              },
+              "commit": "1cbb910d0011480d7e4fcaf5cec8e2513cf6550c",
+              "mounted_product_sha256": "f5fec208cee22abefde41ca56a438e653111762a0ee5806e9eb46ee79ce487e0",
+              "root_uid": 0,
+              "same_inode": true,
+              "uid": 1000,
+              "version_sha256": "3a5fbd147f7352eb05450a7265c4f5a29a966e89f63458229f707381256cb1c5"
+            },
+            "mounted": "9f66c36e090e98f818b61bd8bcbd29b37ed74b942ccf3efb01be63a1e0124da3",
+            "native_cargo_events": [
+              "c8d10f4533d3946e69bdc7816e74d3a140300d9f8c657875f970acbdd5af08b6",
+              "58983808bc63fcf901cb7dae77e711e41b3ac3662647a9213082296d503e1e61"
+            ],
+            "passed": 1,
+            "physical_cargo_calls": 2,
+            "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout": "c32dfa4c149e77a7303bcc01afa2250cbe40bd21d9ff78bf5eea0e76ff7b7e8b",
+            "tests": [
+              "test ohm_worktree::seed_markers_replace_symlinks ... ok"
+            ],
+            "trace": "88bd6bee0531efd9d2b2b0d6a06c3413051c6da1eb6b732f47a2434023761f68"
+          }
+        },
+        "userns_preflight": {
+          "prior_exit": 1,
+          "reason": "ordinary-user-only mapping did not map host root",
+          "stderr_sha256": "937455dd18ec12aa074837a6c01e3d5aa0f52ce60c73a2623de2fbc02a2df9a9",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "test_processes": 0
+        }
+      }
+    }
+  },
+  "earlier_harness_preflight": {
+    "completed_fingerprints": 73,
+    "failed_conditional": 7,
+    "reason": "read-only harness temporary directory",
+    "streams": {
+      "conditional/exec.log": {
+        "bytes": 449,
+        "sha256": "3f04fe05c1647c5cdcaba6fd55420d32fbebb50a7143dd480466c4ce3ddeb488"
+      },
+      "conditional/stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "conditional/stdout": {
+        "bytes": 5138,
+        "sha256": "515fabf64a4322724831c820a6a819a5844df11fb2c19a481314d80dcc3427f6"
+      },
+      "fingerprints/exec.log": {
+        "bytes": 432,
+        "sha256": "f45ccc74dcc28617d50f62128470a659189d5463eef2fc8dd657f206859bbdd3"
+      },
+      "fingerprints/stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "fingerprints/stdout": {
+        "bytes": 7222,
+        "sha256": "53bc897ccdc823ea64361d5516c4c9a2b3a6ca81619732c73eae73b6f7979b40"
+      }
+    }
+  },
+  "fixture_manifest": "7bd69adfb38cdf31f300b61679fef88bc60b2530757683d979de384ce144d264",
+  "fixture_reproduce": "32d7b6c1297ecdf0339cd751bd5dd5d03c08fc35f8935f73e32daa0d8350229f",
+  "operators": {
+    "branch-fifo-audit.py": "0b36a969e4249f84ab74684a1dd8145cd67e24210587df3ee3423c8d812f7c8e",
+    "build-stamped.py": "201d31e5fa55205d2840e5240ab5f275317982aff7fdd4cb4bb1d769ad343501",
+    "build.py": "7af9f3f9b79a72ea91af7db3ccc658dfbe9529862e5d8ec3ec9fc0217a4530bb",
+    "run-stamped-controls.py": "e94aba9aede2f4cdec06f5e804b20fdd049fc9be469dca5acd662d02e4949be9",
+    "suites-stamped-v4.py": "9e6c24fb82f68824239f6dc1587bc3c3255ec8692fa861ebcea20c39e7cf246e",
+    "suites-stamped-v5.py": "05cb61586dbfd706055936bd250e84f20f66f42fff1248bf5521343b2c7f4df6",
+    "suites-stamped.py": "d5ac2888d334f798bed623b569d0c70a7c46eb5fbd8794a3db96fb10556a3ae0",
+    "suites-v2.py": "48e857b487547bab4b981f9fc62462bd9b1dd5dd966d429ec7e13616ed43ebdc",
+    "suites.py": "25bff565b7b5466913f3fa85e15edc07d9f617e3489c053a3cb3b8dd5092ba77"
+  },
+  "rustc_sha256": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+  "source": {
+    "101": {
+      "fixed": {
+        "commit": "f12e6b41ad880c69c38c7f36bdd3ac219d538b1a",
+        "file_bytes": 167821,
+        "file_git_blob": "b317f2f807e68beec4ec6c78466604aeb3a85066",
+        "file_sha256": "d6afea4b0473b0d144d7a9dee031ab8bed03bb8d36200618a2d8d11a1cf771e4",
+        "parents": [
+          "62afc4ab5acf699478f72b8fdbd5927db1da26bb"
+        ],
+        "tree": "ac6345569f35ac475bf7e5cb4a0a5bac170bca41"
+      },
+      "patch_sha256": "8392f2744362b14631122b1a42807f3e32570e629b1b369d1bc1f91b8ecaa535",
+      "path": "src/compiler/fingerprint/mod.rs",
+      "prior": {
+        "commit": "62afc4ab5acf699478f72b8fdbd5927db1da26bb",
+        "file_bytes": 162661,
+        "file_git_blob": "44afb6c221c28847c10e074e8e6004fd0d8774b9",
+        "file_sha256": "3a267a92943e39579e1d92b254822fd9e61dd29dc3c2fb94a09f4c3452efae0d",
+        "parents": [
+          "9866420326d95cc9628ba6442b51e51af76ba35c"
+        ],
+        "tree": "363cef32f88626e439b76d9778a9695cc1324509"
+      }
+    },
+    "103": {
+      "fixed": {
+        "commit": "1cbb910d0011480d7e4fcaf5cec8e2513cf6550c",
+        "file_bytes": 167821,
+        "file_git_blob": "5e25a0fe501c73babc30ebce91d0fe1787a97160",
+        "file_sha256": "f279c8ec72cd38c9bfd15db62ae03304b3e7681cf038659a2a34b385f5c1e244",
+        "parents": [
+          "1a84f8f36f0ff9f283337bfcce856b4b54c47281",
+          "f12e6b41ad880c69c38c7f36bdd3ac219d538b1a"
+        ],
+        "tree": "3d4037d3621fd5f22e28bb18b7bd7513b1fed5a9"
+      },
+      "patch_sha256": "9c1bb86d429d4d7101d48d9b098053ed7ed68bb0c964ebd528fb93eb5d568b65",
+      "path": "src/compiler/fingerprint/mod.rs",
+      "prior": {
+        "commit": "1a84f8f36f0ff9f283337bfcce856b4b54c47281",
+        "file_bytes": 162661,
+        "file_git_blob": "8d7df239d005ceb81e3eacd6efed8696c026d918",
+        "file_sha256": "54656c9a5c5b057ec9f1a8000e0301daa2fa11ed297191456184b6d4ac48e8d9",
+        "parents": [
+          "d00a180d591d5198f58574a05978bcc4773c9548"
+        ],
+        "tree": "952692976d576d0995c1dabf58b19e0d98d50bc7"
+      }
+    }
+  }
+}
