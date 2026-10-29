@@ -1,0 +1,116 @@
+{
+  "after": {
+    "Cargo.lock": "4780a2427971fe3280fe3b3b5ef586aeb3953d1a",
+    "Cargo.toml": "b2fc229f6d93dbceb1e76bcc45dc3c868be777da",
+    "artifacts": 380,
+    "build_jsonl": "f6946ad4ea445aaac64a9a00740eef7988cbe1d05af7e256ba803ca4359b20b3",
+    "build_source_files": {
+      "src/compiler/fingerprint/mod.rs": "9a3e72e1dfa14a3aa696616c7055994ad0f8e616",
+      "src/compiler/mod.rs": "a38dc47c5d965e0336b051d453a5ff5c48e544fc",
+      "src/workspace/features.rs": "10dba34ee127749b235599d901d87b7c889cd0de",
+      "tests/testsuite/freshness.rs": "c7b1353ca4619ee60a7883ed15e41c4350ee5ff8"
+    },
+    "build_trace": "f582e6b19e52c5a4a3cbb78e716e665d47ed7fb32a8dedc7c35c99c81dea5bc6",
+    "cargo_build_argv": [
+      "+ohm",
+      "-Zohm-defaults=no",
+      "build",
+      "--offline",
+      "--locked",
+      "-j4",
+      "-p",
+      "cargo",
+      "--bin",
+      "cargo",
+      "--message-format=json"
+    ],
+    "cargo_version": "5f37740c03b09c310b63eb5243344bd1865c18a0a3a047493bf0e9cc1a758572",
+    "features": [
+      "default",
+      "http-transport-curl"
+    ],
+    "original_build_receipt": "df27aab70e600af2cc504abb291977ec60d333a77a4319eb01be17c15a5276ba",
+    "parents": [
+      "30004d93bdf3b07003fb8cd7097be81d862a9f41"
+    ],
+    "product": "6a89ea01e1f5689919845cbe619f4d6ece36193d63f3839508d27cc8b9171511",
+    "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+    "source": "caac2566f0fbdf3984f519c2141a6d78e18b01b2",
+    "source_recovery": {
+      "archive": "ec4d44c64f60fdf45edd1116bbfcbd0b4958cf524727927ccea3107d365e5092",
+      "source": "caac2566f0fbdf3984f519c2141a6d78e18b01b2",
+      "supplied_missing_git_blobs": {
+        "9a3e72e1dfa14a3aa696616c7055994ad0f8e616": [
+          "src/compiler/fingerprint/mod.rs",
+          "100644"
+        ],
+        "c7b1353ca4619ee60a7883ed15e41c4350ee5ff8": [
+          "tests/testsuite/freshness.rs",
+          "100644"
+        ]
+      },
+      "tree": "45ffe139e1c6bb6ef848c2d64b1eddcc4f8bee32"
+    },
+    "stderr": "a4f979352f8a843742e9408bc3c8b7268232091dc2b380290012282d6e115835",
+    "tree": "45ffe139e1c6bb6ef848c2d64b1eddcc4f8bee32"
+  },
+  "before": {
+    "Cargo.lock": "4780a2427971fe3280fe3b3b5ef586aeb3953d1a",
+    "Cargo.toml": "b2fc229f6d93dbceb1e76bcc45dc3c868be777da",
+    "artifacts": 380,
+    "build_jsonl": "b6c0d55decd03151c8bdf5ccd9590eac94cae790cca05943407e8fac05503fd3",
+    "build_source_files": {
+      "src/compiler/fingerprint/mod.rs": "3cc137b8ea3ed77d2d41b89a5f214a4a991d299f",
+      "src/compiler/mod.rs": "27f3350ae3246c41420ddf7d7e31c77dcc0cce2d",
+      "src/workspace/features.rs": "3eb25add58e35c62af5fce2bd7b9a5f5ada98cd2",
+      "tests/testsuite/freshness.rs": "e358454ccd6f296f894cb13ba323e3872ca326fd"
+    },
+    "build_trace": "b12de0280836a3fd64550a883c32e0408ce3a70bd3a78f3a2edaf7cdf5caea5b",
+    "cargo_build_argv": [
+      "+ohm",
+      "-Zohm-defaults=no",
+      "build",
+      "--offline",
+      "--locked",
+      "-j4",
+      "-p",
+      "cargo",
+      "--bin",
+      "cargo",
+      "--message-format=json"
+    ],
+    "cargo_version": "6f3ee8d6a23f77d6a7dfc8f6f7174b8cc16b98a0bbac2f876e5efea5d77d2140",
+    "features": [
+      "default",
+      "http-transport-curl"
+    ],
+    "original_build_receipt": "ba32c49c711c8a2486b7cdbe207ec6a1ada63cb536d282b94b835542a07bba6c",
+    "parents": [
+      "1aa523118aad2b32eb365589956a96587e527f92"
+    ],
+    "product": "5b9c30978ad2145ef9a237d47ba10d36b7e55fc266568384b12d3b70dd40bde1",
+    "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+    "source": "30004d93bdf3b07003fb8cd7097be81d862a9f41",
+    "source_recovery": {
+      "archive": "3527df37c387e81f0b1aa37d7aadad594ec9f9e54551fe1edea607d377628dd3",
+      "source": "30004d93bdf3b07003fb8cd7097be81d862a9f41",
+      "supplied_missing_git_blobs": {
+        "27f3350ae3246c41420ddf7d7e31c77dcc0cce2d": [
+          "src/compiler/mod.rs",
+          "100644"
+        ],
+        "3cc137b8ea3ed77d2d41b89a5f214a4a991d299f": [
+          "src/compiler/fingerprint/mod.rs",
+          "100644"
+        ],
+        "e358454ccd6f296f894cb13ba323e3872ca326fd": [
+          "tests/testsuite/freshness.rs",
+          "100644"
+        ]
+      },
+      "tree": "8e10ace43f4ea5979deaaa9349cebbe28b0daee7"
+    },
+    "stderr": "dc220fd486a4e970e2b585d448089d958291e35f21caf2726781492d76bc767c",
+    "tree": "8e10ace43f4ea5979deaaa9349cebbe28b0daee7"
+  }
+}

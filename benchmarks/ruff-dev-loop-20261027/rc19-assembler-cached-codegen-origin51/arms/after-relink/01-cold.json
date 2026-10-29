@@ -1,0 +1,183 @@
+{
+  "archives": {
+    "shared/debug/deps/libproducer-dd18d556e6c1bf5b.rlib": "a05a9eac1264d3581759eb113b65cc264247d1f7b220f22831d62fb18de19918"
+  },
+  "assembly_object": [
+    {
+      "bytes": "11",
+      "manifest_sha256": "280d5dc58219f78a1ab1474bf8192927aad0725a066242461e4479451f0e065b",
+      "name": "reader-efba4130c2320c98.reader.934954e8ff5021a8-cgu.0.rcgu.o",
+      "sha256": "845cc674b90a909c7b5903c81eb159f91163f5fdeee81caf33ccba8ef6b948cc"
+    }
+  ],
+  "asset": "4a64a107f0cb32536e5bce6c98c393db21cca7f4ea187ba8c4dca8b51d4ea80a",
+  "asset_opens": [
+    {
+      "acquired": true,
+      "missing": false,
+      "row": "7e7d4fbe81acf007eb3805ab9ebadf0287cfc93700f57b14b5a7984e427316e5",
+      "rustc_unit": "reader"
+    },
+    {
+      "acquired": true,
+      "missing": false,
+      "row": "1ab35a80e3047f500707918e23321ee79365a01fcd611239ccd46a99844f2554",
+      "rustc_unit": "reader"
+    },
+    {
+      "acquired": true,
+      "missing": false,
+      "row": "1ab35a80e3047f500707918e23321ee79365a01fcd611239ccd46a99844f2554",
+      "rustc_unit": "reader"
+    },
+    {
+      "acquired": true,
+      "missing": false,
+      "row": "7e7d4fbe81acf007eb3805ab9ebadf0287cfc93700f57b14b5a7984e427316e5",
+      "rustc_unit": "reader"
+    }
+  ],
+  "binary_source": "dca0a29f1eee4224437fad15cd5eecdbae870dbca1f69c6bde617a9df801f24c",
+  "depinfo": {
+    "reader-efba4130c2320c98.d": {
+      "payload": false,
+      "sha256": "ca29d9e7eb629caed1db1d7d58ce08b80ebba02bc24d70897b6165036a98636d",
+      "source": true
+    }
+  },
+  "elf": "14a510b1ef7d91f1322fa0b9ba1b994971dd0d38a3f1b256990913c327e4cc32",
+  "empty": true,
+  "jobs": [
+    {
+      "argv": "45422b717032a0c69fd9d70f5cbb9c1fdf046741d77a204b85d8aa996e33024d",
+      "exe": "e173035a5dd384e17ca6a178e1987a0a746260c3669459cfab3af580880927ba",
+      "incremental": false,
+      "kind": "rustc",
+      "link_only": false,
+      "no_link": false,
+      "public_hash": true,
+      "unit": "producer"
+    },
+    {
+      "argv": "ef62aae1db4adc04bd96557424f11351a33657391e87c30672c357cadae86c65",
+      "exe": "e173035a5dd384e17ca6a178e1987a0a746260c3669459cfab3af580880927ba",
+      "incremental": false,
+      "kind": "rustc",
+      "link_only": false,
+      "no_link": true,
+      "public_hash": true,
+      "unit": "reader"
+    },
+    {
+      "argv": "5224df46b02a465ed1597ee63012406ceb9ca6daf52922473655833082d35223",
+      "exe": "e173035a5dd384e17ca6a178e1987a0a746260c3669459cfab3af580880927ba",
+      "incremental": false,
+      "kind": "rustc",
+      "link_only": true,
+      "no_link": true,
+      "public_hash": true,
+      "unit": "reader"
+    },
+    {
+      "argv": "28b7085bd2113b7cb695dabbe8c688d758e6e89aab4bc4dbebcf3cb2814ac601",
+      "exe": "1b99826121ae6682a634e5efe09bd3e3df58ce58e0b28f849114ab5b89139c26",
+      "file": "cc",
+      "kind": "driver"
+    },
+    {
+      "argv": "ae9d2d9ce36a3a065fb90b6d3a427319bfff9f4953cda3fec7ee8bd71035f681",
+      "exe": "4d1f341ae5b763b513258ee2812422a45e063c30a2f1924a0cf63d3699f3a158",
+      "file": "collect2",
+      "kind": "driver"
+    },
+    {
+      "argv": "e3abba9c65560efd73ceea6653eb4f7e8fb06f8f6e69d4d0cae2296b1b8ea0da",
+      "exe": "bf1b9bc68d0f70523a95618cb9be2e4d04698564229838cfe29eb913bba7ce67",
+      "file": "ld.lld",
+      "kind": "linker"
+    },
+    {
+      "argv": "5d55c25ccf0e7ac76f9b4fadbee03b00f30f7978bbd1b124ee7426ad015a43d0",
+      "exe": "8fdb035a0d8732dd47659e6e9a77ee75aacc1b7ab89ca822e97841176d58932b",
+      "file": "rust-lld",
+      "kind": "linker"
+    }
+  ],
+  "missing_diagnostic": false,
+  "native": 17,
+  "phase": "01-cold",
+  "public_api_files": {
+    "shared/debug/.fingerprint/producer-dd18d556e6c1bf5b/lib-producer.public-api-hash": {
+      "value": "44f4f372f7cf327866727d75cfa1d173",
+      "version": 1
+    }
+  },
+  "raw": {
+    "program.stdout": "8454e032a504ea6e74fcf0430fec476e5a3fadb78f5679f2786db38b4bbfbd7f",
+    "stderr": "2ec15d8a2c13b6d0742d68e9dc3b05d56f4152f52ac755a6edceeb7a1582456c",
+    "stdout": "5680a88263a7901b13d615297943742c7a30430b67881ddaafca98e4de891b23",
+    "trace.489839": "77427b90244485f8679f5bf8f2f80ee9d98b417a1b28c2d509a0afbabdf912e8",
+    "trace.489840": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trace.489841": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trace.489842": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trace.489843": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trace.489856": "5da7ded30254dbc8335b0e108905d55d4025b58cddb04744fe169fed430ef982",
+    "trace.489864": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trace.489866": "ee9e58c1bf0f33452e8bf11bce076aca3fc74777472627818afb1c1272d61955",
+    "trace.489871": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trace.489872": "5fdcb2dce302ced7051d9a1cc74cbcb172e9f903cb1fbe6d7e22db9cf847fa43",
+    "trace.489873": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trace.489887": "66e55b5e0ebc4d39ff7b534214ea6a471def5bd4784932e7485e9fd76a662054",
+    "trace.489888": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trace.489892": "c593cc018bd935b4583d930a97015c6d66bddf96500ad87ecb90bab1530f16d8",
+    "trace.489902": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trace.489905": "0f0defb2202d121d3d2bac709400c2c64db2312b33762bfe1046b98d3d379ea4",
+    "trace.489914": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trace.489916": "98571724dc5ee9583d3b92a20f5a05c62df8adad1724c14a13aa6a25d849ce9c",
+    "trace.489921": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trace.489923": "3ecaa5e93d757aea32e7df8637edec4dff0e5e16fc4b83bee5aeaa13ddce8302",
+    "trace.489924": "83dbda707bf832b3cfaab7f723c7acc3761601086943744c32f636a7e16f0dae",
+    "trace.489932": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trace.489933": "bcbb9cadb53b33a1c52ce12cdd2250574e2fbb80464873c2210cbdfdf796a180",
+    "trace.489934": "379e5e7a4ec7297f03887918be84c2d499fed9cadd5fc47660286494f12c2e10",
+    "trace.489936": "388e41976ba21283d2e7168394d35a5f2d07d62d6d0dbbd0fd72f3c1547d9077",
+    "trace.489946": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trace.489947": "37e3cbefb5aaa09be3e233e19f29adf071a595876bbf8922e554d530c113ca54",
+    "trace.489948": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trace.489969": "f4d2e27377544250f5d52e579ce2ac0804aa49de5429c4db2c82c8826cae2a5f",
+    "trace.489971": "1f738b9e52f57872d0723acc08527a3d211fd718e91ef45a862297648c99235a",
+    "trace.489984": "1e729cf62ad1717a861785ef8a7ab9ca522af21dc7ba2b79aa154bc58a50987a",
+    "trace.490000": "0395703dfbe4c6bd7cff588af269be03e8b09b284c73c18f85f021ec357815cc",
+    "trace.490003": "fefc4b7a2a8d7e3c8e343a2b12e0ae25967dfd052f225042830d10cbadd9ca8d",
+    "trace.490007": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trace.490012": "8529664accd18ab8ea8a0eecb0a1dc795615c5c5d2192324907d31ac0cafb4ab",
+    "trace.490013": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trace.490034": "7114ef6ebf43bea2e37be1c775e099597021848d5ff5da12973c507cebef7800",
+    "trace.490035": "f3a7ceb0508904532a0e7268a95640a6d434048703dad8714e08d7a8943a071b",
+    "trace.490036": "85d28aaf804d36c70fc1371f9b1b7713dceee0bbc097cfea7e5abbabbd2bcc06",
+    "trace.490056": "c405ab69293e0fe295307cdd32c778bf80311ad1d4d31a343000cd95d7b51841",
+    "trace.490059": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trace.490061": "eab61a456bc0eb27cd54d3b68c7b44f162be1b49eea595889dc589553b48a112",
+    "trace.490062": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trace.490063": "6d1390c67dba77d94252bd0818fa486a691460cd6d22f84ae82f24818a60e6d7",
+    "trace.490066": "7d77ec6cc332f03ee5f87fd72082f9ca9bf3f535f62e8cf11ebe27921b95be41",
+    "trace.490067": "0b58d335cab3a8749c71e6b3e882b1caff50a29dc99de15671e02640165cef4c",
+    "trace.490068": "240f04936edbe96d6477542bb379414f0fe91154b17a7473894aff87e894e2c6",
+    "trace.490069": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trace.490070": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trace.490071": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "rust": 6,
+  "source": "fb17670f278b5599d083e6f01c4b750697702b2e7f11c8741931931c9d759cb1",
+  "status": 0,
+  "typed": [
+    [
+      "producer",
+      false
+    ],
+    [
+      "reader",
+      false
+    ]
+  ]
+}

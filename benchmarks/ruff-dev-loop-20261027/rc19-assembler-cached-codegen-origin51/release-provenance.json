@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "toolchain": "ohm-1.98.1-1",
+  "target": "x86_64-unknown-linux-gnu",
+  "bundled_tools": {
+    "wild": {
+      "version": "0.10.0",
+      "sha256": "641265506a7c06cfb03181b8916ab663ec8407855db6d4db7f8450667d105283"
+    }
+  },
+  "coordinator": {
+    "repository": "astral-sh/ohm",
+    "revision": "518111d9d71225d4a2f759dbe2473c7e84acd12a"
+  },
+  "manifest": {
+    "path": "toolchains/1.98.1/1.json",
+    "sha256": "4a8c2a2fefcbca24830dbb9890fd423cc2b249b1d7bb058c95180268fdf74291"
+  },
+  "sources": {
+    "rust": {
+      "revision": "f6270311094cd4b48fefce03debdffcf8396c64c"
+    },
+    "cargo": {
+      "revision": "81d8c6d261b3663c0b8d64fcd60eaaaeefa9b351"
+    },
+    "clippy": {
+      "revision": "55ebc33c69b5855fc633eb086f77f87e8528ca0d"
+    },
+    "rustfmt": {
+      "revision": "7cac9b33b69a4d18652468c7b99824204aa38873"
+    }
+  }
+}

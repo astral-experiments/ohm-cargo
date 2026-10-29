@@ -1,0 +1,125 @@
+{
+  "archives": {
+    "shared/debug/deps/libproducer-dd18d556e6c1bf5b.rlib": "78879c45f6c1f348ad536da14e5ddd7b0830c508821dc2ce675ee81886942a9c"
+  },
+  "assembly_object": [
+    {
+      "bytes": "11",
+      "manifest_sha256": "46b8055454a6a515b811859c089b0fc1b001d644837b780b06a267374ba06b15",
+      "name": "reader-efba4130c2320c98.reader.934954e8ff5021a8-cgu.0.rcgu.o",
+      "sha256": "845cc674b90a909c7b5903c81eb159f91163f5fdeee81caf33ccba8ef6b948cc"
+    }
+  ],
+  "asset": "1f18d650d205d71d934c3646ff5fac1c096ba52eba4cf758b865364f4167d3cd",
+  "asset_opens": [],
+  "binary_source": "dca0a29f1eee4224437fad15cd5eecdbae870dbca1f69c6bde617a9df801f24c",
+  "depinfo": {
+    "reader-efba4130c2320c98.d": {
+      "payload": false,
+      "sha256": "ca29d9e7eb629caed1db1d7d58ce08b80ebba02bc24d70897b6165036a98636d",
+      "source": true
+    }
+  },
+  "elf": "923707926e9f4e15ea1ac7f3a38cf1d5d54f06c8c56a6bc572dfa979210ee8d4",
+  "empty": false,
+  "jobs": [
+    {
+      "argv": "45422b717032a0c69fd9d70f5cbb9c1fdf046741d77a204b85d8aa996e33024d",
+      "exe": "e173035a5dd384e17ca6a178e1987a0a746260c3669459cfab3af580880927ba",
+      "incremental": false,
+      "kind": "rustc",
+      "link_only": false,
+      "no_link": false,
+      "public_hash": true,
+      "unit": "producer"
+    },
+    {
+      "argv": "5224df46b02a465ed1597ee63012406ceb9ca6daf52922473655833082d35223",
+      "exe": "e173035a5dd384e17ca6a178e1987a0a746260c3669459cfab3af580880927ba",
+      "incremental": false,
+      "kind": "rustc",
+      "link_only": true,
+      "no_link": true,
+      "public_hash": true,
+      "unit": "reader"
+    },
+    {
+      "argv": "f9ccafa28128bcb5e8139cf999a7f9d8e0ba4609b2f469c8e6c412e82b5f1551",
+      "exe": "1b99826121ae6682a634e5efe09bd3e3df58ce58e0b28f849114ab5b89139c26",
+      "file": "cc",
+      "kind": "driver"
+    },
+    {
+      "argv": "362dd5ab3af89bf8ca7955e234ddca3f3db2039dd23aa7336b15e9017a2b14a5",
+      "exe": "4d1f341ae5b763b513258ee2812422a45e063c30a2f1924a0cf63d3699f3a158",
+      "file": "collect2",
+      "kind": "driver"
+    },
+    {
+      "argv": "6d2993f5dbf3e5c37bee6a4275b4f1228738ead44eb81d8cd06c57a35a48a095",
+      "exe": "bf1b9bc68d0f70523a95618cb9be2e4d04698564229838cfe29eb913bba7ce67",
+      "file": "ld.lld",
+      "kind": "linker"
+    },
+    {
+      "argv": "95ff960107bfa4fa5aee83479ef1e5094955ffea48ad5acfcf5cae0ab9282b3b",
+      "exe": "8fdb035a0d8732dd47659e6e9a77ee75aacc1b7ab89ca822e97841176d58932b",
+      "file": "rust-lld",
+      "kind": "linker"
+    }
+  ],
+  "missing_diagnostic": false,
+  "native": 17,
+  "phase": "03-private-edit-and-payload",
+  "public_api_files": {
+    "shared/debug/.fingerprint/producer-dd18d556e6c1bf5b/lib-producer.public-api-hash": {
+      "value": "44f4f372f7cf327866727d75cfa1d173",
+      "version": 1
+    }
+  },
+  "raw": {
+    "program.stdout": "d88011aa64b4f528a24b3c1a25d508fb96a46be564072609c8bfc44ba969b406",
+    "stderr": "085a660ea535a5e02d799463658b575563db940bca103bed9417df8badf417c3",
+    "stdout": "5680a88263a7901b13d615297943742c7a30430b67881ddaafca98e4de891b23",
+    "trace.490123": "98b79e80923bc9a70a9d38b90d12fb73a5af07490ffc3819e7385b8a444d1f9b",
+    "trace.490125": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trace.490126": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trace.490127": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trace.490128": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trace.490140": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trace.490142": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trace.490144": "42745487e0826b8bad302b10a64047b5b1320f0385759ab63615794ceb661048",
+    "trace.490147": "501ccb2f005e867a0c8c53a9ba3e9be8e89f6e5d4913c4c34da5772bc91ea7ff",
+    "trace.490166": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trace.490168": "a713adf62b9bf6b730b3a972186bb02358cd43a97d9bf8d6d0a4405aaf7cddd0",
+    "trace.490169": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trace.490328": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trace.490330": "def0e804497a7b26c27b081f69acb0f287f8ddbba16061a65b2f807c504866c7",
+    "trace.490331": "1e729cf62ad1717a861785ef8a7ab9ca522af21dc7ba2b79aa154bc58a50987a",
+    "trace.490338": "316c1558b81d7d0ae2fd63081a75a7af04092de60d7947f441c380ff951cff56",
+    "trace.490340": "574cbe3adc8731531117dca7f10bb60aa67440d3d184edce88a2d6c7f5b86a0f",
+    "trace.490344": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trace.490345": "6b8e465ffd969cc91f2f2a3512f412a9f51e13e6a08c9f9c9cee584488e5c38a",
+    "trace.490346": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trace.490349": "5642196784580967266786c3850e5086e498334ceef53ef109f49633c77c3a1e",
+    "trace.490354": "35c15d1d430015537c4accc8df1950fe825a224dd77404c3cc8962c8532f5836",
+    "trace.490355": "21aaf970d5752c89ff58f1c1ca109cd725424a3d6eff1b000eeb18f34451e5c5",
+    "trace.490359": "c7f8bef2d9dbd180a3b24ed9322f2a80894d44aad3145a07f0ca1e5471cd04f9",
+    "trace.490360": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trace.490361": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trace.490362": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "rust": 10,
+  "source": "ce99059e4dc4fac19728d67a77aaadb107b611767d9519b47c5bb7775d345e4b",
+  "status": 0,
+  "typed": [
+    [
+      "producer",
+      false
+    ],
+    [
+      "reader",
+      false
+    ]
+  ]
+}
