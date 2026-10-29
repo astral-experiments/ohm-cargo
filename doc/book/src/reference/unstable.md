@@ -2151,8 +2151,9 @@ also disables it.
 ## ohm-ready-tests
 
 Ohm's `cargo test` can run a completed test binary while other targets compile.
-This is enabled by Ohm defaults for supported Unix host builds, including normal
-terminal invocations. Cargo waits
+Enable it with `-Zohm-ready-tests`, `[unstable] ohm-ready-tests = true`, or
+`CARGO_UNSTABLE_OHM_READY_TESTS=true`. Ohm defaults leave it disabled. It supports
+Unix host builds, including normal terminal invocations. Cargo waits
 for confirmed compiler completion and for the queued build scripts, application
 executables, and dynamic libraries that supply runtime inputs. It preserves the
 ordinary test arguments, environment, and working directory, runs only one test
