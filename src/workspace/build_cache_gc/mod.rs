@@ -13,7 +13,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::CargoResult;
 use crate::compiler::Layout;
-use crate::util::data_structures::HashSet;
+use crate::util::data_structures::{HashMap, HashSet};
 use crate::util::flock::try_lock_exclusive;
 
 pub(crate) const DIRECTORY: &str = ".ohm-gc-v1";
@@ -101,7 +101,7 @@ pub(crate) fn record_seed_contexts(root: &Path, source: &Path) -> CargoResult<Ve
                 }
                 let Some(record) =
                     read_record::<ContextRecord>(&records.join(format!("{context}.json")))
-                        .filter(|record| record.version == 1 && record.context == context)
+                        .filter(|record| record.supported() && record.context == context)
                 else {
                     continue;
                 };
@@ -300,6 +300,16 @@ fn installed_ohm_version(compiler: &FileIdentity, driver: &FileIdentity) -> Opti
 }
 
 impl ContextRecord {
+    /// Version 2 uses context-scoped leases and is opaque to older collectors.
+    fn supported(&self) -> bool {
+        self.version
+            == if scoped_context_name(&self.context) {
+                2
+            } else {
+                1
+            }
+    }
+
     fn retired(&self) -> bool {
         [
             (&self.compiler, &self.compiler_anchor),
@@ -360,7 +370,82 @@ pub(crate) struct Summary {
     pub counts: FileCounts,
     pub pending: bool,
     pub busy: bool,
+    pub skipped: Vec<String>,
     pub details: Vec<String>,
+}
+
+impl Summary {
+    fn skip(&mut self, namespace: &Namespace) {
+        self.busy = true;
+        let detail = match namespace.scoped_context() {
+            Some(context) => format!("context {context} (in use)"),
+            None => "legacy caches (a build, program, or older collector is using this cache)"
+                .to_owned(),
+        };
+        if self.skipped.len() < 32 && !self.skipped.contains(&detail) {
+            self.skipped.push(detail);
+        }
+    }
+}
+
+/// One probe per protection domain; busy domains do not block unrelated ones.
+/// Dry runs release probes immediately, before counting any artifact trees.
+#[derive(Default)]
+struct CollectionLocks {
+    // A missing key context denotes legacy protection; a missing value is busy.
+    domains: HashMap<Option<String>, Option<Vec<CollectorLock>>>,
+}
+
+impl CollectionLocks {
+    fn acquire(
+        &mut self,
+        root: &Path,
+        profiles: &[PathBuf],
+        namespace: &Namespace,
+        dry_run: bool,
+    ) -> CargoResult<bool> {
+        let context = namespace.scoped_context().map(str::to_owned);
+        if let Some(guards) = self.domains.get(&context) {
+            return Ok(guards.is_some());
+        }
+        for profile in profiles {
+            ensure!(
+                !crate::compiler::layout::shared_registry_directory_is_nfs(profile)?,
+                "build-cache reclamation does not support NFS profiles"
+            );
+        }
+        let mut paths = if let Some(context) = &context {
+            vec![super::build_cache_gc_lease::context_lock(root, context)]
+        } else {
+            let mut paths = vec![root.join(DIRECTORY).join(CONSUMERS_LOCK)];
+            paths.extend(
+                profiles
+                    .iter()
+                    .map(|profile| profile.join(".cargo-build-lock")),
+            );
+            // Older Cargo's optional ThinLTO pruner runs after releasing profile locks.
+            if plain_directory(&root.join(THINLTO)) {
+                paths.push(root.join(THINLTO).join(".prune-lock"));
+            }
+            paths
+        };
+        if dry_run {
+            paths.retain(|path| !absent(path));
+        }
+        let mut guards = Vec::new();
+        for path in paths {
+            let Some(guard) = try_lock(&path, !dry_run)? else {
+                self.domains.insert(context, None);
+                return Ok(false);
+            };
+            guards.push(guard);
+        }
+        if dry_run {
+            guards.clear();
+        }
+        self.domains.insert(context, Some(guards));
+        Ok(true)
+    }
 }
 
 /// Cache payload totals exclude GC's own provenance and temporary staging files.
@@ -438,32 +523,14 @@ fn collect_with_lock_budget(
     } else {
         let Some(collector) = try_lock(&directory.join("collector.lock"), true)? else {
             summary.busy = true;
+            summary
+                .skipped
+                .push(format!("{} (another GC is running)", root.display()));
             return Ok(summary);
         };
         Some(collector)
     };
-    let consumers_path = directory.join(CONSUMERS_LOCK);
-    if !dry_run || !absent(&consumers_path) {
-        let Some(probe) = try_lock(&consumers_path, !dry_run)? else {
-            summary.busy = true;
-            return Ok(summary);
-        };
-        drop(probe);
-    }
     let tracker = Tracker::existing(root, dry_run)?;
-    // Older Cargo versions prune the legacy ThinLTO layout at build completion,
-    // after releasing their profile locks. Coordinate with that pruner too.
-    let thinlto = root.join(THINLTO);
-    let prune_lock = thinlto.join(".prune-lock");
-    let _thinlto_pruner = if plain_directory(&thinlto) && (!dry_run || !absent(&prune_lock)) {
-        let Some(guard) = try_lock(&prune_lock, !dry_run)? else {
-            summary.busy = true;
-            return Ok(summary);
-        };
-        Some(guard)
-    } else {
-        None
-    };
     let profiles = profiles(root)?;
     let mut ready = Vec::new();
     let mut trash_roots = profiles
@@ -515,30 +582,14 @@ fn collect_with_lock_budget(
         ready.push((namespace, paths));
     }
     if dry_run {
-        let probe = if absent(&consumers_path) {
-            None
-        } else {
-            let Some(probe) = try_lock(&consumers_path, false)? else {
-                summary.busy = true;
-                return Ok(summary);
-            };
-            Some(probe)
-        };
-        for profile in &profiles {
-            ensure!(
-                !crate::compiler::layout::shared_registry_directory_is_nfs(profile)?,
-                "build-cache reclamation does not support NFS profiles"
-            );
-            let Some(_guard) = try_lock(&profile.join(".cargo-build-lock"), false)? else {
-                summary.busy = true;
-                return Ok(summary);
-            };
-        }
-        drop(probe);
-
         // Preview every candidate without holding locks while counting artifacts.
+        let mut locks = CollectionLocks::default();
         let mut sources = Vec::new();
         for (namespace, paths) in ready {
+            if !locks.acquire(root, &profiles, &namespace, true)? {
+                summary.skip(&namespace);
+                continue;
+            }
             let Some(detail) =
                 namespace.detail(root, &profiles, now, current_ohm, tracker.as_ref())
             else {
@@ -588,35 +639,15 @@ fn collect_with_lock_budget(
             RENAME_BUDGET
         };
         let deadline = Instant::now() + lock_budget;
-        let Some(consumers) = try_lock(&consumers_path, false)? else {
-            summary.busy = true;
-            summary.pending = true;
-            return Ok(summary);
-        };
-        if profiles != self::profiles(root)? {
-            summary.pending = true;
-            return Ok(summary);
-        }
-        let mut guards = Vec::new();
-        for profile in &profiles {
-            ensure!(
-                !crate::compiler::layout::shared_registry_directory_is_nfs(profile)?,
-                "build-cache reclamation does not support NFS profiles"
-            );
-            let Some(guard) = try_lock(&profile.join(".cargo-build-lock"), false)? else {
-                summary.busy = true;
-                return Ok(summary);
-            };
-            guards.push(guard);
-        }
+        let mut locks = CollectionLocks::default();
         let tracker = match tracker {
             Some(tracker) => Some(tracker),
             None => Tracker::existing(root, false)?,
         };
-        let transaction = tracker
-            .as_ref()
-            .map(|tracker| tracker.conn.unchecked_transaction())
-            .transpose()?;
+        if let Some(tracker) = &tracker {
+            tracker.conn.busy_timeout(Duration::ZERO)?;
+        }
+        let mut transaction = None;
         let mut remaining = rename_budget;
         let mut records_remaining = rename_budget;
         for (namespace, paths) in ready {
@@ -627,9 +658,41 @@ fn collect_with_lock_budget(
                 summary.pending = true;
                 break;
             }
+            if !locks.acquire(root, &profiles, &namespace, false)? {
+                summary.skip(&namespace);
+                continue;
+            }
+            // Busy contexts need no writer reservation. Once work is available,
+            // reserve before rechecking usage so a deferred transaction cannot
+            // fail to upgrade while another context records its activity.
+            if transaction.is_none()
+                && let Some(tracker) = &tracker
+            {
+                match rusqlite::Transaction::new_unchecked(
+                    &tracker.conn,
+                    rusqlite::TransactionBehavior::Immediate,
+                ) {
+                    Ok(guard) => transaction = Some(guard),
+                    Err(error)
+                        if error.sqlite_error_code() == Some(rusqlite::ErrorCode::DatabaseBusy) =>
+                    {
+                        summary.busy = true;
+                        summary
+                            .skipped
+                            .push(format!("{} (usage database is busy)", root.display()));
+                        break;
+                    }
+                    Err(error) => return Err(error.into()),
+                }
+            }
+            // A build may have added another profile since discovery. Do not
+            // forget a context unless every profile was included in retirement.
+            if matches!(namespace, Namespace::Context(_)) && profiles != self::profiles(root)? {
+                summary.pending = true;
+                break;
+            }
             records_remaining -= 1;
-            // A build may have enrolled a legacy context since discovery. Recheck
-            // while both new consumers and older Cargo builds are excluded.
+            // Recheck usage while consumers of this namespace are excluded.
             let Some(detail) =
                 namespace.detail(root, &profiles, now, current_ohm, tracker.as_ref())
             else {
@@ -664,28 +727,22 @@ fn collect_with_lock_budget(
         if let Some(transaction) = transaction {
             transaction.commit()?;
         }
-        drop(guards);
-        drop(consumers);
     }
-    // Unlink only retired payloads, outside the build locks and in small batches.
-    if let Some(probe) = try_lock(&consumers_path, false)? {
-        drop(probe);
-        let mut remaining = DELETE_BUDGET;
-        for trash in trash_roots {
-            drain_trash(&trash, &mut remaining, &mut summary, false)?;
-        }
-        let mut metadata_summary = Summary::default();
-        drain_trash(
-            &root.join(METADATA_TRASH),
-            &mut remaining,
-            &mut metadata_summary,
-            false,
-        )?;
-        summary.deleted_entries += metadata_summary.deleted_entries;
-        summary.pending |= metadata_summary.pending;
-    } else {
-        summary.busy = true;
+    // Retired paths are unreachable by consumers. Drain them even if a build
+    // starts or another context remains in use.
+    let mut remaining = DELETE_BUDGET;
+    for trash in trash_roots {
+        drain_trash(&trash, &mut remaining, &mut summary, false)?;
     }
+    let mut metadata_summary = Summary::default();
+    drain_trash(
+        &root.join(METADATA_TRASH),
+        &mut remaining,
+        &mut metadata_summary,
+        false,
+    )?;
+    summary.deleted_entries += metadata_summary.deleted_entries;
+    summary.pending |= metadata_summary.pending;
     Ok(summary)
 }
 
@@ -763,7 +820,7 @@ fn idle_dependencies(
 ) -> Option<Vec<Namespace>> {
     let tracker = tracker?;
     let state = tracker.context(context).ok()??;
-    if state.record.version != 1 || state.record.context != context {
+    if !state.record.supported() || state.record.context != context {
         return None;
     }
     let cutoff = tracker::timestamp(now.checked_sub(CONTEXT_MAX_IDLE)?).ok()?;
@@ -837,6 +894,19 @@ fn legacy_usage(root: &Path, context: &str) -> Option<Option<tracker::Timestamp>
 }
 
 impl Namespace {
+    fn scoped_context(&self) -> Option<&str> {
+        match self {
+            Self::Context(context)
+            | Self::Dependency { context, .. }
+            | Self::ThinLto { context, .. }
+                if scoped_context_name(context) =>
+            {
+                Some(context)
+            }
+            _ => None,
+        }
+    }
+
     /// Missing legacy records permit eviction; malformed or newer records do not.
     fn detail(
         &self,
@@ -851,7 +921,7 @@ impl Namespace {
             Self::ThinLto { context, entry } => {
                 // An unknown or malformed context never permits partial eviction.
                 let state = tracker?.context(context).ok()??;
-                if state.record.version != 1 || state.record.context != *context {
+                if !state.record.supported() || state.record.context != *context {
                     return None;
                 }
                 let path = root.join(entry);
@@ -902,11 +972,16 @@ impl Namespace {
                         .is_some_and(|cutoff| last_used.is_some_and(|used| used <= cutoff));
                     (state.record, expired)
                 } else {
-                    if legacy_context_name(id)
+                    if (legacy_context_name(id) || scoped_context_name(id))
                         && safely_absent(root, &path)
                         && safely_absent(root, &directory.join(LAST_USED).join(id))
                     {
-                        return Some(format!("legacy context {id} (no usage records)"));
+                        let kind = if scoped_context_name(id) {
+                            "untracked"
+                        } else {
+                            "legacy"
+                        };
+                        return Some(format!("{kind} context {id} (no usage records)"));
                     }
                     if !plain_ancestors(root, &path).ok()? {
                         return None;
@@ -916,7 +991,7 @@ impl Namespace {
                         context_expired(&directory, id, now),
                     )
                 };
-                if record.version != 1 || record.context != *id {
+                if !record.supported() || record.context != *id {
                     return None;
                 }
                 let previous = record
@@ -1075,7 +1150,7 @@ fn namespaces(
     }
     for profile in profiles {
         for id in directory_names(root, &profile.join("build/registries"))? {
-            if legacy_context_name(&id) {
+            if legacy_context_name(&id) || scoped_context_name(&id) {
                 namespaces.insert(Namespace::Context(id));
             }
         }
@@ -1093,7 +1168,7 @@ fn namespaces(
         }
     }
     for id in directory_names(root, &root.join(THINLTO))? {
-        if legacy_context_name(&id) {
+        if legacy_context_name(&id) || scoped_context_name(&id) {
             namespaces.insert(Namespace::Context(id));
         } else if thinlto_key(&id) && !namespaces.contains(&Namespace::Context(id.clone())) {
             namespaces.insert(Namespace::LegacyThinLto(id));
@@ -1156,6 +1231,11 @@ fn legacy_context_name(name: &str) -> bool {
                 | "-all-native-all"
                 | "-all-native-build-scripts"
         )
+}
+
+/// The namespace and record version jointly keep old root-wide collectors away.
+pub(crate) fn scoped_context_name(name: &str) -> bool {
+    name.strip_prefix("v2-").is_some_and(legacy_context_name)
 }
 
 /// Absence behind a symlink is not proof that the owned payload was removed.
@@ -1489,9 +1569,13 @@ mod tests {
         }
 
         fn enroll(&self) -> CargoResult<()> {
+            self.enroll_context("abcdef")
+        }
+
+        fn enroll_context(&self, context: &str) -> CargoResult<()> {
             record_context(
                 &self.root,
-                "abcdef",
+                context,
                 self.identity(&self.compiler)?,
                 self.identity(&self.driver)?,
             )
@@ -1556,6 +1640,98 @@ mod tests {
             File::open(&path)?.set_modified(used)?;
             Ok(path)
         }
+    }
+
+    #[test]
+    fn busy_context_preserves_its_artifacts_without_blocking_other_contexts_or_trash()
+    -> CargoResult<()> {
+        for recorded in [true, false] {
+            let cache = Cache::new()?;
+            let busy = "v2-0000000000000001";
+            let idle = "v2-0000000000000002";
+            for context in [busy, idle] {
+                if recorded {
+                    cache.enroll_context(context)?;
+                    cache.age_context(context, SystemTime::UNIX_EPOCH)?;
+                }
+                cache.artifact(&format!("build/registries/{context}"))?;
+                cache.thinlto(context, 0, SystemTime::UNIX_EPOCH)?;
+            }
+            let lease = crate::workspace::build_cache_gc_lease::ConsumerLease::acquire_context(
+                &cache.root,
+                busy,
+            )?;
+            let retired = cache.artifact("retired")?;
+            assert!(retire(
+                &cache.root,
+                &retired,
+                &cache.profile.join(TRASH),
+                false
+            )?);
+            for dry_run in [true, false] {
+                let summary = collect(&cache.root, dry_run, None)?;
+                assert_eq!(summary.counts.files, 3);
+                assert_eq!(summary.counts.bytes, 19);
+                assert_eq!(summary.skipped, [format!("context {busy} (in use)")]);
+                assert!(cache.profile.join("build/registries").join(busy).is_dir());
+                assert!(cache.root.join(THINLTO).join(busy).is_dir());
+                assert_eq!(
+                    cache.profile.join("build/registries").join(idle).exists(),
+                    dry_run
+                );
+            }
+            drop(lease);
+            assert_eq!(collect(&cache.root, false, None)?.counts.files, 2);
+            assert!(cache.tracker()?.contexts()?.is_empty());
+        }
+        Ok(())
+    }
+
+    #[test]
+    fn legacy_locks_only_block_legacy_namespaces() -> CargoResult<()> {
+        let cache = Cache::new()?;
+        let context = "v2-0123456789abcdef";
+        cache.enroll()?;
+        cache.enroll_context(context)?;
+        cache.age_context("abcdef", SystemTime::UNIX_EPOCH)?;
+        cache.age_context(context, SystemTime::UNIX_EPOCH)?;
+        let legacy = cache.artifact("build/registries/abcdef")?;
+        let scoped = cache.artifact(&format!("build/registries/{context}"))?;
+        let consumer = crate::workspace::build_cache_gc_lease::ConsumerLease::acquire(&cache.root)?;
+        let profile = File::open(cache.profile.join(".cargo-build-lock"))?;
+        crate::util::flock::lock_shared(&profile)?;
+        fs::create_dir(cache.root.join(THINLTO))?;
+        let pruner = File::create(cache.root.join(THINLTO).join(".prune-lock"))?;
+        crate::util::flock::lock_exclusive(&pruner)?;
+        for dry_run in [true, false] {
+            let summary = collect(&cache.root, dry_run, None)?;
+            assert_eq!(summary.counts.files, 1);
+            assert!(summary.busy);
+            assert!(legacy.exists());
+            assert_eq!(scoped.exists(), dry_run);
+        }
+        drop((consumer, profile, pruner));
+        assert_eq!(collect(&cache.root, false, None)?.counts.files, 1);
+        Ok(())
+    }
+
+    #[test]
+    fn concurrent_usage_writer_postpones_gc_without_failing_or_retiring_artifacts()
+    -> CargoResult<()> {
+        let cache = Cache::new()?;
+        let context = "v2-0123456789abcdef";
+        cache.enroll_context(context)?;
+        cache.age_context(context, SystemTime::UNIX_EPOCH)?;
+        let artifact = cache.artifact(&format!("build/registries/{context}"))?;
+        let tracker = cache.tracker()?;
+        tracker.conn.execute_batch("BEGIN IMMEDIATE")?;
+        let summary = collect(&cache.root, false, None)?;
+        assert!(summary.busy);
+        assert_eq!(summary.retired, 0);
+        assert!(artifact.exists());
+        tracker.conn.execute_batch("ROLLBACK")?;
+        assert_eq!(collect(&cache.root, false, None)?.retired, 1);
+        Ok(())
     }
 
     #[test]
@@ -2574,7 +2750,7 @@ mod tests {
             inner.identity(&inner.compiler)?,
             inner.identity(&inner.driver)?,
         )?;
-        drop(ContextUse::new(inner.tracker()?, id, Some(Vec::new()))?);
+        inner.age_context(id, SystemTime::UNIX_EPOCH)?;
         inner.artifact(&format!("build/registries/{id}"))?;
         let nested = outer.root.join("nested");
         fs::rename(&inner.root, &nested)?;
@@ -2583,9 +2759,9 @@ mod tests {
         assert_eq!(collect(&outer.root, false, None)?.counts.files, 0);
         assert!(collect(&nested, false, None)?.busy);
         drop(lease);
-        assert_eq!(collect(&nested, false, None)?.retired, 0);
+        assert_eq!(collect(&nested, false, None)?.retired, 1);
         assert!(
-            nested
+            !nested
                 .join("debug/build/registries")
                 .join(id)
                 .join("artifact")

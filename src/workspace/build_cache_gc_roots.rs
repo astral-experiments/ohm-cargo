@@ -148,7 +148,10 @@ pub fn collect(gctx: &GlobalContext, root: Option<&Path>, dry_run: bool) -> Carg
             gctx.shell()
                 .status(if dry_run { "Would remove" } else { "Removing" }, detail)?;
         }
-        if summary.busy {
+        for detail in &summary.skipped {
+            gctx.shell().status("Skipping", detail)?;
+        }
+        if summary.busy && summary.skipped.is_empty() {
             gctx.shell()
                 .status("Skipping", format!("{} (cache is in use)", root.display()))?;
         } else if summary.pending {
@@ -230,13 +233,17 @@ fn collect_root(
         total.retained = summary.retained;
         total.busy = summary.busy;
         total.pending = summary.pending;
+        for detail in summary.skipped {
+            if total.skipped.len() < 32 && !total.skipped.contains(&detail) {
+                total.skipped.push(detail);
+            }
+        }
         for detail in summary.details {
             if total.details.len() < 32 && !total.details.contains(&detail) {
                 total.details.push(detail);
             }
         }
-        if !progress || total.busy || !total.pending || started.elapsed() >= Duration::from_secs(10)
-        {
+        if !progress || !total.pending || started.elapsed() >= Duration::from_secs(10) {
             return Ok(total);
         }
     }

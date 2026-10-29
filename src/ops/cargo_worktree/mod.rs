@@ -167,8 +167,8 @@ struct Seeded {
 
 /// Clones private state between target directories while holding their local guards.
 ///
-/// The global consumer lease protects registry references without stopping builds
-/// in other worktrees. The new recipient cannot be another seeding operation's donor.
+/// Consumer leases protect legacy and scoped registry references without stopping
+/// builds in other worktrees. The new recipient cannot be another seeding operation's donor.
 fn seed_shared_build(donor: &Workspace<'_>, recipient: &Workspace<'_>) -> CargoResult<Seeded> {
     let shared_root = donor.canonical_build_path(donor.configured_build_dir().as_path_unlocked());
     ensure!(
@@ -208,6 +208,8 @@ fn seed_shared_build(donor: &Workspace<'_>, recipient: &Workspace<'_>) -> CargoR
             seeded.skipped_profiles += 1;
             continue;
         }
+        let _context_leases =
+            crate::workspace::build_cache_gc_lease::seed_leases(&shared_root, &source)?;
         let _context_uses = if cfg!(any(target_os = "linux", target_os = "macos")) {
             crate::workspace::build_cache_gc::record_seed_contexts(&shared_root, &source)
                 .unwrap_or_else(|error| {

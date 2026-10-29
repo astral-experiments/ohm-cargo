@@ -2,9 +2,9 @@
 
 use crate::util::CargoResult;
 use cargo_util::ProcessBuilder;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
-/// A root-wide shared lease, acquired before any profile or workspace locks.
+/// A shared lease for a compiler context, or an unresolved/legacy consumer.
 ///
 /// The file is closed rather than explicitly unlocked: children may inherit the
 /// same open file description and continue using artifacts after Cargo exits.
@@ -17,6 +17,19 @@ pub(crate) struct ConsumerLease {
 impl ConsumerLease {
     /// Acquires the stable consumer lock without following metadata symlinks.
     pub(crate) fn acquire(root: &Path) -> CargoResult<Self> {
+        Self::acquire_inner(root, None)
+    }
+
+    /// Protects only this context, including children that outlive Cargo.
+    pub(crate) fn acquire_context(root: &Path, context: &str) -> CargoResult<Self> {
+        anyhow::ensure!(
+            super::build_cache_gc::scoped_context_name(context),
+            "invalid scoped build context"
+        );
+        Self::acquire_inner(root, Some(context))
+    }
+
+    fn acquire_inner(root: &Path, context: Option<&str>) -> CargoResult<Self> {
         #[cfg(any(target_os = "linux", target_os = "macos"))]
         {
             use super::build_cache_gc::{CONSUMERS_LOCK, metadata_dir};
@@ -34,7 +47,10 @@ impl ConsumerLease {
             let directory = metadata_dir(&root, true)?;
             let before = fs::symlink_metadata(&directory)?;
 
-            let path = directory.join(CONSUMERS_LOCK);
+            let path = match context {
+                Some(context) => context_lock(root.as_path(), context),
+                None => directory.join(CONSUMERS_LOCK),
+            };
             let file = OpenOptions::new()
                 .read(true)
                 .write(true)
@@ -68,7 +84,7 @@ impl ConsumerLease {
         #[cfg(not(any(target_os = "linux", target_os = "macos")))]
         {
             // Collection is disabled where inherited file leases are not supported.
-            let _ = root;
+            let _ = (root, context);
             Ok(Self {})
         }
     }
@@ -80,6 +96,37 @@ impl ConsumerLease {
         #[cfg(not(any(target_os = "linux", target_os = "macos")))]
         let _ = command;
     }
+}
+
+/// Context locks have stable inodes, independent of the artifacts GC retires.
+pub(crate) fn context_lock(root: &Path, context: &str) -> PathBuf {
+    root.join(super::build_cache_gc::DIRECTORY)
+        .join(format!("context-{context}.lock"))
+}
+
+/// Snapshot imports also consume shared artifacts referenced by private state.
+pub(crate) fn seed_leases(root: &Path, source: &Path) -> CargoResult<Vec<ConsumerLease>> {
+    let mut leases = Vec::new();
+    for parent in [
+        source.to_path_buf(),
+        source.join(crate::compiler::OHM_WORKTREE_CLIPPY_DIRECTORY),
+    ] {
+        if !std::fs::symlink_metadata(&parent).is_ok_and(|metadata| metadata.is_dir()) {
+            continue;
+        }
+        for entry in std::fs::read_dir(parent)? {
+            let entry = entry?;
+            if entry.file_type()?.is_dir()
+                && let Some(context) = entry
+                    .file_name()
+                    .to_str()
+                    .filter(|name| super::build_cache_gc::scoped_context_name(name))
+            {
+                leases.push(ConsumerLease::acquire_context(root, context)?);
+            }
+        }
+    }
+    Ok(leases)
 }
 
 #[cfg(all(test, any(target_os = "linux", target_os = "macos")))]
