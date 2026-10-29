@@ -1,7 +1,7 @@
 //! Root registration and explicit collection of Ohm shared build caches.
 
 use std::fmt;
-use std::fs::{self, File, OpenOptions};
+use std::fs::{self, File};
 use std::io::Read as _;
 use std::path::{Path, PathBuf};
 use std::time::{Duration, Instant, SystemTime};
@@ -129,14 +129,7 @@ pub(crate) fn open_regular(path: &Path) -> CargoResult<File> {
         .parent()
         .context("build-cache metadata has no parent")?;
     let before = validate_directory(directory)?;
-    let mut options = OpenOptions::new();
-    options.read(true);
-    #[cfg(unix)]
-    {
-        use std::os::unix::fs::OpenOptionsExt as _;
-        options.custom_flags(libc::O_NOFOLLOW | libc::O_NONBLOCK);
-    }
-    let file = options.open(path)?;
+    let file = cargo_util::paths::open_regular(path)?;
     let opened = file.metadata()?;
     let named = fs::symlink_metadata(path)?;
     ensure!(

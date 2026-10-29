@@ -289,6 +289,32 @@ pub fn open<P: AsRef<Path>>(path: P) -> Result<File> {
     File::open(path).with_context(|| format!("failed to open file `{}`", path.display()))
 }
 
+/// Opens a regular file for reading, rejecting a final symlink or a special file.
+pub fn open_regular(path: &Path) -> Result<File> {
+    let mut options = File::options();
+    options.read(true);
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::OpenOptionsExt as _;
+        options.custom_flags(libc::O_NOFOLLOW | libc::O_NONBLOCK);
+    }
+    #[cfg(not(unix))]
+    anyhow::ensure!(
+        fs::symlink_metadata(path)?.is_file(),
+        "expected a regular file at `{}`",
+        path.display()
+    );
+    let file = options
+        .open(path)
+        .with_context(|| format!("failed to open `{}`", path.display()))?;
+    anyhow::ensure!(
+        file.metadata()?.is_file(),
+        "expected a regular file at `{}`",
+        path.display()
+    );
+    Ok(file)
+}
+
 /// Returns the last modification time of a file.
 pub fn mtime(path: &Path) -> Result<FileTime> {
     let meta = metadata(path)?;
