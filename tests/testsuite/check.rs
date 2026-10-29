@@ -126,6 +126,131 @@ fn ohm_workspace_macro_project() -> Project {
     project
 }
 
+fn ohm_workspace_build_script_project() -> Project {
+    let project = ohm_workspace_project();
+    project.change_file(
+        "Cargo.toml",
+        "[workspace]\nmembers = [\"application\", \"local\", \"middle\", \"unrelated\"]\nresolver = \"2\"\n",
+    );
+    project.change_file(
+        "application/Cargo.toml",
+        &format!(
+            "{}\n[dependencies]\nmiddle = {{ path = \"../middle\" }}\nunrelated = {{ path = \"../unrelated\" }}\n",
+            basic_manifest("application", "0.0.1")
+        ),
+    );
+    project.change_file(
+        "application/src/lib.rs",
+        "extern crate middle; extern crate unrelated; pub fn value() -> u32 { middle::value() + unrelated::value() }",
+    );
+    project.change_file(
+        "middle/Cargo.toml",
+        &format!(
+            "{}\n[dependencies]\nlocal = {{ path = \"../local\" }}\n",
+            basic_manifest("middle", "1.0.0")
+        ),
+    );
+    project.change_file(
+        "middle/src/lib.rs",
+        "extern crate local; pub fn value() -> u32 { local::value() }",
+    );
+    project.change_file(
+        "unrelated/Cargo.toml",
+        &basic_manifest("unrelated", "1.0.0"),
+    );
+    project.change_file("unrelated/src/lib.rs", "pub fn value() -> u32 { 23 }");
+    project.change_file(
+        "local/src/lib.rs",
+        "include!(concat!(env!(\"OUT_DIR\"), \"/generated.rs\"));",
+    );
+    project.change_file(
+        "local/input.rs",
+        "pub fn value() -> u32 { dependency::value() }",
+    );
+    project.change_file(
+        "local/build.rs",
+        r#"
+            fn main() {
+                println!("cargo:rerun-if-changed=build.rs");
+                println!("cargo:rerun-if-changed=input.rs");
+                println!("cargo:rerun-if-env-changed=OHM_LOCAL_BUILD_INPUT");
+                let source = std::env::var("OHM_LOCAL_UNTRACKED_INPUT")
+                    .or_else(|_| std::env::var("OHM_LOCAL_BUILD_INPUT"))
+                    .unwrap_or_else(|_| std::fs::read_to_string("input.rs").unwrap());
+                let output = std::path::PathBuf::from(std::env::var_os("OUT_DIR").unwrap());
+                std::fs::write(output.join("generated.rs"), source).unwrap();
+            }
+        "#,
+    );
+    project
+}
+
+fn ohm_workspace_build_script_cargo(project: &Project, command: &str) -> cargo_test_support::Execs {
+    let mut cargo = crate::build_dir::shared_registry_cargo(
+        project,
+        &format!("-Zohm-defaults=no -Zohm-reuse-built-deps {command}"),
+    );
+    cargo
+        .masquerade_as_nightly_cargo(&[
+            "ohm-defaults",
+            "ohm-reuse-built-deps",
+            "ohm-shared-registry-cache",
+            "ohm-worktree-seeds",
+        ])
+        .env_remove("CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST")
+        .env_remove("CARGO_UNSTABLE_OHM_NATIVE_TOOL_TRUST")
+        .env_remove("OHM_LOCAL_BUILD_INPUT")
+        .env_remove("OHM_LOCAL_UNTRACKED_INPUT");
+    cargo
+}
+
+fn assert_ohm_metadata_only_check(output: &cargo_test_support::RawOutput, crate_name: &str) {
+    let stderr = std::str::from_utf8(&output.stderr).unwrap();
+    let name = format!("--crate-name {crate_name} ");
+    let commands: Vec<_> = stderr.lines().filter(|line| line.contains(&name)).collect();
+    assert!(
+        !commands.is_empty(),
+        "missing rustc invocation for {crate_name}: {stderr}"
+    );
+    for command in commands {
+        assert!(
+            command
+                .split_ascii_whitespace()
+                .any(|argument| argument == "--emit=dep-info,metadata"),
+            "fallback must check {crate_name} without linking: {command}",
+        );
+    }
+}
+
+fn remove_ohm_run_success(build_directory: &std::path::Path, package: &str) {
+    let markers: Vec<_> = walkdir::WalkDir::new(build_directory)
+        .into_iter()
+        .map(Result::unwrap)
+        .filter(|entry| entry.file_name() == "run-build-script-build-script-build")
+        .map(|entry| entry.into_path())
+        .filter(|path| {
+            let directory = path.parent().unwrap();
+            directory
+                .file_name()
+                .unwrap()
+                .to_string_lossy()
+                .starts_with(&format!("{package}-"))
+                || directory
+                    .parent()
+                    .and_then(|parent| parent.parent())
+                    .and_then(|parent| parent.file_name())
+                    .is_some_and(|name| name == package)
+        })
+        .collect();
+    assert_eq!(
+        markers.len(),
+        1,
+        "expected one {package} run marker: {markers:?}"
+    );
+    assert!(markers[0].with_extension("json").is_file());
+    std::fs::remove_file(&markers[0]).unwrap();
+}
+
 fn ohm_compiler_supports_defaults() -> bool {
     cargo_test_support::process("rustc")
         .arg("-Zpublic-api-hash")
@@ -1115,7 +1240,7 @@ fn ohm_built_registry_dependency_reuse_is_enabled_by_ohm_defaults() {
         .with_stderr_data(str![[r#"
 [FRESH] dependency v1.0.0
 [CHECKING] foo v0.0.1 ([ROOT]/foo)
-[RUNNING] `rustc -Zpublic-api-hash -Zcache-proc-macros -Zthreads=8 -Zpublic-api-hash=no --crate-name foo [..]`
+[RUNNING] `rustc -Zpublic-api-hash -Zcache-proc-macros -Zthreads=8 -Zpublic-api-hash=no [..]--crate-name foo [..]`
 [FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
 
 "#]])
@@ -1895,25 +2020,320 @@ fn ohm_rechecks_workspace_members_with_compiler_wrappers() {
 }
 
 #[cargo_test]
-fn ohm_rechecks_workspace_members_with_local_build_scripts() {
-    let project = ohm_workspace_project();
+fn ohm_workspace_build_script_reuse_preserves_fresh_outputs() {
+    let project = ohm_workspace_build_script_project();
+    ohm_workspace_build_script_cargo(&project, "build -p application").run();
+    ohm_workspace_build_script_cargo(&project, "check -p application -v")
+        .with_stderr_contains("[FRESH] dependency v1.0.0")
+        .with_stderr_contains("[FRESH] local v1.0.0 ([ROOT]/foo/local)")
+        .with_stderr_contains("[FRESH] middle v1.0.0 ([ROOT]/foo/middle)")
+        .with_stderr_does_not_contain("[CHECKING] local")
+        .with_stderr_does_not_contain("[CHECKING] middle")
+        .with_stderr_does_not_contain("[COMPILING]")
+        .with_stderr_does_not_contain("[RUNNING] `[..]build-script-build[..]`")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_workspace_build_script_reuse_requires_generated_inputs() {
+    let project = ohm_workspace_build_script_project();
+    ohm_workspace_build_script_cargo(&project, "build -p application").run();
+    let generated: Vec<_> = project
+        .glob("target/**/generated.rs")
+        .map(Result::unwrap)
+        .collect();
+    assert_eq!(generated.len(), 1);
+    std::fs::remove_file(&generated[0]).unwrap();
+
+    // The script watches its source and input, not the generated file. Preserve
+    // ordinary Cargo's missing-include diagnostic instead of reusing the library.
+    let output = ohm_workspace_build_script_cargo(&project, "check -p application -v")
+        .with_status(101)
+        .with_stderr_contains("[ERROR] couldn't [..]generated.rs[..]")
+        .with_stderr_does_not_contain("[FRESH] local")
+        .with_stderr_does_not_contain("[FRESH] middle")
+        .run();
+    assert_ohm_metadata_only_check(&output, "local");
+}
+
+#[cargo_test]
+fn ohm_workspace_build_script_reuse_revalidates_file_and_environment_inputs() {
+    let project = ohm_workspace_build_script_project();
+    ohm_workspace_build_script_cargo(&project, "build -p application").run();
+    project.change_file(
+        "local/input.rs",
+        r#"
+            #[deprecated(note = "watched input changed")]
+            fn old_value() -> u32 { 42 }
+            pub fn value() -> u32 { old_value() }
+        "#,
+    );
+    let output = ohm_workspace_build_script_cargo(&project, "check -p application -v")
+        .with_stderr_contains(
+            "[WARNING] use of deprecated function `old_value`: watched input changed",
+        )
+        .with_stderr_contains("[FRESH] unrelated v1.0.0 ([ROOT]/foo/unrelated)")
+        .with_stderr_does_not_contain("[CHECKING] unrelated")
+        .run();
+    assert_ohm_metadata_only_check(&output, "local");
+    assert_ohm_metadata_only_check(&output, "middle");
+
+    ohm_workspace_build_script_cargo(&project, "build -p application").run();
+    let output = ohm_workspace_build_script_cargo(&project, "check -p application -v")
+        .env(
+            "OHM_LOCAL_BUILD_INPUT",
+            "compile_error!(\"tracked environment changed\");",
+        )
+        .with_status(101)
+        .with_stderr_contains("[ERROR] tracked environment changed")
+        .with_stderr_contains("[FRESH] unrelated v1.0.0 ([ROOT]/foo/unrelated)")
+        .with_stderr_does_not_contain("[FRESH] middle")
+        .run();
+    assert_ohm_metadata_only_check(&output, "local");
+}
+
+#[cargo_test]
+fn ohm_workspace_build_script_reuse_revalidates_build_helpers() {
+    let project = ohm_workspace_build_script_project();
+    project.change_file(
+        "local/Cargo.toml",
+        &format!(
+            "{}\n[build-dependencies]\nhelper = {{ path = \"../helper\" }}\n",
+            project.read_file("local/Cargo.toml")
+        ),
+    );
+    project.change_file("helper/Cargo.toml", &basic_manifest("helper", "1.0.0"));
+    project.change_file(
+        "helper/src/lib.rs",
+        r#"pub fn source() -> &'static str { "pub fn value() -> u32 { 19 }" }"#,
+    );
+    project.change_file(
+        "helper/build.rs",
+        r#"
+            fn main() {
+                println!("cargo:rerun-if-changed=build.rs");
+                if let Ok(warning) = std::env::var("OHM_LOCAL_UNTRACKED_INPUT") {
+                    println!("cargo:warning={warning}");
+                }
+            }
+        "#,
+    );
     project.change_file(
         "local/build.rs",
-        "fn main() { println!(\"cargo:rerun-if-changed=build.rs\"); }",
+        r#"
+            fn main() {
+                println!("cargo:rerun-if-changed=build.rs");
+                let output = std::path::PathBuf::from(std::env::var_os("OUT_DIR").unwrap());
+                std::fs::write(output.join("generated.rs"), helper::source()).unwrap();
+            }
+        "#,
     );
-
-    project
-        .cargo("-Zohm-reuse-built-deps build -p application")
-        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+    ohm_workspace_build_script_cargo(&project, "-Zohm-worktree-seeds=no build -p application")
+        .run();
+    ohm_workspace_build_script_cargo(&project, "-Zohm-worktree-seeds=no check -p application -v")
+        .with_stderr_contains("[FRESH] local v1.0.0 ([ROOT]/foo/local)")
+        .with_stderr_does_not_contain("[CHECKING] local")
         .run();
 
-    project
-        .cargo("-Zohm-reuse-built-deps check -p application -v")
-        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
-        .with_stderr_contains("[FRESH] dependency v1.0.0")
-        .with_stderr_contains("[CHECKING] local v1.0.0 ([ROOT]/foo/local)")
-        .with_stderr_does_not_contain("[COMPILING] local v1.0.0")
+    // The invalidated execution reaches local only through host helper and
+    // build-script units, none of which is a promoted library itself.
+    // Keep generated code unchanged; a new warning proves the script executes.
+    remove_ohm_run_success(&project.build_dir(), "helper");
+    let output = ohm_workspace_build_script_cargo(
+        &project,
+        "-Zohm-worktree-seeds=no check -p application -v",
+    )
+    .env("OHM_LOCAL_UNTRACKED_INPUT", "helper run marker missing")
+    .with_stderr_contains("[WARNING] [..]helper run marker missing")
+    .with_stderr_contains("[RUNNING] `[..]build-script-build[..]`")
+    .with_stderr_contains("[FRESH] unrelated v1.0.0 ([ROOT]/foo/unrelated)")
+    .with_stderr_does_not_contain("[FRESH] middle")
+    .run();
+    assert_ohm_metadata_only_check(&output, "local");
+    assert_ohm_metadata_only_check(&output, "middle");
+
+    // Restore the successful native state before testing a helper source edit.
+    ohm_workspace_build_script_cargo(&project, "-Zohm-worktree-seeds=no build -p application")
         .run();
+    project.change_file(
+        "helper/src/lib.rs",
+        r#"pub fn source() -> &'static str { "compile_error!(\"build helper changed\");" }"#,
+    );
+    let output = ohm_workspace_build_script_cargo(
+        &project,
+        "-Zohm-worktree-seeds=no check -p application -v",
+    )
+    .with_status(101)
+    .with_stderr_contains("[ERROR] build helper changed")
+    .with_stderr_contains("[FRESH] unrelated v1.0.0 ([ROOT]/foo/unrelated)")
+    .with_stderr_does_not_contain("[FRESH] middle")
+    .run();
+    assert_ohm_metadata_only_check(&output, "local");
+}
+
+#[cargo_test]
+fn ohm_workspace_build_script_reuse_requires_completed_script_execution() {
+    let project = ohm_workspace_build_script_project();
+    for (layout, flags) in [
+        ("private", "-Zohm-worktree-seeds=no"),
+        (
+            "shared",
+            "-Zohm-shared-registry-cache -Zohm-worktree-seeds=no",
+        ),
+        ("seeded", "-Zohm-shared-registry-cache -Zohm-worktree-seeds"),
+    ] {
+        if layout == "seeded" && !ohm_compiler_supports_defaults() {
+            continue;
+        }
+        let build_directory = project.root().join(format!("build-{layout}"));
+        let target_directory = project.root().join(format!("target-{layout}"));
+        ohm_workspace_build_script_cargo(&project, &format!("{flags} build -p application"))
+            .env("CARGO_BUILD_BUILD_DIR", &build_directory)
+            .env("CARGO_TARGET_DIR", &target_directory)
+            .run();
+        remove_ohm_run_success(&build_directory, "local");
+
+        // This input is deliberately unwatched: removing the successful-run
+        // marker must force execution even when the recursive input hash matches.
+        let output =
+            ohm_workspace_build_script_cargo(&project, &format!("{flags} check -p application -v"))
+                .env("CARGO_BUILD_BUILD_DIR", &build_directory)
+                .env("CARGO_TARGET_DIR", &target_directory)
+                .env(
+                    "OHM_LOCAL_UNTRACKED_INPUT",
+                    "compile_error!(\"missing run marker\");",
+                )
+                .with_status(101)
+                .with_stderr_contains("[ERROR] missing run marker")
+                .with_stderr_contains("[FRESH] unrelated v1.0.0 ([ROOT]/foo/unrelated)")
+                .with_stderr_does_not_contain("[FRESH] middle")
+                .run();
+        assert_ohm_metadata_only_check(&output, "local");
+    }
+}
+
+#[cargo_test]
+fn ohm_workspace_build_script_reuse_revalidates_links_metadata() {
+    let project = ohm_workspace_build_script_project();
+    project.change_file(
+        "local/Cargo.toml",
+        &format!(
+            "{}\nprovider = {{ path = \"../provider\" }}\n",
+            project.read_file("local/Cargo.toml")
+        ),
+    );
+    project.change_file(
+        "provider/Cargo.toml",
+        &format!(
+            "{}\nlinks = \"ohm_provider\"\n",
+            basic_manifest("provider", "1.0.0")
+        ),
+    );
+    project.change_file("provider/src/lib.rs", "");
+    project.change_file(
+        "provider/build.rs",
+        r#"
+            fn main() {
+                println!("cargo:rerun-if-changed=build.rs");
+                println!("cargo:rerun-if-changed=input.rs");
+                let source = std::fs::read_to_string("input.rs").unwrap();
+                println!("cargo::metadata=source={source}");
+                if let Ok(warning) = std::env::var("OHM_LOCAL_UNTRACKED_INPUT") {
+                    println!("cargo:warning={warning}");
+                }
+            }
+        "#,
+    );
+    project.change_file(
+        "local/build.rs",
+        r#"
+            fn main() {
+                println!("cargo:rerun-if-changed=build.rs");
+                let output = std::path::PathBuf::from(std::env::var_os("OUT_DIR").unwrap());
+                std::fs::write(output.join("generated.rs"), std::env::var("DEP_OHM_PROVIDER_SOURCE").unwrap()).unwrap();
+            }
+        "#,
+    );
+    for remove_marker in [false, true] {
+        project.change_file("provider/input.rs", "pub fn value() -> u32 { 19 }");
+        ohm_workspace_build_script_cargo(&project, "-Zohm-worktree-seeds=no build -p application")
+            .run();
+        let mut check = ohm_workspace_build_script_cargo(
+            &project,
+            "-Zohm-worktree-seeds=no check -p application -v",
+        );
+        let failure = "compile_error!(\"links metadata changed\");";
+        if remove_marker {
+            // Isolate missing-record fallback while the links metadata stays unchanged.
+            remove_ohm_run_success(&project.build_dir(), "provider");
+            check
+                .env("OHM_LOCAL_UNTRACKED_INPUT", "provider run marker missing")
+                .with_stderr_contains("[WARNING] [..]provider run marker missing")
+                .with_stderr_contains("[RUNNING] `[..]build-script-build[..]`");
+        } else {
+            project.change_file("provider/input.rs", failure);
+            check
+                .with_status(101)
+                .with_stderr_contains("[ERROR] links metadata changed");
+        }
+        let output = check
+            .with_stderr_contains("[FRESH] unrelated v1.0.0 ([ROOT]/foo/unrelated)")
+            .with_stderr_does_not_contain("[FRESH] middle")
+            .run();
+        assert_ohm_metadata_only_check(&output, "local");
+        if remove_marker {
+            assert_ohm_metadata_only_check(&output, "provider");
+            assert_ohm_metadata_only_check(&output, "middle");
+        }
+    }
+}
+
+#[cargo_test]
+fn ohm_workspace_build_script_reuse_revalidates_overrides() {
+    let project = ohm_workspace_build_script_project();
+    project.change_file(
+        "local/Cargo.toml",
+        &project
+            .read_file("local/Cargo.toml")
+            .replace("[dependencies]", "links = \"ohm_override\"\n[dependencies]"),
+    );
+    project.change_file(
+        "local/build.rs",
+        "fn main() { panic!(\"overridden script must not execute\"); }",
+    );
+    project.change_file(
+        "local/src/lib.rs",
+        "include!(env!(\"OHM_OVERRIDE_SOURCE\"));",
+    );
+    project.change_file(
+        "local/src/before.rs",
+        "pub fn value() -> u32 { dependency::value() }",
+    );
+    project.change_file(
+        "local/src/after.rs",
+        "compile_error!(\"script override changed\");",
+    );
+    let configuration = |source| {
+        format!(
+            "[target.{}.ohm_override]\nrustc-env = {{ OHM_OVERRIDE_SOURCE = \"{source}\" }}\n",
+            cargo_test_support::rustc_host()
+        )
+    };
+    project.change_file(".cargo/config.toml", &configuration("before.rs"));
+    ohm_workspace_build_script_cargo(&project, "build -p application").run();
+    ohm_workspace_build_script_cargo(&project, "check -p application -v")
+        .with_stderr_contains("[FRESH] local v1.0.0 ([ROOT]/foo/local)")
+        .with_stderr_does_not_contain("[CHECKING] local")
+        .with_stderr_does_not_contain("[RUNNING] `[..]build-script-build[..]`")
+        .run();
+
+    project.change_file(".cargo/config.toml", &configuration("after.rs"));
+    let output = ohm_workspace_build_script_cargo(&project, "check -p application -v")
+        .with_status(101)
+        .with_stderr_contains("[ERROR] script override changed")
+        .with_stderr_does_not_contain("[RUNNING] `[..]build-script-build[..]`")
+        .run();
+    assert_ohm_metadata_only_check(&output, "local");
 }
 
 #[cargo_test]

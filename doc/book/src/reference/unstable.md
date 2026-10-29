@@ -2144,8 +2144,17 @@ overriding environment and configuration values.
 The `all` policy trusts macros and their helpers not to read untracked external
 files or environment variables. If that assumption is wrong, reuse can retain
 stale generated code. For build-to-check reuse, Cargo still validates normal
-fingerprints, artifacts, and compiler provenance, and keeps local build scripts,
-nonmember path dependencies, and unsupported registry sources ineligible.
+fingerprints, artifacts, and compiler provenance. Workspace build scripts in a
+macro's dependency chain, nonmember path dependencies, and unsupported registry
+sources remain ineligible.
+
+Outside a macro's dependency chain, workspace build scripts permit build-to-check
+reuse when their saved execution fingerprints and the consumers' fingerprints
+remain valid. A stale script execution makes affected libraries fall back to
+ordinary metadata checks. This reuses existing same-workspace results under
+Cargo's normal build-script freshness rules and requires no additional trust
+setting.
+
 The separate `CARGO_UNSTABLE_OHM_NATIVE_TOOL_TRUST` policy controls sharing of
 authenticated registry build scripts and native helpers; macro trust does not
 change that policy.

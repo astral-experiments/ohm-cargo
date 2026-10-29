@@ -1256,13 +1256,17 @@ impl<'a, 'gctx> State<'a, 'gctx> {
         } else {
             // Workspace sources can change, so they are eligible only when their
             // exact build fingerprint is revalidated under the workspace lock.
-            // Local build scripts and arbitrary path dependencies remain ineligible. The
-            // `all` macro trust policy also trusts owned ordinary libraries executing
-            // inside that macro, but cannot widen the trust boundary of a registry macro.
+            // Build scripts outside macro execution are eligible when their saved
+            // execution fingerprints are also fresh. The `all` macro trust policy
+            // trusts owned ordinary libraries executing inside a workspace macro,
+            // but cannot widen the trust boundary of a registry macro.
+            let local_build_script =
+                unit.target.is_custom_build() && macro_runtime == MacroRuntime::None;
             if !self.ws.is_member_id(package_id)
-                || !unit.target.is_lib()
+                || (!unit.target.is_lib() && !local_build_script)
                 || macro_runtime == MacroRuntime::Registry
                 || (unit.target.for_host()
+                    && !local_build_script
                     && !(unit.target.proc_macro()
                         && self.gctx.cli_unstable().ohm_proc_macro_trust == OhmProcMacroTrust::All))
             {

@@ -1436,7 +1436,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
                 })
     }
 
-    /// Validates the exact build-mode registry units selected by a check graph.
+    /// Validates the exact build-mode dependencies selected by a check graph.
     /// This runs after Cargo has computed canonical unit hashes, LTO settings,
     /// output paths, and build-script dependencies, but before any rustc work.
     fn stale_reused_registry_dependencies(&mut self) -> CargoResult<HashSet<PackageId>> {
@@ -1555,6 +1555,18 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             }
         }
 
+        // A consumer's recursive fingerprint does not always validate the saved
+        // execution record of a build script, especially without worktree seeds.
+        // Reject stale script results before scheduling native library units.
+        for unit in registry_closure_units
+            .iter()
+            .filter(|unit| unit.mode.is_run_custom_build())
+        {
+            if !fingerprint::existing_unit_is_fresh(self, unit)? {
+                stale_units.insert(unit.clone());
+            }
+        }
+
         // Every accepted record has the same authenticated compiler driver. Check each
         // distinct loader directory once, after all fingerprints and diagnostics have
         // been validated, so substitutions are rejected immediately before promotion.
@@ -1576,13 +1588,10 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
 
         // A built parent cannot remain promoted when any dependency in its
         // build closure must fall back to metadata-only checking. Propagate
-        // rejected artifacts towards their registry dependents, but leave
+        // rejection through script execution and host dependency nodes too, but leave
         // independent branches and shared, otherwise-fresh leaves reusable.
         let mut reverse_dependencies = HashMap::<Unit, Vec<Unit>>::default();
         for unit in &registry_closure_units {
-            if !self.reused_registry_units.contains(unit) {
-                continue;
-            }
             for dependency in self.unit_deps(unit) {
                 if dependency
                     .unit
@@ -1613,6 +1622,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
 
         Ok(stale_units
             .into_iter()
+            .filter(|unit| self.reused_registry_units.contains(unit))
             .map(|unit| unit.pkg.package_id())
             .collect())
     }
