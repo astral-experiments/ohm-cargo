@@ -1,0 +1,382 @@
+{
+  "candidate": {
+    "cargo": "00d75d89b28ac122fa18d41fbfd054e50fbef0e2a64ccb4786ea146cccc29b20",
+    "proofs": [
+      {
+        "names": [
+          "unused"
+        ],
+        "sha": "4c66668f136c42f8d22674ef1867ae8d419c15e176db1c94f22ba8d97896da5a"
+      }
+    ],
+    "raw_terminal": "67a592f4ef460023fe525545c7b620f58d16ee9db8d0071db1369acd4ee301f2",
+    "rows": [
+      {
+        "cargo_exit": 0,
+        "deferred": [],
+        "elf": "b4ac76bd4ed89a0e793cb4761da61dc13fd431ff36d36fa20445f7b123e32947",
+        "exec_sha": "309eb96104a4aa91a71eda64a0cf84bf9856046decffa72660f7d35288572043",
+        "json_sha": "f72b7c2db95205cb3e59907d191d73fcfc5090724cae53f2d371d7ecb1987206",
+        "native_exit": 0,
+        "raw_log_sha256": {
+          "exec.log": "309eb96104a4aa91a71eda64a0cf84bf9856046decffa72660f7d35288572043",
+          "native.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "native.stdout": "949e1206759e71252bb7ab7540c5cae9f1411f6118479d412e0c47c41746b7b2",
+          "result.json": "c5142af44d86d44c4ec9c96d16e9e50ac504a76e6fc00f43b63703cbbf4d3683",
+          "stderr": "fb3da3bd4a8bf1278cfeaf5c3874bde570cc058d78087b417fc5c0712ef6011a",
+          "stdout": "f72b7c2db95205cb3e59907d191d73fcfc5090724cae53f2d371d7ecb1987206"
+        },
+        "rustcs": [
+          "___",
+          "build_script_build",
+          "unused",
+          "retained",
+          "app"
+        ],
+        "stage": "01-seed",
+        "stderr_sha": "fb3da3bd4a8bf1278cfeaf5c3874bde570cc058d78087b417fc5c0712ef6011a",
+        "value": 17,
+        "wild": 2
+      },
+      {
+        "cargo_exit": 0,
+        "deferred": [
+          "deferring unused dev dependencies names=[\"unused\"]",
+          "accepted current unused-dependency proof"
+        ],
+        "elf": "b4ac76bd4ed89a0e793cb4761da61dc13fd431ff36d36fa20445f7b123e32947",
+        "exec_sha": "f24b29065979e525a2d7a017df6b1f313c88285d05798a8d5bee332c9e3f53f6",
+        "json_sha": "bf7e2940db182922cbc0e4a1587c207577abe160c9dd80adfb3c231cc47d3680",
+        "native_exit": 0,
+        "raw_log_sha256": {
+          "exec.log": "f24b29065979e525a2d7a017df6b1f313c88285d05798a8d5bee332c9e3f53f6",
+          "native.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "native.stdout": "949e1206759e71252bb7ab7540c5cae9f1411f6118479d412e0c47c41746b7b2",
+          "result.json": "74e4dc1b3ed33912ae113a7fc0a8a2101da261403f16a7fd9ff8296da25112a1",
+          "stderr": "cb21f9e3aed308e4468f14e38cb76180f4ea65c5981626f31658d35f6ca7bf0b",
+          "stdout": "bf7e2940db182922cbc0e4a1587c207577abe160c9dd80adfb3c231cc47d3680"
+        },
+        "rustcs": [
+          "app"
+        ],
+        "stage": "02-edited-no-shadow",
+        "stderr_sha": "cb21f9e3aed308e4468f14e38cb76180f4ea65c5981626f31658d35f6ca7bf0b",
+        "value": 17,
+        "wild": 1
+      },
+      {
+        "cargo_exit": 0,
+        "deferred": [
+          "deferring unused dev dependencies names=[\"unused\"]",
+          "accepted current unused-dependency proof"
+        ],
+        "elf": "6832d67a898fc4aad0f8603c1e28e5d27389e6f0148641b3263358ac2de71581",
+        "exec_sha": "12e80b130d0340f556887206b40ea6366e207d8b358d00fae252d611c61e4a8e",
+        "json_sha": "bf7e2940db182922cbc0e4a1587c207577abe160c9dd80adfb3c231cc47d3680",
+        "native_exit": 0,
+        "raw_log_sha256": {
+          "exec.log": "12e80b130d0340f556887206b40ea6366e207d8b358d00fae252d611c61e4a8e",
+          "native.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "native.stdout": "e7730d4b1c320e950f9c5b16a89456d031aa4d28f95b04199dd527cc01271d5f",
+          "result.json": "3548b1c6037686aeccedc9dc728c818b773fd0904ce4aadc278c13d2dd2d56b7",
+          "stderr": "0c76bbc6f9ffdc825c57694d0ea1e91d06a25fc084597a02d9b8cba2da9d16b5",
+          "stdout": "bf7e2940db182922cbc0e4a1587c207577abe160c9dd80adfb3c231cc47d3680"
+        },
+        "rustcs": [
+          "app"
+        ],
+        "stage": "03-supported-archive",
+        "stderr_sha": "0c76bbc6f9ffdc825c57694d0ea1e91d06a25fc084597a02d9b8cba2da9d16b5",
+        "value": 29,
+        "wild": 1
+      },
+      {
+        "cargo_exit": 0,
+        "deferred": [
+          "deferring unused dev dependencies names=[\"unused\"]",
+          "native linker inputs require complete graph",
+          "retrying complete graph"
+        ],
+        "elf": "25fd826ce1b15c994aa66b03c89207fed73332001fe75d9830ed0266aa9b64c9",
+        "exec_sha": "38ae79ff612439bc41ef4344d672670d299f1745ffea1c29d1ae9056f625b3c8",
+        "json_sha": "944f62d7587ae31e1a413b3e0c20b88fb0605100167dd3ef817f05e67f5e08a0",
+        "native_exit": 83,
+        "raw_log_sha256": {
+          "exec.log": "38ae79ff612439bc41ef4344d672670d299f1745ffea1c29d1ae9056f625b3c8",
+          "native.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "native.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "result.json": "d1617b964be27a8eefa29913f32ae2d7c11f56a24dfc79767d252acc30a6cc56",
+          "stderr": "f808087039c4df9da306bbe69558b5221333b2724d0c67cdecf459adb6d0776e",
+          "stdout": "944f62d7587ae31e1a413b3e0c20b88fb0605100167dd3ef817f05e67f5e08a0"
+        },
+        "rustcs": [
+          "app"
+        ],
+        "stage": "04-valid-shadow",
+        "stderr_sha": "f808087039c4df9da306bbe69558b5221333b2724d0c67cdecf459adb6d0776e",
+        "value": null,
+        "wild": 1
+      },
+      {
+        "cargo_exit": 0,
+        "deferred": [],
+        "elf": "6832d67a898fc4aad0f8603c1e28e5d27389e6f0148641b3263358ac2de71581",
+        "exec_sha": "817e5470bc1afecf8576fa56bad361ffe0a988153cd6db91e15558d71bd7cca8",
+        "json_sha": "5466cda4608ccecf225bba22adba08e98b048f1ed7c2f6033fca6b935af21f13",
+        "native_exit": 0,
+        "raw_log_sha256": {
+          "exec.log": "817e5470bc1afecf8576fa56bad361ffe0a988153cd6db91e15558d71bd7cca8",
+          "native.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "native.stdout": "e7730d4b1c320e950f9c5b16a89456d031aa4d28f95b04199dd527cc01271d5f",
+          "result.json": "d4508dd23a4d846d881a0fcc9810ee7457423d13884c08601de365c6c94ef8a3",
+          "stderr": "0084d0cce49d385c7cf66bb6b16faea0ed2bc6fe81f0dad62366b487ff5204c5",
+          "stdout": "5466cda4608ccecf225bba22adba08e98b048f1ed7c2f6033fca6b935af21f13"
+        },
+        "rustcs": [
+          "app"
+        ],
+        "stage": "04a-retrain",
+        "stderr_sha": "0084d0cce49d385c7cf66bb6b16faea0ed2bc6fe81f0dad62366b487ff5204c5",
+        "value": 29,
+        "wild": 1
+      },
+      {
+        "cargo_exit": 101,
+        "deferred": [
+          "deferring unused dev dependencies names=[\"unused\"]",
+          "native linker inputs require complete graph",
+          "retrying complete graph"
+        ],
+        "exec_sha": "f3103df628cb522bdf2a8af7ccf95ed5488953f5780f460d5a573c3669a441d9",
+        "json_sha": "36aadeacd06c953915eba6b99d40c4f478c90ffa3e6668f70573a1ae3000742f",
+        "link_error": true,
+        "raw_log_sha256": {
+          "exec.log": "f3103df628cb522bdf2a8af7ccf95ed5488953f5780f460d5a573c3669a441d9",
+          "result.json": "c8f1134fcb67a7cdd32beaa8ef4eae2419b2ad81ffb956e819a6eea97ea809f6",
+          "stderr": "6123a79facc08507ed9ecf99adc7c933facc32755c8cd60c786b08a3f4ae1d13",
+          "stdout": "36aadeacd06c953915eba6b99d40c4f478c90ffa3e6668f70573a1ae3000742f"
+        },
+        "rustcs": [
+          "app"
+        ],
+        "stage": "05-malformed-shadow",
+        "stderr_sha": "6123a79facc08507ed9ecf99adc7c933facc32755c8cd60c786b08a3f4ae1d13",
+        "wild": 1
+      },
+      {
+        "cargo_exit": 0,
+        "deferred": [],
+        "elf": "6832d67a898fc4aad0f8603c1e28e5d27389e6f0148641b3263358ac2de71581",
+        "exec_sha": "e00c54c5c53ff791cbbe784a95a6139d5c5becfa0942c209d4ac5ffced3591b4",
+        "json_sha": "5466cda4608ccecf225bba22adba08e98b048f1ed7c2f6033fca6b935af21f13",
+        "native_exit": 0,
+        "raw_log_sha256": {
+          "exec.log": "e00c54c5c53ff791cbbe784a95a6139d5c5becfa0942c209d4ac5ffced3591b4",
+          "native.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "native.stdout": "e7730d4b1c320e950f9c5b16a89456d031aa4d28f95b04199dd527cc01271d5f",
+          "result.json": "122c9f2f1ccebbabb394a5a94a65e90f9fc64b9513f5917171fba6dda6135efc",
+          "stderr": "2c4b6caaad687eb58cef67cd3d55843ea54ef9ce9ff9b3c4cda55b816b40e52e",
+          "stdout": "5466cda4608ccecf225bba22adba08e98b048f1ed7c2f6033fca6b935af21f13"
+        },
+        "rustcs": [
+          "app"
+        ],
+        "stage": "06-restored",
+        "stderr_sha": "2c4b6caaad687eb58cef67cd3d55843ea54ef9ce9ff9b3c4cda55b816b40e52e",
+        "value": 29,
+        "wild": 1
+      }
+    ],
+    "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60"
+  },
+  "matched-parent": {
+    "cargo": "ce5b3031dcd3f31098fd9b16147b4c286dc640e1757e5362c9e1e4f05ec88cb3",
+    "proofs": [
+      {
+        "names": [
+          "unused"
+        ],
+        "sha": "d9c32103d6c0b9b6c232b228c6cb0710da405316b3d65cdb1e4404d7dd828672"
+      }
+    ],
+    "raw_terminal": "6241247061d236a5769986bd1bd8405abe77c152ce3ccf5e001f80cd9c0b403e",
+    "rows": [
+      {
+        "cargo_exit": 0,
+        "deferred": [],
+        "elf": "b4ac76bd4ed89a0e793cb4761da61dc13fd431ff36d36fa20445f7b123e32947",
+        "exec_sha": "353037e17aff66db764f39631068cc9836222388c85c86b8f1551c7f4c7b596b",
+        "json_sha": "f43c550f478da92b19475d5b8874cdfaa72f8ac8641019f283e12066405cbe22",
+        "native_exit": 0,
+        "raw_log_sha256": {
+          "exec.log": "353037e17aff66db764f39631068cc9836222388c85c86b8f1551c7f4c7b596b",
+          "native.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "native.stdout": "949e1206759e71252bb7ab7540c5cae9f1411f6118479d412e0c47c41746b7b2",
+          "result.json": "118efbcc7560b56a2fdcf5926ee84e58a54bf9d297087cd2ce41fece4c09f86e",
+          "stderr": "9620850cca0dbba0c39d1972b409da38529d538288f2335f9e420f2463a1d5ec",
+          "stdout": "f43c550f478da92b19475d5b8874cdfaa72f8ac8641019f283e12066405cbe22"
+        },
+        "rustcs": [
+          "___",
+          "build_script_build",
+          "unused",
+          "retained",
+          "app"
+        ],
+        "stage": "01-seed",
+        "stderr_sha": "9620850cca0dbba0c39d1972b409da38529d538288f2335f9e420f2463a1d5ec",
+        "value": 17,
+        "wild": 2
+      },
+      {
+        "cargo_exit": 0,
+        "deferred": [
+          "deferring unused dev dependencies names=[\"unused\"]",
+          "accepted current unused-dependency proof"
+        ],
+        "elf": "b4ac76bd4ed89a0e793cb4761da61dc13fd431ff36d36fa20445f7b123e32947",
+        "exec_sha": "e3f3060ce7d5edb9aff9f1af782285f5a0204e77e945e1ac8a428ddf6faa5219",
+        "json_sha": "ca734f4602fd05ca967d1908b339dcb63cc563433715d70ccad50f2bf1cfb4a9",
+        "native_exit": 0,
+        "raw_log_sha256": {
+          "exec.log": "e3f3060ce7d5edb9aff9f1af782285f5a0204e77e945e1ac8a428ddf6faa5219",
+          "native.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "native.stdout": "949e1206759e71252bb7ab7540c5cae9f1411f6118479d412e0c47c41746b7b2",
+          "result.json": "128b07563250155a91c069bd029283ab17dc2223b73fba59ebd1732683773e4c",
+          "stderr": "7ddc67b68536d272955a6f51a8dec1c393793822132e49dc5182ee9107db75a1",
+          "stdout": "ca734f4602fd05ca967d1908b339dcb63cc563433715d70ccad50f2bf1cfb4a9"
+        },
+        "rustcs": [
+          "app"
+        ],
+        "stage": "02-edited-no-shadow",
+        "stderr_sha": "7ddc67b68536d272955a6f51a8dec1c393793822132e49dc5182ee9107db75a1",
+        "value": 17,
+        "wild": 1
+      },
+      {
+        "cargo_exit": 0,
+        "deferred": [
+          "deferring unused dev dependencies names=[\"unused\"]",
+          "accepted current unused-dependency proof"
+        ],
+        "elf": "6832d67a898fc4aad0f8603c1e28e5d27389e6f0148641b3263358ac2de71581",
+        "exec_sha": "942660aee8797bdafa6161e352e2f1687374519c1b1c2832f519cf75e369adff",
+        "json_sha": "ca734f4602fd05ca967d1908b339dcb63cc563433715d70ccad50f2bf1cfb4a9",
+        "native_exit": 0,
+        "raw_log_sha256": {
+          "exec.log": "942660aee8797bdafa6161e352e2f1687374519c1b1c2832f519cf75e369adff",
+          "native.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "native.stdout": "e7730d4b1c320e950f9c5b16a89456d031aa4d28f95b04199dd527cc01271d5f",
+          "result.json": "70b7804c05f4696a8d771b80a0b452bc020f6bf4bbcf1ae1bd113bdcdcc1d486",
+          "stderr": "8549ca7397132371c6f43a522777dc0191ed30b05abf2726eb1c6193604fea40",
+          "stdout": "ca734f4602fd05ca967d1908b339dcb63cc563433715d70ccad50f2bf1cfb4a9"
+        },
+        "rustcs": [
+          "app"
+        ],
+        "stage": "03-supported-archive",
+        "stderr_sha": "8549ca7397132371c6f43a522777dc0191ed30b05abf2726eb1c6193604fea40",
+        "value": 29,
+        "wild": 1
+      },
+      {
+        "cargo_exit": 0,
+        "deferred": [
+          "deferring unused dev dependencies names=[\"unused\"]",
+          "native linker inputs require complete graph",
+          "retrying complete graph"
+        ],
+        "elf": "25fd826ce1b15c994aa66b03c89207fed73332001fe75d9830ed0266aa9b64c9",
+        "exec_sha": "53e62a8b73487cb8328a69700ad656088e4c496f29f7675d659caac3745344fe",
+        "json_sha": "4bd2a65de67fd991ec26b7b75d4f721db2b9ade9e6fae9e1d19cc70113a24a2b",
+        "native_exit": 83,
+        "raw_log_sha256": {
+          "exec.log": "53e62a8b73487cb8328a69700ad656088e4c496f29f7675d659caac3745344fe",
+          "native.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "native.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "result.json": "295928fa472d6e71301087fea59c8a8eb32642304d56ce6a0e8c63d5b4959869",
+          "stderr": "ca6fd8f9cade7da6b454e178b41b4d0943c97ac0d0a348d55d10a416ff1183f4",
+          "stdout": "4bd2a65de67fd991ec26b7b75d4f721db2b9ade9e6fae9e1d19cc70113a24a2b"
+        },
+        "rustcs": [
+          "app"
+        ],
+        "stage": "04-valid-shadow",
+        "stderr_sha": "ca6fd8f9cade7da6b454e178b41b4d0943c97ac0d0a348d55d10a416ff1183f4",
+        "value": null,
+        "wild": 1
+      },
+      {
+        "cargo_exit": 0,
+        "deferred": [],
+        "elf": "6832d67a898fc4aad0f8603c1e28e5d27389e6f0148641b3263358ac2de71581",
+        "exec_sha": "80031a66f0615fcc328e8698367b6baf8931e656ae114c3d79c59f6e65d93e9c",
+        "json_sha": "bd98375a3a62d9332b1ba631355e5ade2a47530308d759099fff3dcbf73eb2b6",
+        "native_exit": 0,
+        "raw_log_sha256": {
+          "exec.log": "80031a66f0615fcc328e8698367b6baf8931e656ae114c3d79c59f6e65d93e9c",
+          "native.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "native.stdout": "e7730d4b1c320e950f9c5b16a89456d031aa4d28f95b04199dd527cc01271d5f",
+          "result.json": "5961b254085451b5d5896727cacbf9976eecd3cd087ef2c740a90e471aec358d",
+          "stderr": "bf79e4cad6298b6d8f98f0dff513c0b79fbd4f9c975db194c9c15cdd83bec06d",
+          "stdout": "bd98375a3a62d9332b1ba631355e5ade2a47530308d759099fff3dcbf73eb2b6"
+        },
+        "rustcs": [
+          "app"
+        ],
+        "stage": "04a-retrain",
+        "stderr_sha": "bf79e4cad6298b6d8f98f0dff513c0b79fbd4f9c975db194c9c15cdd83bec06d",
+        "value": 29,
+        "wild": 1
+      },
+      {
+        "cargo_exit": 101,
+        "deferred": [
+          "deferring unused dev dependencies names=[\"unused\"]",
+          "native linker inputs require complete graph",
+          "retrying complete graph"
+        ],
+        "exec_sha": "e3e1cc9c0b59e53c19b0c9d772d67dd3c5341205cf81300f4af0121067ec71c6",
+        "json_sha": "6e9341fad2b2372b11ebdd42907f21fce92704c1a901267f0bae1b6374b81a6c",
+        "link_error": true,
+        "raw_log_sha256": {
+          "exec.log": "e3e1cc9c0b59e53c19b0c9d772d67dd3c5341205cf81300f4af0121067ec71c6",
+          "result.json": "bd73407024c5759fb58be7dd29ded6f5d25aa01dd13a75681595077a182b931a",
+          "stderr": "25dde6d3a1ca267d1cc4e77f2fc07b5fcd20c550b2ced1cafda3bd9c07145e0e",
+          "stdout": "6e9341fad2b2372b11ebdd42907f21fce92704c1a901267f0bae1b6374b81a6c"
+        },
+        "rustcs": [
+          "app"
+        ],
+        "stage": "05-malformed-shadow",
+        "stderr_sha": "25dde6d3a1ca267d1cc4e77f2fc07b5fcd20c550b2ced1cafda3bd9c07145e0e",
+        "wild": 1
+      },
+      {
+        "cargo_exit": 0,
+        "deferred": [],
+        "elf": "6832d67a898fc4aad0f8603c1e28e5d27389e6f0148641b3263358ac2de71581",
+        "exec_sha": "87d4ee09406e862f63cef54a676532cd26cbeeb4cba319ffb6bf80a3406c21b7",
+        "json_sha": "bd98375a3a62d9332b1ba631355e5ade2a47530308d759099fff3dcbf73eb2b6",
+        "native_exit": 0,
+        "raw_log_sha256": {
+          "exec.log": "87d4ee09406e862f63cef54a676532cd26cbeeb4cba319ffb6bf80a3406c21b7",
+          "native.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "native.stdout": "e7730d4b1c320e950f9c5b16a89456d031aa4d28f95b04199dd527cc01271d5f",
+          "result.json": "0aef55d8fd9c51941ee8f343c84616e1b0fcae437a5b6ed70af0895aaf27a61e",
+          "stderr": "a5c3ce2b2e5e1871ac5d27b1d933359236f33728c1d8870c9210fe2c5376704e",
+          "stdout": "bd98375a3a62d9332b1ba631355e5ade2a47530308d759099fff3dcbf73eb2b6"
+        },
+        "rustcs": [
+          "app"
+        ],
+        "stage": "06-restored",
+        "stderr_sha": "a5c3ce2b2e5e1871ac5d27b1d933359236f33728c1d8870c9210fe2c5376704e",
+        "value": 29,
+        "wild": 1
+      }
+    ],
+    "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60"
+  }
+}

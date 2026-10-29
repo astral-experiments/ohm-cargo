@@ -1,0 +1,2828 @@
+{
+  "branch_names_without_cargo_sources": [
+    "charlie/uv-ohm-cumulative-177-178-evidence-20261021",
+    "charlie/uv-ohm-four-changes-stack176-evidence-20261021",
+    "charlie/uv-ohm-joint-183-185-stack181-evidence-20261022",
+    "charlie/uv-ohm-lazy-git-evidence-20261021",
+    "charlie/uv-ohm-lazy-sbom-stack179-evidence-20261021",
+    "charlie/uv-ohm-loader-evidence-20261021",
+    "charlie/uv-ohm-package-id-order-stack181-evidence-20261021",
+    "charlie/uv-ohm-parser-allocations-stack181-evidence-20261021",
+    "charlie/uv-ohm-path-cache-evidence-20261021",
+    "charlie/uv-ohm-path-cache-stack179-evidence-20261021",
+    "charlie/uv-ohm-performance-evidence-20261021",
+    "charlie/uv-ohm-scheduler-bitsets-stack181-evidence-20261021",
+    "charlie/uv-ohm-workspace-inheritance-stack180-evidence-20261021"
+  ],
+  "branches": 289,
+  "captured_through_pr": 280,
+  "checked_module_files": [
+    "src/cargo/core/compiler/mod.rs",
+    "src/compiler/mod.rs"
+  ],
+  "counts": {
+    "current-package-only": 225,
+    "no-gate": 55,
+    "unbound": 13
+  },
+  "distinct_source_blobs": 105,
+  "pr_heads": [
+    {
+      "module": [
+        {
+          "blob": "7e196dde023e642a28463da36d99f365e0ca1216",
+          "claim": "no-gate",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 1,
+      "source": "d1198cc4705df7bea471fb1d90947e2e59d46193",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "9ee1be723002bd0246cb92b7566feb636d9c3588",
+          "claim": "no-gate",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 2,
+      "source": "320e80de479e0f86263341d42f9973fa02b04567",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "9ee1be723002bd0246cb92b7566feb636d9c3588",
+          "claim": "no-gate",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 4,
+      "source": "effc3ed9198d92d728e4a27e61433a06bf8d5fa9",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "e145b50adfd0653672e756f005f474d71af056db",
+          "claim": "no-gate",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 5,
+      "source": "ff7c909a6b09eaf91fc7638c69edf3a1ce26e328",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "3e853fb6ea2e7337028b6cd389b6a33e3d185580",
+          "claim": "no-gate",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 6,
+      "source": "1124e6751e55e82ea7bd7f49f07810f852ee5080",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "b23e9ff9c5883a8e81db91cf625cb7d6d4b39851",
+          "claim": "no-gate",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 7,
+      "source": "ba613fb343345539919e1f7050bb227ab0caa1cb",
+      "state": "MERGED"
+    },
+    {
+      "module": [
+        {
+          "blob": "0ab5d55024cd3437697c7e7bdd21e693f24b76c3",
+          "claim": "no-gate",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 9,
+      "source": "46df553a984c0e951bf8180ff47ef18c0c1f8d5b",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "0ab5d55024cd3437697c7e7bdd21e693f24b76c3",
+          "claim": "no-gate",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 10,
+      "source": "abd5f76c78892e23f07b38593561758e12d91fb3",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "9cb9049441d26901ac13b6e4396ff410e2ec41a8",
+          "claim": "no-gate",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 11,
+      "source": "d57c1d91af4c6bcf6010171c4a440dc6d909ee58",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "9cb9049441d26901ac13b6e4396ff410e2ec41a8",
+          "claim": "no-gate",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 12,
+      "source": "bb3a7b08b3c1c91b91a1ed0f9dcbac1404304bda",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "9cb9049441d26901ac13b6e4396ff410e2ec41a8",
+          "claim": "no-gate",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 13,
+      "source": "9261a0e85fae28c5bc1a2c41d2d1873edb4e20b7",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "9cb9049441d26901ac13b6e4396ff410e2ec41a8",
+          "claim": "no-gate",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 14,
+      "source": "49b246e2e3ec95841b31a27172a85eef58480e3c",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "9cb9049441d26901ac13b6e4396ff410e2ec41a8",
+          "claim": "no-gate",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 15,
+      "source": "452e7c93e8996254f0fb22a14218a0872295f00e",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "929f0774b67b18eaeee475827f7b204c47bf6b7e",
+          "claim": "no-gate",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 16,
+      "source": "0d207ca916b45194de26fa4415f1e50d2a704014",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "9cb9049441d26901ac13b6e4396ff410e2ec41a8",
+          "claim": "no-gate",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 17,
+      "source": "7f711f1e00f453212c2639384a5805c4e9c115eb",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "929f0774b67b18eaeee475827f7b204c47bf6b7e",
+          "claim": "no-gate",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 18,
+      "source": "1eb874e5af820cac7ba96732690b32cb3e8fb297",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "9cb9049441d26901ac13b6e4396ff410e2ec41a8",
+          "claim": "no-gate",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 19,
+      "source": "01b8b3139e4107d7823473b554cb1634c4fce787",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "9cb9049441d26901ac13b6e4396ff410e2ec41a8",
+          "claim": "no-gate",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 20,
+      "source": "9099a917703c6a4be530763722b059d0b717f240",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "11b772f35e0813004fee3c657c3b2f433598bd72",
+          "claim": "no-gate",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 21,
+      "source": "e54a69fb3e74d6127caf28bd6db993a100574a6a",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "c4700e142fe3301687816c7536ec1a9439b5c585",
+          "claim": "no-gate",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 22,
+      "source": "177f6d6ae8efb1cae80e17d6e3c577440408f9de",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "a526b4ea4c307036d6d06f42e9071101b6986a70",
+          "claim": "no-gate",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 23,
+      "source": "0bb4992ca5f37a1cc974780fe2fdf9dec152928b",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "6dc61e9283d10dad4fe23edf4e08ea6bfb77c17e",
+          "claim": "no-gate",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 24,
+      "source": "868a865796046ee8ce160ddc2f62d11b413e2d28",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "cb2327cdf7330b3ec5af4a751179b8fc1b21c1f3",
+          "claim": "no-gate",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 25,
+      "source": "46e3ef2dacba50f6643eeb46c5e72dcac4c3978e",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "413f4fe16cfa1a647a298cee62745aa23115e33b",
+          "claim": "no-gate",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 26,
+      "source": "e39809a9e575f5192c33fe75c54bf93bc1d40cf1",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "413f4fe16cfa1a647a298cee62745aa23115e33b",
+          "claim": "no-gate",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 27,
+      "source": "030358a15b42ae6c58bba42b45ebdfcbbb623a01",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "afcf8ba5f8ee63086138f8415845b61ed727b184",
+          "claim": "current-package-only",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 28,
+      "source": "f56167ae2ce9239363de162a4cbdd67e7538928f",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "5cdb11f2431500a08dba0d793271a9610aaf6c43",
+          "claim": "current-package-only",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 29,
+      "source": "ccc262b800e29c56ee4d45857586d8a94bf9d95a",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "5cdb11f2431500a08dba0d793271a9610aaf6c43",
+          "claim": "current-package-only",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 30,
+      "source": "9a88be5cc6c2c86564b6881b58c04cf146af4f73",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "b55d53290ccde2083cd2433d709ca3dd04ab6574",
+          "claim": "current-package-only",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 31,
+      "source": "ebbfce4e99b52b5838e94419a4937e6709032267",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "59a7b91f91d5a2575489ccdccdd1d3eab4aecec3",
+          "claim": "current-package-only",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 32,
+      "source": "81b1c0a0a8b210c87209205d323977390b856dce",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "5ae1728ed54664c84f0ea2cd1b26855554fc23c7",
+          "claim": "current-package-only",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 33,
+      "source": "66feeb29a1377f3ee9966de8c648eb1e41f2e448",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "5ae1728ed54664c84f0ea2cd1b26855554fc23c7",
+          "claim": "current-package-only",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 35,
+      "source": "4460f562c5c99a33a7370225f1c9e3e90e1673b7",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "5ae1728ed54664c84f0ea2cd1b26855554fc23c7",
+          "claim": "current-package-only",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 36,
+      "source": "6de3c368cad3bd21d3261e030f1623cb97ae9360",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "5ae1728ed54664c84f0ea2cd1b26855554fc23c7",
+          "claim": "current-package-only",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 37,
+      "source": "b0c6073c9b0dbd720b0038a934d792f1e22378a3",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "5ae1728ed54664c84f0ea2cd1b26855554fc23c7",
+          "claim": "current-package-only",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 38,
+      "source": "a0840bf8d3359639ae2ed675f24bcc57619298ac",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "5ae1728ed54664c84f0ea2cd1b26855554fc23c7",
+          "claim": "current-package-only",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 39,
+      "source": "b146a4d62ee2e3047f7b370106c97b72dc6eaac4",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "70ee239571529e770789f78ee0665a6a3bcdca46",
+          "claim": "current-package-only",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 40,
+      "source": "b7a1d65c64df5aef0d4d2972b6c3db2831a4cc75",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "815d5e6472f63686f20faf34a11c6e1053bef15d",
+          "claim": "current-package-only",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 41,
+      "source": "72413f0160f5e1872bd7c5fab5b82751fa34f3f8",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "815d5e6472f63686f20faf34a11c6e1053bef15d",
+          "claim": "current-package-only",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 42,
+      "source": "c835cbb2a58e1285fe4e28cbe35c2729378a6df1",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "b23e9ff9c5883a8e81db91cf625cb7d6d4b39851",
+          "claim": "no-gate",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 43,
+      "source": "81e1c819d6e07004dd1c05b5177e70ece1dfe4a9",
+      "state": "MERGED"
+    },
+    {
+      "module": [
+        {
+          "blob": "978b0e0b5562a3e17125f762fb8aa93f76608e22",
+          "claim": "current-package-only",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 44,
+      "source": "781f6a250d934f84d7baf0540afafa4cf35248f4",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "978b0e0b5562a3e17125f762fb8aa93f76608e22",
+          "claim": "current-package-only",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 45,
+      "source": "059525baa6c20c8545203645f2d4271e82a363b5",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "978b0e0b5562a3e17125f762fb8aa93f76608e22",
+          "claim": "current-package-only",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 46,
+      "source": "d4b1caccb789f46b0969b5010c3b9e522f4bda1c",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "815d5e6472f63686f20faf34a11c6e1053bef15d",
+          "claim": "current-package-only",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 47,
+      "source": "60918b21d732f90fd18920b4a4207a969caebff0",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "788d27e3d07a1b6d70ef7d04dd065a0a7783a359",
+          "claim": "current-package-only",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 48,
+      "source": "4d25d094dcf552c248edc4d73b82f69d5185bc60",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "42901c44f02285bd5fdae67652ac46d87b19dc18",
+          "claim": "current-package-only",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 49,
+      "source": "5fed1c5c3208747b11b37cef8f47158b51e1b8f2",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "42901c44f02285bd5fdae67652ac46d87b19dc18",
+          "claim": "current-package-only",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 50,
+      "source": "b358c185c13720e9e1754f4c3c1bea9ce1c72cee",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "a38dc47c5d965e0336b051d453a5ff5c48e544fc",
+          "claim": "no-gate",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 51,
+      "source": "caac2566f0fbdf3984f519c2141a6d78e18b01b2",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "27f3350ae3246c41420ddf7d7e31c77dcc0cce2d",
+          "claim": "no-gate",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 52,
+      "source": "30004d93bdf3b07003fb8cd7097be81d862a9f41",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "8671df5eb56f44e9c938d7049ea8f3c45a4e407b",
+          "claim": "no-gate",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 53,
+      "source": "1aa523118aad2b32eb365589956a96587e527f92",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "82e264f891d8fbf1a0a8ec97a6548f0035c24b60",
+          "claim": "no-gate",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 54,
+      "source": "d75606fa80966b4107d7625e4279c5f400307428",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "a38dc47c5d965e0336b051d453a5ff5c48e544fc",
+          "claim": "no-gate",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 55,
+      "source": "a43bb550de710e8b6e81c170a470dfc7f060dbb9",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "82e264f891d8fbf1a0a8ec97a6548f0035c24b60",
+          "claim": "no-gate",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 56,
+      "source": "582e6bc069f9f03b3895e4f854e2c3a399a341f0",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "82e264f891d8fbf1a0a8ec97a6548f0035c24b60",
+          "claim": "no-gate",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 57,
+      "source": "0cf1cfc346c406cd3fc1a94cc0f21586953e9b6a",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "82e264f891d8fbf1a0a8ec97a6548f0035c24b60",
+          "claim": "no-gate",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 58,
+      "source": "e42df716454ca9387245a022dabae46738084340",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "82e264f891d8fbf1a0a8ec97a6548f0035c24b60",
+          "claim": "no-gate",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 59,
+      "source": "ad86be59ebda9918fdffe4734190d523a52ac141",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "82e264f891d8fbf1a0a8ec97a6548f0035c24b60",
+          "claim": "no-gate",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 60,
+      "source": "309b42ea09bfbc6bf44ffb8427245ecd33a4f47a",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "82e264f891d8fbf1a0a8ec97a6548f0035c24b60",
+          "claim": "no-gate",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 61,
+      "source": "2144670b5b226a014128b8e571cca3b9ca067258",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "82e264f891d8fbf1a0a8ec97a6548f0035c24b60",
+          "claim": "no-gate",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 62,
+      "source": "1aa507d75fd9e90bc0246551e5a559d225b56381",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "82e264f891d8fbf1a0a8ec97a6548f0035c24b60",
+          "claim": "no-gate",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 63,
+      "source": "4c5b0f38185d8346339c1290c411822398ec0390",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "82e264f891d8fbf1a0a8ec97a6548f0035c24b60",
+          "claim": "no-gate",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 64,
+      "source": "4138f17c0f7f96374cd47056a1d155e89d394291",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "7daa02099feee7ae906a33b82733e82488df3a84",
+          "claim": "no-gate",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 65,
+      "source": "9994dd055848a06165837f05a7dd6ae505f17ba1",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "7daa02099feee7ae906a33b82733e82488df3a84",
+          "claim": "no-gate",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 66,
+      "source": "c512a35365c5de427107d7886056516b4948d46e",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "d6f1084db045ad1acd640412cdba699f7ea537d2",
+          "claim": "no-gate",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 67,
+      "source": "ce56f8a9bb231a91f3b9491cec3905b99eb70bdb",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "58c8079bbdede9c9718eabe8c0897fdc74ac44a6",
+          "claim": "no-gate",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 68,
+      "source": "574c9026afd622f49ca27ff33a56f95c1ec1f37d",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "bfb9af126fe3782355d8f0c791b7a56e918d13c8",
+          "claim": "no-gate",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 69,
+      "source": "f3e7a43f7063b081e8caa83bcd11ac51ba094bca",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "583fb3f6e4e945317a78362cf8fa369d08c254a7",
+          "claim": "no-gate",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 70,
+      "source": "01aa38903700fb8348a5b26bf17eef2de6658abb",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "bfb9af126fe3782355d8f0c791b7a56e918d13c8",
+          "claim": "no-gate",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 71,
+      "source": "242e7bdc885910beff6872f71300968933293410",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "bf41dc62c5733696631377e5881fa28f8441e24f",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 72,
+      "source": "0d46e4115020c4fa5b60b5377e29d69dd5b85a04",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "d9d238b47908c0cc3e6b007eae7bbd889509000c",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 73,
+      "source": "e64b02dc5ffabee4c5da90620bb8534ce1ee225b",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "d9d238b47908c0cc3e6b007eae7bbd889509000c",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 74,
+      "source": "2d9ff0ae9a622edd72ff6d933aad5e312755b886",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "cec3ed2764d5561a46f865100a2709297712e2b7",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 75,
+      "source": "e42a45efcab3cf44489a071493f6d2aeafb826d2",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "2d0a58be5477f5f85d2029103f2e7588ba06d6aa",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 76,
+      "source": "4eebe9d1f7ba3738ba157668aef961d1bfc7216b",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "0007963596d09cbd4cfd68ef07532efc1229b020",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 77,
+      "source": "54f2f24cb041a2c266b6bc374e0483223137a535",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "0007963596d09cbd4cfd68ef07532efc1229b020",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 78,
+      "source": "4a5031e074277e0baa2a8eae11efb320f9d287a1",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "0007963596d09cbd4cfd68ef07532efc1229b020",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 79,
+      "source": "4526982e7852ba177a3ab2ec3ccd1fa9e1bf21f0",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "0007963596d09cbd4cfd68ef07532efc1229b020",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 80,
+      "source": "e8e7d8854689bb3df792abf0f2c3cfffb39fee1e",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "0007963596d09cbd4cfd68ef07532efc1229b020",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 81,
+      "source": "a15e160bfeaa43694741ca9b731043a5a3ec0344",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "0007963596d09cbd4cfd68ef07532efc1229b020",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 82,
+      "source": "01fbe9bfb0b9d1a618d01c65b6dc4fd870937628",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "cab1451e5c64381b35ca60eb2d7768446d7b6efb",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 83,
+      "source": "f80e71b3d8390e881056bf9c42d5389905b818bf",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "361dde361a8e4d0ff491dd9c0631f3c5eb3ac123",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 84,
+      "source": "8ce7bc07639c01187828debfb446fd3c18b5f223",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "361dde361a8e4d0ff491dd9c0631f3c5eb3ac123",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 85,
+      "source": "53e801e9f0d9a00550cb347bcca8a346103ba9bd",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "361dde361a8e4d0ff491dd9c0631f3c5eb3ac123",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 86,
+      "source": "0ed683cad880196f823fa34b7bfb40a89379ac12",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "bde8f9ad8d76b8b02a564019ab8f4397b25fbe2f",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 87,
+      "source": "31a4f3c3c87060a825428188dd79f944ad5f358d",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "bde8f9ad8d76b8b02a564019ab8f4397b25fbe2f",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 88,
+      "source": "ead6f8be471216de32624c005f61070734fe90b2",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "bde8f9ad8d76b8b02a564019ab8f4397b25fbe2f",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 89,
+      "source": "ca1a1c77aaa5440f19f39f4e29cc0dfbe381131a",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "4304b2832d0ff3775d9b3d3fce16c60cb51abbe2",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 90,
+      "source": "5666a3121e7ecb2c89272e17ee9579de1ad7fa07",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "2b92c85d7759ea25c7bc4942a8493ee452439ecf",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 91,
+      "source": "62fb776aebefce5362c2913099d12d6ffeb28730",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "2e04005d7ff27f31d1d8364bd5fb43899f8b440b",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 93,
+      "source": "6ff75d8e71dcd4448afaf3f18781cc79eba0c456",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "8f7377377579284b867ae2e38d610f90b4a233e8",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 94,
+      "source": "ad8f9c39817376bb8d67b9fc7216b748b59b624c",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "624683718112e1be1d655801024081a90ec04d27",
+          "claim": "current-package-only",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 95,
+      "source": "248b90b246a01b69c4bcf40995cadfd4cb80da43",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "248fd7ea399f78c02c858072ce325cb19301cad0",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 96,
+      "source": "1bf75e441fed0af26ce26c6c18c7e4edc351cfbc",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "4616a380f604a4f6aa3783b4e854a14a54177e5a",
+          "claim": "current-package-only",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 97,
+      "source": "4abb9b781e6a0044a6bcccd26112a8d3107f8c38",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "6ac4e1eb7341e60463b9936c2c3d4689cc1da47f",
+          "claim": "current-package-only",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 98,
+      "source": "6de6a114dfb02531d23c3c2a9595907eabb0f44b",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "8f7377377579284b867ae2e38d610f90b4a233e8",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 99,
+      "source": "9b133a0f52af4d8e76879756761c5ce47359bc51",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "a660f5b92aa48e6ae383323487425ca02bae26e4",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 100,
+      "source": "0407ea64c175132ddfaf17f08eb7b87fd358778f",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "5b68e40d95f8ee04cf8b263771d9f8bc04ba1d35",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 101,
+      "source": "62afc4ab5acf699478f72b8fdbd5927db1da26bb",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "7e9460b37a766847b19f7753452994aa51fdcfb5",
+          "claim": "current-package-only",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 102,
+      "source": "8966fd8e28a3f37fe44063a38280b60325ab7d83",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "212c3066ac01f62e0554711a6eac6e245b0a4bea",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 103,
+      "source": "1a84f8f36f0ff9f283337bfcce856b4b54c47281",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "5c7703e0b141ba4fcf4411c451ff85fb76220e11",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 104,
+      "source": "7dd8c44da62a3d18cacca8de8829846220c5bd22",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "212c3066ac01f62e0554711a6eac6e245b0a4bea",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 105,
+      "source": "41ca5f3e3b5e526a845d808d46e1bdfe57352bd2",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "212c3066ac01f62e0554711a6eac6e245b0a4bea",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 106,
+      "source": "8a3627a9a0bf6f1c69ccfcd4456aa2e7e2f3c29f",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "7e9460b37a766847b19f7753452994aa51fdcfb5",
+          "claim": "current-package-only",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 107,
+      "source": "fb5fafa1fc1dd25333ea52b0b0f850183f30dbb3",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "16f77cb06ca0ae692f4887efc67bc6174554bf9a",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 108,
+      "source": "4107edb965673ef1f241d70d7b096a933c969865",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "5c74af9ef230b8552dfadb75b84c8e5e8a952a20",
+          "claim": "current-package-only",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 109,
+      "source": "55c7fe2ecc8b21e4d27a793a35fb6e12996aab84",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "7e9460b37a766847b19f7753452994aa51fdcfb5",
+          "claim": "current-package-only",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 110,
+      "source": "3c05b0fa12478d324012b39b6165d1bb2c26f34f",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "7e9460b37a766847b19f7753452994aa51fdcfb5",
+          "claim": "current-package-only",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 111,
+      "source": "2fbb8db250b96841d9cb48c06a04e906006dc03b",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "7e9460b37a766847b19f7753452994aa51fdcfb5",
+          "claim": "current-package-only",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 112,
+      "source": "b31f14023cd14a55451535eae258a2c71fe779f5",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "7e9460b37a766847b19f7753452994aa51fdcfb5",
+          "claim": "current-package-only",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 113,
+      "source": "0de0bcd5d7060ae3baa681b37a77b40e73966285",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "4b7b810d7cbbdec7fb32bb71420002b91035b824",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 114,
+      "source": "14924b0136a28eca97cd62ef0ba7ff7dd6783f2f",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "6efbe69e8fe6968bc450adf941469b9db66e072b",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 115,
+      "source": "a73d8afb43b1ff7bb052c795433ed0a00187ecb0",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "233be35c0fda7dc2bc3e97cc3291ae7b2d783c8a",
+          "claim": "current-package-only",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 116,
+      "source": "b24b763e6f00dd4b57afe6f1415bc94ac2deb943",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "233be35c0fda7dc2bc3e97cc3291ae7b2d783c8a",
+          "claim": "current-package-only",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 117,
+      "source": "57b8d886c7ba44a40d8e5e9a74425556a8885309",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "b248fc7a7d3a561b0fc58ae44f0a9a073c30fd1b",
+          "claim": "current-package-only",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 118,
+      "source": "01459c519c96cd76ceb24b06f328b378a185fd5b",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "b248fc7a7d3a561b0fc58ae44f0a9a073c30fd1b",
+          "claim": "current-package-only",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 119,
+      "source": "103dbd267c58a724b822a2ff75765445e87bf978",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "853a1294ef421c6cc4bc28dcf232adedaccc7325",
+          "claim": "current-package-only",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 120,
+      "source": "c2677e9748fc4368a1be4f4786506d1d8116f8e4",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "4b7b810d7cbbdec7fb32bb71420002b91035b824",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 123,
+      "source": "57b57edfa4e4fba12f00febf4c330276bf21ba33",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "4b7b810d7cbbdec7fb32bb71420002b91035b824",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 126,
+      "source": "3aee22c713b5668e9de06de1a048b5c65eab4d91",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "4b7b810d7cbbdec7fb32bb71420002b91035b824",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 127,
+      "source": "bff5772fdcac2827bd6c392f90e5fe6cc4346ff1",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "6153b2f1e4e8009ce2b8f5624f11b2ced651eee1",
+          "claim": "no-gate",
+          "path": "src/cargo/core/compiler/mod.rs"
+        }
+      ],
+      "number": 128,
+      "source": "cb8f41954a349c305e5551278fe4ed936e102879",
+      "state": "MERGED"
+    },
+    {
+      "module": [
+        {
+          "blob": "1ef75f775a7607f56d857cab3e1bd72cc49d26a4",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 132,
+      "source": "68fae654fe20474dd0a1f5c80e377eb13687feef",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "4b7b810d7cbbdec7fb32bb71420002b91035b824",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 133,
+      "source": "77ed95e8839c81fd25723519cc40229ab902a27d",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "685ec0276ae6fa326a4747cd857fc1c592427eb8",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 134,
+      "source": "6b9bf5e3fb8d53556fefa5f357e3c7c6c32bf4bb",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "4b7b810d7cbbdec7fb32bb71420002b91035b824",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 137,
+      "source": "bfbafc7e2b073292f783f336f225b430aa7fb38d",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "f3992d2e46055f5cba1299d048649dd9d45a0968",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 139,
+      "source": "ed8a56d917f53b6e629d9fe21c5ecd9d79dd2760",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "f3992d2e46055f5cba1299d048649dd9d45a0968",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 140,
+      "source": "755e6b3d3be6f8f427de4ba3bccaacae51a7fd78",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "512f69238af16239f007b7de0f2c1ef8142849f1",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 141,
+      "source": "d2642f20125c7bd09b2dc0736a8c2e2060825e5e",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "564a642cd200648ddec10648c5c17e91f6717007",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 142,
+      "source": "f1bfbaaa1d62efb3b5c7ecc28f67d7b30aa38578",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "564a642cd200648ddec10648c5c17e91f6717007",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 143,
+      "source": "0df33e67f187c99ab4ec08274051aede8dd48508",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "c9e8ffc4653d82a7b75d4ae64168222dd752321e",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 145,
+      "source": "2cf23b11f7d1037704df636dd70b7d358cc7bec5",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "34526a74aaa8ce0b2aa90a0a217c77bfb1ffa3ce",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 146,
+      "source": "a10e3b6dc0225a747ad6d265f228988a270a5877",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "c8e286c11358ff8d538206555efa4ef99b93940f",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 147,
+      "source": "8b17025201e2e8b29b199a0dc5748dae34a73dae",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "c8e286c11358ff8d538206555efa4ef99b93940f",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 148,
+      "source": "97c38d5a2802474c9935e2487895b7b1c512b9b9",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "c8e286c11358ff8d538206555efa4ef99b93940f",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 149,
+      "source": "f7a7a18497b3ef774fd364e4ca267188c8b97f75",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "c8e286c11358ff8d538206555efa4ef99b93940f",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 150,
+      "source": "ce9e64d2457dd132f50446a3ed5778f1c8f4b74b",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "c8e286c11358ff8d538206555efa4ef99b93940f",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 152,
+      "source": "ffaea2d27707d22c674446653eb9faf4b1ea7eb1",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "11a0df93e489f8dafbf59ae54d2e1655b22a2dfd",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 153,
+      "source": "674e12e710317c4b2b060b82df08aebe52340a77",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "11a0df93e489f8dafbf59ae54d2e1655b22a2dfd",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 154,
+      "source": "5497add64866b3d587cca3ede9051fb8ec655471",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "5fbe9fc2181865bbe8c8edbcf1672512ca5a7efb",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 156,
+      "source": "ff3cfa242fa2e7087ea4346155074393c6b62102",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "26951dc61182aeda9025123a83e7e87bfdc1d233",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 157,
+      "source": "f2cb91c4f7c38df61a2933243eea26ba4b852731",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "26951dc61182aeda9025123a83e7e87bfdc1d233",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 158,
+      "source": "d853b22039e058d91f7872a43243ced1933dc250",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "f5c2ed3ac2ec58e34aa9f86a4bb2eb0c88c0bd5d",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 159,
+      "source": "fa1b3b6e3f8049241432f79886229a6095a36b12",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "26951dc61182aeda9025123a83e7e87bfdc1d233",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 160,
+      "source": "da7ad362e2b460b1639fbaafc160b67a76c6a837",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "4c9867b84b38a1821c65969d8d35beb6608861e2",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 161,
+      "source": "19f9ebd5eba6ae2e7ef65a0dead5ac4e87b29953",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "4c9867b84b38a1821c65969d8d35beb6608861e2",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 164,
+      "source": "c03424167aeddb6680c518f7010a26b36b7dd22b",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "864bc7a5475f51be7b92158813dca52f43d0916f",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 165,
+      "source": "99f31d6610e799edd3969a106d129652f73d83b3",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "4c9867b84b38a1821c65969d8d35beb6608861e2",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 167,
+      "source": "c78cc817ff541ba446688bead326ef45572e6f86",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "f5c2ed3ac2ec58e34aa9f86a4bb2eb0c88c0bd5d",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 168,
+      "source": "3d9852572bdaa8e7c627356a0c52533717888988",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "4c9867b84b38a1821c65969d8d35beb6608861e2",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 169,
+      "source": "e8766043df7a6232e95e5c092332115833f0b2c2",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "4c9867b84b38a1821c65969d8d35beb6608861e2",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 170,
+      "source": "a7a77d3be394084932517434cf17a8be3f504ca2",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "f5c2ed3ac2ec58e34aa9f86a4bb2eb0c88c0bd5d",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 171,
+      "source": "8a4d1bd7ea9bea83d6039298fe59afbc8dde64d9",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "f5c2ed3ac2ec58e34aa9f86a4bb2eb0c88c0bd5d",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 172,
+      "source": "5e5d271d763d7beb38b48755e22bd59e93f02b97",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "d7fa56e1c46fdf319a8f9f9c703fc63647a80aec",
+          "claim": "no-gate",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 173,
+      "source": "9568c96e5213a76d12b1146ccca7606a70d37f3d",
+      "state": "MERGED"
+    },
+    {
+      "module": [
+        {
+          "blob": "f5c2ed3ac2ec58e34aa9f86a4bb2eb0c88c0bd5d",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 174,
+      "source": "cd0855e7c536b2e76cc47f5ccff679ec5477eb01",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "f5c2ed3ac2ec58e34aa9f86a4bb2eb0c88c0bd5d",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 175,
+      "source": "cd77646501e195f6b3ba1095070807bcf1f89c03",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "4798704fe931055b998ea30c19f5b26fd5d44dbb",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 176,
+      "source": "5a16c750eba7f6b7bcfd7a220a377685c62b3512",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "4798704fe931055b998ea30c19f5b26fd5d44dbb",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 177,
+      "source": "ff1eacd2b577777ecb8a7f3e934ddac36d11928e",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "230a66c6227d39616de942cfbfb1ba602a87a644",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 178,
+      "source": "8fbefabb23d1b1950b9e5d224ed986ada7331192",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "230a66c6227d39616de942cfbfb1ba602a87a644",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 179,
+      "source": "19718e6d1637244ffbb193334f50bae3ffca1be5",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "230a66c6227d39616de942cfbfb1ba602a87a644",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 180,
+      "source": "c40676e264501bc8a93095d3a273a1c300b80875",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "e9d4f77744cb7fe3c30a7fe9c8399a9ec5d5efd6",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 181,
+      "source": "456eda7c820849e9904e53a10284322ed930dc11",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "e9d4f77744cb7fe3c30a7fe9c8399a9ec5d5efd6",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 182,
+      "source": "75f86b25a30c7ead24da87984d9a99c6874b24e4",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "e9d4f77744cb7fe3c30a7fe9c8399a9ec5d5efd6",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 183,
+      "source": "710e1d66c4118c555f264b83d79aee50ad311ed2",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "e9d4f77744cb7fe3c30a7fe9c8399a9ec5d5efd6",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 184,
+      "source": "d01154289a3ad4100beb880a49806698f330c7d2",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "e9d4f77744cb7fe3c30a7fe9c8399a9ec5d5efd6",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 185,
+      "source": "cfd816c7abd23ab589fd1cbc9c066eba314a8016",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "230a66c6227d39616de942cfbfb1ba602a87a644",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 186,
+      "source": "744e575a77fc13f0e1a8436712e79865881488a6",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "230a66c6227d39616de942cfbfb1ba602a87a644",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 187,
+      "source": "63657ba48dd9e4031779946439f63971d06dedd9",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "e9d4f77744cb7fe3c30a7fe9c8399a9ec5d5efd6",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 188,
+      "source": "b28d53f23205614ac5f6a4f1e479d11ff498169f",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "e9d4f77744cb7fe3c30a7fe9c8399a9ec5d5efd6",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 189,
+      "source": "581da65e493c7646f7776ea4d925a195e59cc2c0",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "8baefdcaba455c8675d98f02499467f8405a75fc",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 190,
+      "source": "7124931aff607d97ecbd76eaa4794b6d7acb2d7e",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "8baefdcaba455c8675d98f02499467f8405a75fc",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 191,
+      "source": "bbe8182f6f4f92dce7e1e175627fa26dd6df683a",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "8baefdcaba455c8675d98f02499467f8405a75fc",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 192,
+      "source": "f5ba12b037ffe3465c6171b145005b7339724748",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "3c6a509faa76708600cf0228331d02f952b41513",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 193,
+      "source": "39ed4eb98b56d4928077530bfa0b086708807a48",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "8e54942637e55f2502623899f57cffef63406f0a",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 197,
+      "source": "c12867106c3ba4485f4ea92be8622660d301489d",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "75948fbec0a887959bc6f76dd20a419a4117d6e2",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 198,
+      "source": "df2a307a2aa0a70fe63047b9ff1768dd297d3847",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "75948fbec0a887959bc6f76dd20a419a4117d6e2",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 200,
+      "source": "aee65defe45618352d72603e8bbf500423215ce1",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "f91a99971b135c4bf1f80a9c613e015b7ecc2474",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 201,
+      "source": "1ec740b59f1d22c7f13ffa938404146262a80814",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "f91a99971b135c4bf1f80a9c613e015b7ecc2474",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 203,
+      "source": "2ebade593a16006fd3f63f1613cf4dbf2008dbad",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "f91a99971b135c4bf1f80a9c613e015b7ecc2474",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 205,
+      "source": "d778d26148e04ef0179e1e782c7f5e02474304f3",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "67585636f0b1218bd3d5183a906786534f0837de",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 208,
+      "source": "a7511f0c2154fbbd8ac835edd02a67e5a4924678",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "cd42245ff0f654b6a891d71ee1b98f9df22b9db2",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 209,
+      "source": "4b108035208de4a7efb661356ee4c1bba4b0b32b",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "67585636f0b1218bd3d5183a906786534f0837de",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 211,
+      "source": "6cea8734d3b502ddbad6aca608d1a8b8ad5f2ef2",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "67585636f0b1218bd3d5183a906786534f0837de",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 213,
+      "source": "53953414d9a0e0dae513b35aa9cea97697985a08",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "67585636f0b1218bd3d5183a906786534f0837de",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 216,
+      "source": "ee52ae9e7f4bc91ef9f49201a6364f946f96925f",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "67585636f0b1218bd3d5183a906786534f0837de",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 217,
+      "source": "9a206984e77e022771fe4cb5971ac829dc2ac828",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "67585636f0b1218bd3d5183a906786534f0837de",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 220,
+      "source": "1bd0b44722825bcbae0168740522a33ad4babe8e",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "67585636f0b1218bd3d5183a906786534f0837de",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 221,
+      "source": "359beac9d47bda0d20ef879c1c0b41082745a05a",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "67585636f0b1218bd3d5183a906786534f0837de",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 223,
+      "source": "fdd26156be98618e2e01a9e02703edac71b79a35",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "3c6a509faa76708600cf0228331d02f952b41513",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 224,
+      "source": "d0d7763a3e644b0908a65d95757bf8d7069f072b",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "67585636f0b1218bd3d5183a906786534f0837de",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 226,
+      "source": "e12b8b0c12c992aab3e152518184a08391675828",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "ea9aed5fb8a64777eaa306ab570fefc0b800d8c3",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 230,
+      "source": "461a3d1007ecc997a6d86c7d75e8b518575c8d90",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "67585636f0b1218bd3d5183a906786534f0837de",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 231,
+      "source": "bca8c1077b2b40b4b037edc059333d7d98f91bae",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "ed357a8e8f8f85a6cd0ed942cce06d29b34ed5c6",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 232,
+      "source": "fa592baf27578e348059de7fbe0eed50126d1bca",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "67585636f0b1218bd3d5183a906786534f0837de",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 233,
+      "source": "ddaa93b0da4f9b432413a26120029462f499eafc",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "19577866b6203a1d91cc6539bde9019fc15ea75e",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 234,
+      "source": "13ed3e7e3d443975083a1931560267bf98161788",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "19577866b6203a1d91cc6539bde9019fc15ea75e",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 235,
+      "source": "fd7a25d7bed7503d628c90879ba265e173343b28",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "ea9aed5fb8a64777eaa306ab570fefc0b800d8c3",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 236,
+      "source": "d5fc5198f85eb1064981ba39381a866f0f7dd265",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "ea9aed5fb8a64777eaa306ab570fefc0b800d8c3",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 237,
+      "source": "936826f7ca3ab56d37502068ab53c72d6adb8010",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "ea9aed5fb8a64777eaa306ab570fefc0b800d8c3",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 238,
+      "source": "4cabdf085d3ebb955cf039cdd9c41e29b8391295",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "ea9aed5fb8a64777eaa306ab570fefc0b800d8c3",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 239,
+      "source": "94918b68911a29d335961ed580cde7fef62e5c70",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "ea9aed5fb8a64777eaa306ab570fefc0b800d8c3",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 240,
+      "source": "4cbc1749d3fdef4f6ec84fdab9b8e3129e31d819",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "ea9aed5fb8a64777eaa306ab570fefc0b800d8c3",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 242,
+      "source": "6283db1b085ad7d5793ac37db1e2c000127297ba",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "ea9aed5fb8a64777eaa306ab570fefc0b800d8c3",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 243,
+      "source": "184e50b93316db9478f82eae2e35b789ba6ab1e9",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "ea9aed5fb8a64777eaa306ab570fefc0b800d8c3",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 244,
+      "source": "f098dcf17e143e8eb669a53098c5a6cdb8a1be0e",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "ea9aed5fb8a64777eaa306ab570fefc0b800d8c3",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 245,
+      "source": "7ba35732a362a0792885652976485ff3806f397a",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "ea9aed5fb8a64777eaa306ab570fefc0b800d8c3",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 246,
+      "source": "062efff3f6799171e10f2aced33f3a2c4a2bf07b",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "ea9aed5fb8a64777eaa306ab570fefc0b800d8c3",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 247,
+      "source": "9b6d2a1581fcc4cabcccffdf3d93d91800610df7",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "ea9aed5fb8a64777eaa306ab570fefc0b800d8c3",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 248,
+      "source": "71b2274138b5a40d47180c0097f73abc8ad52042",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "ea9aed5fb8a64777eaa306ab570fefc0b800d8c3",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 249,
+      "source": "7f71057cd288aceb35036dc5d074225301f5dd08",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "ea9aed5fb8a64777eaa306ab570fefc0b800d8c3",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 250,
+      "source": "764bda75f0dd3adb3ab239dac5565df68b49453a",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "f4dff72cccf8e2dae12f378ddce00fe955e3e410",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 251,
+      "source": "701d02b53c3530c833a26aac013f9a22dfd6386d",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "f4dff72cccf8e2dae12f378ddce00fe955e3e410",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 253,
+      "source": "7d938f4f1ff9d326664ecaea58650bbb72780894",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "4a1faf1d7dbd8d17702cd5abf48185214d587d38",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 254,
+      "source": "4c07cbf6bd91e170e3b8904eeb82436a6dbde358",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "4a1faf1d7dbd8d17702cd5abf48185214d587d38",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 256,
+      "source": "db24aef819477e2fa46a50299bb23d5020dd518a",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "4a1faf1d7dbd8d17702cd5abf48185214d587d38",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 258,
+      "source": "a0c7d08c898d3fdff992f2f431dec57d2486add2",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "7cc2b71c3480e4e3088a3a92fcb4e0c2f435b645",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 260,
+      "source": "6468de26179e87d073d606bd6e4e4cbd90c7dbc2",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "fab65f8d8a5979b86da9f722890097d273b7ca41",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 261,
+      "source": "857652135b0e7ee03b9c715787056a60ea313183",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "7cc2b71c3480e4e3088a3a92fcb4e0c2f435b645",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 262,
+      "source": "7181bfa6256f94da142f80fd6af09cee02ec2c78",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "7cc2b71c3480e4e3088a3a92fcb4e0c2f435b645",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 263,
+      "source": "7caf39914da1e28a67744ecbc963a5f26361474d",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "65466b30d8b542c3ae0861da6cab2b4aa13e096a",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 264,
+      "source": "567b7d201b325e745d2dadd1553363b5c85f30d7",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "7cc2b71c3480e4e3088a3a92fcb4e0c2f435b645",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 265,
+      "source": "e439d116ab16ffc2b4dd8c8721e6d189c43edea9",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "30db83fa5e32e114a89da7cefcc76c15569f061c",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 266,
+      "source": "80c1cf288211a324bdc5725d014589e9f244a313",
+      "state": "CLOSED"
+    },
+    {
+      "module": [
+        {
+          "blob": "65466b30d8b542c3ae0861da6cab2b4aa13e096a",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 267,
+      "source": "4246bb695caa5f713c7234b037512c5262b6891f",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "65466b30d8b542c3ae0861da6cab2b4aa13e096a",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 268,
+      "source": "a3c13409c1d98f3e1072d86c1d968368feb90f9c",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "65466b30d8b542c3ae0861da6cab2b4aa13e096a",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 269,
+      "source": "9256d6a21da8e6c0a2ba9502999d74544ed850cd",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "65466b30d8b542c3ae0861da6cab2b4aa13e096a",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 270,
+      "source": "94c95d6b8ef97b0e63e04b250bc88d1a388a31af",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "7cc2b71c3480e4e3088a3a92fcb4e0c2f435b645",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 271,
+      "source": "36ee3dac9bf62b94c76ea1313581c287839e5abf",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "7cc2b71c3480e4e3088a3a92fcb4e0c2f435b645",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 274,
+      "source": "235f9228651b74c591e6f62cae4c9b761448dd2d",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "7cc2b71c3480e4e3088a3a92fcb4e0c2f435b645",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 275,
+      "source": "cc0fa6ce2d46c4d87f2c0abbd64d63be2afe1d90",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "7cc2b71c3480e4e3088a3a92fcb4e0c2f435b645",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 276,
+      "source": "693599325e47a8c5f59ecd1118893e86eded5c12",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "7cc2b71c3480e4e3088a3a92fcb4e0c2f435b645",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 277,
+      "source": "45be87c5164be332ddff1a586641e5f0318b87c9",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "7cc2b71c3480e4e3088a3a92fcb4e0c2f435b645",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 279,
+      "source": "b3360c5eda186845b9a2ba6e5330a97c07d4acf2",
+      "state": "OPEN"
+    },
+    {
+      "module": [
+        {
+          "blob": "7cc2b71c3480e4e3088a3a92fcb4e0c2f435b645",
+          "claim": "current-package-only",
+          "path": "src/compiler/mod.rs"
+        }
+      ],
+      "number": 280,
+      "source": "34dad66fd2ac823bfb02c2c4a4bab02fb5ac4d31",
+      "state": "OPEN"
+    }
+  ],
+  "private_inventory_sha256": "f27d787f3d4ae09279b63ccd62b597588f2bcf17033d4c1a465956f7b0f15b7d"
+}

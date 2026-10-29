@@ -1,0 +1,70 @@
+{
+  "arms": {
+    "candidate": {
+      "cargo": "00d75d89b28ac122fa18d41fbfd054e50fbef0e2a64ccb4786ea146cccc29b20",
+      "observed_mismatch": [],
+      "raw": {
+        "compiler": "8a6d274b84361abe26e275e83562768987398ed1ccd4877a4aee7d7fa72e4d25",
+        "exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout": "11aad9ea2730c9487c2dc06c67ee219f2d2bb5fb00778d05780d2a6231ca44b8"
+      },
+      "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+      "test_exit": 0,
+      "test_summary": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 4817 filtered out",
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+      "wrapped_jobs": [
+        "compile:build_script_build",
+        "compile:provider",
+        "compile:middle",
+        "compile:app",
+        "compile-link:integration",
+        "compile:provider",
+        "compile:app",
+        "link:integration",
+        "compile:provider",
+        "compile:app",
+        "link:integration"
+      ]
+    },
+    "matched-parent": {
+      "cargo": "ce5b3031dcd3f31098fd9b16147b4c286dc640e1757e5362c9e1e4f05ec88cb3",
+      "observed_mismatch": [
+        [
+          "left",
+          "17"
+        ],
+        [
+          "right",
+          "29"
+        ]
+      ],
+      "raw": {
+        "compiler": "31e644b0be8430fe082d50514869e2244688ccd98e1634f5c26627a002818e3c",
+        "exit": "39b8dc3fc8b44765c8e6f1adee04c5b465e555ab791cc42d0d9e810d5b64297c",
+        "stderr": "42afbf5d6b68f3074e4422a0f95b7e7588e9b1a9e1ab47ff497e7dd1135ae986",
+        "stdout": "b513e0d56cf00e5de99a500aaaaf9fc7ca3c3012fa3bfb942db94bb27fcba503"
+      },
+      "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+      "test_exit": 101,
+      "test_summary": "test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 4817 filtered out",
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+      "wrapped_jobs": [
+        "compile:build_script_build",
+        "compile:provider",
+        "compile:middle",
+        "compile:app",
+        "compile-link:integration",
+        "compile:provider",
+        "compile:app"
+      ]
+    }
+  },
+  "cargo_commit": "29e8dbd291cd79fd8c1ba46f86b3dc333d23cde7",
+  "cargo_tree": "3ea525df7e45751dc263656d61cb0fa087fbe905",
+  "earlier_21_raw_sha256": "e97cef6dbaf58d49f8bdf27e97d91293321da756a7fa9a939d6d5a4c6b0f4754",
+  "earlier_21_result": "test result: ok. 21 passed; 0 failed; 0 ignored; 0 measured; 4797 filtered out",
+  "earlier_prebuilt_regression_parent_stderr": "0f675e3056e0524a411a0931d1be48e4930583315d4a938d0c29485165c4870e",
+  "parent": "34dad66fd2ac823bfb02c2c4a4bab02fb5ac4d31",
+  "product_only_commit": "2d04af1e5971b101ab3c81c076e01f975c136b24"
+}
