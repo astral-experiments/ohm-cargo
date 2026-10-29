@@ -1,0 +1,1657 @@
+{
+  "adapter": "d0fa769cc0a9f40e13ee05688151d3e393c061b5e38fb13684d82da66da77e22",
+  "experiment": "50263df54fa32f09a27f549c5366cb0a7ff1b8192ea9d284956a5c0ed5d01034",
+  "free": [
+    28334800896,
+    30707994624
+  ],
+  "raw": {
+    "chronological-A": [
+      "2c9ebc9f773fcc79ba8195ebc12fd62680eccc88c01413c48535d806626ec542",
+      "0c6d64c096daf46319b2fc2d659bd620cd6955a928e9089c907dd84465dc470c",
+      "7ca2625c6ac1b96fe92dae6de0f653d7294488e7b62312ef2622a001631223b0"
+    ],
+    "chronological-B": [
+      "3f04e2c3ac88c38ece61802139849b7dbb1f91d8087ce9ab0a800b851c38cc3d",
+      "388559a816bee56d61c1f8994d8e2e8da2eb0bf345bc0efbe1c6f1b163f642d4",
+      "e973419c1f265c20502cfc5fd4deb07cdc172633d6c46e5c0c9b4eb51e547113"
+    ],
+    "reverse-A": [
+      "726e13d1c1d0862bdf163da35126abd0de6e6d9e7cb5f37e52b8bab964cf9fa9",
+      "3720bf38dd85912b5bf2725cc7f2a0ec33a549b5039c45846225921980076607",
+      "01c111707efb7b46c6af985220e106793613dbe5daccee3701054a2775281e89"
+    ],
+    "reverse-B": [
+      "05771e080f75368b886896a51ea90aefdaac4a6573a832aa6e83d5d4a224c820",
+      "5dd0984ab6900c73a2fd6b532ef689b3a656042b5f791eee789c0c91f7d356d4",
+      "075db387ae56f87779d2f9f15fdc0c2bc8db0236cb9600f883dbba51ff5e1347"
+    ],
+    "source-only-A": [
+      "99f3056456a1e46620d74f666d0ac44f01b51203480bea40895b4466f86f4675",
+      "d15e2bbda8fb57acd9d795ed06c1398de6d16114f26982c898c11b2858b53b26",
+      "0a6f1144e21e0c53abdf33946b3a97840fafb8921c3770f80d3e5ca3a8b86813"
+    ],
+    "source-only-B": [
+      "4eee90cae3277e3b8c0cab8475f0e5f097174ba8b013d47182a0717181496d23",
+      "2a8c455a330e36211a9b6b8a89e186e51454768592f6bd7cc177c48e7ea177cc",
+      "f2917ad93cbe0da7e2ba37d6672bfe2af8aadd7aa188d11352f43bf4528e9cfe"
+    ]
+  },
+  "seeds": "a1060c0e46535e240a85726e2da0ae6110007e660361127aae2ea31efe76c779",
+  "shapes": {
+    "chronological-A": [
+      {
+        "artifacts": [
+          [
+            "either",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "itertools",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "memchr",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_python_trivia",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_source_file",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_text_size",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "rustc_hash",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_ident",
+            [
+              "lib"
+            ],
+            true
+          ]
+        ],
+        "markers": {
+          ".ohm-built-registry-ready": 0,
+          ".ohm-check-graphs/*": 1
+        },
+        "native": [],
+        "phase": "settled",
+        "resolution": 1,
+        "rmeta_shape": "050216cff7591b84c45f87d631e56b9502944c0092007ee8cf4121e8c757090d",
+        "rustc": [],
+        "source": {
+          "Cargo.lock": "654d0b6e553e505c83ae7ac4dd17107ceb248dc54beafd2dfccf02b35981f9bd",
+          "crates/ruff_python_trivia/Cargo.toml": "c8ff8fed694ad1095f4a41dd034b9442d5d3ddd4cf1406a80b966009fe5f6dc0",
+          "crates/ruff_python_trivia/src/name_matcher.rs": "d9293f05481b4dd4ba260b8f0a92d919d2c0ba16f8eb48088540ce670c9672aa"
+        }
+      },
+      {
+        "artifacts": [
+          [
+            "either",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "itertools",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "memchr",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_python_trivia",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "ruff_source_file",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_text_size",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "rustc_hash",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "tinyvec",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "tinyvec_macros",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "unicode_ident",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_normalization",
+            [
+              "lib"
+            ],
+            false
+          ]
+        ],
+        "markers": {
+          ".ohm-built-registry-ready": 0,
+          ".ohm-check-graphs/*": 1
+        },
+        "native": [],
+        "phase": "edited",
+        "resolution": 2,
+        "rmeta_shape": "68fd19b636a40cb1ff50043748e6c6e42351f88a3d0bce62e9361727780dcef9",
+        "rustc": [
+          "ruff_python_trivia",
+          "tinyvec",
+          "tinyvec_macros",
+          "unicode_normalization"
+        ],
+        "source": {
+          "Cargo.lock": "c9e345325bec5ff08dbbe3916edd39ad0c3d1c7797a8c241ae32f62754e764bf",
+          "crates/ruff_python_trivia/Cargo.toml": "0a8beb3689acb1a28ed9516c7179cc7231cb7c675d9de2ac966f4d28f0b45a95",
+          "crates/ruff_python_trivia/src/name_matcher.rs": "f4408168c0378a6aff61bb4c04582080125c301f21c0da1bdca00ee47d85a01a"
+        }
+      },
+      {
+        "artifacts": [
+          [
+            "either",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "itertools",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "memchr",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_python_trivia",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_source_file",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_text_size",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "rustc_hash",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "tinyvec",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "tinyvec_macros",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_ident",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_normalization",
+            [
+              "lib"
+            ],
+            true
+          ]
+        ],
+        "markers": {
+          ".ohm-built-registry-ready": 0,
+          ".ohm-check-graphs/*": 1
+        },
+        "native": [],
+        "phase": "repeat",
+        "resolution": 1,
+        "rmeta_shape": "68fd19b636a40cb1ff50043748e6c6e42351f88a3d0bce62e9361727780dcef9",
+        "rustc": [],
+        "source": {
+          "Cargo.lock": "c9e345325bec5ff08dbbe3916edd39ad0c3d1c7797a8c241ae32f62754e764bf",
+          "crates/ruff_python_trivia/Cargo.toml": "0a8beb3689acb1a28ed9516c7179cc7231cb7c675d9de2ac966f4d28f0b45a95",
+          "crates/ruff_python_trivia/src/name_matcher.rs": "f4408168c0378a6aff61bb4c04582080125c301f21c0da1bdca00ee47d85a01a"
+        }
+      }
+    ],
+    "chronological-B": [
+      {
+        "artifacts": [
+          [
+            "either",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "itertools",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "memchr",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_python_trivia",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_source_file",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_text_size",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "rustc_hash",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_ident",
+            [
+              "lib"
+            ],
+            true
+          ]
+        ],
+        "markers": {
+          ".ohm-built-registry-ready": 0,
+          ".ohm-check-graphs/*": 1
+        },
+        "native": [],
+        "phase": "settled",
+        "resolution": 1,
+        "rmeta_shape": "050216cff7591b84c45f87d631e56b9502944c0092007ee8cf4121e8c757090d",
+        "rustc": [],
+        "source": {
+          "Cargo.lock": "654d0b6e553e505c83ae7ac4dd17107ceb248dc54beafd2dfccf02b35981f9bd",
+          "crates/ruff_python_trivia/Cargo.toml": "c8ff8fed694ad1095f4a41dd034b9442d5d3ddd4cf1406a80b966009fe5f6dc0",
+          "crates/ruff_python_trivia/src/name_matcher.rs": "d9293f05481b4dd4ba260b8f0a92d919d2c0ba16f8eb48088540ce670c9672aa"
+        }
+      },
+      {
+        "artifacts": [
+          [
+            "either",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "itertools",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "memchr",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_python_trivia",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "ruff_source_file",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_text_size",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "rustc_hash",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "tinyvec",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "tinyvec_macros",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "unicode_ident",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_normalization",
+            [
+              "lib"
+            ],
+            false
+          ]
+        ],
+        "markers": {
+          ".ohm-built-registry-ready": 0,
+          ".ohm-check-graphs/*": 1
+        },
+        "native": [],
+        "phase": "edited",
+        "resolution": 1,
+        "rmeta_shape": "68fd19b636a40cb1ff50043748e6c6e42351f88a3d0bce62e9361727780dcef9",
+        "rustc": [
+          "ruff_python_trivia",
+          "tinyvec",
+          "tinyvec_macros",
+          "unicode_normalization"
+        ],
+        "source": {
+          "Cargo.lock": "c9e345325bec5ff08dbbe3916edd39ad0c3d1c7797a8c241ae32f62754e764bf",
+          "crates/ruff_python_trivia/Cargo.toml": "0a8beb3689acb1a28ed9516c7179cc7231cb7c675d9de2ac966f4d28f0b45a95",
+          "crates/ruff_python_trivia/src/name_matcher.rs": "f4408168c0378a6aff61bb4c04582080125c301f21c0da1bdca00ee47d85a01a"
+        }
+      },
+      {
+        "artifacts": [
+          [
+            "either",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "itertools",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "memchr",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_python_trivia",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_source_file",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_text_size",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "rustc_hash",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "tinyvec",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "tinyvec_macros",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_ident",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_normalization",
+            [
+              "lib"
+            ],
+            true
+          ]
+        ],
+        "markers": {
+          ".ohm-built-registry-ready": 0,
+          ".ohm-check-graphs/*": 1
+        },
+        "native": [],
+        "phase": "repeat",
+        "resolution": 1,
+        "rmeta_shape": "68fd19b636a40cb1ff50043748e6c6e42351f88a3d0bce62e9361727780dcef9",
+        "rustc": [],
+        "source": {
+          "Cargo.lock": "c9e345325bec5ff08dbbe3916edd39ad0c3d1c7797a8c241ae32f62754e764bf",
+          "crates/ruff_python_trivia/Cargo.toml": "0a8beb3689acb1a28ed9516c7179cc7231cb7c675d9de2ac966f4d28f0b45a95",
+          "crates/ruff_python_trivia/src/name_matcher.rs": "f4408168c0378a6aff61bb4c04582080125c301f21c0da1bdca00ee47d85a01a"
+        }
+      }
+    ],
+    "reverse-A": [
+      {
+        "artifacts": [
+          [
+            "either",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "itertools",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "memchr",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_python_trivia",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_source_file",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_text_size",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "rustc_hash",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "tinyvec",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "tinyvec_macros",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_ident",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_normalization",
+            [
+              "lib"
+            ],
+            true
+          ]
+        ],
+        "markers": {
+          ".ohm-built-registry-ready": 0,
+          ".ohm-check-graphs/*": 1
+        },
+        "native": [],
+        "phase": "settled",
+        "resolution": 1,
+        "rmeta_shape": "2cb7cc31a39d8d781831425927cae21a3d49a37612a7612ab32de927a99d47ce",
+        "rustc": [],
+        "source": {
+          "Cargo.lock": "c9e345325bec5ff08dbbe3916edd39ad0c3d1c7797a8c241ae32f62754e764bf",
+          "crates/ruff_python_trivia/Cargo.toml": "0a8beb3689acb1a28ed9516c7179cc7231cb7c675d9de2ac966f4d28f0b45a95",
+          "crates/ruff_python_trivia/src/name_matcher.rs": "f4408168c0378a6aff61bb4c04582080125c301f21c0da1bdca00ee47d85a01a"
+        }
+      },
+      {
+        "artifacts": [
+          [
+            "either",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "itertools",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "memchr",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_python_trivia",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "ruff_source_file",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_text_size",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "rustc_hash",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_ident",
+            [
+              "lib"
+            ],
+            true
+          ]
+        ],
+        "markers": {
+          ".ohm-built-registry-ready": 0,
+          ".ohm-check-graphs/*": 1
+        },
+        "native": [],
+        "phase": "edited",
+        "resolution": 2,
+        "rmeta_shape": "68fd19b636a40cb1ff50043748e6c6e42351f88a3d0bce62e9361727780dcef9",
+        "rustc": [
+          "ruff_python_trivia"
+        ],
+        "source": {
+          "Cargo.lock": "654d0b6e553e505c83ae7ac4dd17107ceb248dc54beafd2dfccf02b35981f9bd",
+          "crates/ruff_python_trivia/Cargo.toml": "c8ff8fed694ad1095f4a41dd034b9442d5d3ddd4cf1406a80b966009fe5f6dc0",
+          "crates/ruff_python_trivia/src/name_matcher.rs": "d9293f05481b4dd4ba260b8f0a92d919d2c0ba16f8eb48088540ce670c9672aa"
+        }
+      },
+      {
+        "artifacts": [
+          [
+            "either",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "itertools",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "memchr",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_python_trivia",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_source_file",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_text_size",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "rustc_hash",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_ident",
+            [
+              "lib"
+            ],
+            true
+          ]
+        ],
+        "markers": {
+          ".ohm-built-registry-ready": 0,
+          ".ohm-check-graphs/*": 1
+        },
+        "native": [],
+        "phase": "repeat",
+        "resolution": 1,
+        "rmeta_shape": "68fd19b636a40cb1ff50043748e6c6e42351f88a3d0bce62e9361727780dcef9",
+        "rustc": [],
+        "source": {
+          "Cargo.lock": "654d0b6e553e505c83ae7ac4dd17107ceb248dc54beafd2dfccf02b35981f9bd",
+          "crates/ruff_python_trivia/Cargo.toml": "c8ff8fed694ad1095f4a41dd034b9442d5d3ddd4cf1406a80b966009fe5f6dc0",
+          "crates/ruff_python_trivia/src/name_matcher.rs": "d9293f05481b4dd4ba260b8f0a92d919d2c0ba16f8eb48088540ce670c9672aa"
+        }
+      }
+    ],
+    "reverse-B": [
+      {
+        "artifacts": [
+          [
+            "either",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "itertools",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "memchr",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_python_trivia",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_source_file",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_text_size",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "rustc_hash",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "tinyvec",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "tinyvec_macros",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_ident",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_normalization",
+            [
+              "lib"
+            ],
+            true
+          ]
+        ],
+        "markers": {
+          ".ohm-built-registry-ready": 0,
+          ".ohm-check-graphs/*": 1
+        },
+        "native": [],
+        "phase": "settled",
+        "resolution": 1,
+        "rmeta_shape": "2cb7cc31a39d8d781831425927cae21a3d49a37612a7612ab32de927a99d47ce",
+        "rustc": [],
+        "source": {
+          "Cargo.lock": "c9e345325bec5ff08dbbe3916edd39ad0c3d1c7797a8c241ae32f62754e764bf",
+          "crates/ruff_python_trivia/Cargo.toml": "0a8beb3689acb1a28ed9516c7179cc7231cb7c675d9de2ac966f4d28f0b45a95",
+          "crates/ruff_python_trivia/src/name_matcher.rs": "f4408168c0378a6aff61bb4c04582080125c301f21c0da1bdca00ee47d85a01a"
+        }
+      },
+      {
+        "artifacts": [
+          [
+            "either",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "itertools",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "memchr",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_python_trivia",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "ruff_source_file",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_text_size",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "rustc_hash",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_ident",
+            [
+              "lib"
+            ],
+            true
+          ]
+        ],
+        "markers": {
+          ".ohm-built-registry-ready": 0,
+          ".ohm-check-graphs/*": 1
+        },
+        "native": [],
+        "phase": "edited",
+        "resolution": 1,
+        "rmeta_shape": "68fd19b636a40cb1ff50043748e6c6e42351f88a3d0bce62e9361727780dcef9",
+        "rustc": [
+          "ruff_python_trivia"
+        ],
+        "source": {
+          "Cargo.lock": "654d0b6e553e505c83ae7ac4dd17107ceb248dc54beafd2dfccf02b35981f9bd",
+          "crates/ruff_python_trivia/Cargo.toml": "c8ff8fed694ad1095f4a41dd034b9442d5d3ddd4cf1406a80b966009fe5f6dc0",
+          "crates/ruff_python_trivia/src/name_matcher.rs": "d9293f05481b4dd4ba260b8f0a92d919d2c0ba16f8eb48088540ce670c9672aa"
+        }
+      },
+      {
+        "artifacts": [
+          [
+            "either",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "itertools",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "memchr",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_python_trivia",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_source_file",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_text_size",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "rustc_hash",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_ident",
+            [
+              "lib"
+            ],
+            true
+          ]
+        ],
+        "markers": {
+          ".ohm-built-registry-ready": 0,
+          ".ohm-check-graphs/*": 1
+        },
+        "native": [],
+        "phase": "repeat",
+        "resolution": 1,
+        "rmeta_shape": "68fd19b636a40cb1ff50043748e6c6e42351f88a3d0bce62e9361727780dcef9",
+        "rustc": [],
+        "source": {
+          "Cargo.lock": "654d0b6e553e505c83ae7ac4dd17107ceb248dc54beafd2dfccf02b35981f9bd",
+          "crates/ruff_python_trivia/Cargo.toml": "c8ff8fed694ad1095f4a41dd034b9442d5d3ddd4cf1406a80b966009fe5f6dc0",
+          "crates/ruff_python_trivia/src/name_matcher.rs": "d9293f05481b4dd4ba260b8f0a92d919d2c0ba16f8eb48088540ce670c9672aa"
+        }
+      }
+    ],
+    "source-only-A": [
+      {
+        "artifacts": [
+          [
+            "either",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "itertools",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "memchr",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_python_trivia",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_source_file",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_text_size",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "rustc_hash",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "tinyvec",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "tinyvec_macros",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_ident",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_normalization",
+            [
+              "lib"
+            ],
+            true
+          ]
+        ],
+        "markers": {
+          ".ohm-built-registry-ready": 0,
+          ".ohm-check-graphs/*": 1
+        },
+        "native": [],
+        "phase": "settled",
+        "resolution": 1,
+        "rmeta_shape": "2cb7cc31a39d8d781831425927cae21a3d49a37612a7612ab32de927a99d47ce",
+        "rustc": [],
+        "source": {
+          "Cargo.lock": "c9e345325bec5ff08dbbe3916edd39ad0c3d1c7797a8c241ae32f62754e764bf",
+          "crates/ruff_python_trivia/Cargo.toml": "0a8beb3689acb1a28ed9516c7179cc7231cb7c675d9de2ac966f4d28f0b45a95",
+          "crates/ruff_python_trivia/src/name_matcher.rs": "f4408168c0378a6aff61bb4c04582080125c301f21c0da1bdca00ee47d85a01a"
+        }
+      },
+      {
+        "artifacts": [
+          [
+            "either",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "itertools",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "memchr",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_python_trivia",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "ruff_source_file",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_text_size",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "rustc_hash",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "tinyvec",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "tinyvec_macros",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_ident",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_normalization",
+            [
+              "lib"
+            ],
+            true
+          ]
+        ],
+        "markers": {
+          ".ohm-built-registry-ready": 0,
+          ".ohm-check-graphs/*": 1
+        },
+        "native": [],
+        "phase": "edited",
+        "resolution": 1,
+        "rmeta_shape": "157b714204c12e0a5c44e026be2af440012102f61a66937db2a278c6319c2874",
+        "rustc": [
+          "ruff_python_trivia"
+        ],
+        "source": {
+          "Cargo.lock": "c9e345325bec5ff08dbbe3916edd39ad0c3d1c7797a8c241ae32f62754e764bf",
+          "crates/ruff_python_trivia/Cargo.toml": "0a8beb3689acb1a28ed9516c7179cc7231cb7c675d9de2ac966f4d28f0b45a95",
+          "crates/ruff_python_trivia/src/name_matcher.rs": "d9293f05481b4dd4ba260b8f0a92d919d2c0ba16f8eb48088540ce670c9672aa"
+        }
+      },
+      {
+        "artifacts": [
+          [
+            "either",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "itertools",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "memchr",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_python_trivia",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_source_file",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_text_size",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "rustc_hash",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "tinyvec",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "tinyvec_macros",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_ident",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_normalization",
+            [
+              "lib"
+            ],
+            true
+          ]
+        ],
+        "markers": {
+          ".ohm-built-registry-ready": 0,
+          ".ohm-check-graphs/*": 1
+        },
+        "native": [],
+        "phase": "repeat",
+        "resolution": 1,
+        "rmeta_shape": "157b714204c12e0a5c44e026be2af440012102f61a66937db2a278c6319c2874",
+        "rustc": [],
+        "source": {
+          "Cargo.lock": "c9e345325bec5ff08dbbe3916edd39ad0c3d1c7797a8c241ae32f62754e764bf",
+          "crates/ruff_python_trivia/Cargo.toml": "0a8beb3689acb1a28ed9516c7179cc7231cb7c675d9de2ac966f4d28f0b45a95",
+          "crates/ruff_python_trivia/src/name_matcher.rs": "d9293f05481b4dd4ba260b8f0a92d919d2c0ba16f8eb48088540ce670c9672aa"
+        }
+      }
+    ],
+    "source-only-B": [
+      {
+        "artifacts": [
+          [
+            "either",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "itertools",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "memchr",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_python_trivia",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_source_file",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_text_size",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "rustc_hash",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "tinyvec",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "tinyvec_macros",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_ident",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_normalization",
+            [
+              "lib"
+            ],
+            true
+          ]
+        ],
+        "markers": {
+          ".ohm-built-registry-ready": 0,
+          ".ohm-check-graphs/*": 1
+        },
+        "native": [],
+        "phase": "settled",
+        "resolution": 1,
+        "rmeta_shape": "2cb7cc31a39d8d781831425927cae21a3d49a37612a7612ab32de927a99d47ce",
+        "rustc": [],
+        "source": {
+          "Cargo.lock": "c9e345325bec5ff08dbbe3916edd39ad0c3d1c7797a8c241ae32f62754e764bf",
+          "crates/ruff_python_trivia/Cargo.toml": "0a8beb3689acb1a28ed9516c7179cc7231cb7c675d9de2ac966f4d28f0b45a95",
+          "crates/ruff_python_trivia/src/name_matcher.rs": "f4408168c0378a6aff61bb4c04582080125c301f21c0da1bdca00ee47d85a01a"
+        }
+      },
+      {
+        "artifacts": [
+          [
+            "either",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "itertools",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "memchr",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_python_trivia",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "ruff_source_file",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_text_size",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "rustc_hash",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "tinyvec",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "tinyvec_macros",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_ident",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_normalization",
+            [
+              "lib"
+            ],
+            true
+          ]
+        ],
+        "markers": {
+          ".ohm-built-registry-ready": 0,
+          ".ohm-check-graphs/*": 1
+        },
+        "native": [],
+        "phase": "edited",
+        "resolution": 1,
+        "rmeta_shape": "157b714204c12e0a5c44e026be2af440012102f61a66937db2a278c6319c2874",
+        "rustc": [
+          "ruff_python_trivia"
+        ],
+        "source": {
+          "Cargo.lock": "c9e345325bec5ff08dbbe3916edd39ad0c3d1c7797a8c241ae32f62754e764bf",
+          "crates/ruff_python_trivia/Cargo.toml": "0a8beb3689acb1a28ed9516c7179cc7231cb7c675d9de2ac966f4d28f0b45a95",
+          "crates/ruff_python_trivia/src/name_matcher.rs": "d9293f05481b4dd4ba260b8f0a92d919d2c0ba16f8eb48088540ce670c9672aa"
+        }
+      },
+      {
+        "artifacts": [
+          [
+            "either",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "itertools",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "memchr",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_python_trivia",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_source_file",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_text_size",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "rustc_hash",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "tinyvec",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "tinyvec_macros",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_ident",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_normalization",
+            [
+              "lib"
+            ],
+            true
+          ]
+        ],
+        "markers": {
+          ".ohm-built-registry-ready": 0,
+          ".ohm-check-graphs/*": 1
+        },
+        "native": [],
+        "phase": "repeat",
+        "resolution": 1,
+        "rmeta_shape": "157b714204c12e0a5c44e026be2af440012102f61a66937db2a278c6319c2874",
+        "rustc": [],
+        "source": {
+          "Cargo.lock": "c9e345325bec5ff08dbbe3916edd39ad0c3d1c7797a8c241ae32f62754e764bf",
+          "crates/ruff_python_trivia/Cargo.toml": "0a8beb3689acb1a28ed9516c7179cc7231cb7c675d9de2ac966f4d28f0b45a95",
+          "crates/ruff_python_trivia/src/name_matcher.rs": "d9293f05481b4dd4ba260b8f0a92d919d2c0ba16f8eb48088540ce670c9672aa"
+        }
+      }
+    ]
+  }
+}

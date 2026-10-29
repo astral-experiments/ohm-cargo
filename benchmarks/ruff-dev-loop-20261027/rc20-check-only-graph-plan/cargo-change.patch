@@ -1,0 +1,91 @@
+diff --git a/src/ops/cargo_compile/mod.rs b/src/ops/cargo_compile/mod.rs
+index 1d58386e6c..f20c49ddb1 100644
+--- a/src/ops/cargo_compile/mod.rs
++++ b/src/ops/cargo_compile/mod.rs
+@@ -214,7 +214,11 @@ fn compile_ws<'a>(
+     }
+ 
+     let check_graph_hint = ordinary_check_graph_hint(ws, options);
+-    let ordinary_graph_tried = check_graph_hint.as_ref().is_some_and(|hint| hint.is_file());
++    // A hint only helps when normal selection could choose a native graph.
++    // After a miss, create_bcx rechecks readiness in case a concurrent build changed it.
++    let ordinary_graph_tried = check_graph_hint
++        .as_ref()
++        .is_some_and(|hint| hint.is_file() && registry_reuse_requested_or_ready(ws));
+     if ordinary_graph_tried {
+         let ordinary_interner = UnitInterner::new();
+         let ordinary_bcx = create_bcx_with_registry_reuse(
+@@ -429,18 +433,7 @@ pub fn create_bcx<'a, 'gctx>(
+     let reuse_built_registry_dependencies =
+         !matches!(options.build_config.intent, UserIntent::Check { .. })
+             || !unstable.ohm_reuse_built_deps()
+-            || unstable.ohm_reuse_built_deps
+-            || ws
+-                .build_dir()
+-                .as_path_unlocked()
+-                .join(OHM_BUILT_REGISTRY_READY_MARKER)
+-                .is_file()
+-            || (ws.shared_registry_cache_enabled()
+-                && ws
+-                    .configured_build_dir()
+-                    .as_path_unlocked()
+-                    .join(OHM_BUILT_REGISTRY_READY_MARKER)
+-                    .is_file());
++            || registry_reuse_requested_or_ready(ws);
+ 
+     create_bcx_with_registry_reuse(
+         ws,
+@@ -452,6 +445,21 @@ pub fn create_bcx<'a, 'gctx>(
+     )
+ }
+ 
++fn registry_reuse_requested_or_ready(ws: &Workspace<'_>) -> bool {
++    ws.gctx().cli_unstable().ohm_reuse_built_deps
++        || ws
++            .build_dir()
++            .as_path_unlocked()
++            .join(OHM_BUILT_REGISTRY_READY_MARKER)
++            .is_file()
++        || (ws.shared_registry_cache_enabled()
++            && ws
++                .configured_build_dir()
++                .as_path_unlocked()
++                .join(OHM_BUILT_REGISTRY_READY_MARKER)
++                .is_file())
++}
++
+ /// Explicitly control speculative registry reuse so a failed preflight can
+ /// rebuild the dependency graph for an ordinary, unmodified check.
+ fn create_bcx_with_registry_reuse<'a, 'gctx>(
+diff --git a/tests/testsuite/check.rs b/tests/testsuite/check.rs
+index 5709e17a17..1dcd6a284b 100644
+--- a/tests/testsuite/check.rs
++++ b/tests/testsuite/check.rs
+@@ -1448,7 +1448,7 @@ fn ohm_built_registry_dependency_reuse_skips_speculation_before_a_real_build() {
+     let p = ohm_registry_project();
+     let readiness = p.root().join("target/.ohm-built-registry-ready");
+ 
+-    for invocation in 0..3 {
++    for invocation in 0..4 {
+         if invocation == 2 {
+             p.change_file(
+                 "src/lib.rs",
+@@ -1464,6 +1464,9 @@ fn ohm_built_registry_dependency_reuse_skips_speculation_before_a_real_build() {
+         if invocation == 0 {
+             check.with_stderr_contains("[COMPILING] build-helper v1.0.0");
+         }
++        if invocation == 3 {
++            check.env("RUSTFLAGS", "--cfg=check_graph_config_changed");
++        }
+         check.run();
+ 
+         assert!(
+@@ -1481,7 +1484,7 @@ fn ohm_built_registry_dependency_reuse_skips_speculation_before_a_real_build() {
+             .count();
+         assert_eq!(
+             resolutions, 1,
+-            "cold, no-op, and directly edited checks must resolve their dependency graph once",
++            "checks without registry build readiness must resolve their dependency graph once",
+         );
+     }
+ }

@@ -1,0 +1,3752 @@
+{
+  "base_source": "8dc33c9cc641e2b641c5b8e7075652a3e9e1f70b",
+  "feature_fixture": {
+    "A": {
+      "default": {
+        "phases": {
+          "cold": {
+            "diagnostics": [],
+            "exit": 0,
+            "graphs": 1,
+            "hints": 1,
+            "raw": {
+              "analysis": "b0e2f82154b5104757222f003e5285ae6e179f3193e04e009e6eb0f1c9338825",
+              "exec.log": "ef889d340374b3f85ff1ec3d53138fd6dd2ceb9d7b2ed454412268ec0f37231f",
+              "stderr": "6599507bd1bddd0bcaca4edbd6237a59aaac977c354747b4e57087a545db9fc0",
+              "stdout": "73af85cd7b45a0f36b794798d25ce39bb4c4cf1b8946231fee0bd7c897511ed7"
+            },
+            "registry_ready_markers": 0,
+            "typed": [
+              [
+                "support",
+                false
+              ],
+              [
+                "consumer",
+                false
+              ]
+            ]
+          },
+          "fresh": {
+            "diagnostics": [],
+            "exit": 0,
+            "graphs": 1,
+            "hints": 1,
+            "raw": {
+              "analysis": "7688026f0a5ce19e894fed4185e8f477061cad581fcf98ce9f1438c54091127a",
+              "exec.log": "f815658b68b9e17129730e69e27d1ba6b98ebe40afd35af47445d3efaa7f3ee6",
+              "stderr": "8c233a54790c4800d3dd585436af679aa838da259bfdb129412e2d51cdb75cdc",
+              "stdout": "2ef688cd50caf4211ab296e5d1d9498dd0b7a13305687d8fcb90f4e632f3fb6c"
+            },
+            "registry_ready_markers": 0,
+            "typed": [
+              [
+                "support",
+                true
+              ],
+              [
+                "consumer",
+                true
+              ]
+            ]
+          },
+          "invalid": {
+            "diagnostics": [
+              "E0308"
+            ],
+            "exit": 101,
+            "graphs": 2,
+            "hints": 0,
+            "raw": {
+              "analysis": "4f6d1e93af0009ff6e38d1ae32e82a7d97f3de560732b65e32306a3c96882b5d",
+              "exec.log": "4bea26b904cb051e34244aa4f4c3e3b4e9ccb12758c143c32e7c23bfe2a9bdf3",
+              "stderr": "374b0b820c1925e91a81ec0d3e67389b0fb7d50d0e2b91930cae911e56d61ddc",
+              "stdout": "da75791a49161161a6d0da5d961410ed3f46e18de86b30cd15ed95e3dd3b76b2"
+            },
+            "registry_ready_markers": 0,
+            "typed": [
+              [
+                "support",
+                false
+              ]
+            ]
+          },
+          "invalid-again": {
+            "diagnostics": [
+              "E0308"
+            ],
+            "exit": 101,
+            "graphs": 1,
+            "hints": 0,
+            "raw": {
+              "analysis": "2c0d40c827b807422ca4aec5fdce67429f3d097f28cc66e872f6cec3dee8e959",
+              "exec.log": "228bfe22674efddc5c9f2e3765d173cbcaa0ba6ee88ed5f37ccae875c5a8b75b",
+              "stderr": "47326028e84e5175f23efa5fb837c1ce12cd52dc97235ce4e43d6f06ad516369",
+              "stdout": "b025495925ffee6811a2fdd904a00d77bfed9138f6c7552801116c614bec4328"
+            },
+            "registry_ready_markers": 0,
+            "typed": [
+              [
+                "support",
+                true
+              ]
+            ]
+          },
+          "last": {
+            "diagnostics": [],
+            "exit": 0,
+            "graphs": 1,
+            "hints": 1,
+            "raw": {
+              "analysis": "0c5e0928be8b217cda57b3f49160f444b03bba09e49023d78d81ed68c91e2ea8",
+              "exec.log": "09cf34e275f1895e1c1818221d99701650e1fd86a6ac941433a574a83a190f37",
+              "stderr": "a5f4c585ee974ca44916ac30a98bbc189e067a7e0a6bc6d2e8d6bc525be724af",
+              "stdout": "5e95c8d3d80c70e4ca3e3383c1c6f529b9817ca4f66b71f4487101822c64b59e"
+            },
+            "registry_ready_markers": 0,
+            "typed": [
+              [
+                "support",
+                true
+              ],
+              [
+                "consumer",
+                true
+              ]
+            ]
+          },
+          "revert": {
+            "diagnostics": [],
+            "exit": 0,
+            "graphs": 1,
+            "hints": 1,
+            "raw": {
+              "analysis": "793528bd70d586edcf067690095055c86c9c87bf62c096525901184264e33f69",
+              "exec.log": "4a5de8eaef0cd9e19961196ef50e1aa1c5375db5fe9ec4e82560046f15b0a041",
+              "stderr": "fecede7c2157efe2f16c8c8b9dce94b0fb4dd384dca8207046c8bf7636eb0ffe",
+              "stdout": "5585f9d41d063f46e7e3e03a67e75e1d4a4bd0171b9c21724832b12f7acbcce0"
+            },
+            "registry_ready_markers": 0,
+            "typed": [
+              [
+                "support",
+                true
+              ],
+              [
+                "consumer",
+                true
+              ]
+            ]
+          }
+        },
+        "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+        "sha256": "a6b6ed0bb31895ab1d2132dd40f613d94426ef3e5b64ff7b87750ee16d5af441"
+      },
+      "explicit": {
+        "phases": {
+          "cold": {
+            "diagnostics": [],
+            "exit": 0,
+            "graphs": 2,
+            "hints": 1,
+            "raw": {
+              "analysis": "649991608f745474ca3f43ea6dbee243643c073fc6837d04b325e3f44b161db0",
+              "exec.log": "2f798cb98e0c749533c72b1560969c0b0963f9cbc02fd95c4d1b6f8be2961373",
+              "stderr": "377d5af3f2c5a1a1fc7b4e73b133eb33cdaed94dae5213e743a39d71e0b215b8",
+              "stdout": "1b5e25dae968af1486f268dea1ed25912a1aff24b2fbddf5aa2e2661ad40798c"
+            },
+            "registry_ready_markers": 0,
+            "typed": [
+              [
+                "support",
+                false
+              ],
+              [
+                "consumer",
+                false
+              ]
+            ]
+          },
+          "fresh": {
+            "diagnostics": [],
+            "exit": 0,
+            "graphs": 1,
+            "hints": 1,
+            "raw": {
+              "analysis": "894392c3ad56b10af6bb2dba05d2d061526480a56fd83f76a55502de744e6fe3",
+              "exec.log": "559588c37fa5ce11052f9c853e11f294ce25a90798b87121dfe9010059df931d",
+              "stderr": "22e0df986057b9ba5be07526ac5fb348862a3dedef42108383cc3e088acbb889",
+              "stdout": "b89f8d6328466952c9e681e0178d68733889e4851ed9916d1ddbce0d49352085"
+            },
+            "registry_ready_markers": 0,
+            "typed": [
+              [
+                "support",
+                true
+              ],
+              [
+                "consumer",
+                true
+              ]
+            ]
+          },
+          "invalid": {
+            "diagnostics": [
+              "E0308"
+            ],
+            "exit": 101,
+            "graphs": 3,
+            "hints": 0,
+            "raw": {
+              "analysis": "9851d37b40ef20f7cf70042580e893981f71d2a949a7c2c5c17e7ebf2191dfc4",
+              "exec.log": "0eae59b6733358a71218b34bca77d8dde90dc3d35dd1de13afba76257c171a65",
+              "stderr": "f9a3c3f6100c62cf76c5b592586ccac9b4c9248ffaf42b28d58861a8ad6e6fab",
+              "stdout": "65e8aedaf4a281cd1c2d59aeec61ac8c34873396f1e055e551f5507e2d299eea"
+            },
+            "registry_ready_markers": 0,
+            "typed": [
+              [
+                "support",
+                false
+              ]
+            ]
+          },
+          "invalid-again": {
+            "diagnostics": [
+              "E0308"
+            ],
+            "exit": 101,
+            "graphs": 3,
+            "hints": 0,
+            "raw": {
+              "analysis": "ef0bff9e72046cc3916ab79ebecd69edbd7467a154349dd01df431f3fe64d902",
+              "exec.log": "67ae790236dbadc7007b46d3e267a7895f586118471964c71917af941c5db8cd",
+              "stderr": "4fcd1830d67e9c3c278f44149f6c3e402ac5e1ecd66c036ee0a1e8c92770f899",
+              "stdout": "cb0c3314c174edc3ca86faa7ec6d9847906237a525d0148090c5fc32822ad13e"
+            },
+            "registry_ready_markers": 0,
+            "typed": [
+              [
+                "support",
+                true
+              ]
+            ]
+          },
+          "last": {
+            "diagnostics": [],
+            "exit": 0,
+            "graphs": 1,
+            "hints": 1,
+            "raw": {
+              "analysis": "e570c63e06cbc01b4bab0bbf45f6caac676e16e22e7131fe281a89aba7784e67",
+              "exec.log": "b94b236ddecc7f58a04f0eebbddd0de5215cb6f65c7005f7bc021f4cd755af88",
+              "stderr": "8c233a54790c4800d3dd585436af679aa838da259bfdb129412e2d51cdb75cdc",
+              "stdout": "9c7bf22e2d7bb7384ac31a90c5c4ca9ca18c9a91391c5dfe3f137a65f437f116"
+            },
+            "registry_ready_markers": 0,
+            "typed": [
+              [
+                "support",
+                true
+              ],
+              [
+                "consumer",
+                true
+              ]
+            ]
+          },
+          "revert": {
+            "diagnostics": [],
+            "exit": 0,
+            "graphs": 2,
+            "hints": 1,
+            "raw": {
+              "analysis": "ec16eaf6de7bb176b1eee5a37b2880d5c3b3316c53d86169e2435f11ad535442",
+              "exec.log": "f4e4ef128c78cb2274530c8bd0419bb0f6248d2af449b7df21667566a25a26dd",
+              "stderr": "fecede7c2157efe2f16c8c8b9dce94b0fb4dd384dca8207046c8bf7636eb0ffe",
+              "stdout": "1f852eb345bc16b0857d6104542d416295251e4d66f25bad786b1b0f6ea91313"
+            },
+            "registry_ready_markers": 0,
+            "typed": [
+              [
+                "support",
+                true
+              ],
+              [
+                "consumer",
+                true
+              ]
+            ]
+          }
+        },
+        "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+        "sha256": "258a16135dd9acd615903f52547095dd4fb158e5328b0c8ccecc7c3fc98812f7"
+      },
+      "marker": {
+        "phases": {
+          "cold": {
+            "diagnostics": [],
+            "exit": 0,
+            "graphs": 1,
+            "hints": 0,
+            "raw": {
+              "analysis": "907d1989d884f4a3b4abb1d27e690dd8a0f6190540871361c7a08265d63e90cf",
+              "exec.log": "96101694ca0b3be4b3461930612d8da9fb4d643060a36d3b4a57a56a42099de6",
+              "stderr": "a5f4c585ee974ca44916ac30a98bbc189e067a7e0a6bc6d2e8d6bc525be724af",
+              "stdout": "5fefce83091867d17ecf9d46daa6bfd12376381c2bc5b8ea27aadae28031d2a8"
+            },
+            "registry_ready_markers": 1,
+            "typed": [
+              [
+                "support",
+                true
+              ],
+              [
+                "consumer",
+                true
+              ]
+            ]
+          },
+          "fresh": {
+            "diagnostics": [],
+            "exit": 0,
+            "graphs": 1,
+            "hints": 0,
+            "raw": {
+              "analysis": "7f11dd1e7a8accd7573c155af3120f67064b8be9150f9dead1dbd61b425df957",
+              "exec.log": "0424d3d6b4126811e8ef9ee58cdc733fe76e1e88d8870afba5a5cce17fdb5fce",
+              "stderr": "a5f4c585ee974ca44916ac30a98bbc189e067a7e0a6bc6d2e8d6bc525be724af",
+              "stdout": "617919a9fe6c48221aa52490f55a53e90e37190afd51de640b9684c5b0c63ce9"
+            },
+            "registry_ready_markers": 1,
+            "typed": [
+              [
+                "support",
+                true
+              ],
+              [
+                "consumer",
+                true
+              ]
+            ]
+          },
+          "invalid": {
+            "diagnostics": [
+              "E0308"
+            ],
+            "exit": 101,
+            "graphs": 3,
+            "hints": 0,
+            "raw": {
+              "analysis": "35148bbcca59126b0e08321201a772ec34c9f01020788327691986784b25814a",
+              "exec.log": "0c01c554d2953969584e84eccbdac437a9f4db10419124b7c9d704f81dd088d8",
+              "stderr": "da878e99408b5b23f6e672bc312e7ca01e4fd2878e4fd17b5e14d827f6563cab",
+              "stdout": "31191a3c4182e56e50f8dffbe2a368ad3c4cce9813914fa6e622a03f1afe2119"
+            },
+            "registry_ready_markers": 1,
+            "typed": [
+              [
+                "support",
+                false
+              ]
+            ]
+          },
+          "invalid-again": {
+            "diagnostics": [
+              "E0308"
+            ],
+            "exit": 101,
+            "graphs": 3,
+            "hints": 0,
+            "raw": {
+              "analysis": "2fd5606285e5bdde9d81d12ac36920b8a3452502f4aa9621e84f263f585af1ce",
+              "exec.log": "3aac83a6dd0ba58cc9bf4d33e07501d0e755af954174822dd7e91a80bb1302cb",
+              "stderr": "18ac747e0af4dc7af2bd6aa947e838815a588e0050c64c766c43239547e0bcae",
+              "stdout": "0f968581ef456929b3ea632e88a68812823281e4526ac1370caf4c9ae1aa282d"
+            },
+            "registry_ready_markers": 1,
+            "typed": [
+              [
+                "support",
+                true
+              ]
+            ]
+          },
+          "last": {
+            "diagnostics": [],
+            "exit": 0,
+            "graphs": 1,
+            "hints": 0,
+            "raw": {
+              "analysis": "2c34f6899e7d216c3e03dec945d4a94d53cd6ccbfb8c83b72eb147d4eba6bb03",
+              "exec.log": "33ee1541c37437293165af6523462f44b98b02f92b886dfa3a23580f4e70079b",
+              "stderr": "a5f4c585ee974ca44916ac30a98bbc189e067a7e0a6bc6d2e8d6bc525be724af",
+              "stdout": "0a71a33cb4416de06ced04d1dbbdf0e32a105a8beacaab3f4d70a39e772844f9"
+            },
+            "registry_ready_markers": 1,
+            "typed": [
+              [
+                "support",
+                true
+              ],
+              [
+                "consumer",
+                true
+              ]
+            ]
+          },
+          "revert": {
+            "diagnostics": [],
+            "exit": 0,
+            "graphs": 1,
+            "hints": 0,
+            "raw": {
+              "analysis": "341b83419f237e992baf9167c3abec86011a4cb1fc49d95e6eea4cec6519e081",
+              "exec.log": "c4cdf79cb19737f41ce520498dd585c2dc630ea9d65a3406ec1b48806cf748cc",
+              "stderr": "a5f4c585ee974ca44916ac30a98bbc189e067a7e0a6bc6d2e8d6bc525be724af",
+              "stdout": "e9b6ef3d3765f5bd3871032c6c68b45c520eccb4b34359cafa7bed5de726ccd4"
+            },
+            "registry_ready_markers": 1,
+            "typed": [
+              [
+                "support",
+                true
+              ],
+              [
+                "consumer",
+                true
+              ]
+            ]
+          }
+        },
+        "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+        "sha256": "cc5202e968782eeab889f0f9bb4e6f75478d644d3b48112a14b89b55be7d2121"
+      },
+      "off": {
+        "phases": {
+          "cold": {
+            "diagnostics": [],
+            "exit": 0,
+            "graphs": 1,
+            "hints": 0,
+            "raw": {
+              "analysis": "5c15132a9c261f08653a57014ccce573328e3571bcac07d2ed1142571c4f1fc2",
+              "exec.log": "c0617d48169eac4dfbc6d12079f44c6251ed8138f87e18286b91d1a39d6c3f32",
+              "stderr": "6b06c8f82faea4d0b6b52d0209aef3de39f5575b41f3641577edd5312cd75f8e",
+              "stdout": "3d93f5ff754f5ad0085dd56401c085670e4ec188232f5a9399b808ccfe769dc7"
+            },
+            "registry_ready_markers": 0,
+            "typed": [
+              [
+                "support",
+                false
+              ],
+              [
+                "consumer",
+                false
+              ]
+            ]
+          },
+          "fresh": {
+            "diagnostics": [],
+            "exit": 0,
+            "graphs": 1,
+            "hints": 0,
+            "raw": {
+              "analysis": "d2c5fc9ca9e2028dab132fd21eb7fc17f928766ff7f275b2dd4d7fbdbdf385d9",
+              "exec.log": "369e2bca41a5ff3cfe65b5c4f90cd190fb894886a1a71cfc06cef82a1fc9c9f7",
+              "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+              "stdout": "b7e60fa202ae488a55b1b3c09d7afa05c51bf82e2035f85f9c36929c12a4c51d"
+            },
+            "registry_ready_markers": 0,
+            "typed": [
+              [
+                "support",
+                true
+              ],
+              [
+                "consumer",
+                true
+              ]
+            ]
+          },
+          "invalid": {
+            "diagnostics": [
+              "E0308"
+            ],
+            "exit": 101,
+            "graphs": 1,
+            "hints": 0,
+            "raw": {
+              "analysis": "d07a182f0ec07d411ff207deded69d5e2ccfaf50f40effe228722ba57f4023f9",
+              "exec.log": "c79aa2c4956169c8e51cf05f5df4f35b40d3b4ab6e994d8a7439119aee5fdd0c",
+              "stderr": "56186873fde1eae42d55cc17d5a1d65e5aa7d31ffd94ae6a84aaa03afb27388d",
+              "stdout": "bee3d515a419a49db172eda5edfd8e64d1bdc2c4dc0e0b08d4e521d3a91f4a1b"
+            },
+            "registry_ready_markers": 0,
+            "typed": [
+              [
+                "support",
+                false
+              ]
+            ]
+          },
+          "invalid-again": {
+            "diagnostics": [
+              "E0308"
+            ],
+            "exit": 101,
+            "graphs": 1,
+            "hints": 0,
+            "raw": {
+              "analysis": "10cd431fad52611faf1da99a005c91b2a45a773eb0fb4c57ec57e31b1e4dcf3c",
+              "exec.log": "9b9c0e46aa922e2f87a4671c9ade7b8320e5b1cc7d77443f4134d7dbf48dd410",
+              "stderr": "548cbaf5e815ff661c081b2b5df4f0c9e62d6f7bf8c0d84fb44500e2bdcd677a",
+              "stdout": "35bf8101f26c49f2c6014a352dc1fd5f1f9ca08985c2fc2629baee17ee869f71"
+            },
+            "registry_ready_markers": 0,
+            "typed": [
+              [
+                "support",
+                true
+              ]
+            ]
+          },
+          "last": {
+            "diagnostics": [],
+            "exit": 0,
+            "graphs": 1,
+            "hints": 0,
+            "raw": {
+              "analysis": "10ab4d63c053075ef9dc4b2d7b52d3cfeb5533c6dcbd82524af57e5b0ece2675",
+              "exec.log": "6fe042a2559576f517d56d49a188e4ab373400bf26c44577453538992b600893",
+              "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+              "stdout": "4de442233c8a792c40ade019aa250fca078abf6b6946026afbc1d57cee23d1b3"
+            },
+            "registry_ready_markers": 0,
+            "typed": [
+              [
+                "support",
+                true
+              ],
+              [
+                "consumer",
+                true
+              ]
+            ]
+          },
+          "revert": {
+            "diagnostics": [],
+            "exit": 0,
+            "graphs": 1,
+            "hints": 0,
+            "raw": {
+              "analysis": "96914a7c3467479f3b48dd1ff1eb0857e80a8bc7ae11b9cf0ea970f260d00ba4",
+              "exec.log": "27b489751e785960871f0b9ea385a87c6b0076ad264ea43db4d0da1a4f42168f",
+              "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+              "stdout": "2b033ff735b5c809f36c5512850f79018c7c845aa6eb9651570f5b29ec70b467"
+            },
+            "registry_ready_markers": 0,
+            "typed": [
+              [
+                "support",
+                true
+              ],
+              [
+                "consumer",
+                true
+              ]
+            ]
+          }
+        },
+        "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+        "sha256": "4f325f763291c7c40dcfd278f9059633a929dde2ce245a02fda3b6fc96a046eb"
+      }
+    },
+    "B": {
+      "default": {
+        "phases": {
+          "cold": {
+            "diagnostics": [],
+            "exit": 0,
+            "graphs": 1,
+            "hints": 1,
+            "raw": {
+              "analysis": "3d7a0c99ced080811d044d37d31c1ed98e2ad1b10a84c162432be23d4426486c",
+              "exec.log": "bc5ed50e82c28af6d198f3e67005d7dbe5a72acc1821da529906765a4c096966",
+              "stderr": "f749618221085273ba2fa47ad1a4782b9ddc8e213147faf48d6b147c77101697",
+              "stdout": "b85b2042b5a64b9148d8b42020fcd21e7681ee5eab2c41f0a5c3b22bf016c0e4"
+            },
+            "registry_ready_markers": 0,
+            "typed": [
+              [
+                "support",
+                false
+              ],
+              [
+                "consumer",
+                false
+              ]
+            ]
+          },
+          "fresh": {
+            "diagnostics": [],
+            "exit": 0,
+            "graphs": 1,
+            "hints": 1,
+            "raw": {
+              "analysis": "c97bb2c025ba3d2a4913e10581bb7ecf84fd1b32d24913e9dc629100154082ad",
+              "exec.log": "d1676498ae2aef0f6c30503bf4fe9b83ff35a1ec7bce99a65aeb6cfe72660a68",
+              "stderr": "8c233a54790c4800d3dd585436af679aa838da259bfdb129412e2d51cdb75cdc",
+              "stdout": "4931b3fc02d9f404fe5a8e3f3530d1b0a8b4bc18ad189f99ed952ef172c124ce"
+            },
+            "registry_ready_markers": 0,
+            "typed": [
+              [
+                "support",
+                true
+              ],
+              [
+                "consumer",
+                true
+              ]
+            ]
+          },
+          "invalid": {
+            "diagnostics": [
+              "E0308"
+            ],
+            "exit": 101,
+            "graphs": 1,
+            "hints": 1,
+            "raw": {
+              "analysis": "7f0d4feca04e2c63eaca06827038ef14d2161607c39b78d44dc89f0fa477b4de",
+              "exec.log": "71793613d6bd445911c676f7be7c1f1d512acb5dfd9db0c700ce5306a745465b",
+              "stderr": "ef2fa51d6edff6f65d7bb42498ae98187984d66fc03d7b273a02e0cae1b932a9",
+              "stdout": "86b10a69c6c8add17cad614587b9878b6835173703993e9b88e4485269cc1dfd"
+            },
+            "registry_ready_markers": 0,
+            "typed": [
+              [
+                "support",
+                false
+              ]
+            ]
+          },
+          "invalid-again": {
+            "diagnostics": [
+              "E0308"
+            ],
+            "exit": 101,
+            "graphs": 1,
+            "hints": 1,
+            "raw": {
+              "analysis": "94126f24c79706c26c776983544bdcc1c6d86323e60f1c7a8743d7e889bed7ce",
+              "exec.log": "8df6a1328452e706447db2f4697d41326169dfccd6543df994db0d9729901bfd",
+              "stderr": "7659e65d41ec2827baf2614a62db3123127e33e16cbf4eabf3eeec21e1c5930f",
+              "stdout": "11d1739414a81b04c59976444d222737463baa5e99d9ac96a47ad869a297350c"
+            },
+            "registry_ready_markers": 0,
+            "typed": [
+              [
+                "support",
+                true
+              ]
+            ]
+          },
+          "last": {
+            "diagnostics": [],
+            "exit": 0,
+            "graphs": 1,
+            "hints": 1,
+            "raw": {
+              "analysis": "c9d0a79e2612914b074d39c0c0eac69a8aa9f87d03c345ec524ea38508ff0364",
+              "exec.log": "14b0d067425cd4fd24fcd1f2bd2a6f52b905677b6673dda0feeee60b624491ea",
+              "stderr": "8c233a54790c4800d3dd585436af679aa838da259bfdb129412e2d51cdb75cdc",
+              "stdout": "1e7c1794d9eb0db5a98acb609a87b7de16f60d936208fe44cb13e7350f7ffe63"
+            },
+            "registry_ready_markers": 0,
+            "typed": [
+              [
+                "support",
+                true
+              ],
+              [
+                "consumer",
+                true
+              ]
+            ]
+          },
+          "revert": {
+            "diagnostics": [],
+            "exit": 0,
+            "graphs": 1,
+            "hints": 1,
+            "raw": {
+              "analysis": "a65b09eb741a4855e07cee858f458ae078d747158ecb00e91cf31b08528c413a",
+              "exec.log": "946e4d6c0166a6c28821ee32e9bc96b32277096b1d8292ecea8cfa3bd444000a",
+              "stderr": "59639588a6f1826f129cbcd121edc07279dab94786f5fa5bde6b3439b2e845cc",
+              "stdout": "5248acd4d87e78840a763a97adf81f0aa7a00f28112f05d451557ded2da7eef6"
+            },
+            "registry_ready_markers": 0,
+            "typed": [
+              [
+                "support",
+                true
+              ],
+              [
+                "consumer",
+                true
+              ]
+            ]
+          }
+        },
+        "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+        "sha256": "a09cf03dc800c0c9b2c0b90a27953735b6b213cd201164a8803ffaa82bb75271"
+      },
+      "explicit": {
+        "phases": {
+          "cold": {
+            "diagnostics": [],
+            "exit": 0,
+            "graphs": 2,
+            "hints": 1,
+            "raw": {
+              "analysis": "0691382f2bd0f3d51a4eb5e640a9770ac6a3fcca257d8b166166f9967d986c21",
+              "exec.log": "fa6adbbfc08141a1cee8a5b8df6d02caf0047c0df66c807c755fc385bba157c6",
+              "stderr": "2dcef62128e00bb4a361e6760cb2c3168e38a0f3774dd6fc068405142f9acdfd",
+              "stdout": "5eb5829ed7ad307beb583371daf5bd97c76b7c742c28d31a90851613f459f916"
+            },
+            "registry_ready_markers": 0,
+            "typed": [
+              [
+                "support",
+                false
+              ],
+              [
+                "consumer",
+                false
+              ]
+            ]
+          },
+          "fresh": {
+            "diagnostics": [],
+            "exit": 0,
+            "graphs": 1,
+            "hints": 1,
+            "raw": {
+              "analysis": "74aae850072daa5279c1ac6e9ec4937c30092633a1b71d0ee2dfd1b084ed2c79",
+              "exec.log": "78da742d640050f924a78127ec84ecf45651809e7b81bdb7fac1a0928730e292",
+              "stderr": "99f71393b9903dca098310bb446022a4bdee195ea9996f351a787195555210a6",
+              "stdout": "03be07be202f4e383f0c96a8c69d27ff3a48c59b367a00650d4f67dccbee0f16"
+            },
+            "registry_ready_markers": 0,
+            "typed": [
+              [
+                "support",
+                true
+              ],
+              [
+                "consumer",
+                true
+              ]
+            ]
+          },
+          "invalid": {
+            "diagnostics": [
+              "E0308"
+            ],
+            "exit": 101,
+            "graphs": 3,
+            "hints": 0,
+            "raw": {
+              "analysis": "98360766a56d9e4c90a296277216c0c1b81f4bd9e26bd42ce57f919f04d0a6f3",
+              "exec.log": "9fa80d347df3726ec120ba71ddc3a4926c3b529637f02e885f2861f0acb081d8",
+              "stderr": "c1b2869dc43b83f711d9a3d1b84217ea73cf887693e29ad9e78af7ff2cae0aec",
+              "stdout": "f708678e8701c99356a3e165b8b1c786bef2de06e7e3e2e7d78d7d680116ab8f"
+            },
+            "registry_ready_markers": 0,
+            "typed": [
+              [
+                "support",
+                false
+              ]
+            ]
+          },
+          "invalid-again": {
+            "diagnostics": [
+              "E0308"
+            ],
+            "exit": 101,
+            "graphs": 3,
+            "hints": 0,
+            "raw": {
+              "analysis": "72d19debf7ad1cf48d0fc0e0ac7fd9c47d4b0ad138542a1f49b127a147673d5c",
+              "exec.log": "aaeb0a4e2ca8f87adabb3d0f9b2c256ac65e78b71bb7dedcdd90c73597b08c7e",
+              "stderr": "9a1d30b93bea9e696d242485bdf4d423ca09aeb9598bdd33be90d98cfdade12a",
+              "stdout": "175da91553a8ddb82f4eed435f29a5809c4f5d2f4f2e525c06bb46fbfdbd4bcf"
+            },
+            "registry_ready_markers": 0,
+            "typed": [
+              [
+                "support",
+                true
+              ]
+            ]
+          },
+          "last": {
+            "diagnostics": [],
+            "exit": 0,
+            "graphs": 1,
+            "hints": 1,
+            "raw": {
+              "analysis": "7b3766583ef141acbc6d39dd81e1d9bf5fa0909450ccdb026cbf03f70a418ed1",
+              "exec.log": "b564c8c80fcc5ef15b8d7208c979a0f5046a4871ddc5d4983d709db49bb8c3d5",
+              "stderr": "8c233a54790c4800d3dd585436af679aa838da259bfdb129412e2d51cdb75cdc",
+              "stdout": "22f02b562f96839d5c232b2d077f7734812217f86c42fbb2d88a6c0e712a3fa3"
+            },
+            "registry_ready_markers": 0,
+            "typed": [
+              [
+                "support",
+                true
+              ],
+              [
+                "consumer",
+                true
+              ]
+            ]
+          },
+          "revert": {
+            "diagnostics": [],
+            "exit": 0,
+            "graphs": 2,
+            "hints": 1,
+            "raw": {
+              "analysis": "14d1f6eadf6e37e475cb978b0fe1f2941ee336ab7836433611ddb361f7d47fd6",
+              "exec.log": "b7310db2ca8989771c28e6b7a0b40d0e6c8e81ed36a32d29dceb64c08b531e6f",
+              "stderr": "a41051563a4cb5fc1b1bcdd9aa0ba28ca80f7736d629d90cc138218756e8e3a9",
+              "stdout": "f0f4939be03dbfd23eed4cf0ff8718e0bbf9f650c285323253df7dee02831ca1"
+            },
+            "registry_ready_markers": 0,
+            "typed": [
+              [
+                "support",
+                true
+              ],
+              [
+                "consumer",
+                true
+              ]
+            ]
+          }
+        },
+        "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+        "sha256": "dc5d83c4d4977466d74d84efcabdd13a6f24f5c765d361f46a66b860420a7007"
+      },
+      "marker": {
+        "phases": {
+          "cold": {
+            "diagnostics": [],
+            "exit": 0,
+            "graphs": 1,
+            "hints": 0,
+            "raw": {
+              "analysis": "5fd1e7824739ec6fa5833f1d986ca69b5e4eaa2f30eaea09875f30a440a67a05",
+              "exec.log": "3afe7d4413cccac9e26fec77f5405e3164875057ee13662119724d5a3e4a2ddf",
+              "stderr": "a5f4c585ee974ca44916ac30a98bbc189e067a7e0a6bc6d2e8d6bc525be724af",
+              "stdout": "65c02643c0407c18e183355066ce7d530383605ed3b6d5a1e452bd2196faaa0e"
+            },
+            "registry_ready_markers": 1,
+            "typed": [
+              [
+                "support",
+                true
+              ],
+              [
+                "consumer",
+                true
+              ]
+            ]
+          },
+          "fresh": {
+            "diagnostics": [],
+            "exit": 0,
+            "graphs": 1,
+            "hints": 0,
+            "raw": {
+              "analysis": "a5a48c09ddd825f4233d37cf399b2482978d867226123b8f9c53aff72e7b512d",
+              "exec.log": "a8a0c7287f0b240092e11f168404599cb186bdf13eb0f6328c995c12377cc453",
+              "stderr": "a5f4c585ee974ca44916ac30a98bbc189e067a7e0a6bc6d2e8d6bc525be724af",
+              "stdout": "94dc01126d8b92cd1be0931c46330361f258e1627aad60bfa195291611a050be"
+            },
+            "registry_ready_markers": 1,
+            "typed": [
+              [
+                "support",
+                true
+              ],
+              [
+                "consumer",
+                true
+              ]
+            ]
+          },
+          "invalid": {
+            "diagnostics": [
+              "E0308"
+            ],
+            "exit": 101,
+            "graphs": 3,
+            "hints": 0,
+            "raw": {
+              "analysis": "04ed5805ab9c6f80561f26288dea8b8e977763b6b814faade027059c0e48b968",
+              "exec.log": "07dd5a852b77c4378131b2f2a0cd4c9a8d4e2546f6e0d5aaaab7a175574a8e7c",
+              "stderr": "afb467bed2818c086292e68a9145268bd028ce1a4f4b89b2d6d865a78d4de146",
+              "stdout": "ddf290de210ae80cc4be476ab751ec9f751daa61d09f17a23493e0b5ba051d13"
+            },
+            "registry_ready_markers": 1,
+            "typed": [
+              [
+                "support",
+                false
+              ]
+            ]
+          },
+          "invalid-again": {
+            "diagnostics": [
+              "E0308"
+            ],
+            "exit": 101,
+            "graphs": 3,
+            "hints": 0,
+            "raw": {
+              "analysis": "19dc317168ca50883334ea8101b1becdc373436899db3c231ed93ca891fc561f",
+              "exec.log": "9bdf7df0cb2d962cc7fc9583dbdd1481a3d874ffd693c71411913e7104c08255",
+              "stderr": "fead74df152f053d8ee650acd468f66c01e2df115133aeb65b55f76def7dcf3e",
+              "stdout": "441566a570f7e45b5989a1b9d57ba1d26146260964ed105cd0fbb98a5a66d6fb"
+            },
+            "registry_ready_markers": 1,
+            "typed": [
+              [
+                "support",
+                true
+              ]
+            ]
+          },
+          "last": {
+            "diagnostics": [],
+            "exit": 0,
+            "graphs": 1,
+            "hints": 0,
+            "raw": {
+              "analysis": "cc3b29ac2abbe56ae7ae113993581af9770ee220dca42a3818805e64a8daf7ce",
+              "exec.log": "3c2bc8bd9f7b674a799d03a4828372380b146b6c87b6b5be58daf3c3e32c1d74",
+              "stderr": "a5f4c585ee974ca44916ac30a98bbc189e067a7e0a6bc6d2e8d6bc525be724af",
+              "stdout": "232e2e439898e0f479007d5517d4967124d4ba4c06df3729d73b311beb29d92d"
+            },
+            "registry_ready_markers": 1,
+            "typed": [
+              [
+                "support",
+                true
+              ],
+              [
+                "consumer",
+                true
+              ]
+            ]
+          },
+          "revert": {
+            "diagnostics": [],
+            "exit": 0,
+            "graphs": 1,
+            "hints": 0,
+            "raw": {
+              "analysis": "4f6f68b031b05cd87b544355d3e5fcea9fa0dce8c9f548a9dd9309a0f5ff87f5",
+              "exec.log": "1ac39dc9fc5c266bc4584300cd93b0a98db832458e92d1f69c39bcb3d7dd5a9a",
+              "stderr": "a5f4c585ee974ca44916ac30a98bbc189e067a7e0a6bc6d2e8d6bc525be724af",
+              "stdout": "b35caff63c3328a3d2071042e08ef6217832333ad6b35bdf24919ae37c114995"
+            },
+            "registry_ready_markers": 1,
+            "typed": [
+              [
+                "support",
+                true
+              ],
+              [
+                "consumer",
+                true
+              ]
+            ]
+          }
+        },
+        "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+        "sha256": "5e1f2f5e637f4e7e4310969d3a579ce6977d9c26904316cac88771b00ce49988"
+      },
+      "off": {
+        "phases": {
+          "cold": {
+            "diagnostics": [],
+            "exit": 0,
+            "graphs": 1,
+            "hints": 0,
+            "raw": {
+              "analysis": "978fe2e333f26a06ffaed5595ea21aab0749a61c8d34f6663d5906d21ca085bf",
+              "exec.log": "f7b2c1f13be1dcf9aa72c00c3c399d03488ee87e79ec1723534b9e9a63992373",
+              "stderr": "c7e22f3a2989d30dab06c0c6ee187a2060bbec51e46e9046af4897bdc78003fa",
+              "stdout": "8c1ae0c90e708ce6213ed10a2a4f5cc5c7aff1018a62d1b89c5343b6f67a8294"
+            },
+            "registry_ready_markers": 0,
+            "typed": [
+              [
+                "support",
+                false
+              ],
+              [
+                "consumer",
+                false
+              ]
+            ]
+          },
+          "fresh": {
+            "diagnostics": [],
+            "exit": 0,
+            "graphs": 1,
+            "hints": 0,
+            "raw": {
+              "analysis": "fdd8daab7bf0fc66d3ab0354fd92ad9b39302e6494c94c9aff6f0c49966e6a54",
+              "exec.log": "9667aa70c8085c38ac4b15c6d298ae69aada36194a453d6b9cb6d5cc60dc0221",
+              "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+              "stdout": "ab8db611191e8e9655a1e6f5a761fdcfdbcb6023aae91efd01fd8106deece6ac"
+            },
+            "registry_ready_markers": 0,
+            "typed": [
+              [
+                "support",
+                true
+              ],
+              [
+                "consumer",
+                true
+              ]
+            ]
+          },
+          "invalid": {
+            "diagnostics": [
+              "E0308"
+            ],
+            "exit": 101,
+            "graphs": 1,
+            "hints": 0,
+            "raw": {
+              "analysis": "f90ce67d41bc6a4984f3427f034de6c9a85ce6678c36296d06ebc0608c8691e8",
+              "exec.log": "596568332b57754ac39f00766193658d01e09561ba392052592938041b29827b",
+              "stderr": "bdf4691ee0c1f80d691ae1857a50cc08113d542b50b261f088a0ff56715579f8",
+              "stdout": "0c6c2f6b72e6d735cfaf2645e997a97a897139e5dcccbfc41abe65be72342397"
+            },
+            "registry_ready_markers": 0,
+            "typed": [
+              [
+                "support",
+                false
+              ]
+            ]
+          },
+          "invalid-again": {
+            "diagnostics": [
+              "E0308"
+            ],
+            "exit": 101,
+            "graphs": 1,
+            "hints": 0,
+            "raw": {
+              "analysis": "eab77274083c71e829c456932813c78e7650881f48f44de581d6f51bd279bbf0",
+              "exec.log": "81ba7b7ca865f691e4c5030328eddf933f34bf317a4b45faf55881319ef968ef",
+              "stderr": "93fa1701008c169494057de9686178e7064f3400ea431e56c01b7f336f82172c",
+              "stdout": "7d522e91f8bcad8e7a5e664a389d9b970c556ed329152cfed82961b2ef4eb407"
+            },
+            "registry_ready_markers": 0,
+            "typed": [
+              [
+                "support",
+                true
+              ]
+            ]
+          },
+          "last": {
+            "diagnostics": [],
+            "exit": 0,
+            "graphs": 1,
+            "hints": 0,
+            "raw": {
+              "analysis": "2676d664c84c79507c5f8370771b56022fe57c54bc9593440e480bfe78bbe7aa",
+              "exec.log": "79baca26737aca851298b957ad3691233ba5ee181a95dd4e81882d5414f933d2",
+              "stderr": "736e2582f563605dd272e5fb977840b0c0767377d27b6940c440caf75eec7157",
+              "stdout": "a42435f0697969771eb259696db78fda74b14dfcd7c0533a3e57f158f085120c"
+            },
+            "registry_ready_markers": 0,
+            "typed": [
+              [
+                "support",
+                true
+              ],
+              [
+                "consumer",
+                true
+              ]
+            ]
+          },
+          "revert": {
+            "diagnostics": [],
+            "exit": 0,
+            "graphs": 1,
+            "hints": 0,
+            "raw": {
+              "analysis": "38ed0c904f8aa713bf2a806aa3182d8a2904aa7f1cd12ac7dca7b8d4faf2bc84",
+              "exec.log": "b508c7534ae8c524f176b1f94d57e873983dd629197f22052b2a905a71247efa",
+              "stderr": "736e2582f563605dd272e5fb977840b0c0767377d27b6940c440caf75eec7157",
+              "stdout": "565291f3981c2ec59a1b31f6b0880d69820f2e3daa173fbb16a651f47cbda29c"
+            },
+            "registry_ready_markers": 0,
+            "typed": [
+              [
+                "support",
+                true
+              ],
+              [
+                "consumer",
+                true
+              ]
+            ]
+          }
+        },
+        "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+        "sha256": "a72f544d805d31b37cd5b5e488c483433c586a1f10a775337ecf32b2a706d0f9"
+      }
+    }
+  },
+  "qualification_sources": {
+    "check_only_entry_kernel": "d847d92f3ba37d60cd182dd2cd43e2f6feb49fbdd6c1be56054bfea6c6125d7f",
+    "initial_guard_errors": {
+      "native-gate-v2.err": "e02f06c80e350ac048a700a1f683076b3d5819f1103e022066d38d8a9c46ccab",
+      "native-gate.err": "0f79759884ff366f0b739dba5e71afa0146d0272f253d8b529a87575b5ccef01",
+      "prepare-clock.err": "f4642b8a0fbe212c6eaa3db38a2533eec3de7fdcf174c95ef0b0817b7ceff541",
+      "remote-ruff-v2.err": "638b1347ad5fd6554c4ebdb40e29956986db43227ff8180f02be9a0b5d7e99e5",
+      "remote-ruff.err": "cc3a4327b3e610d38d3692d6afa4549e732bc1a4df9b0381d6b710541cc5f671",
+      "remote-tests.err": "f41e1875a9f41f4e7ca5417bcf9bb00cda7ca1c13aaa55f6cb64e87f16759164"
+    },
+    "original_CIT": "10f27384bb2782e1abaff3406ac671a6ab5cf7fe34359f33340e08883b126a9e",
+    "raw_original_trace_reconciler": "d847d92f3ba37d60cd182dd2cd43e2f6feb49fbdd6c1be56054bfea6c6125d7f",
+    "terminal_collection": "b19c4e86502105d037c3ced3ee90aa7c82f140fde72660c71c9fb39e018e12a2"
+  },
+  "ruff_check_components": {
+    "A": {
+      "invalid-clean": {
+        "code": 101,
+        "diagnostics": [
+          "E0432"
+        ],
+        "graphs": 1,
+        "native": [],
+        "rustc": [
+          "___",
+          "either",
+          "itertools",
+          "memchr",
+          "ruff_python_trivia",
+          "ruff_source_file",
+          "ruff_text_size",
+          "rustc_hash",
+          "unicode_ident"
+        ],
+        "sha256": {
+          "exec.log": "d73c3d0fdf7772e602608ef93c546d0ef0b096b4312e075ff2f05c628f88ddd0",
+          "stderr": "2758dd4fd6c2e7e5c1f49b59ef31976d48ce6fe7549db7dbc9ba1b5b63a65807",
+          "stdout": "7b776086cec858d02f10913921f1f13ca7c926fb0aad50c86ff95b40d6e69e27"
+        },
+        "source": {
+          "Cargo.lock": "654d0b6e553e505c83ae7ac4dd17107ceb248dc54beafd2dfccf02b35981f9bd",
+          "crates/ruff_python_trivia/Cargo.toml": "c8ff8fed694ad1095f4a41dd034b9442d5d3ddd4cf1406a80b966009fe5f6dc0",
+          "crates/ruff_python_trivia/src/name_matcher.rs": "f4408168c0378a6aff61bb4c04582080125c301f21c0da1bdca00ee47d85a01a"
+        },
+        "typed": [
+          [
+            "unicode_ident",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "rustc_hash",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "ruff_text_size",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "either",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "memchr",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "ruff_source_file",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "itertools",
+            [
+              "lib"
+            ],
+            false
+          ]
+        ]
+      },
+      "invalid-mixed": {
+        "code": 101,
+        "diagnostics": [
+          "E0432"
+        ],
+        "graphs": 1,
+        "native": [],
+        "rustc": [
+          "ruff_python_trivia"
+        ],
+        "sha256": {
+          "exec.log": "1e712e9ab10ce1da5a07c026564288133f458d6c7beb01f84c23b5941220b791",
+          "stderr": "fd9081484a2e1c739c9aa777deef861e8f116af80739cfb7e9065fd8cb3b619c",
+          "stdout": "5367dc4633ac3360cad00231b69913d8fe4ae6c3979f8a5237f212fc7c70f8cf"
+        },
+        "source": {
+          "Cargo.lock": "654d0b6e553e505c83ae7ac4dd17107ceb248dc54beafd2dfccf02b35981f9bd",
+          "crates/ruff_python_trivia/Cargo.toml": "c8ff8fed694ad1095f4a41dd034b9442d5d3ddd4cf1406a80b966009fe5f6dc0",
+          "crates/ruff_python_trivia/src/name_matcher.rs": "f4408168c0378a6aff61bb4c04582080125c301f21c0da1bdca00ee47d85a01a"
+        },
+        "typed": [
+          [
+            "either",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_text_size",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "memchr",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "itertools",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_ident",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "rustc_hash",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_source_file",
+            [
+              "lib"
+            ],
+            true
+          ]
+        ]
+      },
+      "invalid-unchanged": {
+        "code": 101,
+        "diagnostics": [
+          "E0432"
+        ],
+        "graphs": 1,
+        "native": [],
+        "rustc": [
+          "ruff_python_trivia"
+        ],
+        "sha256": {
+          "exec.log": "1b58b406b4e62c5430afbe18fa994ac71353e01d47deae255f6e80ff9f077bfe",
+          "stderr": "fd9081484a2e1c739c9aa777deef861e8f116af80739cfb7e9065fd8cb3b619c",
+          "stdout": "36e6f9f7b55850c61635581a282625809b7ba1039465d26bf88ef55c0c566f6c"
+        },
+        "source": {
+          "Cargo.lock": "654d0b6e553e505c83ae7ac4dd17107ceb248dc54beafd2dfccf02b35981f9bd",
+          "crates/ruff_python_trivia/Cargo.toml": "c8ff8fed694ad1095f4a41dd034b9442d5d3ddd4cf1406a80b966009fe5f6dc0",
+          "crates/ruff_python_trivia/src/name_matcher.rs": "f4408168c0378a6aff61bb4c04582080125c301f21c0da1bdca00ee47d85a01a"
+        },
+        "typed": [
+          [
+            "memchr",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "either",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_text_size",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "itertools",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_ident",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_source_file",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "rustc_hash",
+            [
+              "lib"
+            ],
+            true
+          ]
+        ]
+      },
+      "last": {
+        "code": 0,
+        "diagnostics": [],
+        "graphs": 1,
+        "native": [],
+        "rustc": [],
+        "sha256": {
+          "exec.log": "7b325ef3eb4d6793088d04e0f2221e73fbc6219e240472f5d8cb60a63c760ba2",
+          "stderr": "c84ee144cf086166f813f73cb1d5963454a50c86dc3bc56224c35167d304039a",
+          "stdout": "0bfd1cadfefdc9b93bf00dd547204fa4585ebbb75fcec911474e1feb20392916"
+        },
+        "source": {
+          "Cargo.lock": "c9e345325bec5ff08dbbe3916edd39ad0c3d1c7797a8c241ae32f62754e764bf",
+          "crates/ruff_python_trivia/Cargo.toml": "0a8beb3689acb1a28ed9516c7179cc7231cb7c675d9de2ac966f4d28f0b45a95",
+          "crates/ruff_python_trivia/src/name_matcher.rs": "f4408168c0378a6aff61bb4c04582080125c301f21c0da1bdca00ee47d85a01a"
+        },
+        "typed": [
+          [
+            "tinyvec_macros",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "tinyvec",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "either",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_text_size",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "memchr",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_source_file",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "itertools",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_normalization",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_ident",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "rustc_hash",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_python_trivia",
+            [
+              "lib"
+            ],
+            true
+          ]
+        ]
+      },
+      "original": {
+        "code": 0,
+        "diagnostics": [],
+        "graphs": 1,
+        "native": [],
+        "rustc": [
+          "___",
+          "either",
+          "itertools",
+          "memchr",
+          "ruff_python_trivia",
+          "ruff_source_file",
+          "ruff_text_size",
+          "rustc_hash",
+          "tinyvec",
+          "tinyvec_macros",
+          "unicode_ident",
+          "unicode_normalization"
+        ],
+        "sha256": {
+          "exec.log": "54b38cd8f798b8ceb711ae6c32f100dd8faaefa788377e58a0a4fb51d8bc5236",
+          "stderr": "5f08b5610b87e4e3b1a1af9639564e6f61ba03c5bb0ed13c30a4b6ee55b64538",
+          "stdout": "9fdd1862d17e2e5d28fd2f0fe252bd9c8f35fe8ab460aa58184baeeee0fbe828"
+        },
+        "source": {
+          "Cargo.lock": "c9e345325bec5ff08dbbe3916edd39ad0c3d1c7797a8c241ae32f62754e764bf",
+          "crates/ruff_python_trivia/Cargo.toml": "0a8beb3689acb1a28ed9516c7179cc7231cb7c675d9de2ac966f4d28f0b45a95",
+          "crates/ruff_python_trivia/src/name_matcher.rs": "f4408168c0378a6aff61bb4c04582080125c301f21c0da1bdca00ee47d85a01a"
+        },
+        "typed": [
+          [
+            "tinyvec_macros",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "unicode_ident",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "rustc_hash",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "either",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "ruff_text_size",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "tinyvec",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "memchr",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "ruff_source_file",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "unicode_normalization",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "itertools",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "ruff_python_trivia",
+            [
+              "lib"
+            ],
+            false
+          ]
+        ]
+      },
+      "restored": {
+        "code": 0,
+        "diagnostics": [],
+        "graphs": 1,
+        "native": [],
+        "rustc": [],
+        "sha256": {
+          "exec.log": "671e333a0f9fd0251f14eff01b96d81bcc179c10d100c4b00df65668679975a3",
+          "stderr": "5e1ea006c109df38da1858faaad66ab1c08789e5468d812c7d97b58706c620be",
+          "stdout": "0b28a6e1e20dbfe50fc4cd5155bc3cb6619874d37dc4fb8cff3b81be8676a05e"
+        },
+        "source": {
+          "Cargo.lock": "c9e345325bec5ff08dbbe3916edd39ad0c3d1c7797a8c241ae32f62754e764bf",
+          "crates/ruff_python_trivia/Cargo.toml": "0a8beb3689acb1a28ed9516c7179cc7231cb7c675d9de2ac966f4d28f0b45a95",
+          "crates/ruff_python_trivia/src/name_matcher.rs": "f4408168c0378a6aff61bb4c04582080125c301f21c0da1bdca00ee47d85a01a"
+        },
+        "typed": [
+          [
+            "tinyvec_macros",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "tinyvec",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_text_size",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "memchr",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "either",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_source_file",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_normalization",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "rustc_hash",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_ident",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "itertools",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_python_trivia",
+            [
+              "lib"
+            ],
+            true
+          ]
+        ]
+      },
+      "reverted": {
+        "code": 0,
+        "diagnostics": [],
+        "graphs": 2,
+        "native": [],
+        "rustc": [
+          "ruff_python_trivia"
+        ],
+        "sha256": {
+          "exec.log": "b2001af1fe09864b3a9926c9ce57fa1762857b85fd1e1ab8e522cd054491ab7b",
+          "stderr": "ccc72429e9db6b9a2a23bf3903719fe38a50daa048c610ec2b17eae794af249c",
+          "stdout": "50bf0c8d765d368ce0533402f8c910f85f72fae12469a51a40017e1a69be7a2e"
+        },
+        "source": {
+          "Cargo.lock": "654d0b6e553e505c83ae7ac4dd17107ceb248dc54beafd2dfccf02b35981f9bd",
+          "crates/ruff_python_trivia/Cargo.toml": "c8ff8fed694ad1095f4a41dd034b9442d5d3ddd4cf1406a80b966009fe5f6dc0",
+          "crates/ruff_python_trivia/src/name_matcher.rs": "d9293f05481b4dd4ba260b8f0a92d919d2c0ba16f8eb48088540ce670c9672aa"
+        },
+        "typed": [
+          [
+            "ruff_text_size",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "memchr",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "either",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "itertools",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_source_file",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_ident",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "rustc_hash",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_python_trivia",
+            [
+              "lib"
+            ],
+            false
+          ]
+        ]
+      },
+      "reverted-unchanged": {
+        "code": 0,
+        "diagnostics": [],
+        "graphs": 1,
+        "native": [],
+        "rustc": [],
+        "sha256": {
+          "exec.log": "0d5eb0181086a71fccbf6098e3c07cb40b37520f18db8dd2a849bb0cfbea195c",
+          "stderr": "2581ac32d121951ab2bdbad6e39a9413f4b50ae9c111d6d56a481f38584f6040",
+          "stdout": "e4cf17deae9af0f584b7128da5a484a9c783c74fd6f33b111cf15070b7df77a7"
+        },
+        "source": {
+          "Cargo.lock": "654d0b6e553e505c83ae7ac4dd17107ceb248dc54beafd2dfccf02b35981f9bd",
+          "crates/ruff_python_trivia/Cargo.toml": "c8ff8fed694ad1095f4a41dd034b9442d5d3ddd4cf1406a80b966009fe5f6dc0",
+          "crates/ruff_python_trivia/src/name_matcher.rs": "d9293f05481b4dd4ba260b8f0a92d919d2c0ba16f8eb48088540ce670c9672aa"
+        },
+        "typed": [
+          [
+            "ruff_text_size",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "memchr",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "either",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_source_file",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_ident",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "itertools",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "rustc_hash",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_python_trivia",
+            [
+              "lib"
+            ],
+            true
+          ]
+        ]
+      },
+      "unchanged": {
+        "code": 0,
+        "diagnostics": [],
+        "graphs": 1,
+        "native": [],
+        "rustc": [],
+        "sha256": {
+          "exec.log": "d44fe98328d4964e3bef0186fb67c8fe71c18f76617cb7371eb1cc0a47e77720",
+          "stderr": "c84ee144cf086166f813f73cb1d5963454a50c86dc3bc56224c35167d304039a",
+          "stdout": "50c5fed2f8e08724dd69e55e832348f0f6961822d19a22ffc308656c4d7f0999"
+        },
+        "source": {
+          "Cargo.lock": "c9e345325bec5ff08dbbe3916edd39ad0c3d1c7797a8c241ae32f62754e764bf",
+          "crates/ruff_python_trivia/Cargo.toml": "0a8beb3689acb1a28ed9516c7179cc7231cb7c675d9de2ac966f4d28f0b45a95",
+          "crates/ruff_python_trivia/src/name_matcher.rs": "f4408168c0378a6aff61bb4c04582080125c301f21c0da1bdca00ee47d85a01a"
+        },
+        "typed": [
+          [
+            "tinyvec_macros",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "tinyvec",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_text_size",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "memchr",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "either",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_normalization",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_source_file",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "itertools",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_ident",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "rustc_hash",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_python_trivia",
+            [
+              "lib"
+            ],
+            true
+          ]
+        ]
+      }
+    },
+    "B": {
+      "invalid-clean": {
+        "code": 101,
+        "diagnostics": [
+          "E0432"
+        ],
+        "graphs": 1,
+        "native": [],
+        "rustc": [
+          "___",
+          "either",
+          "itertools",
+          "memchr",
+          "ruff_python_trivia",
+          "ruff_source_file",
+          "ruff_text_size",
+          "rustc_hash",
+          "unicode_ident"
+        ],
+        "sha256": {
+          "exec.log": "f77a62143c09ebb857077804241fc30a7f82c8408f304a34e6bb752d4f544ad4",
+          "stderr": "38780200525492b6f0c844718a28c26ab0257efd8f146fc24c5ed3f3b0b92f64",
+          "stdout": "4cfcf849db9b2cd9a74c4d0e15581195945090f9f8d07309f887df651060d4d8"
+        },
+        "source": {
+          "Cargo.lock": "654d0b6e553e505c83ae7ac4dd17107ceb248dc54beafd2dfccf02b35981f9bd",
+          "crates/ruff_python_trivia/Cargo.toml": "c8ff8fed694ad1095f4a41dd034b9442d5d3ddd4cf1406a80b966009fe5f6dc0",
+          "crates/ruff_python_trivia/src/name_matcher.rs": "f4408168c0378a6aff61bb4c04582080125c301f21c0da1bdca00ee47d85a01a"
+        },
+        "typed": [
+          [
+            "rustc_hash",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "unicode_ident",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "ruff_text_size",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "either",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "memchr",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "ruff_source_file",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "itertools",
+            [
+              "lib"
+            ],
+            false
+          ]
+        ]
+      },
+      "invalid-mixed": {
+        "code": 101,
+        "diagnostics": [
+          "E0432"
+        ],
+        "graphs": 1,
+        "native": [],
+        "rustc": [
+          "ruff_python_trivia"
+        ],
+        "sha256": {
+          "exec.log": "9fe5ccf283e26e3bc3978254a8bd2aa9fac344780979468f3bff7e5aacc067f7",
+          "stderr": "39c5e29d816e68cb051bda1c059142c730bd554463d2c27ea99123d5a86c10d4",
+          "stdout": "770274914c592b9384778e2333dabb363804294fdea75e058e54690c90026178"
+        },
+        "source": {
+          "Cargo.lock": "654d0b6e553e505c83ae7ac4dd17107ceb248dc54beafd2dfccf02b35981f9bd",
+          "crates/ruff_python_trivia/Cargo.toml": "c8ff8fed694ad1095f4a41dd034b9442d5d3ddd4cf1406a80b966009fe5f6dc0",
+          "crates/ruff_python_trivia/src/name_matcher.rs": "f4408168c0378a6aff61bb4c04582080125c301f21c0da1bdca00ee47d85a01a"
+        },
+        "typed": [
+          [
+            "memchr",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_text_size",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "either",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_source_file",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "itertools",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "rustc_hash",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_ident",
+            [
+              "lib"
+            ],
+            true
+          ]
+        ]
+      },
+      "invalid-unchanged": {
+        "code": 101,
+        "diagnostics": [
+          "E0432"
+        ],
+        "graphs": 1,
+        "native": [],
+        "rustc": [
+          "ruff_python_trivia"
+        ],
+        "sha256": {
+          "exec.log": "50c99dad06e9dc34c564118f2f1936b96be59ac8730219712de11787e68f7f15",
+          "stderr": "39c5e29d816e68cb051bda1c059142c730bd554463d2c27ea99123d5a86c10d4",
+          "stdout": "0eb8bcc638cf74317a5fcc77566c410e87dd52d06207e810327d74b55d95f1b7"
+        },
+        "source": {
+          "Cargo.lock": "654d0b6e553e505c83ae7ac4dd17107ceb248dc54beafd2dfccf02b35981f9bd",
+          "crates/ruff_python_trivia/Cargo.toml": "c8ff8fed694ad1095f4a41dd034b9442d5d3ddd4cf1406a80b966009fe5f6dc0",
+          "crates/ruff_python_trivia/src/name_matcher.rs": "f4408168c0378a6aff61bb4c04582080125c301f21c0da1bdca00ee47d85a01a"
+        },
+        "typed": [
+          [
+            "memchr",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_text_size",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "either",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_source_file",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "itertools",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_ident",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "rustc_hash",
+            [
+              "lib"
+            ],
+            true
+          ]
+        ]
+      },
+      "last": {
+        "code": 0,
+        "diagnostics": [],
+        "graphs": 1,
+        "native": [],
+        "rustc": [],
+        "sha256": {
+          "exec.log": "048b53c5b218bcc693754b9e0c0eeec0f6f6faad669f04631375f15bffea6385",
+          "stderr": "bc8ac4cd1392d058657b217b230598c5bf5ec686e2d8919db577986efc1c5e8f",
+          "stdout": "a1e71e3f46c6186fa7a99f5edb24da97019041493bc51a02b453773a7960bb96"
+        },
+        "source": {
+          "Cargo.lock": "c9e345325bec5ff08dbbe3916edd39ad0c3d1c7797a8c241ae32f62754e764bf",
+          "crates/ruff_python_trivia/Cargo.toml": "0a8beb3689acb1a28ed9516c7179cc7231cb7c675d9de2ac966f4d28f0b45a95",
+          "crates/ruff_python_trivia/src/name_matcher.rs": "f4408168c0378a6aff61bb4c04582080125c301f21c0da1bdca00ee47d85a01a"
+        },
+        "typed": [
+          [
+            "tinyvec_macros",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "tinyvec",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "either",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_text_size",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "memchr",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_normalization",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_ident",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "itertools",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_source_file",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "rustc_hash",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_python_trivia",
+            [
+              "lib"
+            ],
+            true
+          ]
+        ]
+      },
+      "original": {
+        "code": 0,
+        "diagnostics": [],
+        "graphs": 1,
+        "native": [],
+        "rustc": [
+          "___",
+          "either",
+          "itertools",
+          "memchr",
+          "ruff_python_trivia",
+          "ruff_source_file",
+          "ruff_text_size",
+          "rustc_hash",
+          "tinyvec",
+          "tinyvec_macros",
+          "unicode_ident",
+          "unicode_normalization"
+        ],
+        "sha256": {
+          "exec.log": "29c764c33260d52b691cafdd72c40c4b3a6595aae1d8517121de04eda223c7a5",
+          "stderr": "e0c52fae958ce708cc71b759faa7a3a7f84c4d321ca215240a46c214321ef166",
+          "stdout": "d54a70cb0914b10cb1143aadd3d18907f799adf07fcaf952a03b2fb3c330dbc3"
+        },
+        "source": {
+          "Cargo.lock": "c9e345325bec5ff08dbbe3916edd39ad0c3d1c7797a8c241ae32f62754e764bf",
+          "crates/ruff_python_trivia/Cargo.toml": "0a8beb3689acb1a28ed9516c7179cc7231cb7c675d9de2ac966f4d28f0b45a95",
+          "crates/ruff_python_trivia/src/name_matcher.rs": "f4408168c0378a6aff61bb4c04582080125c301f21c0da1bdca00ee47d85a01a"
+        },
+        "typed": [
+          [
+            "tinyvec_macros",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "rustc_hash",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "unicode_ident",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "ruff_text_size",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "either",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "tinyvec",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "memchr",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "ruff_source_file",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "unicode_normalization",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "itertools",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "ruff_python_trivia",
+            [
+              "lib"
+            ],
+            false
+          ]
+        ]
+      },
+      "restored": {
+        "code": 0,
+        "diagnostics": [],
+        "graphs": 1,
+        "native": [],
+        "rustc": [],
+        "sha256": {
+          "exec.log": "f086b061896f2be7181592de8085286e1e542880050dd1b8751ff904d4b0db49",
+          "stderr": "fe53016ea72db977dc72a5a2819ea33da45b01aa3917a8b9f979b4c627bd7e45",
+          "stdout": "b28d7261e671d346c55931ae14b34ea50dd8ab931bb348b16b44558e154750af"
+        },
+        "source": {
+          "Cargo.lock": "c9e345325bec5ff08dbbe3916edd39ad0c3d1c7797a8c241ae32f62754e764bf",
+          "crates/ruff_python_trivia/Cargo.toml": "0a8beb3689acb1a28ed9516c7179cc7231cb7c675d9de2ac966f4d28f0b45a95",
+          "crates/ruff_python_trivia/src/name_matcher.rs": "f4408168c0378a6aff61bb4c04582080125c301f21c0da1bdca00ee47d85a01a"
+        },
+        "typed": [
+          [
+            "tinyvec_macros",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "tinyvec",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "memchr",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "either",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_text_size",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "itertools",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_source_file",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_normalization",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_ident",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "rustc_hash",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_python_trivia",
+            [
+              "lib"
+            ],
+            true
+          ]
+        ]
+      },
+      "reverted": {
+        "code": 0,
+        "diagnostics": [],
+        "graphs": 1,
+        "native": [],
+        "rustc": [
+          "ruff_python_trivia"
+        ],
+        "sha256": {
+          "exec.log": "8b0356734c16e94ceea7d002af63b55b65b7efec4d483700405504156bcf54e8",
+          "stderr": "3421ba8b41ed94b6c86873ff7211063fb2c353f9900911322b372c6c53388a94",
+          "stdout": "e9ccd3558fdbbba8251a5e4eee794bb0bef97dd2dbbd227450fab95c6fe7e266"
+        },
+        "source": {
+          "Cargo.lock": "654d0b6e553e505c83ae7ac4dd17107ceb248dc54beafd2dfccf02b35981f9bd",
+          "crates/ruff_python_trivia/Cargo.toml": "c8ff8fed694ad1095f4a41dd034b9442d5d3ddd4cf1406a80b966009fe5f6dc0",
+          "crates/ruff_python_trivia/src/name_matcher.rs": "d9293f05481b4dd4ba260b8f0a92d919d2c0ba16f8eb48088540ce670c9672aa"
+        },
+        "typed": [
+          [
+            "either",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_text_size",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "memchr",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "itertools",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_source_file",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "rustc_hash",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_ident",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_python_trivia",
+            [
+              "lib"
+            ],
+            false
+          ]
+        ]
+      },
+      "reverted-unchanged": {
+        "code": 0,
+        "diagnostics": [],
+        "graphs": 1,
+        "native": [],
+        "rustc": [],
+        "sha256": {
+          "exec.log": "d44dcf3eb31533518621e57b9fd61debc512d4dbeb78a2c698c0a3fc8c1e67c6",
+          "stderr": "2581ac32d121951ab2bdbad6e39a9413f4b50ae9c111d6d56a481f38584f6040",
+          "stdout": "7cf19fd067891d77298f4bb89c9f653dd439ef8c603f2bd7817de4cd5fede709"
+        },
+        "source": {
+          "Cargo.lock": "654d0b6e553e505c83ae7ac4dd17107ceb248dc54beafd2dfccf02b35981f9bd",
+          "crates/ruff_python_trivia/Cargo.toml": "c8ff8fed694ad1095f4a41dd034b9442d5d3ddd4cf1406a80b966009fe5f6dc0",
+          "crates/ruff_python_trivia/src/name_matcher.rs": "d9293f05481b4dd4ba260b8f0a92d919d2c0ba16f8eb48088540ce670c9672aa"
+        },
+        "typed": [
+          [
+            "either",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "memchr",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_text_size",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "itertools",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_ident",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "rustc_hash",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_source_file",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_python_trivia",
+            [
+              "lib"
+            ],
+            true
+          ]
+        ]
+      },
+      "unchanged": {
+        "code": 0,
+        "diagnostics": [],
+        "graphs": 1,
+        "native": [],
+        "rustc": [],
+        "sha256": {
+          "exec.log": "54485a0632c58fa010e31632b718d70a4896611daaba724be69e1f1cca7079f4",
+          "stderr": "aa179da453f2230bd1e15aba94758186419c7da32c7b3f7ddab1d233e484c0b8",
+          "stdout": "a8b726b48ff087ce6134f8b4976d5752c121ac090481320542d60a08abea2d1b"
+        },
+        "source": {
+          "Cargo.lock": "c9e345325bec5ff08dbbe3916edd39ad0c3d1c7797a8c241ae32f62754e764bf",
+          "crates/ruff_python_trivia/Cargo.toml": "0a8beb3689acb1a28ed9516c7179cc7231cb7c675d9de2ac966f4d28f0b45a95",
+          "crates/ruff_python_trivia/src/name_matcher.rs": "f4408168c0378a6aff61bb4c04582080125c301f21c0da1bdca00ee47d85a01a"
+        },
+        "typed": [
+          [
+            "tinyvec_macros",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "tinyvec",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "either",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_text_size",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "memchr",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_source_file",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "itertools",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_normalization",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "unicode_ident",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "rustc_hash",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "ruff_python_trivia",
+            [
+              "lib"
+            ],
+            true
+          ]
+        ]
+      }
+    }
+  },
+  "ruff_native": {
+    "arms": {
+      "A": "0b87458b39eda33df2a667218073480fb3eb9b49ff620a652402e12145f16d53",
+      "B": "8ee479f1d2827790df139d39df207ec053a9bbf5b2fb093b42db20e1ca384222"
+    },
+    "edit": "f240bf849841cf6cb3ffd844db8bd6d6aa0b3026",
+    "patch": "7dce00dfb83f8b49e6beb696a0d267be6ffa854e5980b648bddcbe1c4330788e",
+    "raw_attempts": {
+      "v1": "ee836097aa6e76d20e419f8260a50eaffa54a6145695789fd861bc1ce09de272",
+      "v2": "638b1347ad5fd6554c4ebdb40e29956986db43227ff8180f02be9a0b5d7e99e5"
+    },
+    "reopened": "d847d92f3ba37d60cd182dd2cd43e2f6feb49fbdd6c1be56054bfea6c6125d7f",
+    "runs": {
+      "caller-original": {
+        "ELF": [
+          "6284ab527ebeabd3db39f12d5efa640d2e4e170daef8faf859330586237989bb",
+          "97cd1434d53fc052224f5e7041fb3a1377c1f0c4eed73b51baab72f5577aa7e8"
+        ],
+        "caller": "false"
+      },
+      "caller-restored": {
+        "ELF": [
+          "6284ab527ebeabd3db39f12d5efa640d2e4e170daef8faf859330586237989bb",
+          "97cd1434d53fc052224f5e7041fb3a1377c1f0c4eed73b51baab72f5577aa7e8"
+        ],
+        "caller": "false"
+      },
+      "caller-reverted": {
+        "ELF": [
+          "318683b29fb88650c59b60cd01a903a2c452bf4ec47d1d5b3954f4c5ba563481",
+          "7aeb9a38e014a057cdb0022712e97f4755afeaece3dd37e7d017211bbb61686d"
+        ],
+        "caller": "true"
+      },
+      "invalid-clean": {
+        "A_B_resolutions": [
+          1,
+          1
+        ],
+        "artifact_count": 7,
+        "code": 101,
+        "diagnostics": [
+          "E0432"
+        ],
+        "native": [],
+        "rustc": [
+          "___",
+          "either",
+          "itertools",
+          "memchr",
+          "ruff_python_trivia",
+          "ruff_source_file",
+          "ruff_text_size",
+          "rustc_hash",
+          "unicode_ident"
+        ]
+      },
+      "invalid-mixed": {
+        "A_B_resolutions": [
+          1,
+          1
+        ],
+        "artifact_count": 7,
+        "code": 101,
+        "diagnostics": [
+          "E0432"
+        ],
+        "native": [],
+        "rustc": [
+          "ruff_python_trivia"
+        ]
+      },
+      "invalid-unchanged": {
+        "A_B_resolutions": [
+          1,
+          1
+        ],
+        "artifact_count": 7,
+        "code": 101,
+        "diagnostics": [
+          "E0432"
+        ],
+        "native": [],
+        "rustc": [
+          "ruff_python_trivia"
+        ]
+      },
+      "last": {
+        "A_B_resolutions": [
+          1,
+          1
+        ],
+        "artifact_count": 11,
+        "code": 0,
+        "diagnostics": [],
+        "native": [],
+        "rustc": []
+      },
+      "original": {
+        "A_B_resolutions": [
+          1,
+          1
+        ],
+        "artifact_count": 11,
+        "code": 0,
+        "diagnostics": [],
+        "native": [],
+        "rustc": [
+          "___",
+          "either",
+          "itertools",
+          "memchr",
+          "ruff_python_trivia",
+          "ruff_source_file",
+          "ruff_text_size",
+          "rustc_hash",
+          "tinyvec",
+          "tinyvec_macros",
+          "unicode_ident",
+          "unicode_normalization"
+        ]
+      },
+      "restored": {
+        "A_B_resolutions": [
+          1,
+          1
+        ],
+        "artifact_count": 11,
+        "code": 0,
+        "diagnostics": [],
+        "native": [],
+        "rustc": []
+      },
+      "reverted": {
+        "A_B_resolutions": [
+          2,
+          1
+        ],
+        "artifact_count": 8,
+        "code": 0,
+        "diagnostics": [],
+        "native": [],
+        "rustc": [
+          "ruff_python_trivia"
+        ]
+      },
+      "reverted-unchanged": {
+        "A_B_resolutions": [
+          1,
+          1
+        ],
+        "artifact_count": 8,
+        "code": 0,
+        "diagnostics": [],
+        "native": [],
+        "rustc": []
+      },
+      "unchanged": {
+        "A_B_resolutions": [
+          1,
+          1
+        ],
+        "artifact_count": 11,
+        "code": 0,
+        "diagnostics": [],
+        "native": [],
+        "rustc": []
+      }
+    },
+    "scope": {
+      "A": {
+        "shared-caller": [],
+        "shared-ruff": [],
+        "target-caller": [
+          ".ohm-built-registry-ready"
+        ],
+        "target-ruff": []
+      },
+      "B": {
+        "shared-caller": [],
+        "shared-ruff": [],
+        "target-caller": [
+          ".ohm-built-registry-ready"
+        ],
+        "target-ruff": []
+      },
+      "retained-test-build": {
+        "shared": [
+          ".ohm-built-registry-ready"
+        ],
+        "target": [
+          ".ohm-built-registry-ready"
+        ]
+      }
+    },
+    "source": "93526150df078af7dd8fc4226cdcc469539d2001"
+  },
+  "rust_tests": [
+    {
+      "actual": 101,
+      "actual_cargo_execs": 4,
+      "arm": "A",
+      "bound_cargo": "8c1717fa9786e16d3bec0c3181c02c1803484ed857d262580ce88d54056504c5",
+      "expected": 101,
+      "group": "new-count",
+      "raw": {
+        "exec.log": "7ca76c95dbb2988ed8350388e4eab348e784758e58e7d4b95f24e74055c66be9",
+        "list": "838eb08af52de80585433c52bbf562cfbe8a054465802e508b59eb3a16fd8cf7",
+        "stderr": "54899a06385b11c1d86082b768759d40163b4a7b2386766fc9e70a7fc89ec7fa",
+        "stdout": "c8a2e06c466dac0b50fbee588becbe54b34f55318cb519fefccbf36a5be21432"
+      },
+      "receipt": "1b40f94d0ca18e266a24643644f082a901111da27150db35b463451187a9e152",
+      "suite": "functional-v2",
+      "tests": [
+        "check::ohm_built_registry_dependency_reuse_skips_speculation_before_a_real_build"
+      ]
+    },
+    {
+      "actual": 101,
+      "actual_cargo_execs": 3,
+      "arm": "A",
+      "bound_cargo": "8c1717fa9786e16d3bec0c3181c02c1803484ed857d262580ce88d54056504c5",
+      "expected": 101,
+      "group": "old-resolver",
+      "raw": {
+        "exec.log": "cf6a7fcd2c58b40274e3c8085047ce86a00811106f43c6cb12804248b5c3a330",
+        "list": "7b8779fa2bf9d90e59eade24fa70a3f8f9f09abde37d3af9466c28b8cd7a58fa",
+        "stderr": "8703ed49ff8805954595c57024451d4bb46eb939117504bf000f5d7d1d507b46",
+        "stdout": "8c7abaa19f2d6518a6297fc71a1963fa9700d0bac1c42892dcbcde26a8daa8af"
+      },
+      "receipt": "f39799a9041059ddd235ba8a16340b0ccebea85e50f1f7f8a684f02514cb727b",
+      "suite": "functional-v2",
+      "tests": [
+        "workspaces::workspace_resolve_cache_ignores_execution_only_environment"
+      ]
+    },
+    {
+      "actual": 0,
+      "actual_cargo_execs": 4,
+      "arm": "B",
+      "bound_cargo": "22df91fc7f26491ad6208b5f66f44f8cf1b2d9c21b6f5ecfbbd3e91daf348c32",
+      "expected": 0,
+      "group": "changed-config",
+      "raw": {
+        "exec.log": "b35db34933cee38b9018387e33c43369a2fc66bb369b17d55ee971a8295cd12b",
+        "list": "838eb08af52de80585433c52bbf562cfbe8a054465802e508b59eb3a16fd8cf7",
+        "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout": "8e465be88e5d6bee2988f2edbcdf1bec88f211dc12496cfd2ca05609dc371ac2"
+      },
+      "receipt": "f2fd4cd31070b16b23ee3cd9e9f34d2c0e2f096ca1c8b4293fb687b6d7a245de",
+      "suite": "functional-v2",
+      "tests": [
+        "check::ohm_built_registry_dependency_reuse_skips_speculation_before_a_real_build"
+      ]
+    },
+    {
+      "actual": 0,
+      "actual_cargo_execs": 2,
+      "arm": "B",
+      "bound_cargo": "22df91fc7f26491ad6208b5f66f44f8cf1b2d9c21b6f5ecfbbd3e91daf348c32",
+      "expected": 0,
+      "group": "cold-graph",
+      "raw": {
+        "exec.log": "98ed70c5fad7d3806e49001c8014cf9600426ce6f5d3560caa87047b08f7a4ac",
+        "list": "d0e89e1a2051333c5f5564a9553b90fdf92193dc94b8dc5535a96d4d93035a96",
+        "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout": "f955ce7a14983a04001a46666d06ea4f1dc8c262fce183ea7afa76b141685c06"
+      },
+      "receipt": "8caa6c5834d5da0c5bc24746825160180da121fca87a4219130591dabee739c7",
+      "suite": "functional-v2",
+      "tests": [
+        "check::ohm_skips_cold_ordinary_check_graphs_after_test_builds"
+      ]
+    },
+    {
+      "actual": 0,
+      "actual_cargo_execs": 2,
+      "arm": "B",
+      "bound_cargo": "22df91fc7f26491ad6208b5f66f44f8cf1b2d9c21b6f5ecfbbd3e91daf348c32",
+      "expected": 0,
+      "group": "opt-out",
+      "raw": {
+        "exec.log": "858072da70e5948caf63ba61a2e427019905a1b9c60f2b0ba182bc8de97ac43a",
+        "list": "80d3d4d7bd6259c3ced28cdf9bc5601f74496d93f620b9ee89f55ea1d7e82db6",
+        "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout": "82c13e29ed84e17ea7cceea5c109dd7d7c634e45fa0946f521e0c44373528a2a"
+      },
+      "receipt": "a5c5b723d4a5a208808d75406613c94b04078f202574973e3004b62cef0a9283",
+      "suite": "functional-v2",
+      "tests": [
+        "check::ohm_built_registry_dependency_reuse_respects_aggregate_default_opt_out"
+      ]
+    },
+    {
+      "actual": 0,
+      "actual_cargo_execs": 35,
+      "arm": "B",
+      "bound_cargo": "22df91fc7f26491ad6208b5f66f44f8cf1b2d9c21b6f5ecfbbd3e91daf348c32",
+      "expected": 0,
+      "group": "resolver",
+      "raw": {
+        "exec.log": "5f8d4bc05e422318af23acab1794a99dc6911e05fdb9700e2af31ba5d31dae86",
+        "list": "6deaf0ccdbf70a2e5efc20166f50f189503470c210f67e71fddfff25c8488de6",
+        "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout": "e769cc3271380d228063d2c4efb408e0b39b83f166b77913755f911a8587ee5e"
+      },
+      "receipt": "cde95cc7dd9c74bfb7e4753324094340d362c7708f06a38a6f80e4aa4a6dcf28",
+      "suite": "functional-v2",
+      "tests": [
+        "workspaces::workspace_resolve_cache_allows_unselected_required_target_features",
+        "workspaces::workspace_resolve_cache_ignores_dependency_required_target_features",
+        "workspaces::workspace_resolve_cache_ignores_execution_only_environment",
+        "workspaces::workspace_resolve_cache_invalidates_configuration",
+        "workspaces::workspace_resolve_cache_invalidates_external_path_dependency",
+        "workspaces::workspace_resolve_cache_invalidates_unselected_workspace_member",
+        "workspaces::workspace_resolve_cache_preserves_dependency_feature_kinds",
+        "workspaces::workspace_resolve_cache_rejects_replaced_lockfile_after_loading",
+        "workspaces::workspace_resolve_cache_replaces_a_symlink",
+        "workspaces::workspace_resolve_cache_respects_explicit_opt_out",
+        "workspaces::workspace_resolve_cache_reuses_local_required_target_features",
+        "workspaces::workspace_resolve_cache_reuses_metadata_resolution_for_check",
+        "workspaces::workspace_resolve_cache_reuses_unchanged_workspace"
+      ]
+    },
+    {
+      "actual": 101,
+      "actual_cargo_execs": 1,
+      "arm": "B",
+      "bound_cargo": "22df91fc7f26491ad6208b5f66f44f8cf1b2d9c21b6f5ecfbbd3e91daf348c32",
+      "expected": 0,
+      "group": "shared",
+      "raw": {
+        "exec.log": "a8c9e28b6942d4b16e8be0f5b8e3b24088ad894816e4fcde71555e3dd90ea69c",
+        "list": "728044f52d229af9947722db82c0bc9f7edd40b7f0a025a5c2905faac5c3d6cd",
+        "stderr": "02b6cf5b030f2d63c979786b2cfa5eb3c6ab0d29009e04319eb0a5fd63e19c82",
+        "stdout": "6ce4ab73e189a8e19fa7277e38e02e8e32085c51a71863fddc9a7777f210b833"
+      },
+      "receipt": "3c0fe3acc60458e2fd3d7925962311bb787e424223d4424f1c7f2b3ac8ecea11",
+      "suite": "functional-v2",
+      "tests": [
+        "check::ohm_built_registry_dependency_reuse_keeps_readiness_in_the_build_directory"
+      ]
+    },
+    {
+      "actual": 0,
+      "actual_cargo_execs": 2,
+      "arm": "B",
+      "bound_cargo": "22df91fc7f26491ad6208b5f66f44f8cf1b2d9c21b6f5ecfbbd3e91daf348c32",
+      "expected": 0,
+      "group": "explicit",
+      "raw": {
+        "exec.log": "4662a262f3922f4e18dae6e147d15dfdb309e98987779d4ae840943f8f787eb2",
+        "list": "71f9650899aa301f74c635d5582016f338e344a86fca16fba06cd1e085a674dc",
+        "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout": "233c3a02190d13ad140537024f0407d67ac3e0a114cdc313e64994fa920fefa4"
+      },
+      "receipt": "a2304023813e07d49c6531f8dcd494e57b4267c966a9703a29baa48df6ff097d",
+      "suite": "functional-v2",
+      "tests": [
+        "check::ohm_built_registry_dependency_reuse_preserves_explicit_policy_without_readiness"
+      ]
+    },
+    {
+      "actual": 0,
+      "actual_cargo_execs": 7,
+      "arm": "B",
+      "bound_cargo": "22df91fc7f26491ad6208b5f66f44f8cf1b2d9c21b6f5ecfbbd3e91daf348c32",
+      "expected": 0,
+      "group": "warm-edit",
+      "raw": {
+        "exec.log": "fdd6e7d12e60ec8ed7bbacdba3ed5c69e1d9d9a8e7325d240887e438db6201e8",
+        "list": "53369bd4eaaf7f3fd7efd33dfc04e0c51c5ad23f7a5139da1b170f6c130c6871",
+        "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout": "3bb32dc8ac8b8cf2829ba98a29cc7dba20bebc78457c350338352fb0af10e906"
+      },
+      "receipt": "1eadfbd56b88f8ffac07779e4ce06dca5aeb523455fe040e5181f43c0f4120e0",
+      "suite": "functional-v2",
+      "tests": [
+        "check::ohm_preserves_established_check_graph_after_editing_the_root"
+      ]
+    },
+    {
+      "actual": 101,
+      "actual_cargo_execs": 5,
+      "arm": "B",
+      "bound_cargo": "22df91fc7f26491ad6208b5f66f44f8cf1b2d9c21b6f5ecfbbd3e91daf348c32",
+      "expected": 0,
+      "group": "warm-lock",
+      "raw": {
+        "exec.log": "cfce94093e796cec7e3c93dc2e7cdff8aa4a3276f64dce5ddcf558de6cbf3046",
+        "list": "0576f9a7011b24ae85d6bdbf76b35b2b034064adb17a801148befcdba1abc38c",
+        "stderr": "b5732f03b8bd1c5c343b529026c6561a3585952a96b73942c7d0101f8806fc8e",
+        "stdout": "ccd8056420122924a284eae124d74fc23fdbe73d34b5e67574822ee2d102a1e0"
+      },
+      "receipt": "749db9e387803e15aa2f095572532c6b8eb4fc6faf7b102cf074de766a7abcc7",
+      "suite": "functional-v2",
+      "tests": [
+        "check::ohm_locks_fingerprints_before_preserving_established_check_graphs"
+      ]
+    },
+    {
+      "actual": 101,
+      "actual_cargo_execs": 1,
+      "arm": "A",
+      "bound_cargo": "8c1717fa9786e16d3bec0c3181c02c1803484ed857d262580ce88d54056504c5",
+      "expected": 101,
+      "group": "shared",
+      "raw": {
+        "exec.log": "443be45f6c9364a71358a533020154b630e467f3505b748499da6cbc92636dc9",
+        "list": "728044f52d229af9947722db82c0bc9f7edd40b7f0a025a5c2905faac5c3d6cd",
+        "stderr": "6ee2dd868f25f2af9c67eedb379133096282034382ba9d33591c6ca3ff1f19b9",
+        "stdout": "d87a84d0e6ed7d6e52c3a986679b618b52db6fcb10f8dc507c34d1a2a3415b9d"
+      },
+      "receipt": "c9362c345df5eb94437aaebd6d57f9805da3d5b4c33565806406003788856027",
+      "suite": "inherited-controls-v1",
+      "tests": [
+        "check::ohm_built_registry_dependency_reuse_keeps_readiness_in_the_build_directory"
+      ]
+    },
+    {
+      "actual": 101,
+      "actual_cargo_execs": 5,
+      "arm": "A",
+      "bound_cargo": "8c1717fa9786e16d3bec0c3181c02c1803484ed857d262580ce88d54056504c5",
+      "expected": 101,
+      "group": "warm-lock",
+      "raw": {
+        "exec.log": "d06114095dbd2ecb66efb7c51bee497ea39cb849710f8eb39f5a3fdff1c182ff",
+        "list": "0576f9a7011b24ae85d6bdbf76b35b2b034064adb17a801148befcdba1abc38c",
+        "stderr": "8695f8eedd07c0122df5cdcc245b3a4eee8c717bb055930e469f0283919d3b2f",
+        "stdout": "dfa1b73b37801c02cc46c726b7cdd26e920b69b6a0d52fbcbec7940570052ee6"
+      },
+      "receipt": "2af4e7f70ee949075ee43e7f43992cb500195bb828c8af6f6e5e4e3e8ebaa39e",
+      "suite": "inherited-controls-v1",
+      "tests": [
+        "check::ohm_locks_fingerprints_before_preserving_established_check_graphs"
+      ]
+    }
+  ],
+  "sdk": {
+    "archive": "ef21d83519bc376479811a7e01fa5ac8915ac0a500c6859bc22a1e0b4913d812",
+    "driver": "f772b49abec18759edbd9cb7f9f2930097d6ba64d9a2b82837edf4451acc3014",
+    "official_release": "ohm-1.99.0-19",
+    "runtime": {
+      "bytes": 512561837,
+      "files": 68,
+      "inventory_sha256": "c659b071916456198ae613644ab50d89258eefceb03cfe0b2bd66ff15c66187c",
+      "rustc": "rustc 1.99.0-dev (eef2f3425 2026-10-28) (ohm-1.99.0-19)\nbinary: rustc\ncommit-hash: eef2f3425c1c6f7fddfb4555769a9f90fe1e0f53\ncommit-date: 2026-10-28\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-dev\nLLVM version: 23.1.1\n"
+    },
+    "rustc": "5694abe50767a22cebeccb767143f7404d5e81c4b1760cff4426466bf410e511",
+    "rustdoc": "a368ad0fdc5a72d5832d0425c00ee41cf1368908eae4835d303262dd8b266cf0",
+    "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+  },
+  "seed_states": {
+    "new-A": {
+      "literal_rmeta": {
+        "products/debug/build/workspaces/bef7090d974358c3/v2-5d5a5f97109c13ce/either/bb6376e40a6dbe9f/out/libeither-bb6376e40a6dbe9f.rmeta": [
+          142428,
+          "a180cf462ab99f0f5a548bea348de274380325f4be1eb50d3e0b6ff81d7d7fa4"
+        ],
+        "products/debug/build/workspaces/bef7090d974358c3/v2-5d5a5f97109c13ce/itertools/99c467bdd8fff521/out/libitertools-99c467bdd8fff521.rmeta": [
+          1395419,
+          "6431ec1f6b57dbd56029ae46f91734ef4e74a743bff135a4f9da4c4b75efe39f"
+        ],
+        "products/debug/build/workspaces/bef7090d974358c3/v2-5d5a5f97109c13ce/memchr/ca9ee5d444698f4d/out/libmemchr-ca9ee5d444698f4d.rmeta": [
+          481356,
+          "2efddac40462ef8ded19320d2579559f1560b282593e88d7d064a0642822a018"
+        ],
+        "products/debug/build/workspaces/bef7090d974358c3/v2-5d5a5f97109c13ce/ruff_python_trivia/5955d1f8545cf52a/out/libruff_python_trivia-5955d1f8545cf52a.rmeta": [
+          132399,
+          "9f04796f0be80b48d37173257280d04705803aab8e61c1256f3bc14a6e8c9728"
+        ],
+        "products/debug/build/workspaces/bef7090d974358c3/v2-5d5a5f97109c13ce/ruff_source_file/943a898afbe4e5f3/out/libruff_source_file-943a898afbe4e5f3.rmeta": [
+          143012,
+          "7c818d7daeab9b692cce1e1efb84bcc214ca98d58a1f4abf3b635312f5b2eaa9"
+        ],
+        "products/debug/build/workspaces/bef7090d974358c3/v2-5d5a5f97109c13ce/ruff_text_size/8a341f99e3ae933d/out/libruff_text_size-8a341f99e3ae933d.rmeta": [
+          68714,
+          "c33b1d5ffd2965e44df1c03f6746e98579be549601a576bf999aec3988e29a13"
+        ],
+        "products/debug/build/workspaces/bef7090d974358c3/v2-5d5a5f97109c13ce/rustc-hash/107b2ef838b0cd9f/out/librustc_hash-107b2ef838b0cd9f.rmeta": [
+          19647,
+          "99915d1c9901ed2e3adf92b402d043f5e281bd8ee4d5b9655daac336327652df"
+        ],
+        "products/debug/build/workspaces/bef7090d974358c3/v2-5d5a5f97109c13ce/tinyvec/4e4d0185cebec04c/out/libtinyvec-4e4d0185cebec04c.rmeta": [
+          246268,
+          "e802f65ff6fdd379f616163328ae3ef977c6b32378a20eaa75c8c8924164401b"
+        ],
+        "products/debug/build/workspaces/bef7090d974358c3/v2-5d5a5f97109c13ce/tinyvec_macros/991c19be31f009f9/out/libtinyvec_macros-991c19be31f009f9.rmeta": [
+          3384,
+          "2061f32386870d0c82ec6318586ce0dbfd065bc3aeedca0e23a131c43f8f00e1"
+        ],
+        "products/debug/build/workspaces/bef7090d974358c3/v2-5d5a5f97109c13ce/unicode-ident/9e12fc2222b4b4b4/out/libunicode_ident-9e12fc2222b4b4b4.rmeta": [
+          33163,
+          "af59ec8e34b01f839843e2256826d4676c7870f9478f6fb5e5221d1ebcddede4"
+        ],
+        "products/debug/build/workspaces/bef7090d974358c3/v2-5d5a5f97109c13ce/unicode-normalization/0b89da19ffa5832d/out/libunicode_normalization-0b89da19ffa5832d.rmeta": [
+          1469275,
+          "8b0053fccd68b1377f20af80aca82a270b03056aa868f0d32fc9dca2bf379ccb"
+        ],
+        "products/debug/incremental/bef7090d974358c3/ruff_python_trivia-2ya0ympowfmsp/s-hnnrpccgha-14ln1no-dk2wybht5k82asittwwwf932d/metadata.rmeta": [
+          132399,
+          "9f04796f0be80b48d37173257280d04705803aab8e61c1256f3bc14a6e8c9728"
+        ],
+        "products/debug/incremental/bef7090d974358c3/ruff_python_trivia-2ya0ympowfmsp/s-hnnrpccgha-14ln1no-dk2wybht5k82asittwwwf932d/ohm-check-metadata.rmeta": [
+          132399,
+          "9f04796f0be80b48d37173257280d04705803aab8e61c1256f3bc14a6e8c9728"
+        ],
+        "products/debug/incremental/bef7090d974358c3/ruff_source_file-213o6iyh8zxkq/s-hnnrpc7156-1nhk7ro-dki3bzwfwhezk2khtgdz3bt1o/metadata.rmeta": [
+          143012,
+          "7c818d7daeab9b692cce1e1efb84bcc214ca98d58a1f4abf3b635312f5b2eaa9"
+        ],
+        "products/debug/incremental/bef7090d974358c3/ruff_source_file-213o6iyh8zxkq/s-hnnrpc7156-1nhk7ro-dki3bzwfwhezk2khtgdz3bt1o/ohm-check-metadata.rmeta": [
+          143012,
+          "7c818d7daeab9b692cce1e1efb84bcc214ca98d58a1f4abf3b635312f5b2eaa9"
+        ],
+        "products/debug/incremental/bef7090d974358c3/ruff_text_size-0m00fj3kph1nb/s-hnnrpc2qcv-00w4i0x-e55g19p8ygj3drddtty388zx4/metadata.rmeta": [
+          68714,
+          "c33b1d5ffd2965e44df1c03f6746e98579be549601a576bf999aec3988e29a13"
+        ],
+        "products/debug/incremental/bef7090d974358c3/ruff_text_size-0m00fj3kph1nb/s-hnnrpc2qcv-00w4i0x-e55g19p8ygj3drddtty388zx4/ohm-check-metadata.rmeta": [
+          68714,
+          "c33b1d5ffd2965e44df1c03f6746e98579be549601a576bf999aec3988e29a13"
+        ]
+      },
+      "roster": [
+        [
+          "either",
+          [
+            "lib"
+          ],
+          true
+        ],
+        [
+          "itertools",
+          [
+            "lib"
+          ],
+          true
+        ],
+        [
+          "memchr",
+          [
+            "lib"
+          ],
+          true
+        ],
+        [
+          "ruff_python_trivia",
+          [
+            "lib"
+          ],
+          true
+        ],
+        [
+          "ruff_source_file",
+          [
+            "lib"
+          ],
+          true
+        ],
+        [
+          "ruff_text_size",
+          [
+            "lib"
+          ],
+          true
+        ],
+        [
+          "rustc_hash",
+          [
+            "lib"
+          ],
+          true
+        ],
+        [
+          "tinyvec",
+          [
+            "lib"
+          ],
+          true
+        ],
+        [
+          "tinyvec_macros",
+          [
+            "lib"
+          ],
+          true
+        ],
+        [
+          "unicode_ident",
+          [
+            "lib"
+          ],
+          true
+        ],
+        [
+          "unicode_normalization",
+          [
+            "lib"
+          ],
+          true
+        ]
+      ],
+      "source": {
+        "Cargo.lock": "c9e345325bec5ff08dbbe3916edd39ad0c3d1c7797a8c241ae32f62754e764bf",
+        "crates/ruff_python_trivia/Cargo.toml": "0a8beb3689acb1a28ed9516c7179cc7231cb7c675d9de2ac966f4d28f0b45a95",
+        "crates/ruff_python_trivia/src/name_matcher.rs": "f4408168c0378a6aff61bb4c04582080125c301f21c0da1bdca00ee47d85a01a"
+      },
+      "store": {
+        "entries": 208,
+        "sha256": "43f3949f5a6cee02bf15fe33d92d6ceeb2f1df2184d24ecd44bf1419f398239f"
+      }
+    },
+    "new-B": {
+      "literal_rmeta": {
+        "products/debug/build/workspaces/bef7090d974358c3/v2-5d5a5f97109c13ce/either/bb6376e40a6dbe9f/out/libeither-bb6376e40a6dbe9f.rmeta": [
+          142428,
+          "a180cf462ab99f0f5a548bea348de274380325f4be1eb50d3e0b6ff81d7d7fa4"
+        ],
+        "products/debug/build/workspaces/bef7090d974358c3/v2-5d5a5f97109c13ce/itertools/99c467bdd8fff521/out/libitertools-99c467bdd8fff521.rmeta": [
+          1395419,
+          "6431ec1f6b57dbd56029ae46f91734ef4e74a743bff135a4f9da4c4b75efe39f"
+        ],
+        "products/debug/build/workspaces/bef7090d974358c3/v2-5d5a5f97109c13ce/memchr/ca9ee5d444698f4d/out/libmemchr-ca9ee5d444698f4d.rmeta": [
+          481356,
+          "2efddac40462ef8ded19320d2579559f1560b282593e88d7d064a0642822a018"
+        ],
+        "products/debug/build/workspaces/bef7090d974358c3/v2-5d5a5f97109c13ce/ruff_python_trivia/5955d1f8545cf52a/out/libruff_python_trivia-5955d1f8545cf52a.rmeta": [
+          132399,
+          "9f04796f0be80b48d37173257280d04705803aab8e61c1256f3bc14a6e8c9728"
+        ],
+        "products/debug/build/workspaces/bef7090d974358c3/v2-5d5a5f97109c13ce/ruff_source_file/943a898afbe4e5f3/out/libruff_source_file-943a898afbe4e5f3.rmeta": [
+          143012,
+          "7c818d7daeab9b692cce1e1efb84bcc214ca98d58a1f4abf3b635312f5b2eaa9"
+        ],
+        "products/debug/build/workspaces/bef7090d974358c3/v2-5d5a5f97109c13ce/ruff_text_size/8a341f99e3ae933d/out/libruff_text_size-8a341f99e3ae933d.rmeta": [
+          68714,
+          "c33b1d5ffd2965e44df1c03f6746e98579be549601a576bf999aec3988e29a13"
+        ],
+        "products/debug/build/workspaces/bef7090d974358c3/v2-5d5a5f97109c13ce/rustc-hash/107b2ef838b0cd9f/out/librustc_hash-107b2ef838b0cd9f.rmeta": [
+          19647,
+          "99915d1c9901ed2e3adf92b402d043f5e281bd8ee4d5b9655daac336327652df"
+        ],
+        "products/debug/build/workspaces/bef7090d974358c3/v2-5d5a5f97109c13ce/tinyvec/4e4d0185cebec04c/out/libtinyvec-4e4d0185cebec04c.rmeta": [
+          246268,
+          "e802f65ff6fdd379f616163328ae3ef977c6b32378a20eaa75c8c8924164401b"
+        ],
+        "products/debug/build/workspaces/bef7090d974358c3/v2-5d5a5f97109c13ce/tinyvec_macros/991c19be31f009f9/out/libtinyvec_macros-991c19be31f009f9.rmeta": [
+          3384,
+          "2061f32386870d0c82ec6318586ce0dbfd065bc3aeedca0e23a131c43f8f00e1"
+        ],
+        "products/debug/build/workspaces/bef7090d974358c3/v2-5d5a5f97109c13ce/unicode-ident/9e12fc2222b4b4b4/out/libunicode_ident-9e12fc2222b4b4b4.rmeta": [
+          33163,
+          "af59ec8e34b01f839843e2256826d4676c7870f9478f6fb5e5221d1ebcddede4"
+        ],
+        "products/debug/build/workspaces/bef7090d974358c3/v2-5d5a5f97109c13ce/unicode-normalization/0b89da19ffa5832d/out/libunicode_normalization-0b89da19ffa5832d.rmeta": [
+          1469275,
+          "8b0053fccd68b1377f20af80aca82a270b03056aa868f0d32fc9dca2bf379ccb"
+        ],
+        "products/debug/incremental/bef7090d974358c3/ruff_python_trivia-2ya0ympowfmsp/s-hnnrpd3141-080fb3w-dk2wybht5k82asittwwwf932d/metadata.rmeta": [
+          132399,
+          "9f04796f0be80b48d37173257280d04705803aab8e61c1256f3bc14a6e8c9728"
+        ],
+        "products/debug/incremental/bef7090d974358c3/ruff_python_trivia-2ya0ympowfmsp/s-hnnrpd3141-080fb3w-dk2wybht5k82asittwwwf932d/ohm-check-metadata.rmeta": [
+          132399,
+          "9f04796f0be80b48d37173257280d04705803aab8e61c1256f3bc14a6e8c9728"
+        ],
+        "products/debug/incremental/bef7090d974358c3/ruff_source_file-213o6iyh8zxkq/s-hnnrpcxard-13y04of-dki3bzwfwhezk2khtgdz3bt1o/metadata.rmeta": [
+          143012,
+          "7c818d7daeab9b692cce1e1efb84bcc214ca98d58a1f4abf3b635312f5b2eaa9"
+        ],
+        "products/debug/incremental/bef7090d974358c3/ruff_source_file-213o6iyh8zxkq/s-hnnrpcxard-13y04of-dki3bzwfwhezk2khtgdz3bt1o/ohm-check-metadata.rmeta": [
+          143012,
+          "7c818d7daeab9b692cce1e1efb84bcc214ca98d58a1f4abf3b635312f5b2eaa9"
+        ],
+        "products/debug/incremental/bef7090d974358c3/ruff_text_size-0m00fj3kph1nb/s-hnnrpct5b3-17ws6p3-e55g19p8ygj3drddtty388zx4/metadata.rmeta": [
+          68714,
+          "c33b1d5ffd2965e44df1c03f6746e98579be549601a576bf999aec3988e29a13"
+        ],
+        "products/debug/incremental/bef7090d974358c3/ruff_text_size-0m00fj3kph1nb/s-hnnrpct5b3-17ws6p3-e55g19p8ygj3drddtty388zx4/ohm-check-metadata.rmeta": [
+          68714,
+          "c33b1d5ffd2965e44df1c03f6746e98579be549601a576bf999aec3988e29a13"
+        ]
+      },
+      "roster": [
+        [
+          "either",
+          [
+            "lib"
+          ],
+          true
+        ],
+        [
+          "itertools",
+          [
+            "lib"
+          ],
+          true
+        ],
+        [
+          "memchr",
+          [
+            "lib"
+          ],
+          true
+        ],
+        [
+          "ruff_python_trivia",
+          [
+            "lib"
+          ],
+          true
+        ],
+        [
+          "ruff_source_file",
+          [
+            "lib"
+          ],
+          true
+        ],
+        [
+          "ruff_text_size",
+          [
+            "lib"
+          ],
+          true
+        ],
+        [
+          "rustc_hash",
+          [
+            "lib"
+          ],
+          true
+        ],
+        [
+          "tinyvec",
+          [
+            "lib"
+          ],
+          true
+        ],
+        [
+          "tinyvec_macros",
+          [
+            "lib"
+          ],
+          true
+        ],
+        [
+          "unicode_ident",
+          [
+            "lib"
+          ],
+          true
+        ],
+        [
+          "unicode_normalization",
+          [
+            "lib"
+          ],
+          true
+        ]
+      ],
+      "source": {
+        "Cargo.lock": "c9e345325bec5ff08dbbe3916edd39ad0c3d1c7797a8c241ae32f62754e764bf",
+        "crates/ruff_python_trivia/Cargo.toml": "0a8beb3689acb1a28ed9516c7179cc7231cb7c675d9de2ac966f4d28f0b45a95",
+        "crates/ruff_python_trivia/src/name_matcher.rs": "f4408168c0378a6aff61bb4c04582080125c301f21c0da1bdca00ee47d85a01a"
+      },
+      "store": {
+        "entries": 208,
+        "sha256": "c7fe92ba355917fd3b8658698d4eb724bff09db930deccff26342f09b0ec78fe"
+      }
+    },
+    "old-A": {
+      "literal_rmeta": {
+        "products/debug/build/workspaces/bef7090d974358c3/v2-5d5a5f97109c13ce/either/bb6376e40a6dbe9f/out/libeither-bb6376e40a6dbe9f.rmeta": [
+          142428,
+          "a180cf462ab99f0f5a548bea348de274380325f4be1eb50d3e0b6ff81d7d7fa4"
+        ],
+        "products/debug/build/workspaces/bef7090d974358c3/v2-5d5a5f97109c13ce/itertools/99c467bdd8fff521/out/libitertools-99c467bdd8fff521.rmeta": [
+          1395419,
+          "6431ec1f6b57dbd56029ae46f91734ef4e74a743bff135a4f9da4c4b75efe39f"
+        ],
+        "products/debug/build/workspaces/bef7090d974358c3/v2-5d5a5f97109c13ce/memchr/ca9ee5d444698f4d/out/libmemchr-ca9ee5d444698f4d.rmeta": [
+          481356,
+          "2efddac40462ef8ded19320d2579559f1560b282593e88d7d064a0642822a018"
+        ],
+        "products/debug/build/workspaces/bef7090d974358c3/v2-5d5a5f97109c13ce/ruff_python_trivia/827c60edef0a1bee/out/libruff_python_trivia-827c60edef0a1bee.rmeta": [
+          131984,
+          "20702d81459e6f7cc53eaa7af51bfdab5bbb10db9d373b080990f96e630160f1"
+        ],
+        "products/debug/build/workspaces/bef7090d974358c3/v2-5d5a5f97109c13ce/ruff_source_file/943a898afbe4e5f3/out/libruff_source_file-943a898afbe4e5f3.rmeta": [
+          143012,
+          "7c818d7daeab9b692cce1e1efb84bcc214ca98d58a1f4abf3b635312f5b2eaa9"
+        ],
+        "products/debug/build/workspaces/bef7090d974358c3/v2-5d5a5f97109c13ce/ruff_text_size/8a341f99e3ae933d/out/libruff_text_size-8a341f99e3ae933d.rmeta": [
+          68714,
+          "c33b1d5ffd2965e44df1c03f6746e98579be549601a576bf999aec3988e29a13"
+        ],
+        "products/debug/build/workspaces/bef7090d974358c3/v2-5d5a5f97109c13ce/rustc-hash/107b2ef838b0cd9f/out/librustc_hash-107b2ef838b0cd9f.rmeta": [
+          19647,
+          "99915d1c9901ed2e3adf92b402d043f5e281bd8ee4d5b9655daac336327652df"
+        ],
+        "products/debug/build/workspaces/bef7090d974358c3/v2-5d5a5f97109c13ce/unicode-ident/9e12fc2222b4b4b4/out/libunicode_ident-9e12fc2222b4b4b4.rmeta": [
+          33163,
+          "af59ec8e34b01f839843e2256826d4676c7870f9478f6fb5e5221d1ebcddede4"
+        ],
+        "products/debug/incremental/bef7090d974358c3/ruff_python_trivia-1ogdqtod7tkqb/s-hnnrpavmwq-1qrykr7-d1w5zqucyrz1h921z8hg6ibnf/metadata.rmeta": [
+          131984,
+          "20702d81459e6f7cc53eaa7af51bfdab5bbb10db9d373b080990f96e630160f1"
+        ],
+        "products/debug/incremental/bef7090d974358c3/ruff_python_trivia-1ogdqtod7tkqb/s-hnnrpavmwq-1qrykr7-d1w5zqucyrz1h921z8hg6ibnf/ohm-check-metadata.rmeta": [
+          131984,
+          "20702d81459e6f7cc53eaa7af51bfdab5bbb10db9d373b080990f96e630160f1"
+        ],
+        "products/debug/incremental/bef7090d974358c3/ruff_source_file-213o6iyh8zxkq/s-hnnrpaq37p-15646v4-dki3bzwfwhezk2khtgdz3bt1o/metadata.rmeta": [
+          143012,
+          "7c818d7daeab9b692cce1e1efb84bcc214ca98d58a1f4abf3b635312f5b2eaa9"
+        ],
+        "products/debug/incremental/bef7090d974358c3/ruff_source_file-213o6iyh8zxkq/s-hnnrpaq37p-15646v4-dki3bzwfwhezk2khtgdz3bt1o/ohm-check-metadata.rmeta": [
+          143012,
+          "7c818d7daeab9b692cce1e1efb84bcc214ca98d58a1f4abf3b635312f5b2eaa9"
+        ],
+        "products/debug/incremental/bef7090d974358c3/ruff_text_size-0m00fj3kph1nb/s-hnnrpalh57-1lgej6m-e55g19p8ygj3drddtty388zx4/metadata.rmeta": [
+          68714,
+          "c33b1d5ffd2965e44df1c03f6746e98579be549601a576bf999aec3988e29a13"
+        ],
+        "products/debug/incremental/bef7090d974358c3/ruff_text_size-0m00fj3kph1nb/s-hnnrpalh57-1lgej6m-e55g19p8ygj3drddtty388zx4/ohm-check-metadata.rmeta": [
+          68714,
+          "c33b1d5ffd2965e44df1c03f6746e98579be549601a576bf999aec3988e29a13"
+        ]
+      },
+      "roster": [
+        [
+          "either",
+          [
+            "lib"
+          ],
+          true
+        ],
+        [
+          "itertools",
+          [
+            "lib"
+          ],
+          true
+        ],
+        [
+          "memchr",
+          [
+            "lib"
+          ],
+          true
+        ],
+        [
+          "ruff_python_trivia",
+          [
+            "lib"
+          ],
+          true
+        ],
+        [
+          "ruff_source_file",
+          [
+            "lib"
+          ],
+          true
+        ],
+        [
+          "ruff_text_size",
+          [
+            "lib"
+          ],
+          true
+        ],
+        [
+          "rustc_hash",
+          [
+            "lib"
+          ],
+          true
+        ],
+        [
+          "unicode_ident",
+          [
+            "lib"
+          ],
+          true
+        ]
+      ],
+      "source": {
+        "Cargo.lock": "654d0b6e553e505c83ae7ac4dd17107ceb248dc54beafd2dfccf02b35981f9bd",
+        "crates/ruff_python_trivia/Cargo.toml": "c8ff8fed694ad1095f4a41dd034b9442d5d3ddd4cf1406a80b966009fe5f6dc0",
+        "crates/ruff_python_trivia/src/name_matcher.rs": "d9293f05481b4dd4ba260b8f0a92d919d2c0ba16f8eb48088540ce670c9672aa"
+      },
+      "store": {
+        "entries": 172,
+        "sha256": "ac523307aaa4195310c90cf479bdbcede687178f8e7090b1a21c1be65f96e91b"
+      }
+    },
+    "old-B": {
+      "literal_rmeta": {
+        "products/debug/build/workspaces/bef7090d974358c3/v2-5d5a5f97109c13ce/either/bb6376e40a6dbe9f/out/libeither-bb6376e40a6dbe9f.rmeta": [
+          142428,
+          "a180cf462ab99f0f5a548bea348de274380325f4be1eb50d3e0b6ff81d7d7fa4"
+        ],
+        "products/debug/build/workspaces/bef7090d974358c3/v2-5d5a5f97109c13ce/itertools/99c467bdd8fff521/out/libitertools-99c467bdd8fff521.rmeta": [
+          1395419,
+          "6431ec1f6b57dbd56029ae46f91734ef4e74a743bff135a4f9da4c4b75efe39f"
+        ],
+        "products/debug/build/workspaces/bef7090d974358c3/v2-5d5a5f97109c13ce/memchr/ca9ee5d444698f4d/out/libmemchr-ca9ee5d444698f4d.rmeta": [
+          481356,
+          "2efddac40462ef8ded19320d2579559f1560b282593e88d7d064a0642822a018"
+        ],
+        "products/debug/build/workspaces/bef7090d974358c3/v2-5d5a5f97109c13ce/ruff_python_trivia/827c60edef0a1bee/out/libruff_python_trivia-827c60edef0a1bee.rmeta": [
+          131984,
+          "20702d81459e6f7cc53eaa7af51bfdab5bbb10db9d373b080990f96e630160f1"
+        ],
+        "products/debug/build/workspaces/bef7090d974358c3/v2-5d5a5f97109c13ce/ruff_source_file/943a898afbe4e5f3/out/libruff_source_file-943a898afbe4e5f3.rmeta": [
+          143012,
+          "7c818d7daeab9b692cce1e1efb84bcc214ca98d58a1f4abf3b635312f5b2eaa9"
+        ],
+        "products/debug/build/workspaces/bef7090d974358c3/v2-5d5a5f97109c13ce/ruff_text_size/8a341f99e3ae933d/out/libruff_text_size-8a341f99e3ae933d.rmeta": [
+          68714,
+          "c33b1d5ffd2965e44df1c03f6746e98579be549601a576bf999aec3988e29a13"
+        ],
+        "products/debug/build/workspaces/bef7090d974358c3/v2-5d5a5f97109c13ce/rustc-hash/107b2ef838b0cd9f/out/librustc_hash-107b2ef838b0cd9f.rmeta": [
+          19647,
+          "99915d1c9901ed2e3adf92b402d043f5e281bd8ee4d5b9655daac336327652df"
+        ],
+        "products/debug/build/workspaces/bef7090d974358c3/v2-5d5a5f97109c13ce/unicode-ident/9e12fc2222b4b4b4/out/libunicode_ident-9e12fc2222b4b4b4.rmeta": [
+          33163,
+          "af59ec8e34b01f839843e2256826d4676c7870f9478f6fb5e5221d1ebcddede4"
+        ],
+        "products/debug/incremental/bef7090d974358c3/ruff_python_trivia-1ogdqtod7tkqb/s-hnnrpbm1k1-0brnevr-d1w5zqucyrz1h921z8hg6ibnf/metadata.rmeta": [
+          131984,
+          "20702d81459e6f7cc53eaa7af51bfdab5bbb10db9d373b080990f96e630160f1"
+        ],
+        "products/debug/incremental/bef7090d974358c3/ruff_python_trivia-1ogdqtod7tkqb/s-hnnrpbm1k1-0brnevr-d1w5zqucyrz1h921z8hg6ibnf/ohm-check-metadata.rmeta": [
+          131984,
+          "20702d81459e6f7cc53eaa7af51bfdab5bbb10db9d373b080990f96e630160f1"
+        ],
+        "products/debug/incremental/bef7090d974358c3/ruff_source_file-213o6iyh8zxkq/s-hnnrpbgfqs-1j8y0vy-dki3bzwfwhezk2khtgdz3bt1o/metadata.rmeta": [
+          143012,
+          "7c818d7daeab9b692cce1e1efb84bcc214ca98d58a1f4abf3b635312f5b2eaa9"
+        ],
+        "products/debug/incremental/bef7090d974358c3/ruff_source_file-213o6iyh8zxkq/s-hnnrpbgfqs-1j8y0vy-dki3bzwfwhezk2khtgdz3bt1o/ohm-check-metadata.rmeta": [
+          143012,
+          "7c818d7daeab9b692cce1e1efb84bcc214ca98d58a1f4abf3b635312f5b2eaa9"
+        ],
+        "products/debug/incremental/bef7090d974358c3/ruff_text_size-0m00fj3kph1nb/s-hnnrpbc3mt-1hbpoec-e55g19p8ygj3drddtty388zx4/metadata.rmeta": [
+          68714,
+          "c33b1d5ffd2965e44df1c03f6746e98579be549601a576bf999aec3988e29a13"
+        ],
+        "products/debug/incremental/bef7090d974358c3/ruff_text_size-0m00fj3kph1nb/s-hnnrpbc3mt-1hbpoec-e55g19p8ygj3drddtty388zx4/ohm-check-metadata.rmeta": [
+          68714,
+          "c33b1d5ffd2965e44df1c03f6746e98579be549601a576bf999aec3988e29a13"
+        ]
+      },
+      "roster": [
+        [
+          "either",
+          [
+            "lib"
+          ],
+          true
+        ],
+        [
+          "itertools",
+          [
+            "lib"
+          ],
+          true
+        ],
+        [
+          "memchr",
+          [
+            "lib"
+          ],
+          true
+        ],
+        [
+          "ruff_python_trivia",
+          [
+            "lib"
+          ],
+          true
+        ],
+        [
+          "ruff_source_file",
+          [
+            "lib"
+          ],
+          true
+        ],
+        [
+          "ruff_text_size",
+          [
+            "lib"
+          ],
+          true
+        ],
+        [
+          "rustc_hash",
+          [
+            "lib"
+          ],
+          true
+        ],
+        [
+          "unicode_ident",
+          [
+            "lib"
+          ],
+          true
+        ]
+      ],
+      "source": {
+        "Cargo.lock": "654d0b6e553e505c83ae7ac4dd17107ceb248dc54beafd2dfccf02b35981f9bd",
+        "crates/ruff_python_trivia/Cargo.toml": "c8ff8fed694ad1095f4a41dd034b9442d5d3ddd4cf1406a80b966009fe5f6dc0",
+        "crates/ruff_python_trivia/src/name_matcher.rs": "d9293f05481b4dd4ba260b8f0a92d919d2c0ba16f8eb48088540ce670c9672aa"
+      },
+      "store": {
+        "entries": 172,
+        "sha256": "0414f045edc0e4145f52f483e9e916967874941fb465a719fe09497c86643f06"
+      }
+    }
+  },
+  "subjects": {
+    "A": {
+      "binary_sha256": "8c1717fa9786e16d3bec0c3181c02c1803484ed857d262580ce88d54056504c5",
+      "commit": "8dc33c9cc641e2b641c5b8e7075652a3e9e1f70b",
+      "complete_sha256": "567606a6da19a31ea0a4bc785fb262b637c2a6a10fa635485b5743770be651c2",
+      "linker_inputs": 335,
+      "ordered_externs": 239,
+      "profile_sha256": "481ada8a40c70dad11b3c7e8871e9a52207d78447ca5e8ace06fc4aec2d2b5a7",
+      "receipt": "cfac7fee21bc97eb45ccaccccc1ec0e86a75dadb9261ed3334107bf6ba85170b",
+      "rlibs": 326,
+      "size": 43360264,
+      "terminal_sha256": "3c8f731d5f0d0e85836fd90fe3d61eb04d266d4a4f5c051b00355c3419d32079",
+      "tree": "feecb81aec0dd64d4ecb8622729605f01177c3f8"
+    },
+    "B": {
+      "binary_sha256": "22df91fc7f26491ad6208b5f66f44f8cf1b2d9c21b6f5ecfbbd3e91daf348c32",
+      "commit": "ec660ad8b5f3327924988ef3daa9e4444106b40e",
+      "complete_sha256": "5477989c368fd8d76d21fd60b287f96c89fa71c3ec9f96cb19b13bdb4bf3e513",
+      "linker_inputs": 335,
+      "ordered_externs": 239,
+      "profile_sha256": "481ada8a40c70dad11b3c7e8871e9a52207d78447ca5e8ace06fc4aec2d2b5a7",
+      "receipt": "812a3a33061e93f87e23123a62e10f5529f7140f5df0f5ed6e7c8d79296a9312",
+      "rlibs": 326,
+      "size": 43360176,
+      "terminal_sha256": "04145ba1002d21cfc7d095ee8bd79b0d8da9ffcee7caa66a3b058fae50aadecc",
+      "tree": "a68c4d07094f89db61c1c911e09d4cbacf56617d"
+    }
+  }
+}
