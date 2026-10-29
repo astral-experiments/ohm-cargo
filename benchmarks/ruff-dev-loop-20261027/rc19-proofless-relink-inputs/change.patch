@@ -1,0 +1,139 @@
+diff --git a/src/compiler/mod.rs b/src/compiler/mod.rs
+index c3485487bb..1501e782e3 100644
+--- a/src/compiler/mod.rs
++++ b/src/compiler/mod.rs
+@@ -691,22 +691,40 @@ impl RelinkCachePaths {
+ 
+     fn initialize(
+         &self,
++        reuse_codegen: bool,
+         unused_externs: Option<&std::collections::BTreeSet<InternedString>>,
+     ) -> CargoResult<()> {
++        let write_manifest = reuse_codegen || unused_externs.is_some();
++        let mut has_objects = false;
+         let mut objects = Vec::new();
+         for path in self.codegen_temps()? {
+             match path.extension().and_then(OsStr::to_str) {
+-                Some("o" | "obj") => objects.push(cached_file(path)?),
++                Some("o" | "obj") => {
++                    has_objects = true;
++                    if write_manifest {
++                        objects.push(cached_file(path)?);
++                    } else {
++                        paths::open_regular(&path)?;
++                    }
++                }
+                 Some("bc") => paths::remove_file(&path)?,
+                 _ => {}
+             }
+         }
+-        objects.sort_by(|left, right| left.path.cmp(&right.path));
++        if !write_manifest {
++            if has_objects {
++                // A successful wrapper can leave the expected executable missing.
++                paths::open_regular(&self.rlink)?;
++                cached_object(self.executable.clone())?;
++            }
++            // A wrapper may have recreated the manifest while rustc was running.
++            return invalidate_relink_entry(&self.manifest);
++        }
+         if objects.is_empty() {
+             // A successful wrapper invocation may intentionally skip compilation.
+-            // The cache was invalidated before running rustc, so leave it absent.
+             return Ok(());
+         }
++        objects.sort_by(|left, right| left.path.cmp(&right.path));
+         let manifest = RelinkCacheManifest {
+             version: RELINK_CACHE_VERSION,
+             rlink: cached_file(self.rlink.clone())?,
+@@ -825,21 +843,23 @@ impl RelinkCachePaths {
+     }
+ 
+     fn invalidate(&self) -> CargoResult<()> {
+-        for path in [&self.manifest, &self.rlink] {
+-            if let Err(error) = paths::remove_file(path)
+-                && !error
+-                    .downcast_ref::<std::io::Error>()
+-                    .is_some_and(|e| e.kind() == std::io::ErrorKind::NotFound)
+-            {
+-                return Err(error).with_context(|| {
+-                    format!("failed to invalidate relink cache `{}`", path.display())
+-                });
+-            }
+-        }
+-        Ok(())
++        invalidate_relink_entry(&self.manifest)?;
++        invalidate_relink_entry(&self.rlink)
+     }
+ }
+ 
++fn invalidate_relink_entry(path: &Path) -> CargoResult<()> {
++    if let Err(error) = paths::remove_file(path)
++        && !error
++            .downcast_ref::<std::io::Error>()
++            .is_some_and(|e| e.kind() == std::io::ErrorKind::NotFound)
++    {
++        return Err(error)
++            .with_context(|| format!("failed to invalidate relink cache `{}`", path.display()));
++    }
++    Ok(())
++}
++
+ fn cached_file(path: PathBuf) -> CargoResult<RelinkCacheFile> {
+     let mut hasher = blake3::Hasher::new();
+     hasher
+@@ -1909,7 +1929,7 @@ fn rustc(
+             let unused_externs = (unused_integration_dependency.is_some() || record_dev_unused)
+                 .then(|| state.recorded_unused_externs())
+                 .flatten();
+-            cache.initialize(unused_externs.as_ref())?;
++            cache.initialize(reuse_codegen, unused_externs.as_ref())?;
+         }
+ 
+         if rustc_dep_info_loc.exists() {
+@@ -4553,6 +4573,36 @@ mod relink_cache_tests {
+         Ok(())
+     }
+ 
++    #[test]
++    fn relink_cache_without_a_consumer_still_validates_outputs() -> CargoResult<()> {
++        let dir = tempfile::tempdir()?;
++        let cache = RelinkCachePaths::new(dir.path().join("app"));
++        fs::create_dir(&cache.objects)?;
++        fs::write(&cache.manifest, b"previous proof")?;
++        cache.initialize(false, None)?;
++        assert!(!cache.manifest.exists());
++
++        fs::write(cache.objects.join("a.o"), b"codegen")?;
++        fs::write(cache.objects.join("a.bc"), b"bitcode")?;
++        fs::write(&cache.rlink, b"recipe")?;
++        assert!(cache.initialize(false, None).is_err());
++
++        fs::write(&cache.executable, b"exe")?;
++        fs::write(&cache.manifest, b"previous proof")?;
++        cache.initialize(false, None)?;
++        assert!(!cache.manifest.exists());
++        assert!(!cache.objects.join("a.bc").exists());
++        assert!(cache.objects.join("a.o").is_file());
++
++        cache.initialize(false, Some(&Default::default()))?;
++        assert!(
++            cache
++                .unused_extern_names()
++                .is_some_and(|names| names.is_empty())
++        );
++        Ok(())
++    }
++
+     #[test]
+     fn incomplete_object_list_invalidates_relink_manifest() -> CargoResult<()> {
+         let dir = tempfile::tempdir()?;
+@@ -4563,7 +4613,7 @@ mod relink_cache_tests {
+         for name in ["a.o", "b.o"] {
+             fs::write(cache.objects.join(name), b"codegen")?;
+         }
+-        cache.initialize(None)?;
++        cache.initialize(true, None)?;
+         assert!(cache.is_valid());
+ 
+         let mut manifest: serde_json::Value = serde_json::from_slice(&fs::read(&cache.manifest)?)?;
