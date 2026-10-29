@@ -1,0 +1,117 @@
+{
+  "caller": "9c7e1b83172431a3a524bdd15b63a07ae2f1ef98e2a5f30a146626de9597dedf",
+  "compiler": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+  "directory_ids": {
+    "F": {
+      "home": [
+        64800,
+        14449732
+      ],
+      "shared": [
+        64800,
+        14449734
+      ],
+      "target": [
+        64800,
+        14449733
+      ]
+    },
+    "R": {
+      "home": [
+        64800,
+        14438139
+      ],
+      "shared": [
+        64800,
+        14438141
+      ],
+      "target": [
+        64800,
+        14438140
+      ]
+    },
+    "X": {
+      "home": [
+        64800,
+        14586503
+      ],
+      "shared": [
+        64800,
+        14586505
+      ],
+      "target": [
+        64800,
+        14586504
+      ]
+    },
+    "Y": {
+      "home": [
+        64800,
+        14692909
+      ],
+      "shared": [
+        64800,
+        14692911
+      ],
+      "target": [
+        64800,
+        14692910
+      ]
+    }
+  },
+  "driver": "d8adcc610bdae225344ed1310ff9708784634d1fecafa600f7758a5d48d2cc95",
+  "help_snapshot_only_source_amendment": "9c4ee237da61df2017834986075dba643244d0c182deb0231570e91dbcf8c6dc",
+  "original": {
+    "crates/ruff_python_parser/resources/inline/err/from_import_parenthesized_star.py": "3be59b3fe72e77a1933980a8f61dead543218b53ab435db5ba719d380ac2d95a",
+    "crates/ruff_python_parser/src/parser/statement.rs": "0fb0c0a76ca90b218d1b310a30b79ca17ae8cf139aa7a3102854f62cab7f7658",
+    "crates/ruff_python_parser/tests/snapshots/invalid_syntax@from_import_parenthesized_star.py.snap": "f14de100f5cb6af91a826f4ea71bb5b58c5f98bb48c2149fbc3df63df2dfde8e"
+  },
+  "plan": "67fc65a718d9aac461cb11d52da777f9d8f350d0271a65958209449162d01ef3",
+  "registry": {
+    "bytes": 193133325,
+    "files": 9600,
+    "sha": "432d3703e5e8b3e405297ccffa9832c2e46f3d6865f6aa581cfd056bab7f9c65"
+  },
+  "scripts": {
+    "analysis-selftests.json": "db476aab0579c55707b105e9fbb53012dee846dd928f439a98212fc6d6d8a6a7",
+    "analyze.py": "80642724b98d22f0e660b742d576ba7e7199c893aba1f3d4f53794a509e44a3f",
+    "bind-images.py": "8845d4ad762800b08e90a86a55515cc6bbdf340d1722f336411f48e0b4c78b65",
+    "common.py": "172064e5bc5f27a7beb87b55fc2a30df22960dfddcab3f647ef42f5420044ccf",
+    "mount-v2.sh": "1ceee6719a7d24bd7e425d7f331977b58509a8e7e229b82c7ef0714398691fdc",
+    "prepare.py": "c49d1b9f4c698b2e67c5cfdff8551039d5faf49733d0e2afebb4e0b72be00020",
+    "source-helper/scope.py": "813a3291769b67e2c4151b3c27f5efdde979cb420947379505318b76e9b2a4ca",
+    "source-helper/supplement.py": "30482dd85d2ad3e2fc5da8d3668098c83d4c090cfaac2094f37a43e7e98ea553",
+    "study-v2.py": "c4ecd755e34f3568769cdc11f4c6d3a1d8111f1af60999878b60ddf9eab67dd2",
+    "verify-native.py": "1cebadccacc1afbe807c85c4de854862db71fdc9a4a46fe4be0da96e797bfe8c",
+    "worker.py": "35ee565f3f495d330188bea42431c10562be1817bc5b72bdb77aefcb426f7601"
+  },
+  "setup": "e2bfc0855fe0f55dff653878be5c75f52adf63c2c5752004b95f3aa8877e59c4",
+  "source": {
+    "bytes": 94050079,
+    "count": 11244,
+    "sha256": "fb2fc8a9e0c631b53decd75b8ea6966722d78619bded441702d52614b2ee2739"
+  },
+  "source_runtime": "3124dc80a8af4b9461d8b7b67518e43388bb593d9d8e9429f40d83f721d2b3e5",
+  "source_specification_sha256": "e6d4933f6e9b7e9b34436bfc61998bab13931a5ff966ab467aa7ced0bebbb94c",
+  "space": {
+    "home_bytes_free": 70089768960,
+    "scratch_bytes_free": 60826664960
+  },
+  "subjects": {
+    "F": {
+      "receipt_sha256": "cdd00d02803a9cc427acbdd2be1401c457f1dd87d84e25863939ff20c938bdda",
+      "sha256": "ad893345f66ade1c886309b0fc2f98ec5b225d206c176e356531f0e3467eff81",
+      "source": "a8f0c9aa0412aa259c686416a48aa8d2cf92da72",
+      "stamp": "a8f0c9aa0412aa259c686416a48aa8d2cf92da72",
+      "version": "cargo 1.99.0 (a8f0c9aa0 2026-10-29)\nrelease: 1.99.0\ncommit-hash: a8f0c9aa0412aa259c686416a48aa8d2cf92da72\ncommit-date: 2026-10-29\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.0.13)\nos: Ubuntu 24.4.0 (noble) [64-bit]\n"
+    },
+    "R": {
+      "receipt_sha256": "c705bdba36b41e278ef6a678df8b03718685e81dd64aa7855193145df1daa737",
+      "sha256": "60d68cba36a784928893b024ce0737bb82d2aa563092c5e283502bd456e8c79c",
+      "source": "2447f7f4eacb4fdf499899929f08d0de19abb4d0",
+      "stamp": "2447f7f4eacb4fdf499899929f08d0de19abb4d0",
+      "version": "cargo 1.99.0 (2447f7f4e 2026-10-29)\nrelease: 1.99.0\ncommit-hash: 2447f7f4eacb4fdf499899929f08d0de19abb4d0\ncommit-date: 2026-10-29\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.0.13)\nos: Ubuntu 24.4.0 (noble) [64-bit]\n"
+    }
+  },
+  "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+}
