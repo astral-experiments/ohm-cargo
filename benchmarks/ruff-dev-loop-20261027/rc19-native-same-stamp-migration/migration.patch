@@ -1,0 +1,21 @@
+diff --git a/src/compiler/fingerprint/mod.rs b/src/compiler/fingerprint/mod.rs
+index 97efe9d31f..5f03c9c1c0 100644
+--- a/src/compiler/fingerprint/mod.rs
++++ b/src/compiler/fingerprint/mod.rs
+@@ -2709,6 +2709,16 @@ fn calculate_normal(
+     if super::unit_suppresses_default_public_api_hash(build_runner, unit) {
+         ("ohm-terminal-check-public-api-hash", 1_u8).hash(&mut config);
+     }
++    if unit.mode == CompileMode::Test
++        && unit.target.is_test()
++        && build_runner.bcx.gctx.cli_unstable().ohm_defaults()
++        && unit_can_use_relink_only(build_runner, unit)
++        && unit.pkg.targets().iter().any(|target| target.is_lib())
++    {
++        // Older Cargo could mark an integration executable fresh without running
++        // its linker. Even an unchanged command must revalidate that output once.
++        ("ohm-native-integration-relink", 1_u8).hash(&mut config);
++    }
+ 
+     let compile_kind = unit.kind.fingerprint_hash();
+     let mut declared_features = unit.pkg.summary().features().keys().collect::<Vec<_>>();
