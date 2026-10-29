@@ -262,9 +262,17 @@ cleanup, without holding build locks while counting them. Actual collection
 reports `Removing` and `Removed`, counts files as it deletes them, and uses small
 batches to yield to active builds. Counts exclude GC bookkeeping; like
 `cargo clean`, byte totals use file lengths rather than physical disk usage.
-Concurrent builds or cleanup can change the preview's estimate.
-If a root is busy or work remains after the per-root budget, invoke
-`cargo +ohm gc` again to continue. `--quiet` suppresses the output.
+Concurrent builds or cleanup can change the preview's estimate. A preview can
+count a readable file whose parent later denies a rename or deletion.
+One invocation keeps draining productive batches until cleanup finishes; there
+is no overall time limit. Busy contexts and paths that cannot be safely removed
+are reported with a reason. Use `cargo +ohm gc -v` to see the exact lock file.
+For example, `lsof /path/to/debug/.cargo-build-lock` shows which processes
+have that file open. When the usage database has another writer, GC can still
+remove eligible ThinLTO objects and legacy workspace files under their file locks.
+If GC encounters a permission error or an unreadable database, it finishes
+independent work, prints the totals, and exits with an error listing the affected
+paths. `--quiet` suppresses routine output.
 
 Cleanup only removes recognized namespaces inside marked shared build roots.
 It preserves external targets, ordinary checkout targets, unknown directory
