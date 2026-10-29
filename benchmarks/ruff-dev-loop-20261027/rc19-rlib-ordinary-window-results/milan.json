@@ -1,0 +1,571 @@
+{
+  "admission": {
+    "affinity": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31
+    ],
+    "genuine_sources": {
+      "historical": {
+        "crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM222.py": "44148a51819e5dacadf63eabf8b51abb27278b91c698f5e909e9d245fcf7d2af",
+        "crates/ruff_linter/src/rules/flake8_simplify/snapshots/ruff_linter__rules__flake8_simplify__tests__SIM222_SIM222.py.snap": "31709191dbae367577e8ef151c6332ec03611a0a263a013684d852bb8d9f50a4",
+        "crates/ruff_python_ast/src/helpers.rs": "c26e408db88fdecac6eedac5ac51eee6fcb0688a8896b9882228e3ede072f9a3"
+      },
+      "parent": {
+        "crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM222.py": "1f6f803972ae9f5269f75cb4610fd746184f3b2b467ba4f936893456e40409ee",
+        "crates/ruff_linter/src/rules/flake8_simplify/snapshots/ruff_linter__rules__flake8_simplify__tests__SIM222_SIM222.py.snap": "fba885d2dcbe06d8e89c468a60957eece73b6e2e3311d10297c1a56dc88d8dbe",
+        "crates/ruff_python_ast/src/helpers.rs": "7e6f1fd514893831f5011dde8098efeb0fba372f25a81e464060889b661fa08e"
+      }
+    },
+    "images": {
+      "cargo": "02a86ebd2d9e4f237b33f212102b81ed145eb77fae090d67e379cb6f1d70a573",
+      "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+    },
+    "observer": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31
+    ],
+    "origin": "503e3a4d1350444abd19973f1576e6d816971c4acc6fb1f5cc0a479eae24870b",
+    "trained": [
+      248,
+      true
+    ],
+    "typed_sha256": "874183d1024728fd67ade937e99e5bc5abe9d811523a99d84a996f49b18cbb79"
+  },
+  "samples": [
+    {
+      "before": "503e3a4d1350444abd19973f1576e6d816971c4acc6fb1f5cc0a479eae24870b",
+      "consumer": {
+        "ast": "c7a4412d181df680a0f8d7de749fe2297b1396dc3732ce7c6920e9d76300d6b5",
+        "executable": "3783237fc7b20185905c2ffdb14e45feb183f88a7d83d6ab988dc4a0087c64f4",
+        "exit": 0,
+        "input": "e981376810375b7214c83ccd0dd840cd0110c7ce31d90cffc45ae1bd9706c4c2",
+        "linter": "b2b244090e717df20dcf03b759e563859c08c2b6f267a2ea66602afaea024d45",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout": "2 SIM222\n3 SIM222\n4 SIM222\n"
+      },
+      "direction": "parent",
+      "phases": {
+        "edit": {
+          "bounds": {
+            "create_bracket": 1191640,
+            "hi": 268824130,
+            "lo": 266500851,
+            "publish_bracket": 1131639
+          },
+          "dirty": [
+            "ruff_db",
+            "ruff_linter",
+            "ruff_python_ast",
+            "ruff_python_codegen",
+            "ruff_python_importer",
+            "ruff_python_index",
+            "ruff_python_literal",
+            "ruff_python_parser",
+            "ruff_python_semantic",
+            "ruff_ranged_value"
+          ],
+          "record": {
+            "command_ns": 11471456843,
+            "events": [
+              {
+                "cookie": 0,
+                "hi": 10976250699,
+                "lo": 10975059059,
+                "name": ".tmpS1B4Lv.temp-archive",
+                "role": "create"
+              },
+              {
+                "cookie": 591446,
+                "hi": 11243883189,
+                "lo": 11242751550,
+                "name": "<archive>",
+                "role": "publish"
+              },
+              {
+                "cookie": 0,
+                "hi": 11243994886,
+                "lo": 11243915207,
+                "name": ".tmpS1B4Lv.temp-archive",
+                "role": "remove"
+              }
+            ],
+            "observer_cpu_ns": 294643699,
+            "other": 519,
+            "returncode": 0
+          },
+          "stderr_sha256": "bbbb4c5085b95fc98c933fe5bdd582f2fbc46d155d4b2d5497aa73bd5a200b0a",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "repeat": {
+          "bounds": null,
+          "dirty": [],
+          "record": {
+            "command_ns": 287585393,
+            "events": [],
+            "observer_cpu_ns": 9031667,
+            "other": 0,
+            "returncode": 0
+          },
+          "stderr_sha256": "5604fc8f0c276397a55db4bd7008236712075c0ad37d3b3a0f1fe362b1b85a36",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "before": "b2b244090e717df20dcf03b759e563859c08c2b6f267a2ea66602afaea024d45",
+      "consumer": {
+        "ast": "0e8b30c466ca4f17c06791a1ad4076fa16845e8a38129ff43091bf5130dd42a5",
+        "executable": "3d28badf21d9262fe01d04412882817d0be7605c1b56136b336a90a50d4ebfd9",
+        "exit": 0,
+        "input": "e981376810375b7214c83ccd0dd840cd0110c7ce31d90cffc45ae1bd9706c4c2",
+        "linter": "da9fb7db68af32d7a9f7b8b69b14a1d5890f95f9beeddc5898665b94e947e580",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout": "1 SIM222\n"
+      },
+      "direction": "historical",
+      "phases": {
+        "edit": {
+          "bounds": {
+            "create_bracket": 1914881,
+            "hi": 493615151,
+            "lo": 489558529,
+            "publish_bracket": 2141741
+          },
+          "dirty": [
+            "ruff_db",
+            "ruff_linter",
+            "ruff_python_ast",
+            "ruff_python_codegen",
+            "ruff_python_importer",
+            "ruff_python_index",
+            "ruff_python_literal",
+            "ruff_python_parser",
+            "ruff_python_semantic",
+            "ruff_ranged_value"
+          ],
+          "record": {
+            "command_ns": 11550248286,
+            "events": [
+              {
+                "cookie": 0,
+                "hi": 10751759838,
+                "lo": 10749844957,
+                "name": ".tmpg3Igui.temp-archive",
+                "role": "create"
+              },
+              {
+                "cookie": 591536,
+                "hi": 11243460108,
+                "lo": 11241318367,
+                "name": "<archive>",
+                "role": "publish"
+              },
+              {
+                "cookie": 0,
+                "hi": 11243548561,
+                "lo": 11243493410,
+                "name": ".tmpg3Igui.temp-archive",
+                "role": "remove"
+              }
+            ],
+            "observer_cpu_ns": 302748494,
+            "other": 519,
+            "returncode": 0
+          },
+          "stderr_sha256": "f2aa599ea5d7fcca5760c2af2f14b8eb91f6cbbb367b9d2a68ad65f69f00ec88",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "repeat": {
+          "bounds": null,
+          "dirty": [],
+          "record": {
+            "command_ns": 377791203,
+            "events": [],
+            "observer_cpu_ns": 12782542,
+            "other": 0,
+            "returncode": 0
+          },
+          "stderr_sha256": "8a2933ae25e59188be988ea6218274cb341f13d8bc4b533f57b12ececd4be8b3",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "before": "da9fb7db68af32d7a9f7b8b69b14a1d5890f95f9beeddc5898665b94e947e580",
+      "consumer": {
+        "ast": "d1b58d99a9ab13fadc6ac830f575129e8308406b830cef4937fcfd7daf485967",
+        "executable": "3783237fc7b20185905c2ffdb14e45feb183f88a7d83d6ab988dc4a0087c64f4",
+        "exit": 0,
+        "input": "e981376810375b7214c83ccd0dd840cd0110c7ce31d90cffc45ae1bd9706c4c2",
+        "linter": "179a5bcad88f925c0c77dca56e7ccc0810af5a9ebda91e36d43bb04d4a10ee8f",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout": "2 SIM222\n3 SIM222\n4 SIM222\n"
+      },
+      "direction": "parent",
+      "phases": {
+        "edit": {
+          "bounds": {
+            "create_bracket": 800104,
+            "hi": 204996310,
+            "lo": 203757806,
+            "publish_bracket": 438400
+          },
+          "dirty": [
+            "ruff_db",
+            "ruff_linter",
+            "ruff_python_ast",
+            "ruff_python_codegen",
+            "ruff_python_importer",
+            "ruff_python_index",
+            "ruff_python_literal",
+            "ruff_python_parser",
+            "ruff_python_semantic",
+            "ruff_ranged_value"
+          ],
+          "record": {
+            "command_ns": 13209736771,
+            "events": [
+              {
+                "cookie": 0,
+                "hi": 12750318275,
+                "lo": 12749518171,
+                "name": ".tmpc7oLtc.temp-archive",
+                "role": "create"
+              },
+              {
+                "cookie": 591634,
+                "hi": 12954514481,
+                "lo": 12954076081,
+                "name": "<archive>",
+                "role": "publish"
+              },
+              {
+                "cookie": 0,
+                "hi": 12954685548,
+                "lo": 12954543154,
+                "name": ".tmpc7oLtc.temp-archive",
+                "role": "remove"
+              }
+            ],
+            "observer_cpu_ns": 369752383,
+            "other": 519,
+            "returncode": 0
+          },
+          "stderr_sha256": "31e4522b7951135d48c68f0af2b7bee551580c2dbd1248a08ad1071ca139d35c",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "repeat": {
+          "bounds": null,
+          "dirty": [],
+          "record": {
+            "command_ns": 372224200,
+            "events": [],
+            "observer_cpu_ns": 11088041,
+            "other": 0,
+            "returncode": 0
+          },
+          "stderr_sha256": "8b1fd2394f7b6f177ede882431154a419bd9f404f00add314c912e91a7fc0ec0",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "before": "179a5bcad88f925c0c77dca56e7ccc0810af5a9ebda91e36d43bb04d4a10ee8f",
+      "consumer": {
+        "ast": "03c082355da3b4029c5afdb14252b47ecefbf891efbc7c2e5c4f50cfe10a3f19",
+        "executable": "3d28badf21d9262fe01d04412882817d0be7605c1b56136b336a90a50d4ebfd9",
+        "exit": 0,
+        "input": "e981376810375b7214c83ccd0dd840cd0110c7ce31d90cffc45ae1bd9706c4c2",
+        "linter": "03a9fca57a36ee457fe90df418a70ef384704993d6f45a2277e7ca8b3ad072c9",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout": "1 SIM222\n"
+      },
+      "direction": "historical",
+      "phases": {
+        "edit": {
+          "bounds": {
+            "create_bracket": 1477670,
+            "hi": 438170396,
+            "lo": 436486544,
+            "publish_bracket": 206182
+          },
+          "dirty": [
+            "ruff_db",
+            "ruff_linter",
+            "ruff_python_ast",
+            "ruff_python_codegen",
+            "ruff_python_importer",
+            "ruff_python_index",
+            "ruff_python_literal",
+            "ruff_python_parser",
+            "ruff_python_semantic",
+            "ruff_ranged_value"
+          ],
+          "record": {
+            "command_ns": 12692606714,
+            "events": [
+              {
+                "cookie": 0,
+                "hi": 11962190883,
+                "lo": 11960713213,
+                "name": ".tmpl9wdxR.temp-archive",
+                "role": "create"
+              },
+              {
+                "cookie": 591740,
+                "hi": 12398883609,
+                "lo": 12398677427,
+                "name": "<archive>",
+                "role": "publish"
+              },
+              {
+                "cookie": 0,
+                "hi": 12400031258,
+                "lo": 12398677427,
+                "name": ".tmpl9wdxR.temp-archive",
+                "role": "remove"
+              }
+            ],
+            "observer_cpu_ns": 557314949,
+            "other": 519,
+            "returncode": 0
+          },
+          "stderr_sha256": "1ffc5881bc66e964ffdb2787405fd6c521e9eca3bac4ef1b3bd7d8a8485940bb",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "repeat": {
+          "bounds": null,
+          "dirty": [],
+          "record": {
+            "command_ns": 505454247,
+            "events": [],
+            "observer_cpu_ns": 67877347,
+            "other": 0,
+            "returncode": 0
+          },
+          "stderr_sha256": "9c73735a1033f44f00ea48e15c38d73843ff5a391557aac653bd81d564a34b5f",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "before": "03a9fca57a36ee457fe90df418a70ef384704993d6f45a2277e7ca8b3ad072c9",
+      "consumer": {
+        "ast": "4431349932802f0a09120bde5ec08a581f88e6a7aa0ce6f28e7cb8e66db0fa70",
+        "executable": "3783237fc7b20185905c2ffdb14e45feb183f88a7d83d6ab988dc4a0087c64f4",
+        "exit": 0,
+        "input": "e981376810375b7214c83ccd0dd840cd0110c7ce31d90cffc45ae1bd9706c4c2",
+        "linter": "0fbda5aa9cb6da6490ffb45a2a2c58c56b1b449056bc603b89f3b4b52ae55e2e",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout": "2 SIM222\n3 SIM222\n4 SIM222\n"
+      },
+      "direction": "parent",
+      "phases": {
+        "edit": {
+          "bounds": {
+            "create_bracket": 326616,
+            "hi": 556384658,
+            "lo": 555094706,
+            "publish_bracket": 963336
+          },
+          "dirty": [
+            "ruff_db",
+            "ruff_linter",
+            "ruff_python_ast",
+            "ruff_python_codegen",
+            "ruff_python_importer",
+            "ruff_python_index",
+            "ruff_python_literal",
+            "ruff_python_parser",
+            "ruff_python_semantic",
+            "ruff_ranged_value"
+          ],
+          "record": {
+            "command_ns": 13069532352,
+            "events": [
+              {
+                "cookie": 0,
+                "hi": 12278872643,
+                "lo": 12278546027,
+                "name": ".tmpAw7DkD.temp-archive",
+                "role": "create"
+              },
+              {
+                "cookie": 591832,
+                "hi": 12834930685,
+                "lo": 12833967349,
+                "name": "<archive>",
+                "role": "publish"
+              },
+              {
+                "cookie": 0,
+                "hi": 12835046640,
+                "lo": 12833967349,
+                "name": ".tmpAw7DkD.temp-archive",
+                "role": "remove"
+              }
+            ],
+            "observer_cpu_ns": 850894573,
+            "other": 519,
+            "returncode": 0
+          },
+          "stderr_sha256": "5a2ec34d659fbf20744190a3a7898e10a6f92425e87e8860837f347caeba437e",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "repeat": {
+          "bounds": null,
+          "dirty": [],
+          "record": {
+            "command_ns": 649529239,
+            "events": [],
+            "observer_cpu_ns": 57160906,
+            "other": 0,
+            "returncode": 0
+          },
+          "stderr_sha256": "92bec25ad54c650450560360480d5f94d3d8ad203f81a2c724e0c641b330bbfb",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "before": "0fbda5aa9cb6da6490ffb45a2a2c58c56b1b449056bc603b89f3b4b52ae55e2e",
+      "consumer": {
+        "ast": "ee276a03aa183dbe8244002b3b552d1e9ddc3d604bf8bc8b0ce57472f93aaf2d",
+        "executable": "3d28badf21d9262fe01d04412882817d0be7605c1b56136b336a90a50d4ebfd9",
+        "exit": 0,
+        "input": "e981376810375b7214c83ccd0dd840cd0110c7ce31d90cffc45ae1bd9706c4c2",
+        "linter": "22f1e8f6c172768fa2a154de031410cfb43112c68f09414c6daa02ff83e2e9d3",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout": "1 SIM222\n"
+      },
+      "direction": "historical",
+      "phases": {
+        "edit": {
+          "bounds": {
+            "create_bracket": 342285,
+            "hi": 602843606,
+            "lo": 601076801,
+            "publish_bracket": 1424520
+          },
+          "dirty": [
+            "ruff_db",
+            "ruff_linter",
+            "ruff_python_ast",
+            "ruff_python_codegen",
+            "ruff_python_importer",
+            "ruff_python_index",
+            "ruff_python_literal",
+            "ruff_python_parser",
+            "ruff_python_semantic",
+            "ruff_ranged_value"
+          ],
+          "record": {
+            "command_ns": 13137161563,
+            "events": [
+              {
+                "cookie": 0,
+                "hi": 12285636632,
+                "lo": 12285294347,
+                "name": ".tmp6rHfgo.temp-archive",
+                "role": "create"
+              },
+              {
+                "cookie": 591926,
+                "hi": 12888137953,
+                "lo": 12886713433,
+                "name": "<archive>",
+                "role": "publish"
+              },
+              {
+                "cookie": 0,
+                "hi": 12889544271,
+                "lo": 12886713433,
+                "name": ".tmp6rHfgo.temp-archive",
+                "role": "remove"
+              }
+            ],
+            "observer_cpu_ns": 399849844,
+            "other": 519,
+            "returncode": 0
+          },
+          "stderr_sha256": "54e349353326d01379f0c8df1f79427141f2051879a270e1dcc41935cf0ed328",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "repeat": {
+          "bounds": null,
+          "dirty": [],
+          "record": {
+            "command_ns": 357794300,
+            "events": [],
+            "observer_cpu_ns": 10514257,
+            "other": 0,
+            "returncode": 0
+          },
+          "stderr_sha256": "0b53209db424367e80c52cd8cde8b75e37af110438a0efde777104a1463956de",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    }
+  ]
+}

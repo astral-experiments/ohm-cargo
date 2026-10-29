@@ -1,0 +1,516 @@
+{
+  "admission": {
+    "affinity": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "genuine_sources": {
+      "historical": {
+        "crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM222.py": "44148a51819e5dacadf63eabf8b51abb27278b91c698f5e909e9d245fcf7d2af",
+        "crates/ruff_linter/src/rules/flake8_simplify/snapshots/ruff_linter__rules__flake8_simplify__tests__SIM222_SIM222.py.snap": "31709191dbae367577e8ef151c6332ec03611a0a263a013684d852bb8d9f50a4",
+        "crates/ruff_python_ast/src/helpers.rs": "c26e408db88fdecac6eedac5ac51eee6fcb0688a8896b9882228e3ede072f9a3"
+      },
+      "parent": {
+        "crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM222.py": "1f6f803972ae9f5269f75cb4610fd746184f3b2b467ba4f936893456e40409ee",
+        "crates/ruff_linter/src/rules/flake8_simplify/snapshots/ruff_linter__rules__flake8_simplify__tests__SIM222_SIM222.py.snap": "fba885d2dcbe06d8e89c468a60957eece73b6e2e3311d10297c1a56dc88d8dbe",
+        "crates/ruff_python_ast/src/helpers.rs": "7e6f1fd514893831f5011dde8098efeb0fba372f25a81e464060889b661fa08e"
+      }
+    },
+    "images": {
+      "cargo": "02a86ebd2d9e4f237b33f212102b81ed145eb77fae090d67e379cb6f1d70a573",
+      "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+    },
+    "observer": [
+      8
+    ],
+    "origin": "c443d4bf8c7a6c2d8302e1506836cb74ebe00b69f6b866cd423c0c2e08c636ba",
+    "trained": [
+      248,
+      true
+    ],
+    "typed_sha256": "baa38b2d7c6b741d36ba661340989461355f9de598ee50e850d64ee9017f61f4"
+  },
+  "samples": [
+    {
+      "before": "c443d4bf8c7a6c2d8302e1506836cb74ebe00b69f6b866cd423c0c2e08c636ba",
+      "consumer": {
+        "ast": "b442c21815626dc8eef1069e7e09230b1d3efa816cabc8ace21da9d75cceabe2",
+        "executable": "65ae068b83bac043d2f8eb42057c020c73ddfe1423f344f436f620abefe06ec1",
+        "exit": 0,
+        "input": "e981376810375b7214c83ccd0dd840cd0110c7ce31d90cffc45ae1bd9706c4c2",
+        "linter": "0e51d501321a02055bb33dfcb4c636c0e420265838034b28becf856df63722c7",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout": "2 SIM222\n3 SIM222\n4 SIM222\n"
+      },
+      "direction": "parent",
+      "phases": {
+        "edit": {
+          "bounds": {
+            "create_bracket": 1858789,
+            "hi": 239600818,
+            "lo": 236461970,
+            "publish_bracket": 1280059
+          },
+          "dirty": [
+            "ruff_db",
+            "ruff_linter",
+            "ruff_python_ast",
+            "ruff_python_codegen",
+            "ruff_python_importer",
+            "ruff_python_index",
+            "ruff_python_literal",
+            "ruff_python_parser",
+            "ruff_python_semantic",
+            "ruff_ranged_value"
+          ],
+          "record": {
+            "command_ns": 9954762835,
+            "events": [
+              {
+                "cookie": 0,
+                "hi": 9504458605,
+                "lo": 9502599816,
+                "name": ".tmpgvX6f4.temp-archive",
+                "role": "create"
+              },
+              {
+                "cookie": 980721,
+                "hi": 9742200634,
+                "lo": 9740920575,
+                "name": "<archive>",
+                "role": "publish"
+              },
+              {
+                "cookie": 0,
+                "hi": 9742346303,
+                "lo": 9742230478,
+                "name": ".tmpgvX6f4.temp-archive",
+                "role": "remove"
+              }
+            ],
+            "observer_cpu_ns": 206037636,
+            "other": 519,
+            "returncode": 0
+          },
+          "stderr_sha256": "5b451a8873c2b031066eefa09cb4d8ce45165730bee8736ffa3917021ead97e5",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "repeat": {
+          "bounds": null,
+          "dirty": [],
+          "record": {
+            "command_ns": 260952253,
+            "events": [],
+            "observer_cpu_ns": 6355305,
+            "other": 0,
+            "returncode": 0
+          },
+          "stderr_sha256": "f4403412cb20dc7d8a0a94c08c9c8853e4bac9b3e8489158834f30512311ed97",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "before": "0e51d501321a02055bb33dfcb4c636c0e420265838034b28becf856df63722c7",
+      "consumer": {
+        "ast": "9d71f8e8a1d5049a2d5de7166764ae9c79c90f37de58e4d6cef9f520fa54e545",
+        "executable": "b387b46b153116bae8bafe28913945c055eb7113e626d77240134e455b101aef",
+        "exit": 0,
+        "input": "e981376810375b7214c83ccd0dd840cd0110c7ce31d90cffc45ae1bd9706c4c2",
+        "linter": "f64694ea465151ebc732b373a2f41562d7ea605d6b766f40b72c9e5e1c2634cf",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout": "1 SIM222\n"
+      },
+      "direction": "historical",
+      "phases": {
+        "edit": {
+          "bounds": {
+            "create_bracket": 237318,
+            "hi": 165346523,
+            "lo": 164162409,
+            "publish_bracket": 946796
+          },
+          "dirty": [
+            "ruff_db",
+            "ruff_linter",
+            "ruff_python_ast",
+            "ruff_python_codegen",
+            "ruff_python_importer",
+            "ruff_python_index",
+            "ruff_python_literal",
+            "ruff_python_parser",
+            "ruff_python_semantic",
+            "ruff_ranged_value"
+          ],
+          "record": {
+            "command_ns": 10174201568,
+            "events": [
+              {
+                "cookie": 0,
+                "hi": 9794505413,
+                "lo": 9794268095,
+                "name": ".tmpsgZjAH.temp-archive",
+                "role": "create"
+              },
+              {
+                "cookie": 980817,
+                "hi": 9959614618,
+                "lo": 9958667822,
+                "name": "<archive>",
+                "role": "publish"
+              },
+              {
+                "cookie": 0,
+                "hi": 9959761549,
+                "lo": 9959655168,
+                "name": ".tmpsgZjAH.temp-archive",
+                "role": "remove"
+              }
+            ],
+            "observer_cpu_ns": 188627379,
+            "other": 519,
+            "returncode": 0
+          },
+          "stderr_sha256": "807b95c9641d99d871cc150b274ec97f43dc29710ee23cf36aff8a7829386940",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "repeat": {
+          "bounds": null,
+          "dirty": [],
+          "record": {
+            "command_ns": 266202556,
+            "events": [],
+            "observer_cpu_ns": 5914593,
+            "other": 0,
+            "returncode": 0
+          },
+          "stderr_sha256": "f4403412cb20dc7d8a0a94c08c9c8853e4bac9b3e8489158834f30512311ed97",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "before": "f64694ea465151ebc732b373a2f41562d7ea605d6b766f40b72c9e5e1c2634cf",
+      "consumer": {
+        "ast": "799d73143feffff259327a842d7ed95975f4057f9c8a1255a3017ffb4817070c",
+        "executable": "65ae068b83bac043d2f8eb42057c020c73ddfe1423f344f436f620abefe06ec1",
+        "exit": 0,
+        "input": "e981376810375b7214c83ccd0dd840cd0110c7ce31d90cffc45ae1bd9706c4c2",
+        "linter": "98b9ab20540e7c77686e330abd47564ff3425640bc980eeb1c1e8dc529771d9e",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout": "2 SIM222\n3 SIM222\n4 SIM222\n"
+      },
+      "direction": "parent",
+      "phases": {
+        "edit": {
+          "bounds": {
+            "create_bracket": 1757368,
+            "hi": 162998911,
+            "lo": 160619897,
+            "publish_bracket": 621646
+          },
+          "dirty": [
+            "ruff_db",
+            "ruff_linter",
+            "ruff_python_ast",
+            "ruff_python_codegen",
+            "ruff_python_importer",
+            "ruff_python_index",
+            "ruff_python_literal",
+            "ruff_python_parser",
+            "ruff_python_semantic",
+            "ruff_ranged_value"
+          ],
+          "record": {
+            "command_ns": 10787732391,
+            "events": [
+              {
+                "cookie": 0,
+                "hi": 10385991276,
+                "lo": 10384233908,
+                "name": ".tmp2hakv7.temp-archive",
+                "role": "create"
+              },
+              {
+                "cookie": 980918,
+                "hi": 10547232819,
+                "lo": 10546611173,
+                "name": "<archive>",
+                "role": "publish"
+              },
+              {
+                "cookie": 0,
+                "hi": 10547360361,
+                "lo": 10547270316,
+                "name": ".tmp2hakv7.temp-archive",
+                "role": "remove"
+              }
+            ],
+            "observer_cpu_ns": 220231645,
+            "other": 519,
+            "returncode": 0
+          },
+          "stderr_sha256": "cacb8c704f13bfd705f3add25a750f2e7c2401b0ac4bd4443b7d3447da2cf107",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "repeat": {
+          "bounds": null,
+          "dirty": [],
+          "record": {
+            "command_ns": 271003306,
+            "events": [],
+            "observer_cpu_ns": 5991964,
+            "other": 0,
+            "returncode": 0
+          },
+          "stderr_sha256": "f4403412cb20dc7d8a0a94c08c9c8853e4bac9b3e8489158834f30512311ed97",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "before": "98b9ab20540e7c77686e330abd47564ff3425640bc980eeb1c1e8dc529771d9e",
+      "consumer": {
+        "ast": "dc2def3b28cd99a9735d202bb2b989cb773edaae28d343ae6ec8356dc607b117",
+        "executable": "b387b46b153116bae8bafe28913945c055eb7113e626d77240134e455b101aef",
+        "exit": 0,
+        "input": "e981376810375b7214c83ccd0dd840cd0110c7ce31d90cffc45ae1bd9706c4c2",
+        "linter": "3b6b5d0d369792a43231396de848a64af7b0a81429affa01b38be828de84f8f2",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout": "1 SIM222\n"
+      },
+      "direction": "historical",
+      "phases": {
+        "edit": {
+          "bounds": {
+            "create_bracket": 1782966,
+            "hi": 168389305,
+            "lo": 166235300,
+            "publish_bracket": 371039
+          },
+          "dirty": [
+            "ruff_db",
+            "ruff_linter",
+            "ruff_python_ast",
+            "ruff_python_codegen",
+            "ruff_python_importer",
+            "ruff_python_index",
+            "ruff_python_literal",
+            "ruff_python_parser",
+            "ruff_python_semantic",
+            "ruff_ranged_value"
+          ],
+          "record": {
+            "command_ns": 9221869672,
+            "events": [
+              {
+                "cookie": 0,
+                "hi": 8833485543,
+                "lo": 8831702577,
+                "name": ".tmpbV5Dn7.temp-archive",
+                "role": "create"
+              },
+              {
+                "cookie": 981008,
+                "hi": 9000091882,
+                "lo": 8999720843,
+                "name": "<archive>",
+                "role": "publish"
+              },
+              {
+                "cookie": 0,
+                "hi": 9000190611,
+                "lo": 9000140184,
+                "name": ".tmpbV5Dn7.temp-archive",
+                "role": "remove"
+              }
+            ],
+            "observer_cpu_ns": 178572127,
+            "other": 519,
+            "returncode": 0
+          },
+          "stderr_sha256": "553373ed930870133623bfd8bb179af5c4592fc4b407bc82f8746cdc9480c30c",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "repeat": {
+          "bounds": null,
+          "dirty": [],
+          "record": {
+            "command_ns": 253620609,
+            "events": [],
+            "observer_cpu_ns": 6062052,
+            "other": 0,
+            "returncode": 0
+          },
+          "stderr_sha256": "2bc683fb4e4f4f21ee9ee39e2b8ecce2efe20d3b1be57bda5316aa519ab3d30a",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "before": "3b6b5d0d369792a43231396de848a64af7b0a81429affa01b38be828de84f8f2",
+      "consumer": {
+        "ast": "d2e0968c44fc22feae2c683b3a111d1007e5bacc0abb48158d09ded1b681bd5c",
+        "executable": "65ae068b83bac043d2f8eb42057c020c73ddfe1423f344f436f620abefe06ec1",
+        "exit": 0,
+        "input": "e981376810375b7214c83ccd0dd840cd0110c7ce31d90cffc45ae1bd9706c4c2",
+        "linter": "6cbed472598c9c81300cedd756f5d60b4fd6bf165ec43222f9ba46d92269b244",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout": "2 SIM222\n3 SIM222\n4 SIM222\n"
+      },
+      "direction": "parent",
+      "phases": {
+        "edit": {
+          "bounds": {
+            "create_bracket": 1142120,
+            "hi": 177277151,
+            "lo": 175700557,
+            "publish_bracket": 434474
+          },
+          "dirty": [
+            "ruff_db",
+            "ruff_linter",
+            "ruff_python_ast",
+            "ruff_python_codegen",
+            "ruff_python_importer",
+            "ruff_python_index",
+            "ruff_python_literal",
+            "ruff_python_parser",
+            "ruff_python_semantic",
+            "ruff_ranged_value"
+          ],
+          "record": {
+            "command_ns": 10131087491,
+            "events": [
+              {
+                "cookie": 0,
+                "hi": 9714174140,
+                "lo": 9713032020,
+                "name": ".tmp1oxook.temp-archive",
+                "role": "create"
+              },
+              {
+                "cookie": 981098,
+                "hi": 9890309171,
+                "lo": 9889874697,
+                "name": "<archive>",
+                "role": "publish"
+              },
+              {
+                "cookie": 0,
+                "hi": 9890451136,
+                "lo": 9890357183,
+                "name": ".tmp1oxook.temp-archive",
+                "role": "remove"
+              }
+            ],
+            "observer_cpu_ns": 205252383,
+            "other": 519,
+            "returncode": 0
+          },
+          "stderr_sha256": "ca02900130aeac11bf10db09145d4460c659423df6f2c6b290aa3101b2c09d76",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "repeat": {
+          "bounds": null,
+          "dirty": [],
+          "record": {
+            "command_ns": 320814131,
+            "events": [],
+            "observer_cpu_ns": 9228071,
+            "other": 0,
+            "returncode": 0
+          },
+          "stderr_sha256": "9d892c5778d0c975f64a671e66ea5a753502353da3addd1dfdf3825225e406a2",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "before": "6cbed472598c9c81300cedd756f5d60b4fd6bf165ec43222f9ba46d92269b244",
+      "consumer": {
+        "ast": "d4a9850440f2ff6dcc76161eeb41fbe98884f33add91538bf634fb01f109a82e",
+        "executable": "b387b46b153116bae8bafe28913945c055eb7113e626d77240134e455b101aef",
+        "exit": 0,
+        "input": "e981376810375b7214c83ccd0dd840cd0110c7ce31d90cffc45ae1bd9706c4c2",
+        "linter": "5cefa4e4648c9ce7a52ca28d3713109c47282da0d8e13a7f076d5c7829f9f0ff",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout": "1 SIM222\n"
+      },
+      "direction": "historical",
+      "phases": {
+        "edit": {
+          "bounds": {
+            "create_bracket": 752854,
+            "hi": 170370378,
+            "lo": 168025646,
+            "publish_bracket": 1591878
+          },
+          "dirty": [
+            "ruff_db",
+            "ruff_linter",
+            "ruff_python_ast",
+            "ruff_python_codegen",
+            "ruff_python_importer",
+            "ruff_python_index",
+            "ruff_python_literal",
+            "ruff_python_parser",
+            "ruff_python_semantic",
+            "ruff_ranged_value"
+          ],
+          "record": {
+            "command_ns": 11168075181,
+            "events": [
+              {
+                "cookie": 0,
+                "hi": 10773765479,
+                "lo": 10773012625,
+                "name": ".tmpqr15V9.temp-archive",
+                "role": "create"
+              },
+              {
+                "cookie": 981190,
+                "hi": 10943383003,
+                "lo": 10941791125,
+                "name": "<archive>",
+                "role": "publish"
+              },
+              {
+                "cookie": 0,
+                "hi": 10943492507,
+                "lo": 10943423414,
+                "name": ".tmpqr15V9.temp-archive",
+                "role": "remove"
+              }
+            ],
+            "observer_cpu_ns": 203955217,
+            "other": 519,
+            "returncode": 0
+          },
+          "stderr_sha256": "274a153fdc00f81d126b801126a416ea6ba9b5cf7333274b251e88e7d9551e36",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "repeat": {
+          "bounds": null,
+          "dirty": [],
+          "record": {
+            "command_ns": 247701437,
+            "events": [],
+            "observer_cpu_ns": 6815724,
+            "other": 0,
+            "returncode": 0
+          },
+          "stderr_sha256": "2bc683fb4e4f4f21ee9ee39e2b8ecce2efe20d3b1be57bda5316aa519ab3d30a",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    }
+  ]
+}
