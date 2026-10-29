@@ -389,7 +389,7 @@ pub fn translate_dep_info(
     allow_package: bool,
     env_config: &Arc<HashMap<String, OsString>>,
     worktree_seed_namespace: Option<&Path>,
-) -> CargoResult<()> {
+) -> CargoResult<bool> {
     let mut depinfo = parse_rustc_dep_info(rustc_dep_info)?;
     if !depinfo.raw_checksum_paths {
         // Older rustc hashed Make-escaped paths and could merge distinct lossy filenames.
@@ -558,7 +558,7 @@ pub fn translate_dep_info(
         ));
     }
     paths::write(cargo_dep_info, on_disk_info.serialize()?)?;
-    Ok(())
+    Ok(depinfo.recheck_dependent_links)
 }
 
 /// Cargo supplies these paths from the current unit, not from package metadata.

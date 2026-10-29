@@ -420,6 +420,7 @@ dependencies = [
  "libgit2-sys",
  "memchr",
  "memfd",
+ "object",
  "opener",
  "openssl",
  "openssl-probe",
@@ -3448,6 +3449,15 @@ checksum = "9df9128cbbfef73cda168416ccf7f837b62737d748333bfe9ab71c245d76613e"
 dependencies = [
  "objc2",
  "objc2-foundation",
+]
+
+[[package]]
+name = "object"
+version = "0.38.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "271638cd5fa9cca89c4c304675ca658efc4e64a66c716b7cfe1afb4b9611dbbc"
+dependencies = [
+ "memchr",
 ]
 
 [[package]]

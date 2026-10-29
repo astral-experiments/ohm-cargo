@@ -246,6 +246,9 @@ cargo-credential-libsecret.workspace = true
 [target.'cfg(target_os = "macos")'.dependencies]
 cargo-credential-macos-keychain.workspace = true
 
+[target.'cfg(all(target_os = "macos", target_arch = "aarch64"))'.dependencies]
+object = { version = "0.38.1", optional = true, default-features = false, features = ["read_core", "macho", "archive", "std", "unaligned"] }
+
 [target.'cfg(not(windows))'.dependencies]
 openssl = { workspace = true, optional = true }
 openssl-src = { workspace = true, optional = true }
@@ -291,7 +294,7 @@ doc = false
 
 [features]
 default = ["http-transport-curl"]
-ohm-defaults = []
+ohm-defaults = ["dep:object"]
 vendored-openssl = ["openssl/vendored"]
 vendored-libgit2 = ["libgit2-sys/vendored"]
 # This is primarily used by rust-lang/rust distributing cargo the executable.

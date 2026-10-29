@@ -5711,11 +5711,15 @@ fn native_recheck_reuses_codegen_until_the_root_changes() {
     };
     assert_eq!(build(), "compile:dep\ncompile-link:app\n");
     assert_eq!(build(), "link:app\n");
+    p.change_file("dep/src/lib.rs", "pub fn value() -> i32 { 18 }");
+    assert_eq!(build(), "compile:dep\nlink:app\n");
+    p.process(&p.bin("app")).with_stdout_data("18\n").run();
+    p.change_file("dep/src/lib.rs", "pub fn value() -> i32 { 17 }");
     p.change_file(
         "src/main.rs",
         "extern crate dep; fn main() { println!(\"{}\", dep::value() + 25); }",
     );
-    assert_eq!(build(), "compile-link:app\n");
+    assert_eq!(build(), "compile:dep\ncompile-link:app\n");
     p.process(&p.bin("app")).with_stdout_data("42\n").run();
 }
 

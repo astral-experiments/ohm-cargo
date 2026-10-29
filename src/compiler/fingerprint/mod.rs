@@ -604,15 +604,19 @@ fn restored_metadata_mtime(
         })
 }
 
-/// Returns whether an unchanged metadata output can retain its generation.
-pub fn can_preserve_metadata_generation(fingerprint: &Fingerprint, output: &Path) -> bool {
-    paths::mtime(output)
-        .ok()
-        .and_then(|mtime| {
-            restored_metadata_mtime(fingerprint, mtime)
-                .filter(|minimum_mtime| *minimum_mtime == mtime)
-        })
-        .is_some()
+/// Keep skipped artifacts whose existing timestamp already satisfies their dependencies.
+pub(super) fn can_preserve_skipped_output(fingerprint: &Fingerprint, output: &Path) -> bool {
+    let Ok(mtime) = paths::mtime(output) else {
+        return false;
+    };
+    match output.extension().and_then(|ext| ext.to_str()) {
+        Some("rmeta") => restored_metadata_mtime(fingerprint, mtime) == Some(mtime),
+        Some("rlib") => fingerprint.deps.iter().all(|dep| {
+            dep.previous_output_mtime()
+                .is_some_and(|required| required <= mtime)
+        }),
+        _ => false,
+    }
 }
 
 /// Restores a metadata generation when its public semantics did not change.
@@ -1395,7 +1399,7 @@ pub struct Fingerprint {
     build_state: Mutex<BuildState>,
     /// Whether this unit or a dependency reused assembly that still requires native link checks.
     #[serde(skip)]
-    recheck_dependent_links: bool,
+    recheck_dependent_links: AtomicBool,
     /// The persisted action and its inputs were fresh before forcing a native link.
     #[serde(skip)]
     native_link_only: bool,
@@ -1890,7 +1894,7 @@ impl Fingerprint {
             index: UnitIndex::default(),
             fs_status: Mutex::new(FsStatus::Stale),
             build_state: Mutex::new(BuildState::Pending),
-            recheck_dependent_links: false,
+            recheck_dependent_links: AtomicBool::new(false),
             native_link_only: false,
             observes_foreign_span: false,
             early_cutoff_candidate: AtomicBool::new(false),
@@ -1932,9 +1936,53 @@ impl Fingerprint {
 
     /// Native links can read inputs that are absent from an upstream rlib's dep-info.
     fn must_recheck_native_link(&self, unit: &Unit) -> bool {
-        self.recheck_dependent_links
+        self.recheck_dependent_links.load(Ordering::Acquire)
             && matches!(unit.mode, CompileMode::Build | CompileMode::Test)
             && unit.requires_upstream_objects()
+    }
+
+    /// Custom compilers and wrappers retain their ordinary compilation behavior.
+    pub(super) fn native_recheck_can_reuse_codegen(
+        &self,
+        build_runner: &BuildRunner<'_, '_>,
+        unit: &Unit,
+    ) -> bool {
+        self.must_recheck_native_link(unit)
+            && build_runner.bcx.build_config.primary_unit_rustc.is_none()
+            && build_runner.bcx.rustc().wrapper.is_none()
+            && build_runner.bcx.rustc().workspace_wrapper.is_none()
+    }
+
+    /// Read completed prerequisites too, since their first dep-info may arrive after scheduling.
+    pub(super) fn needs_native_link_driver(&self) -> bool {
+        self.recheck_dependent_links.load(Ordering::Acquire)
+            || self.deps.iter().any(|dep| {
+                dep.fingerprint
+                    .recheck_dependent_links
+                    .load(Ordering::Acquire)
+            })
+    }
+
+    /// An intermediate job can finish with early metadata before a leaf reports its marker.
+    /// Traverse the completed graph before reusing a seeded executable without invoking rustc.
+    fn inherited_native_recheck(&self) -> bool {
+        let mut pending = vec![self];
+        let mut seen = HashSet::default();
+        while let Some(fp) = pending.pop() {
+            if seen.insert(fp.index) {
+                if fp.recheck_dependent_links.load(Ordering::Acquire) {
+                    return true;
+                }
+                pending.extend(fp.deps.iter().map(|dep| dep.fingerprint.as_ref()));
+            }
+        }
+        false
+    }
+
+    pub(super) fn record_native_link_inputs(&self, marked: bool) {
+        if marked || self.needs_native_link_driver() {
+            self.recheck_dependent_links.store(true, Ordering::Release);
+        }
     }
 
     /// A dependency rebuilt after job preparation may have invalidated the cached objects.
@@ -2229,7 +2277,7 @@ impl Fingerprint {
                 worktree_seed,
                 checksum_parallelism,
                 &mut self.observes_foreign_span,
-                &mut self.recheck_dependent_links,
+                self.recheck_dependent_links.get_mut(),
             )? {
                 item.log();
                 *self.fs_status.get_mut().unwrap() = FsStatus::StaleItem(item);
@@ -2557,17 +2605,14 @@ fn calculate(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
 
     // Public metadata can remain unchanged through arbitrarily many rlibs. The final
     // native link still observes external files, including libraries newly visible in -L.
-    fingerprint.recheck_dependent_links |= fingerprint
-        .deps
-        .iter()
-        .any(|dep| dep.fingerprint.recheck_dependent_links);
-    if fingerprint.must_recheck_native_link(unit) {
-        // Keep forcing the real link, but preserve the original objects when the
-        // native recheck is the only reason this unit would run.
+    fingerprint.record_native_link_inputs(false);
+    // An already dirty unit will run the linker. Preserve its original reason so
+    // dependency-only changes can reuse codegen and local changes still compile.
+    if fingerprint.must_recheck_native_link(unit)
+        && fingerprint.fs_status.get_mut().unwrap().up_to_date()
+    {
         fingerprint.native_link_only = unit_can_use_relink_only(build_runner, unit)
-            && build_runner.bcx.build_config.primary_unit_rustc.is_none()
-            && build_runner.bcx.rustc().wrapper.is_none()
-            && build_runner.bcx.rustc().workspace_wrapper.is_none()
+            && fingerprint.native_recheck_can_reuse_codegen(build_runner, unit)
             && matches!(
                 fingerprint.fs_status.get_mut().unwrap(),
                 FsStatus::UpToDate { .. }
@@ -2813,7 +2858,7 @@ fn calculate_normal(
         config: Hasher::finish(&config),
         compile_kind,
         index: build_runner.bcx.unit_to_index[unit],
-        recheck_dependent_links: false,
+        recheck_dependent_links: AtomicBool::new(false),
         native_link_only: false,
         observes_foreign_span: false,
         rustflags: extra_flags,
@@ -4053,6 +4098,40 @@ mod early_cutoff_tests {
         check.deps.push(dep);
 
         assert_eq!(restored_metadata_mtime(&check, invoked), Some(generation));
+    }
+
+    #[test]
+    fn a_late_leaf_marker_blocks_transitive_native_seed_reuse() {
+        let mut leaf = Fingerprint::new();
+        leaf.index = UnitIndex(1);
+        let leaf = Arc::new(leaf);
+        let mut mid = Fingerprint::new();
+        mid.index = UnitIndex(2);
+        mid.deps.push(make_dep_fingerprint(Arc::clone(&leaf)));
+        let mut bin = Fingerprint::new();
+        bin.index = UnitIndex(3);
+        bin.deps.push(make_dep_fingerprint(Arc::new(mid)));
+        assert!(!bin.inherited_native_recheck());
+        leaf.record_native_link_inputs(true);
+        assert!(bin.inherited_native_recheck());
+    }
+
+    #[test]
+    fn skipped_rlib_only_keeps_a_current_timestamp() {
+        let dir = tempfile::tempdir().unwrap();
+        let rmeta = dir.path().join("leaf.rmeta");
+        let rlib = dir.path().join("middle.rlib");
+        std::fs::write(&rmeta, "").unwrap();
+        std::fs::write(&rlib, "").unwrap();
+        let mut leaf = Fingerprint::new();
+        leaf.outputs.push(rmeta.clone());
+        let mut middle = Fingerprint::new();
+        middle.deps.push(make_dep_fingerprint(Arc::new(leaf)));
+        filetime::set_file_mtime(&rlib, FileTime::from_unix_time(2, 0)).unwrap();
+        filetime::set_file_mtime(&rmeta, FileTime::from_unix_time(1, 0)).unwrap();
+        assert!(can_preserve_skipped_output(&middle, &rlib));
+        filetime::set_file_mtime(&rmeta, FileTime::from_unix_time(3, 0)).unwrap();
+        assert!(!can_preserve_skipped_output(&middle, &rlib));
     }
 
     #[test]
