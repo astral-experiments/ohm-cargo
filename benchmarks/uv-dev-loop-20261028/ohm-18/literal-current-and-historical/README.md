@@ -33,3 +33,5 @@ python3 -E -s -B "$study/run.py" report > "$study/report.json"
 ```
 
 Both source-matched stage-2 packages are now built. Their SHA-256 identities and the exact tested Wild builds were bound before warming uv. The build receipts record the differing standalone rustc linker default and the actual packaged Wild selected through Cargo in all three toolchains. [Build and execution receipts](stage2.md) · [Binary identities](input-lock.json)
+
+The local four-toolchain replay archive is 133,205,022 bytes with SHA-256 `ba9e6e3c7bd7d8573d8fa1a132b6e46ea1b35f4b4129b2bdeb39bd450261efb1`. A detached staging test verified every redistributed file, selected the four exact compiler, Cargo, Wild and target-library sets under new paths, and preserved all 576 registered command assignments. Its scorer requires all six completed endpoint cohorts. [Portable archive identity and detached check](portable-replay-verification.json) · [Full component map](portable-component-map.json)

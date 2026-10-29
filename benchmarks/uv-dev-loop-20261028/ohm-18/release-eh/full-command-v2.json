@@ -1,0 +1,574 @@
+{
+  "original_plan_sha256": "831b24ff4991229569294e4a73d06b872b762628104592aa54b36601d56f2c6f",
+  "scope_sha256": "3b71dff4dc81980449ae87cd20c10790151569e2983c3f81133b7e07dcb8279a",
+  "observer_sha256": "221bb113af489fe3c0a5559b2ba51ae7ad47064a91e0efbfcf83103544a7e2e1",
+  "sealed_sha256": "ce93ff9bc5490a4c9ceb34b8d5df4b7849ec0c93f22fc20b156542fe7bf06851",
+  "stock_path_bindings": {
+    "initial": {
+      "linked_paths": [
+        "debug/build/uv/2de13956f9b1455d/out/uvx",
+        "debug/build/uv/3a5715ef5d3087bd/out/uvx-3a5715ef5d3087bd",
+        "debug/build/uv/8f1aa1dc2727ceb6/out/uv-8f1aa1dc2727ceb6",
+        "debug/build/uv/e0133cb6050b81d6/out/uv-e0133cb6050b81d6",
+        "debug/build/uv/e6ac92541876a4a1/out/uv"
+      ],
+      "emitted_paths": [
+        "debug/build/uv-audit/19041b9e5c308b1f/out/uv_audit-19041b9e5c308b1f",
+        "debug/build/uv-auth/c555d90e77695d0d/out/uv_auth-c555d90e77695d0d",
+        "debug/build/uv-bin-install/36bd9f571fa0b9fd/out/uv_bin_install-36bd9f571fa0b9fd",
+        "debug/build/uv-build-backend/738dbe44bf659744/out/uv_build_backend-738dbe44bf659744",
+        "debug/build/uv-build-frontend/8ac76cd191c72ef3/out/uv_build_frontend-8ac76cd191c72ef3",
+        "debug/build/uv-build/92c8747fc80b7684/out/uv_build-92c8747fc80b7684",
+        "debug/build/uv-cache-info/e101f2cf3e68b254/out/uv_cache_info-e101f2cf3e68b254",
+        "debug/build/uv-cache-key/7cc5b3f91a1cc5f1/out/uv_cache_key-7cc5b3f91a1cc5f1",
+        "debug/build/uv-cache/43560cb1a78116cf/out/uv_cache-43560cb1a78116cf",
+        "debug/build/uv-cli/da8cebfa0d4dfbcc/out/uv_cli-da8cebfa0d4dfbcc",
+        "debug/build/uv-client/0c2713b9d109c434/out/it-0c2713b9d109c434",
+        "debug/build/uv-client/7a02ce5dc39ebbe6/out/uv_client-7a02ce5dc39ebbe6",
+        "debug/build/uv-configuration/f33e24e4763fae77/out/uv_configuration-f33e24e4763fae77",
+        "debug/build/uv-dev/c43a32e6154ed2c3/out/uv_dev-c43a32e6154ed2c3",
+        "debug/build/uv-dirs/4378c759132e708e/out/uv_dirs-4378c759132e708e",
+        "debug/build/uv-distribution-filename/91b06214fd140942/out/uv_distribution_filename-91b06214fd140942",
+        "debug/build/uv-distribution-types/d3ffa0aa6a2e3188/out/uv_distribution_types-d3ffa0aa6a2e3188",
+        "debug/build/uv-distribution/97215d08cd837f9e/out/uv_distribution-97215d08cd837f9e",
+        "debug/build/uv-errors/1fdbad5cb5bd381d/out/uv_errors-1fdbad5cb5bd381d",
+        "debug/build/uv-extract/feb2ebf16eb0659e/out/uv_extract-feb2ebf16eb0659e",
+        "debug/build/uv-fastid/dfba8efac7e759d8/out/uv_fastid-dfba8efac7e759d8",
+        "debug/build/uv-fs/f3993152283b95b5/out/uv_fs-f3993152283b95b5",
+        "debug/build/uv-git-types/a1b8615171a849f3/out/uv_git_types-a1b8615171a849f3",
+        "debug/build/uv-git/2e040dadb35d4b7e/out/uv_git-2e040dadb35d4b7e",
+        "debug/build/uv-globfilter/12cefb6ddd8f7372/out/uv_globfilter-12cefb6ddd8f7372",
+        "debug/build/uv-globfilter/6e0de276c4f1041a/out/uv_globfilter-6e0de276c4f1041a",
+        "debug/build/uv-install-wheel/36c3fa706748222e/out/uv_install_wheel-36c3fa706748222e",
+        "debug/build/uv-installer/21ffbb37012e2f7f/out/uv_installer-21ffbb37012e2f7f",
+        "debug/build/uv-keyring/03b4b5a87eb17105/out/uv_keyring-03b4b5a87eb17105",
+        "debug/build/uv-keyring/056b85f2ebac3568/out/basic-056b85f2ebac3568",
+        "debug/build/uv-keyring/1888bd5b80f12366/out/threading-1888bd5b80f12366",
+        "debug/build/uv-logging/c44a8dce8bedb3fb/out/uv_logging-c44a8dce8bedb3fb",
+        "debug/build/uv-metadata/23e138fa29c3eb66/out/uv_metadata-23e138fa29c3eb66",
+        "debug/build/uv-netrc/d2a8069b8511a22a/out/uv_netrc-d2a8069b8511a22a",
+        "debug/build/uv-normalize/1afa11ce7048a20c/out/uv_normalize-1afa11ce7048a20c",
+        "debug/build/uv-pep440/29af0a7279e077dd/out/uv_pep440-29af0a7279e077dd",
+        "debug/build/uv-pep508/efaea409dd66ec9c/out/uv_pep508-efaea409dd66ec9c",
+        "debug/build/uv-platform-tags/72e35b7df5413b76/out/uv_platform_tags-72e35b7df5413b76",
+        "debug/build/uv-platform/ec0c3140668774ae/out/uv_platform-ec0c3140668774ae",
+        "debug/build/uv-preview/cac64276bcc0ceb5/out/uv_preview-cac64276bcc0ceb5",
+        "debug/build/uv-publish/c10ff22bd13e494d/out/uv_publish-c10ff22bd13e494d",
+        "debug/build/uv-pypi-types/7bf64e1f0aea9fde/out/uv_pypi_types-7bf64e1f0aea9fde",
+        "debug/build/uv-python/0fcc88ea37751d7f/out/uv_python-0fcc88ea37751d7f",
+        "debug/build/uv-redacted/d468d52bd70df549/out/uv_redacted-d468d52bd70df549",
+        "debug/build/uv-requirements-txt/45406a76011ee9b3/out/uv_requirements_txt-45406a76011ee9b3",
+        "debug/build/uv-resolver/32714e0b62dfa4fa/out/uv_resolver-32714e0b62dfa4fa",
+        "debug/build/uv-scripts/c3e1cac8270e66a7/out/uv_scripts-c3e1cac8270e66a7",
+        "debug/build/uv-shell/c02b3ce0d2f7c986/out/uv_shell-c02b3ce0d2f7c986",
+        "debug/build/uv-test/dbe1548df87cbd5b/out/uv_test-dbe1548df87cbd5b",
+        "debug/build/uv-toml/1be4a1572c97c512/out/uv_toml-1be4a1572c97c512",
+        "debug/build/uv-torch/0b341815834de784/out/uv_torch-0b341815834de784",
+        "debug/build/uv-trampoline-builder/806cd6dfc006dede/out/uv_trampoline_builder-806cd6dfc006dede",
+        "debug/build/uv-trampoline-builder/a1301a059efac3fd/out/normalize_pe_timestamps-a1301a059efac3fd",
+        "debug/build/uv-types/b02538cb8707c059/out/uv_types-b02538cb8707c059",
+        "debug/build/uv-version/3bb5c158caa7f774/out/uv_version-3bb5c158caa7f774",
+        "debug/build/uv-warnings/357c1c5f56d1d031/out/uv_warnings-357c1c5f56d1d031",
+        "debug/build/uv-workspace/beed7f352bfb511e/out/uv_workspace-beed7f352bfb511e",
+        "debug/build/uv/1b857b43b01bc582/out/pip-1b857b43b01bc582",
+        "debug/build/uv/272752454623508a/out/pip_install-272752454623508a",
+        "debug/build/uv/3a5715ef5d3087bd/out/uvx-3a5715ef5d3087bd",
+        "debug/build/uv/4070fd4eb4bc99cf/out/project-4070fd4eb4bc99cf",
+        "debug/build/uv/47f742fa96d957c3/out/python-47f742fa96d957c3",
+        "debug/build/uv/5ac882bac69e8dcb/out/pip_compile-5ac882bac69e8dcb",
+        "debug/build/uv/85594c66e3e84ab7/out/sync-85594c66e3e84ab7",
+        "debug/build/uv/8f1aa1dc2727ceb6/out/uv-8f1aa1dc2727ceb6",
+        "debug/build/uv/9cf6794862ac3951/out/tool-9cf6794862ac3951",
+        "debug/build/uv/9e440e0e6d76402c/out/workspace-9e440e0e6d76402c",
+        "debug/build/uv/aa4cb23057093d2b/out/lock-aa4cb23057093d2b",
+        "debug/build/uv/b9adf5d504cb2157/out/it-b9adf5d504cb2157",
+        "debug/build/uv/e0133cb6050b81d6/out/uv-e0133cb6050b81d6",
+        "debug/build/uv/ea45f6bc1643f01e/out/lock_scenarios-ea45f6bc1643f01e",
+        "debug/build/uv/fa833f574ec56fc4/out/build-fa833f574ec56fc4"
+      ],
+      "allowed": [
+        "debug/build/uv/3a5715ef5d3087bd/out/uvx-3a5715ef5d3087bd",
+        "debug/build/uv/8f1aa1dc2727ceb6/out/uv-8f1aa1dc2727ceb6",
+        "debug/build/uv/e0133cb6050b81d6/out/uv-e0133cb6050b81d6",
+        "debug/build/uv/e6ac92541876a4a1/out/uv"
+      ],
+      "proof_sha256": "dd4fc903302ee83117d90be4ee9dee84e1e4fa37891c617bbcc96b91fa99f333"
+    },
+    "replica": {
+      "linked_paths": [
+        "debug/build/uv/2de13956f9b1455d/out/uvx",
+        "debug/build/uv/3a5715ef5d3087bd/out/uvx-3a5715ef5d3087bd",
+        "debug/build/uv/8f1aa1dc2727ceb6/out/uv-8f1aa1dc2727ceb6",
+        "debug/build/uv/e0133cb6050b81d6/out/uv-e0133cb6050b81d6",
+        "debug/build/uv/e6ac92541876a4a1/out/uv"
+      ],
+      "emitted_paths": [
+        "debug/build/uv-audit/19041b9e5c308b1f/out/uv_audit-19041b9e5c308b1f",
+        "debug/build/uv-auth/c555d90e77695d0d/out/uv_auth-c555d90e77695d0d",
+        "debug/build/uv-bin-install/36bd9f571fa0b9fd/out/uv_bin_install-36bd9f571fa0b9fd",
+        "debug/build/uv-build-backend/738dbe44bf659744/out/uv_build_backend-738dbe44bf659744",
+        "debug/build/uv-build-frontend/8ac76cd191c72ef3/out/uv_build_frontend-8ac76cd191c72ef3",
+        "debug/build/uv-build/92c8747fc80b7684/out/uv_build-92c8747fc80b7684",
+        "debug/build/uv-cache-info/e101f2cf3e68b254/out/uv_cache_info-e101f2cf3e68b254",
+        "debug/build/uv-cache-key/7cc5b3f91a1cc5f1/out/uv_cache_key-7cc5b3f91a1cc5f1",
+        "debug/build/uv-cache/43560cb1a78116cf/out/uv_cache-43560cb1a78116cf",
+        "debug/build/uv-cli/da8cebfa0d4dfbcc/out/uv_cli-da8cebfa0d4dfbcc",
+        "debug/build/uv-client/0c2713b9d109c434/out/it-0c2713b9d109c434",
+        "debug/build/uv-client/7a02ce5dc39ebbe6/out/uv_client-7a02ce5dc39ebbe6",
+        "debug/build/uv-configuration/f33e24e4763fae77/out/uv_configuration-f33e24e4763fae77",
+        "debug/build/uv-dev/c43a32e6154ed2c3/out/uv_dev-c43a32e6154ed2c3",
+        "debug/build/uv-dirs/4378c759132e708e/out/uv_dirs-4378c759132e708e",
+        "debug/build/uv-distribution-filename/91b06214fd140942/out/uv_distribution_filename-91b06214fd140942",
+        "debug/build/uv-distribution-types/d3ffa0aa6a2e3188/out/uv_distribution_types-d3ffa0aa6a2e3188",
+        "debug/build/uv-distribution/97215d08cd837f9e/out/uv_distribution-97215d08cd837f9e",
+        "debug/build/uv-errors/1fdbad5cb5bd381d/out/uv_errors-1fdbad5cb5bd381d",
+        "debug/build/uv-extract/feb2ebf16eb0659e/out/uv_extract-feb2ebf16eb0659e",
+        "debug/build/uv-fastid/dfba8efac7e759d8/out/uv_fastid-dfba8efac7e759d8",
+        "debug/build/uv-fs/f3993152283b95b5/out/uv_fs-f3993152283b95b5",
+        "debug/build/uv-git-types/a1b8615171a849f3/out/uv_git_types-a1b8615171a849f3",
+        "debug/build/uv-git/2e040dadb35d4b7e/out/uv_git-2e040dadb35d4b7e",
+        "debug/build/uv-globfilter/12cefb6ddd8f7372/out/uv_globfilter-12cefb6ddd8f7372",
+        "debug/build/uv-globfilter/6e0de276c4f1041a/out/uv_globfilter-6e0de276c4f1041a",
+        "debug/build/uv-install-wheel/36c3fa706748222e/out/uv_install_wheel-36c3fa706748222e",
+        "debug/build/uv-installer/21ffbb37012e2f7f/out/uv_installer-21ffbb37012e2f7f",
+        "debug/build/uv-keyring/03b4b5a87eb17105/out/uv_keyring-03b4b5a87eb17105",
+        "debug/build/uv-keyring/056b85f2ebac3568/out/basic-056b85f2ebac3568",
+        "debug/build/uv-keyring/1888bd5b80f12366/out/threading-1888bd5b80f12366",
+        "debug/build/uv-logging/c44a8dce8bedb3fb/out/uv_logging-c44a8dce8bedb3fb",
+        "debug/build/uv-metadata/23e138fa29c3eb66/out/uv_metadata-23e138fa29c3eb66",
+        "debug/build/uv-netrc/d2a8069b8511a22a/out/uv_netrc-d2a8069b8511a22a",
+        "debug/build/uv-normalize/1afa11ce7048a20c/out/uv_normalize-1afa11ce7048a20c",
+        "debug/build/uv-pep440/29af0a7279e077dd/out/uv_pep440-29af0a7279e077dd",
+        "debug/build/uv-pep508/efaea409dd66ec9c/out/uv_pep508-efaea409dd66ec9c",
+        "debug/build/uv-platform-tags/72e35b7df5413b76/out/uv_platform_tags-72e35b7df5413b76",
+        "debug/build/uv-platform/ec0c3140668774ae/out/uv_platform-ec0c3140668774ae",
+        "debug/build/uv-preview/cac64276bcc0ceb5/out/uv_preview-cac64276bcc0ceb5",
+        "debug/build/uv-publish/c10ff22bd13e494d/out/uv_publish-c10ff22bd13e494d",
+        "debug/build/uv-pypi-types/7bf64e1f0aea9fde/out/uv_pypi_types-7bf64e1f0aea9fde",
+        "debug/build/uv-python/0fcc88ea37751d7f/out/uv_python-0fcc88ea37751d7f",
+        "debug/build/uv-redacted/d468d52bd70df549/out/uv_redacted-d468d52bd70df549",
+        "debug/build/uv-requirements-txt/45406a76011ee9b3/out/uv_requirements_txt-45406a76011ee9b3",
+        "debug/build/uv-resolver/32714e0b62dfa4fa/out/uv_resolver-32714e0b62dfa4fa",
+        "debug/build/uv-scripts/c3e1cac8270e66a7/out/uv_scripts-c3e1cac8270e66a7",
+        "debug/build/uv-shell/c02b3ce0d2f7c986/out/uv_shell-c02b3ce0d2f7c986",
+        "debug/build/uv-test/dbe1548df87cbd5b/out/uv_test-dbe1548df87cbd5b",
+        "debug/build/uv-toml/1be4a1572c97c512/out/uv_toml-1be4a1572c97c512",
+        "debug/build/uv-torch/0b341815834de784/out/uv_torch-0b341815834de784",
+        "debug/build/uv-trampoline-builder/806cd6dfc006dede/out/uv_trampoline_builder-806cd6dfc006dede",
+        "debug/build/uv-trampoline-builder/a1301a059efac3fd/out/normalize_pe_timestamps-a1301a059efac3fd",
+        "debug/build/uv-types/b02538cb8707c059/out/uv_types-b02538cb8707c059",
+        "debug/build/uv-version/3bb5c158caa7f774/out/uv_version-3bb5c158caa7f774",
+        "debug/build/uv-warnings/357c1c5f56d1d031/out/uv_warnings-357c1c5f56d1d031",
+        "debug/build/uv-workspace/beed7f352bfb511e/out/uv_workspace-beed7f352bfb511e",
+        "debug/build/uv/1b857b43b01bc582/out/pip-1b857b43b01bc582",
+        "debug/build/uv/272752454623508a/out/pip_install-272752454623508a",
+        "debug/build/uv/3a5715ef5d3087bd/out/uvx-3a5715ef5d3087bd",
+        "debug/build/uv/4070fd4eb4bc99cf/out/project-4070fd4eb4bc99cf",
+        "debug/build/uv/47f742fa96d957c3/out/python-47f742fa96d957c3",
+        "debug/build/uv/5ac882bac69e8dcb/out/pip_compile-5ac882bac69e8dcb",
+        "debug/build/uv/85594c66e3e84ab7/out/sync-85594c66e3e84ab7",
+        "debug/build/uv/8f1aa1dc2727ceb6/out/uv-8f1aa1dc2727ceb6",
+        "debug/build/uv/9cf6794862ac3951/out/tool-9cf6794862ac3951",
+        "debug/build/uv/9e440e0e6d76402c/out/workspace-9e440e0e6d76402c",
+        "debug/build/uv/aa4cb23057093d2b/out/lock-aa4cb23057093d2b",
+        "debug/build/uv/b9adf5d504cb2157/out/it-b9adf5d504cb2157",
+        "debug/build/uv/e0133cb6050b81d6/out/uv-e0133cb6050b81d6",
+        "debug/build/uv/ea45f6bc1643f01e/out/lock_scenarios-ea45f6bc1643f01e",
+        "debug/build/uv/fa833f574ec56fc4/out/build-fa833f574ec56fc4"
+      ],
+      "allowed": [
+        "debug/build/uv/3a5715ef5d3087bd/out/uvx-3a5715ef5d3087bd",
+        "debug/build/uv/8f1aa1dc2727ceb6/out/uv-8f1aa1dc2727ceb6",
+        "debug/build/uv/e0133cb6050b81d6/out/uv-e0133cb6050b81d6",
+        "debug/build/uv/e6ac92541876a4a1/out/uv"
+      ],
+      "proof_sha256": "a8e6caab32bd73dc38498beeb47b8c2e815aa320bddfda92a2b5543af5218616"
+    }
+  },
+  "original_macro_cohorts": {
+    "initial-base": {
+      "cohort": "initial",
+      "control": "base",
+      "literal_family": "FV",
+      "seed": 71245033,
+      "native_count_admission": [
+        [
+          "native",
+          "candidate"
+        ],
+        [
+          "native",
+          "base"
+        ],
+        [
+          "count",
+          "base"
+        ],
+        [
+          "count",
+          "candidate"
+        ]
+      ],
+      "edits": {
+        "0": "bf5709d08fd6f216cad394396460ff4613362c5401cd25207771813f1a2e6fb5",
+        "1": "f37f301a45294fe46eb62975109e53a06c22810d93f4e0dcad1655943421f96f",
+        "15": "31c5752496004b49e9120e65faa98529309730910662b82cfaa53e6e79e0003d",
+        "16": "f3093b7a32374feaec4dc1c22425ac6c4933d4e1b9946085c5d68aaebe113c7e",
+        "12": "e47860865a249547a761b0cb8c4499c194a7409e533ae01740e7ccd2d84f9872",
+        "14": "8187bca66e6cb3babfbce6709ebc8a150ad8f7453c9355c6a5935fdf202f52db",
+        "11": "31bf7d79bc25fd2fea466d6967f4168df8e01f96b782edf7814748df020b8e96",
+        "13": "6de00f9aa1396766dac06ac701c403d42a859b944df2d856e752920416b2c86b",
+        "10": "3d0f949cfc278d6e6b791f76c0ee00cc47be4e2f91d63b116ce097063311c9a0",
+        "17": "ba1665be69859eb472b182a3c3bbc5ad2e975078abb6c4959d1c23e4887f3e2d"
+      },
+      "pairs": [
+        {
+          "id": 15,
+          "order": [
+            "base",
+            "candidate"
+          ]
+        },
+        {
+          "id": 16,
+          "order": [
+            "base",
+            "candidate"
+          ]
+        },
+        {
+          "id": 12,
+          "order": [
+            "candidate",
+            "base"
+          ]
+        },
+        {
+          "id": 14,
+          "order": [
+            "candidate",
+            "base"
+          ]
+        },
+        {
+          "id": 11,
+          "order": [
+            "base",
+            "candidate"
+          ]
+        },
+        {
+          "id": 13,
+          "order": [
+            "candidate",
+            "base"
+          ]
+        },
+        {
+          "id": 10,
+          "order": [
+            "base",
+            "candidate"
+          ]
+        },
+        {
+          "id": 17,
+          "order": [
+            "candidate",
+            "base"
+          ]
+        }
+      ]
+    },
+    "initial-shipped": {
+      "cohort": "initial",
+      "control": "shipped",
+      "literal_family": "FZ",
+      "seed": 86209131,
+      "native_count_admission": [
+        [
+          "native",
+          "candidate"
+        ],
+        [
+          "native",
+          "shipped"
+        ],
+        [
+          "count",
+          "candidate"
+        ],
+        [
+          "count",
+          "shipped"
+        ]
+      ],
+      "edits": {
+        "0": "7f6c0e56e6b109a5565c824e93692008f8005c54ee05bd8e6c8c705288afea88",
+        "1": "5ac73266c475713cf1a76a9837305778a3bd33a675cff02146ffceb8f69da594",
+        "13": "faa72af2320d9212dc50454333fbe430b130696d6b8ca9ce5dcc9e3299a6df2e",
+        "12": "e7583375f56afd0bebc05ce03ab7a4b2331b2fdec4f0bbbc9d2655bd63f5a85e",
+        "11": "aba739addade4aed881b55bf2f5b6d50b63bd0232015c00034b0f461fdce921b",
+        "15": "c87fbf1344f2a5e4ee269c46ef0911e3d0c14f116ef8ed00a97be7426fad1059",
+        "10": "aacc84eae8aa5d8de073399e5d2adef2a18f72b4a63066cd999b5799aa73d8f8",
+        "17": "683368834f5f5789887c1b62883f87930aa74bbcfc7985772bd0530112145731",
+        "14": "405997505d303c590471747abb0f6a30ff4b93656837dd39cb562acc046b7380",
+        "16": "247bbf7f8522bb4b885d05fca2c792b4e1bbda151e8b6cad44771437fe244e5e"
+      },
+      "pairs": [
+        {
+          "id": 13,
+          "order": [
+            "shipped",
+            "candidate"
+          ]
+        },
+        {
+          "id": 12,
+          "order": [
+            "candidate",
+            "shipped"
+          ]
+        },
+        {
+          "id": 11,
+          "order": [
+            "shipped",
+            "candidate"
+          ]
+        },
+        {
+          "id": 15,
+          "order": [
+            "shipped",
+            "candidate"
+          ]
+        },
+        {
+          "id": 10,
+          "order": [
+            "candidate",
+            "shipped"
+          ]
+        },
+        {
+          "id": 17,
+          "order": [
+            "shipped",
+            "candidate"
+          ]
+        },
+        {
+          "id": 14,
+          "order": [
+            "candidate",
+            "shipped"
+          ]
+        },
+        {
+          "id": 16,
+          "order": [
+            "candidate",
+            "shipped"
+          ]
+        }
+      ]
+    },
+    "replica-base": {
+      "cohort": "replica",
+      "control": "base",
+      "literal_family": "HV",
+      "seed": 13460987,
+      "native_count_admission": [
+        [
+          "count",
+          "base"
+        ],
+        [
+          "native",
+          "base"
+        ],
+        [
+          "count",
+          "candidate"
+        ],
+        [
+          "native",
+          "candidate"
+        ]
+      ],
+      "edits": {
+        "0": "8a90060144a6f299dfc9b0c54a30bf01575be2acfbf14819eca8bb4184cafc68",
+        "1": "bdd6b3a0e5a08add5b1361f589c729c55e333aa11d8ff987002c909bc20b997d",
+        "12": "e99e1d5a4523693c05d0e71a06e4654da8221eee338508633d9e6f5abc0b725a",
+        "10": "7787ac9d481d9894bc916cfc9f004fdf778b7425778675a46bd16d681f05725e",
+        "16": "b6897fd7927e5aa49caaf25b55650c0ef15d37d70d8c79ac9f1b12fd666e1123",
+        "15": "331061eb5a56b507491b132fed29e97f262200702b469007f7d842de17fd8163",
+        "11": "e378eb701dfc0c5b53c7ca0c667ca9590ebc0d3a88c56999a449f115612a5be3",
+        "17": "75daba4561c2b4ca7de5c633ba58dded8c5d36c1706925cd50ee9cbc085fda1c",
+        "13": "721b5429952a7b531a5c06ce7878f32322cef6b2332a08d14ff0b79abb9ba4bc",
+        "14": "52c65388dc2aa3265a042f66032236af8cb63fb1cbe06d43987efa0540e32b0a"
+      },
+      "pairs": [
+        {
+          "id": 12,
+          "order": [
+            "candidate",
+            "base"
+          ]
+        },
+        {
+          "id": 10,
+          "order": [
+            "candidate",
+            "base"
+          ]
+        },
+        {
+          "id": 16,
+          "order": [
+            "candidate",
+            "base"
+          ]
+        },
+        {
+          "id": 15,
+          "order": [
+            "base",
+            "candidate"
+          ]
+        },
+        {
+          "id": 11,
+          "order": [
+            "candidate",
+            "base"
+          ]
+        },
+        {
+          "id": 17,
+          "order": [
+            "base",
+            "candidate"
+          ]
+        },
+        {
+          "id": 13,
+          "order": [
+            "base",
+            "candidate"
+          ]
+        },
+        {
+          "id": 14,
+          "order": [
+            "base",
+            "candidate"
+          ]
+        }
+      ]
+    },
+    "replica-shipped": {
+      "cohort": "replica",
+      "control": "shipped",
+      "literal_family": "HZ",
+      "seed": 24539161,
+      "native_count_admission": [
+        [
+          "count",
+          "shipped"
+        ],
+        [
+          "count",
+          "candidate"
+        ],
+        [
+          "native",
+          "shipped"
+        ],
+        [
+          "native",
+          "candidate"
+        ]
+      ],
+      "edits": {
+        "0": "68b264aeba71459f699fa6a181a5c5377959398ac6e5d75eb4e39f08936540cb",
+        "1": "c7cbe53c859e5dfd14c575db8e3c38a5a0ff18cb8a7946ac6da30a232f49eea8",
+        "10": "0d083b2e671d498f5f66636fcd918498e203d7704740c3bca3eac414dca22b8d",
+        "16": "a96081f786568bcbd16a09c75a9ca9431ef416479ebca52484521965e014ae88",
+        "15": "4248fd303968e92a8203834d7d07035c5789cac14c3ea91c6dc9cb7d15897376",
+        "12": "ef12549552ebcd92daf85f6f36af77183e07215d40c00087f6d8a1dd45581abb",
+        "17": "37fdf4f6f57f60bbe588c28a2d9373e19592648e4946272986c19ad33e21cd74",
+        "11": "a1c5cb4a7805efd3f3577560ccd8d1d24868c359810c923bbb079d37d9a4ce7e",
+        "14": "6da535c4a1d8dee73c7fb219eaaf98d6483bf55c1a0c3f7246cee5ff09b27415",
+        "13": "18e32a5b3cfc16f24d74701e7e11c7eaa6ab0c406dfcd6809ee2786bcdc9b8bf"
+      },
+      "pairs": [
+        {
+          "id": 10,
+          "order": [
+            "candidate",
+            "shipped"
+          ]
+        },
+        {
+          "id": 16,
+          "order": [
+            "candidate",
+            "shipped"
+          ]
+        },
+        {
+          "id": 15,
+          "order": [
+            "shipped",
+            "candidate"
+          ]
+        },
+        {
+          "id": 12,
+          "order": [
+            "candidate",
+            "shipped"
+          ]
+        },
+        {
+          "id": 17,
+          "order": [
+            "shipped",
+            "candidate"
+          ]
+        },
+        {
+          "id": 11,
+          "order": [
+            "shipped",
+            "candidate"
+          ]
+        },
+        {
+          "id": 14,
+          "order": [
+            "candidate",
+            "shipped"
+          ]
+        },
+        {
+          "id": 13,
+          "order": [
+            "shipped",
+            "candidate"
+          ]
+        }
+      ]
+    }
+  },
+  "original_cell_order": [
+    "initial-base",
+    "initial-shipped",
+    "replica-base",
+    "replica-shipped"
+  ],
+  "former_attempt": "../command/results/initial/base/rejected.json",
+  "scored_rows_imported": 0
+}
