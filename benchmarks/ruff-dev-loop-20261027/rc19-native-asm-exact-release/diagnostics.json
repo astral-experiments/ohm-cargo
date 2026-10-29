@@ -1,0 +1,723 @@
+{
+  "checked_in_conditional": {
+    "native_rustc_count": 22,
+    "raw": {
+      "exec.log": "1cae72caedb82292faca04d7913a7d0ab4bceb51716dbf684b1e88560e456cad",
+      "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "2720eed6e560400ecd589beeabf7fa853ba826c3413e6d8ce8ee690428af1bc4"
+    },
+    "tests": {
+      "freshness::conditional_metadata_pipelines_changed_check_before_compiler_finishes": "ok",
+      "freshness::conditional_metadata_recovers_when_dependency_fails_after_metadata": "ok",
+      "freshness::conditional_metadata_waits_for_unchanged_hash_and_preserves_early_cutoff": "ok"
+    }
+  },
+  "failed_then_reverted": {
+    "cargo_sha256": "e9d797db90e051284931870fa2be6648e09e6878f1a2b5176f4848889e6c4fae",
+    "first_success": "reverted",
+    "mode": "default",
+    "phases": {
+      "final-program": {
+        "errors": [],
+        "exit": 0,
+        "files": {
+          "exec.log": "cc66bdd7832ad88252ffccda459471d9ba35d0c5765932b2405dcc5881153ef7",
+          "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+        },
+        "rustcs": []
+      },
+      "forced-failure": {
+        "errors": [],
+        "exit": 101,
+        "files": {
+          "exec.log": "444133fef7b3a2ce33a631591cae8a712680604cf359614eb335020e17ec4923",
+          "stderr": "241f003adfac56a1cc729b7749661b951723baf8ff0527e75e69667735af0e84",
+          "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "rustcs": [
+          [
+            "dep",
+            "lib"
+          ],
+          [
+            "app",
+            "lib"
+          ]
+        ]
+      },
+      "make-wrapper": {
+        "errors": [],
+        "exit": 0,
+        "files": {
+          "exec.log": "01acfdd16fd6de682501581f07edde54cfdcf821ec2cfac0881b775278fa6455",
+          "stderr": "edd7cc8964958a187dbd628e6e6d42c652e5c4d8f1e670456f5335d9a118dd33",
+          "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "rustcs": []
+      },
+      "prime": {
+        "errors": [],
+        "exit": 0,
+        "files": {
+          "exec.log": "b27108d4fae29646a6bb8ef14574b248240e26f39abfe957871a4ea2c275c9a1",
+          "stderr": "97e3b6eb0afb815638728aec3b18e733e808bb6522fb5bfedc35cf5c28a24c15",
+          "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "rustcs": [
+          [
+            "dep",
+            "lib"
+          ],
+          [
+            "app",
+            "lib"
+          ],
+          [
+            "app",
+            "bin"
+          ]
+        ]
+      },
+      "prime-program": {
+        "errors": [],
+        "exit": 0,
+        "files": {
+          "exec.log": "f087f753a5f365ebe491a025b1d96a8eb7a96ac0179bcfbb11db66ba4cae2ad5",
+          "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+        },
+        "rustcs": []
+      },
+      "reverted": {
+        "errors": [],
+        "exit": 0,
+        "files": {
+          "exec.log": "2b7de1608e365f90d28a299c8a496e2ea6b6c2df9b81bfcbf337fbf2b7b9dfbb",
+          "stderr": "5c7618ff51ee28e66ac6ea1804117dd7060e0c4c9500431721bc9ffd1419781e",
+          "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "rustcs": [
+          [
+            "dep",
+            "lib"
+          ],
+          [
+            "app",
+            "lib"
+          ],
+          [
+            "app",
+            "bin"
+          ]
+        ]
+      }
+    },
+    "rustc_sha256": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+    "value": 1
+  },
+  "fifo": {
+    "default": {
+      "deadline": false,
+      "fifo_open_calls": 1,
+      "parent_eisdir": true,
+      "passed": true,
+      "raw_result": "f870aa3a23bd6147b746ba74ffd47c7d822759145bf6f6faae8733f59c7da946",
+      "rc": 101,
+      "stderr": "8adbcc5d80151970d5ff098c7da6e38a70cbc2eb27ee1ba3fed9e34245460080",
+      "trace": "1f614f621c2966c17dd7dedb4cfc58f6e9f418bbafad7212af1e2e19b9c485e7",
+      "writer_processes": 0
+    },
+    "no-ohm": {
+      "deadline": false,
+      "fifo_open_calls": 1,
+      "parent_eisdir": true,
+      "passed": true,
+      "raw_result": "383abb60ab15010284c0ee5cc3da9fb18a5b3d53c45b230b1dda0b2c47b34e8c",
+      "rc": 101,
+      "stderr": "01b8c97c3b924048e224d74408d52f2fc0929202f7ce97f5521e77e17a389d73",
+      "trace": "d04af3aed0e69a9d0d5dfdbc18bebe12df39690ab12a1e5a14e3f5854e132e78",
+      "writer_processes": 0
+    }
+  },
+  "genuine_interruption": {
+    "clean-revert": {
+      "artifacts": [
+        [
+          "dep",
+          [
+            "lib"
+          ],
+          false
+        ],
+        [
+          "app",
+          [
+            "lib"
+          ],
+          false
+        ],
+        [
+          "app",
+          [
+            "bin"
+          ],
+          false
+        ]
+      ],
+      "elf": "0de0f467e5dbc732d3d2fa96d02acae4a04313be2f12e354f7c40b713b20d214",
+      "errors": [],
+      "program_stdout": "17\n",
+      "rc": 0,
+      "source": "ac7d2d1a3be92218484c75035167a8576234315a3cc9a3d17ef1db63d41af548",
+      "stderr": "a1ee34c386e056f796e19e575ddd29663d5141daea7ac1093d6943a025d282b8",
+      "stdout": "faf31210e51ce10b6f2f4d00c7f6df4f9e4a054fa12ef62094cd479fd204bd35"
+    },
+    "independent-valid-change": {
+      "artifacts": [
+        [
+          "dep",
+          [
+            "lib"
+          ],
+          false
+        ],
+        [
+          "app",
+          [
+            "lib"
+          ],
+          false
+        ],
+        [
+          "app",
+          [
+            "bin"
+          ],
+          false
+        ]
+      ],
+      "elf": "912d40452a7cf694393f1a66663c520e194961eb95eeefd984b773fa74b01c4c",
+      "errors": [],
+      "program_stdout": "29\n",
+      "rc": 0,
+      "source": "a2bdb99cb2b8a9aed45d8e3f87d59aaa494f3f340a822b5ae680b065a95de97e",
+      "stderr": "3bb18b1017aec04c6cc35227236a779f225eecd218a713caf10d30f57c575e03",
+      "stdout": "faf31210e51ce10b6f2f4d00c7f6df4f9e4a054fa12ef62094cd479fd204bd35"
+    },
+    "interrupted-provider": {
+      "artifacts": [],
+      "errors": [],
+      "rc": 101,
+      "source": "a2bdb99cb2b8a9aed45d8e3f87d59aaa494f3f340a822b5ae680b065a95de97e",
+      "stderr": "26419dfe523933720e541f46062cf83f51c86c3841a1e9a866db8b86d5f3a657",
+      "stdout": "7c4af99fd1ea2a26d5425d34c5279d692c40dff9303bccfa457c8b1058299ee8"
+    },
+    "revert": {
+      "artifacts": [
+        [
+          "dep",
+          [
+            "lib"
+          ],
+          false
+        ],
+        [
+          "app",
+          [
+            "lib"
+          ],
+          false
+        ],
+        [
+          "app",
+          [
+            "bin"
+          ],
+          false
+        ]
+      ],
+      "elf": "0de0f467e5dbc732d3d2fa96d02acae4a04313be2f12e354f7c40b713b20d214",
+      "errors": [],
+      "program_stdout": "17\n",
+      "rc": 0,
+      "source": "ac7d2d1a3be92218484c75035167a8576234315a3cc9a3d17ef1db63d41af548",
+      "stderr": "3bb18b1017aec04c6cc35227236a779f225eecd218a713caf10d30f57c575e03",
+      "stdout": "faf31210e51ce10b6f2f4d00c7f6df4f9e4a054fa12ef62094cd479fd204bd35"
+    },
+    "revert-again": {
+      "artifacts": [
+        [
+          "dep",
+          [
+            "lib"
+          ],
+          true
+        ],
+        [
+          "app",
+          [
+            "lib"
+          ],
+          true
+        ],
+        [
+          "app",
+          [
+            "bin"
+          ],
+          true
+        ]
+      ],
+      "elf": "0de0f467e5dbc732d3d2fa96d02acae4a04313be2f12e354f7c40b713b20d214",
+      "errors": [],
+      "program_stdout": "17\n",
+      "rc": 0,
+      "source": "ac7d2d1a3be92218484c75035167a8576234315a3cc9a3d17ef1db63d41af548",
+      "stderr": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e",
+      "stdout": "ffcd8b99e160de47d421d38bef188c6fa6fc93d4f2423248e82e1888a9e222d6"
+    },
+    "seed": {
+      "artifacts": [
+        [
+          "dep",
+          [
+            "lib"
+          ],
+          false
+        ],
+        [
+          "app",
+          [
+            "lib"
+          ],
+          false
+        ],
+        [
+          "app",
+          [
+            "bin"
+          ],
+          false
+        ]
+      ],
+      "elf": "0de0f467e5dbc732d3d2fa96d02acae4a04313be2f12e354f7c40b713b20d214",
+      "errors": [],
+      "program_stdout": "17\n",
+      "rc": 0,
+      "source": "ac7d2d1a3be92218484c75035167a8576234315a3cc9a3d17ef1db63d41af548",
+      "stderr": "1c59cafd1f00f2fb1a2b116ddc8e3ec895e5b58c58e24a3339fa636ca3e93d7e",
+      "stdout": "faf31210e51ce10b6f2f4d00c7f6df4f9e4a054fa12ef62094cd479fd204bd35"
+    },
+    "unchanged": {
+      "artifacts": [
+        [
+          "dep",
+          [
+            "lib"
+          ],
+          true
+        ],
+        [
+          "app",
+          [
+            "lib"
+          ],
+          true
+        ],
+        [
+          "app",
+          [
+            "bin"
+          ],
+          true
+        ]
+      ],
+      "elf": "0de0f467e5dbc732d3d2fa96d02acae4a04313be2f12e354f7c40b713b20d214",
+      "errors": [],
+      "program_stdout": "17\n",
+      "rc": 0,
+      "source": "ac7d2d1a3be92218484c75035167a8576234315a3cc9a3d17ef1db63d41af548",
+      "stderr": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e",
+      "stdout": "ffcd8b99e160de47d421d38bef188c6fa6fc93d4f2423248e82e1888a9e222d6"
+    }
+  },
+  "providers": {
+    "provider-first": {
+      "compiler_invocations": 17,
+      "ordering": [
+        [
+          "before-fd",
+          1,
+          0
+        ],
+        [
+          "after-fd",
+          1,
+          0
+        ],
+        [
+          "before-fd",
+          2,
+          0
+        ],
+        [
+          "hold-fd",
+          2,
+          0
+        ],
+        [
+          "release-fd",
+          2,
+          0
+        ],
+        [
+          "after-fd",
+          2,
+          0
+        ]
+      ],
+      "phases": [
+        {
+          "dirty": [
+            "api",
+            "client",
+            "provider",
+            "reader"
+          ],
+          "errors": [],
+          "finished": {
+            "reason": "build-finished",
+            "success": true
+          },
+          "fresh": [],
+          "phase": "original",
+          "stderr_sha256": "15a3ca32c43fadc1fd3267da350530b9ce091c649509706af6300f6f69f6710b",
+          "stdout_sha256": "a572744ed08803c1ccbbd32feda9971406978c22e9ac4fb6a4cb8db82cd4bb79"
+        },
+        {
+          "dirty": [],
+          "errors": [],
+          "finished": {
+            "reason": "build-finished",
+            "success": true
+          },
+          "fresh": [
+            "api",
+            "client",
+            "provider",
+            "reader"
+          ],
+          "phase": "original-repeat",
+          "stderr_sha256": "a5f4c585ee974ca44916ac30a98bbc189e067a7e0a6bc6d2e8d6bc525be724af",
+          "stdout_sha256": "07d23ce313a1dcdccd9df8c44f87d97d837bb76eab86cf79e2b3cc70551c2f66"
+        },
+        {
+          "dirty": [
+            "provider",
+            "reader"
+          ],
+          "errors": [
+            {
+              "code": "E0034",
+              "crate": "client",
+              "message": "multiple applicable items in scope",
+              "rendered_sha256": "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56",
+              "span": 3
+            }
+          ],
+          "finished": {
+            "reason": "build-finished",
+            "success": false
+          },
+          "fresh": [
+            "api"
+          ],
+          "phase": "edited",
+          "stderr_sha256": "af636990d270c99636116bbdab463e77fcb80431b7668dc45bf07434f2d63d33",
+          "stdout_sha256": "d917f453ca965a85146cd1a1389cb7e8363e339005516815d3bfb11a589fe2d8"
+        },
+        {
+          "dirty": [],
+          "errors": [
+            {
+              "code": "E0034",
+              "crate": "client",
+              "message": "multiple applicable items in scope",
+              "rendered_sha256": "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56",
+              "span": 3
+            }
+          ],
+          "finished": {
+            "reason": "build-finished",
+            "success": false
+          },
+          "fresh": [
+            "api",
+            "provider",
+            "reader"
+          ],
+          "phase": "edited-repeat",
+          "stderr_sha256": "dd22d02e49661eff22a8c43141a591acae062551cd57b3d3b5d08d6128735e99",
+          "stdout_sha256": "f4d1441ff79d01a50ce74c769f436b86eb9ed13fc05b3ab7322ec1959762b03a"
+        },
+        {
+          "dirty": [
+            "api",
+            "provider",
+            "reader"
+          ],
+          "errors": [
+            {
+              "code": "E0034",
+              "crate": "client",
+              "message": "multiple applicable items in scope",
+              "rendered_sha256": "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56",
+              "span": 3
+            }
+          ],
+          "finished": {
+            "reason": "build-finished",
+            "success": false
+          },
+          "fresh": [],
+          "phase": "edited-clean",
+          "stderr_sha256": "e9eec9c5511837c39204ffecf0916b8b8c00cfb1e84118922d9d6572e8a978b2",
+          "stdout_sha256": "b976b9eda4691c58e5e7dd3e004317db7fbbc1b1763ca1d9efda750f6bcf9344"
+        },
+        {
+          "dirty": [
+            "client",
+            "provider",
+            "reader"
+          ],
+          "errors": [],
+          "finished": {
+            "reason": "build-finished",
+            "success": true
+          },
+          "fresh": [
+            "api"
+          ],
+          "phase": "restore",
+          "stderr_sha256": "c42b8a010caee937825ddc12b55453f3e72c4b284eaeb125b970fa560b35c64b",
+          "stdout_sha256": "6f3283be687e5487d53b373062955acedfd5de2751a6be0c6cf1cda553fa1754"
+        },
+        {
+          "dirty": [],
+          "errors": [],
+          "finished": {
+            "reason": "build-finished",
+            "success": true
+          },
+          "fresh": [
+            "api",
+            "client",
+            "provider",
+            "reader"
+          ],
+          "phase": "restore-repeat",
+          "stderr_sha256": "c92508a29848820f033cd2ea015c85dde0953c88b07cc967ce34b7c08f610549",
+          "stdout_sha256": "07d23ce313a1dcdccd9df8c44f87d97d837bb76eab86cf79e2b3cc70551c2f66"
+        }
+      ],
+      "physical_checks": {
+        "all_romatched": true,
+        "provider_and_reader_have_public_hash": true,
+        "real_rustcs": true,
+        "seven_phases": true
+      },
+      "raw_exec": "485b55607d1bf4761a9e0a58bf7a98050c4e96f8447330836b80093a2f791b81",
+      "raw_result": "cf5809e65c61471f10cbc1f82fa9d4c4d10a2c3662dff9c6cad69db0141e40ea",
+      "verdict": "correct"
+    },
+    "provider-late": {
+      "compiler_invocations": 17,
+      "ordering": [
+        [
+          "before-fd",
+          1,
+          0
+        ],
+        [
+          "hold-fd",
+          1,
+          0
+        ],
+        [
+          "before-fd",
+          2,
+          0
+        ],
+        [
+          "after-fd",
+          2,
+          0
+        ],
+        [
+          "release-fd",
+          1,
+          0
+        ],
+        [
+          "after-fd",
+          1,
+          0
+        ]
+      ],
+      "phases": [
+        {
+          "dirty": [
+            "api",
+            "client",
+            "provider",
+            "reader"
+          ],
+          "errors": [],
+          "finished": {
+            "reason": "build-finished",
+            "success": true
+          },
+          "fresh": [],
+          "phase": "original",
+          "stderr_sha256": "7e3f1d48949d259ce70bc538b09d31721280319cbbc8a326e645dbfe7065aecb",
+          "stdout_sha256": "81c52886ee63ed10cb5eb984f1c7ae28a68ecdaae36f6362e8f7d052deecbf60"
+        },
+        {
+          "dirty": [],
+          "errors": [],
+          "finished": {
+            "reason": "build-finished",
+            "success": true
+          },
+          "fresh": [
+            "api",
+            "client",
+            "provider",
+            "reader"
+          ],
+          "phase": "original-repeat",
+          "stderr_sha256": "a5f4c585ee974ca44916ac30a98bbc189e067a7e0a6bc6d2e8d6bc525be724af",
+          "stdout_sha256": "caf399104533d039a70efed87019b5426043c008a51cde42d62d6718853c03cf"
+        },
+        {
+          "dirty": [
+            "provider",
+            "reader"
+          ],
+          "errors": [
+            {
+              "code": "E0034",
+              "crate": "client",
+              "message": "multiple applicable items in scope",
+              "rendered_sha256": "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56",
+              "span": 3
+            }
+          ],
+          "finished": {
+            "reason": "build-finished",
+            "success": false
+          },
+          "fresh": [
+            "api"
+          ],
+          "phase": "edited",
+          "stderr_sha256": "2dbf5c48c68d7d00c765b83f8797a2ee4e5a3d6a79a199b4573de83ceb9761df",
+          "stdout_sha256": "5f18cec618640b72b763df829dc68540c0f34531cf0fcf11cf885681c508e8e8"
+        },
+        {
+          "dirty": [],
+          "errors": [
+            {
+              "code": "E0034",
+              "crate": "client",
+              "message": "multiple applicable items in scope",
+              "rendered_sha256": "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56",
+              "span": 3
+            }
+          ],
+          "finished": {
+            "reason": "build-finished",
+            "success": false
+          },
+          "fresh": [
+            "api",
+            "provider",
+            "reader"
+          ],
+          "phase": "edited-repeat",
+          "stderr_sha256": "c6179ac76ab72ca403095f8d863f97122abe05f7d0b4536d637c6137cbb41c23",
+          "stdout_sha256": "e7d6f5c12ecd1e906f9a724fa6448829f4a5cface2f5df89248fb5d8dc333038"
+        },
+        {
+          "dirty": [
+            "api",
+            "provider",
+            "reader"
+          ],
+          "errors": [
+            {
+              "code": "E0034",
+              "crate": "client",
+              "message": "multiple applicable items in scope",
+              "rendered_sha256": "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56",
+              "span": 3
+            }
+          ],
+          "finished": {
+            "reason": "build-finished",
+            "success": false
+          },
+          "fresh": [],
+          "phase": "edited-clean",
+          "stderr_sha256": "c8ad49b975b140bbe890b880b72388ee1e44ac5352caadd1afff23d354d6866e",
+          "stdout_sha256": "dbc1f62079d178a60952926c80bab6eaee51ce6ae3b17b65dd43f4634ef9fa0e"
+        },
+        {
+          "dirty": [
+            "client",
+            "provider",
+            "reader"
+          ],
+          "errors": [],
+          "finished": {
+            "reason": "build-finished",
+            "success": true
+          },
+          "fresh": [
+            "api"
+          ],
+          "phase": "restore",
+          "stderr_sha256": "9cadded8427f6022dab2bc4fb605dc3a3ffdc0ac63e771c027c18e3f23f9d1d3",
+          "stdout_sha256": "da52e7e53cae6b105b77ea1b3cd278e2ff81ed9bc195bddec182d02af73905b1"
+        },
+        {
+          "dirty": [],
+          "errors": [],
+          "finished": {
+            "reason": "build-finished",
+            "success": true
+          },
+          "fresh": [
+            "api",
+            "client",
+            "provider",
+            "reader"
+          ],
+          "phase": "restore-repeat",
+          "stderr_sha256": "a5f4c585ee974ca44916ac30a98bbc189e067a7e0a6bc6d2e8d6bc525be724af",
+          "stdout_sha256": "caf399104533d039a70efed87019b5426043c008a51cde42d62d6718853c03cf"
+        }
+      ],
+      "physical_checks": {
+        "all_romatched": true,
+        "provider_and_reader_have_public_hash": true,
+        "real_rustcs": true,
+        "seven_phases": true
+      },
+      "raw_exec": "3fdd6e69bef7f167bdb454a7c4182f79c6e2dfb1f04456eaeb77a49daf0d9809",
+      "raw_result": "58e1525c947644553f2ec859e0a7a84e4227f4184dcad8b0763f1f5c1ae6b8b8",
+      "verdict": "correct"
+    }
+  }
+}

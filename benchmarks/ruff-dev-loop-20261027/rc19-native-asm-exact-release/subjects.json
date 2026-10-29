@@ -1,0 +1,425 @@
+{
+  "bootstrap": {
+    "archive_cargo": "f09f4c530787b5f444770d5fcc1ec49f5546e70354b343206ac3bc504e225a56",
+    "archive_rust": "698785c209371b5b069af17298b1267a0195bcce3c4da0993a9a898b8209d2a5",
+    "complete": "b1cf93129f4253427ace2e96c19847ce185af1a0bbcb81f900cd71fbeaf92ae2",
+    "cpus": [
+      8,
+      9,
+      10,
+      11
+    ],
+    "exit": 0,
+    "first_postbuild_verifier_exit": 1,
+    "jobs": 4,
+    "joined_original_execs": {
+      "accounted_source_records": [
+        {
+          "completion_line": 11122,
+          "crate": "___",
+          "joined_exec_sha256": "c119cdd454f13c665303e85ad21145288be3b5129c1e40e40ff9f9a4d4f0f47e",
+          "pid": 352873,
+          "start_line": 11122
+        },
+        {
+          "completion_line": 11137,
+          "crate": "core",
+          "joined_exec_sha256": "8a5ab3ac919800c9bf24e0fa116c4e7d5b7af17203ca574760d430b620f72fbb",
+          "pid": 352891,
+          "start_line": 11135
+        },
+        {
+          "completion_line": 11262,
+          "crate": "compiler_builtins",
+          "joined_exec_sha256": "0835cc390f9aab7a50873b314efd419e84b8d627594f8ac04df684bc916e4e78",
+          "pid": 354140,
+          "start_line": 11262
+        },
+        {
+          "completion_line": 11270,
+          "crate": "alloc",
+          "joined_exec_sha256": "5d9b5efa0a9a1c3d53ee3f14d7960d4464625e413ab5f86adc4f980732079a9f",
+          "pid": 354163,
+          "start_line": 11270
+        },
+        {
+          "completion_line": 11271,
+          "crate": "rustc_std_workspace_core",
+          "joined_exec_sha256": "0a6329223214b8c56eaf605d3eee153b55172d6b7ad1200664351720a54afb51",
+          "pid": 354164,
+          "start_line": 11271
+        },
+        {
+          "completion_line": 11276,
+          "crate": "libc",
+          "joined_exec_sha256": "5d5cd440962466c553828629b71a17d7859ab493719650ceebdd386bee1a6275",
+          "pid": 354179,
+          "start_line": 11276
+        },
+        {
+          "completion_line": 11278,
+          "crate": "memchr",
+          "joined_exec_sha256": "32832c8f57b3398ffb99f6de6f80b61c74cd8447aadd946ac2326d479c7ba3cf",
+          "pid": 354203,
+          "start_line": 11278
+        },
+        {
+          "completion_line": 11284,
+          "crate": "unwind",
+          "joined_exec_sha256": "f69370bbff6d2b7feef1ab12b8465e6e9bbe8048f37aee631a5e7d6f39f6f157",
+          "pid": 354469,
+          "start_line": 11284
+        },
+        {
+          "completion_line": 11290,
+          "crate": "adler2",
+          "joined_exec_sha256": "bc433ccab6a6641ad499290902d242cef06a6cd54f66d18d02753ab4b4fc9dfa",
+          "pid": 354477,
+          "start_line": 11290
+        },
+        {
+          "completion_line": 11294,
+          "crate": "cfg_if",
+          "joined_exec_sha256": "674d0f3a6c79bbd989a875cef58ae91d5a23647258291821547a4a6f70df7dde",
+          "pid": 354480,
+          "start_line": 11294
+        },
+        {
+          "completion_line": 11302,
+          "crate": "panic_abort",
+          "joined_exec_sha256": "d5fc0f923d22881047e33b8a247dabbc32aa77cdf29e0c4a0bcc97b1951a814f",
+          "pid": 354493,
+          "start_line": 11302
+        },
+        {
+          "completion_line": 11306,
+          "crate": "rustc_demangle",
+          "joined_exec_sha256": "fc0801f00de7f85e285689fe5c8b92a6fe085838c06bfddb7ed50c44597f5913",
+          "pid": 354499,
+          "start_line": 11306
+        },
+        {
+          "completion_line": 11311,
+          "crate": "rustc_literal_escaper",
+          "joined_exec_sha256": "d69a46b2cd310aea0311a8d9bab73dc19f8beea5693362c393b46d4a605a6146",
+          "pid": 354507,
+          "start_line": 11311
+        },
+        {
+          "completion_line": 11323,
+          "crate": "panic_unwind",
+          "joined_exec_sha256": "578865af60ef6349dc98c629f3c2efc61dc817b39d88cfbd7759af3f3c0a1f25",
+          "pid": 354534,
+          "start_line": 11321
+        },
+        {
+          "completion_line": 11324,
+          "crate": "rustc_std_workspace_alloc",
+          "joined_exec_sha256": "fad0aa0381afb9027e2050f050dfecb7411e643f7170c7240d5cb964942cb1bb",
+          "pid": 354533,
+          "start_line": 11322
+        },
+        {
+          "completion_line": 11326,
+          "crate": "gimli",
+          "joined_exec_sha256": "ff0416aa53a7dca1bcca79f7c8521d18058c9b01e3f19dd66c9ca0c16d9fb4b7",
+          "pid": 354546,
+          "start_line": 11326
+        },
+        {
+          "completion_line": 11332,
+          "crate": "object",
+          "joined_exec_sha256": "bb08a4fc8052f21279714cc5c5a7332e690337abd26b611304ca698f6c92bc70",
+          "pid": 354554,
+          "start_line": 11332
+        },
+        {
+          "completion_line": 11336,
+          "crate": "hashbrown",
+          "joined_exec_sha256": "dabc674b293266e9094ab52f5f0ef1b2f64f56d67318db6767d58a5f1df5f023",
+          "pid": 354558,
+          "start_line": 11336
+        },
+        {
+          "completion_line": 11341,
+          "crate": "miniz_oxide",
+          "joined_exec_sha256": "928e888b6b4c6fc6ac6e07cb56a24d5024466e1bdf7f7e268dc40f8d16b5d803",
+          "pid": 354564,
+          "start_line": 11341
+        },
+        {
+          "completion_line": 11346,
+          "crate": "std_detect",
+          "joined_exec_sha256": "6ad5dc65e333f9fcdd88c04b08b78026190ad136400c42cff909ec70f16bb33b",
+          "pid": 354638,
+          "start_line": 11346
+        },
+        {
+          "completion_line": 11354,
+          "crate": "addr2line",
+          "joined_exec_sha256": "afe64364516102d1a64a96c9ade2635b9feab111f525659670861909456d89fe",
+          "pid": 354663,
+          "start_line": 11354
+        },
+        {
+          "completion_line": 11364,
+          "crate": "std",
+          "joined_exec_sha256": "0dd3655df44757344da9ed6a1a53614196d9948202992ba3d9535df2d45b6fb7",
+          "pid": 354687,
+          "start_line": 11364
+        },
+        {
+          "completion_line": 11387,
+          "crate": "rustc_std_workspace_std",
+          "joined_exec_sha256": "0b955c2f2baac6d1df173bad541dc95aa9ed6a46e456596f8c457e458b397ab0",
+          "pid": 355474,
+          "start_line": 11385
+        },
+        {
+          "completion_line": 11388,
+          "crate": "proc_macro",
+          "joined_exec_sha256": "d9e583e906e3e7aca70181dc6869f64d88ad45677a0db01b83fe3fc10a2fca6a",
+          "pid": 355475,
+          "start_line": 11386
+        },
+        {
+          "completion_line": 11390,
+          "crate": "getopts",
+          "joined_exec_sha256": "6ef5398d347efefd9539814d3d76ba99711067d900ebd7a9bcdf1146bb66497b",
+          "pid": 355485,
+          "start_line": 11390
+        },
+        {
+          "completion_line": 11394,
+          "crate": "test",
+          "joined_exec_sha256": "16cda9175f8acabd8de849553a63b43ce7d2d29a6941da34fc9e5c671a0fcf28",
+          "pid": 355493,
+          "start_line": 11394
+        },
+        {
+          "completion_line": 11398,
+          "crate": "sysroot",
+          "joined_exec_sha256": "61d1a1df87d99e77de71483e70cf747773663facb147c17f904989f40fe4e1db",
+          "pid": 355506,
+          "start_line": 11398
+        }
+      ],
+      "all_library_files_verified": 53,
+      "bootstrap_status": 1,
+      "bootstrap_stderr": "d967e075046d49640cf96a473812fec34f22320428fa3d6fc28900916e2650d3",
+      "compile_exit": 0,
+      "compile_receipt": "b1cf93129f4253427ace2e96c19847ce185af1a0bbcb81f900cd71fbeaf92ae2",
+      "missing_initially": [
+        "core",
+        "panic_unwind",
+        "proc_macro",
+        "rustc_std_workspace_alloc",
+        "rustc_std_workspace_std"
+      ],
+      "ordinary_trace_counts": {
+        "___": 1,
+        "addr2line": 1,
+        "adler2": 1,
+        "alloc": 1,
+        "cfg_if": 1,
+        "compiler_builtins": 1,
+        "getopts": 1,
+        "gimli": 1,
+        "hashbrown": 1,
+        "libc": 1,
+        "memchr": 1,
+        "miniz_oxide": 1,
+        "object": 1,
+        "panic_abort": 1,
+        "rustc_demangle": 1,
+        "rustc_literal_escaper": 1,
+        "rustc_std_workspace_core": 1,
+        "std": 1,
+        "std_detect": 1,
+        "sysroot": 1,
+        "test": 1,
+        "unwind": 1
+      },
+      "original_product": "c364ba1e2f96cbc83ab81cef9892fdf2696972e9fea806ee4bc7be83c39547e2",
+      "source": "ca780121cea38bb9b0538d020d4bcce76ca30cbc",
+      "trace": "ad655bb123625c6b18434a500ebf19ed13ebfd4fa5c18f7cd48af3729e3c56f0"
+    },
+    "joined_trace_result": "31be49f60d482acd5f5d34952b4d5ce97dee9462ea161727c365daeed694f66f",
+    "minimum_free": {
+      "home": 94039777280,
+      "scratch": 61730000896,
+      "upper": 10033840128
+    },
+    "product": "2c7a421f77bc05b00cd3434df3a981aae618ecd0167d9d44fd846087b9232471",
+    "real_exec": "ad655bb123625c6b18434a500ebf19ed13ebfd4fa5c18f7cd48af3729e3c56f0",
+    "stage": 1,
+    "uid": 1000
+  },
+  "cargo": {
+    "archive_sha256": "c60b51168e0def23cee028930fa3a8cee411e069170e76b90a9bd25f5d233e75",
+    "binary_sha256": "e9d797db90e051284931870fa2be6648e09e6878f1a2b5176f4848889e6c4fae",
+    "build_log_sha256": "6892b071e96815842a8320ca18c0f50c20d69cd39755b79b23678aea5c0e12a6",
+    "commit": "2447f7f4eacb4fdf499899929f08d0de19abb4d0",
+    "complete_sha256": "2f7d2dc40c01bf8670171c993c500cce3ad6ffa407d6708a3f4135e178fe4f63",
+    "linker_inputs": 335,
+    "ordered_externs": 239,
+    "profile_sha256": "481ada8a40c70dad11b3c7e8871e9a52207d78447ca5e8ace06fc4aec2d2b5a7",
+    "rlibs": 326,
+    "size": 43394312,
+    "terminal_sha256": "008f4ce5ffee403c03f81b6640a64556eb8be13892bbab26bcad00dcf67c6c64",
+    "trace_sha256": "ecb7bde97db35420968057b9056c7d6abea8a8aab3711728c2c5d3e480077783",
+    "tree": "b9496c0cbd39e102be38433f9eb193e343fb4fe9",
+    "version": "cargo 1.99.0 (2447f7f4e 2026-10-29)\nrelease: 1.99.0\ncommit-hash: 2447f7f4eacb4fdf499899929f08d0de19abb4d0\ncommit-date: 2026-10-29\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.0.13)\nos: Ubuntu 24.4.0 (noble) [64-bit]\n"
+  },
+  "cargo_gitlink": "2447f7f4eacb4fdf499899929f08d0de19abb4d0",
+  "compiler": {
+    "actual_stage1_crates": {
+      "___": 1,
+      "addr2line": 1,
+      "adler2": 1,
+      "alloc": 1,
+      "cfg_if": 1,
+      "compiler_builtins": 1,
+      "core": 1,
+      "getopts": 1,
+      "gimli": 1,
+      "hashbrown": 1,
+      "libc": 1,
+      "memchr": 1,
+      "miniz_oxide": 1,
+      "object": 1,
+      "panic_abort": 1,
+      "panic_unwind": 1,
+      "proc_macro": 1,
+      "rustc_demangle": 1,
+      "rustc_literal_escaper": 1,
+      "rustc_std_workspace_alloc": 1,
+      "rustc_std_workspace_core": 1,
+      "rustc_std_workspace_std": 1,
+      "std": 1,
+      "std_detect": 1,
+      "sysroot": 1,
+      "test": 1,
+      "unwind": 1
+    },
+    "bolt": false,
+    "driver": "d8adcc610bdae225344ed1310ff9708784634d1fecafa600f7758a5d48d2cc95",
+    "frontend": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+    "llvm": "43bac9749e539cd5988a4d5452b64582cf07ac9e7c059fde29c7bee76e106c51",
+    "pgo": false,
+    "target_files": {
+      "libaddr2line-a8a739e2e1b28a8c.rlib": "a3f0ee9f30441afa54c88ed206cb1c96af82556448f8f62e6abe11352442932b",
+      "libaddr2line-a8a739e2e1b28a8c.rmeta": "da6d5f26684b030d1ab09f887a0c40133b2955271d53d250ddcf572b9b02bbac",
+      "libadler2-6a08ce9a9d86afb8.rlib": "aa71ec3aef09ca2c999a2ccb6dd2e3782c182a546352050a374cd277b46f1f89",
+      "libadler2-6a08ce9a9d86afb8.rmeta": "7ab760e17333017f82f6c16983c44bf02134db0a3db2f69b88f1411899f874c7",
+      "liballoc-5ec1bb43fdca384b.rlib": "796cabd9545010c06245faec844159e21339245c074490f87f3dd205dc981e22",
+      "liballoc-5ec1bb43fdca384b.rmeta": "141d9201e23d3f26548044bb9b1703bf0cf6125975b7298b91b53428f12cc999",
+      "libcfg_if-1ecd1837d539b049.rlib": "b1f848f7ff83ac9213d463fbcf9e93cdfd50228af67fefa18aaf84e6156bc855",
+      "libcfg_if-1ecd1837d539b049.rmeta": "4309647b753ead66a42aaf213ecb1bea47dc4c34dbb5d46b3d9c70a34da6b231",
+      "libcompiler_builtins-a280af8ddbe14daf.rlib": "8152cd0e58b153ec9091bcc37f6297cf649d5fb528c1a07d51fd68e80d378238",
+      "libcompiler_builtins-a280af8ddbe14daf.rmeta": "39ac19729063c865c99c65233ac3176bccf98d6be089ddce968e44a06519c11c",
+      "libcore-25f2a875ad28f903.rlib": "9897346e2d1466fe64afa0164917ca61a96be1926d29b6b0a0848efce69a497a",
+      "libcore-25f2a875ad28f903.rmeta": "04763f01fcfffdd07b97f3318ba19e90c06946397cc10b3cf1b75ccaa83a88f6",
+      "libgetopts-d187277e3b35b556.rlib": "cb531725147942d4976d32f3caff2d3f497f36f57eb36cf08e809108895eaa4d",
+      "libgetopts-d187277e3b35b556.rmeta": "b9388c245ad140863e8c2426d92348218a2856227db1eea4f8a8ee3ec6075dbc",
+      "libgimli-477763a63d9d8223.rlib": "b01e27ae011149333696f37602c7338c2ff93ef1dc8abfbfa28e864e7cbcde2a",
+      "libgimli-477763a63d9d8223.rmeta": "62d31264f9433989f1f25c0e715c1985d0c9462bc7abb7ff7ddf826cb303731f",
+      "libhashbrown-1e04a2372500f70b.rlib": "ecbd516b45576128d1b95d524b11e51043c3b34fa16760d9adc68ed06f215ce4",
+      "libhashbrown-1e04a2372500f70b.rmeta": "781431899ba001de12fa9f20cab9b285e7a69b700a56dcb0336761ddc9dc903c",
+      "liblibc-92f687c39789ad74.rlib": "278bc1a61b2761210f9bc70648bc3ed5c343c9fcec5dee1458a4d6af7444f6f5",
+      "liblibc-92f687c39789ad74.rmeta": "289bb32fa72345fa9912ec2be82c226a694c1ecda388dea263d6a992b903badc",
+      "libmemchr-eec8d6602b9c38cf.rlib": "2e12700ff77797f5faf4d8199ca5dcfdff267f2e03e73ff9c0b27c30d4604a47",
+      "libmemchr-eec8d6602b9c38cf.rmeta": "23a92d5cc6d60bed481257f24d224c27eb27ddfb29aae4bcd6639a2dfd18f74d",
+      "libminiz_oxide-c54af1741d09864d.rlib": "ff8804a88772b09c3a2a13320b047586d2f2c771ec30cab6e5c7bf2077973679",
+      "libminiz_oxide-c54af1741d09864d.rmeta": "7cfc1bc14601c2b49a2bd52721d1aeb48e1f77c7a4583d0bb23b682f086e9eb4",
+      "libobject-f60748dd81484aad.rlib": "b07bdaba43145229a15a744fedab3f632deb0dfe61a315477162f818ec011619",
+      "libobject-f60748dd81484aad.rmeta": "6af6ae0029616272a107a0710dcfdb96e6a6b51bf4877a5032864a9954cc87dc",
+      "libpanic_abort-829ef592e97ada20.rlib": "0f5fcdec86daa9c8991d75199dfd7a931d0c099ecfec62a3171919d35d035e10",
+      "libpanic_abort-829ef592e97ada20.rmeta": "bf5ab0d6495fadf8ffc78083c52b63370728f9e84817aa7fe31e9301bb1811bb",
+      "libpanic_unwind-ef5350c88274274d.rlib": "7a4f2a358370ac099981745c8d47c9d3882f8121b4417db6f21d12b2c45e527f",
+      "libpanic_unwind-ef5350c88274274d.rmeta": "59c4b711774ebf456e7b85af70e1988f658427d28b7c73cec3b6790c14e5c26c",
+      "libproc_macro-1d3ce540b9908bdb.rlib": "acfc936cd510f5270e478d207b3e481a6b4a38d0be1736599829b9fa0a3632d6",
+      "libproc_macro-1d3ce540b9908bdb.rmeta": "88e140e35b29ad52170d4010ca8c6b9109180567b7dbf552b5fbb493bcb6bd16",
+      "librustc_demangle-f50af5c2136e3ec8.rlib": "9faf24e432782fd77054177f15516b1fe73707b840272d36d15c2efa33b9502e",
+      "librustc_demangle-f50af5c2136e3ec8.rmeta": "fbec2598bbdbbf2d2e489ee3dc13990c7444a862c9e17251cbd05bb98f99e4eb",
+      "librustc_literal_escaper-a329649033a24639.rlib": "1b56a710253bbd7d9b32d87837abee3cfa3baa4eb1cadcb599c165b9fb798ca7",
+      "librustc_literal_escaper-a329649033a24639.rmeta": "5b0f0cea3129decce2618a509a392dd4e1dd7cbc531c6ded1a114052b68a0eda",
+      "librustc_std_workspace_alloc-f7c95ae66f62c024.rlib": "d4b7b2e9d4eeeb52ca44e720fbaba24a673613da5027cef9ee70a531d25a7dc5",
+      "librustc_std_workspace_alloc-f7c95ae66f62c024.rmeta": "e9be4ca1abd654eb1fab72a7dea1fcd2a71a03704d2007098be4992a3b80413f",
+      "librustc_std_workspace_core-a80aade9fcd73db4.rlib": "58bebf5ec199650fb99c8e9f6f850d0ac0d55f77811d4eb20ea885ec481660cf",
+      "librustc_std_workspace_core-a80aade9fcd73db4.rmeta": "cc2795917f91afe0fedf95ab4d18f5469c8d37d5f6733a818e3db85b5309dff2",
+      "librustc_std_workspace_std-6955d780ec928009.rlib": "a52d66f9a55a4e3878ad30e445ca7861d95d77dd9d98b8b3a135e628434b232e",
+      "librustc_std_workspace_std-6955d780ec928009.rmeta": "ec244be9e1d51710909b9afdf1febf0e509ed6b3159e4cc7708bb01264dcff8c",
+      "libstd-2938453352845601.rlib": "f31bee0f2ad542160f99574ad53ed09a575fbc1f6ff10d9c46e6b507c5a8482a",
+      "libstd-2938453352845601.rmeta": "b3eb2e93576baad0d435a48d70faf5d7e182e64d32525d21953254b44595c02d",
+      "libstd-2938453352845601.so": "18dc5c7554f26e9f5126c9630de6b53f389d864531de63277b01d3781e0ea9e0",
+      "libstd_detect-2583d1743b7c90d6.rlib": "a68cb91a87269b2289dcccc5dd159c13d42df2903b8122e2aa00b6bf400d3fe5",
+      "libstd_detect-2583d1743b7c90d6.rmeta": "d845421114a483226533bf6c9478e8108707040e73d5255ff2ade00e0cd11eea",
+      "libsysroot-721e517be9b77667.rlib": "d66632ccc0af2b2c08fc375d76f7f939a664b94cfb49f57be5ebf62981c5a928",
+      "libsysroot-721e517be9b77667.rmeta": "c842abf26cc5dca19bb537ebbeab92e9896cc51de7c535ea5799994f12129f3a",
+      "libtest-58a53a7263774292.rlib": "593ec75d79866fa62259f1b1ff4f3b2e74389d04b0c78c93e65d47b1bc85e06d",
+      "libtest-58a53a7263774292.rmeta": "3e3afb80aa784f85467980ab7b00119aa76e6c7f7eeaf69e95a684dde07688aa",
+      "libunwind-169b1770424bb908.rlib": "ffcfaba4b7a556c58a12c2a888348e38c1e6a1d6f28f1092b011030149bf7e97",
+      "libunwind-169b1770424bb908.rmeta": "b8848f29080fe8386b7f20846ccb85ba8be91fe38a8ee5a01bfd508da2a49fcc"
+    },
+    "version": "rustc 1.99.0-dev (ca780121c 2026-10-29) (ohm-ruff-lint-scout)\nbinary: rustc\ncommit-hash: ca780121cea38bb9b0538d020d4bcce76ca30cbc\ncommit-date: 2026-10-29\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-dev\nLLVM version: 23.1.1\n",
+    "wild_built": false
+  },
+  "compiler_tree": "e560860a8cf3f3c527e4d40fd74f1e828d1f4360",
+  "rustup_routing": {
+    "cargo": "cargo 1.99.0 (2447f7f4e 2026-10-29)\nrelease: 1.99.0\ncommit-hash: 2447f7f4eacb4fdf499899929f08d0de19abb4d0\ncommit-date: 2026-10-29\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.0.13)\nos: Ubuntu 24.4.0 (noble) [64-bit]\n",
+    "cargo_sha256": "e9d797db90e051284931870fa2be6648e09e6878f1a2b5176f4848889e6c4fae",
+    "driver_sha256": "d8adcc610bdae225344ed1310ff9708784634d1fecafa600f7758a5d48d2cc95",
+    "rustc": "rustc 1.99.0-dev (ca780121c 2026-10-29) (ohm-ruff-lint-scout)\nbinary: rustc\ncommit-hash: ca780121cea38bb9b0538d020d4bcce76ca30cbc\ncommit-date: 2026-10-29\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-dev\nLLVM version: 23.1.1\n",
+    "rustc_sha256": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+    "stock_helpers": {
+      "gcc-ld/ld.lld": "8fac14815c9a794cffe82ee301d924bf21db1058b9d261d8f5f80f7a51cc793a",
+      "gcc-ld/ld64.lld": "8fac14815c9a794cffe82ee301d924bf21db1058b9d261d8f5f80f7a51cc793a",
+      "gcc-ld/lld-link": "8fac14815c9a794cffe82ee301d924bf21db1058b9d261d8f5f80f7a51cc793a",
+      "gcc-ld/wasm-ld": "8fac14815c9a794cffe82ee301d924bf21db1058b9d261d8f5f80f7a51cc793a",
+      "rust-lld": "9f47056ea756a869ce9d130f4633894c0c0a17ef8575d32a16f6f43397c5228c",
+      "wild-ld/ld.bfd": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+    }
+  },
+  "source": "ca780121cea38bb9b0538d020d4bcce76ca30cbc",
+  "tree": "400fa38b36fca7d84c58331d188df2d725e0b419",
+  "unchanged_trees": {
+    "AGENTS.md": [
+      "af1ad378bebddcadc8bde50ce54f9ccdba5a8c3a",
+      "af1ad378bebddcadc8bde50ce54f9ccdba5a8c3a"
+    ],
+    "Cargo.lock": [
+      "1a4155a7c5f450485724fe3336d69ac922051f26",
+      "1a4155a7c5f450485724fe3336d69ac922051f26"
+    ],
+    "compiler": [
+      "e560860a8cf3f3c527e4d40fd74f1e828d1f4360",
+      "e560860a8cf3f3c527e4d40fd74f1e828d1f4360"
+    ],
+    "library": [
+      "4f7a8f755164dc68fff80790db8a844ae030fd03",
+      "4f7a8f755164dc68fff80790db8a844ae030fd03"
+    ],
+    "src/bootstrap": [
+      "1dcf3e6b142ba5c132f7a2370dffa6ba090b15e1",
+      "1dcf3e6b142ba5c132f7a2370dffa6ba090b15e1"
+    ],
+    "src/llvm-project": [
+      "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+      "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145"
+    ],
+    "src/shim_utils": [
+      "1d132487fcfacfb1f03de6bdd237f10afb5085aa",
+      "1d132487fcfacfb1f03de6bdd237f10afb5085aa"
+    ],
+    "src/stage0": [
+      "2b3c07d4d457c516754477d36a21529d0cabbfdd",
+      "2b3c07d4d457c516754477d36a21529d0cabbfdd"
+    ],
+    "x.py": [
+      "928a7496cb70ef2a6caf8e890fb09f12883a26e3",
+      "928a7496cb70ef2a6caf8e890fb09f12883a26e3"
+    ]
+  },
+  "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+}

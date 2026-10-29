@@ -1,0 +1,707 @@
+{
+  "default": {
+    "defaults_off": false,
+    "incremental": 0,
+    "raw_terminal": "bc3eac149f369a22e2256a80d1c4ae4aee12aa05f8395df559f0caf1218e6a50",
+    "records": {
+      "01-cold": {
+        "asset_opens": [
+          {
+            "line": "b04f450b8e17b02b76a9316c34b1c10e50d8aab9aed8ec97c1d9c72d278aff03",
+            "missing": false,
+            "nearest_compiler": "reader",
+            "nearest_executable": "rustc",
+            "open_successful": true,
+            "tid": 360650
+          }
+        ],
+        "diagnostic_mentions_incbin": false,
+        "elf": "9b4fec8f45cb684facc7a6295f7508d3e388a492efd9556384ec392ee01a67b1",
+        "empty": true,
+        "native": 17,
+        "processes": [
+          {
+            "exe": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+            "incremental": false,
+            "line": "7bc320dc52d6d390a48f01ffc64aab55dd649871d2593d03ef3e4e75fb2005d6",
+            "link_only": false,
+            "pid": 360589,
+            "type": "rustc",
+            "unit": "reader"
+          },
+          {
+            "exe": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+            "line": "52c9f8eb1b362c5daef27411b727e7e3847e8574031e66e58accb4f016c35667",
+            "name": "ld.bfd",
+            "pid": 360673,
+            "type": "linker"
+          },
+          {
+            "exe": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+            "incremental": false,
+            "line": "827299523eb535b8293451145da12fbef42ba9fac79c486ab58c3fbf7a02e385",
+            "link_only": false,
+            "pid": 360587,
+            "type": "rustc",
+            "unit": "assembler_reader"
+          }
+        ],
+        "raw_result": "06bd1dbdb7cd8b71bd195b579571402c7f294fd8578815e3c2873791676e9be8",
+        "rust": 0,
+        "status": 0
+      },
+      "02-unchanged": {
+        "asset_opens": [],
+        "diagnostic_mentions_incbin": false,
+        "elf": "9b4fec8f45cb684facc7a6295f7508d3e388a492efd9556384ec392ee01a67b1",
+        "empty": false,
+        "native": 17,
+        "processes": [],
+        "raw_result": "fa277988c31155fdf8b41b5b5ad1fcfa11ecb766e39dfcbca812d674b2be0cb5",
+        "rust": 0,
+        "status": 0
+      },
+      "03-edit-and-new-asset": {
+        "asset_opens": [],
+        "diagnostic_mentions_incbin": false,
+        "elf": "9b4fec8f45cb684facc7a6295f7508d3e388a492efd9556384ec392ee01a67b1",
+        "empty": false,
+        "native": 17,
+        "processes": [
+          {
+            "exe": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+            "incremental": false,
+            "line": "9e5153ed3618d554f2d5d2b1bffccf42df4302308e7a2e60e8747afd52e79d45",
+            "link_only": true,
+            "pid": 360814,
+            "type": "rustc",
+            "unit": "reader"
+          },
+          {
+            "exe": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+            "incremental": false,
+            "line": "50e8ed472b94c5ac14b4475bfb2fb5d9fdb54933ee98c194800820c30e515c6b",
+            "link_only": false,
+            "pid": 360766,
+            "type": "rustc",
+            "unit": "assembler_reader"
+          },
+          {
+            "exe": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+            "line": "9d931845d53c35400e08c22246b66d84697f4c9a29ba88cfe4aaaee5cf63f8d3",
+            "name": "ld.bfd",
+            "pid": 360862,
+            "type": "linker"
+          }
+        ],
+        "raw_result": "19a9193de0a76e45d6a50e60a3128eedfc6dcfc52c83557baec2cdac542b5c69",
+        "rust": 0,
+        "status": 0
+      },
+      "04-independent-clean": {
+        "asset_opens": [
+          {
+            "line": "b04f450b8e17b02b76a9316c34b1c10e50d8aab9aed8ec97c1d9c72d278aff03",
+            "missing": false,
+            "nearest_compiler": "reader",
+            "nearest_executable": "rustc",
+            "open_successful": true,
+            "tid": 361105
+          }
+        ],
+        "diagnostic_mentions_incbin": false,
+        "elf": "b376dc52a1d04b43a8db7778ffd7fd4109942a393f17bff1dbc4797a9c2fb42b",
+        "empty": true,
+        "native": 29,
+        "processes": [
+          {
+            "exe": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+            "line": "e87262889c80a5399be53c51febd959e7d6aed48c2c6366b1617b8f4da49d774",
+            "name": "ld.bfd",
+            "pid": 361120,
+            "type": "linker"
+          },
+          {
+            "exe": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+            "incremental": false,
+            "line": "974f4ff30627a9e9b97eb91c6e1c5c372c62cd3bbed36cafa08e00d57a1c6ecd",
+            "link_only": false,
+            "pid": 361012,
+            "type": "rustc",
+            "unit": "assembler_reader"
+          },
+          {
+            "exe": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+            "incremental": false,
+            "line": "902da1bdb8cab91c2db70938800e6cdfbdfc182d69a5bb5e4b8011d441be0559",
+            "link_only": false,
+            "pid": 361013,
+            "type": "rustc",
+            "unit": "reader"
+          }
+        ],
+        "raw_result": "1c28befe305bc27126a3c0addf66e4bef22005042965bccbaa8b12d82b31d1ff",
+        "rust": 0,
+        "status": 0
+      },
+      "05-forced-full-keep-incremental": {
+        "asset_opens": [
+          {
+            "line": "b04f450b8e17b02b76a9316c34b1c10e50d8aab9aed8ec97c1d9c72d278aff03",
+            "missing": false,
+            "nearest_compiler": "reader",
+            "nearest_executable": "rustc",
+            "open_successful": true,
+            "tid": 361226
+          }
+        ],
+        "diagnostic_mentions_incbin": false,
+        "elf": "b376dc52a1d04b43a8db7778ffd7fd4109942a393f17bff1dbc4797a9c2fb42b",
+        "empty": false,
+        "native": 29,
+        "processes": [
+          {
+            "exe": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+            "incremental": false,
+            "line": "72c8078d181db6cdcac95e20562b30180b7367da18e80bfac0ebc81e5624d78a",
+            "link_only": false,
+            "pid": 361192,
+            "type": "rustc",
+            "unit": "reader"
+          },
+          {
+            "exe": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+            "line": "b649eb1775c71730c4e74b1fcb01a1bb51e2708278c9b17e85e1664632a4a3a3",
+            "name": "ld.bfd",
+            "pid": 361243,
+            "type": "linker"
+          }
+        ],
+        "raw_result": "48427be31ee618439f9a449acef8345d48ef99c5dc284527ee0e3daf853dba36",
+        "rust": 0,
+        "status": 0
+      },
+      "07-source-restore-missing-asset": {
+        "asset_opens": [],
+        "diagnostic_mentions_incbin": false,
+        "elf": "b376dc52a1d04b43a8db7778ffd7fd4109942a393f17bff1dbc4797a9c2fb42b",
+        "empty": false,
+        "native": 29,
+        "processes": [
+          {
+            "exe": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+            "incremental": false,
+            "line": "2c1afb8ee141362444dc834b26a558e575ac1222cb182a6e76bafc645f509b44",
+            "link_only": true,
+            "pid": 361340,
+            "type": "rustc",
+            "unit": "reader"
+          },
+          {
+            "exe": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+            "line": "7b172f6c42956b9832329c759e140496dc0b05cf958f229db4245c5d2d88d630",
+            "name": "ld.bfd",
+            "pid": 361362,
+            "type": "linker"
+          },
+          {
+            "exe": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+            "incremental": false,
+            "line": "77a3bc5afd31fa31d7509c183abb30249a2ad31d70bc8d40aeb40f3f317836b9",
+            "link_only": false,
+            "pid": 361291,
+            "type": "rustc",
+            "unit": "assembler_reader"
+          }
+        ],
+        "raw_result": "bf07f6c1d2bac61ea31817a00da55763cd0a6ecc8397c91578b000bb605d5507",
+        "rust": 0,
+        "status": 0
+      },
+      "08-independent-missing": {
+        "asset_opens": [
+          {
+            "line": "3c1e193b8f3948b4ff1a51225659418f980ea353c8dd63919fcc3e51b457550b",
+            "missing": true,
+            "nearest_compiler": "reader",
+            "nearest_executable": "rustc",
+            "open_successful": false,
+            "tid": 361760
+          },
+          {
+            "line": "3c1e193b8f3948b4ff1a51225659418f980ea353c8dd63919fcc3e51b457550b",
+            "missing": true,
+            "nearest_compiler": "reader",
+            "nearest_executable": "rustc",
+            "open_successful": false,
+            "tid": 361832
+          }
+        ],
+        "diagnostic_mentions_incbin": true,
+        "empty": true,
+        "processes": [
+          {
+            "exe": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+            "incremental": false,
+            "line": "4330cda312f75ecc25325a7c875709d3c0a021c49635179d2f39eb6ba7c02ac4",
+            "link_only": false,
+            "pid": 361768,
+            "type": "rustc",
+            "unit": "reader"
+          },
+          {
+            "exe": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+            "incremental": false,
+            "line": "9fdc5dea082e2019cbbaadea25ec0f4dc5fa9a45a1181370cf99968b8be14062",
+            "link_only": false,
+            "pid": 361531,
+            "type": "rustc",
+            "unit": "assembler_reader"
+          },
+          {
+            "exe": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+            "incremental": false,
+            "line": "49983e5bfe75f0eaebe44c2d2235ff106871490639968fa21e9ab5b9e1c21a62",
+            "link_only": false,
+            "pid": 361532,
+            "type": "rustc",
+            "unit": "reader"
+          }
+        ],
+        "raw_result": "b29ed336e4a83e3b3fb0d63e5da478a8dba95db5509ab032d2ff53aff322b12c",
+        "status": 101
+      },
+      "09-forced-same-missing": {
+        "asset_opens": [
+          {
+            "line": "3c1e193b8f3948b4ff1a51225659418f980ea353c8dd63919fcc3e51b457550b",
+            "missing": true,
+            "nearest_compiler": "reader",
+            "nearest_executable": "rustc",
+            "open_successful": false,
+            "tid": 361930
+          }
+        ],
+        "diagnostic_mentions_incbin": true,
+        "empty": false,
+        "processes": [
+          {
+            "exe": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+            "incremental": false,
+            "line": "6271a0c58261fb7c7aee7b3b97f0a6929fc00c7c3722e6ce0d5e74939145e719",
+            "link_only": false,
+            "pid": 361886,
+            "type": "rustc",
+            "unit": "reader"
+          }
+        ],
+        "raw_result": "525d6fd443e6b0874fc66f83e7555c8ffa77151f8efa61efdc322fcad747a619",
+        "status": 101
+      },
+      "10-recovered": {
+        "asset_opens": [
+          {
+            "line": "b04f450b8e17b02b76a9316c34b1c10e50d8aab9aed8ec97c1d9c72d278aff03",
+            "missing": false,
+            "nearest_compiler": "reader",
+            "nearest_executable": "rustc",
+            "open_successful": true,
+            "tid": 362027
+          }
+        ],
+        "diagnostic_mentions_incbin": false,
+        "elf": "9b4fec8f45cb684facc7a6295f7508d3e388a492efd9556384ec392ee01a67b1",
+        "empty": false,
+        "native": 17,
+        "processes": [
+          {
+            "exe": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+            "incremental": false,
+            "line": "85f8f25949db52f57d6bd1c8ee9fc3a87e28e89921c398a3bc4b079e86967e1f",
+            "link_only": false,
+            "pid": 361963,
+            "type": "rustc",
+            "unit": "reader"
+          },
+          {
+            "exe": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+            "line": "2fc99910ca0a9689a0213b296184fe083291a317d288e18a62aa26ac3f533e67",
+            "name": "ld.bfd",
+            "pid": 362092,
+            "type": "linker"
+          }
+        ],
+        "raw_result": "05f1d3c1ec788ca177a98555a66e85cedde2e2040550d2c617812b3507426081",
+        "rust": 0,
+        "status": 0
+      }
+    },
+    "relationship": "unused-public",
+    "semantic_check": {
+      "changed": {
+        "actual": 17,
+        "empty": 29,
+        "forced": 29
+      },
+      "checks": {
+        "changed_existing_payload": false,
+        "missing_payload": false
+      },
+      "missing": {
+        "actual": 0,
+        "empty": 101,
+        "forced": 101
+      },
+      "terminal": "bc3eac149f369a22e2256a80d1c4ae4aee12aa05f8395df559f0caf1218e6a50"
+    },
+    "semantic_exit": 1
+  },
+  "defaults-off": {
+    "defaults_off": true,
+    "incremental": 0,
+    "raw_terminal": "805e68916da1ddc521892b8ba1633e6e8f56ffa7c1c9c5b25d545e5c7d402022",
+    "records": {
+      "01-cold": {
+        "asset_opens": [
+          {
+            "line": "38ebf11bf3981b6a868615c4b32ede7d87f4c9a120ad61c329905649f44430bb",
+            "missing": false,
+            "nearest_compiler": "reader",
+            "nearest_executable": "rustc",
+            "open_successful": true,
+            "tid": 362266
+          }
+        ],
+        "diagnostic_mentions_incbin": false,
+        "elf": "5a26b2c22b5df0646d4af32258a599fd1403970d19065533017564792e7fdcfe",
+        "empty": true,
+        "native": 17,
+        "processes": [
+          {
+            "exe": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+            "incremental": false,
+            "line": "625207a7cbd24df4877feeb57267d7eaa77e1ebf99d4118f5a11ae4d12df5efb",
+            "link_only": false,
+            "pid": 362236,
+            "type": "rustc",
+            "unit": "reader"
+          },
+          {
+            "exe": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+            "incremental": false,
+            "line": "e48dacfafaaea922f3b865f264da1caf4d55a418d2e2f6d3566bb11983a9a253",
+            "link_only": false,
+            "pid": 362206,
+            "type": "rustc",
+            "unit": "assembler_reader"
+          },
+          {
+            "exe": "e9ceb054c12207970f2726dfc07e9a66b411602748628baf27399f02a9bbb31b",
+            "line": "dd969efec58cb0b8b66f68783c43b7ba51156234c2cd28ce5197f4f466c15673",
+            "name": "ld",
+            "pid": 362281,
+            "type": "linker"
+          }
+        ],
+        "raw_result": "a0b661967e8759a14b38246c2bfec496de3f09f1cc565079a78941ab53965cd9",
+        "rust": 0,
+        "status": 0
+      },
+      "02-unchanged": {
+        "asset_opens": [],
+        "diagnostic_mentions_incbin": false,
+        "elf": "5a26b2c22b5df0646d4af32258a599fd1403970d19065533017564792e7fdcfe",
+        "empty": false,
+        "native": 17,
+        "processes": [],
+        "raw_result": "3004a152779883c5ec68f1f7646bef78ea5defb8bc5b6a3afbf0f9a705750dac",
+        "rust": 0,
+        "status": 0
+      },
+      "03-edit-and-new-asset": {
+        "asset_opens": [
+          {
+            "line": "38ebf11bf3981b6a868615c4b32ede7d87f4c9a120ad61c329905649f44430bb",
+            "missing": false,
+            "nearest_compiler": "reader",
+            "nearest_executable": "rustc",
+            "open_successful": true,
+            "tid": 362835
+          }
+        ],
+        "diagnostic_mentions_incbin": false,
+        "elf": "3823e06b605d9a04fa38a2bf21c3b50ec715f2873e8935572e404ce3c4af0425",
+        "empty": false,
+        "native": 29,
+        "processes": [
+          {
+            "exe": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+            "incremental": false,
+            "line": "8c8260a6153053c9c14ad55f7b0e14f5831f1a78a4bf6fe8153e0d81225f8473",
+            "link_only": false,
+            "pid": 362781,
+            "type": "rustc",
+            "unit": "assembler_reader"
+          },
+          {
+            "exe": "e9ceb054c12207970f2726dfc07e9a66b411602748628baf27399f02a9bbb31b",
+            "line": "0790cfc7777a055396690db7d856a08e6bfca462e760d2b839d5c69bf82c4c7f",
+            "name": "ld",
+            "pid": 362845,
+            "type": "linker"
+          },
+          {
+            "exe": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+            "incremental": false,
+            "line": "ae1ff7b8de201f3f41719cedaaaa4d5c59383a68ca33b6e0e355eb166457acbe",
+            "link_only": false,
+            "pid": 362801,
+            "type": "rustc",
+            "unit": "reader"
+          }
+        ],
+        "raw_result": "fa4ac7baa74f67690579e88e5fd6a97b7a7ecf7b9877e5f0a6cbafa92c6d0f58",
+        "rust": 0,
+        "status": 0
+      },
+      "04-independent-clean": {
+        "asset_opens": [
+          {
+            "line": "38ebf11bf3981b6a868615c4b32ede7d87f4c9a120ad61c329905649f44430bb",
+            "missing": false,
+            "nearest_compiler": "reader",
+            "nearest_executable": "rustc",
+            "open_successful": true,
+            "tid": 363072
+          }
+        ],
+        "diagnostic_mentions_incbin": false,
+        "elf": "3823e06b605d9a04fa38a2bf21c3b50ec715f2873e8935572e404ce3c4af0425",
+        "empty": true,
+        "native": 29,
+        "processes": [
+          {
+            "exe": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+            "incremental": false,
+            "line": "f2a6f5ea83b1f12a1508250203b77d254ce190177be12de0d8a2b2c598521335",
+            "link_only": false,
+            "pid": 363034,
+            "type": "rustc",
+            "unit": "assembler_reader"
+          },
+          {
+            "exe": "e9ceb054c12207970f2726dfc07e9a66b411602748628baf27399f02a9bbb31b",
+            "line": "ca0e9b07ac965e396e549ab54d8e83a6352e291f97a6e28818797dd9d1bf8a04",
+            "name": "ld",
+            "pid": 363078,
+            "type": "linker"
+          },
+          {
+            "exe": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+            "incremental": false,
+            "line": "10db69d2ab22ee5fd6932dac7654d36eeb410b97da7a8d56cd0b521469c6f8d2",
+            "link_only": false,
+            "pid": 363054,
+            "type": "rustc",
+            "unit": "reader"
+          }
+        ],
+        "raw_result": "321657d67f1fdae034cda81485aeba86108fe23df0c5dd7bacc1d8e84a3a564f",
+        "rust": 0,
+        "status": 0
+      },
+      "05-forced-full-keep-incremental": {
+        "asset_opens": [
+          {
+            "line": "38ebf11bf3981b6a868615c4b32ede7d87f4c9a120ad61c329905649f44430bb",
+            "missing": false,
+            "nearest_compiler": "reader",
+            "nearest_executable": "rustc",
+            "open_successful": true,
+            "tid": 363235
+          }
+        ],
+        "diagnostic_mentions_incbin": false,
+        "elf": "3823e06b605d9a04fa38a2bf21c3b50ec715f2873e8935572e404ce3c4af0425",
+        "empty": false,
+        "native": 29,
+        "processes": [
+          {
+            "exe": "e9ceb054c12207970f2726dfc07e9a66b411602748628baf27399f02a9bbb31b",
+            "line": "3f6372fed89c951839bc51803a01226a4de15d4323d5aabf7b1e0cbeacb4d2fa",
+            "name": "ld",
+            "pid": 363243,
+            "type": "linker"
+          },
+          {
+            "exe": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+            "incremental": false,
+            "line": "2cedabfd8ef80287a1907e71332e5452f0205e6c4171ae9692080ad896a0cda8",
+            "link_only": false,
+            "pid": 363219,
+            "type": "rustc",
+            "unit": "reader"
+          }
+        ],
+        "raw_result": "5a68d91628f02e79f59bb3b62519534322fa94e424ee7198fd0b61edc8986536",
+        "rust": 0,
+        "status": 0
+      },
+      "07-source-restore-missing-asset": {
+        "asset_opens": [
+          {
+            "line": "a16f343dc90d0061fa34ca30e935e9d71eb8c56b5f1933601a82d2f6e5181591",
+            "missing": true,
+            "nearest_compiler": "reader",
+            "nearest_executable": "rustc",
+            "open_successful": false,
+            "tid": 363298
+          }
+        ],
+        "diagnostic_mentions_incbin": true,
+        "empty": false,
+        "processes": [
+          {
+            "exe": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+            "incremental": false,
+            "line": "97899a06b6251df4259788e3bff7ccdb4edaa458d0604e683724c95c00fc92a5",
+            "link_only": false,
+            "pid": 363287,
+            "type": "rustc",
+            "unit": "reader"
+          },
+          {
+            "exe": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+            "incremental": false,
+            "line": "a561154515d1dfc5bdd01398eaafbf1753d87664c9e42712a21b68b039525a9a",
+            "link_only": false,
+            "pid": 363280,
+            "type": "rustc",
+            "unit": "assembler_reader"
+          }
+        ],
+        "raw_result": "cd4bf05e8e6f81ee87999218f2ae6ad9adff67327ddf2a2f3a66d05f26834886",
+        "status": 101
+      },
+      "08-independent-missing": {
+        "asset_opens": [
+          {
+            "line": "a16f343dc90d0061fa34ca30e935e9d71eb8c56b5f1933601a82d2f6e5181591",
+            "missing": true,
+            "nearest_compiler": "reader",
+            "nearest_executable": "rustc",
+            "open_successful": false,
+            "tid": 363388
+          }
+        ],
+        "diagnostic_mentions_incbin": true,
+        "empty": true,
+        "processes": [
+          {
+            "exe": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+            "incremental": false,
+            "line": "944455a076392a6b15031554765ddc1e781ad1c5a272ce380f56fbf340b65e2f",
+            "link_only": false,
+            "pid": 363370,
+            "type": "rustc",
+            "unit": "reader"
+          },
+          {
+            "exe": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+            "incremental": false,
+            "line": "707e961cf278e3476e3b95825dd7b96d4d8f198ec4d60aeaa080750f446af789",
+            "link_only": false,
+            "pid": 363349,
+            "type": "rustc",
+            "unit": "assembler_reader"
+          }
+        ],
+        "raw_result": "3ae6ab7b3ecf7c8261bca760407cbb1915cb3cf35e85c31bfd4591bbe212d175",
+        "status": 101
+      },
+      "09-forced-same-missing": {
+        "asset_opens": [
+          {
+            "line": "a16f343dc90d0061fa34ca30e935e9d71eb8c56b5f1933601a82d2f6e5181591",
+            "missing": true,
+            "nearest_compiler": "reader",
+            "nearest_executable": "rustc",
+            "open_successful": false,
+            "tid": 363423
+          }
+        ],
+        "diagnostic_mentions_incbin": true,
+        "empty": false,
+        "processes": [
+          {
+            "exe": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+            "incremental": false,
+            "line": "459f5c48849832d334d48796781cf36722eb3d7bac9b56b68a344d60fcdaceab",
+            "link_only": false,
+            "pid": 363404,
+            "type": "rustc",
+            "unit": "reader"
+          }
+        ],
+        "raw_result": "2964af383b788df0bcc245a95412e2ca3e73bf05fcc59eade8b779087451975f",
+        "status": 101
+      },
+      "10-recovered": {
+        "asset_opens": [
+          {
+            "line": "38ebf11bf3981b6a868615c4b32ede7d87f4c9a120ad61c329905649f44430bb",
+            "missing": false,
+            "nearest_compiler": "reader",
+            "nearest_executable": "rustc",
+            "open_successful": true,
+            "tid": 363455
+          }
+        ],
+        "diagnostic_mentions_incbin": false,
+        "elf": "5a26b2c22b5df0646d4af32258a599fd1403970d19065533017564792e7fdcfe",
+        "empty": false,
+        "native": 17,
+        "processes": [
+          {
+            "exe": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+            "incremental": false,
+            "line": "ffb3d7943aa56027ddb0727edfefdb0ac05df08c26addf8fa0da983725b865d2",
+            "link_only": false,
+            "pid": 363442,
+            "type": "rustc",
+            "unit": "reader"
+          },
+          {
+            "exe": "e9ceb054c12207970f2726dfc07e9a66b411602748628baf27399f02a9bbb31b",
+            "line": "bc5bbea0325c5e5736ce57bbaabcc4ca4930545ae50ec8a7124584f21c24bedf",
+            "name": "ld",
+            "pid": 363465,
+            "type": "linker"
+          }
+        ],
+        "raw_result": "8f67bc5823a092769c59b0578dffea8bcc37322225259a96862424b00094764e",
+        "rust": 0,
+        "status": 0
+      }
+    },
+    "relationship": "unused-public",
+    "semantic_check": {
+      "changed": {
+        "actual": 29,
+        "empty": 29,
+        "forced": 29
+      },
+      "checks": {
+        "changed_existing_payload": true,
+        "missing_payload": true
+      },
+      "missing": {
+        "actual": 101,
+        "empty": 101,
+        "forced": 101
+      },
+      "terminal": "805e68916da1ddc521892b8ba1633e6e8f56ffa7c1c9c5b25d545e5c7d402022"
+    },
+    "semantic_exit": 0
+  }
+}
