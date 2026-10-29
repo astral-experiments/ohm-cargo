@@ -1,0 +1,13 @@
+diff --git a/src/compiler/output_depinfo.rs b/src/compiler/output_depinfo.rs
+index e22f736..c580324 100644
+--- a/src/compiler/output_depinfo.rs
++++ b/src/compiler/output_depinfo.rs
+@@ -242,7 +242,7 @@ pub fn output_depinfo(
+     // Preserve the legacy target selection for crate types sharing a dep-info path.
+     let single_output = outputs.clone().nth(1).is_none();
+     let previous = if success && single_output {
+-        paths::read_bytes(first_output.with_extension("d")).ok()
++        paths::read_bytes(&first_output.with_extension("d")).ok()
+     } else {
+         None
+     };
