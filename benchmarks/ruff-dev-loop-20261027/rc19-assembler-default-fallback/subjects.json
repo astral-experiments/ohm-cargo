@@ -1,0 +1,86 @@
+{
+  "build_source": {
+    "base": "2447f7f4eacb4fdf499899929f08d0de19abb4d0",
+    "base_archive_sha256": "364fbbaaf855631e32829c10656c6ed218c5e54dbe21bda47b827d4ea1a0d520",
+    "development_stamp": [
+      "34dad66fd2ac823bfb02c2c4a4bab02fb5ac4d31",
+      "34dad66fd",
+      "2026-10-29"
+    ],
+    "patch_sha256": "a8ece61b242750e04a662f6527d61f54917a70d72e1192d9967c10f44f0867a5",
+    "sources": {
+      "src/compiler/fingerprint/mod.rs": "cd1bf905a7061bf59ecfd4593cde37d0c39bdd94a93a325b04bd26e11cf2ae14",
+      "src/compiler/mod.rs": "c74f840bc7e70e49ae9042860c9e2648f588d958b17fd44ea0faff474b6bb1cb",
+      "src/compiler/ohm_deferred_dev_deps.rs": "25a5f1e4ff937df4dc45a0c6b21f886e04742066e5daec3a1a54a34245e81a2a",
+      "src/workspace/features.rs": "6beff06ac31e0310ff37ff53170a59df9cd50871bb496a01dd9bf64bd6c48785",
+      "tests/testsuite/config.rs": "8b842550d924a97b997fe5dc7eda1611e155605df517ece1e33e4e4af4b51692"
+    }
+  },
+  "development": {
+    "candidate": {
+      "cargo": "749cde35ef1f4fb78954d7110ee4ee9a8271159aec9f9f67390fcb1e5419b3b6",
+      "cargo_version": "cargo 1.99.0 (34dad66fd 2026-10-29)\nrelease: 1.99.0\ncommit-hash: 34dad66fd2ac823bfb02c2c4a4bab02fb5ac4d31\ncommit-date: 2026-10-29\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.0.13)\nos: Ubuntu 24.4.0 (noble) [64-bit]\n",
+      "driver": "d8adcc610bdae225344ed1310ff9708784634d1fecafa600f7758a5d48d2cc95",
+      "rustc": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+      "rustc_version": "rustc 1.99.0-dev (ca780121c 2026-10-29) (ohm-ruff-lint-scout)\nbinary: rustc\ncommit-hash: ca780121cea38bb9b0538d020d4bcce76ca30cbc\ncommit-date: 2026-10-29\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-dev\nLLVM version: 23.1.1\n"
+    },
+    "parent": {
+      "cargo": "78d19cdf9e8002a369061b7ce02a3579dcd875a514f8bc80665e588a05d15a29",
+      "cargo_version": "cargo 1.99.0 (34dad66fd 2026-10-29)\nrelease: 1.99.0\ncommit-hash: 34dad66fd2ac823bfb02c2c4a4bab02fb5ac4d31\ncommit-date: 2026-10-29\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.0.13)\nos: Ubuntu 24.4.0 (noble) [64-bit]\n",
+      "driver": "d8adcc610bdae225344ed1310ff9708784634d1fecafa600f7758a5d48d2cc95",
+      "rustc": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+      "rustc_version": "rustc 1.99.0-dev (ca780121c 2026-10-29) (ohm-ruff-lint-scout)\nbinary: rustc\ncommit-hash: ca780121cea38bb9b0538d020d4bcce76ca30cbc\ncommit-date: 2026-10-29\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-dev\nLLVM version: 23.1.1\n"
+    }
+  },
+  "official": {
+    "17": {
+      "archive": "163267d26889b1bd2c467d7db97efee42cd2ac9dc9af2abc3a56ade8da9a9572",
+      "images": {
+        "cargo": "4e4065390403afbf4fb77b2f41fbc21c59afe3dda2337a5bbe29fda29a47dbb3",
+        "driver": "618ebac16b7d4ec01a2af89661d25b8f26ff347edbb69c6dcaa78f10115914a7",
+        "rustc": "7ec5263869aed2fc9272ea7212aabbe7b272a4685f1b79af75c123daff09c02c",
+        "rustdoc": "946b4c7d71af91fa372cfadfca300952024d107ad45b34679d4ac4db77e552f8",
+        "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+      },
+      "receipt": "4f4d4cf8a9274c3d3c320a0f141e5658c1434e43718c3fafd697094b52b22273",
+      "release": "ohm-1.99.0-17",
+      "versions": {
+        "cargo": "cargo 1.99.0-dev (a0c7d08c8 2026-10-27) (ohm-1.99.0-17)\nrelease: 1.99.0-dev\ncommit-hash: a0c7d08c898d3fdff992f2f431dec57d2486add2\ncommit-date: 2026-10-27\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.6.3)\nssl: OpenSSL 3.6.3 9 Jun 2026\nos: Ubuntu 24.4.0 (noble) [64-bit]\n",
+        "rustc": "rustc 1.99.0-dev (bfa236f63 2026-10-27) (ohm-1.99.0-17)\nbinary: rustc\ncommit-hash: bfa236f639034f61ec884c15bd1f4e0b75e508ac\ncommit-date: 2026-10-27\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-dev\nLLVM version: 23.1.1\n"
+      }
+    },
+    "18": {
+      "archive_sha256": "629abab6a87c84bb4d910549ca96a31e437e3dc9de3039fedcbb7b50d198a5e8",
+      "images": {
+        "cargo": "02a86ebd2d9e4f237b33f212102b81ed145eb77fae090d67e379cb6f1d70a573",
+        "driver": "a7648053cbad025c1bb0bebb7009ce9e1515bdb02e8c30bef29b52a881e5b8de",
+        "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+        "rustdoc": "dc6501f27285e927df450d559108a1e5609fc11d266e628d4f1b27d416b84cef",
+        "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+      },
+      "receipt": "d4bb636e5ea9132352ff1032b5c347eac83b9649a4a5c6f925cf42a7da2703d9",
+      "tag": "ohm-1.99.0-18",
+      "versions": {
+        "cargo": "cargo 1.99.0-dev (7caf39914 2026-10-28) (ohm-1.99.0-18)\nrelease: 1.99.0-dev\ncommit-hash: 7caf39914da1e28a67744ecbc963a5f26361474d\ncommit-date: 2026-10-28\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.6.3)\nssl: OpenSSL 3.6.3 9 Jun 2026\nos: Ubuntu 24.4.0 (noble) [64-bit]\n",
+        "rustc": "rustc 1.99.0-dev (a4fa11bcd 2026-10-28) (ohm-1.99.0-18)\nbinary: rustc\ncommit-hash: a4fa11bcd38280639cb94daacc125472657db6c3\ncommit-date: 2026-10-28\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-dev\nLLVM version: 23.1.1\n"
+      }
+    },
+    "19": {
+      "archive": "ef21d83519bc376479811a7e01fa5ac8915ac0a500c6859bc22a1e0b4913d812",
+      "images": {
+        "cargo": "789c2f116732ed642565d0f92c500838f8cd53664fbe60f205a5621c43cbecf1",
+        "driver": "f772b49abec18759edbd9cb7f9f2930097d6ba64d9a2b82837edf4451acc3014",
+        "rustc": "5694abe50767a22cebeccb767143f7404d5e81c4b1760cff4426466bf410e511",
+        "rustdoc": "a368ad0fdc5a72d5832d0425c00ee41cf1368908eae4835d303262dd8b266cf0",
+        "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+      },
+      "receipt": "a954acabeab3fd7b9392135b8e581565dd56935984b08aba93be50d839259634",
+      "release": "ohm-1.99.0-19",
+      "versions": {
+        "cargo": "cargo 1.99.0-dev (235f92286 2026-10-28) (ohm-1.99.0-19)\nrelease: 1.99.0-dev\ncommit-hash: 235f9228651b74c591e6f62cae4c9b761448dd2d\ncommit-date: 2026-10-28\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.6.3)\nssl: OpenSSL 3.6.3 9 Jun 2026\nos: Ubuntu 24.4.0 (noble) [64-bit]\n",
+        "rustc": "rustc 1.99.0-dev (eef2f3425 2026-10-28) (ohm-1.99.0-19)\nbinary: rustc\ncommit-hash: eef2f3425c1c6f7fddfb4555769a9f90fe1e0f53\ncommit-date: 2026-10-28\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-dev\nLLVM version: 23.1.1\n"
+      }
+    }
+  },
+  "physical_driver_common": true
+}

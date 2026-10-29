@@ -1,0 +1,154 @@
+diff --git a/src/compiler/fingerprint/mod.rs b/src/compiler/fingerprint/mod.rs
+index 5f03c9c1c0..3fb2defcb7 100644
+--- a/src/compiler/fingerprint/mod.rs
++++ b/src/compiler/fingerprint/mod.rs
+@@ -711,9 +711,13 @@ pub fn unit_can_use_early_cutoff(build_runner: &BuildRunner<'_, '_>, unit: &Unit
+ /// consume their dependencies' public hashes without producing one themselves.
+ pub fn unit_can_use_relink_only(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
+     !unit.artifact.is_true()
+-        && unit_consumes_public_api_hash(build_runner, unit)
+         && (unit.mode == CompileMode::Test
+             || (unit.mode == CompileMode::Build && unit.target.is_bin()))
++        && matches!(
++            build_runner.lto[unit],
++            super::lto::Lto::Off | super::lto::Lto::OnlyObject
++        )
++        && unit_consumes_public_api_hash(build_runner, unit)
+ }
+ 
+ fn is_early_cutoff_candidate(fingerprint: &Fingerprint, dirty_reason: &DirtyReason) -> bool {
+@@ -2709,15 +2713,14 @@ fn calculate_normal(
+     if super::unit_suppresses_default_public_api_hash(build_runner, unit) {
+         ("ohm-terminal-check-public-api-hash", 1_u8).hash(&mut config);
+     }
+-    if unit.mode == CompileMode::Test
+-        && unit.target.is_test()
+-        && build_runner.bcx.gctx.cli_unstable().ohm_defaults()
+-        && unit_can_use_relink_only(build_runner, unit)
+-        && unit.pkg.targets().iter().any(|target| target.is_lib())
+-    {
+-        // Older Cargo could mark an integration executable fresh without running
+-        // its linker. Even an unchanged command must revalidate that output once.
+-        ("ohm-native-integration-relink", 1_u8).hash(&mut config);
++    if unit_can_use_relink_only(build_runner, unit) {
++        // Older Cargo could mark a stale executable fresh. Rebuild it once on
++        // upgrade and when switching between full and cached codegen.
++        (
++            "ohm-native-codegen-reuse",
++            build_runner.bcx.gctx.cli_unstable().relink_only(),
++        )
++            .hash(&mut config);
+     }
+ 
+     let compile_kind = unit.kind.fingerprint_hash();
+diff --git a/src/compiler/mod.rs b/src/compiler/mod.rs
+index 10d10fbbb2..6110caf8bd 100644
+--- a/src/compiler/mod.rs
++++ b/src/compiler/mod.rs
+@@ -1120,9 +1120,10 @@ fn rustc(
+ 
+     let outputs = build_runner.outputs(unit)?;
+     let root = build_runner.files().output_dir(unit);
+-    let relink_cache = (build_runner.bcx.gctx.cli_unstable().relink_only()
+-        && fingerprint::unit_can_use_relink_only(build_runner, unit)
+-        && matches!(build_runner.lto[unit], lto::Lto::Off | lto::Lto::OnlyObject))
++    let unstable = build_runner.bcx.gctx.cli_unstable();
++    let reuse_codegen = unstable.relink_only();
++    let relink_cache = (unstable.collect_relink_cache()
++        && fingerprint::unit_can_use_relink_only(build_runner, unit))
+     .then(|| {
+         outputs
+             .iter()
+@@ -1465,17 +1466,20 @@ fn rustc(
+             }
+         }
+ 
+-        let can_relink_dependencies = fingerprint.as_ref().is_some_and(|fingerprint| {
+-            // An unused Rust library can leave this test's codegen valid even if its
+-            // public API changed. Native inputs are resolved independently by the linker.
+-            fingerprint::can_relink_due_to_early_cutoff(fingerprint, &relinkable_dependencies)
+-                || unused_integration_dependency.is_some_and(|(dependency, extern_name)| {
+-                    fingerprint::can_relink_unused_integration_dependency(fingerprint, dependency)
+-                        && relink_cache
++        let can_relink_dependencies = reuse_codegen
++            && fingerprint.as_ref().is_some_and(|fingerprint| {
++                // An unused Rust library can leave this test's codegen valid even if its
++                // public API changed. Native inputs are resolved independently by the linker.
++                fingerprint::can_relink_due_to_early_cutoff(fingerprint, &relinkable_dependencies)
++                    || unused_integration_dependency.is_some_and(|(dependency, extern_name)| {
++                        fingerprint::can_relink_unused_integration_dependency(
++                            fingerprint,
++                            dependency,
++                        ) && relink_cache
+                             .as_ref()
+                             .is_some_and(|cache| cache.proves_unused_extern(extern_name))
+-                })
+-        });
++                    })
++            });
+         let validation_started = Instant::now();
+         let use_cached_relink = early_test.is_none()
+             && deferred_dev_names.is_empty()
+diff --git a/src/compiler/ohm_deferred_dev_deps.rs b/src/compiler/ohm_deferred_dev_deps.rs
+index 51d9b1caac..c77f6378d2 100644
+--- a/src/compiler/ohm_deferred_dev_deps.rs
++++ b/src/compiler/ohm_deferred_dev_deps.rs
+@@ -233,7 +233,7 @@ fn native_auxiliary_text_supported(text: &str) -> bool {
+ /// Unsupported commands retain the ordinary build path.
+ pub(crate) fn supported(runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
+     runner.bcx.gctx.cli_unstable().ohm_defaults()
+-        && runner.bcx.gctx.cli_unstable().relink_only()
++        && runner.bcx.gctx.cli_unstable().collect_relink_cache()
+         && !runner.bcx.gctx.cli_unstable().cargo_lints
+         && runner.bcx.roots.len() == 1
+         && runner.bcx.roots[0] == *unit
+diff --git a/src/workspace/features.rs b/src/workspace/features.rs
+index 748e1cacbf..d7072079b1 100644
+--- a/src/workspace/features.rs
++++ b/src/workspace/features.rs
+@@ -980,7 +980,7 @@ unstable_cli_options!(
+     profile_rustflags: bool = ("Enable the `rustflags` option in profiles in .cargo/config.toml file"),
+     public_dependency: bool = ("Respect a dependency's `public` field in Cargo.toml to control public/private dependencies"),
+     publish_timeout: bool = ("Enable the `publish.timeout` key in .cargo/config.toml file"),
+-    relink_only: Option<bool> = ("Reuse cached rustc codegen output when only dependency artifacts changed"),
++    relink_only: Option<bool> = ("Reuse cached rustc codegen when only dependencies changed (assumes all assembler inputs are tracked)"),
+     root_dir: Option<PathBuf> = ("Set the root directory relative to which paths are printed (defaults to workspace root)"),
+     rustc_unicode: bool = ("Enable `rustc`'s unicode error format in Cargo's error messages"),
+     rustdoc_depinfo: bool = ("Use dep-info files in rustdoc rebuild detection"),
+@@ -1383,6 +1383,11 @@ impl CliUnstable {
+ 
+     /// Whether cached rustc codegen should be reused when only dependencies changed.
+     pub fn relink_only(&self) -> bool {
++        self.relink_only.unwrap_or(false)
++    }
++
++    /// Whether to record the compiler's unused-dependency reports for test scheduling.
++    pub(crate) fn collect_relink_cache(&self) -> bool {
+         self.relink_only.unwrap_or_else(|| self.ohm_defaults())
+     }
+ 
+diff --git a/tests/testsuite/config.rs b/tests/testsuite/config.rs
+index 33f4740a7d..5ae492b2ee 100644
+--- a/tests/testsuite/config.rs
++++ b/tests/testsuite/config.rs
+@@ -1505,10 +1505,7 @@ fn ohm_defaults_can_be_disabled_for_one_invocation() {
+         gctx.cli_unstable().ohm_defaults(),
+         cfg!(feature = "ohm-defaults")
+     );
+-    assert_eq!(
+-        gctx.cli_unstable().relink_only(),
+-        cfg!(feature = "ohm-defaults")
+-    );
++    assert!(!gctx.cli_unstable().relink_only());
+     assert_eq!(
+         gctx.cli_unstable().no_embed_metadata(),
+         cfg!(feature = "ohm-defaults")
+@@ -1539,7 +1536,7 @@ fn ohm_defaults_can_be_disabled_for_one_invocation() {
+     assert!(gctx.cli_unstable().ohm_defer_dev_deps());
+     assert!(!gctx.cli_unstable().ohm_ready_tests());
+     assert!(gctx.cli_unstable().headstart());
+-    assert!(gctx.cli_unstable().relink_only());
++    assert!(!gctx.cli_unstable().relink_only());
+     assert!(gctx.cli_unstable().no_embed_metadata());
+     assert!(gctx.cli_unstable().ohm_reuse_built_deps());
+ 
