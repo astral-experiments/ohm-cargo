@@ -1,0 +1,36 @@
+--- protocols/fixed-reader/known-dso.py	2026-10-29 05:12:08.456728828 +0000
++++ typed-dso-protocol/typed-dso.py	2026-10-29 05:14:02.422187715 +0000
+@@ -32,7 +32,7 @@
+             std::thread::sleep(std::time::Duration::from_millis(5));
+         }
+     }
+-    seen.parse().unwrap()
++    if seen == "17" { "17u16" } else { "29i16" }.parse().unwrap()
+ }
+ '''
+ def sha(p):
+@@ -71,8 +71,8 @@
+         cmd='check'
+     else:
+         call='race_extern::sample!()'
+-        cmd='build'
+-    main.write_text('use hold_probe::wait_value;\n'+original.replace('fn main(){','fn main(){println!("generation=0");println!("sample={}",'+call+');'))
++        cmd='check'
++    main.write_text('use hold_probe::wait_value;\n'+original.replace('fn main(){','fn main(){println!("generation=0");let _: u16 = '+call+';'))
+     rustup=root/'rustup';(rustup/'toolchains').mkdir(parents=True);(rustup/'toolchains/ohm').symlink_to(sdk)
+     env=dict(HOME=str(root),PATH=os.environ['PATH'],USER=os.environ.get('USER','dev-user'),
+              RUSTUP_HOME=str(rustup),RUSTUP_AUTO_INSTALL='0',CARGO_HOME=str(root/'cargo-home'),
+@@ -180,11 +180,10 @@
+         if rc==101:assert diag,(kind,phase,rc)
+         result={'exit':rc,'value':value,'diagnostics':diag,'unit_fresh':focus[0]['fresh'] if focus else None,'all_fresh':bool(arts) and all(x['fresh'] for x in arts),'native':success,'claims':claims,'trace_sha256':{f.name:sha(f) for f in sorted(rec.glob('exec.*'))}}
+         rows[phase]=result;write(rec/'result.json',result)
+-    assert all(rows[p]['value']==17 for p in ('train-cold','train-first','train-settled'))
++    assert all(rows[p]['exit']==0 for p in ('train-cold','train-first','train-settled','initial'))
+     assert rows['initial']['unit_fresh'] is False and any(v.get('crate')=='hold_direct' for v in rows['initial']['native'])
+     assert after==stat(live)
+-    if kind=='rmeta':assert rows['clean']['exit']==101 and any(x['code']=='E0308' for x in rows['clean']['diagnostics']),rows['clean']
+-    else:assert rows['clean']['value']==29,rows['clean']
++    assert all(rows[p]['exit']==101 and any(x['code']=='E0308' for x in rows[p]['diagnostics']) for p in ('repeat','again','clean'))
+     record={'case':kind,'timestamp':stamp,'old_token_before_replacement':17,'sections':native_identity,'old':before,'replacement':after,'compiled':defs,'observed_old_maps':opened,'rows':rows}
+     write(root/'complete.json',record)
+     return {k:(v['exit'],v['value'],v['unit_fresh'],v['claims'].get('complete'),[i['code'] for i in v['diagnostics']]) for k,v in rows.items()}

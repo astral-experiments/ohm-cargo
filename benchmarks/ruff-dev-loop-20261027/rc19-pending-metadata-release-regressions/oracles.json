@@ -1,0 +1,248 @@
+{
+  "structured_diagnostics": {
+    "0eebf814ff1683b2191c32b85b0c67f0ee852873f74d5d277d53a6e593d905ef": {
+      "children": [],
+      "code": "E0308",
+      "level": "error",
+      "message": "mismatched types",
+      "spans": [
+        {
+          "byte_end": 333,
+          "byte_start": 315,
+          "column_end": 334,
+          "column_start": 316,
+          "is_primary": true,
+          "label": "expected `u16`, found `i16`",
+          "line_end": 1,
+          "line_start": 1,
+          "suggested_replacement": null,
+          "suggestion_applicability": null
+        },
+        {
+          "byte_end": 158,
+          "byte_start": 155,
+          "column_end": 43,
+          "column_start": 40,
+          "is_primary": false,
+          "label": "expected due to this",
+          "line_end": 5,
+          "line_start": 5,
+          "suggested_replacement": null,
+          "suggestion_applicability": null
+        }
+      ]
+    },
+    "1286ef2625eec3390351c5c94f1f76b0fe71b0f6c521f7b5196b60c6d1760a18": {
+      "children": [],
+      "code": null,
+      "level": "error",
+      "message": "found crates (`race_extern` and `race_extern`) with colliding StableCrateId values",
+      "spans": [
+        {
+          "byte_end": 158,
+          "byte_start": 147,
+          "column_end": 43,
+          "column_start": 32,
+          "is_primary": true,
+          "label": null,
+          "line_end": 5,
+          "line_start": 5,
+          "suggested_replacement": null,
+          "suggestion_applicability": null
+        }
+      ]
+    },
+    "8a047a64a5ef67ebc74dfcdf7add3a120e02c50aac62b7026d6d79daf5c67812": {
+      "children": [],
+      "code": "E0308",
+      "level": "error",
+      "message": "mismatched types",
+      "spans": [
+        {
+          "byte_end": 78,
+          "byte_start": 73,
+          "column_end": 63,
+          "column_start": 58,
+          "is_primary": true,
+          "label": "expected `i16`, found `u16`",
+          "line_end": 2,
+          "line_start": 2,
+          "suggested_replacement": null,
+          "suggestion_applicability": null
+        },
+        {
+          "byte_end": 70,
+          "byte_start": 67,
+          "column_end": 55,
+          "column_start": 52,
+          "is_primary": false,
+          "label": "expected because of the type of the constant",
+          "line_end": 2,
+          "line_start": 2,
+          "suggested_replacement": null,
+          "suggestion_applicability": null
+        }
+      ]
+    },
+    "968d657479d76415564d9ed4ee4d172f3b5d39ca94a58d26b067467bbccc7a45": {
+      "children": [],
+      "code": null,
+      "level": "error",
+      "message": "found crates (`race_extern` and `race_extern`) with colliding StableCrateId values",
+      "spans": [
+        {
+          "byte_end": 150,
+          "byte_start": 139,
+          "column_end": 35,
+          "column_start": 24,
+          "is_primary": true,
+          "label": null,
+          "line_end": 5,
+          "line_start": 5,
+          "suggested_replacement": null,
+          "suggestion_applicability": null
+        }
+      ]
+    },
+    "c616916acc34054dcd1857914e316a4aa055d2d84706c6341959e04edef7f0a1": {
+      "children": [],
+      "code": null,
+      "level": "error",
+      "message": "found crates (`race_extern` and `race_extern`) with colliding StableCrateId values",
+      "spans": [
+        {
+          "byte_end": 172,
+          "byte_start": 161,
+          "column_end": 57,
+          "column_start": 46,
+          "is_primary": true,
+          "label": null,
+          "line_end": 5,
+          "line_start": 5,
+          "suggested_replacement": null,
+          "suggestion_applicability": null
+        }
+      ]
+    },
+    "dceeceda73348e2c43976dac6deb3ce0cf7d026f0e95db3e44191c9a600873f6": {
+      "children": [
+        {
+          "children": [],
+          "code": null,
+          "level": "help",
+          "message": "change the type of the numeric literal from `i16` to `u16`",
+          "spans": [
+            {
+              "byte_end": 186,
+              "byte_start": 186,
+              "column_end": 71,
+              "column_start": 71,
+              "is_primary": true,
+              "label": null,
+              "line_end": 5,
+              "line_start": 5,
+              "suggested_replacement": "u16",
+              "suggestion_applicability": "MachineApplicable"
+            }
+          ]
+        }
+      ],
+      "code": "E0308",
+      "level": "error",
+      "message": "mismatched types",
+      "spans": [
+        {
+          "byte_end": 186,
+          "byte_start": 164,
+          "column_end": 71,
+          "column_start": 49,
+          "is_primary": true,
+          "label": "expected `u16`, found `i16`",
+          "line_end": 5,
+          "line_start": 5,
+          "suggested_replacement": null,
+          "suggestion_applicability": null
+        },
+        {
+          "byte_end": 161,
+          "byte_start": 158,
+          "column_end": 46,
+          "column_start": 43,
+          "is_primary": false,
+          "label": "expected due to this",
+          "line_end": 5,
+          "line_start": 5,
+          "suggested_replacement": null,
+          "suggestion_applicability": null
+        }
+      ]
+    },
+    "e47880b26a6adc2f42b8aec935f27939200d7df3fc433fb7f83f4e4b2e491704": {
+      "children": [],
+      "code": "E0308",
+      "level": "error",
+      "message": "mismatched types",
+      "spans": [
+        {
+          "byte_end": 333,
+          "byte_start": 315,
+          "column_end": 334,
+          "column_start": 316,
+          "is_primary": true,
+          "label": "expected `u16`, found `i16`",
+          "line_end": 1,
+          "line_start": 1,
+          "suggested_replacement": null,
+          "suggestion_applicability": null
+        },
+        {
+          "byte_end": 136,
+          "byte_start": 133,
+          "column_end": 21,
+          "column_start": 18,
+          "is_primary": false,
+          "label": "expected due to this",
+          "line_end": 5,
+          "line_start": 5,
+          "suggested_replacement": null,
+          "suggestion_applicability": null
+        }
+      ]
+    }
+  },
+  "supplementary_stdout_reopens": [
+    {
+      "arm": "A",
+      "case": "conventional-dso-current",
+      "phase": "again",
+      "stdout": "626648680685651dee5f6d8e28c8ca293769d57fa64629c23ce6f3f79b0d1f6d"
+    },
+    {
+      "arm": "A",
+      "case": "first-dso-current",
+      "phase": "again",
+      "stdout": "bae7f3f38c2a219fa08c0f692322e8adf29302e629412be5bb9067b19830d54a"
+    },
+    {
+      "arm": "A",
+      "case": "known-dso-current",
+      "phase": "again",
+      "stdout": "9ed591b29208395e136a438af60ab15b98d09c0c9fcc8d8114dc02507e531ef4"
+    }
+  ],
+  "terminal_stdout": {
+    "04fbf77092e62bbd353e4b97470934969bca0889fb1906a0828d32f90f03c5ac": "sample=29\n19 #13 bytes(375370..375392)\n",
+    "1aa6a1980dd6504e77835171fe56172e3ef9669d3ed2d6cc649ab383ec355978": "sample=29\n19 #13 bytes(375366..375388)\n",
+    "3f812b72a18cbfb98b349f75a9c45c79f80c6ce8fc9a4f283136673dd3fb6488": "revision=2\nsample=29\n19 #15 bytes(375391..375413)\n",
+    "626648680685651dee5f6d8e28c8ca293769d57fa64629c23ce6f3f79b0d1f6d": "sample=29\n19 #14 bytes(374958..374980)\n",
+    "81d69078ad4b7657eb793a6e8ef678b41e71d566b99d9772298938c5281ba068": "revision=2\nsample=29\n19 #13 bytes(375159..375181)\n",
+    "939a543e3bb34969da4cd27a06dc4b87420e51a67b660288b35f941ae6c08a64": "revision=2\nsample=29\n19 #15 bytes(375395..375417)\n",
+    "98dd9f77d3e61c80ad15d2b6fcf918652ecddd05aaddf1a28331957571b2bdcc": "revision=2\nsample=29\n19 #15 bytes(375397..375419)\n",
+    "9ed591b29208395e136a438af60ab15b98d09c0c9fcc8d8114dc02507e531ef4": "generation=1\nsample=29\n19 #16 bytes(375194..375216)\n",
+    "bae7f3f38c2a219fa08c0f692322e8adf29302e629412be5bb9067b19830d54a": "sample=29\n19 #14 bytes(375048..375070)\n",
+    "bae8312b70c4ba99792ac179583600efa0392458ed53cb66e541541c2f23c281": "sample=29\n19 #11 bytes(375136..375158)\n",
+    "bbf0d7ed30ce19886a69f41e0d27c36cd331072b7cf714c14b29e17abf3e1d31": "sample=29\n19 #13 bytes(375364..375386)\n",
+    "d8e5289545ae8ec9bb57790945c69a4a888b0b443359e280048c89b7675053af": "sample=29\n19 #13 bytes(375372..375394)\n",
+    "d9ff00d3b3a95e9f9878fd34d264da6fa07650f89713e74082ea97feaf29ebc4": "revision=2\nsample=29\n19 #15 bytes(375389..375411)\n"
+  }
+}
