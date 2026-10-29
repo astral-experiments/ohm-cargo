@@ -1387,7 +1387,7 @@ pub struct Fingerprint {
     /// Cached hash of the [`Fingerprint`] struct. Used to improve performance
     /// for hashing.
     #[serde(skip)]
-    memoized_hash: Mutex<Option<u64>>,
+    memoized_hash: Mutex<Option<MemoizedHash>>,
     /// A script's result is used by dependents, while its action hash still
     /// determines whether the script itself must run.
     #[serde(skip)]
@@ -1436,6 +1436,22 @@ pub struct Fingerprint {
     /// fingerprints output files are regenerated and look newer than this one.
     #[serde(skip)]
     outputs: Vec<PathBuf>,
+}
+
+struct MemoizedHash {
+    value: u64,
+    /// The short file matched this value under exclusive metadata access.
+    /// The first comparison consumes it, and clearing the hash discards it.
+    matched_on_disk: bool,
+}
+
+impl MemoizedHash {
+    fn new(value: u64) -> Self {
+        Self {
+            value,
+            matched_on_disk: false,
+        }
+    }
 }
 
 /// Indication of the status on the filesystem for a particular unit.
@@ -1586,7 +1602,7 @@ impl<'de> Deserialize<'de> for DepFingerprint {
             name: name.into(),
             public,
             fingerprint: Arc::new(Fingerprint {
-                memoized_hash: Mutex::new(Some(hash)),
+                memoized_hash: Mutex::new(Some(MemoizedHash::new(hash))),
                 ..Fingerprint::new()
             }),
             // This field is never read since it's only used in
@@ -1948,11 +1964,11 @@ impl Fingerprint {
     }
 
     fn hash_u64(&self) -> u64 {
-        if let Some(s) = *self.memoized_hash.lock().unwrap() {
-            return s;
+        if let Some(cached) = self.memoized_hash.lock().unwrap().as_ref() {
+            return cached.value;
         }
         let ret = util::hash_u64(self);
-        *self.memoized_hash.lock().unwrap() = Some(ret);
+        *self.memoized_hash.lock().unwrap() = Some(MemoizedHash::new(ret));
         ret
     }
 
@@ -2538,6 +2554,27 @@ fn calculate(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
             workers_started: None,
         },
     )?;
+
+    // A downstream library may have finished using provisional metadata before
+    // this producer failed. Reverting the source can satisfy the old dep-info
+    // checksums, but an uncommitted producer must still dirty its dependents.
+    if fingerprint.fs_status.get_mut().unwrap().up_to_date()
+        && fingerprint
+            .outputs
+            .iter()
+            .any(|output| output.extension().is_some_and(|ext| ext == "rmeta"))
+    {
+        let loc = build_runner.files().fingerprint_file_path(unit, "");
+        let hash = fingerprint.hash_u64();
+        if !paths::read(&loc).is_ok_and(|old| old == util::to_hex(hash)) {
+            *fingerprint.fs_status.get_mut().unwrap() = FsStatus::Stale;
+        } else if unit_has_exclusive_metadata_access(build_runner, unit) {
+            *fingerprint.memoized_hash.get_mut().unwrap() = Some(MemoizedHash {
+                value: hash,
+                matched_on_disk: true,
+            });
+        }
+    }
 
     if unit.mode.is_run_custom_build()
         && !fingerprint.outputs.is_empty()
@@ -3126,8 +3163,16 @@ fn _compare_old_fingerprint(
     old_hash_path: &Path,
     new_fingerprint: &Fingerprint,
 ) -> CargoResult<FingerprintComparison> {
+    let matched_on_disk = new_fingerprint
+        .memoized_hash
+        .lock()
+        .unwrap()
+        .as_mut()
+        .is_some_and(|cached| std::mem::take(&mut cached.matched_on_disk));
+    if matched_on_disk && new_fingerprint.fs_status.lock().unwrap().up_to_date() {
+        return Ok(FingerprintComparison::Fresh);
+    }
     let old_fingerprint_short = paths::read(old_hash_path)?;
-
     let new_hash = new_fingerprint.hash_u64();
 
     if util::to_hex(new_hash) == old_fingerprint_short
@@ -4019,6 +4064,51 @@ mod early_cutoff_tests {
             fs::read(public_api_hash_path).unwrap(),
             old_public_api_hash_contents
         );
+    }
+
+    #[test]
+    fn committed_short_hash_only_validates_one_current_comparison() {
+        let temp = tempfile::tempdir().unwrap();
+        let path = temp.path().join("lib-example");
+        let fresh = || FsStatus::UpToDate {
+            mtimes: HashMap::default(),
+            link_mtime: None,
+        };
+        let mut fingerprint = Fingerprint::new();
+        fingerprint.rustc = 1;
+        *fingerprint.fs_status.get_mut().unwrap() = fresh();
+        write_fingerprint(&path, &fingerprint).unwrap();
+        let hash = fingerprint.hash_u64();
+        let record_match = || {
+            *fingerprint.memoized_hash.lock().unwrap() = Some(MemoizedHash {
+                value: hash,
+                matched_on_disk: true,
+            });
+        };
+        let is_fresh = || {
+            matches!(
+                _compare_old_fingerprint(&path, &fingerprint).unwrap(),
+                FingerprintComparison::Fresh
+            )
+        };
+
+        record_match();
+        assert!(is_fresh());
+        let mut different = Fingerprint::new();
+        different.rustc = 2;
+        write_fingerprint(&path, &different).unwrap();
+        assert!(!is_fresh());
+
+        write_fingerprint(&path, &fingerprint).unwrap();
+        record_match();
+        *fingerprint.fs_status.lock().unwrap() = FsStatus::Stale;
+        assert!(!is_fresh());
+
+        *fingerprint.fs_status.lock().unwrap() = fresh();
+        record_match();
+        fingerprint.clear_memoized();
+        paths::write(&path, b"").unwrap();
+        assert!(!is_fresh());
     }
 
     #[test]
