@@ -1,0 +1,7 @@
+# Rejected control on a separate workspace copy
+
+This was a separate proposed native-provider experiment on the settled W/7277 workspace. One verified copy preserved 45,543 paths, every file’s contents and all 4,398 internal hardlink groups. Two unchanged Cargo commands ran before any workspace provider insertion. Each reported 619 typed artifacts, 433 fresh and zero link-only rustcs. GCC, collect2 and stock Wild each handled the same 103 native output paths, and the 50 selected programs returned their previous ELF hashes and test-name lists.
+
+The first call matched the source arm's 119 full rustcs. The second ran 127. Its eight additional rustc commands rebuilt ordinary libraries for cachedir, assert_fs, ruff, insta, insta-cmd, mdtest, ty_test and ruff_mdtest. Each requested dep-info, metadata and link output and produced a Rust archive without a native linker invocation. The registered compiler-roster gate rejected the experiment at that point. No matching Cargo K warm-copy run was made. These observations belong to the copy experiment and are excluded from the independent three-arm comparison. The direct tiny executable and shared-library controls had already run outside the workspace.
+
+Run `sha256sum --check SHA256SUMS` and `python3 -IB verify.py` in this directory to verify the small receipt. It contains the source-arm and control-file digests and the literal argv hash of each extra compiler. The generated workspace and full raw logs were retained at the study host.

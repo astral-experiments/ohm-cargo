@@ -1,0 +1,101 @@
+{
+  "copied_members": 45543,
+  "copied_unique_files": 34692,
+  "independent_executable_and_dlopen_probe": "56a37f8557dbfe0ba0221533fb6695cf37ec833bb01c287cc9a7411e0a7fc479",
+  "internal_hardlink_groups": 4398,
+  "plan": "3154f5aa914d48aa4500b97a48a5fb0fc74626eeff5e27e3f9fd37bcccbba604",
+  "possible_exception_handler_artifact": "Python apport imported a study script named copy.py while handling the original assertion. Its privilege check rejected before any materialization. The actual completed clone verification remains separate.",
+  "primary_three_arm": "35171c6a4565a7b9f9535f4993aa015971de2914329e8a6067e506bf37fe0551",
+  "proof": {
+    "00-baseline-one": {
+      "all_three_output_multisets_match": true,
+      "cached": 0,
+      "cargo_stderr": "04776a632f5d50394bdbb77c8a8b74fa75af0c0cb3bd8f7a87c56c074d891990",
+      "cargo_stdout": "544675431f67f855ba455b80369441868dca7ae64037643078b757d369f67bb5",
+      "case": "e3bd751f7d871322399750912098c6c137611901bc376617bd9d4d8064c82a3f",
+      "fixed50_original_ELF_and_listing": true,
+      "fresh": 433,
+      "full": 119,
+      "gcc_collect2_wild": {
+        "collect2": 103,
+        "gcc": 103,
+        "wild": 103
+      },
+      "jobs": "03dc112fda12a775da390cadd181ed099b199ae0b2440069796ec49e1105f50e",
+      "physical_extras": [],
+      "typed": 619
+    },
+    "01-baseline-two": {
+      "all_three_output_multisets_match": true,
+      "cached": 0,
+      "cargo_stderr": "85e3579ac1b4d977ed3608fba64e3eea03afb31214c2c8cf05fc0f0b9dff5d24",
+      "cargo_stdout": "d49416c708bf504b0db6bf9fc2c9b4f4315930f8b33cad15df0e678a2f6a7720",
+      "case": "71167169345fb302f44a148df3390b87b367fc63f714d4b10205c31520612cc1",
+      "fixed50_original_ELF_and_listing": true,
+      "fresh": 433,
+      "full": 127,
+      "gcc_collect2_wild": {
+        "collect2": 103,
+        "gcc": 103,
+        "wild": 103
+      },
+      "jobs": "b2f58bf898ec728840837fc0beb89c25e67636ee7920f396bc5a24377bb7670f",
+      "physical_extras": [
+        {
+          "crate": "assert_fs",
+          "emits": "--emit=dep-info,metadata,link",
+          "physical_argv": "155408fcbc77fda40ec9da04391b9975bdd4ea84dff0be43d29bcd36fb235851",
+          "unit": "181f391a60ee6614"
+        },
+        {
+          "crate": "cachedir",
+          "emits": "--emit=dep-info,metadata,link",
+          "physical_argv": "1708af71893a1ce61f78f3e8c6e01350ce1ce185556f160e4a09386d4b913142",
+          "unit": "8b9e7adbaa757f34"
+        },
+        {
+          "crate": "ruff_mdtest",
+          "emits": "--emit=dep-info,metadata,link",
+          "physical_argv": "79590f50a585b6e821bb14debf4f898c6b8dbc8993cc4b9d19e67e0ba215df7e",
+          "unit": "5c6e6ab1d85cd16e"
+        },
+        {
+          "crate": "insta_cmd",
+          "emits": "--emit=dep-info,metadata,link",
+          "physical_argv": "7b95e2f31092496b10515ba4842900cb3aa58349574d27f6aecefb368079016f",
+          "unit": "c501293e61043b7f"
+        },
+        {
+          "crate": "ty_test",
+          "emits": "--emit=dep-info,metadata,link",
+          "physical_argv": "8c31a49231b72147bbc02f3cff6f21f8abb9a2898b296532e0d988878bdc5fbb",
+          "unit": "719ab1219a74b8a5"
+        },
+        {
+          "crate": "ruff",
+          "emits": "--emit=dep-info,metadata,link",
+          "physical_argv": "96ffc882f2069d80457f48ef2b0da29bc53639795db3d2131d0557876e1d7b0b",
+          "unit": "bbde13e16694c190"
+        },
+        {
+          "crate": "mdtest",
+          "emits": "--emit=dep-info,metadata,link",
+          "physical_argv": "e528765fa5f36588dcfc7211a399128f573351c482bc9fb64eba053ace6cb1db",
+          "unit": "efdfb1c540e65039"
+        },
+        {
+          "crate": "insta",
+          "emits": "--emit=dep-info,metadata,link",
+          "physical_argv": "fcb4984ed7f6213ea7c3561c1074f23fe46064ccee1a8c60af96dabccfdad917",
+          "unit": "f6cb313f4c50f71c"
+        }
+      ],
+      "typed": 619
+    }
+  },
+  "rejection": "dc182ddcf7f9b25d48b52b0921c99850b645080cfd2b8da970e3dd2f43ede2b3",
+  "scope": "The comparison of two prespecified incumbent verifications was rejected before workspace provider mutation. There was no matched K warm clone. This is distinct from the fresh three-arm sequence.",
+  "source_and_copy_shared_inodes": 0,
+  "verified_content_and_topology": "568864f5027e80486cb91454ccf8a2c7495641bb441a51054ea4343fa1ea62b9",
+  "workspace_provider_present_before_or_during": false
+}
