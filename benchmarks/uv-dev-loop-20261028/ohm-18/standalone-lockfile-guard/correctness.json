@@ -1,0 +1,94 @@
+{
+  "path_fixtures": [
+    {
+      "resolve_version": 1,
+      "fixture": "two path packages",
+      "duplicate": false,
+      "receipt": {
+        "status": 0,
+        "lock": "86d3a2d37ac1414396792f4c3cc4d438c151d90a1c261b86ba015ae2093b9ea2",
+        "error": null
+      }
+    },
+    {
+      "resolve_version": 1,
+      "fixture": "two path packages",
+      "duplicate": true,
+      "receipt": {
+        "status": 101,
+        "lock": null,
+        "error": "error: package collision in the lockfile: packages same v1.0.0 (/tmp/ohm-uv-bench.0H03f2TH/resolver-bare-18-correctness/fixture/left) and same v1.0.0 (/tmp/ohm-uv-bench.0H03f2TH/resolver-bare-18-correctness/fixture/right) are different, but only one can be written to lockfile unambiguously\n"
+      }
+    },
+    {
+      "resolve_version": 2,
+      "fixture": "two path packages",
+      "duplicate": false,
+      "receipt": {
+        "status": 0,
+        "lock": "a22f916a1a53d012552b8f639b5db4f4b8a61d818f74be02cb23dec3aa937f4b",
+        "error": null
+      }
+    },
+    {
+      "resolve_version": 2,
+      "fixture": "two path packages",
+      "duplicate": true,
+      "receipt": {
+        "status": 101,
+        "lock": null,
+        "error": "error: package collision in the lockfile: packages same v1.0.0 (/tmp/ohm-uv-bench.0H03f2TH/resolver-bare-18-correctness/fixture/left) and same v1.0.0 (/tmp/ohm-uv-bench.0H03f2TH/resolver-bare-18-correctness/fixture/right) are different, but only one can be written to lockfile unambiguously\n"
+      }
+    },
+    {
+      "resolve_version": 3,
+      "fixture": "two path packages",
+      "duplicate": false,
+      "receipt": {
+        "status": 0,
+        "lock": "c94aa430cda5694ced2ee5048270a80c77d553cdaacef61febf8194d1f58d946",
+        "error": null
+      }
+    },
+    {
+      "resolve_version": 3,
+      "fixture": "two path packages",
+      "duplicate": true,
+      "receipt": {
+        "status": 101,
+        "lock": null,
+        "error": "error: package collision in the lockfile: packages same v1.0.0 (/tmp/ohm-uv-bench.0H03f2TH/resolver-bare-18-correctness/fixture/left) and same v1.0.0 (/tmp/ohm-uv-bench.0H03f2TH/resolver-bare-18-correctness/fixture/right) are different, but only one can be written to lockfile unambiguously\n"
+      }
+    },
+    {
+      "resolve_version": 4,
+      "fixture": "two path packages",
+      "duplicate": false,
+      "receipt": {
+        "status": 0,
+        "lock": "ebc4d79d0040aabff37d0043b71a8d1ade548afe541ac339e72ed4d83d933ac4",
+        "error": null
+      }
+    },
+    {
+      "resolve_version": 4,
+      "fixture": "two path packages",
+      "duplicate": true,
+      "receipt": {
+        "status": 101,
+        "lock": null,
+        "error": "error: package collision in the lockfile: packages same v1.0.0 (/tmp/ohm-uv-bench.0H03f2TH/resolver-bare-18-correctness/fixture/left) and same v1.0.0 (/tmp/ohm-uv-bench.0H03f2TH/resolver-bare-18-correctness/fixture/right) are different, but only one can be written to lockfile unambiguously\n"
+      }
+    },
+    {
+      "resolve_version": 4,
+      "fixture": "two same-version Git packages at separate local URLs",
+      "receipt": {
+        "lock": "c6145242ae4975d1651e08fd9612edbf48768f6100a275cffd595a4c22aad9c1"
+      }
+    }
+  ],
+  "exact_resolver_cases": 40,
+  "git_and_v5": "see generated collision_compare.rs and probe.log",
+  "probe_sha256": "3b6e26ecb181cd423a7fb89997b8e89a6c80eb5210d11f806096d2f2148e4db5"
+}

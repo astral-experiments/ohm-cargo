@@ -15,6 +15,10 @@ The table shows the seven-patch stack’s paired median saving in wall time. Pos
 
 The extra Wild jobserver retry passed one of four preregistered holdout comparisons. The two Cargo lockfile guards passed their warm Cargo instruction tests, but neither produced a repeatable elapsed-time saving across 96 edited-check pairs. [All 216 jobserver confirmation runs](confirmation32/README.md) · [Resolver timings and product verification](resolver-wall/README.md)
 
+### Standalone Cargo lockfile guard
+
+A nine-line guard on the released Cargo source reduced Cargo-process instructions after real uv edits in all 16 pairs. DynamoRIO measured 0.159% and Cachegrind measured 0.152%. The earlier full-command elapsed-time comparison was inconclusive. [Raw samples, controls and reproduction](standalone-lockfile-guard/README.md)
+
 ### Instruction counts
 
 On fully warm uv commands, the five Cargo changes and the std change in the Cargo executable reduced driver instructions by about 2.3% for check, 5.6% and 7.8% for build, and 2.5% for test preparation across two counters. Cargo launched no compiler. A stock-executable replay of the same parent-only profiler launch showed that Cachegrind sets `LD_PRELOAD`, which changes Cargo check-mode reuse eligibility. DynamoRIO added three private variables. [Per-command intervals and raw counts](warm-cargo/README.md) · [Observer audit](observer-audit/README.md)

@@ -1,0 +1,49 @@
+{
+  "cohorts": {
+    "primary": {
+      "state": "complete",
+      "n": 8,
+      "wins": 8,
+      "losses": 0,
+      "ties": 0,
+      "arm_medians": {
+        "base": 961369618.5,
+        "candidate": 959827198.0
+      },
+      "median_fraction": 0.0015932608451200703,
+      "median_interval_fraction": [
+        0.0004017160926872432,
+        0.0023222732012564418
+      ],
+      "median_interval_coverage": 0.9921875,
+      "sign_p": 0.0078125,
+      "balanced_order_p": 0.02857142857142857,
+      "gate": true
+    },
+    "repeat": {
+      "state": "complete",
+      "n": 8,
+      "wins": 8,
+      "losses": 0,
+      "ties": 0,
+      "arm_medians": {
+        "base": 963366930.0,
+        "candidate": 961884980.0
+      },
+      "median_fraction": 0.0015182846770174785,
+      "median_interval_fraction": [
+        0.0013674820597588955,
+        0.001603806094521043
+      ],
+      "median_interval_coverage": 0.9921875,
+      "sign_p": 0.0078125,
+      "balanced_order_p": 0.02857142857142857,
+      "gate": true
+    }
+  },
+  "independently_qualified": true,
+  "scope": "Only the Cargo process and its application threads. Real compiler execution is checked separately.",
+  "metadata_products": 696,
+  "distinct_observed_sha256": 1117,
+  "raw_objects_verified": false
+}
