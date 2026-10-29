@@ -961,6 +961,7 @@ unstable_cli_options!(
     no_index_update: bool = ("Do not update the registry index even if the cache is outdated"),
     ohm_clippy_seed_isolation: Option<bool> = ("Isolate bundled Clippy outputs from worktree snapshots (automatic when cloning is available)"),
     ohm_defaults: Option<bool> = ("Enable the defaults packaged with Ohm"),
+    ohm_early_tests: Option<bool> = ("Compile first integration tests alongside their package library (enabled by Ohm defaults)"),
     ohm_focused_tests: bool = ("Compile only an explicitly selected exact library test"),
     ohm_linker: Option<OhmLinker> = ("Select a bundled linker for native Linux x86-64 builds: wild or lld"),
     ohm_native_tool_trust: OhmNativeToolTrust = ("Set native-tool trust for shared registry artifacts: strict (default), build-scripts, or all (potentially unsound)"),
@@ -1319,6 +1320,11 @@ impl CliUnstable {
         self.ohm_defaults.unwrap_or(cfg!(feature = "ohm-defaults"))
     }
 
+    /// Whether supported first integration-test builds may overlap their library.
+    pub fn ohm_early_tests(&self) -> bool {
+        self.ohm_early_tests.unwrap_or_else(|| self.ohm_defaults())
+    }
+
     /// Whether compatible checks and builds share frontend incremental state.
     pub fn ohm_shared_stages(&self) -> bool {
         self.ohm_shared_stages
@@ -1582,6 +1588,7 @@ impl CliUnstable {
             "no-embed-metadata" => self.no_embed_metadata = Some(parse_bool(k, v)?),
             "no-index-update" => self.no_index_update = parse_empty(k, v)?,
             "ohm-defaults" => self.ohm_defaults = Some(parse_bool(k, v)?),
+            "ohm-early-tests" => self.ohm_early_tests = Some(parse_bool(k, v)?),
             "ohm-thinlto-cache" => self.ohm_thinlto_cache = Some(parse_bool(k, v)?),
             "ohm-shared-stages" => self.ohm_shared_stages = Some(parse_bool(k, v)?),
             "ohm-focused-tests" => self.ohm_focused_tests = parse_empty(k, v)?,

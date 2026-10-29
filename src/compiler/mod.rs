@@ -43,6 +43,7 @@ pub(crate) mod layout;
 mod links;
 mod locking;
 mod lto;
+mod ohm_early_tests;
 mod ohm_linker;
 mod ohm_thinlto_cache;
 mod output_depinfo;
@@ -1010,6 +1011,17 @@ fn rustc(
         .map(|dep| build_runner.bcx.unit_to_index[&dep.unit])
         .collect::<HashSet<_>>();
     let unused_integration_dependency = unused_integration_self_dependency(build_runner, unit);
+    let early_test = ohm_early_tests::dependency(build_runner, unit).map(|(dependency, name)| {
+        build_runner
+            .early_test_dependencies
+            .insert(unit.clone(), dependency.clone());
+        let completion = build_runner
+            .early_test_completions
+            .entry(dependency)
+            .or_default()
+            .clone();
+        (completion, name)
+    });
     let workspace_integration_proof = unused_integration_dependency
         .and_then(|_| relink_cache.as_ref())
         .and_then(RelinkCachePaths::unused_extern_names);
@@ -1171,6 +1183,14 @@ fn rustc(
                     })
                 })
         });
+        let early_test = if unused_integration_dependency.is_none() {
+            if let Some((completion, _)) = early_test {
+                completion.wait()?;
+            }
+            None
+        } else {
+            early_test
+        };
         if unused_integration_dependency.is_some() && !workspace_build_scripts.is_empty() {
             let script_outputs = build_script_outputs.lock().unwrap();
             unused_workspace_dependencies.retain(|dependency| {
@@ -1219,8 +1239,9 @@ fn rustc(
             let skip_unused_integration_dependency =
                 skip_unused_integration_dependency || skip_unused_workspace_dependencies;
 
-            if (can_skip_compilation && fingerprint::can_skip_due_to_early_cutoff(fp))
-                || skip_unused_integration_dependency
+            if early_test.is_none()
+                && ((can_skip_compilation && fingerprint::can_skip_due_to_early_cutoff(fp))
+                    || skip_unused_integration_dependency)
             {
                 let essential_outputs = outputs
                     .iter()
@@ -1278,7 +1299,8 @@ fn rustc(
             fingerprint::can_relink_due_to_early_cutoff(fingerprint, &relinkable_dependencies)
         });
         let validation_started = Instant::now();
-        let use_cached_relink = can_relink_dependencies
+        let use_cached_relink = early_test.is_none()
+            && can_relink_dependencies
             && relink_cache
                 .as_ref()
                 .is_some_and(RelinkCachePaths::is_valid);
@@ -1350,6 +1372,7 @@ fn rustc(
 
         if let (Some(fingerprint), Some(namespace)) =
             (fingerprint.as_ref(), worktree_seed_namespace.as_deref())
+            && early_test.is_none()
             && fingerprint::can_reuse_after_scripts(
                 fingerprint,
                 &pkg_root,
@@ -1487,8 +1510,76 @@ fn rustc(
             }
         }
 
-        let result = exec
-            .exec(
+        let mut accepted_early_test = false;
+        if let Some((completion, extern_name)) = &early_test {
+            let output = std::cell::RefCell::new(ohm_early_tests::Output::default());
+            let result = exec.exec(
+                &rustc,
+                package_id,
+                &target,
+                mode,
+                &mut |line| {
+                    output.borrow_mut().push(line, false);
+                    Ok(())
+                },
+                &mut |line| {
+                    if let Ok(timing) = serde_json::from_str::<SectionTiming>(line) {
+                        state.on_section_timing_emitted(timing);
+                    } else {
+                        output.borrow_mut().push(line, true);
+                    }
+                    Ok(())
+                },
+            );
+            // No diagnostics, relink manifest, or Cargo fingerprint from the
+            // provisional invocation is published before its producer succeeds.
+            let producer_result = completion.wait();
+            let output = output.into_inner();
+            accepted_early_test =
+                producer_result.is_ok() && result.is_ok() && output.proves_unused(*extern_name);
+            if accepted_early_test {
+                // The executable may have been linked before its producer. Mark
+                // the acceptance time so the next build does not mistake that
+                // ordering for a dependency changed after a successful build.
+                let accepted_at = filetime::FileTime::now();
+                for artifact in outputs
+                    .iter()
+                    .filter(|output| output.flavor == FileFlavor::Normal)
+                {
+                    filetime::set_file_mtime(&artifact.path, accepted_at)?;
+                }
+                tracing::info!(target: "cargo::compiler::ohm_early_tests", "accepted early {}", target.name());
+                for line in output.stdout {
+                    on_stdout_line(state, &line, package_id, &target)?;
+                }
+                for line in output.stderr {
+                    on_stderr_line(
+                        state,
+                        &line,
+                        package_id,
+                        &manifest,
+                        &target,
+                        &mut output_options,
+                    )?;
+                }
+            } else {
+                if let Some(cache) = &relink_cache {
+                    cache.clear_codegen_temps()?;
+                }
+                for output in outputs.iter() {
+                    if output.path.exists() {
+                        paths::remove_file(&output.path)?;
+                    }
+                }
+                producer_result?;
+                tracing::info!(target: "cargo::compiler::ohm_early_tests", "retrying {} after dependency completion", target.name());
+            }
+        }
+
+        let result = if accepted_early_test {
+            Ok(())
+        } else {
+            exec.exec(
                 &rustc,
                 package_id,
                 &target,
@@ -1505,32 +1596,33 @@ fn rustc(
                     )
                 },
             )
-            .map_err(|e| {
-                if output_options.errors_seen == 0 {
-                    // If we didn't expect an error, do not require --verbose to fail.
-                    // This is intended to debug
-                    // https://github.com/rust-lang/crater/issues/733, where we are seeing
-                    // Cargo exit unsuccessfully while seeming to not show any errors.
-                    e
-                } else {
-                    verbose_if_simple_exit_code(e)
-                }
-            })
-            .with_context(|| {
-                // adapted from rustc_errors/src/lib.rs
-                let warnings = match output_options.warnings_seen {
-                    0 => String::new(),
-                    1 => "; 1 warning emitted".to_string(),
-                    count => format!("; {} warnings emitted", count),
-                };
-                let errors = match output_options.errors_seen {
-                    0 => String::new(),
-                    1 => " due to 1 previous error".to_string(),
-                    count => format!(" due to {} previous errors", count),
-                };
-                let name = descriptive_pkg_name(&name, &target, &mode);
-                format!("could not compile {name}{errors}{warnings}")
-            });
+        }
+        .map_err(|e| {
+            if output_options.errors_seen == 0 {
+                // If we didn't expect an error, do not require --verbose to fail.
+                // This is intended to debug
+                // https://github.com/rust-lang/crater/issues/733, where we are seeing
+                // Cargo exit unsuccessfully while seeming to not show any errors.
+                e
+            } else {
+                verbose_if_simple_exit_code(e)
+            }
+        })
+        .with_context(|| {
+            // adapted from rustc_errors/src/lib.rs
+            let warnings = match output_options.warnings_seen {
+                0 => String::new(),
+                1 => "; 1 warning emitted".to_string(),
+                count => format!("; {} warnings emitted", count),
+            };
+            let errors = match output_options.errors_seen {
+                0 => String::new(),
+                1 => " due to 1 previous error".to_string(),
+                count => format!(" due to {} previous errors", count),
+            };
+            let name = descriptive_pkg_name(&name, &target, &mode);
+            format!("could not compile {name}{errors}{warnings}")
+        });
 
         if let Err(e) = result {
             if let Some(diagnostic) = failed_scrape_diagnostic {

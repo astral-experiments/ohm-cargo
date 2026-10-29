@@ -5299,6 +5299,29 @@ fn relink_only_wrapper() -> PathBuf {
                 }
 
                 fn run(rustc: &OsStr, args: &[OsString]) -> Output {
+                    let native = args.iter().any(|arg| arg.to_str().is_some_and(|arg| {
+                        arg.strip_prefix("--emit=").is_some_and(|emit| emit.split(',').any(|part| part == "link"))
+                    }));
+                    let control = env::var_os("EARLY_TEST_CONTROL").map(PathBuf::from).filter(|_| native);
+                    if let Some(control) = &control {
+                        if crate_name(args) == Some("app") {
+                            fs::write(control.join("library-started"), "").unwrap();
+                            if env::var_os("EARLY_TEST_EXPECT_OVERLAP").is_some() {
+                                let deadline = std::time::Instant::now() + std::time::Duration::from_secs(15);
+                                while !control.join("test-finished").exists() {
+                                    assert!(std::time::Instant::now() < deadline, "test did not finish early");
+                                    std::thread::sleep(std::time::Duration::from_millis(5));
+                                }
+                            }
+                        } else if crate_name(args) == Some("integration") {
+                            // Cargo assigns the library worker first, but the
+                            // test's compiler process can reach this wrapper first.
+                            if env::var_os("EARLY_TEST_EXPECT_OVERLAP").is_none() {
+                                assert!(control.join("library-finished").exists(), "test started too early");
+                            }
+                            fs::write(control.join("test-started"), "").unwrap();
+                        }
+                    }
                     let mut command = Command::new(rustc);
                     command.args(args).env("RUSTC_BOOTSTRAP", "1");
                     if env::var_os("UNUSED_INTEGRATION_DEPENDENCY_PROOF").is_some()
@@ -5307,6 +5330,13 @@ fn relink_only_wrapper() -> PathBuf {
                         command.arg("--force-warn=unused_crate_dependencies");
                     }
                     let mut output = command.output().expect("rustc should run");
+                    if let Some(control) = &control {
+                        if crate_name(args) == Some("app") {
+                            fs::write(control.join("library-finished"), "").unwrap();
+                        } else if crate_name(args) == Some("integration") {
+                            fs::write(control.join("test-finished"), "").unwrap();
+                        }
+                    }
                     if args.iter().any(|arg| arg == "--print=sysroot")
                         && let Ok(mock_sysroot) = env::var("UNUSED_INTEGRATION_MOCK_SYSROOT")
                     {
@@ -5329,6 +5359,12 @@ fn relink_only_wrapper() -> PathBuf {
                     let public_api_hash = env::var("UNUSED_INTEGRATION_PUBLIC_HASH")
                         .unwrap_or_else(|_| "00000000000000000000000000000000".to_owned());
                     for line in stderr.lines() {
+                        if crate_name(args) == Some("integration")
+                            && line.contains("\"$message_type\":\"unused_extern\"")
+                            && env::var_os("EARLY_TEST_MISSING_PROOF").is_some()
+                        {
+                            continue;
+                        }
                         if line.contains("\"artifact\":")
                             && line.contains(".rmeta")
                             && let Some(prefix) = line.strip_suffix('}')
@@ -5459,7 +5495,10 @@ fn relink_only_wrapper() -> PathBuf {
             "#,
         )
         .build();
-    wrapper.cargo("build").run();
+    wrapper
+        .cargo("-Zohm-defaults=no build")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .run();
     wrapper.bin("relink-only-wrapper")
 }
 
@@ -7291,4 +7330,168 @@ fn relink_only_reuses_root_codegen_after_separate_transitive_dependency_build() 
 
 "#]])
         .run();
+}
+
+/// Exercise real compiler success/failure with deterministic scheduler overlap.
+#[cargo_test]
+#[cfg(not(windows))]
+fn early_native_integration_tests_default_and_fallback() {
+    let wrapper = relink_only_wrapper();
+    for (case, flags, extra_env, used, fails, overlap, invocations) in [
+        ("unused", "", None, false, false, true, 1),
+        ("used", "", None, true, false, true, 2),
+        (
+            "missing-proof",
+            "",
+            Some("EARLY_TEST_MISSING_PROOF"),
+            false,
+            false,
+            true,
+            2,
+        ),
+        (
+            "conflicting-proof",
+            "",
+            Some("UNUSED_INTEGRATION_CONFLICTING_PROOF"),
+            false,
+            false,
+            true,
+            2,
+        ),
+        (
+            "malformed-proof",
+            "",
+            Some("UNUSED_INTEGRATION_MALFORMED_PROOF"),
+            false,
+            false,
+            true,
+            2,
+        ),
+        ("producer-error", "", None, false, true, true, 1),
+        ("denied-warning", "", None, false, true, true, 1),
+        (
+            "opt-out",
+            "-Zohm-early-tests=no",
+            None,
+            false,
+            false,
+            false,
+            1,
+        ),
+        ("serial", "", None, false, false, false, 1),
+    ] {
+        let p = project()
+            .at(case)
+            .file(
+                "Cargo.toml",
+                "[package]\nname=\"app\"\nversion=\"0.1.0\"\nedition=\"2024\"\n",
+            )
+            .file(
+                "src/lib.rs",
+                if case == "producer-error" {
+                    "compile_error!(\"intentional producer failure\");"
+                } else if case == "denied-warning" {
+                    "pub fn value() -> u32 { 7 } fn unused() {}"
+                } else {
+                    "pub fn value() -> u32 { 7 }"
+                },
+            )
+            .file(
+                "tests/integration.rs",
+                if used {
+                    "#[test] fn works() { assert_eq!(app::value(), 7); }"
+                } else {
+                    "#[test] fn works() { assert_eq!(2 + 2, 4); }"
+                },
+            )
+            .build();
+        let log = p.root().join("wrapper.log");
+        let jobs = if case == "serial" { 1 } else { 2 };
+        let mut command = p.cargo(&format!(
+            "-Zohm-defaults -Zheadstart -Zsection-timings test --test integration -j{jobs} {flags}"
+        ));
+        if case == "denied-warning" {
+            command.arg("--config").arg(r#"build.warnings="deny""#);
+        }
+        command
+            .masquerade_as_nightly_cargo(&[
+                "ohm-defaults",
+                "headstart",
+                "ohm-early-tests",
+                "section-timings",
+            ])
+            .env("RUSTC_WRAPPER", &wrapper)
+            .env("RELINK_WRAPPER_LOG", &log)
+            .env("UNUSED_INTEGRATION_DEPENDENCY_PROOF", "1")
+            .env("EARLY_TEST_CONTROL", p.root())
+            .env("CARGO_LOG", "cargo::compiler::ohm_early_tests=info");
+        if overlap {
+            command.env("EARLY_TEST_EXPECT_OVERLAP", "1");
+        }
+        if let Some(key) = extra_env {
+            command.env(key, "1");
+        }
+        if fails {
+            command
+                .with_status(101)
+                .with_stdout_does_not_contain("[..]1 passed[..]")
+                .with_stderr_does_not_contain("[..]accepted early integration[..]");
+        } else {
+            command.with_stdout_contains("[..]1 passed[..]");
+            if overlap && invocations == 1 {
+                command.with_stderr_contains("[..]accepted early integration[..]");
+            } else if invocations == 2 {
+                command
+                    .with_stderr_contains("[..]retrying integration[..]")
+                    .with_stderr_does_not_contain("[..]E0463[..]");
+            }
+        }
+        command.run();
+        if fails {
+            assert!(
+                fs::read_dir(p.target_debug_dir().join("deps"))
+                    .unwrap()
+                    .all(|entry| {
+                        let name = entry.unwrap().file_name();
+                        let name = name.to_string_lossy();
+                        !(name.starts_with("integration-") && name.ends_with(".rlink-cache.json"))
+                    })
+            );
+        }
+        let calls = fs::read_to_string(&log).unwrap();
+        assert_eq!(
+            calls
+                .lines()
+                .filter(|line| line.ends_with(":integration"))
+                .count(),
+            invocations,
+            "{case}: {calls}"
+        );
+        if case == "unused" {
+            // An existing executable keeps ordinary freshness and native reuse.
+            fs::write(&log, "").unwrap();
+            p.cargo("-Zohm-defaults -Zheadstart -Zsection-timings test --test integration -j2")
+                .masquerade_as_nightly_cargo(&["ohm-defaults", "headstart", "section-timings"])
+                .env("RUSTC_WRAPPER", &wrapper)
+                .env("RELINK_WRAPPER_LOG", &log)
+                .env("UNUSED_INTEGRATION_DEPENDENCY_PROOF", "1")
+                .run();
+            assert!(fs::read_to_string(&log).unwrap().is_empty());
+            // The earlier executable must not look older than its accepted
+            // producer when a later, unused library change is considered.
+            p.change_file("src/lib.rs", "pub fn value() -> u32 { 11 }");
+            p.cargo("-Zohm-defaults -Zheadstart -Zsection-timings test --test integration -j2")
+                .masquerade_as_nightly_cargo(&["ohm-defaults", "headstart", "section-timings"])
+                .env("RUSTC_WRAPPER", &wrapper)
+                .env("RELINK_WRAPPER_LOG", &log)
+                .env("UNUSED_INTEGRATION_DEPENDENCY_PROOF", "1")
+                .run();
+            assert!(
+                !fs::read_to_string(&log)
+                    .unwrap()
+                    .lines()
+                    .any(|line| line.ends_with(":integration"))
+            );
+        }
+    }
 }
