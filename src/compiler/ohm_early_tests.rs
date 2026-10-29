@@ -106,7 +106,7 @@ impl CheckHint {
             return;
         }
         let result = paths::create_dir_all(self.path.parent().unwrap())
-            .and_then(|()| paths::write_atomic(&self.path, b"uses-library\n"));
+            .and_then(|()| paths::write_atomic_no_follow(&self.path, b"uses-library\n"));
         if let Err(error) = result {
             tracing::debug!(?error, "could not record early-test check hint");
         }

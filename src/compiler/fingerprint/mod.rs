@@ -3060,7 +3060,10 @@ fn write_fingerprint_and_public_api_hash(
     match public_api_hash_update {
         PublicApiHashUpdate::Preserve => {}
         PublicApiHashUpdate::Write(public_api_hash) => {
-            paths::write_atomic(public_api_hash_path, serde_json::to_vec(&public_api_hash)?)?;
+            paths::write_atomic_no_follow(
+                public_api_hash_path,
+                serde_json::to_vec(&public_api_hash)?,
+            )?;
         }
         PublicApiHashUpdate::Remove => {
             if public_api_hash_path.exists() {
@@ -4062,6 +4065,29 @@ mod early_cutoff_tests {
             fs::read(public_api_hash_path).unwrap(),
             old_public_api_hash_contents
         );
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn public_api_hash_replaces_a_symlink() {
+        let dir = tempfile::tempdir().unwrap();
+        let target = dir.path().join("target");
+        let sidecar = dir.path().join("unit.public-api-hash");
+        fs::write(&target, "keep").unwrap();
+        std::os::unix::fs::symlink(&target, &sidecar).unwrap();
+        let mut fingerprint = Fingerprint::new();
+        fingerprint.rustc = 1;
+        let hash = PublicApiHash::new(1, "11111111111111111111111111111111").unwrap();
+
+        write_fingerprint_and_public_api_hash(
+            &dir.path().join("unit"),
+            &fingerprint,
+            &sidecar,
+            PublicApiHashUpdate::Write(hash),
+        )
+        .unwrap();
+        assert_eq!(fs::read(target).unwrap(), b"keep");
+        assert!(read_public_api_hash(&sidecar).is_some());
     }
 
     #[test]

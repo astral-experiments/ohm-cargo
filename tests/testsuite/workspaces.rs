@@ -3036,6 +3036,24 @@ fn workspace_resolve_cache_reuses_unchanged_workspace() {
         .run();
 }
 
+#[cfg(unix)]
+#[cargo_test]
+fn workspace_resolve_cache_replaces_a_symlink() {
+    let project = workspace_resolve_cache_project();
+    let target = project.root().join("sentinel");
+    let cache = project.build_dir().join(".cargo-resolve-cache-v1");
+    fs::create_dir_all(project.build_dir()).unwrap();
+    fs::write(&target, "keep").unwrap();
+    std::os::unix::fs::symlink(&target, &cache).unwrap();
+
+    workspace_resolve_cache_command(&project, "check --package selected").run();
+    assert_eq!(fs::read(target).unwrap(), b"keep");
+    assert!(!cache.is_symlink());
+    workspace_resolve_cache_command(&project, "check --package selected")
+        .with_stderr_contains(WORKSPACE_RESOLVE_CACHE_HIT)
+        .run();
+}
+
 #[cargo_test]
 fn workspace_resolve_cache_ignores_execution_only_environment() {
     let project = workspace_resolve_cache_project();
