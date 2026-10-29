@@ -25,3 +25,5 @@ To repeat the numerical and product audit from a fresh directory, run
 unzip observations.zip
 python3 -I -B protocol/rescore-edited-native.py . r18-proof-common-seed
 ```
+
+The native-link regression has its own portable fixture. Extract it into another directory and run `python3 -I -B rescore.py` to verify all 48 recorded program results. The included replay driver can also rebuild the ordinary `#[link]` example under both Cargo binaries with `--mode transitive-search --endpoint build`. [Fixture, raw compiler diagnostics and program outputs](native-link-correctness.zip)
