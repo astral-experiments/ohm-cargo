@@ -5589,7 +5589,7 @@ fn relink_only_reuses_root_codegen() {
         })
         .unwrap();
     let cache: serde_json::Value = serde_json::from_slice(&fs::read(&manifest).unwrap()).unwrap();
-    assert_eq!(cache["version"], 4);
+    assert_eq!(cache["version"], 5);
     let executable = Path::new(cache["executable"]["path"].as_str().unwrap());
     let objects = executable.with_extension("rlink-objects");
     assert!(objects.is_dir());
@@ -5647,13 +5647,32 @@ fn relink_only_reuses_root_codegen() {
 
     let rebuilt_cache: serde_json::Value =
         serde_json::from_slice(&fs::read(&manifest).unwrap()).unwrap();
-    assert_eq!(rebuilt_cache["version"], 4);
+    assert_eq!(rebuilt_cache["version"], 5);
     let rebuilt_objects = rebuilt_cache["objects"].as_array().unwrap();
     assert!(!rebuilt_objects.is_empty());
     assert!(
         rebuilt_objects
             .iter()
             .all(|object| Path::new(object["path"].as_str().unwrap()).is_file())
+    );
+
+    let object = Path::new(rebuilt_objects[0]["path"].as_str().unwrap());
+    let mtime = filetime::FileTime::from_last_modification_time(&object.metadata().unwrap());
+    let replacement = object.with_extension("replacement");
+    fs::write(&replacement, b"bad! object").unwrap();
+    filetime::set_file_mtime(&replacement, mtime).unwrap();
+    fs::rename(replacement, object).unwrap();
+    fs::write(&log, "").unwrap();
+    sleep_ms(1000);
+    p.change_file("dep/src/lib.rs", "pub fn value() -> i32 { 13 }");
+    p.cargo("-Zohm-defaults build")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RELINK_WRAPPER_LOG", &log)
+        .run();
+    assert_eq!(
+        fs::read_to_string(&log).unwrap(),
+        "compile:dep\ncompile-link:app\n"
     );
 
     // A skipped invocation must invalidate the old cache after a source change.
