@@ -44,6 +44,7 @@ mod links;
 mod locking;
 mod lto;
 mod ohm_linker;
+mod ohm_thinlto_cache;
 mod output_depinfo;
 mod output_sbom;
 pub mod rustdoc;
@@ -2000,6 +2001,7 @@ fn prepare_rustc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
         base.arg("--force-warn=unused_crate_dependencies");
     }
 
+    ohm_thinlto_cache::configure(build_runner, unit, &mut base);
     build_runner.inherit_shared_cache_locks(&mut base)?;
     Ok(base)
 }
