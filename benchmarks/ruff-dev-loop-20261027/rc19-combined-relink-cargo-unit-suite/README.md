@@ -1,0 +1,9 @@
+# Cargo library tests for the relink-input change
+
+All 407 Cargo library tests passed twice on the candidate that skips hashing relink inputs when Cargo has no consumer for the hashes. The nine focused cache tests also passed in a separate invocation. A clean, locked, offline build used Ohm’s published Linux x86-64 `-16` build toolchain to compile the exact candidate source with `ohm-defaults`. The focused run compiled the executable. The two full runs reused that same verified executable. [Native controls on the corresponding release-profile Cargo binaries](https://github.com/astral-sh/ohm-cargo/tree/b2afe8168a2c804402dd6b73ce2a96a656913466/benchmarks/ruff-dev-loop-20261027/rc19-combined-proofless-input-controls)
+
+The candidate is `78bedbdaafd7cda72bee7c844888b44f3b902c61`, directly above Cargo #284. We compared all 3,108 tracked source entries with their Git blobs and checked the commit stamp before and after the focused build. The freshly built test executable had SHA-256 `aae373cddb590ecc04db2605b0acb13952226600cd2f5327935939621e698c99`. [Parent safety fix](https://github.com/astral-sh/ohm-cargo/pull/284)
+
+The first full-run collector recognized 403 ordinary verdict lines. Rust’s harness marks four tests with an additional `- should panic` annotation. Its native transcript recorded all four as passing and reported 407 passes. We preserved that transcript, repeated the full suite with an annotation-aware collector, and independently matched all 407 names against each transcript and the executable’s own listing.
+
+Run `sha256sum -c SHA256SUMS` and `python3 -IB verify.py` in this directory to verify the portable observations. The unfiltered build streams are retained by SHA-256. To rerun from the candidate checkout, use separate target and build directories with the recorded toolchain and run `cargo +ohm test --locked --offline -p cargo --lib --features ohm-defaults`. Append `compiler::relink_cache_tests` for the focused cases.
