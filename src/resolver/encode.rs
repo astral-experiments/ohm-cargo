@@ -213,20 +213,13 @@ pub fn into_resolve(
         live_pkgs
     };
 
-    // V2 and newer lockfiles can omit the version and source from an edge.
-    // Most names occur just once and need no nested version or source maps.
-    let mut unique = HashMap::default();
-    for (id, pkg) in &live_pkgs {
-        unique
-            .entry(id.name().as_str())
-            .and_modify(|entry| *entry = None)
-            .or_insert(Some((*id, pkg.version.as_str())));
-    }
+    // When decoding a V2 version the edges in `dependencies` aren't
+    // guaranteed to have either version or source information. This `map`
+    // is used to find package ids even if dependencies have missing
+    // information. This map is from name to version to source to actual
+    // package ID. (various levels to drill down step by step)
     let mut map = HashMap::default();
     for (id, _) in &live_pkgs {
-        if unique[id.name().as_str()].is_some() {
-            continue;
-        }
         map.entry(id.name().as_str())
             .or_insert_with(HashMap::default)
             .entry(id.version().to_string())
@@ -235,24 +228,8 @@ pub fn into_resolve(
     }
 
     let mut lookup_id = |enc_id: &TomlLockfilePackageId| -> Option<PackageId> {
-        if let Some((id, package_version)) = *unique.get(enc_id.name.as_str())? {
-            if enc_id
-                .version
-                .as_deref()
-                .is_some_and(|v| v != package_version)
-            {
-                return None;
-            }
-            if enc_id.version.is_none() || (enc_id.source.is_none() && !id.source_id().is_path()) {
-                version = version.max(ResolveVersion::V2);
-            }
-            if let Some(source) = &enc_id.source {
-                return (id.source_id() == SourceId::from_url(source.source_str()).unwrap())
-                    .then_some(id);
-            }
-            return Some(id);
-        }
-
+        // The name of this package should always be in the larger list of
+        // all packages.
         let by_version = map.get(enc_id.name.as_str())?;
 
         // If the version is provided, look that up. Otherwise if the
