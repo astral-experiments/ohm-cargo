@@ -792,6 +792,12 @@ pub fn exclude_from_backups_and_indexing(p: impl AsRef<Path>) {
     exclude_from_content_indexing(path);
 }
 
+/// The tag Cargo writes when it creates a cache directory.
+pub const CARGO_CACHE_TAG: &str = "Signature: 8a477f597d28d172789f06886806bc55
+# This file is a cache directory tag created by cargo.
+# For information about cache directory tags see https://bford.info/cachedir/
+";
+
 /// Marks the directory as excluded from archives/backups.
 ///
 /// This is recommended to prevent derived/temporary files from bloating backups. There are two
@@ -803,13 +809,7 @@ fn exclude_from_backups(path: &Path) {
     exclude_from_time_machine_and_cloud_sync(path);
     let file = path.join("CACHEDIR.TAG");
     if !file.exists() {
-        let _ = std::fs::write(
-            file,
-            "Signature: 8a477f597d28d172789f06886806bc55
-# This file is a cache directory tag created by cargo.
-# For information about cache directory tags see https://bford.info/cachedir/
-",
-        );
+        let _ = std::fs::write(file, CARGO_CACHE_TAG);
         // Similarly to exclude_from_time_machine_and_cloud_sync() we ignore errors here as it's an optional feature.
     }
 }

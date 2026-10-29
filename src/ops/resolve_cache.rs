@@ -42,7 +42,7 @@ pub(super) fn mark_workspace_resolve_fresh(
             workspace_resolve_fingerprint(workspace, resolve, rustc, lockfile_contents)?;
         let cache_path = cache_path(workspace);
         if let Some(parent) = cache_path.parent() {
-            paths::create_dir_all(parent)?;
+            paths::create_dir_all_excluded_from_backups_atomic(parent)?;
         }
 
         paths::write_atomic(cache_path, format!("{fingerprint:016x}"))?;

@@ -4,6 +4,7 @@ use std::collections::hash_map::Entry;
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::{Path, PathBuf};
 use std::rc::Rc;
+use std::sync::{Arc, Weak};
 
 use anyhow::{Context as _, anyhow, bail};
 use cargo_util_terminal::report::Level;
@@ -13,6 +14,7 @@ use tracing::debug;
 use url::Url;
 
 use crate::compiler::Unit;
+use crate::compiler::layout::PrivateBuildLease;
 use crate::context;
 use crate::context::{
     CargoResolverConfig, ConfigRelativePath, FeatureUnification, IncompatibleRustVersions, Value,
@@ -76,6 +78,9 @@ pub struct Workspace<'gctx> {
 
     /// Nested Cargo must not wait for a shared-cache lock held by its parent.
     nested_shared_cache: bool,
+
+    /// Shares one target lease across resolution, fallback runners, and their results.
+    private_build_lease: RefCell<Weak<PrivateBuildLease>>,
 
     /// List of members in this workspace with a listing of all their manifest
     /// paths. The packages themselves can be looked up through the `packages`
@@ -231,7 +236,7 @@ pub(crate) struct SharedCacheAncestor {
 }
 
 /// Keep inherited paths lossless on Unix, including non-UTF-8 directory names.
-mod shared_cache_path {
+pub(super) mod shared_cache_path {
     use std::path::{Path, PathBuf};
 
     pub fn serialize<S: serde::Serializer>(path: &Path, serializer: S) -> Result<S::Ok, S::Error> {
@@ -291,6 +296,7 @@ impl<'gctx> Workspace<'gctx> {
             target_dir: None,
             build_dir: None,
             nested_shared_cache: false,
+            private_build_lease: RefCell::default(),
             members: IndexSet::default(),
             member_ids: HashSet::default(),
             default_members: Vec::new(),
@@ -548,6 +554,20 @@ impl<'gctx> Workspace<'gctx> {
     /// Whether this workspace can use the configured shared registry cache.
     pub(crate) fn shared_registry_cache_enabled(&self) -> bool {
         self.gctx.cli_unstable().ohm_shared_registry_cache && !self.nested_shared_cache
+    }
+
+    /// Keeps active build state alive without retaining a lease in an idle workspace.
+    pub(crate) fn private_build_lease(&self) -> CargoResult<Option<Arc<PrivateBuildLease>>> {
+        if !self.shared_registry_cache_enabled() {
+            return Ok(None);
+        }
+        let mut cached = self.private_build_lease.borrow_mut();
+        if let Some(lease) = cached.upgrade() {
+            return Ok(Some(lease));
+        }
+        let lease = Arc::new(PrivateBuildLease::acquire(self, false)?);
+        *cached = Arc::downgrade(&lease);
+        Ok(Some(lease))
     }
 
     /// Preserves the parent's private-cache fallback in a temporary workspace.
@@ -1469,6 +1489,7 @@ impl<'gctx> Workspace<'gctx> {
 
     pub fn set_target_dir(&mut self, target_dir: Filesystem) {
         self.target_dir = Some(target_dir);
+        *self.private_build_lease.get_mut() = Weak::new();
     }
 
     /// Returns a Vec of `(&Package, CliFeatures)` tuples that

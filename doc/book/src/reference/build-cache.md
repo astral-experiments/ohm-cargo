@@ -99,7 +99,7 @@ you use bash, it makes sense to add `export RUSTC_WRAPPER=sccache` to
 `.bashrc`. Alternatively, you can set [`build.rustc-wrapper`] in the [Cargo
 configuration][config]. Refer to sccache documentation for more details.
 
-## Ohm shared build cleanup
+## Ohm build cache cleanup
 
 With a separate `CARGO_BUILD_BUILD_DIR`, Ohm shares compatible registry builds
 and keeps each workspace's private state in its own `target` directory. This
@@ -115,8 +115,9 @@ Private intermediates live under
 `target/<profile>/build/workspaces/<workspace>/<context>`, and incremental state
 under `target/<profile>/incremental/<workspace>`. Worktree seeding clones private
 state from the donor's target into the recipient's target. Removing a worktree
-also removes its default target, so this private state needs no global ownership
-record or GC pass. Explicit targets outside the checkout need separate cleanup.
+also removes its default target. An explicit target outside a removed checkout
+stays at its configured path. GC forgets a vanished checkout's registration.
+Another live workspace using the same external target can still make it eligible.
 
 On Linux and macOS, `cargo +ohm gc` reclaims these categories from shared
 build directories:
@@ -126,7 +127,6 @@ build directories:
   compiler executable or driver library being removed or replaced also makes its
   context eligible immediately.
 * Other tracked compiler contexts that have not been used for at least one hour.
-  Private state in existing worktrees is preserved.
 * Individual tracked dependency builds that have not been used for at least one
   hour, even while other dependencies keep their compiler context active. Versions,
   feature combinations, profiles, and targets retain their own usage histories.
@@ -137,8 +137,42 @@ build directories:
   private intermediates, incremental state, and scratch files left in the global
   directory by the old layout, including the old flat ThinLTO namespaces. These
   are eligible immediately, regardless of age
-  or whether the original worktree still exists. A colocated target's private
-  state is preserved.
+  or whether the original worktree still exists. Private workspace namespaces
+  in a colocated target follow the rule below.
+
+Running `cargo +ohm gc` also checks enrolled workspace targets. An Ohm build or
+check enrolls the selected target in any workspace, including primary checkouts
+and linked worktrees. `cargo +ohm worktree add` enrolls the destination before
+its first build. The workspace ID in the private layout is Ohm's hash of the
+workspace root and target paths. For a default in-tree target, the complete
+path starts in the checkout, for example
+`/code/my-worktree/target/debug/build/workspaces/…`.
+
+After a full hour without an Ohm build, check, or worktree seed using a target,
+manual GC can clean its private outputs on **any compiler release**. This
+includes final binaries, documentation, incremental state and private compiler
+intermediates, including older unmarked directories. A fresh build or check
+counts even when it recompiles nothing. One timestamp covers the physical
+target across all workspaces using it. Its recorded time rounds up to the next
+five-minute boundary, so eligibility can lag by up to five minutes. Long builds
+refresh their time at completion. A newly enrolled target needs a recorded use
+before GC can establish its age. An external target must carry the cache tag
+written by Cargo. The checkout's conventional `target/` can also qualify
+without a tag, for compatibility with older builds.
+
+An active build or a program holding the target lease postpones cleanup.
+GC removes observed files and empty directories in small batches and leaves
+Cargo's lock files in place. It preserves nested checkouts, other targets,
+shared registry and ThinLTO caches, and directories backing external artifact
+exports. A directory export pins its compiler context even if the export is
+later deleted. The next build recreates the private files it needs. Time spent
+running the binary does not extend the deadline after the program exits.
+
+In a recently used target, upgrading the moving `+ohm` toolchain still makes
+its older marked private compiler contexts eligible immediately. This narrower
+pass keeps final outputs, incremental state, pinned contexts, and directory
+artifacts still used by published outputs. Use `cargo clean` for an immediate
+local clean.
 
 A build context groups artifacts that share a compiler, build tools, and relevant
 configuration and environment. Multiple projects, crate versions, and feature
@@ -235,12 +269,12 @@ Shared registry and ThinLTO artifacts and legacy global state are left for `carg
 The first build after switching to this layout rebuilds private intermediates;
 existing global registry artifacts remain reusable.
 
-`cargo +ohm gc` performs global maintenance across registered shared build roots.
+`cargo +ohm gc` checks enrolled workspace targets and registered shared build roots.
 It also discovers marked legacy roots in the configured build directory and up
 to four directory levels beneath `$HOME/.cache`, `$XDG_CACHE_HOME`, and, on macOS,
 `$HOME/Library/Caches`. Discovery does not follow directory symlinks or descend
-into build profiles. Roots elsewhere can be selected with `--build-dir`; an
-actual collection registers them for subsequent runs. Dry runs do not enroll
+into build profiles. Passing `--build-dir PATH` limits the entire run to that
+shared root. Collecting it registers it for subsequent runs. Dry runs do not enroll
 roots or create metadata. The command can run from any directory, without a
 Cargo workspace:
 
@@ -250,11 +284,12 @@ cargo +ohm gc
 ```
 
 To select one root explicitly, add `--build-dir /path/to/shared-build`.
-`--dry-run` lists eligible contexts and legacy workspaces, estimates their file
+`--dry-run` lists idle workspace targets, eligible private or shared compiler
+contexts, and legacy namespaces. It estimates their file
 and byte totals, and leaves artifacts and records unchanged. For example:
 
 ```text
-Would remove context 6f4e82a9c1d037ab (from ohm-1.98.1-1; current is ohm-1.98.1-2)
+Would remove workspace target /code/my-worktree/target (unused for at least 1 hour)
      Summary 1248 files, 842.6MiB total
 warning: no files deleted due to --dry-run
 ```
@@ -263,8 +298,8 @@ Longer runs show a pulsing progress bar with running file and byte counts.
 A dry run labels them `eligible`. Cleanup labels them `removed` as each deletion
 succeeds. The display follows Cargo's [progress settings](config.md#termprogresswhen).
 
-The preview includes all eligible artifacts and files left by interrupted
-cleanup, without holding build locks while counting them. Actual collection
+The preview includes eligible artifacts and files left by interrupted
+cleanup. Actual collection
 reports `Removing` and `Removed`, counts files as it deletes them, and uses small
 batches to yield to active builds. Counts exclude GC bookkeeping; like
 `cargo clean`, byte totals use file lengths rather than physical disk usage.

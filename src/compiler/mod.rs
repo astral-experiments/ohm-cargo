@@ -2037,6 +2037,16 @@ fn link_targets(
         return Ok(Work::noop());
     }
     let export_dir = build_runner.files().export_dir();
+    let private_export = (cfg!(any(target_os = "linux", target_os = "macos"))
+        && export_dir.is_some()
+        && bcx.ws.shared_registry_cache_enabled()
+        && !build_runner.files().is_shared_registry_unit(unit))
+    .then(|| {
+        (
+            bcx.ws.target_dir(),
+            build_runner.files().private_context_dir(unit),
+        )
+    });
     let package_id = unit.pkg.package_id();
     let manifest_path = PathBuf::from(unit.pkg.manifest_path());
     let profile = unit.profile.clone();
@@ -2079,6 +2089,17 @@ fn link_targets(
                 let export_dir = export_dir.as_ref().unwrap();
                 paths::create_dir_all(export_dir)?;
 
+                // Cargo exports directory artifacts such as dSYMs as symlinks.
+                // An external consumer can use that path long after this build.
+                if let Some((root, context)) = &private_export
+                    && src.is_dir()
+                {
+                    crate::workspace::build_cache_gc::worktrees::provenance::keep_export(
+                        root.as_path_unlocked(),
+                        context,
+                        export_dir,
+                    )?;
+                }
                 paths::link_or_copy(src, path)?;
             }
         }

@@ -6,6 +6,7 @@ use std::ffi::{OsStr, OsString};
 use std::path::Path;
 use std::path::PathBuf;
 use std::rc::Rc;
+use std::sync::Arc;
 
 use cargo_platform::CfgExpr;
 use cargo_util::{ProcessBuilder, paths};
@@ -146,7 +147,7 @@ pub struct Compilation<'gctx> {
     shared_registry_root: Option<PathBuf>,
 
     /// Keeps this target's private files alive while tests and launched programs use them.
-    private_lease: Option<PrivateBuildLease>,
+    private_lease: Option<Arc<PrivateBuildLease>>,
 
     /// Keeps shared artifacts alive after build locks are released, including during tests.
     consumer_lease: Option<ConsumerLease>,
@@ -156,12 +157,14 @@ pub struct Compilation<'gctx> {
 }
 
 impl<'gctx> Compilation<'gctx> {
+    /// The opened lock binds private-cache enrollment to the target of this build.
+    #[cfg(any(target_os = "linux", target_os = "macos"))]
+    pub(super) fn private_build_lock(&self) -> Option<&std::fs::File> {
+        self.private_lease.as_deref().map(PrivateBuildLease::file)
+    }
+
     pub fn new<'a>(bcx: &BuildContext<'a, 'gctx>) -> CargoResult<Compilation<'gctx>> {
-        let private_lease = bcx
-            .ws
-            .shared_registry_cache_enabled()
-            .then(|| PrivateBuildLease::acquire(bcx.ws))
-            .transpose()?;
+        let private_lease = bcx.ws.private_build_lease()?;
         let rustc_process = bcx.rustc().process();
         let primary_rustc_process = bcx.build_config.primary_unit_rustc.clone();
         let rustc_workspace_wrapper_process = bcx.rustc().workspace_process();

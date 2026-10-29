@@ -28,6 +28,7 @@ const CONTEXT_MAX_IDLE: Duration = Duration::from_secs(60 * 60);
 const LAST_USED: &str = "last-used"; // Legacy file-based bookkeeping.
 
 mod tracker;
+pub(crate) mod worktrees;
 use tracker::Tracker;
 
 /// Refreshes context and dependency activity at build start and completion.
@@ -515,12 +516,16 @@ pub(crate) struct FileCounts {
 
 impl FileCounts {
     fn record(&mut self, metadata: &Metadata) {
-        if metadata.is_dir() {
+        self.record_entry(metadata.is_dir(), metadata.len());
+    }
+
+    fn record_entry(&mut self, directory: bool, len: u64) {
+        if directory {
             self.directories += 1;
         } else {
             self.files += 1;
             // Match cargo clean: logical lengths, including symlinks, rather than disk blocks.
-            self.bytes = self.bytes.saturating_add(metadata.len());
+            self.bytes = self.bytes.saturating_add(len);
         }
     }
 
@@ -694,10 +699,10 @@ fn collect_with_lock_budget(
             }
             counted.insert(source.clone());
             let device = filesystem_device(&fs::symlink_metadata(&source)?);
-            remove_bounded(&source, device, &mut remaining, summary, true)?;
+            remove_bounded(&source, device, &mut remaining, summary, true, None)?;
         }
         for trash in trash_roots {
-            drain_trash(&trash, &mut remaining, summary, true)?;
+            drain_trash(&trash, &mut remaining, summary, true, None)?;
         }
         return Ok(());
     }
@@ -850,7 +855,7 @@ fn collect_with_lock_budget(
     // starts or another context remains in use.
     let mut remaining = DELETE_BUDGET;
     for trash in trash_roots {
-        drain_trash(&trash, &mut remaining, summary, false)?;
+        drain_trash(&trash, &mut remaining, summary, false, None)?;
     }
     let mut metadata_summary = Summary::default();
     drain_trash(
@@ -858,6 +863,7 @@ fn collect_with_lock_budget(
         &mut remaining,
         &mut metadata_summary,
         false,
+        None,
     )?;
     summary.deleted_entries += metadata_summary.deleted_entries;
     summary.pending |= metadata_summary.pending;
@@ -1417,6 +1423,27 @@ fn retire(
     dry_run: bool,
     summary: &mut Summary<'_>,
 ) -> CargoResult<bool> {
+    retire_path(
+        root,
+        source,
+        trash,
+        dry_run,
+        summary,
+        matches!(namespace, Namespace::Dependency { .. })
+            .then_some("dependency path is no longer a plain directory"),
+        false,
+    )
+}
+
+fn retire_path(
+    root: &Path,
+    source: &Path,
+    trash: &Path,
+    dry_run: bool,
+    summary: &mut Summary<'_>,
+    non_directory_reason: Option<&str>,
+    allow_symlink: bool,
+) -> CargoResult<bool> {
     if safely_absent(root, source) {
         return Ok(false);
     }
@@ -1425,11 +1452,13 @@ fn retire(
         return Ok(false);
     }
     let metadata = fs::symlink_metadata(source)?;
-    if matches!(namespace, Namespace::Dependency { .. }) && !metadata.is_dir() {
-        summary.skip_path(source, "dependency path is no longer a plain directory");
+    if let Some(reason) = non_directory_reason
+        && !metadata.is_dir()
+    {
+        summary.skip_path(source, reason);
         return Ok(false);
     }
-    if !metadata.is_dir() && !metadata.is_file() {
+    if !(metadata.is_dir() || metadata.is_file() || allow_symlink && metadata.is_symlink()) {
         summary.skip_path(source, "not a regular file or directory");
         return Ok(false);
     }
@@ -1471,6 +1500,7 @@ fn drain_trash(
     remaining: &mut usize,
     summary: &mut Summary<'_>,
     dry_run: bool,
+    bookkeeping: Option<&str>,
 ) -> CargoResult<()> {
     if !plain_directory(trash) {
         return Ok(());
@@ -1486,7 +1516,7 @@ fn drain_trash(
             continue;
         }
         let path = entry.path();
-        drain_entry(&path, device, remaining, summary, dry_run)
+        drain_entry(&path, device, remaining, summary, dry_run, bookkeeping)
             .or_else(|error| summary.path_error(&path, error))?;
         if !dry_run && *remaining < 2 {
             summary.pending = true;
@@ -1503,6 +1533,7 @@ fn drain_entry(
     remaining: &mut usize,
     summary: &mut Summary<'_>,
     dry_run: bool,
+    bookkeeping: Option<&str>,
 ) -> CargoResult<()> {
     let owner = path.join("owner");
     match fs::symlink_metadata(&owner) {
@@ -1520,7 +1551,15 @@ fn drain_entry(
         return Ok(());
     }
     let payload = path.join("payload");
-    remove_bounded(&payload, device, remaining, summary, dry_run)?;
+    let bookkeeping = bookkeeping.map(|name| payload.join(name));
+    remove_bounded(
+        &payload,
+        device,
+        remaining,
+        summary,
+        dry_run,
+        bookkeeping.as_deref(),
+    )?;
     if !dry_run && absent(&payload) && *remaining >= 2 {
         fs::remove_file(owner)?;
         fs::remove_dir(path)?;
@@ -1537,8 +1576,9 @@ fn remove_bounded(
     remaining: &mut usize,
     summary: &mut Summary<'_>,
     dry_run: bool,
+    bookkeeping: Option<&Path>,
 ) -> CargoResult<bool> {
-    remove_entry(path, device, remaining, summary, dry_run)
+    remove_entry(path, device, remaining, summary, dry_run, bookkeeping)
         .or_else(|error| summary.path_error(path, error))
 }
 
@@ -1548,6 +1588,7 @@ fn remove_entry(
     remaining: &mut usize,
     summary: &mut Summary<'_>,
     dry_run: bool,
+    bookkeeping: Option<&Path>,
 ) -> CargoResult<bool> {
     if absent(path) {
         return Ok(true);
@@ -1568,7 +1609,14 @@ fn remove_entry(
             if *remaining == 0 {
                 return Ok(false);
             }
-            complete &= remove_bounded(&child?.path(), device, remaining, summary, dry_run)?;
+            complete &= remove_bounded(
+                &child?.path(),
+                device,
+                remaining,
+                summary,
+                dry_run,
+                bookkeeping,
+            )?;
         }
         if *remaining == 0 || !complete {
             return Ok(false);
@@ -1585,12 +1633,18 @@ fn remove_entry(
     }
     *remaining -= 1;
     summary.deleted_entries += 1;
-    summary.counts.record(&metadata);
-    summary.tick();
+    if bookkeeping != Some(path) {
+        summary.counts.record(&metadata);
+        summary.tick();
+    }
     Ok(true)
 }
 
 fn profiles(root: &Path) -> CargoResult<Vec<PathBuf>> {
+    profiles_matching(root, |path| regular(&path.join(".cargo-build-lock")))
+}
+
+fn profiles_matching(root: &Path, is_profile: impl Fn(&Path) -> bool) -> CargoResult<Vec<PathBuf>> {
     let mut result = Vec::new();
     for entry in fs::read_dir(root)? {
         let entry = entry?;
@@ -1602,13 +1656,13 @@ fn profiles(root: &Path) -> CargoResult<Vec<PathBuf>> {
         if regular(&path.join(Layout::SHARED_REGISTRY_CACHE_MARKER)) {
             continue;
         }
-        if regular(&path.join(".cargo-build-lock")) {
+        if is_profile(&path) {
             result.push(path);
             continue;
         }
         for child in fs::read_dir(path)? {
             let child = child?;
-            if child.file_type()?.is_dir() && regular(&child.path().join(".cargo-build-lock")) {
+            if child.file_type()?.is_dir() && is_profile(&child.path()) {
                 result.push(child.path());
             }
         }
@@ -1630,6 +1684,10 @@ impl Drop for CollectorLock {
 }
 
 fn try_lock(path: &Path, create: bool) -> CargoResult<Option<CollectorLock>> {
+    try_lock_file(path, create, true)
+}
+
+fn try_lock_file(path: &Path, create: bool, exclusive: bool) -> CargoResult<Option<CollectorLock>> {
     let mut options = OpenOptions::new();
     options.read(true).write(true).create(create);
     #[cfg(unix)]
@@ -1642,16 +1700,9 @@ fn try_lock(path: &Path, create: bool) -> CargoResult<Option<CollectorLock>> {
         Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(None),
         Err(error) => return Err(error.into()),
     };
-    ensure!(
-        file.metadata()?.is_file(),
-        "cache lock is not a regular file"
-    );
-    match try_lock_exclusive(&file) {
-        Ok(()) => {}
-        Err(TryLockError::WouldBlock) => return Ok(None),
-        Err(TryLockError::Error(error)) => return Err(error.into()),
-    }
-    let lock = CollectorLock(file);
+    let Some(lock) = try_lock_opened(file, exclusive)? else {
+        return Ok(None);
+    };
     #[cfg(unix)]
     {
         use std::os::unix::fs::MetadataExt as _;
@@ -1663,6 +1714,25 @@ fn try_lock(path: &Path, create: bool) -> CargoResult<Option<CollectorLock>> {
         );
     }
     Ok(Some(lock))
+}
+
+/// Locks an opened regular file and releases the collector's lock at scope exit.
+fn try_lock_opened(file: File, exclusive: bool) -> CargoResult<Option<CollectorLock>> {
+    ensure!(
+        file.metadata()?.is_file(),
+        "cache lock is not a regular file"
+    );
+    let acquired = if exclusive {
+        try_lock_exclusive(&file)
+    } else {
+        crate::util::flock::try_lock_shared(&file)
+    };
+    match acquired {
+        Ok(()) => {}
+        Err(TryLockError::WouldBlock) => return Ok(None),
+        Err(TryLockError::Error(error)) => return Err(error.into()),
+    }
+    Ok(Some(CollectorLock(file)))
 }
 
 fn plain_ancestors(root: &Path, path: &Path) -> CargoResult<bool> {
@@ -2948,7 +3018,14 @@ mod tests {
         let wrong_device = filesystem_device(&fs::symlink_metadata(&payload)?) ^ 1;
         let mut remaining = DELETE_BUDGET;
         let mut summary = Summary::default();
-        remove_bounded(&payload, wrong_device, &mut remaining, &mut summary, false)?;
+        remove_bounded(
+            &payload,
+            wrong_device,
+            &mut remaining,
+            &mut summary,
+            false,
+            None,
+        )?;
         assert!(payload.join("artifact").exists());
         assert_eq!(remaining, DELETE_BUDGET);
         assert_eq!(summary.deleted_entries, 0);
@@ -2959,7 +3036,14 @@ mod tests {
                 payload.display()
             )]
         );
-        remove_bounded(&payload, wrong_device, &mut remaining, &mut summary, true)?;
+        remove_bounded(
+            &payload,
+            wrong_device,
+            &mut remaining,
+            &mut summary,
+            true,
+            None,
+        )?;
         assert_eq!(summary.counts, FileCounts::default());
         Ok(())
     }

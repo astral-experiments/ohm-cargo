@@ -1351,7 +1351,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             );
         }
         self.files().record_worktree_seed_policy(self)?;
-        match self.files().record_gc_metadata() {
+        match self.files().record_gc_metadata(&self.compilation) {
             Ok(usage) => self.context_use = usage,
             Err(error) => tracing::debug!(
                 ?error,
@@ -1386,9 +1386,15 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
                     .insert(kind, artifact_dir.dest().to_path_buf());
             }
             if self.bcx.gctx.cli_unstable().build_dir_new_layout {
+                let mut record_context = cfg!(any(target_os = "linux", target_os = "macos"))
+                    && self.bcx.ws.shared_registry_cache_enabled();
                 for (unit, _) in self.bcx.unit_graph.iter() {
                     if kind != unit.kind {
                         continue;
+                    }
+                    if record_context && !files.is_shared_registry_unit(unit) {
+                        files.record_private_context(unit, self)?;
+                        record_context = false;
                     }
                     let dep_dir = self.files().deps_dir(unit);
                     paths::create_dir_all(&dep_dir)?;
