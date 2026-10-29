@@ -240,7 +240,7 @@ jobs:
             --root /private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci \
             --evidence "$RUNNER_TEMP/clippy-apfs-results/apfs" --jobs 4 \
             --toolchain "$OHM_VERSION" --arms off1,on1,on2,off2,on3,off3,off4,on4 \
-            --production --require-quiet
+            --require-quiet
           "$python" benches/clippy-seeding/summarize.py "$RUNNER_TEMP/clippy-apfs-results/apfs" \
             --arms off1,on1,on2,off2,on3,off3,off4,on4 \
             > "$RUNNER_TEMP/clippy-apfs-results/summary.json"
