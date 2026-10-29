@@ -1,0 +1,14 @@
+# Upgrading a target that already returned an invalid success on published Ohm -19
+
+Installing the proposed -20 Cargo and Rust revisions repaired both reproduced failures on the next command. Each history started with the official Linux -19 archive. The test kept the source, target directory and build directory in place through the toolchain switch. An independent empty build supplied each expected check diagnostic. [Draft -20 manifest](https://github.com/astral-sh/ohm/pull/202) · [Source qualification](https://github.com/astral-sh/ohm-cargo/tree/7617f156786830e29d189509558848d752c3a28d/benchmarks/ruff-dev-loop-20261027/rc19-corrected-source-release-decision)
+
+| Starting state on -19 | Relink the alias to -19 | Switch to corrected Cargo, keep -19 rustc | Switch to both corrected pins |
+| --- | --- | --- | --- |
+| Ambiguous call already marked fresh | First and second checks both succeeded | E0034 on first and second checks | E0034 on first and second checks |
+| Revert a failed producer after its dependent committed | First build failed with E0460. Next retry printed 1 | First build rebuilt all three units and printed 1 | First build rebuilt all three units and printed 1 |
+
+The test compared the paths, inodes, sizes, modification times and contents of 105 source and cache files per check and 41 per build immediately before and after updating the private rustup toolchain alias. Each corrected check selected different on-disk output paths and rebuilt all three library prerequisites on that first invocation. On the second unchanged check all three were fresh and the caller still rejected the program. Restoring valid source recovered in all three histories. Replacing the alias with a new symlink to the same -19 SDK preserved the invalid success, including after an independent empty check reported E0034.
+
+The build fixture uses Cargo’s checked-in synchronized compiler wrapper to make a producer fail after its dependent commits. This replay used the ordinary enabled Cargo defaults. The driver supplies no `RUSTFLAGS`. The -19 failure and both correct first recoveries each reopened a native executable. The release-profile Cargo candidate reports its exact source stamp. The candidate compiler is the independently built optimized stage1 compiler and standard library from the -20 Rust pin.
+
+Run `python3 -IB verify.py`. To repeat a check, use `python3 -IB check/replay.py /path/to/official19 /tmp/new-check provider-late --replacement-sdk /path/to/candidate --replacement-verdict 101`. To repeat a build, create a private rustup home with its `toolchains/ohm` symlink pointing to the official -19 SDK, then run `python3 -IB build/replay.py /tmp/new-build --rustup-home /path/to/private-home --replacement-sdk /path/to/candidate`. Both fixture directories must be new. Each build run changes only its own private alias.

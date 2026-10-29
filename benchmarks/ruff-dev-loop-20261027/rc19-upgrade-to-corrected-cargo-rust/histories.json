@@ -1,0 +1,1412 @@
+{
+  "cargo-only-upgrade": {
+    "build": {
+      "result": {
+        "cargo_sha256": "a9c1b18bbb02f541bcf089db9d4286c215ffc8036fa1ff443e59c9210e77771c",
+        "first_success": "reverted",
+        "mode": "default",
+        "phases": {
+          "final-program": {
+            "errors": [],
+            "exit": 0,
+            "files": {
+              "exec.log": "b02906f75726312f64833b3d609552635dd3b553773dd5cd9ed1eb352c204d8f",
+              "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+            },
+            "rustcs": []
+          },
+          "forced-failure": {
+            "errors": [],
+            "exit": 101,
+            "files": {
+              "exec.log": "3c3fd25d14f702cb100792086bb0d8c63bde444776d887ed015d1c86e4524d73",
+              "stderr": "c12f5517c4b32cc1b8de6625686dcd3551fded6a9321cc091b5ea72a988577f7",
+              "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "rustcs": [
+              [
+                "dep",
+                "lib"
+              ],
+              [
+                "app",
+                "lib"
+              ]
+            ]
+          },
+          "make-wrapper": {
+            "errors": [],
+            "exit": 0,
+            "files": {
+              "exec.log": "1fe5e16f5c5f33bb1b5a0d61e37145035f17108ee4a2a79033b4678ecf9b5bf0",
+              "stderr": "2ac6ee733ebc3bf778a9991de1890ac64ae2dfa61e35198d0a02ab7a1ec36cb1",
+              "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "rustcs": []
+          },
+          "prime": {
+            "errors": [],
+            "exit": 0,
+            "files": {
+              "exec.log": "4f4e0e802b38bc3a1868e3e551b4c9f6a01f5445c7298a448daf4584105319f7",
+              "stderr": "1530697f722270d6cf61bc1668d5f4e05f365ac9a64f2d73f207f056a27bc361",
+              "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "rustcs": [
+              [
+                "dep",
+                "lib"
+              ],
+              [
+                "app",
+                "lib"
+              ],
+              [
+                "app",
+                "bin"
+              ]
+            ]
+          },
+          "prime-program": {
+            "errors": [],
+            "exit": 0,
+            "files": {
+              "exec.log": "a0c1bbb6b857f8834d9eaf4d09d5e2193b6be851fd7449856cfd353ca34c2a40",
+              "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+            },
+            "rustcs": []
+          },
+          "reverted": {
+            "errors": [],
+            "exit": 0,
+            "files": {
+              "exec.log": "c77332602bb39415bf5d6d63b0af5344534c6f6836a028664deb9ece2b710898",
+              "stderr": "6e37d13aec65e39e679490eedc048ce7beca5dbce7e72b6c652cc66fa2cc1a43",
+              "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "rustcs": [
+              [
+                "dep",
+                "lib"
+              ],
+              [
+                "app",
+                "lib"
+              ],
+              [
+                "app",
+                "bin"
+              ]
+            ]
+          }
+        },
+        "rustc_sha256": "5694abe50767a22cebeccb767143f7404d5e81c4b1760cff4426466bf410e511",
+        "value": 1
+      },
+      "upgrade": {
+        "after": {
+          "cargo": "a9c1b18bbb02f541bcf089db9d4286c215ffc8036fa1ff443e59c9210e77771c",
+          "rustc": "5694abe50767a22cebeccb767143f7404d5e81c4b1760cff4426466bf410e511"
+        },
+        "before": {
+          "cargo": "789c2f116732ed642565d0f92c500838f8cd53664fbe60f205a5621c43cbecf1",
+          "rustc": "5694abe50767a22cebeccb767143f7404d5e81c4b1760cff4426466bf410e511"
+        },
+        "state_files": 41,
+        "state_identity_and_digest": "ee5a08c12473b9eb1d00a20e1e2d0ad5d8b91bdb861be7788e10c91912ed04b2"
+      }
+    },
+    "check": {
+      "events": [
+        "hold-fd",
+        "release-fd"
+      ],
+      "phases": {
+        "edited": {
+          "artifacts": {
+            "api": {
+              "files": [
+                "target/debug/build/workspaces/9913bf555c3fa7b8/v2-31de7d3d0f68e4dc/api/ff08d5c74dba0d49/out/libapi-ff08d5c74dba0d49.rmeta"
+              ],
+              "fresh": true
+            },
+            "client": {
+              "files": [
+                "target/debug/build/workspaces/9913bf555c3fa7b8/v2-31de7d3d0f68e4dc/client/f3282da4f6b60ad3/out/libclient-f3282da4f6b60ad3.rmeta"
+              ],
+              "fresh": false
+            },
+            "provider": {
+              "files": [
+                "target/debug/build/workspaces/9913bf555c3fa7b8/v2-31de7d3d0f68e4dc/provider/fad1377df2484a4d/out/libprovider-fad1377df2484a4d.rmeta"
+              ],
+              "fresh": false
+            },
+            "reader": {
+              "files": [
+                "target/debug/build/workspaces/9913bf555c3fa7b8/v2-31de7d3d0f68e4dc/reader/e30cb9577ac7759c/out/libreader-e30cb9577ac7759c.rmeta"
+              ],
+              "fresh": false
+            }
+          },
+          "errors": [],
+          "stderr": "f740c1f5e89785e2554b18a22bb8b0439e779308bfbda135aab4a9110f0c53bc",
+          "stdout": "a6c3b400345f9dc6f8ba6e752204a457b7dd2ba42db61f179751a151942a9b6a",
+          "success": true
+        },
+        "edited-clean": {
+          "artifacts": {
+            "api": {
+              "files": [
+                "cold-target/debug/build/workspaces/2317cb0432a000a4/v2-31de7d3d0f68e4dc/api/ff08d5c74dba0d49/out/libapi-ff08d5c74dba0d49.rmeta"
+              ],
+              "fresh": false
+            },
+            "provider": {
+              "files": [
+                "cold-target/debug/build/workspaces/2317cb0432a000a4/v2-31de7d3d0f68e4dc/provider/fad1377df2484a4d/out/libprovider-fad1377df2484a4d.rmeta"
+              ],
+              "fresh": false
+            },
+            "reader": {
+              "files": [
+                "cold-target/debug/build/workspaces/2317cb0432a000a4/v2-31de7d3d0f68e4dc/reader/e30cb9577ac7759c/out/libreader-e30cb9577ac7759c.rmeta"
+              ],
+              "fresh": false
+            }
+          },
+          "errors": [
+            [
+              "client",
+              "E0034",
+              "multiple applicable items in scope",
+              "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+            ]
+          ],
+          "stderr": "8fdd24b71abcebef7160c2da291db29773cdb6ba8283db9f14a71e7369b8750a",
+          "stdout": "b4387370329765f5ed740c1d10e41d4355714d89636b706e630c914d08625e31",
+          "success": false
+        },
+        "edited-repeat": {
+          "artifacts": {
+            "api": {
+              "files": [
+                "target/debug/build/workspaces/9913bf555c3fa7b8/v2-31de7d3d0f68e4dc/api/ff08d5c74dba0d49/out/libapi-ff08d5c74dba0d49.rmeta"
+              ],
+              "fresh": true
+            },
+            "client": {
+              "files": [
+                "target/debug/build/workspaces/9913bf555c3fa7b8/v2-31de7d3d0f68e4dc/client/f3282da4f6b60ad3/out/libclient-f3282da4f6b60ad3.rmeta"
+              ],
+              "fresh": true
+            },
+            "provider": {
+              "files": [
+                "target/debug/build/workspaces/9913bf555c3fa7b8/v2-31de7d3d0f68e4dc/provider/fad1377df2484a4d/out/libprovider-fad1377df2484a4d.rmeta"
+              ],
+              "fresh": true
+            },
+            "reader": {
+              "files": [
+                "target/debug/build/workspaces/9913bf555c3fa7b8/v2-31de7d3d0f68e4dc/reader/e30cb9577ac7759c/out/libreader-e30cb9577ac7759c.rmeta"
+              ],
+              "fresh": true
+            }
+          },
+          "errors": [],
+          "stderr": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e",
+          "stdout": "8d204f5f388ae74f7b5b755c0111e0988d91fa30432b161c9d470b3e0bdbb3cf",
+          "success": true
+        },
+        "first-after-upgrade": {
+          "artifacts": {
+            "api": {
+              "files": [
+                "target/debug/build/workspaces/9913bf555c3fa7b8/v2-c4aae54907097a27/api/ff08d5c74dba0d49/out/libapi-ff08d5c74dba0d49.rmeta"
+              ],
+              "fresh": false
+            },
+            "provider": {
+              "files": [
+                "target/debug/build/workspaces/9913bf555c3fa7b8/v2-c4aae54907097a27/provider/fad1377df2484a4d/out/libprovider-fad1377df2484a4d.rmeta"
+              ],
+              "fresh": false
+            },
+            "reader": {
+              "files": [
+                "target/debug/build/workspaces/9913bf555c3fa7b8/v2-c4aae54907097a27/reader/e30cb9577ac7759c/out/libreader-e30cb9577ac7759c.rmeta"
+              ],
+              "fresh": false
+            }
+          },
+          "errors": [
+            [
+              "client",
+              "E0034",
+              "multiple applicable items in scope",
+              "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+            ]
+          ],
+          "stderr": "8fdd24b71abcebef7160c2da291db29773cdb6ba8283db9f14a71e7369b8750a",
+          "stdout": "2bd3a60280a30213abd5e123e417efbd8da7da5495a2fdbc1ae36d5f40defb9b",
+          "success": false
+        },
+        "independent-after-upgrade": {
+          "artifacts": {
+            "api": {
+              "files": [
+                "new-cold-target/debug/build/workspaces/896804481aad4eb6/v2-c4aae54907097a27/api/ff08d5c74dba0d49/out/libapi-ff08d5c74dba0d49.rmeta"
+              ],
+              "fresh": false
+            },
+            "provider": {
+              "files": [
+                "new-cold-target/debug/build/workspaces/896804481aad4eb6/v2-c4aae54907097a27/provider/fad1377df2484a4d/out/libprovider-fad1377df2484a4d.rmeta"
+              ],
+              "fresh": false
+            },
+            "reader": {
+              "files": [
+                "new-cold-target/debug/build/workspaces/896804481aad4eb6/v2-c4aae54907097a27/reader/e30cb9577ac7759c/out/libreader-e30cb9577ac7759c.rmeta"
+              ],
+              "fresh": false
+            }
+          },
+          "errors": [
+            [
+              "client",
+              "E0034",
+              "multiple applicable items in scope",
+              "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+            ]
+          ],
+          "stderr": "8fdd24b71abcebef7160c2da291db29773cdb6ba8283db9f14a71e7369b8750a",
+          "stdout": "971f8356ff72931dd6abd4ae671a281d8b46b5bbe5b2e6a0233bd03bfb7c0e6a",
+          "success": false
+        },
+        "original": {
+          "artifacts": {
+            "api": {
+              "files": [
+                "target/debug/build/workspaces/9913bf555c3fa7b8/v2-31de7d3d0f68e4dc/api/ff08d5c74dba0d49/out/libapi-ff08d5c74dba0d49.rmeta"
+              ],
+              "fresh": false
+            },
+            "client": {
+              "files": [
+                "target/debug/build/workspaces/9913bf555c3fa7b8/v2-31de7d3d0f68e4dc/client/f3282da4f6b60ad3/out/libclient-f3282da4f6b60ad3.rmeta"
+              ],
+              "fresh": false
+            },
+            "provider": {
+              "files": [
+                "target/debug/build/workspaces/9913bf555c3fa7b8/v2-31de7d3d0f68e4dc/provider/fad1377df2484a4d/out/libprovider-fad1377df2484a4d.rmeta"
+              ],
+              "fresh": false
+            },
+            "reader": {
+              "files": [
+                "target/debug/build/workspaces/9913bf555c3fa7b8/v2-31de7d3d0f68e4dc/reader/e30cb9577ac7759c/out/libreader-e30cb9577ac7759c.rmeta"
+              ],
+              "fresh": false
+            }
+          },
+          "errors": [],
+          "stderr": "5f15a728997c1585accd03746bdeb9a67125afebc5daf4c5818fec411c40078b",
+          "stdout": "4212a9757e593b8178a34e45fa8eb10f9df2b187476b94c5d7334fae875a6c63",
+          "success": true
+        },
+        "original-repeat": {
+          "artifacts": {
+            "api": {
+              "files": [
+                "target/debug/build/workspaces/9913bf555c3fa7b8/v2-31de7d3d0f68e4dc/api/ff08d5c74dba0d49/out/libapi-ff08d5c74dba0d49.rmeta"
+              ],
+              "fresh": true
+            },
+            "client": {
+              "files": [
+                "target/debug/build/workspaces/9913bf555c3fa7b8/v2-31de7d3d0f68e4dc/client/f3282da4f6b60ad3/out/libclient-f3282da4f6b60ad3.rmeta"
+              ],
+              "fresh": true
+            },
+            "provider": {
+              "files": [
+                "target/debug/build/workspaces/9913bf555c3fa7b8/v2-31de7d3d0f68e4dc/provider/fad1377df2484a4d/out/libprovider-fad1377df2484a4d.rmeta"
+              ],
+              "fresh": true
+            },
+            "reader": {
+              "files": [
+                "target/debug/build/workspaces/9913bf555c3fa7b8/v2-31de7d3d0f68e4dc/reader/e30cb9577ac7759c/out/libreader-e30cb9577ac7759c.rmeta"
+              ],
+              "fresh": true
+            }
+          },
+          "errors": [],
+          "stderr": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e",
+          "stdout": "8d204f5f388ae74f7b5b755c0111e0988d91fa30432b161c9d470b3e0bdbb3cf",
+          "success": true
+        },
+        "restore": {
+          "artifacts": {
+            "api": {
+              "files": [
+                "target/debug/build/workspaces/9913bf555c3fa7b8/v2-c4aae54907097a27/api/ff08d5c74dba0d49/out/libapi-ff08d5c74dba0d49.rmeta"
+              ],
+              "fresh": true
+            },
+            "client": {
+              "files": [
+                "target/debug/build/workspaces/9913bf555c3fa7b8/v2-c4aae54907097a27/client/f3282da4f6b60ad3/out/libclient-f3282da4f6b60ad3.rmeta"
+              ],
+              "fresh": false
+            },
+            "provider": {
+              "files": [
+                "target/debug/build/workspaces/9913bf555c3fa7b8/v2-c4aae54907097a27/provider/fad1377df2484a4d/out/libprovider-fad1377df2484a4d.rmeta"
+              ],
+              "fresh": false
+            },
+            "reader": {
+              "files": [
+                "target/debug/build/workspaces/9913bf555c3fa7b8/v2-c4aae54907097a27/reader/e30cb9577ac7759c/out/libreader-e30cb9577ac7759c.rmeta"
+              ],
+              "fresh": false
+            }
+          },
+          "errors": [],
+          "stderr": "dc4d88499fa508e117a233a50c0e5e45289be51893e6f7ffff55a6d5491b288d",
+          "stdout": "77b05a7abf17ef306d7dd29a6fc852f185e8d1883b57fed63ba27d97aadf20b3",
+          "success": true
+        },
+        "restore-repeat": {
+          "artifacts": {
+            "api": {
+              "files": [
+                "target/debug/build/workspaces/9913bf555c3fa7b8/v2-c4aae54907097a27/api/ff08d5c74dba0d49/out/libapi-ff08d5c74dba0d49.rmeta"
+              ],
+              "fresh": true
+            },
+            "client": {
+              "files": [
+                "target/debug/build/workspaces/9913bf555c3fa7b8/v2-c4aae54907097a27/client/f3282da4f6b60ad3/out/libclient-f3282da4f6b60ad3.rmeta"
+              ],
+              "fresh": true
+            },
+            "provider": {
+              "files": [
+                "target/debug/build/workspaces/9913bf555c3fa7b8/v2-c4aae54907097a27/provider/fad1377df2484a4d/out/libprovider-fad1377df2484a4d.rmeta"
+              ],
+              "fresh": true
+            },
+            "reader": {
+              "files": [
+                "target/debug/build/workspaces/9913bf555c3fa7b8/v2-c4aae54907097a27/reader/e30cb9577ac7759c/out/libreader-e30cb9577ac7759c.rmeta"
+              ],
+              "fresh": true
+            }
+          },
+          "errors": [],
+          "stderr": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e",
+          "stdout": "1944e126bb6608432abcb95fef710aabfaa3943a0e6ca74e92fbc4f2be0ce590",
+          "success": true
+        },
+        "second-after-upgrade": {
+          "artifacts": {
+            "api": {
+              "files": [
+                "target/debug/build/workspaces/9913bf555c3fa7b8/v2-c4aae54907097a27/api/ff08d5c74dba0d49/out/libapi-ff08d5c74dba0d49.rmeta"
+              ],
+              "fresh": true
+            },
+            "provider": {
+              "files": [
+                "target/debug/build/workspaces/9913bf555c3fa7b8/v2-c4aae54907097a27/provider/fad1377df2484a4d/out/libprovider-fad1377df2484a4d.rmeta"
+              ],
+              "fresh": true
+            },
+            "reader": {
+              "files": [
+                "target/debug/build/workspaces/9913bf555c3fa7b8/v2-c4aae54907097a27/reader/e30cb9577ac7759c/out/libreader-e30cb9577ac7759c.rmeta"
+              ],
+              "fresh": true
+            }
+          },
+          "errors": [
+            [
+              "client",
+              "E0034",
+              "multiple applicable items in scope",
+              "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+            ]
+          ],
+          "stderr": "171550abf0fbae9ffc08cba88f59451292e8c82f0b5301ee0a816bf0562a7c2d",
+          "stdout": "285355da30cb56316dd7cf9f8f7ce32cac177759dcfc32f54d778b286d54db05",
+          "success": false
+        }
+      },
+      "schedule": "eeaace476c3652cc75e136da604395baebcb2b17da8755ab812cb1b33e29c285",
+      "upgrade": {
+        "after": {
+          "cargo": "a9c1b18bbb02f541bcf089db9d4286c215ffc8036fa1ff443e59c9210e77771c",
+          "rustc": "5694abe50767a22cebeccb767143f7404d5e81c4b1760cff4426466bf410e511"
+        },
+        "before": {
+          "cargo": "789c2f116732ed642565d0f92c500838f8cd53664fbe60f205a5621c43cbecf1",
+          "rustc": "5694abe50767a22cebeccb767143f7404d5e81c4b1760cff4426466bf410e511"
+        },
+        "state_files": 105,
+        "state_identity_and_digest": "13c4e223fc88f6902b7b247b9e11747ac65c70b7fd11c0d0121aa03a82d01c87"
+      }
+    }
+  },
+  "full-release-upgrade": {
+    "build": {
+      "result": {
+        "cargo_sha256": "a9c1b18bbb02f541bcf089db9d4286c215ffc8036fa1ff443e59c9210e77771c",
+        "first_success": "reverted",
+        "mode": "default",
+        "phases": {
+          "final-program": {
+            "errors": [],
+            "exit": 0,
+            "files": {
+              "exec.log": "f65e49c4a5b1de0831fc96af3be9d64c40d7ca88a34e1a15e329282db57f8c15",
+              "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+            },
+            "rustcs": []
+          },
+          "forced-failure": {
+            "errors": [],
+            "exit": 101,
+            "files": {
+              "exec.log": "cb3fcb2e8e078b1680432a37206eaa5563585cf5570c231e063a8f87007db2ab",
+              "stderr": "c7c704e198e726abd8abd5e053d5b7a28ab64ecfb101adad3deb5cd19b2c0a66",
+              "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "rustcs": [
+              [
+                "dep",
+                "lib"
+              ],
+              [
+                "app",
+                "lib"
+              ]
+            ]
+          },
+          "make-wrapper": {
+            "errors": [],
+            "exit": 0,
+            "files": {
+              "exec.log": "9958178f295b8a5c4d1a3d253e2ce0f8946e4cc582f6998aca0f10533aa60c0a",
+              "stderr": "23347ef2cec2b67690373c7dadf184fe068c4d1e751c35bf61cbb506a487602b",
+              "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "rustcs": []
+          },
+          "prime": {
+            "errors": [],
+            "exit": 0,
+            "files": {
+              "exec.log": "0c87f96f474e0356988bfacd361e84a4f914640c7d430dc1565888885c67ffa0",
+              "stderr": "8cc646fdc1308295c54639e5a9e6021923b4543044a0919920fc70a4b6af4e8a",
+              "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "rustcs": [
+              [
+                "dep",
+                "lib"
+              ],
+              [
+                "app",
+                "lib"
+              ],
+              [
+                "app",
+                "bin"
+              ]
+            ]
+          },
+          "prime-program": {
+            "errors": [],
+            "exit": 0,
+            "files": {
+              "exec.log": "48ee4d25f9bd379e4c8a1dc08b21ee3d7bb15ebf3f43ac6886f990f66dae2473",
+              "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+            },
+            "rustcs": []
+          },
+          "reverted": {
+            "errors": [],
+            "exit": 0,
+            "files": {
+              "exec.log": "2a607261d143907057a643b1471e6d0ef1867aa4194a385df9cbec9a27d1e8fc",
+              "stderr": "a546ab3c9c0c702fd5ef1856f162e565d62abf00d331e5a61a987623d0871ab1",
+              "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "rustcs": [
+              [
+                "dep",
+                "lib"
+              ],
+              [
+                "app",
+                "lib"
+              ],
+              [
+                "app",
+                "bin"
+              ]
+            ]
+          }
+        },
+        "rustc_sha256": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+        "value": 1
+      },
+      "upgrade": {
+        "after": {
+          "cargo": "a9c1b18bbb02f541bcf089db9d4286c215ffc8036fa1ff443e59c9210e77771c",
+          "rustc": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512"
+        },
+        "before": {
+          "cargo": "789c2f116732ed642565d0f92c500838f8cd53664fbe60f205a5621c43cbecf1",
+          "rustc": "5694abe50767a22cebeccb767143f7404d5e81c4b1760cff4426466bf410e511"
+        },
+        "state_files": 41,
+        "state_identity_and_digest": "4629ae5f86c97040f000c5823cb2906c397e56c5283b48d436c21e296f63a200"
+      }
+    },
+    "check": {
+      "events": [
+        "hold-fd",
+        "release-fd"
+      ],
+      "phases": {
+        "edited": {
+          "artifacts": {
+            "api": {
+              "files": [
+                "target/debug/build/workspaces/79a1e1a23463214f/v2-2ed00bc065f4c14a/api/ff08d5c74dba0d49/out/libapi-ff08d5c74dba0d49.rmeta"
+              ],
+              "fresh": true
+            },
+            "client": {
+              "files": [
+                "target/debug/build/workspaces/79a1e1a23463214f/v2-2ed00bc065f4c14a/client/f3282da4f6b60ad3/out/libclient-f3282da4f6b60ad3.rmeta"
+              ],
+              "fresh": false
+            },
+            "provider": {
+              "files": [
+                "target/debug/build/workspaces/79a1e1a23463214f/v2-2ed00bc065f4c14a/provider/fad1377df2484a4d/out/libprovider-fad1377df2484a4d.rmeta"
+              ],
+              "fresh": false
+            },
+            "reader": {
+              "files": [
+                "target/debug/build/workspaces/79a1e1a23463214f/v2-2ed00bc065f4c14a/reader/e30cb9577ac7759c/out/libreader-e30cb9577ac7759c.rmeta"
+              ],
+              "fresh": false
+            }
+          },
+          "errors": [],
+          "stderr": "58167aa9061ac1314d0478abb4a5d80c4986a7357c730f78e26cf4bbb1158beb",
+          "stdout": "1a03abcfa7eabef0ab2dda6d05c1d3f184a1ce7ec4359fc210e0380c6a6c74e4",
+          "success": true
+        },
+        "edited-clean": {
+          "artifacts": {
+            "api": {
+              "files": [
+                "cold-target/debug/build/workspaces/f6f3033e82b737af/v2-2ed00bc065f4c14a/api/ff08d5c74dba0d49/out/libapi-ff08d5c74dba0d49.rmeta"
+              ],
+              "fresh": false
+            },
+            "provider": {
+              "files": [
+                "cold-target/debug/build/workspaces/f6f3033e82b737af/v2-2ed00bc065f4c14a/provider/fad1377df2484a4d/out/libprovider-fad1377df2484a4d.rmeta"
+              ],
+              "fresh": false
+            },
+            "reader": {
+              "files": [
+                "cold-target/debug/build/workspaces/f6f3033e82b737af/v2-2ed00bc065f4c14a/reader/e30cb9577ac7759c/out/libreader-e30cb9577ac7759c.rmeta"
+              ],
+              "fresh": false
+            }
+          },
+          "errors": [
+            [
+              "client",
+              "E0034",
+              "multiple applicable items in scope",
+              "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+            ]
+          ],
+          "stderr": "67d921a527d1ac3c2de003a5deabd3f5d69c87bc118d7d12213e492498ec2311",
+          "stdout": "589fde5cefc802d66b009cba5863231bfeb69d710886dff1bc11cb0443abf438",
+          "success": false
+        },
+        "edited-repeat": {
+          "artifacts": {
+            "api": {
+              "files": [
+                "target/debug/build/workspaces/79a1e1a23463214f/v2-2ed00bc065f4c14a/api/ff08d5c74dba0d49/out/libapi-ff08d5c74dba0d49.rmeta"
+              ],
+              "fresh": true
+            },
+            "client": {
+              "files": [
+                "target/debug/build/workspaces/79a1e1a23463214f/v2-2ed00bc065f4c14a/client/f3282da4f6b60ad3/out/libclient-f3282da4f6b60ad3.rmeta"
+              ],
+              "fresh": true
+            },
+            "provider": {
+              "files": [
+                "target/debug/build/workspaces/79a1e1a23463214f/v2-2ed00bc065f4c14a/provider/fad1377df2484a4d/out/libprovider-fad1377df2484a4d.rmeta"
+              ],
+              "fresh": true
+            },
+            "reader": {
+              "files": [
+                "target/debug/build/workspaces/79a1e1a23463214f/v2-2ed00bc065f4c14a/reader/e30cb9577ac7759c/out/libreader-e30cb9577ac7759c.rmeta"
+              ],
+              "fresh": true
+            }
+          },
+          "errors": [],
+          "stderr": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e",
+          "stdout": "74556854a6c452c0987d126ea67c7f1a38a263cc1e579a480aedaffe38b63bd2",
+          "success": true
+        },
+        "first-after-upgrade": {
+          "artifacts": {
+            "api": {
+              "files": [
+                "target/debug/build/workspaces/79a1e1a23463214f/v2-185522a42ffa802a/api/18ad74d2b54f7cb0/out/libapi-18ad74d2b54f7cb0.rmeta"
+              ],
+              "fresh": false
+            },
+            "provider": {
+              "files": [
+                "target/debug/build/workspaces/79a1e1a23463214f/v2-185522a42ffa802a/provider/9b95166d54c28c34/out/libprovider-9b95166d54c28c34.rmeta"
+              ],
+              "fresh": false
+            },
+            "reader": {
+              "files": [
+                "target/debug/build/workspaces/79a1e1a23463214f/v2-185522a42ffa802a/reader/20cb837f556ad3a2/out/libreader-20cb837f556ad3a2.rmeta"
+              ],
+              "fresh": false
+            }
+          },
+          "errors": [
+            [
+              "client",
+              "E0034",
+              "multiple applicable items in scope",
+              "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+            ]
+          ],
+          "stderr": "67d921a527d1ac3c2de003a5deabd3f5d69c87bc118d7d12213e492498ec2311",
+          "stdout": "91955bef176b9654526a966572d5993368e759435fac519b1459ffaf8622992b",
+          "success": false
+        },
+        "independent-after-upgrade": {
+          "artifacts": {
+            "api": {
+              "files": [
+                "new-cold-target/debug/build/workspaces/68b3f69985f33825/v2-185522a42ffa802a/api/18ad74d2b54f7cb0/out/libapi-18ad74d2b54f7cb0.rmeta"
+              ],
+              "fresh": false
+            },
+            "provider": {
+              "files": [
+                "new-cold-target/debug/build/workspaces/68b3f69985f33825/v2-185522a42ffa802a/provider/9b95166d54c28c34/out/libprovider-9b95166d54c28c34.rmeta"
+              ],
+              "fresh": false
+            },
+            "reader": {
+              "files": [
+                "new-cold-target/debug/build/workspaces/68b3f69985f33825/v2-185522a42ffa802a/reader/20cb837f556ad3a2/out/libreader-20cb837f556ad3a2.rmeta"
+              ],
+              "fresh": false
+            }
+          },
+          "errors": [
+            [
+              "client",
+              "E0034",
+              "multiple applicable items in scope",
+              "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+            ]
+          ],
+          "stderr": "67d921a527d1ac3c2de003a5deabd3f5d69c87bc118d7d12213e492498ec2311",
+          "stdout": "80ed5f8f06de1a901ef035ebd30e13e37a8c64f5c870b444bf332866b305ef28",
+          "success": false
+        },
+        "original": {
+          "artifacts": {
+            "api": {
+              "files": [
+                "target/debug/build/workspaces/79a1e1a23463214f/v2-2ed00bc065f4c14a/api/ff08d5c74dba0d49/out/libapi-ff08d5c74dba0d49.rmeta"
+              ],
+              "fresh": false
+            },
+            "client": {
+              "files": [
+                "target/debug/build/workspaces/79a1e1a23463214f/v2-2ed00bc065f4c14a/client/f3282da4f6b60ad3/out/libclient-f3282da4f6b60ad3.rmeta"
+              ],
+              "fresh": false
+            },
+            "provider": {
+              "files": [
+                "target/debug/build/workspaces/79a1e1a23463214f/v2-2ed00bc065f4c14a/provider/fad1377df2484a4d/out/libprovider-fad1377df2484a4d.rmeta"
+              ],
+              "fresh": false
+            },
+            "reader": {
+              "files": [
+                "target/debug/build/workspaces/79a1e1a23463214f/v2-2ed00bc065f4c14a/reader/e30cb9577ac7759c/out/libreader-e30cb9577ac7759c.rmeta"
+              ],
+              "fresh": false
+            }
+          },
+          "errors": [],
+          "stderr": "687af5ac9c018267c8b9664a3d7eabe6f716907a6849f09ec6f853232892ab9e",
+          "stdout": "18f06a2446304e73c88dd4567eb66cd751acc891dc26f698c530019150a0727f",
+          "success": true
+        },
+        "original-repeat": {
+          "artifacts": {
+            "api": {
+              "files": [
+                "target/debug/build/workspaces/79a1e1a23463214f/v2-2ed00bc065f4c14a/api/ff08d5c74dba0d49/out/libapi-ff08d5c74dba0d49.rmeta"
+              ],
+              "fresh": true
+            },
+            "client": {
+              "files": [
+                "target/debug/build/workspaces/79a1e1a23463214f/v2-2ed00bc065f4c14a/client/f3282da4f6b60ad3/out/libclient-f3282da4f6b60ad3.rmeta"
+              ],
+              "fresh": true
+            },
+            "provider": {
+              "files": [
+                "target/debug/build/workspaces/79a1e1a23463214f/v2-2ed00bc065f4c14a/provider/fad1377df2484a4d/out/libprovider-fad1377df2484a4d.rmeta"
+              ],
+              "fresh": true
+            },
+            "reader": {
+              "files": [
+                "target/debug/build/workspaces/79a1e1a23463214f/v2-2ed00bc065f4c14a/reader/e30cb9577ac7759c/out/libreader-e30cb9577ac7759c.rmeta"
+              ],
+              "fresh": true
+            }
+          },
+          "errors": [],
+          "stderr": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e",
+          "stdout": "74556854a6c452c0987d126ea67c7f1a38a263cc1e579a480aedaffe38b63bd2",
+          "success": true
+        },
+        "restore": {
+          "artifacts": {
+            "api": {
+              "files": [
+                "target/debug/build/workspaces/79a1e1a23463214f/v2-185522a42ffa802a/api/18ad74d2b54f7cb0/out/libapi-18ad74d2b54f7cb0.rmeta"
+              ],
+              "fresh": true
+            },
+            "client": {
+              "files": [
+                "target/debug/build/workspaces/79a1e1a23463214f/v2-185522a42ffa802a/client/50837a13d7cbbf28/out/libclient-50837a13d7cbbf28.rmeta"
+              ],
+              "fresh": false
+            },
+            "provider": {
+              "files": [
+                "target/debug/build/workspaces/79a1e1a23463214f/v2-185522a42ffa802a/provider/9b95166d54c28c34/out/libprovider-9b95166d54c28c34.rmeta"
+              ],
+              "fresh": false
+            },
+            "reader": {
+              "files": [
+                "target/debug/build/workspaces/79a1e1a23463214f/v2-185522a42ffa802a/reader/20cb837f556ad3a2/out/libreader-20cb837f556ad3a2.rmeta"
+              ],
+              "fresh": false
+            }
+          },
+          "errors": [],
+          "stderr": "6f1b7e90b22c4c21af83f4cb1ee945687c56bcc3a2f6bc43f69bd85a2747e9a4",
+          "stdout": "3d7b6f3e0e46bb0f15602b2de1268d04d4d09773553ae3a66d3a43be110378d3",
+          "success": true
+        },
+        "restore-repeat": {
+          "artifacts": {
+            "api": {
+              "files": [
+                "target/debug/build/workspaces/79a1e1a23463214f/v2-185522a42ffa802a/api/18ad74d2b54f7cb0/out/libapi-18ad74d2b54f7cb0.rmeta"
+              ],
+              "fresh": true
+            },
+            "client": {
+              "files": [
+                "target/debug/build/workspaces/79a1e1a23463214f/v2-185522a42ffa802a/client/50837a13d7cbbf28/out/libclient-50837a13d7cbbf28.rmeta"
+              ],
+              "fresh": true
+            },
+            "provider": {
+              "files": [
+                "target/debug/build/workspaces/79a1e1a23463214f/v2-185522a42ffa802a/provider/9b95166d54c28c34/out/libprovider-9b95166d54c28c34.rmeta"
+              ],
+              "fresh": true
+            },
+            "reader": {
+              "files": [
+                "target/debug/build/workspaces/79a1e1a23463214f/v2-185522a42ffa802a/reader/20cb837f556ad3a2/out/libreader-20cb837f556ad3a2.rmeta"
+              ],
+              "fresh": true
+            }
+          },
+          "errors": [],
+          "stderr": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e",
+          "stdout": "f31c7ab928c95625a6b5dd8a6a6db74d3660da578ec9136e81404546e145b278",
+          "success": true
+        },
+        "second-after-upgrade": {
+          "artifacts": {
+            "api": {
+              "files": [
+                "target/debug/build/workspaces/79a1e1a23463214f/v2-185522a42ffa802a/api/18ad74d2b54f7cb0/out/libapi-18ad74d2b54f7cb0.rmeta"
+              ],
+              "fresh": true
+            },
+            "provider": {
+              "files": [
+                "target/debug/build/workspaces/79a1e1a23463214f/v2-185522a42ffa802a/provider/9b95166d54c28c34/out/libprovider-9b95166d54c28c34.rmeta"
+              ],
+              "fresh": true
+            },
+            "reader": {
+              "files": [
+                "target/debug/build/workspaces/79a1e1a23463214f/v2-185522a42ffa802a/reader/20cb837f556ad3a2/out/libreader-20cb837f556ad3a2.rmeta"
+              ],
+              "fresh": true
+            }
+          },
+          "errors": [
+            [
+              "client",
+              "E0034",
+              "multiple applicable items in scope",
+              "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+            ]
+          ],
+          "stderr": "822fe5d318acd9a33a0fe628390fd92a0a715c58f012a598f67eb286b244ca8d",
+          "stdout": "82055762ea9ed537f164cd9713f330bf620fa2e2742764a3dc473591ca795da0",
+          "success": false
+        }
+      },
+      "schedule": "528970a39900b5ef5aa7e7e57bfdc0309e476ad2eeb5f09752bed38ffc237ddd",
+      "upgrade": {
+        "after": {
+          "cargo": "a9c1b18bbb02f541bcf089db9d4286c215ffc8036fa1ff443e59c9210e77771c",
+          "rustc": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512"
+        },
+        "before": {
+          "cargo": "789c2f116732ed642565d0f92c500838f8cd53664fbe60f205a5621c43cbecf1",
+          "rustc": "5694abe50767a22cebeccb767143f7404d5e81c4b1760cff4426466bf410e511"
+        },
+        "state_files": 105,
+        "state_identity_and_digest": "de71e864617a1803ace33bece27e0e73dc4b9ef4a71705c0431fe24cf5a6f296"
+      }
+    }
+  },
+  "same-release-control": {
+    "build": {
+      "result": {
+        "cargo_sha256": "789c2f116732ed642565d0f92c500838f8cd53664fbe60f205a5621c43cbecf1",
+        "first_success": "untouched-1",
+        "mode": "default",
+        "phases": {
+          "final-program": {
+            "errors": [],
+            "exit": 0,
+            "files": {
+              "exec.log": "2ee2c9b7b3fd1958a730727e0e832ef2375159ffb6200aed61c5d90ec9f5b40f",
+              "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+            },
+            "rustcs": []
+          },
+          "forced-failure": {
+            "errors": [],
+            "exit": 101,
+            "files": {
+              "exec.log": "491a46eee1ba54abf3f5f70c9836c1e621cf98ecddee92bf8e79bf7fbae0fc94",
+              "stderr": "88451cb500d79b0a95832591f544f8d2565e4a830e43bb3bf992501de876d246",
+              "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "rustcs": [
+              [
+                "dep",
+                "lib"
+              ],
+              [
+                "app",
+                "lib"
+              ]
+            ]
+          },
+          "make-wrapper": {
+            "errors": [],
+            "exit": 0,
+            "files": {
+              "exec.log": "5639842bead426eddbabfcf8083afb466362ed4fa8f419618800f939e978c81d",
+              "stderr": "ac0139ccca0c3a5f111849a23c33ace1c0a64358db3f46375272d9aaaf79e920",
+              "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "rustcs": []
+          },
+          "prime": {
+            "errors": [],
+            "exit": 0,
+            "files": {
+              "exec.log": "69e15c3b5e7a4a8f6e49ff306d2f6b8f4dff454813e490321ca0cc5a74b6cf5f",
+              "stderr": "575085d6ba7697562ed2abfb28f33ead0c0026f3fa81c78c55eb66ae37ffbcf6",
+              "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "rustcs": [
+              [
+                "dep",
+                "lib"
+              ],
+              [
+                "app",
+                "lib"
+              ],
+              [
+                "app",
+                "bin"
+              ]
+            ]
+          },
+          "prime-program": {
+            "errors": [],
+            "exit": 0,
+            "files": {
+              "exec.log": "9c0d3dbdfc8ea448a7608dacd6b8eef4b5471a585fb44344fafc08a180b42ce7",
+              "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+            },
+            "rustcs": []
+          },
+          "reverted": {
+            "errors": [
+              "E0460"
+            ],
+            "exit": 101,
+            "files": {
+              "exec.log": "d86b397fcc5a3d77ec2d070c974a4e431a4638f10f036d36e117c44b332e8940",
+              "stderr": "7f7720909faa5c0d38a4cff954dc3c683679c43c3720942dabab64a2d39eada3",
+              "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "rustcs": [
+              [
+                "dep",
+                "lib"
+              ],
+              [
+                "app",
+                "bin"
+              ]
+            ]
+          },
+          "untouched-1": {
+            "errors": [],
+            "exit": 0,
+            "files": {
+              "exec.log": "8622d630062dfe61eefeb6469666a43746eda5f8901456890767cfddc2daddb7",
+              "stderr": "a2a9d32111e84301b40fb6ed3eb4bc4c7d4e23cda23fd3ae95692306a99773bb",
+              "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "rustcs": [
+              [
+                "app",
+                "lib"
+              ],
+              [
+                "app",
+                "bin"
+              ]
+            ]
+          }
+        },
+        "rustc_sha256": "5694abe50767a22cebeccb767143f7404d5e81c4b1760cff4426466bf410e511",
+        "value": 1
+      },
+      "upgrade": {
+        "after": {
+          "cargo": "789c2f116732ed642565d0f92c500838f8cd53664fbe60f205a5621c43cbecf1",
+          "rustc": "5694abe50767a22cebeccb767143f7404d5e81c4b1760cff4426466bf410e511"
+        },
+        "before": {
+          "cargo": "789c2f116732ed642565d0f92c500838f8cd53664fbe60f205a5621c43cbecf1",
+          "rustc": "5694abe50767a22cebeccb767143f7404d5e81c4b1760cff4426466bf410e511"
+        },
+        "state_files": 41,
+        "state_identity_and_digest": "d55de15fd3f073e17ff1a1d4eb159eeff0d00413db41ba049ee0e0a01c4a4bd7"
+      }
+    },
+    "check": {
+      "events": [
+        "hold-fd",
+        "release-fd"
+      ],
+      "phases": {
+        "edited": {
+          "artifacts": {
+            "api": {
+              "files": [
+                "target/debug/build/workspaces/eb9007d49a5d565d/v2-4baa8ea9482b97fc/api/ff08d5c74dba0d49/out/libapi-ff08d5c74dba0d49.rmeta"
+              ],
+              "fresh": true
+            },
+            "client": {
+              "files": [
+                "target/debug/build/workspaces/eb9007d49a5d565d/v2-4baa8ea9482b97fc/client/f3282da4f6b60ad3/out/libclient-f3282da4f6b60ad3.rmeta"
+              ],
+              "fresh": false
+            },
+            "provider": {
+              "files": [
+                "target/debug/build/workspaces/eb9007d49a5d565d/v2-4baa8ea9482b97fc/provider/fad1377df2484a4d/out/libprovider-fad1377df2484a4d.rmeta"
+              ],
+              "fresh": false
+            },
+            "reader": {
+              "files": [
+                "target/debug/build/workspaces/eb9007d49a5d565d/v2-4baa8ea9482b97fc/reader/e30cb9577ac7759c/out/libreader-e30cb9577ac7759c.rmeta"
+              ],
+              "fresh": false
+            }
+          },
+          "errors": [],
+          "stderr": "553323b7e77feb091772f4eea95911001549dec86a89e852fb1d57fe49af0aa3",
+          "stdout": "a213b3d4bfe6ec6b758bf35f98b8e2e00bfc6665ada2f8519521c9694fa31632",
+          "success": true
+        },
+        "edited-clean": {
+          "artifacts": {
+            "api": {
+              "files": [
+                "cold-target/debug/build/workspaces/59bfeb1124d9bfc7/v2-4baa8ea9482b97fc/api/ff08d5c74dba0d49/out/libapi-ff08d5c74dba0d49.rmeta"
+              ],
+              "fresh": false
+            },
+            "provider": {
+              "files": [
+                "cold-target/debug/build/workspaces/59bfeb1124d9bfc7/v2-4baa8ea9482b97fc/provider/fad1377df2484a4d/out/libprovider-fad1377df2484a4d.rmeta"
+              ],
+              "fresh": false
+            },
+            "reader": {
+              "files": [
+                "cold-target/debug/build/workspaces/59bfeb1124d9bfc7/v2-4baa8ea9482b97fc/reader/e30cb9577ac7759c/out/libreader-e30cb9577ac7759c.rmeta"
+              ],
+              "fresh": false
+            }
+          },
+          "errors": [
+            [
+              "client",
+              "E0034",
+              "multiple applicable items in scope",
+              "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+            ]
+          ],
+          "stderr": "20663d1580186d4d40df4bc734af569d40472a6294b57aa837323c81bbc4c111",
+          "stdout": "63517234c1522328314bac711805011fd25fb69571b715f08f670eaee9e7fc89",
+          "success": false
+        },
+        "edited-repeat": {
+          "artifacts": {
+            "api": {
+              "files": [
+                "target/debug/build/workspaces/eb9007d49a5d565d/v2-4baa8ea9482b97fc/api/ff08d5c74dba0d49/out/libapi-ff08d5c74dba0d49.rmeta"
+              ],
+              "fresh": true
+            },
+            "client": {
+              "files": [
+                "target/debug/build/workspaces/eb9007d49a5d565d/v2-4baa8ea9482b97fc/client/f3282da4f6b60ad3/out/libclient-f3282da4f6b60ad3.rmeta"
+              ],
+              "fresh": true
+            },
+            "provider": {
+              "files": [
+                "target/debug/build/workspaces/eb9007d49a5d565d/v2-4baa8ea9482b97fc/provider/fad1377df2484a4d/out/libprovider-fad1377df2484a4d.rmeta"
+              ],
+              "fresh": true
+            },
+            "reader": {
+              "files": [
+                "target/debug/build/workspaces/eb9007d49a5d565d/v2-4baa8ea9482b97fc/reader/e30cb9577ac7759c/out/libreader-e30cb9577ac7759c.rmeta"
+              ],
+              "fresh": true
+            }
+          },
+          "errors": [],
+          "stderr": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e",
+          "stdout": "af3a496869cedba33d8386ed0fef471b6d0a588fb91bc704003677973ca8c99b",
+          "success": true
+        },
+        "first-after-upgrade": {
+          "artifacts": {
+            "api": {
+              "files": [
+                "target/debug/build/workspaces/eb9007d49a5d565d/v2-4baa8ea9482b97fc/api/ff08d5c74dba0d49/out/libapi-ff08d5c74dba0d49.rmeta"
+              ],
+              "fresh": true
+            },
+            "client": {
+              "files": [
+                "target/debug/build/workspaces/eb9007d49a5d565d/v2-4baa8ea9482b97fc/client/f3282da4f6b60ad3/out/libclient-f3282da4f6b60ad3.rmeta"
+              ],
+              "fresh": true
+            },
+            "provider": {
+              "files": [
+                "target/debug/build/workspaces/eb9007d49a5d565d/v2-4baa8ea9482b97fc/provider/fad1377df2484a4d/out/libprovider-fad1377df2484a4d.rmeta"
+              ],
+              "fresh": true
+            },
+            "reader": {
+              "files": [
+                "target/debug/build/workspaces/eb9007d49a5d565d/v2-4baa8ea9482b97fc/reader/e30cb9577ac7759c/out/libreader-e30cb9577ac7759c.rmeta"
+              ],
+              "fresh": true
+            }
+          },
+          "errors": [],
+          "stderr": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e",
+          "stdout": "af3a496869cedba33d8386ed0fef471b6d0a588fb91bc704003677973ca8c99b",
+          "success": true
+        },
+        "independent-after-upgrade": {
+          "artifacts": {
+            "api": {
+              "files": [
+                "new-cold-target/debug/build/workspaces/096817367ee824b4/v2-4baa8ea9482b97fc/api/ff08d5c74dba0d49/out/libapi-ff08d5c74dba0d49.rmeta"
+              ],
+              "fresh": false
+            },
+            "provider": {
+              "files": [
+                "new-cold-target/debug/build/workspaces/096817367ee824b4/v2-4baa8ea9482b97fc/provider/fad1377df2484a4d/out/libprovider-fad1377df2484a4d.rmeta"
+              ],
+              "fresh": false
+            },
+            "reader": {
+              "files": [
+                "new-cold-target/debug/build/workspaces/096817367ee824b4/v2-4baa8ea9482b97fc/reader/e30cb9577ac7759c/out/libreader-e30cb9577ac7759c.rmeta"
+              ],
+              "fresh": false
+            }
+          },
+          "errors": [
+            [
+              "client",
+              "E0034",
+              "multiple applicable items in scope",
+              "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+            ]
+          ],
+          "stderr": "20663d1580186d4d40df4bc734af569d40472a6294b57aa837323c81bbc4c111",
+          "stdout": "bc4d6f8c37859abe7fb923b8da0e3194e50cd8566bf3bc2e3a73487d0d2c0263",
+          "success": false
+        },
+        "original": {
+          "artifacts": {
+            "api": {
+              "files": [
+                "target/debug/build/workspaces/eb9007d49a5d565d/v2-4baa8ea9482b97fc/api/ff08d5c74dba0d49/out/libapi-ff08d5c74dba0d49.rmeta"
+              ],
+              "fresh": false
+            },
+            "client": {
+              "files": [
+                "target/debug/build/workspaces/eb9007d49a5d565d/v2-4baa8ea9482b97fc/client/f3282da4f6b60ad3/out/libclient-f3282da4f6b60ad3.rmeta"
+              ],
+              "fresh": false
+            },
+            "provider": {
+              "files": [
+                "target/debug/build/workspaces/eb9007d49a5d565d/v2-4baa8ea9482b97fc/provider/fad1377df2484a4d/out/libprovider-fad1377df2484a4d.rmeta"
+              ],
+              "fresh": false
+            },
+            "reader": {
+              "files": [
+                "target/debug/build/workspaces/eb9007d49a5d565d/v2-4baa8ea9482b97fc/reader/e30cb9577ac7759c/out/libreader-e30cb9577ac7759c.rmeta"
+              ],
+              "fresh": false
+            }
+          },
+          "errors": [],
+          "stderr": "286332a2ac81cb7150523cb24f1089a67be4d8a850c3cdcf31725158cc33ce4d",
+          "stdout": "aaf4b14e5df08a59c252145e8b6332d426dc093d362d1687da9848497ab3073e",
+          "success": true
+        },
+        "original-repeat": {
+          "artifacts": {
+            "api": {
+              "files": [
+                "target/debug/build/workspaces/eb9007d49a5d565d/v2-4baa8ea9482b97fc/api/ff08d5c74dba0d49/out/libapi-ff08d5c74dba0d49.rmeta"
+              ],
+              "fresh": true
+            },
+            "client": {
+              "files": [
+                "target/debug/build/workspaces/eb9007d49a5d565d/v2-4baa8ea9482b97fc/client/f3282da4f6b60ad3/out/libclient-f3282da4f6b60ad3.rmeta"
+              ],
+              "fresh": true
+            },
+            "provider": {
+              "files": [
+                "target/debug/build/workspaces/eb9007d49a5d565d/v2-4baa8ea9482b97fc/provider/fad1377df2484a4d/out/libprovider-fad1377df2484a4d.rmeta"
+              ],
+              "fresh": true
+            },
+            "reader": {
+              "files": [
+                "target/debug/build/workspaces/eb9007d49a5d565d/v2-4baa8ea9482b97fc/reader/e30cb9577ac7759c/out/libreader-e30cb9577ac7759c.rmeta"
+              ],
+              "fresh": true
+            }
+          },
+          "errors": [],
+          "stderr": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e",
+          "stdout": "af3a496869cedba33d8386ed0fef471b6d0a588fb91bc704003677973ca8c99b",
+          "success": true
+        },
+        "restore": {
+          "artifacts": {
+            "api": {
+              "files": [
+                "target/debug/build/workspaces/eb9007d49a5d565d/v2-4baa8ea9482b97fc/api/ff08d5c74dba0d49/out/libapi-ff08d5c74dba0d49.rmeta"
+              ],
+              "fresh": true
+            },
+            "client": {
+              "files": [
+                "target/debug/build/workspaces/eb9007d49a5d565d/v2-4baa8ea9482b97fc/client/f3282da4f6b60ad3/out/libclient-f3282da4f6b60ad3.rmeta"
+              ],
+              "fresh": false
+            },
+            "provider": {
+              "files": [
+                "target/debug/build/workspaces/eb9007d49a5d565d/v2-4baa8ea9482b97fc/provider/fad1377df2484a4d/out/libprovider-fad1377df2484a4d.rmeta"
+              ],
+              "fresh": false
+            },
+            "reader": {
+              "files": [
+                "target/debug/build/workspaces/eb9007d49a5d565d/v2-4baa8ea9482b97fc/reader/e30cb9577ac7759c/out/libreader-e30cb9577ac7759c.rmeta"
+              ],
+              "fresh": false
+            }
+          },
+          "errors": [],
+          "stderr": "2bb2f52e01cc609d2ec3faa16a32b8d6ea9f7574ad70c6706a46f07337291d84",
+          "stdout": "a213b3d4bfe6ec6b758bf35f98b8e2e00bfc6665ada2f8519521c9694fa31632",
+          "success": true
+        },
+        "restore-repeat": {
+          "artifacts": {
+            "api": {
+              "files": [
+                "target/debug/build/workspaces/eb9007d49a5d565d/v2-4baa8ea9482b97fc/api/ff08d5c74dba0d49/out/libapi-ff08d5c74dba0d49.rmeta"
+              ],
+              "fresh": true
+            },
+            "client": {
+              "files": [
+                "target/debug/build/workspaces/eb9007d49a5d565d/v2-4baa8ea9482b97fc/client/f3282da4f6b60ad3/out/libclient-f3282da4f6b60ad3.rmeta"
+              ],
+              "fresh": true
+            },
+            "provider": {
+              "files": [
+                "target/debug/build/workspaces/eb9007d49a5d565d/v2-4baa8ea9482b97fc/provider/fad1377df2484a4d/out/libprovider-fad1377df2484a4d.rmeta"
+              ],
+              "fresh": true
+            },
+            "reader": {
+              "files": [
+                "target/debug/build/workspaces/eb9007d49a5d565d/v2-4baa8ea9482b97fc/reader/e30cb9577ac7759c/out/libreader-e30cb9577ac7759c.rmeta"
+              ],
+              "fresh": true
+            }
+          },
+          "errors": [],
+          "stderr": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e",
+          "stdout": "af3a496869cedba33d8386ed0fef471b6d0a588fb91bc704003677973ca8c99b",
+          "success": true
+        },
+        "second-after-upgrade": {
+          "artifacts": {
+            "api": {
+              "files": [
+                "target/debug/build/workspaces/eb9007d49a5d565d/v2-4baa8ea9482b97fc/api/ff08d5c74dba0d49/out/libapi-ff08d5c74dba0d49.rmeta"
+              ],
+              "fresh": true
+            },
+            "client": {
+              "files": [
+                "target/debug/build/workspaces/eb9007d49a5d565d/v2-4baa8ea9482b97fc/client/f3282da4f6b60ad3/out/libclient-f3282da4f6b60ad3.rmeta"
+              ],
+              "fresh": true
+            },
+            "provider": {
+              "files": [
+                "target/debug/build/workspaces/eb9007d49a5d565d/v2-4baa8ea9482b97fc/provider/fad1377df2484a4d/out/libprovider-fad1377df2484a4d.rmeta"
+              ],
+              "fresh": true
+            },
+            "reader": {
+              "files": [
+                "target/debug/build/workspaces/eb9007d49a5d565d/v2-4baa8ea9482b97fc/reader/e30cb9577ac7759c/out/libreader-e30cb9577ac7759c.rmeta"
+              ],
+              "fresh": true
+            }
+          },
+          "errors": [],
+          "stderr": "23b9a21bbaf189889e08dc27ed8eba521021280c5852db22205f721db08b2c7c",
+          "stdout": "af3a496869cedba33d8386ed0fef471b6d0a588fb91bc704003677973ca8c99b",
+          "success": true
+        }
+      },
+      "schedule": "752645ba8159173b7ff9fd7591a9995da428fb4270914e2895ec79236f498a3d",
+      "upgrade": {
+        "after": {
+          "cargo": "789c2f116732ed642565d0f92c500838f8cd53664fbe60f205a5621c43cbecf1",
+          "rustc": "5694abe50767a22cebeccb767143f7404d5e81c4b1760cff4426466bf410e511"
+        },
+        "before": {
+          "cargo": "789c2f116732ed642565d0f92c500838f8cd53664fbe60f205a5621c43cbecf1",
+          "rustc": "5694abe50767a22cebeccb767143f7404d5e81c4b1760cff4426466bf410e511"
+        },
+        "state_files": 105,
+        "state_identity_and_digest": "9c91af85eef78bec4e8c1bce3743549f7472d0c7f3be65c6b845f986d3674e0e"
+      }
+    }
+  }
+}
