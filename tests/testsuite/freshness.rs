@@ -3672,6 +3672,15 @@ fn conditional_metadata_pipeline_wrapper() -> PathBuf {
                             } else {
                                 "00000000000000000000000000000000"
                             };
+                            // Cargo can start the dependent as soon as it reads this notification.
+                            let marker = match crate_name.as_deref() {
+                                Some("dep") => Some("dependency-metadata"),
+                                Some("middle") => Some("middle-metadata"),
+                                _ => None,
+                            };
+                            if let (Some(control), Some(marker)) = (&control, marker) {
+                                fs::write(control.join(marker), b"ready").expect("record metadata");
+                            }
                             eprintln!(
                                 "{prefix},\"public_api_hash\":{{\"version\":1,\
                                  \"value\":\"{public_api_hash}\"}}}}"
@@ -3682,8 +3691,6 @@ fn conditional_metadata_pipeline_wrapper() -> PathBuf {
                                 && let Some(control) = &control
                                 && let Some(phase) = &phase
                             {
-                                fs::write(control.join("dependency-metadata"), b"ready")
-                                    .expect("record dependency metadata");
                                 if phase == "unchanged" {
                                     thread::sleep(Duration::from_millis(150));
                                 } else {
@@ -3722,11 +3729,9 @@ fn conditional_metadata_pipeline_wrapper() -> PathBuf {
                                     }
                                 }
                             } else if crate_name.as_deref() == Some("middle")
-                                && let Some(control) = &control
+                                && control.is_some()
                                 && env::var_os("CONDITIONAL_PIPELINE_HOLD_MIDDLE").is_some()
                             {
-                                fs::write(control.join("middle-metadata"), b"ready")
-                                    .expect("record intermediate metadata");
                                 thread::sleep(Duration::from_millis(150));
                             }
                         } else {
