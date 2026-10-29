@@ -1,0 +1,292 @@
+{
+  "arguments": [
+    "test",
+    "-p",
+    "ruff_text_size",
+    "--features",
+    "serde",
+    "--test",
+    "serde",
+    "--no-run",
+    "--locked",
+    "--offline"
+  ],
+  "bootstrap": 20000,
+  "design": "Each starting manifest state receives two untouched independent empty target/shared roots, A and B, and same-state individual CLI validation. Per starting source, byte/type/mode/mtime/hardlink-preserving copies of the same empty-origin outputs then train each Cargo once on that state and verify the repeat has zero compilers. For each arm in each scored pair, a freshly allocated empty private products/shared upper on that matched read-only trained donor must pass exact initial output hashes and fingerprint. Actual same target, source, registry, SDK, Rustup proxy and temp path spellings in every operation. No reused opposite-state artifact can satisfy a first edit. Physical overlays and qualified targets retained through final native work. Separate native logging changes a hashed variable: explicitly enable CARGO_LOG at the original state, verify its baseline and settle, then hold this environment unchanged for the real edit/next command. All scored invocations have no logger/strace.",
+  "images": {
+    "A": "80356b8237d3089d3360b6de5abfc64a17e4b8d3f0ec1fb64e09254418b5c5e5",
+    "B": "acc057a0a90f2c2390a5e2cb74efcd883d419060e13909eab711ef3e833fb8d8",
+    "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+    "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+  },
+  "interval_seed": 687431,
+  "method": "32 pairs, 16 in each direction, eight AB/eight BA within each direction. Work measured as ordinary rustup cargo +ohm test selection, blocking waitpid(pid,0) and monotonic raw ns. Edit followed immediately by that arms first unchanged (small resolve marker read between clocks). Open private fds before timing, no JSON or instrumentation in timing. Outside cal 28 true/sleep requirements, flags-zero wait in kernel, independent clean and final snapshots & native work. Full-command primary is edit+first unchanged combined, one paired two-sided exact sign test, median ms/100*(parent-candidate)/parent, 20K percentile resamples stratified by direction and arm order; descriptive per-direction edit/repeat/combined use same medians/CIs stratified by order. Independent unchanged noninferiority gates must hold in EACH direction, lower 95% savings >=-3% and >=-5ms; also report pooled repeat separately. A general confirmation of full preregistered claim needs combined lower95>0 and p<.05 and both directional repeat bounds. Failure to establish a bound is not evidence of slowdown unless its interval excludes zero in the slower direction. Archive every adverse pair, per direction/order and worst case; no historical pooling. All work and limits frozen before local native observations.",
+  "native": "Four independent empties total for one test selection, A and B at original and edited independently. Both same-source empty references must yield exact standalone .rmeta/test ELF and full strict archive witness. On each genuine first change both arms must run exactly ruff_text_size lib and serde harness (2 actual rustcs), 1 true stock Wild, older --allow=clippy::large_stack_arrays only, same typed graph and all three actual serde tests passing. Full resolver witness A>0/B=0 on first, settled no full; all ordinary repeats zero native and exact current products. Preserve the raw archives and any raw nonce-name differences. Read-only final checks from both states. If these, ordinary floors, product/sample checks, separation, post flanks or complete schedule fail: hold effects or report exact stop. No dropped or replacement measurements.",
+  "native_hash": "ae71edd0c1e9a5246164b2f54389672fed8b1f37e10efb72d2289c16aed6250a",
+  "previous_preclock": "3674278ba9eec35e70c80d2a7e0243c4ab1291c81b2af3169189b19affbfdc2b",
+  "request": "Independent ordinary coordinator host + signed -18 Rust/stock Wild, after a one-host signed -19 study with a noisy reverse unchanged. No pooling across hosts or selecting favorable directions.",
+  "resource": {
+    "add_safety_when_export": 8388608,
+    "cpus": [
+      8,
+      9,
+      10,
+      11
+    ],
+    "durable_archive_floor": 42949672960,
+    "durable_home_floor": 48318382080,
+    "mem_available_floor": 17179869184,
+    "private_mount_max": 3221225472,
+    "watchdog_cpus": [
+      28,
+      29
+    ]
+  },
+  "root": {
+    "A": "80356b8237d3089d3360b6de5abfc64a17e4b8d3f0ec1fb64e09254418b5c5e5",
+    "B": "acc057a0a90f2c2390a5e2cb74efcd883d419060e13909eab711ef3e833fb8d8",
+    "added_on_reverse": "# Diagnostics are not actionable: Enable once https://github.com/rust-lang/rust-clippy/issues/13774 is resolved.\nlarge_stack_arrays = \"allow\"\n\n",
+    "anchor": "[profile.release]\n",
+    "baseline": "97e5acfb7b8eefde1ce07d703fc4849d6d36e37c",
+    "baseline_pr_head": "c3bacd5c276b370a57bf235b2cf50bb116470950",
+    "candidate": "70baacdb3232ab8690c42c32ccbe46dbf701ec72",
+    "diff_sha256": "9534d18c0119e4a9a2242ad83ae42a507fb1ebc15d59f880b17436f4bb7f08a2",
+    "edit": "3edca130e22b2aba1d0cfe263e3f6a6679e166cc",
+    "image_receipt": "b5902f21a4bb58f58a28f793bde65edd7e490a0eb522b2b862e579622a2429d9",
+    "lock": "c9e345325bec5ff08dbbe3916edd39ad0c3d1c7797a8c241ae32f62754e764bf",
+    "reverse_manifest": "e2a814b3f17d64a93667fca79d1f7ef4d09fb1b53944459c5b7eff8fc269f8a9",
+    "ruff": "93526150df078af7dd8fc4226cdcc469539d2001",
+    "source_manifest": "893b5ff55f23fde170f5079766ebbe20937419a24296394a6dd0f326b8ccba88"
+  },
+  "schedule": {
+    "serde": [
+      {
+        "direction": "reverse",
+        "from_state": "original",
+        "order": "BA",
+        "pair": 1,
+        "to_state": "older"
+      },
+      {
+        "direction": "restore",
+        "from_state": "older",
+        "order": "AB",
+        "pair": 2,
+        "to_state": "original"
+      },
+      {
+        "direction": "reverse",
+        "from_state": "original",
+        "order": "AB",
+        "pair": 3,
+        "to_state": "older"
+      },
+      {
+        "direction": "restore",
+        "from_state": "older",
+        "order": "BA",
+        "pair": 4,
+        "to_state": "original"
+      },
+      {
+        "direction": "reverse",
+        "from_state": "original",
+        "order": "BA",
+        "pair": 5,
+        "to_state": "older"
+      },
+      {
+        "direction": "restore",
+        "from_state": "older",
+        "order": "BA",
+        "pair": 6,
+        "to_state": "original"
+      },
+      {
+        "direction": "reverse",
+        "from_state": "original",
+        "order": "AB",
+        "pair": 7,
+        "to_state": "older"
+      },
+      {
+        "direction": "restore",
+        "from_state": "older",
+        "order": "AB",
+        "pair": 8,
+        "to_state": "original"
+      },
+      {
+        "direction": "reverse",
+        "from_state": "original",
+        "order": "AB",
+        "pair": 9,
+        "to_state": "older"
+      },
+      {
+        "direction": "restore",
+        "from_state": "older",
+        "order": "BA",
+        "pair": 10,
+        "to_state": "original"
+      },
+      {
+        "direction": "reverse",
+        "from_state": "original",
+        "order": "BA",
+        "pair": 11,
+        "to_state": "older"
+      },
+      {
+        "direction": "restore",
+        "from_state": "older",
+        "order": "AB",
+        "pair": 12,
+        "to_state": "original"
+      },
+      {
+        "direction": "reverse",
+        "from_state": "original",
+        "order": "BA",
+        "pair": 13,
+        "to_state": "older"
+      },
+      {
+        "direction": "restore",
+        "from_state": "older",
+        "order": "AB",
+        "pair": 14,
+        "to_state": "original"
+      },
+      {
+        "direction": "reverse",
+        "from_state": "original",
+        "order": "AB",
+        "pair": 15,
+        "to_state": "older"
+      },
+      {
+        "direction": "restore",
+        "from_state": "older",
+        "order": "AB",
+        "pair": 16,
+        "to_state": "original"
+      },
+      {
+        "direction": "reverse",
+        "from_state": "original",
+        "order": "BA",
+        "pair": 17,
+        "to_state": "older"
+      },
+      {
+        "direction": "restore",
+        "from_state": "older",
+        "order": "AB",
+        "pair": 18,
+        "to_state": "original"
+      },
+      {
+        "direction": "reverse",
+        "from_state": "original",
+        "order": "AB",
+        "pair": 19,
+        "to_state": "older"
+      },
+      {
+        "direction": "restore",
+        "from_state": "older",
+        "order": "BA",
+        "pair": 20,
+        "to_state": "original"
+      },
+      {
+        "direction": "reverse",
+        "from_state": "original",
+        "order": "AB",
+        "pair": 21,
+        "to_state": "older"
+      },
+      {
+        "direction": "restore",
+        "from_state": "older",
+        "order": "AB",
+        "pair": 22,
+        "to_state": "original"
+      },
+      {
+        "direction": "reverse",
+        "from_state": "original",
+        "order": "BA",
+        "pair": 23,
+        "to_state": "older"
+      },
+      {
+        "direction": "restore",
+        "from_state": "older",
+        "order": "BA",
+        "pair": 24,
+        "to_state": "original"
+      },
+      {
+        "direction": "reverse",
+        "from_state": "original",
+        "order": "BA",
+        "pair": 25,
+        "to_state": "older"
+      },
+      {
+        "direction": "restore",
+        "from_state": "older",
+        "order": "AB",
+        "pair": 26,
+        "to_state": "original"
+      },
+      {
+        "direction": "reverse",
+        "from_state": "original",
+        "order": "AB",
+        "pair": 27,
+        "to_state": "older"
+      },
+      {
+        "direction": "restore",
+        "from_state": "older",
+        "order": "BA",
+        "pair": 28,
+        "to_state": "original"
+      },
+      {
+        "direction": "reverse",
+        "from_state": "original",
+        "order": "BA",
+        "pair": 29,
+        "to_state": "older"
+      },
+      {
+        "direction": "restore",
+        "from_state": "older",
+        "order": "BA",
+        "pair": 30,
+        "to_state": "original"
+      },
+      {
+        "direction": "reverse",
+        "from_state": "original",
+        "order": "AB",
+        "pair": 31,
+        "to_state": "older"
+      },
+      {
+        "direction": "restore",
+        "from_state": "older",
+        "order": "BA",
+        "pair": 32,
+        "to_state": "original"
+      }
+    ]
+  },
+  "schema": 1,
+  "seed": "21bd41c704c9d283caffc696d608dc4f40c8fccdcb85ff8eb315a413d2ba14f1",
+  "source_hashes": "261b3e5e70dd474df1b99c8d879ee37554eefa2058775632ee6059804e7df380"
+}
