@@ -1,0 +1,70 @@
+{
+  "checked_ci_log_sha256": "5adf6bc1d6784aa52740f8a5484a1296b9514e777ded53fecd4ef85621dda530",
+  "ci_sha": "9d675d9393b5ff1ecebe764d1a554f8fd64175ef",
+  "portable_driver": {
+    "clocked": false,
+    "early_exclusions": [
+      {
+        "actual_fixture_cargo": 0,
+        "reason": "ptrace denied in initial process sandbox"
+      },
+      {
+        "cargo_probe": 1,
+        "fixture_crates_compiled": 0,
+        "reason": "automatic release-only compiler switches on stable toolchain target discovery"
+      }
+    ],
+    "genuine_commands": 48,
+    "handshake_deadline_ms": 3000,
+    "home_floor": 48318382080,
+    "modified_project_files": 0,
+    "pinned_cpus": [
+      8,
+      9,
+      10,
+      11
+    ],
+    "secondary_floor": 42949672960,
+    "three_crate_middle_hold_ms_in_original_test": 150
+  },
+  "sources_sha256": {
+    "exact99.py": "982f3590c2d8b25a645ab7dbdd1a60d333fc0f132836bba9cf8698122168fefd",
+    "freshness.rs": "eb5aed470db4a4f81a6751513be82e0a8be902519c45f3db9ec7cdb463cef100",
+    "gate-wait": "fa77ecd5bd94268a3611375bba8b065fc3e96fd05c535acd44270d52c8396277",
+    "gate-wait.c": "bdd3fd0bcee1dcf1169ac8bb4527564dd6a1496249dfaaa5f3e1b1c257030032",
+    "original-284-bounded.rs": "a6b34217af99c4b820ac4733e596ca09dacd4643873fda12c966b2f88fdbf4af",
+    "original-284.rs": "cf15d6f3f0693596692b15565bf48d5e825bd61307967225da5b5012722c73ae",
+    "original-71-freshness.rs": "e2f95194f7aaa7563a922bfa331f8302ca4d750a756a8a1f28da99e04d41008e",
+    "original-bounded.rs": "1a9fe7eec31b0a6f173336cc0fad0371f2a5d97d3734b8788669c07841e1c679",
+    "original.rs": "3ddfc37d39a26bc28c7972c98ce1d537442d0b39107560cff9ce329c8eb5b604",
+    "prepare-final.py": "31b7fc8d9bdf6d017051730614251aef28f435c203132993861c2ecc70de119c",
+    "proposed-284-bounded.rs": "9336a6733c4f8b0b4a651ceafc2640df9738b81a1df38a740063d7741ea5bf9e",
+    "proposed-284.rs": "77dc3d786244b74d7da89522ef2026dc14b6fd06e38ec3184ad290cb1d791e0d",
+    "proposed-71-freshness.rs": "deb00e7978bc4721e705090d3eadf4198548c4155038f86894cb715f5d235a09",
+    "proposed-bounded.rs": "d24ce7aaef077d11aa17d19e3e3af2e0f748edf8b74082b69e4e6fc56c985a2d",
+    "proposed.rs": "7281321d9f3b40dbdc73c34c4a7c0ddb9d4d8cde6d59d52d6b9ba710dbf6d6c5",
+    "run.py": "703816af6c9b07b4619a0466f17eb3505d11694b3f1e2c9f046d9fcb70a27ab7",
+    "verify-native.py": "6f34ee9def9b81bba62f107bcb7e4dacc8f97f5fcfa68641191e8cd65cec499f"
+  },
+  "test_source_parent": "242e7bdc885910beff6872f71300968933293410",
+  "toolchains": {
+    "ci-stable-1.99.0": {
+      "cargo_Vv": "cargo 1.99.0 (8dc33c9cc 2026-10-29)\nrelease: 1.99.0\ncommit-hash: 8dc33c9cc641e2b641c5b8e7075652a3e9e1f70b\ncommit-date: 2026-10-29\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.0.13)\nos: Ubuntu 24.4.0 (noble) [64-bit]\n",
+      "cargo_sha256": "8c1717fa9786e16d3bec0c3181c02c1803484ed857d262580ce88d54056504c5",
+      "driver_sha256": {
+        "librustc_driver-999a121de2f042be.so": "f45c41337f1516bb9f4d504a2a507202a01c431fc2063334913dde5480ffee03"
+      },
+      "rustc_Vv": "rustc 1.99.0 (b940084d7 2026-09-28)\nbinary: rustc\ncommit-hash: b940084d7eb6a299eb4bfeb8e34901bc051e7ac4\ncommit-date: 2026-09-28\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0\nLLVM version: 23.1.1\n",
+      "rustc_sha256": "f3834d26669b03f6855fa54bd2381443123e860167bc0c7a8dd137e5cf6e5e4f"
+    },
+    "stable-1.98.1": {
+      "cargo_Vv": "cargo 1.99.0 (8dc33c9cc 2026-10-29)\nrelease: 1.99.0\ncommit-hash: 8dc33c9cc641e2b641c5b8e7075652a3e9e1f70b\ncommit-date: 2026-10-29\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.0.13)\nos: Ubuntu 24.4.0 (noble) [64-bit]\n",
+      "cargo_sha256": "8c1717fa9786e16d3bec0c3181c02c1803484ed857d262580ce88d54056504c5",
+      "driver_sha256": {
+        "librustc_driver-eaf3ed1d23ca5027.so": "96218b68a4a569c06c6fea5ee95b9052ce61c7316ac265a7963e7fea90e985d2"
+      },
+      "rustc_Vv": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8\n",
+      "rustc_sha256": "859254978c0a0402c32f949f6de0d99aee73be8d15f45aac00ae1448aac51e74"
+    }
+  }
+}

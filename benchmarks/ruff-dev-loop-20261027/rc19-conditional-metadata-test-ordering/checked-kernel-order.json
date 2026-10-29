@@ -1,0 +1,902 @@
+{
+  "original-284-failure": {
+    "observations": {
+      "edited": {
+        "cargo_exit": 101,
+        "dependency_hash": null,
+        "real_rustc": [
+          "app",
+          "dep"
+        ],
+        "sequence": [
+          [
+            466,
+            "real-rustc-rmeta"
+          ],
+          [
+            480,
+            "metadata-notification-forwarded"
+          ],
+          [
+            500,
+            "bounded-wait-open"
+          ],
+          [
+            522,
+            "dependent-marker-ENOENT"
+          ],
+          [
+            525,
+            "dependent-start-recorded"
+          ],
+          [
+            528,
+            "bounded-wait-closed"
+          ],
+          [
+            549,
+            "producer-marker-created"
+          ]
+        ]
+      },
+      "recovery": {
+        "cargo_exit": 0,
+        "dependency_hash": "61b0b598633333c4ec8166537147c2f56ad413a24ece3d6cd440ae68e4fbe8de",
+        "real_rustc": [
+          "app",
+          "dep"
+        ]
+      },
+      "seed": {
+        "cargo_exit": 0,
+        "dependency_hash": "845f48c1d461dfec4961524bf2e798793e71941fe014d2f25e84ad1dbfc4f3f8",
+        "real_rustc": [
+          "app",
+          "dep"
+        ]
+      },
+      "unchanged": {
+        "cargo_exit": 0,
+        "dependency_hash": "61b0b598633333c4ec8166537147c2f56ad413a24ece3d6cd440ae68e4fbe8de",
+        "real_rustc": []
+      }
+    },
+    "raw_sha256": {
+      "edited": {
+        "kernel.trace": "84509071e7aeef4e8704fbc1e334ab6fbb96d5fe8abd7878ced3b4b1a05c5525",
+        "result.json": "99f65cbe21a4de4cb1281acc93b8704a9c0ebadfb5caf6c86c323b9e46c1299a",
+        "stderr": "5bee9a23a36672f801854bb6e3605be1835db23b65f53c90c2beda86c1c65fbe",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "recovery": {
+        "kernel.trace": "ccbba899da7df43d1cb67ac3ca8860037c62130b48cfd37f23f372cac5c1cbe7",
+        "result.json": "ae42ca8df8e4265c212c5beb8d409bd6e356d03b040a054943636cad19201db4",
+        "stderr": "b4036beea64f0ffd5c04b88189b1375797cd674da1be83944e9e23900fd0cb04",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "seed": {
+        "kernel.trace": "bd6c26e565412358f34ad56b742d9943877bf662af474305d0104108050c3b8f",
+        "result.json": "979b909346415b86ab1014c7e3359360aa6cd9418bdfff0165b8feaacf005c75",
+        "stderr": "0dc7289cb8f932cac5e781bdd9131bfe6ae76645b5d48b41986d5fe596aee5ab",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "unchanged": {
+        "kernel.trace": "0764a7c27ff3cd76abec973701caae9a0f2e7eea2547a2112bf29cc3640eda14",
+        "result.json": "fe429624c879bf471e9baeefa4681ed5bb8e12d5077042ab89095755b8173833",
+        "stderr": "736e2582f563605dd272e5fb977840b0c0767377d27b6940c440caf75eec7157",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "scenario": "failure",
+    "variant": "original-284"
+  },
+  "original-direct-middle": {
+    "observations": {
+      "edited": {
+        "cargo_exit": 0,
+        "dependency_hash": "61b0b598633333c4ec8166537147c2f56ad413a24ece3d6cd440ae68e4fbe8de",
+        "real_rustc": [
+          "app",
+          "middle"
+        ],
+        "sequence": [
+          [
+            470,
+            "real-rustc-rmeta"
+          ],
+          [
+            487,
+            "metadata-notification-forwarded"
+          ],
+          [
+            512,
+            "bounded-wait-open"
+          ],
+          [
+            535,
+            "dependent-marker-ENOENT"
+          ],
+          [
+            536,
+            "dependent-start-recorded"
+          ],
+          [
+            539,
+            "bounded-wait-closed"
+          ],
+          [
+            545,
+            "producer-marker-created"
+          ]
+        ]
+      },
+      "recovery": {
+        "cargo_exit": 0,
+        "dependency_hash": "61b0b598633333c4ec8166537147c2f56ad413a24ece3d6cd440ae68e4fbe8de",
+        "real_rustc": []
+      },
+      "seed": {
+        "cargo_exit": 0,
+        "dependency_hash": "845f48c1d461dfec4961524bf2e798793e71941fe014d2f25e84ad1dbfc4f3f8",
+        "real_rustc": [
+          "app",
+          "middle"
+        ]
+      },
+      "unchanged": {
+        "cargo_exit": 0,
+        "dependency_hash": "61b0b598633333c4ec8166537147c2f56ad413a24ece3d6cd440ae68e4fbe8de",
+        "real_rustc": []
+      }
+    },
+    "raw_sha256": {
+      "edited": {
+        "kernel.trace": "86af7de0fead5cd6f82f628161f7a3320f4f45437d8dbdacbbda117ff5b1da21",
+        "result.json": "02a3f658fefc79cc3458a1817ba3d07cd6476255ed2c8a2bdfa8a4c9125b714f",
+        "stderr": "e5a0e38f8a22b30078973682df2acf6be4d2b3bdc755e280bb15252018e32f1b",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "recovery": {
+        "kernel.trace": "5b61efce04d9b6c7b5f8b1daf7d360d3e9caa8c83b18590b15677ff96c56530d",
+        "result.json": "87906d3c98fdcb5219d83eaa79146991c463e0785c5c89dafe27a80f9ac51c39",
+        "stderr": "736e2582f563605dd272e5fb977840b0c0767377d27b6940c440caf75eec7157",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "seed": {
+        "kernel.trace": "04c640f50e534c924f482393a1ec046024475d13694037f685e62d396eb7ef2d",
+        "result.json": "5d3106ee12fe2cfaef219e61d0aa67e25105e745db16e7b9d80a953b3d256f9a",
+        "stderr": "11b1c9f241162738cfcf60d6d44b951eb26dc4b4ab735d0cbf0875f639f0ec91",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "unchanged": {
+        "kernel.trace": "223d252814ff8856c57d882d6dd2c1566a3fb0d6499357ec349244a0e4d023e1",
+        "result.json": "0b3d0d189b578c5147f4be64ecb6a5784749683e70f0e2e2fc22fe1e8ecd6640",
+        "stderr": "736e2582f563605dd272e5fb977840b0c0767377d27b6940c440caf75eec7157",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "scenario": "direct-middle",
+    "variant": "original"
+  },
+  "original-failure-v2": {
+    "observations": {
+      "edited": {
+        "cargo_exit": 101,
+        "dependency_hash": null,
+        "real_rustc": [
+          "app",
+          "dep"
+        ],
+        "sequence": [
+          [
+            466,
+            "real-rustc-rmeta"
+          ],
+          [
+            484,
+            "metadata-notification-forwarded"
+          ],
+          [
+            505,
+            "bounded-wait-open"
+          ],
+          [
+            525,
+            "dependent-marker-ENOENT"
+          ],
+          [
+            528,
+            "dependent-start-recorded"
+          ],
+          [
+            531,
+            "bounded-wait-closed"
+          ],
+          [
+            537,
+            "producer-marker-created"
+          ]
+        ]
+      },
+      "recovery": {
+        "cargo_exit": 0,
+        "dependency_hash": "61b0b598633333c4ec8166537147c2f56ad413a24ece3d6cd440ae68e4fbe8de",
+        "real_rustc": [
+          "app",
+          "dep"
+        ]
+      },
+      "seed": {
+        "cargo_exit": 0,
+        "dependency_hash": "845f48c1d461dfec4961524bf2e798793e71941fe014d2f25e84ad1dbfc4f3f8",
+        "real_rustc": [
+          "app",
+          "dep"
+        ]
+      },
+      "unchanged": {
+        "cargo_exit": 0,
+        "dependency_hash": "61b0b598633333c4ec8166537147c2f56ad413a24ece3d6cd440ae68e4fbe8de",
+        "real_rustc": []
+      }
+    },
+    "raw_sha256": {
+      "edited": {
+        "kernel.trace": "16b8074f954e951a8edb62e86d2c5a567c007ca0205b79f15545444f346e2ed1",
+        "result.json": "b42e6a1b1028140f40aabd2c3d4a38c2691066e0b72611ffa6a5442c62c3b1e5",
+        "stderr": "9a712ece2df467e3c95f1ea52894d18f984d85ae4459592fe0fd4f46968220f3",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "recovery": {
+        "kernel.trace": "abaa8a8bed42a094abe3fb90bfdd41cb062c83a9dc280f00c4ded34b60b0c6a2",
+        "result.json": "70f06f346d74bb98650a13876cbf3809853ff2558f3791aec538891a21337297",
+        "stderr": "c36acf7d0983fe2bc7a25fa07c23eeb518c4302fdeb8ecdb161cf2aaf99613bc",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "seed": {
+        "kernel.trace": "6d1ac1890e7fc38483afa3aa09167915523f60daf783b103866b47db9692a82d",
+        "result.json": "c903634c414269f663c60f5fd4efa6ccb42b051bd6f584d291e37117d8e00f91",
+        "stderr": "c319c39cbde6f35d65c60d08ce02294758802f2846a9c25347e10dd69436c5a5",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "unchanged": {
+        "kernel.trace": "2a1841c71ea7342d7225cd160d4c8e855b1fd98a4d1d644dad42b1b6027b4463",
+        "result.json": "0e5b165bab1f69531c35c7ca9b5d56ea3d40fd3658b8001edfc9cbdef971dbad",
+        "stderr": "736e2582f563605dd272e5fb977840b0c0767377d27b6940c440caf75eec7157",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "scenario": "failure",
+    "variant": "original"
+  },
+  "original-transitive-bin": {
+    "observations": {
+      "edited": {
+        "cargo_exit": 0,
+        "dependency_hash": "61b0b598633333c4ec8166537147c2f56ad413a24ece3d6cd440ae68e4fbe8de",
+        "real_rustc": [
+          "app",
+          "dep",
+          "middle"
+        ],
+        "sequence": [
+          [
+            511,
+            "real-rustc-rmeta"
+          ],
+          [
+            525,
+            "metadata-notification-forwarded"
+          ],
+          [
+            554,
+            "bounded-wait-open"
+          ],
+          [
+            578,
+            "dependent-marker-ENOENT"
+          ],
+          [
+            580,
+            "dependent-start-recorded"
+          ],
+          [
+            583,
+            "bounded-wait-closed"
+          ],
+          [
+            589,
+            "producer-marker-created"
+          ]
+        ]
+      },
+      "recovery": {
+        "cargo_exit": 0,
+        "dependency_hash": "61b0b598633333c4ec8166537147c2f56ad413a24ece3d6cd440ae68e4fbe8de",
+        "real_rustc": []
+      },
+      "seed": {
+        "cargo_exit": 0,
+        "dependency_hash": "845f48c1d461dfec4961524bf2e798793e71941fe014d2f25e84ad1dbfc4f3f8",
+        "real_rustc": [
+          "app",
+          "dep",
+          "middle"
+        ]
+      },
+      "unchanged": {
+        "cargo_exit": 0,
+        "dependency_hash": "61b0b598633333c4ec8166537147c2f56ad413a24ece3d6cd440ae68e4fbe8de",
+        "real_rustc": []
+      }
+    },
+    "raw_sha256": {
+      "edited": {
+        "kernel.trace": "6d53e50e39e09dcaed0c1da095aee6a08c69e22ba702f7a36ec0908e6c5d43f4",
+        "result.json": "e98a377d0aa6873b72b6d0798aa69d5051772e1e4b7d97c7de5e1dae7e12ed9d",
+        "stderr": "62550b7c455e6ad710c1de36d2a73978eea3b3766d9a325fec1328750112ae3a",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "recovery": {
+        "kernel.trace": "bd2dadca66d049b0f960a794942a86bddb5deb8660623828436644a8a12c417e",
+        "result.json": "67eb2216864be2e779d5423cb90cf27ca019717353c44638cac06e815c67ef18",
+        "stderr": "736e2582f563605dd272e5fb977840b0c0767377d27b6940c440caf75eec7157",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "seed": {
+        "kernel.trace": "c9ac5b6d3ed2c88b6b73114f1934d35f40b276be9dd74ca708ef101a7ce5225f",
+        "result.json": "7481e46904620cfacc8d3b9b82073445e91af16ff8602c845f335e5a4d3b01bf",
+        "stderr": "cd2fcbda02c7bb9d933e71886ee3f67270188cf5f7e18682be56b6e96f62da5b",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "unchanged": {
+        "kernel.trace": "0d20ddb0259fa1c4624de9af43343ab2c7d48c38a0ffa98e7394ba2364204108",
+        "result.json": "052cae48a6ff2e44d105f647345d2185b35a321e6b2cfc648e8bbbb819a92fe9",
+        "stderr": "736e2582f563605dd272e5fb977840b0c0767377d27b6940c440caf75eec7157",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "scenario": "transitive-bin",
+    "variant": "original"
+  },
+  "original-transitive-lib": {
+    "observations": {
+      "edited": {
+        "cargo_exit": 0,
+        "dependency_hash": "61b0b598633333c4ec8166537147c2f56ad413a24ece3d6cd440ae68e4fbe8de",
+        "real_rustc": [
+          "app",
+          "dep",
+          "middle"
+        ],
+        "sequence": [
+          [
+            514,
+            "real-rustc-rmeta"
+          ],
+          [
+            529,
+            "metadata-notification-forwarded"
+          ],
+          [
+            554,
+            "bounded-wait-open"
+          ],
+          [
+            580,
+            "dependent-marker-ENOENT"
+          ],
+          [
+            582,
+            "dependent-start-recorded"
+          ],
+          [
+            585,
+            "bounded-wait-closed"
+          ],
+          [
+            593,
+            "producer-marker-created"
+          ]
+        ]
+      },
+      "recovery": {
+        "cargo_exit": 0,
+        "dependency_hash": "61b0b598633333c4ec8166537147c2f56ad413a24ece3d6cd440ae68e4fbe8de",
+        "real_rustc": []
+      },
+      "seed": {
+        "cargo_exit": 0,
+        "dependency_hash": "845f48c1d461dfec4961524bf2e798793e71941fe014d2f25e84ad1dbfc4f3f8",
+        "real_rustc": [
+          "app",
+          "dep",
+          "middle"
+        ]
+      },
+      "unchanged": {
+        "cargo_exit": 0,
+        "dependency_hash": "61b0b598633333c4ec8166537147c2f56ad413a24ece3d6cd440ae68e4fbe8de",
+        "real_rustc": []
+      }
+    },
+    "raw_sha256": {
+      "edited": {
+        "kernel.trace": "a4fbb8cdf28e36e162fdb7ae95a2b82d495271b4302abe58547f70dd29f161e9",
+        "result.json": "46a1754af2f05497a206d7b930077e3b11fe8d950d7f42c06ed21453da0598fb",
+        "stderr": "e399d2a570e349f9935b30766da3eaca09125365b0bff4e059e7fd396dcb3dae",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "recovery": {
+        "kernel.trace": "333180e73e68ab3bcdd25aeb0e29094f47c22c75161c367e0910b73374839c56",
+        "result.json": "457c28b0342c05660f0ce16e150c268f318d5841554360b40f7017a23fb9ff62",
+        "stderr": "736e2582f563605dd272e5fb977840b0c0767377d27b6940c440caf75eec7157",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "seed": {
+        "kernel.trace": "7eca8d445a03f92cbff2619e1585443b601f948957b99b7cbcf1535b02bcb239",
+        "result.json": "03deba267f4036f4f5b16fd40c34bba51eb6f1b0414f386cb2d3ddf7d88cd24b",
+        "stderr": "5efd708086c15accabd708b1b29d6cf01d2012f8d2ef418010ebb59e1156f914",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "unchanged": {
+        "kernel.trace": "391ac02f56115a12a928737bf4afdbbd2eba9dbceedd1a24815bc59c9e1c6f3f",
+        "result.json": "12865020b5f984dda986c95d303776725b6cd3699556c4fbb8be6174cc36a91b",
+        "stderr": "736e2582f563605dd272e5fb977840b0c0767377d27b6940c440caf75eec7157",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "scenario": "transitive-lib",
+    "variant": "original"
+  },
+  "proposed-284-failure": {
+    "observations": {
+      "edited": {
+        "cargo_exit": 101,
+        "dependency_hash": null,
+        "real_rustc": [
+          "app",
+          "dep"
+        ],
+        "sequence": [
+          [
+            466,
+            "real-rustc-rmeta"
+          ],
+          [
+            471,
+            "producer-marker-created"
+          ],
+          [
+            485,
+            "metadata-notification-forwarded"
+          ],
+          [
+            509,
+            "bounded-wait-open"
+          ],
+          [
+            530,
+            "dependent-marker-present"
+          ],
+          [
+            535,
+            "dependent-start-recorded"
+          ],
+          [
+            540,
+            "bounded-wait-closed"
+          ]
+        ]
+      },
+      "recovery": {
+        "cargo_exit": 0,
+        "dependency_hash": "61b0b598633333c4ec8166537147c2f56ad413a24ece3d6cd440ae68e4fbe8de",
+        "real_rustc": [
+          "app",
+          "dep"
+        ]
+      },
+      "seed": {
+        "cargo_exit": 0,
+        "dependency_hash": "845f48c1d461dfec4961524bf2e798793e71941fe014d2f25e84ad1dbfc4f3f8",
+        "real_rustc": [
+          "app",
+          "dep"
+        ]
+      },
+      "unchanged": {
+        "cargo_exit": 0,
+        "dependency_hash": "61b0b598633333c4ec8166537147c2f56ad413a24ece3d6cd440ae68e4fbe8de",
+        "real_rustc": []
+      }
+    },
+    "raw_sha256": {
+      "edited": {
+        "kernel.trace": "936dd043960220e3b5d94f1d215320530b69b1e132fbcf1f65903755314a8441",
+        "result.json": "d85474bf5100d3bf11a3e710154fbd2c2630f8730d6b3fa7312b5108ed865302",
+        "stderr": "e1bef45aa2e0318ac438c5a767fe5fea47ee39889f3fb74fb96ff4cba29b3646",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "recovery": {
+        "kernel.trace": "d2bef1fcfeefbf2c3792be80b77a023313c6391777bbd2e2ec702c82180dd44a",
+        "result.json": "e08d613034edc1d82a9d73bbbc1ed80f4934a50bc66ff2d1e2f83b20a310c202",
+        "stderr": "39368823832a5e2906c679b3005c824294155ea4607c97836d6422aac49964e7",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "seed": {
+        "kernel.trace": "6456c8d308707d5bbda08f21b4a1cf42dc6cd26d91ca3a89414a164efde9a56d",
+        "result.json": "d55f8666fa58b4437673a288ee2f42d844971c64ace7b13a7a86679f1115d0eb",
+        "stderr": "b56847de11d615a2683d3f44b922ff85f8aa499ae882dc9d4a0463789661ee1c",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "unchanged": {
+        "kernel.trace": "8f36c500614229970dea4e4a491ef1477c1d6090ae96ae303dbbf7a762e92599",
+        "result.json": "82f05f55de53d1d9f78ca071160235b176aa9abd302563f27993cd7ea73d76d1",
+        "stderr": "736e2582f563605dd272e5fb977840b0c0767377d27b6940c440caf75eec7157",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "scenario": "failure",
+    "variant": "proposed-284"
+  },
+  "proposed-direct-middle": {
+    "observations": {
+      "edited": {
+        "cargo_exit": 0,
+        "dependency_hash": "61b0b598633333c4ec8166537147c2f56ad413a24ece3d6cd440ae68e4fbe8de",
+        "real_rustc": [
+          "app",
+          "middle"
+        ],
+        "sequence": [
+          [
+            470,
+            "real-rustc-rmeta"
+          ],
+          [
+            475,
+            "producer-marker-created"
+          ],
+          [
+            487,
+            "metadata-notification-forwarded"
+          ],
+          [
+            510,
+            "bounded-wait-open"
+          ],
+          [
+            534,
+            "dependent-marker-present"
+          ],
+          [
+            538,
+            "dependent-start-recorded"
+          ],
+          [
+            541,
+            "bounded-wait-closed"
+          ]
+        ]
+      },
+      "recovery": {
+        "cargo_exit": 0,
+        "dependency_hash": "61b0b598633333c4ec8166537147c2f56ad413a24ece3d6cd440ae68e4fbe8de",
+        "real_rustc": []
+      },
+      "seed": {
+        "cargo_exit": 0,
+        "dependency_hash": "845f48c1d461dfec4961524bf2e798793e71941fe014d2f25e84ad1dbfc4f3f8",
+        "real_rustc": [
+          "app",
+          "middle"
+        ]
+      },
+      "unchanged": {
+        "cargo_exit": 0,
+        "dependency_hash": "61b0b598633333c4ec8166537147c2f56ad413a24ece3d6cd440ae68e4fbe8de",
+        "real_rustc": []
+      }
+    },
+    "raw_sha256": {
+      "edited": {
+        "kernel.trace": "00ebf73c080ceb980212f17c02467e2b6fa20ff49f67723b5e0bdf919db653d8",
+        "result.json": "6bf873f9bc1542883515a147dc8cf1c63fe3c6535f5c40be33b577fcc67d6fa5",
+        "stderr": "ac1acdb276f4d1816f6974532aed29c2835c0b2f78d518f593248b3f548a34f3",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "recovery": {
+        "kernel.trace": "ff60615742c31228e2e389ec1f157d1cb71e38750ad230255165cd856e3179da",
+        "result.json": "656b6255dcb489ae991fdb90cba04f72a0c471a47c334e08a92325baf53cede5",
+        "stderr": "736e2582f563605dd272e5fb977840b0c0767377d27b6940c440caf75eec7157",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "seed": {
+        "kernel.trace": "45d9d0efe3a055f170cd79053c6275c1dc77a194287a74615a4ea5f982afc0cc",
+        "result.json": "70129344d9780e3084231d5694add690aeba979d7c1b76e4eb14ec4f8f2c6289",
+        "stderr": "d850bd6e9aedb4f28023f6df7883b0a71255f2c2bb538ee88e43884f871774d3",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "unchanged": {
+        "kernel.trace": "bb543829c12b0d424e197f09f4a21d3d03451a3da57a109dac4ff07628d2f51b",
+        "result.json": "88ebe0c788e1498ffd67e4c3c7fa8b3e9e246d76e9a3ab44fd7ec063a8dc2869",
+        "stderr": "736e2582f563605dd272e5fb977840b0c0767377d27b6940c440caf75eec7157",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "scenario": "direct-middle",
+    "variant": "proposed"
+  },
+  "proposed-failure": {
+    "observations": {
+      "edited": {
+        "cargo_exit": 101,
+        "dependency_hash": null,
+        "real_rustc": [
+          "app",
+          "dep"
+        ],
+        "sequence": [
+          [
+            466,
+            "real-rustc-rmeta"
+          ],
+          [
+            471,
+            "producer-marker-created"
+          ],
+          [
+            480,
+            "metadata-notification-forwarded"
+          ],
+          [
+            506,
+            "bounded-wait-open"
+          ],
+          [
+            526,
+            "dependent-marker-present"
+          ],
+          [
+            531,
+            "dependent-start-recorded"
+          ],
+          [
+            537,
+            "bounded-wait-closed"
+          ]
+        ]
+      },
+      "recovery": {
+        "cargo_exit": 0,
+        "dependency_hash": "61b0b598633333c4ec8166537147c2f56ad413a24ece3d6cd440ae68e4fbe8de",
+        "real_rustc": [
+          "app",
+          "dep"
+        ]
+      },
+      "seed": {
+        "cargo_exit": 0,
+        "dependency_hash": "845f48c1d461dfec4961524bf2e798793e71941fe014d2f25e84ad1dbfc4f3f8",
+        "real_rustc": [
+          "app",
+          "dep"
+        ]
+      },
+      "unchanged": {
+        "cargo_exit": 0,
+        "dependency_hash": "61b0b598633333c4ec8166537147c2f56ad413a24ece3d6cd440ae68e4fbe8de",
+        "real_rustc": []
+      }
+    },
+    "raw_sha256": {
+      "edited": {
+        "kernel.trace": "05c151fd02bba6bc5b289cdb623629af2ed55c66d856d347cd216bcaab5aaa38",
+        "result.json": "8dfa796a71db73a6612a94b31a9c76bbad8114bf8e4e6d981ddc0e9bcede3a08",
+        "stderr": "83916d0aba47cb0f3a07755d8cf09493a4c28ed287e45484af064e2f97b5aa38",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "recovery": {
+        "kernel.trace": "f661ceb97c59869fb21d9c7142a126416f88924963f68a9ff4759ae47dc31e83",
+        "result.json": "5aec862d9483ae7251d67cbb0ead3e6fa10ec36181683c125c5d274c3146641e",
+        "stderr": "784e86be15640ac58a92f5abad71bb5cdc3a3ec23e40bbd4b4630800ddced0ee",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "seed": {
+        "kernel.trace": "cc5e004edf2362b2dedeaf8062a5c4216a1ae8510125032b644e3a98278cfa23",
+        "result.json": "4a91686e910e66b6f677e35cf02b0aff3dc5e0abd82e7b2ac73a14832d5e6f41",
+        "stderr": "24dfbb2ede4b87d7ebdb7e49614543dbcf661b3e2213a72843c781aa12495496",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "unchanged": {
+        "kernel.trace": "e6a78adf4f59b2bed3a4d5bd00bfd84fed2f82ebf688dd697032e71338814abf",
+        "result.json": "3a11a4ed0741941083e3be614f1a04fcf3cfaa170074a8ccdb500cd4826bb9c8",
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "scenario": "failure",
+    "variant": "proposed"
+  },
+  "proposed-transitive-bin": {
+    "observations": {
+      "edited": {
+        "cargo_exit": 0,
+        "dependency_hash": "61b0b598633333c4ec8166537147c2f56ad413a24ece3d6cd440ae68e4fbe8de",
+        "real_rustc": [
+          "app",
+          "dep",
+          "middle"
+        ],
+        "sequence": [
+          [
+            511,
+            "real-rustc-rmeta"
+          ],
+          [
+            516,
+            "producer-marker-created"
+          ],
+          [
+            526,
+            "metadata-notification-forwarded"
+          ],
+          [
+            548,
+            "bounded-wait-open"
+          ],
+          [
+            577,
+            "dependent-marker-present"
+          ],
+          [
+            581,
+            "dependent-start-recorded"
+          ],
+          [
+            586,
+            "bounded-wait-closed"
+          ]
+        ]
+      },
+      "recovery": {
+        "cargo_exit": 0,
+        "dependency_hash": "61b0b598633333c4ec8166537147c2f56ad413a24ece3d6cd440ae68e4fbe8de",
+        "real_rustc": []
+      },
+      "seed": {
+        "cargo_exit": 0,
+        "dependency_hash": "845f48c1d461dfec4961524bf2e798793e71941fe014d2f25e84ad1dbfc4f3f8",
+        "real_rustc": [
+          "app",
+          "dep",
+          "middle"
+        ]
+      },
+      "unchanged": {
+        "cargo_exit": 0,
+        "dependency_hash": "61b0b598633333c4ec8166537147c2f56ad413a24ece3d6cd440ae68e4fbe8de",
+        "real_rustc": []
+      }
+    },
+    "raw_sha256": {
+      "edited": {
+        "kernel.trace": "3dedbff190c506c807d0a9f9077321d0fae871f36fa834b3650c6cf08a8e64cc",
+        "result.json": "e36a5556439bdc2ee9e76ffb1f7c778f57ba2bbdc7c106e0fe048f61ca9e7c7a",
+        "stderr": "68a3f8d52b5e432dd9f8aaf2ec4b1588d6449e95ef65d8cb15b6ded3b30dd10c",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "recovery": {
+        "kernel.trace": "657c924c0a73eb6cfb802b0efe7795b128bae827b9ae50a4ae7a246ba8d5c5cf",
+        "result.json": "8b825fc5c1b737e1031c5c6b40c16310e88c0ce2b5e64bf84c3aae036ab5b7f8",
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "seed": {
+        "kernel.trace": "d81b6a7a76d14b99cefe45fed8ae76618f68486694145e809c2beea4ef817f76",
+        "result.json": "60cef8aea77fa67e7abaa763c7e472ddf7695058189269bbd5d12e68689ce80b",
+        "stderr": "6a64fa756e17290eddad140994643f2d5a7a158cae7e501d450234d0de692215",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "unchanged": {
+        "kernel.trace": "ccd740f9477dee48c66501f68a19d8dea21d093c9b84522e81056d38c417fca3",
+        "result.json": "09fcae4554961de2e9b3f9560060d2f3ce3d5b3a8e623c37ee5ff43cbc46a748",
+        "stderr": "736e2582f563605dd272e5fb977840b0c0767377d27b6940c440caf75eec7157",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "scenario": "transitive-bin",
+    "variant": "proposed"
+  },
+  "proposed-transitive-lib": {
+    "observations": {
+      "edited": {
+        "cargo_exit": 0,
+        "dependency_hash": "61b0b598633333c4ec8166537147c2f56ad413a24ece3d6cd440ae68e4fbe8de",
+        "real_rustc": [
+          "app",
+          "dep",
+          "middle"
+        ],
+        "sequence": [
+          [
+            513,
+            "real-rustc-rmeta"
+          ],
+          [
+            518,
+            "producer-marker-created"
+          ],
+          [
+            532,
+            "metadata-notification-forwarded"
+          ],
+          [
+            559,
+            "bounded-wait-open"
+          ],
+          [
+            585,
+            "dependent-marker-present"
+          ],
+          [
+            589,
+            "dependent-start-recorded"
+          ],
+          [
+            592,
+            "bounded-wait-closed"
+          ]
+        ]
+      },
+      "recovery": {
+        "cargo_exit": 0,
+        "dependency_hash": "61b0b598633333c4ec8166537147c2f56ad413a24ece3d6cd440ae68e4fbe8de",
+        "real_rustc": []
+      },
+      "seed": {
+        "cargo_exit": 0,
+        "dependency_hash": "845f48c1d461dfec4961524bf2e798793e71941fe014d2f25e84ad1dbfc4f3f8",
+        "real_rustc": [
+          "app",
+          "dep",
+          "middle"
+        ]
+      },
+      "unchanged": {
+        "cargo_exit": 0,
+        "dependency_hash": "61b0b598633333c4ec8166537147c2f56ad413a24ece3d6cd440ae68e4fbe8de",
+        "real_rustc": []
+      }
+    },
+    "raw_sha256": {
+      "edited": {
+        "kernel.trace": "c83f88cb30c16125f17c3512d8f3b07119465cc54a88a48df82699ee9bb2ed14",
+        "result.json": "983294748e473816b8c05ea4d6b705e1e5d4e5eaaf97fe4fc8b119d7cb1015cb",
+        "stderr": "a53f39f30842d501e55c835a6b9ff3e17c6beb813b05cc8a93109b898ca81311",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "recovery": {
+        "kernel.trace": "8c33b2815398f80086b543dc901f891f2ca385b11c818c613250faf7973e749a",
+        "result.json": "f689ce8ad2a58c076a0ecdd7f6e6c719e3360006150497c6aed4a0f843b185a8",
+        "stderr": "736e2582f563605dd272e5fb977840b0c0767377d27b6940c440caf75eec7157",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "seed": {
+        "kernel.trace": "30828baf62725c3cd072057d7f913c006fe24a138b50859383a1882c3019815e",
+        "result.json": "00fa631a514b279835aaf21151c853bbe671148a94f05defb40a110f0a37f4ac",
+        "stderr": "b103ab9f433c353fa04b45e1c8aaa3cb3157716c8d4648a8aef20078f85a8863",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "unchanged": {
+        "kernel.trace": "0381034466c5761f8baabec35003ac6362951609b7b4ed6270413542385d5a4f",
+        "result.json": "820c66c5c350b7715db297edc05b30cca108979cf9cf06e5c608d62a54169f3e",
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "scenario": "transitive-lib",
+    "variant": "proposed"
+  }
+}

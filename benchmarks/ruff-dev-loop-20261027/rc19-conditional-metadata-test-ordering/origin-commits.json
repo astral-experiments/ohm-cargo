@@ -1,0 +1,38 @@
+{
+  "030358a15b42ae6c58bba42b45ebdfcbbb623a01": {
+    "added_lines": [],
+    "date": "2026-08-06T11:39:00Z",
+    "title": "Write concurrent compiler invocation logs atomically"
+  },
+  "242e7bdc885910beff6872f71300968933293410": {
+    "added_lines": [
+      "+                            io::stderr().flush().expect(\"flush metadata notification\");",
+      "+                                    .expect(\"record dependency metadata\");",
+      "+                                    .expect(\"record intermediate metadata\");",
+      "+fn conditional_metadata_recovers_when_dependency_fails_after_metadata() {"
+    ],
+    "date": "2026-08-21T11:43:11Z",
+    "title": "Pipeline early-cutoff dependencies when public APIs change"
+  },
+  "61294b1ce5962f99eb2bba8b83b7cbcb5033660a": {
+    "added_lines": [
+      "+                            io::stderr().flush().expect(\"flush metadata notification\");",
+      "+                                    .expect(\"record dependency metadata\");",
+      "+                                    .expect(\"record intermediate metadata\");",
+      "+fn conditional_metadata_recovers_when_dependency_fails_after_metadata() {"
+    ],
+    "date": "2026-08-06T11:09:24Z",
+    "title": "Pipeline early-cutoff dependencies when public APIs change"
+  },
+  "be0f428de0f5b2be244b4cf0402873c38f1fccf4": {
+    "added_lines": [],
+    "date": "2026-08-06T11:28:45Z",
+    "title": "Invalidate public hashes before pipelining dependents"
+  },
+  "upstream": {
+    "file_blob": "25906f56b2c0aadf6e48355972f6bb40e0cac315",
+    "helper_present": false,
+    "repo": "rust-lang/cargo",
+    "sha": "06413ecf8cd3ec5b10b93ac2b85f6fad34f8597c"
+  }
+}

@@ -1,0 +1,184 @@
+{
+  "original-284-exact-ci": {
+    "observations": {
+      "edited": {
+        "cargo_exit": 101,
+        "dependency_hash": null,
+        "real_rustc": [
+          "app",
+          "dep"
+        ],
+        "sequence": [
+          [
+            487,
+            "real-rustc-rmeta"
+          ],
+          [
+            499,
+            "metadata-notification-forwarded"
+          ],
+          [
+            523,
+            "bounded-wait-open"
+          ],
+          [
+            543,
+            "dependent-marker-ENOENT"
+          ],
+          [
+            546,
+            "dependent-start-recorded"
+          ],
+          [
+            549,
+            "bounded-wait-closed"
+          ],
+          [
+            555,
+            "producer-marker-created"
+          ]
+        ]
+      },
+      "recovery": {
+        "cargo_exit": 0,
+        "dependency_hash": "61b0b598633333c4ec8166537147c2f56ad413a24ece3d6cd440ae68e4fbe8de",
+        "real_rustc": [
+          "app",
+          "dep"
+        ]
+      },
+      "seed": {
+        "cargo_exit": 0,
+        "dependency_hash": "845f48c1d461dfec4961524bf2e798793e71941fe014d2f25e84ad1dbfc4f3f8",
+        "real_rustc": [
+          "app",
+          "dep"
+        ]
+      },
+      "unchanged": {
+        "cargo_exit": 0,
+        "dependency_hash": "61b0b598633333c4ec8166537147c2f56ad413a24ece3d6cd440ae68e4fbe8de",
+        "real_rustc": []
+      }
+    },
+    "raw_sha256": {
+      "edited": {
+        "kernel.trace": "4653059e712b7b33e2f96e847184fbfa08d8f306923d36c3554adc403bd8cd77",
+        "result.json": "61093dc332bfe26475d4dc56af1c3371afb9947d1fe979c04224f15cd9fdfe72",
+        "stderr": "8610bfc1e108cbfe772bf8afec81c5fad98abd50d8e7dc4fea1881fb9e493cfa",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "recovery": {
+        "kernel.trace": "02a25ebd5229539bd3e3d788cb8e1eebb2ca5c15af23234a847fbe7413aa8782",
+        "result.json": "07db301e012687a1f765af78393958a41922ec3d8cbead223813e47d963f4645",
+        "stderr": "6808d47a853a83127f1b8e37e1c0fda4e65917d294dbc1ce428ad9dced77531d",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "seed": {
+        "kernel.trace": "691254a9865bac7c6d1df0999bf1a39e2d877919f9697614086a480032e04895",
+        "result.json": "161d987123ebd51dce4be977013541d7f78425f9c40de16be88d0f55f7911d3a",
+        "stderr": "cc60fcc63390d02af17005f06b64bb9e03ff3b1bf78e259f388a8f16b4866576",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "unchanged": {
+        "kernel.trace": "9f4db9b99a9a32320fe08960b1ad3a44e4f4971579e0689353b9d13a63bd1af8",
+        "result.json": "27020e84ea836a550dd8d2501e539eadfd7605a7fe6b01bb0362f00260912bae",
+        "stderr": "736e2582f563605dd272e5fb977840b0c0767377d27b6940c440caf75eec7157",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "scenario": "failure",
+    "variant": "original-284"
+  },
+  "proposed-284-exact-ci": {
+    "observations": {
+      "edited": {
+        "cargo_exit": 101,
+        "dependency_hash": null,
+        "real_rustc": [
+          "app",
+          "dep"
+        ],
+        "sequence": [
+          [
+            487,
+            "real-rustc-rmeta"
+          ],
+          [
+            492,
+            "producer-marker-created"
+          ],
+          [
+            500,
+            "metadata-notification-forwarded"
+          ],
+          [
+            526,
+            "bounded-wait-open"
+          ],
+          [
+            546,
+            "dependent-marker-present"
+          ],
+          [
+            553,
+            "dependent-start-recorded"
+          ],
+          [
+            558,
+            "bounded-wait-closed"
+          ]
+        ]
+      },
+      "recovery": {
+        "cargo_exit": 0,
+        "dependency_hash": "61b0b598633333c4ec8166537147c2f56ad413a24ece3d6cd440ae68e4fbe8de",
+        "real_rustc": [
+          "app",
+          "dep"
+        ]
+      },
+      "seed": {
+        "cargo_exit": 0,
+        "dependency_hash": "845f48c1d461dfec4961524bf2e798793e71941fe014d2f25e84ad1dbfc4f3f8",
+        "real_rustc": [
+          "app",
+          "dep"
+        ]
+      },
+      "unchanged": {
+        "cargo_exit": 0,
+        "dependency_hash": "61b0b598633333c4ec8166537147c2f56ad413a24ece3d6cd440ae68e4fbe8de",
+        "real_rustc": []
+      }
+    },
+    "raw_sha256": {
+      "edited": {
+        "kernel.trace": "83fc6156676fd1ec4c5cf1cf46c5d07a17ee39fc62189b90d1c03a7da7a6b364",
+        "result.json": "ed208ec15655c5268f1e1c864009b3aad74d666bf634226d9f688dfdece5769c",
+        "stderr": "fb92e5fc89154e2daa4c5f45807ed90bfaac65a5b9c4da3d9f151aa66a75edd3",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "recovery": {
+        "kernel.trace": "0324d8022e4131dfe6eb8ea599ed85aa79352e4233f560ba3b5895192844bd6a",
+        "result.json": "de5779b4e94180ef2b02070010572125a78f6c467b7ffcdc5c8f482bdbff9e2e",
+        "stderr": "7a502b2ec247c51a7b953401bb037328d58f77816f83ec93da8eab5a7b6f6013",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "seed": {
+        "kernel.trace": "b880c9b2b1aeb00ba39bf0c911c69bfb30dc55447bbe496d4218037e032aceab",
+        "result.json": "a49072cdac1e8eef3eb0ed17ad527d624e9bf74774dae98c1b80e118b8341cc5",
+        "stderr": "e4d270e59447932554693aee5e6544605c59b47ef5faf9e4e2ee6f8fab2bbd13",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "unchanged": {
+        "kernel.trace": "7911e6a6015f7b754f59cb8248e0ac7d6595bff5a7f000b8044a216d4f6e2e57",
+        "result.json": "39411d5ce207dc643d451e53d770451684a57b6677c70dd14d133d28566969e0",
+        "stderr": "736e2582f563605dd272e5fb977840b0c0767377d27b6940c440caf75eec7157",
+        "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "scenario": "failure",
+    "variant": "proposed-284"
+  }
+}
