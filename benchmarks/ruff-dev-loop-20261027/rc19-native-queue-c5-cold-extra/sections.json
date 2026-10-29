@@ -1,0 +1,137 @@
+{
+  "all_other_bytes_equal": true,
+  "differing_ranges_by_section": {
+    ".note.gnu.build-id": {
+      "A_sha256": "370cb87c6f5e58605f6ca2fa4fe3c198c2495fefca908b37bbfab1520cd1042b",
+      "B_sha256": "bbd702d1e46f80d4f2551535a31a521eddc80fea36a5ebfee46342c64ef5d935",
+      "first_offset": 696,
+      "last_offset": 727,
+      "mismatched_bytes": 32,
+      "size": 48,
+      "start": 680
+    },
+    ".rodata": {
+      "A_sha256": "2a497787cd387c29fc43495d8beca273f9281a025c6a26834e11f837a0cdf733",
+      "B_sha256": "03f098ff9af642140b98c68bfa1d40afe01786f110716f48a6391eecb781633e",
+      "first_offset": 202022,
+      "last_offset": 202216,
+      "mismatched_bytes": 191,
+      "size": 85427,
+      "start": 142848
+    },
+    ".rustc": {
+      "A_sha256": "71ffa6954e32eb340b32ea0077ea1b5c35515c9bf596f3497cefc73339a283e1",
+      "B_sha256": "2b4a635886887c0b12d8d0229c897b99f27d431f0eb42ff9d2d36877030a6793",
+      "first_offset": 2047970,
+      "last_offset": 2048001,
+      "mismatched_bytes": 32,
+      "size": 13300,
+      "start": 2035096
+    },
+    ".text": {
+      "A_sha256": "efb94563c4dd32d271661dad501417f90354eaa0b197a9a4ec8a055a44764d27",
+      "B_sha256": "ac658110690432d6b2ea845e7da6d2828036dc72a35be601fb1396f8342aba2a",
+      "first_offset": 579065,
+      "last_offset": 580820,
+      "mismatched_bytes": 45,
+      "size": 1442313,
+      "start": 513232
+    }
+  },
+  "empty_A_B_complete_native_path_counts": {
+    "compared": 188,
+    "different": 1,
+    "equal": 187
+  },
+  "identical_section_headers": true,
+  "literal_mutually_exclusive_diagnostics_by_rodata_order": {
+    "A": [
+      {
+        "argument": "ignore",
+        "conflicts_with": "size_fn",
+        "offset": 201917
+      },
+      {
+        "argument": "size_fn",
+        "conflicts_with": "ignore",
+        "offset": 201969
+      },
+      {
+        "argument": "ignore",
+        "conflicts_with": "size",
+        "offset": 202021
+      },
+      {
+        "argument": "size",
+        "conflicts_with": "ignore",
+        "offset": 202070
+      },
+      {
+        "argument": "size",
+        "conflicts_with": "size_fn",
+        "offset": 202119
+      },
+      {
+        "argument": "size_fn",
+        "conflicts_with": "size",
+        "offset": 202169
+      }
+    ],
+    "B": [
+      {
+        "argument": "ignore",
+        "conflicts_with": "size_fn",
+        "offset": 201917
+      },
+      {
+        "argument": "size_fn",
+        "conflicts_with": "ignore",
+        "offset": 201969
+      },
+      {
+        "argument": "size",
+        "conflicts_with": "size_fn",
+        "offset": 202021
+      },
+      {
+        "argument": "size_fn",
+        "conflicts_with": "size",
+        "offset": 202071
+      },
+      {
+        "argument": "ignore",
+        "conflicts_with": "size",
+        "offset": 202121
+      },
+      {
+        "argument": "size",
+        "conflicts_with": "ignore",
+        "offset": 202170
+      }
+    ]
+  },
+  "path": "libget_size_derive2-7de3207bd8fa1d6e.so",
+  "physical_subjects": {
+    "A": {
+      "argv_sha256": "19403fb8da75fecfcaf7e295e97eb7fbf31c93f72cf9b8dc612dcbbefb2ee2b1",
+      "event": 22,
+      "file": "libget_size_derive2-7de3207bd8fa1d6e.so",
+      "path_sha256": "a077e6b8077a88ad105d8d1e77b96fc29a868b853c876da80e50bb975c149378",
+      "sha256": "6ad769f29a9ceb3aa8aed8f307d2b9bf21f003fa7b6b3619e7d75f25ed6200df",
+      "size": 3085984
+    },
+    "B": {
+      "argv_sha256": "5b686d462f5532a6620cfc128b250ee525ed68acdd0754d035ffa4b36660a543",
+      "event": 22,
+      "file": "libget_size_derive2-7de3207bd8fa1d6e.so",
+      "path_sha256": "a077e6b8077a88ad105d8d1e77b96fc29a868b853c876da80e50bb975c149378",
+      "sha256": "e025787f5cff48ba45de275f750645123d87739b8d10c631848c77a30370f756",
+      "size": 3085984
+    }
+  },
+  "registered_cold_outputs": {
+    "compared": 52,
+    "equal": 52
+  },
+  "source_functional_manifest": "cc25e2379d12a2faa95c5a2f710a10de5eacb474a46a1ad6f8b64d53677c207d"
+}

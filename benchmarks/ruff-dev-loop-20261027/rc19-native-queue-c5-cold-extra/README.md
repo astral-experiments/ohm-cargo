@@ -1,0 +1,9 @@
+# Additional cold dependency output
+
+The two independent empty builds of the edited Ruff workspace linked 188 files at the same 188 exact output paths. All 52 prospectively enrolled outputs matched byte for byte. Across the wider inventory, 187 matched. The sole exception was the 3,085,984-byte registry procedural macro `libget_size_derive2-7de3207bd8fa1d6e.so`.
+
+Both complete binaries were recovered and hashed independently using their originally traced `-o` paths. Exactly 300 bytes differed. Their ELF section tables are identical. There are 32 differing bytes in the GNU build ID, 191 in `.rodata`, 45 in `.text` and 32 in `.rustc`. The binaries contain the same six pairwise conflict messages for the attributes `ignore`, `size` and `size_fn` in different orders. The actual payload order and offsets for both files are in `sections.json`.
+
+An earlier independent experiment on the registry crate `get-size-derive2 0.11.0` traced this variation to unordered iteration during expansion in its dependency `attribute-derive-macro 0.10.3`. It reproduced multiple orders under an identical Rust compiler, arguments and upstream contents. The current two cold builds were inspected as binary files. The earlier report contains its own executable probes. [Independent registry-macro experiment](https://github.com/astral-sh/ohm-cargo/tree/2574186849c7a41c9bc6d29698ef3101af5909d9/benchmarks/ruff-dev-loop-20261027/mixed-qualification-rejection-h3-v2)
+
+Run `sha256sum -c SHA256SUMS` and `python3 -IB verify.py /path/to/functional-component`. With the original binaries at hand, append the A and B ELF paths to recompute every range, including all bytes between sections and the real diagnostic positions. The main component's registered fourteen comparisons remain independently reproducible from the original admission.
