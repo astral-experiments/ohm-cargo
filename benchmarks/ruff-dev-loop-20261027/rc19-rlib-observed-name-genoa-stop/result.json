@@ -1,0 +1,87 @@
+{
+  "actual_executions": {
+    "A_cargo_compile_lines": 10,
+    "A_edits": 1,
+    "A_immediate_repeats": 1,
+    "accepted_pairs": 0,
+    "actual_caller_runtime": 1,
+    "actual_linked_caller": 1,
+    "completed_B_visits": 0,
+    "extra_compiler_invocations_during_forensics": 0,
+    "ordinary_A_Cargo": 2,
+    "ordinary_B_Cargo": 0,
+    "repeat_cargo_compile_lines": 0
+  },
+  "actual_source_spelling_bytes": 77,
+  "compared_source_bytes": "1b51d29cfcb474133d2c9a41f70295355c46f4ca1abd7111929f9a00317f058b",
+  "comparison_failed": "complete native caller SHA-256",
+  "elapsed_claim": false,
+  "exit_receipt": "820e5ddd7b27a085312999990ffbb99a543899ca64829dd2c032044741a02e5f",
+  "failing_comparison_requires_identical_native_ELF": true,
+  "first_terminal": "A, H to P",
+  "freshness_explicit_typed_on_measured_commands": false,
+  "full_pairs": 0,
+  "go": "cacc72e1fec6e1295b0c4509dd06a5bd5c5b34d37e172c0a08a56457ee751bb8",
+  "host": "AMD Genoa, Linux x86_64",
+  "host_native_qualification": "01d52aa3cc3da3a7cd346ce2398b4b0aaede5463de0c14abf6e702c45358917b",
+  "observed_reader": {
+    "ast": "aaa7335cd696ff6db18d5c9661d8954c1128ffc1d7b3e0a5cbe4d20cfcce3b25",
+    "executable": "fbdd8f9538d4d612a6c2923e709592ff7805dde0f6fcf914193ae224b89e731a",
+    "exit": 0,
+    "input": "e981376810375b7214c83ccd0dd840cd0110c7ce31d90cffc45ae1bd9706c4c2",
+    "linter": "d9c99f3e9fa37e8fac261087d868170fff30fcc627cbcd1ed1e1943245a1f11e",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "2 SIM222\n3 SIM222\n4 SIM222\n"
+  },
+  "portable_native_qualification": "165c876d4d9050b7f80f5688ca8135b75a7976b521a8940ed97d2f5214b2577b",
+  "prior_accepted_reader": {
+    "ast": "862b14ab5ca6dff6a22647f33168eedaf7ea901078c1bbf4e4267901d247d748",
+    "executable": "c43c42962091e5a21b45d5e13e7a7d0f813dc7b885fc7af825a53cef5ec17bd7",
+    "exit": 0,
+    "input": "e981376810375b7214c83ccd0dd840cd0110c7ce31d90cffc45ae1bd9706c4c2",
+    "linter": "757f7dd63be195d3635b0c220d618bc904207f5d562f09513330a18e5c2aa1b9",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "2 SIM222\n3 SIM222\n4 SIM222\n"
+  },
+  "protocol": "86fd410922315ae22b9d3de58f50b30ba1e8939a",
+  "qualified_source_spelling_bytes": 70,
+  "registered_pairs": 8,
+  "same_numeric_result": true,
+  "scope": "first unpaired clock visit retained in full; no treatment observation or numerical performance conclusion",
+  "source_artifacts": {
+    "emitted_rlib": {
+      "basename": "libruff_linter-88cb4a3b74d48e0c.rlib",
+      "bytes": 101719820,
+      "dev": 63,
+      "ino": 68780,
+      "mtime_ns": 1793241170209139838,
+      "sha256": "d9c99f3e9fa37e8fac261087d868170fff30fcc627cbcd1ed1e1943245a1f11e"
+    },
+    "held_ast": {
+      "basename": "libruff_python_ast-f10f57581a1108d7.rlib",
+      "bytes": 16365506,
+      "dev": 63,
+      "ino": 68658,
+      "mtime_ns": 1793241159075826692,
+      "sha256": "aaa7335cd696ff6db18d5c9661d8954c1128ffc1d7b3e0a5cbe4d20cfcce3b25"
+    },
+    "observed_caller": {
+      "basename": "lint-cli",
+      "bytes": 75800496,
+      "dev": 64769,
+      "ino": 7416392,
+      "mtime_ns": 1793241177242337134,
+      "sha256": "fbdd8f9538d4d612a6c2923e709592ff7805dde0f6fcf914193ae224b89e731a"
+    },
+    "ordinary_qualification_caller": {
+      "basename": "ordinary-gold-reader",
+      "bytes": 75800496,
+      "dev": 64800,
+      "ino": 15227975,
+      "mtime_ns": 1793239179608495118,
+      "sha256": "c43c42962091e5a21b45d5e13e7a7d0f813dc7b885fc7af825a53cef5ec17bd7"
+    }
+  },
+  "start": "29afb223b5d040dfe7dd7e7e7032c91fd91a9f884c446f82732c1450505e3c04",
+  "unchanged_stocks_after_stop": true
+}
