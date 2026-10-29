@@ -637,6 +637,32 @@ fn ohm_reuses_compatible_test_built_registry_dependencies_when_features_change()
 }
 
 #[cargo_test]
+fn ohm_preserves_fresh_checks_after_building_the_same_graph() {
+    Package::new("dependency", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+    let p = ohm_registry_project();
+
+    p.cargo("-Zohm-reuse-built-deps check")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .run();
+    p.cargo("build").run();
+    p.cargo("-Zohm-reuse-built-deps check -v")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .with_stderr_contains("[FRESH] dependency v1.0.0")
+        .with_stderr_contains("[FRESH] foo v0.0.1 ([ROOT]/foo)")
+        .with_stderr_does_not_contain("[CHECKING]")
+        .run();
+
+    p.change_file("src/lib.rs", "pub fn value() -> u32 { \"wrong type\" }");
+    p.cargo("-Zohm-reuse-built-deps check")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .with_status(101)
+        .with_stderr_contains("error[E0308]: mismatched types")
+        .run();
+}
+
+#[cargo_test]
 fn ohm_preserves_fresh_checks_when_test_registry_features_change() {
     Package::new("stable", "1.0.0")
         .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
