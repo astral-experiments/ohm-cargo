@@ -1,0 +1,1828 @@
+{
+  "geometry": {
+    "matched_chunks_bytes": 101067528,
+    "native_same_bytes": 77383632,
+    "native_same_range": 256,
+    "new_objects": 256,
+    "new_size": 101853960,
+    "old_objects": 256,
+    "old_size": 101853960
+  },
+  "phases": {
+    "edit": {
+      "consumer": {
+        "ast": "d1a7d36c05586ce7612c65526a19108a4b2c9ca0f250ee15a7c5923cd4c35130",
+        "executable": "b2c84a8acd74681ba8d0f3f5725c463a8bc03c14175cb7cb437baaf30aab0d7c",
+        "exit": 0,
+        "input": "e981376810375b7214c83ccd0dd840cd0110c7ce31d90cffc45ae1bd9706c4c2",
+        "linter": "ed50cec8f8a9d85ab7e361648511d5e0c83f4d808b0a8b5951c7d615e778f315",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout": "2 SIM222\n3 SIM222\n4 SIM222\n"
+      },
+      "dirty_units": [
+        [
+          "ruff_db",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ruff_linter",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ruff_python_ast",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ruff_python_codegen",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ruff_python_importer",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ruff_python_index",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ruff_python_literal",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ruff_python_parser",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ruff_python_semantic",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ruff_ranged_value",
+          [
+            "lib"
+          ]
+        ]
+      ],
+      "raw_digests": {
+        "cargo.err": "11ed747c380e3ba97a4b56f40ef9512087756e24ae951556d7a08a1cb3979a4e",
+        "cargo.jsonl": "3477eb62cb2d0673cdae13594a9f110dc0aed7ffa11884fb4d564aa2bc27e42a",
+        "consumer/compiler.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "consumer/result.json": "1e1911081fead0aaf827887a86a0eef41b1e5927ca6d58a49847e8aa6091e049",
+        "summary.json": "afdf53a423ef0c0cac2dd7aa9892b961ccd49554ad5ef900e845bdb6551ae493"
+      },
+      "summary": {
+        "archive": "ed50cec8f8a9d85ab7e361648511d5e0c83f4d808b0a8b5951c7d615e778f315",
+        "consumer_exe": "b2c84a8acd74681ba8d0f3f5725c463a8bc03c14175cb7cb437baaf30aab0d7c",
+        "consumer_output": "2 SIM222\n3 SIM222\n4 SIM222\n",
+        "fresh": 238,
+        "root_fresh": false,
+        "size": 101853960,
+        "state_free": 5588406272,
+        "units": 248
+      }
+    },
+    "edit-repeat": {
+      "consumer": {
+        "ast": "d1a7d36c05586ce7612c65526a19108a4b2c9ca0f250ee15a7c5923cd4c35130",
+        "executable": "b2c84a8acd74681ba8d0f3f5725c463a8bc03c14175cb7cb437baaf30aab0d7c",
+        "exit": 0,
+        "input": "e981376810375b7214c83ccd0dd840cd0110c7ce31d90cffc45ae1bd9706c4c2",
+        "linter": "ed50cec8f8a9d85ab7e361648511d5e0c83f4d808b0a8b5951c7d615e778f315",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout": "2 SIM222\n3 SIM222\n4 SIM222\n"
+      },
+      "dirty_units": [],
+      "raw_digests": {
+        "cargo.err": "f4403412cb20dc7d8a0a94c08c9c8853e4bac9b3e8489158834f30512311ed97",
+        "cargo.jsonl": "d9ea42fecc9ee03e82d4d9feb73351b23d530f1471b530dc05e76cafddbdc354",
+        "consumer/compiler.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "consumer/result.json": "1e1911081fead0aaf827887a86a0eef41b1e5927ca6d58a49847e8aa6091e049",
+        "summary.json": "7ce748acf3cc84c5ae88fd47aba2c1d35c858d41a48fc3cf67a8a5c529649969"
+      },
+      "summary": {
+        "archive": "ed50cec8f8a9d85ab7e361648511d5e0c83f4d808b0a8b5951c7d615e778f315",
+        "consumer_exe": "b2c84a8acd74681ba8d0f3f5725c463a8bc03c14175cb7cb437baaf30aab0d7c",
+        "consumer_output": "2 SIM222\n3 SIM222\n4 SIM222\n",
+        "fresh": 248,
+        "root_fresh": true,
+        "size": 101853960,
+        "state_free": 5588406272,
+        "units": 248
+      }
+    },
+    "independent-empty-edited": {
+      "consumer": {
+        "ast": "f30837015ea9af91984cfe9f367bc6054c18f7121208b7982e91e7afd790fcf8",
+        "executable": "72ee84305c341a8a679ca27588c9f139d420e332cc0a74535bd0d57ae084feaa",
+        "exit": 0,
+        "input": "e981376810375b7214c83ccd0dd840cd0110c7ce31d90cffc45ae1bd9706c4c2",
+        "linter": "5a19ea987c7207360622c1337327ef5c37cb6a0567d55826578f5650524c2d5b",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout": "2 SIM222\n3 SIM222\n4 SIM222\n"
+      },
+      "dirty_units": [
+        [
+          "aho_corasick",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "aho_corasick",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "allocator_api2",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "annotate_snippets",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "anstyle",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "anyhow",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "arc_swap",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "arrayvec",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "attribute_derive",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "attribute_derive_macro",
+          [
+            "proc-macro"
+          ]
+        ],
+        [
+          "autocfg",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "bitflags",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "boxcar",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "bstr",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "build-script-build",
+          [
+            "custom-build"
+          ]
+        ],
+        [
+          "build-script-build",
+          [
+            "custom-build"
+          ]
+        ],
+        [
+          "build-script-build",
+          [
+            "custom-build"
+          ]
+        ],
+        [
+          "build-script-build",
+          [
+            "custom-build"
+          ]
+        ],
+        [
+          "build-script-build",
+          [
+            "custom-build"
+          ]
+        ],
+        [
+          "build-script-build",
+          [
+            "custom-build"
+          ]
+        ],
+        [
+          "build-script-build",
+          [
+            "custom-build"
+          ]
+        ],
+        [
+          "build-script-build",
+          [
+            "custom-build"
+          ]
+        ],
+        [
+          "build-script-build",
+          [
+            "custom-build"
+          ]
+        ],
+        [
+          "build-script-build",
+          [
+            "custom-build"
+          ]
+        ],
+        [
+          "build-script-build",
+          [
+            "custom-build"
+          ]
+        ],
+        [
+          "build-script-build",
+          [
+            "custom-build"
+          ]
+        ],
+        [
+          "build-script-build",
+          [
+            "custom-build"
+          ]
+        ],
+        [
+          "build-script-build",
+          [
+            "custom-build"
+          ]
+        ],
+        [
+          "build-script-build",
+          [
+            "custom-build"
+          ]
+        ],
+        [
+          "build-script-build",
+          [
+            "custom-build"
+          ]
+        ],
+        [
+          "build-script-build",
+          [
+            "custom-build"
+          ]
+        ],
+        [
+          "build-script-build",
+          [
+            "custom-build"
+          ]
+        ],
+        [
+          "build-script-build",
+          [
+            "custom-build"
+          ]
+        ],
+        [
+          "build-script-build",
+          [
+            "custom-build"
+          ]
+        ],
+        [
+          "build-script-build",
+          [
+            "custom-build"
+          ]
+        ],
+        [
+          "build-script-build",
+          [
+            "custom-build"
+          ]
+        ],
+        [
+          "build-script-build",
+          [
+            "custom-build"
+          ]
+        ],
+        [
+          "build-script-build",
+          [
+            "custom-build"
+          ]
+        ],
+        [
+          "build-script-build",
+          [
+            "custom-build"
+          ]
+        ],
+        [
+          "build-script-build",
+          [
+            "custom-build"
+          ]
+        ],
+        [
+          "camino",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "castaway",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "cfg_if",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "chacha20",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "chrono",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "collection_literals",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "colored",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "compact_str",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "cpufeatures",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "crc32fast",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "crossbeam_queue",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "crossbeam_utils",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "dashmap",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "derive_where",
+          [
+            "proc-macro"
+          ]
+        ],
+        [
+          "displaydoc",
+          [
+            "proc-macro"
+          ]
+        ],
+        [
+          "dunce",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "either",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "equivalent",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "fern",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "filetime",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "foldhash",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "form_urlencoded",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "get_size2",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "get_size_derive2",
+          [
+            "proc-macro"
+          ]
+        ],
+        [
+          "getopts",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "getrandom",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "glob",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "globset",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "hashbrown",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "hashbrown",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "hashlink",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "heck",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "icu_collections",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "icu_locale_core",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "icu_normalizer",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "icu_normalizer_data",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "icu_properties",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "icu_properties_data",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "icu_provider",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "idna",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "idna_adapter",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "imperative",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "indexmap",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "interpolator",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "intrusive_collections",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "inventory",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "is_macro",
+          [
+            "proc-macro"
+          ]
+        ],
+        [
+          "itertools",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "itertools",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "itoa",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "jiff",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "libc",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "libc",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "libcst_derive",
+          [
+            "proc-macro"
+          ]
+        ],
+        [
+          "libcst_native",
+          [
+            "cdylib",
+            "rlib"
+          ]
+        ],
+        [
+          "litemap",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "lock_api",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "log",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "log",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "manyhow",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "manyhow_macros",
+          [
+            "proc-macro"
+          ]
+        ],
+        [
+          "matchit",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "memchr",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "memoffset",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "natord",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "newtype_uuid",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "num_traits",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "once_cell",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ordermap",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "parking_lot",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "parking_lot_core",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "paste",
+          [
+            "proc-macro"
+          ]
+        ],
+        [
+          "path_absolutize",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "path_dedot",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "path_slash",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "pathdiff",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "peg",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "peg_macros",
+          [
+            "proc-macro"
+          ]
+        ],
+        [
+          "peg_runtime",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "peg_runtime",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "pep440_rs",
+          [
+            "rlib",
+            "cdylib"
+          ]
+        ],
+        [
+          "pep508_rs",
+          [
+            "cdylib",
+            "rlib"
+          ]
+        ],
+        [
+          "percent_encoding",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "phf",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "phf",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "phf_codegen",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "phf_generator",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "phf_shared",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "phf_shared",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "phf_shared",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "pin_project_lite",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "portable_atomic",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "potential_utf",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ppv_lite86",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "proc_macro2",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "proc_macro_utils",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "pyproject_toml",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "quick_junit",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "quick_xml",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "quote",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "quote_use",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "quote_use_macros",
+          [
+            "proc-macro"
+          ]
+        ],
+        [
+          "rand",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "rand",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "rand_chacha",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "rand_core",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "rand_core",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "regex",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "regex",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "regex_automata",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "regex_automata",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "regex_syntax",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ruff_annotate_snippets",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ruff_cache",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ruff_db",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ruff_diagnostics",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ruff_index",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ruff_linter",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ruff_macros",
+          [
+            "proc-macro"
+          ]
+        ],
+        [
+          "ruff_memory_usage",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ruff_notebook",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ruff_python_ast",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ruff_python_codegen",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ruff_python_importer",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ruff_python_index",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ruff_python_literal",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ruff_python_parser",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ruff_python_semantic",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ruff_python_stdlib",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ruff_python_trivia",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ruff_python_trivia",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ruff_ranged_value",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ruff_source_file",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ruff_source_file",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ruff_text_size",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ruff_text_size",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "rust_stemmers",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "rustc_hash",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "rustversion",
+          [
+            "proc-macro"
+          ]
+        ],
+        [
+          "ryu",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "salsa",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "salsa_macro_rules",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "salsa_macros",
+          [
+            "proc-macro"
+          ]
+        ],
+        [
+          "scopeguard",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "seahash",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "serde",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "serde_core",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "serde_derive",
+          [
+            "proc-macro"
+          ]
+        ],
+        [
+          "serde_json",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "serde_spanned",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "similar",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "siphasher",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "smallvec",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "smallvec",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "stable_deref_trait",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "static_assertions",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "strip_ansi_escapes",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "strum",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "strum_macros",
+          [
+            "proc-macro"
+          ]
+        ],
+        [
+          "supports_hyperlinks",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "syn",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "synstructure",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "thin_vec",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "thiserror",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "thiserror",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "thiserror_impl",
+          [
+            "proc-macro"
+          ]
+        ],
+        [
+          "thiserror_impl",
+          [
+            "proc-macro"
+          ]
+        ],
+        [
+          "tinystr",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "tinyvec",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "tinyvec_macros",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "toml",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "toml",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "toml_datetime",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "toml_datetime",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "toml_parser",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "toml_writer",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "tracing",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "tracing_attributes",
+          [
+            "proc-macro"
+          ]
+        ],
+        [
+          "tracing_core",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ty_static",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "typed_arena",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "typed_path",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "typeid",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "unicode_ident",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "unicode_names2",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "unicode_names2_generator",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "unicode_normalization",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "unicode_width",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "unscanny",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "url",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "urlencoding",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "utf8_iter",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "uuid",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "version_ranges",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "vte",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "winnow",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "winnow",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "writeable",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "yoke",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "yoke_derive",
+          [
+            "proc-macro"
+          ]
+        ],
+        [
+          "zerocopy",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "zerofrom",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "zerofrom_derive",
+          [
+            "proc-macro"
+          ]
+        ],
+        [
+          "zerotrie",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "zerovec",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "zerovec_derive",
+          [
+            "proc-macro"
+          ]
+        ],
+        [
+          "zip",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "zmij",
+          [
+            "lib"
+          ]
+        ]
+      ],
+      "raw_digests": {
+        "cargo.err": "897d2c328f62eca81178e4b1daab0e991fc7f4087528b9330d9e2ab558bba970",
+        "cargo.jsonl": "7c20ee6b7dfecc92674a5615f20aa222a6119f8bd5f8bf564694598205b52485",
+        "consumer/compiler.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "consumer/result.json": "ef1501c5f5fe0d3622ce4fc87799d7e72a22cad3cdb5286eba6293c9a6018ab8",
+        "summary.json": "22ae7c0f2fc4866d292c1488104f108fbca27db964d3f8f97dc91c96c5b74d6f"
+      },
+      "summary": {
+        "archive": "5a19ea987c7207360622c1337327ef5c37cb6a0567d55826578f5650524c2d5b",
+        "consumer_exe": "72ee84305c341a8a679ca27588c9f139d420e332cc0a74535bd0d57ae084feaa",
+        "consumer_output": "2 SIM222\n3 SIM222\n4 SIM222\n",
+        "fresh": 0,
+        "root_fresh": false,
+        "size": 101853960,
+        "state_free": 3860676608,
+        "units": 248
+      }
+    },
+    "original": {
+      "consumer": {
+        "ast": "17ed7cc324ab735fc8510c82a35b4c28cceb7c7392ee2c34874a502e865f832b",
+        "executable": "b538463bb851945e3ca3510e792ab6111dc5c849b62d94f14636d9808077fd71",
+        "exit": 0,
+        "input": "e981376810375b7214c83ccd0dd840cd0110c7ce31d90cffc45ae1bd9706c4c2",
+        "linter": "503e3a4d1350444abd19973f1576e6d816971c4acc6fb1f5cc0a479eae24870b",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout": "1 SIM222\n"
+      },
+      "dirty_units": [],
+      "raw_digests": {
+        "cargo.err": "29b5eb7e6828fd2e1c45fec9c88ddf581e48fee458005e18d12a35400858745b",
+        "cargo.jsonl": "d96a6cd1e475db2f9278d1e82b2372f53c6d6e1f92b47f5df7f6e29bb7fae58e",
+        "consumer/compiler.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "consumer/result.json": "dabe64e4f4746b2e1bbaf9ca73d95c8b50a0eae877689fc76379902d78d015bd",
+        "summary.json": "62c996e1e917d91c3cf3450baf79c71282e6d7ee4e7ac53003242efe0586dba3"
+      },
+      "summary": {
+        "archive": "503e3a4d1350444abd19973f1576e6d816971c4acc6fb1f5cc0a479eae24870b",
+        "consumer_exe": "b538463bb851945e3ca3510e792ab6111dc5c849b62d94f14636d9808077fd71",
+        "consumer_output": "1 SIM222\n",
+        "fresh": 248,
+        "root_fresh": true,
+        "size": 101853960,
+        "state_free": 5590073344,
+        "units": 248
+      }
+    },
+    "restore": {
+      "consumer": {
+        "ast": "e50a88f26752fc83dc433e51eecaf507e8c872aa6a71ec37b2506e6a6dccaab6",
+        "executable": "b538463bb851945e3ca3510e792ab6111dc5c849b62d94f14636d9808077fd71",
+        "exit": 0,
+        "input": "e981376810375b7214c83ccd0dd840cd0110c7ce31d90cffc45ae1bd9706c4c2",
+        "linter": "aa1cd318e39231b8ce8c33b82e2cdd85104b56a26345d4b991e2bdb8ebb0741a",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout": "1 SIM222\n"
+      },
+      "dirty_units": [
+        [
+          "ruff_db",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ruff_linter",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ruff_python_ast",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ruff_python_codegen",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ruff_python_importer",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ruff_python_index",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ruff_python_literal",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ruff_python_parser",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ruff_python_semantic",
+          [
+            "lib"
+          ]
+        ],
+        [
+          "ruff_ranged_value",
+          [
+            "lib"
+          ]
+        ]
+      ],
+      "raw_digests": {
+        "cargo.err": "2fadf60bfff0c5b10b5ca22543c64b23603f95d5cdcde9e3ccb656e579a11164",
+        "cargo.jsonl": "a471d26191f88cb374b743759f9afdc19b988bcded861657ab360ea9282afb3c",
+        "consumer/compiler.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "consumer/result.json": "f814a5285fa5d933ec062e8dd0aff47ba281ea87e0bfbfd4a8668e9910b2e785",
+        "summary.json": "0e0700311ef78847cec1beb281bacd3936bf03c1b2912651c47f218f67014347"
+      },
+      "summary": {
+        "archive": "aa1cd318e39231b8ce8c33b82e2cdd85104b56a26345d4b991e2bdb8ebb0741a",
+        "consumer_exe": "b538463bb851945e3ca3510e792ab6111dc5c849b62d94f14636d9808077fd71",
+        "consumer_output": "1 SIM222\n",
+        "fresh": 238,
+        "root_fresh": false,
+        "size": 101853960,
+        "state_free": 3943964672,
+        "units": 248
+      }
+    },
+    "restore-repeat": {
+      "consumer": {
+        "ast": "e50a88f26752fc83dc433e51eecaf507e8c872aa6a71ec37b2506e6a6dccaab6",
+        "executable": "b538463bb851945e3ca3510e792ab6111dc5c849b62d94f14636d9808077fd71",
+        "exit": 0,
+        "input": "e981376810375b7214c83ccd0dd840cd0110c7ce31d90cffc45ae1bd9706c4c2",
+        "linter": "aa1cd318e39231b8ce8c33b82e2cdd85104b56a26345d4b991e2bdb8ebb0741a",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout": "1 SIM222\n"
+      },
+      "dirty_units": [],
+      "raw_digests": {
+        "cargo.err": "bcb74884a78099501f6bfc31de29d15aae4eb48dcd18d5c99bdde44d75b90089",
+        "cargo.jsonl": "beb530c2717cdeb2906f5671f14f14d465d18b81779463a664d5c178e767797c",
+        "consumer/compiler.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "consumer/result.json": "f814a5285fa5d933ec062e8dd0aff47ba281ea87e0bfbfd4a8668e9910b2e785",
+        "summary.json": "7116b0aabd94459673785816c7c6aaa451e18381f5a317bab7c9dd40fd07c039"
+      },
+      "summary": {
+        "archive": "aa1cd318e39231b8ce8c33b82e2cdd85104b56a26345d4b991e2bdb8ebb0741a",
+        "consumer_exe": "b538463bb851945e3ca3510e792ab6111dc5c849b62d94f14636d9808077fd71",
+        "consumer_output": "1 SIM222\n",
+        "fresh": 248,
+        "root_fresh": true,
+        "size": 101853960,
+        "state_free": 4328865792,
+        "units": 248
+      }
+    }
+  },
+  "qualification": {
+    "edited_actual_consumer": "2 SIM222\n3 SIM222\n4 SIM222\n",
+    "edited_warm_archive": "ed50cec8f8a9d85ab7e361648511d5e0c83f4d808b0a8b5951c7d615e778f315",
+    "independent_empty_archive": "5a19ea987c7207360622c1337327ef5c37cb6a0567d55826578f5650524c2d5b",
+    "original_archive": "503e3a4d1350444abd19973f1576e6d816971c4acc6fb1f5cc0a479eae24870b",
+    "restored_actual_consumer": "1 SIM222\n",
+    "restored_archive": "aa1cd318e39231b8ce8c33b82e2cdd85104b56a26345d4b991e2bdb8ebb0741a",
+    "restored_original_raw": false,
+    "warm_and_empty_archive_equal": false
+  },
+  "script_hashes": {
+    "cli_input.py": "8f1a2b56a9041bf64da2b920317ae15a0e616837a64d30137a8b7d392c5ea364",
+    "h2-stock-qa.py": "8efbc03e669e1e49b4155ea578041dab13d8e53368d885811885867de05879ac",
+    "h2-stock-qa.sh": "62d34a40261a5ef52a50a6b75a1ddf79ed7109170ad8b48b3c0bae6187f7bc1a",
+    "reader.rs": "1b51d29cfcb474133d2c9a41f70295355c46f4ca1abd7111929f9a00317f058b"
+  },
+  "seed": {
+    "dev": 61,
+    "free": 5881065472,
+    "fresh": 0,
+    "full_units": 248,
+    "hash": "503e3a4d1350444abd19973f1576e6d816971c4acc6fb1f5cc0a479eae24870b",
+    "ino": 18247,
+    "size": 101853960,
+    "unit": "target/debug/build/workspaces/3f58deaa374aa99a/v2-e20b151467518253/ruff_linter/0491bb5183f6cc03/out/libruff_linter-0491bb5183f6cc03.rlib",
+    "uplift": "target/debug/libruff_linter.rlib"
+  }
+}
