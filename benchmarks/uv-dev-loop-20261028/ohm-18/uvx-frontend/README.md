@@ -1,5 +1,9 @@
 # Compiler time after editing uvx
 
+The proposed Cargo rule failed its large-module control. Adding a module with 4,096 reachable functions to a previously one-file binary made an ordinary edited cargo build 234 ms slower than shipped Ohm -18 (97.73% rank interval 128–577 ms) and 479 ms slower than the matched Cargo (240–729 ms). The candidate was slower in 21 of 24 paired blocks against each control. It used the previous build’s single-file dep-info to select one thread for the first edit. Once that edit had recorded the new file, the candidate selected eight threads again. This stopped promotion to a whole-uv wall-time study. [All 72 commands and standalone verifier](large-module-control.tar.gz)
+
+The patched and pristine Cargo binaries each trained on the same 24 bitmaps and Diesel commands. Twelve structural cases finished and every compared executable matched. In the final library control, shipped Cargo succeeded but the verifier expected an archive member starting with uv- and encountered frontlib-. The failed module margin comes from its own complete cell. The archive preserves the separate error and every original observation.
+
 Changing rustc from eight frontend threads to one saved 38–44 ms when recompiling the edited uvx binary on Ohm 1.99.0-18. The time includes the link. Each of the six comparisons used 48 balanced pairs on a 32-vCPU AMD EPYC Milan KVM guest with 16 vCPUs available to the workload. Each checkout used a different real source edit. The brackets show 97.07% paired intervals in milliseconds.
 
 | rustc invocation | First edit, ms saved | Second edit, ms saved | Rustc instructions saved on each edit |
