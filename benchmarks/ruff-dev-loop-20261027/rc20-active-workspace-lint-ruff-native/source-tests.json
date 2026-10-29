@@ -1,0 +1,49 @@
+{
+  "build_stderr": "ac75285a148a4158551e9d35c4c1dbc962ea692cac234d04a34919c1ae13916b",
+  "build_stdout": "88e0d3c6bab8874faeb8eb9ea91b2df5581cfca693ae5d1f5b3106a0cde52ba9",
+  "results": [
+    {
+      "direct_product_execs": 0,
+      "exit": 0,
+      "image": "789a3a4c430521dd65853424fb0d7f71419a45f7b1fea6a0f6ad30ef9a4681bd",
+      "label": "lib",
+      "source": null,
+      "test": "ops::resolve_cache::tests::trailing_workspace_lints_preserve_dependency_and_cargo_settings"
+    },
+    {
+      "direct_product_execs": 3,
+      "exit": 101,
+      "image": "1c9771370a4e6baf970e47c4cfd4a7f1367f7fd4a40ca8113c910079cce6b51e",
+      "label": "control",
+      "source": "80356b8237d3089d3360b6de5abfc64a17e4b8d3f0ec1fb64e09254418b5c5e5",
+      "test": "workspaces::workspace_resolve_cache_applies_edited_workspace_lints"
+    },
+    {
+      "direct_product_execs": 3,
+      "exit": 0,
+      "image": "1c9771370a4e6baf970e47c4cfd4a7f1367f7fd4a40ca8113c910079cce6b51e",
+      "label": "candidate",
+      "source": "ed665a889fe5621e65c119175b09139bff9be1d6b5fc25adfec6bcaa6d2ba40c",
+      "test": "workspaces::workspace_resolve_cache_applies_edited_workspace_lints"
+    }
+  ],
+  "source": "70baacdb3232ab8690c42c32ccbe46dbf701ec72",
+  "streams": {
+    "candidate": {
+      "original_exec_sha256": "547d49ca6ac2baa57edea6ac55f3e6b34a967089495442b6dab89fa920f7d72e",
+      "original_stdout_sha256": "9f7f95162b8c9c8e804e54f80845db96889a559f594287d8aa920ff029410363",
+      "stdout": "\nrunning 1 test\ntest workspaces::workspace_resolve_cache_applies_edited_workspace_lints ... ok\n\ntest result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 4823 filtered out; finished in 1.21s\n\n"
+    },
+    "control": {
+      "original_exec_sha256": "f7366255092ee076e8e523c13f019b637596dc45bceb88a7c7a48d5aa0be2a2b",
+      "original_stdout_sha256": "248163a69d15ed3db114761c07a2de0dde68c843954eb2481978f95087ba387a",
+      "stdout": "\nrunning 1 test\ntest workspaces::workspace_resolve_cache_applies_edited_workspace_lints ... FAILED\n\nfailures:\n\n---- workspaces::workspace_resolve_cache_applies_edited_workspace_lints stdout ----\nrunning `<test-view>/target/debug/cargo check --package selected`\nrunning `<test-view>/target/debug/cargo check --package selected`\nrunning `<test-view>/target/debug/cargo check --package selected`\n\nthread 'workspaces::workspace_resolve_cache_applies_edited_workspace_lints' (1363544) panicked at tests/testsuite/workspaces.rs:3090:10:\n\ntest failed running `<test-view>/target/debug/cargo check --package selected`\nerror: expected to find:\n[..]reusing the cached workspace resolution[..]\n\ndid not find in output:\n   0.022495635s DEBUG resolve_with_registry:resolve_with_previous:register_patch_entries: cargo::ops::resolve: return=Ok({})\n   0.022628403s DEBUG resolve_with_registry:resolve_with_previous: cargo::ops::resolve: attempting to prefer selected v0.1.0 ([ROOT]/foo)\n   0.028574835s DEBUG resolve_with_previous: cargo::ops::resolve: attempting to prefer selected v0.1.0 ([ROOT]/foo)\n[CHECKING] selected v0.1.0 ([ROOT]/foo)\n[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s\n\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\n\nfailures:\n    workspaces::workspace_resolve_cache_applies_edited_workspace_lints\n\ntest result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 4823 filtered out; finished in 1.18s\n\n"
+    },
+    "lib": {
+      "original_exec_sha256": "6bfd2f5b0c60356eb866638ecb2c760c3535b2954a5ce5dd36c59a3ca97b824f",
+      "original_stdout_sha256": "74b4ee249309e527a0017bd9303e17f808a4a5e8a47e6e1455be1415d382447c",
+      "stdout": "\nrunning 1 test\ntest ops::resolve_cache::tests::trailing_workspace_lints_preserve_dependency_and_cargo_settings ... ok\n\ntest result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 407 filtered out; finished in 0.00s\n\n"
+    }
+  },
+  "version": "cargo 1.99.0-dev (7caf39914 2026-10-28) (ohm-1.99.0-18)\nrelease: 1.99.0-dev\ncommit-hash: 7caf39914da1e28a67744ecbc963a5f26361474d\ncommit-date: 2026-10-28\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.6.3)\nssl: OpenSSL 3.6.3 9 Jun 2026\nos: Ubuntu 24.4.0 (noble) [64-bit]\n"
+}

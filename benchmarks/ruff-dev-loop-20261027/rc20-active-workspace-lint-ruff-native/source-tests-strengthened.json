@@ -1,0 +1,50 @@
+{
+  "build_stderr": "cdcb1b2617fe1cb495c0e9321bb60aec337622849f27e7e47c3d79ce5d66ec31",
+  "build_stdout": "76eba556526e6d57425d6e90bbb1c6049b8a2e2ab02ee06bf879edaa08b518d6",
+  "production_blob": "9239e0f6b581abfc58f8dbcac4af6936574ec958",
+  "results": [
+    {
+      "direct_product_execs": 0,
+      "exit": 0,
+      "image": "34a27b43980c6b4f17c901425f6e8846b49e63f7b48a50660c92d1da20c57e5b",
+      "label": "lib",
+      "source": null,
+      "test": "ops::resolve_cache::tests::trailing_workspace_lints_preserve_dependency_and_cargo_settings"
+    },
+    {
+      "direct_product_execs": 2,
+      "exit": 101,
+      "image": "6c762b44dc6cae5c322be2807cf6cbe159e1f6e420b867e33baf72525065da3c",
+      "label": "control",
+      "source": "80356b8237d3089d3360b6de5abfc64a17e4b8d3f0ec1fb64e09254418b5c5e5",
+      "test": "workspaces::workspace_resolve_cache_applies_edited_workspace_lints"
+    },
+    {
+      "direct_product_execs": 3,
+      "exit": 0,
+      "image": "6c762b44dc6cae5c322be2807cf6cbe159e1f6e420b867e33baf72525065da3c",
+      "label": "candidate",
+      "source": "acc057a0a90f2c2390a5e2cb74efcd883d419060e13909eab711ef3e833fb8d8",
+      "test": "workspaces::workspace_resolve_cache_applies_edited_workspace_lints"
+    }
+  ],
+  "source": "fd7269b3bb520ad00f661962d84efdf75fb0daca",
+  "streams": {
+    "candidate": {
+      "original_exec_sha256": "a083a517467ffe8c3fcce8b5582445a1e8de2791b657069a6d4e91019fbee2c3",
+      "original_stdout_sha256": "6b8e4ce6cb5e5aa4d0e86696d69dbd10528a88ff69a8d03553cdbb631e809693",
+      "stdout": "\nrunning 1 test\ntest workspaces::workspace_resolve_cache_applies_edited_workspace_lints ... ok\n\ntest result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 4823 filtered out; finished in 1.14s\n\n"
+    },
+    "control": {
+      "original_exec_sha256": "0cf5c665027b40a3257bf3efc497928a92b6222fd9ccba96f32b1216d72f2cb7",
+      "original_stdout_sha256": "824a873efdacc12a239862b2e28d3d09d9e792e47afe756b8ed16f8444606c40",
+      "stdout": "\nrunning 1 test\ntest workspaces::workspace_resolve_cache_applies_edited_workspace_lints ... FAILED\n\nfailures:\n\n---- workspaces::workspace_resolve_cache_applies_edited_workspace_lints stdout ----\nrunning `<test-view>/target/debug/cargo check --package selected`\nrunning `<test-view>/target/debug/cargo check --package selected`\n\nthread 'workspaces::workspace_resolve_cache_applies_edited_workspace_lints' (1477513) panicked at tests/testsuite/workspaces.rs:3090:10:\n\ntest failed running `<test-view>/target/debug/cargo check --package selected`\nerror: expected not to find:\n[..]resolve_with_registry:resolve_with_previous:register_patch_entries:[..]\n\nbut found in output:\n   0.017838626s DEBUG resolve_with_registry:resolve_with_previous:register_patch_entries: cargo::ops::resolve: return=Ok({})\n   0.017986873s DEBUG resolve_with_registry:resolve_with_previous: cargo::ops::resolve: attempting to prefer selected v0.1.0 (<test-view>/target/tmp/083eeb85a0ec8fca/cit/testsuite/workspaces/workspace_resolve_cache_applies_edited_workspace_lints/foo)\n   0.023726509s DEBUG resolve_with_previous: cargo::ops::resolve: attempting to prefer selected v0.1.0 (<test-view>/target/tmp/083eeb85a0ec8fca/cit/testsuite/workspaces/workspace_resolve_cache_applies_edited_workspace_lints/foo)\n   0.034625644s DEBUG cargo::ops::resolve: reusing the cached workspace resolution\n   0.034934131s DEBUG resolve_with_previous:register_patch_entries: cargo::ops::resolve: return=Ok({})\n   0.034985016s DEBUG resolve_with_previous: cargo::ops::resolve: attempting to prefer selected v0.1.0 (<test-view>/target/tmp/083eeb85a0ec8fca/cit/testsuite/workspaces/workspace_resolve_cache_applies_edited_workspace_lints/foo)\n    Checking selected v0.1.0 (<test-view>/target/tmp/083eeb85a0ec8fca/cit/testsuite/workspaces/workspace_resolve_cache_applies_edited_workspace_lints/foo)\nerror: unused variable: `value`\n --> src/main.rs:1:17\n  |\n1 | fn main() { let value = 17; }\n  |                 ^^^^^ help: if this is intentional, prefix it with an underscore: `_value`\n  |\n  = note: requested on the command line with `-D unused-variables`\n\nerror: could not compile `selected` (bin \"selected\") due to 1 previous error\n\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\n\nfailures:\n    workspaces::workspace_resolve_cache_applies_edited_workspace_lints\n\ntest result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 4823 filtered out; finished in 0.86s\n\n"
+    },
+    "lib": {
+      "original_exec_sha256": "25fc423e4b02fd5f844bfbe3a3ee1a23600aad8450f0ce9090344a531516fe48",
+      "original_stdout_sha256": "74b4ee249309e527a0017bd9303e17f808a4a5e8a47e6e1455be1415d382447c",
+      "stdout": "\nrunning 1 test\ntest ops::resolve_cache::tests::trailing_workspace_lints_preserve_dependency_and_cargo_settings ... ok\n\ntest result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 407 filtered out; finished in 0.00s\n\n"
+    }
+  },
+  "version": "cargo 1.99.0-dev (7caf39914 2026-10-28) (ohm-1.99.0-18)\nrelease: 1.99.0-dev\ncommit-hash: 7caf39914da1e28a67744ecbc963a5f26361474d\ncommit-date: 2026-10-28\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.6.3)\nssl: OpenSSL 3.6.3 9 Jun 2026\nos: Ubuntu 24.4.0 (noble) [64-bit]\n"
+}

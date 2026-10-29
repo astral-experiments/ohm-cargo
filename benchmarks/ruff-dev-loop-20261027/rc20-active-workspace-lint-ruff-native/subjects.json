@@ -1,0 +1,67 @@
+{
+  "baseline": "97e5acfb7b8eefde1ce07d703fc4849d6d36e37c",
+  "baseline_binary": "80356b8237d3089d3360b6de5abfc64a17e4b8d3f0ec1fb64e09254418b5c5e5",
+  "baseline_to_git_parent_delta": [
+    "tests/testsuite/workspaces.rs"
+  ],
+  "bytes": 43359400,
+  "cargo_sha256": "acc057a0a90f2c2390a5e2cb74efcd883d419060e13909eab711ef3e833fb8d8",
+  "git_parent": "c3bacd5c276b370a57bf235b2cf50bb116470950",
+  "held_cargo_version": "cargo 1.99.0 (2fe90823d 2026-10-29)\nrelease: 1.99.0\ncommit-hash: 2fe90823d8eadc95de56c2cde8d41e0082aac0eb\ncommit-date: 2026-10-29\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.0.13)\nos: Ubuntu 24.4.0 (noble) [64-bit]\n",
+  "independent_native_files": 335,
+  "independent_rlibs": 326,
+  "literal_compiler_commands_equal": true,
+  "measured_driver_sha256": "35528f38557d13eeae4ac8a214ecf66e6acef5fe55229881147b0a4cbf84d4aa",
+  "ordered_external_inputs": 239,
+  "pgo_profile": "481ada8a40c70dad11b3c7e8871e9a52207d78447ca5e8ace06fc4aec2d2b5a7",
+  "released_18_runtime": {
+    "bin/rustc": {
+      "bytes": 171720,
+      "sha256": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60"
+    },
+    "lib/librustc_driver-b03bf00bec23bb9a.so": {
+      "bytes": 162599552,
+      "sha256": "a7648053cbad025c1bb0bebb7009ce9e1515bdb02e8c30bef29b52a881e5b8de"
+    },
+    "lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld/ld.bfd": {
+      "bytes": 10319072,
+      "sha256": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+    }
+  },
+  "ruff": {
+    "files": {
+      "Cargo.lock": {
+        "bytes": 138994,
+        "git_blob": "a07ef6fbbdf04d9a20e53f647dbccd47d6d93b75",
+        "sha256": "c9e345325bec5ff08dbbe3916edd39ad0c3d1c7797a8c241ae32f62754e764bf"
+      },
+      "Cargo.toml": {
+        "bytes": 19147,
+        "git_blob": "03b948d730b889ad22181211db283ab450298d0a",
+        "sha256": "893b5ff55f23fde170f5079766ebbe20937419a24296394a6dd0f326b8ccba88"
+      },
+      "LICENSE": {
+        "bytes": 20731,
+        "git_blob": "655a0c76fc5539b2f8e63b673741a5fd0e0c5799",
+        "sha256": "2597d854122b77ddc71971564ca2350a37608575ce324adc5650a2b2051c8f18"
+      },
+      "crates/ruff_text_size/src/lib.rs": {
+        "bytes": 1305,
+        "git_blob": "0276e0b32b1e89a642647927fc5a69de72bb4063",
+        "sha256": "5818d42f6c51b95216b293fd5c2d219ee56127662bf53bbfb836bd4ec608621e"
+      },
+      "crates/ruff_text_size/tests/serde.rs": {
+        "bytes": 1808,
+        "git_blob": "606b4168335e920da5f93c1121dce00da1d30426",
+        "sha256": "46cd1f5bfd2f40374e3d5312f9d151b2cf7470ec866a3a309adb1999b7231d46"
+      }
+    },
+    "historical_commit": "36cc91ffb72adde11f0c4dfb76330a07481f6153",
+    "historical_parent": "6d4d692526580e0b4b1e38e52c4a6dd4786868d2",
+    "source": "93526150df078af7dd8fc4226cdcc469539d2001",
+    "tree": "62d3f106c5e41f6022847f26ff8c7dc00139f7b1"
+  },
+  "source": "70baacdb3232ab8690c42c32ccbe46dbf701ec72",
+  "source_stamp_scope": "Only generated git-commit-info is held at the actual reference stamp. Candidate source is bound independently to its 3108 Git leaves.",
+  "unchanged_input_scope": "All durable literal non-product inputs and normalized native argv. Three gcc/rustc-generated ephemeral role paths were recorded; their temporary bytes were not retained."
+}
