@@ -1,0 +1,50 @@
+{
+  "analysis": "median paired log F/R, per-arm median, 95% percentile paired bootstrap and exact two-sided six-of-twelve order randomization; characterization, no product-claim gate",
+  "bootstrap_draws": 30000,
+  "bootstrap_seed": 202610290750,
+  "cargo": "e9d797db90e051284931870fa2be6648e09e6878f1a2b5176f4848889e6c4fae",
+  "cargo_source": "2447f7f4eacb4fdf499899929f08d0de19abb4d0",
+  "clock": "inside verified full-uid mount namespace around ordinary cargo subprocess including wait/output close; no tracing, tests, artifact parsing or restoration between timestamps",
+  "cpu": [
+    24,
+    25,
+    26,
+    27
+  ],
+  "driver": "887bf8fc3c90090c1dd5be4af51e8c4a0f319a93db99b454dae35e96c7afde8b",
+  "edit": "a50dc58628691ee00a21809e19bdea71958e4f3c",
+  "gates": [
+    "fresh independent R/F targets, build dirs, registry directories under common absolute runtime paths",
+    "same complete Rust/PGO Cargo and stock Wild, no wrappers or RUSTFLAGS",
+    "147 typed outputs and actual clean/dirty/zero-work and 558/557 plus 1 inventories; original/edited independent fixed-input parser rejection/acceptance and matching failure after invalid code",
+    "R historical edit one full parser, both cached compiler and both stock Wild; F both true reader and generator compilers and both stock Wild, no cached rustc",
+    "raw ELF and section fingerprints bound; stop on any unexplained runtime-relevant difference, incorrect caller, unexpected native work or failed slot",
+    "admit before timers; three-second per-lane idle guard at >=85% CPU idle and >=65GiB filesystem/16GiB MemAvailable; wait up to two minutes for unrelated load, no replacement of started slots",
+    "all completed native+clock outputs and failures retained; one genuine restoration and typed zero-job state per arm between pairs; same canonical source and current mtime per matched pair"
+  ],
+  "jobs": 4,
+  "order_seed": 202610290749,
+  "orders": [
+    "RF",
+    "RF",
+    "FR",
+    "RF",
+    "FR",
+    "RF",
+    "RF",
+    "FR",
+    "RF",
+    "FR",
+    "FR",
+    "FR"
+  ],
+  "primary": "12 adjacent matched pairs, historical parser H to P, ordinary full wall, R is defaults and F differs only by -Zrelink-only=no",
+  "rust": "5e3de497d41f4d4fa98fce3082ea43076779de5d",
+  "rustc": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+  "source": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "targets": [
+    "generate_inline_tests",
+    "fixtures"
+  ],
+  "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+}

@@ -1,0 +1,82 @@
+{
+  "elf_comparison": {
+    "H": {
+      "fixtures": {
+        "changes": {},
+        "list_equal": true,
+        "raw_equal": true,
+        "width_neutral_equal": true
+      },
+      "generate_inline_tests": {
+        "changes": {},
+        "list_equal": true,
+        "raw_equal": true,
+        "width_neutral_equal": true
+      }
+    },
+    "P": {
+      "fixtures": {
+        "changes": {},
+        "list_equal": true,
+        "raw_equal": true,
+        "width_neutral_equal": true
+      },
+      "generate_inline_tests": {
+        "changes": {},
+        "list_equal": true,
+        "raw_equal": true,
+        "width_neutral_equal": true
+      }
+    }
+  },
+  "independent": "5d83f008a52d148c63e001e6b70a7e176cf0416556003fcf685f65f688aedbfb",
+  "native": "9150badf594c84166c285b501b77d0008d2c4264ebc5ef138804fab19984fb01",
+  "setup": {
+    "setup-attempt-0.json": {
+      "cargo_or_timing": false,
+      "correction": "use system Python in isolated mode and explicitly locate the trusted sibling worker",
+      "exception": "ModuleNotFoundError common",
+      "stage": "before acquisition/import common",
+      "state_created": false
+    },
+    "setup-attempt-1.json": {
+      "affected_path": "crates/ty_python_semantic/resources/corpus/83_jupyter_notebook_ipython_magic.ipynb",
+      "clock_commands": 0,
+      "correction": "Compare all files and symlink payloads/modes to pristine Git archive; do not dereference repository links or alter either source",
+      "exception": "prepare: assert not f.is_symlink() during full source census",
+      "native_commands": 0,
+      "original": "5bd14b7f86f717abaf1f771a4dc6a4a521d025f8de11651bcc4b6b7ac1f7a681"
+    },
+    "setup-attempt-2.json": {
+      "exception": "PermissionError loading private helper under /root before ordinary user HOME was restored after sudo",
+      "fix": "set correct HOME USER LOGNAME in mount adapter before invoking the ordinary uid worker; timing plan and workload unchanged",
+      "prior_enter": "55aaf7c345690bdcc05df879d39478ac95c6981322b776b1e248d07061e1a6dc",
+      "prior_failure": "84089654a8e1308fb1dc3d2414f259668df0d95c1c6c2dfc48994d7f05398977",
+      "timed_commands": 0,
+      "unchanged_physical_inputs": true,
+      "worktree_commands": 0
+    }
+  },
+  "source": {
+    "analyze.py": "80642724b98d22f0e660b742d576ba7e7199c893aba1f3d4f53794a509e44a3f",
+    "common.py": "79912fdb90d0d723a9ea86baf55c8c414102b08a003c35fea915dc82d5a740d1",
+    "finish-bind.py": "1cd3104f37b050cd5e8d4eabfb7f19ab639305067930c9ddf50caf7b39053523",
+    "mount-v2.sh": "8ced8070df4c1350b94bbc5b2e5fd852241a7f874f8a7cccc0898a4aaede38c6",
+    "mount.sh": "0f6e674388af6c7b15b655051eac0332300c6eaaae860a6477e69abb078b6957",
+    "prepare.py": "5bd14b7f86f717abaf1f771a4dc6a4a521d025f8de11651bcc4b6b7ac1f7a681",
+    "study-v2.py": "1d0ceec862ee484539f60e603b0fc0aa43bf7b53965a9cdc1f078297eddf2bda",
+    "study.py": "c3f3f72ecf1340adda8abf86a66f9272e262bb31a2a4540fb3cc327ef8003582",
+    "verify-native.py": "c142008aca251a5cc705e65e148f2c0a6c069155542f9ce7442921fea7f07970",
+    "worker.py": "77e136dcb503008402b273221f47e96a22b31e67cce0da95b88b776d9c5cb9e3"
+  },
+  "subjects": {
+    "cargo": "2447f7f4eacb4fdf499899929f08d0de19abb4d0",
+    "cargo_pgo_profile": "481ada8a40c70dad11b3c7e8871e9a52207d78447ca5e8ace06fc4aec2d2b5a7",
+    "cargo_release_stamped": true,
+    "cargo_tree": "b9496c0cbd39e102be38433f9eb193e343fb4fe9",
+    "rust": "5e3de497d41f4d4fa98fce3082ea43076779de5d",
+    "rust_compiler_tree": "e560860a8cf3f3c527e4d40fd74f1e828d1f4360",
+    "rust_stage1": true,
+    "rust_stdlib_tree": "4f7a8f755164dc68fff80790db8a844ae030fd03"
+  }
+}
