@@ -1,0 +1,218 @@
+{
+  "Cargo_lock_sha256": "c9e345325bec5ff08dbbe3916edd39ad0c3d1c7797a8c241ae32f62754e764bf",
+  "Ruff": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "admission_sha256": "48c0da198ae84092e625dd475585fbda77a19e1e2317d04172e86f15b12b3c5e",
+  "bootstrap_seed": 2026102912322,
+  "command": [
+    "cargo",
+    "+ohm",
+    "test",
+    "--locked",
+    "--offline",
+    "--no-run",
+    "-j4",
+    "-p",
+    "ruff_python_parser",
+    "--test",
+    "generate_inline_tests",
+    "--test",
+    "fixtures"
+  ],
+  "common_clean_seed_sha256": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+  "external_timer": "04942bc147d5ae168e1a91e60b19ea2ef87790ca6d091147015a44315bbd2743",
+  "historical_commit": "6dc1031889aa24a0461457409d39861e279242a9",
+  "historical_patch_sha256": "f91d0b26cd34058d4eb0c85eabe6df5cf0c20d7b05b840ef68eea0875798f037",
+  "images": {
+    "A": "967f5f1db2938847fac22d78dc222054cbb143a5fabcffcad0bd15f8929b47e9",
+    "B": "80356b8237d3089d3360b6de5abfc64a17e4b8d3f0ec1fb64e09254418b5c5e5"
+  },
+  "order": [
+    {
+      "direction": "reverse",
+      "order": "BA",
+      "pair": 1
+    },
+    {
+      "direction": "restore",
+      "order": "AB",
+      "pair": 2
+    },
+    {
+      "direction": "reverse",
+      "order": "AB",
+      "pair": 3
+    },
+    {
+      "direction": "restore",
+      "order": "BA",
+      "pair": 4
+    },
+    {
+      "direction": "reverse",
+      "order": "BA",
+      "pair": 5
+    },
+    {
+      "direction": "restore",
+      "order": "AB",
+      "pair": 6
+    },
+    {
+      "direction": "reverse",
+      "order": "BA",
+      "pair": 7
+    },
+    {
+      "direction": "restore",
+      "order": "BA",
+      "pair": 8
+    },
+    {
+      "direction": "reverse",
+      "order": "AB",
+      "pair": 9
+    },
+    {
+      "direction": "restore",
+      "order": "AB",
+      "pair": 10
+    },
+    {
+      "direction": "reverse",
+      "order": "AB",
+      "pair": 11
+    },
+    {
+      "direction": "restore",
+      "order": "BA",
+      "pair": 12
+    },
+    {
+      "direction": "reverse",
+      "order": "AB",
+      "pair": 13
+    },
+    {
+      "direction": "restore",
+      "order": "AB",
+      "pair": 14
+    },
+    {
+      "direction": "reverse",
+      "order": "BA",
+      "pair": 15
+    },
+    {
+      "direction": "restore",
+      "order": "BA",
+      "pair": 16
+    },
+    {
+      "direction": "reverse",
+      "order": "AB",
+      "pair": 17
+    },
+    {
+      "direction": "restore",
+      "order": "BA",
+      "pair": 18
+    },
+    {
+      "direction": "reverse",
+      "order": "AB",
+      "pair": 19
+    },
+    {
+      "direction": "restore",
+      "order": "AB",
+      "pair": 20
+    },
+    {
+      "direction": "reverse",
+      "order": "BA",
+      "pair": 21
+    },
+    {
+      "direction": "restore",
+      "order": "AB",
+      "pair": 22
+    },
+    {
+      "direction": "reverse",
+      "order": "BA",
+      "pair": 23
+    },
+    {
+      "direction": "restore",
+      "order": "BA",
+      "pair": 24
+    },
+    {
+      "direction": "reverse",
+      "order": "AB",
+      "pair": 25
+    },
+    {
+      "direction": "restore",
+      "order": "AB",
+      "pair": 26
+    },
+    {
+      "direction": "reverse",
+      "order": "BA",
+      "pair": 27
+    },
+    {
+      "direction": "restore",
+      "order": "AB",
+      "pair": 28
+    },
+    {
+      "direction": "reverse",
+      "order": "BA",
+      "pair": 29
+    },
+    {
+      "direction": "restore",
+      "order": "BA",
+      "pair": 30
+    },
+    {
+      "direction": "reverse",
+      "order": "AB",
+      "pair": 31
+    },
+    {
+      "direction": "restore",
+      "order": "BA",
+      "pair": 32
+    }
+  ],
+  "original_separate_clock": "8ef03d9942f74b3e4599d20c3473b3acc9f9c9a1ac4ad7ca4cd4d17216f20e62",
+  "raw_argv_sha256": "f026d917521e559e3b740e85f3c9c04434c4cc3bcebb4faf73df443b02a951c3",
+  "registration_sha256": "29c63a3fe917fce70e815580d79c76f538a0f80a8a507c9b621873d25e8ea0f1",
+  "root_manifest": {
+    "H": "893b5ff55f23fde170f5079766ebbe20937419a24296394a6dd0f326b8ccba88",
+    "P": "cd6179ed534ae36214b5554461d767080c86a3dad2652f15f304ca31d4da77a2"
+  },
+  "schedule_seed": 2026102912321,
+  "source": {
+    "baseline": "2fe90823d8eadc95de56c2cde8d41e0082aac0eb",
+    "candidate": "97e5acfb7b8eefde1ce07d703fc4849d6d36e37c",
+    "h4_build_sha256": "94ea50204f754c19af985386ac7605f1b9b4f7639a7370b924f390d340c38007",
+    "parent": "9d675d9393b5ff1ecebe764d1a554f8fd64175ef",
+    "tree": "5f178546610e421118c2ad60c8634d97ea06f687"
+  },
+  "starting_states": "Continued the two previously independent warm ext4 arms at H after fully archiving and verifying each.",
+  "statistics": "Primary edited median paired 100*(A-B)/A; both direction medians positive, 32 pair sign test two-sided p<.05 and 20,000 direction/order-stratified paired-bootstrap median 95% lower >0. Same per-cycle criterion on sum. For immediate repeats separately in reverse and restore (n=16 per), preregister noninferiority margin 2% slowdown; one-sided exact sign p<.05 for reduction >-2% with equality excluded AND one-sided exact distribution-free lower confidence bound (the fifth ordered observation, coverage 96.16% for n16) strictly above -2%. Broad requires primary and cycle plus BOTH direction guards (intersection-union). Give raw 128 durations, direction-specific paired distributions/medians, per-arm quartiles/range and intervals irrespective of decision. Quantized old samples and prior startup failure never enter any new estimate.",
+  "stock": {
+    "driver": "a7648053cbad025c1bb0bebb7009ce9e1515bdb02e8c30bef29b52a881e5b8de",
+    "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+    "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+  },
+  "test_elf": {
+    "fixtures": "f502d5919920f81692487761e975a69ced9c722e889e9884786a6a3850cfcfd1",
+    "generate_inline_tests": "576f1c40fa2653d9d35dec2511371ed3e70838880e61a117b959093280395c33"
+  },
+  "wall_grant_sha256": "bbf884732f2b8cff426b259eb6e290fb4e9f5021d4612d067d3fad46672be007"
+}

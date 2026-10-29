@@ -1,0 +1,24 @@
+{
+  "arms": [
+    "blocking",
+    "polling"
+  ],
+  "child": "009c546b617a823ed3bb08efb18a5fa0b29135d6537567919450da99da1ee655",
+  "ms": [
+    109,
+    115,
+    121,
+    127,
+    133,
+    139,
+    145,
+    151,
+    157,
+    163
+  ],
+  "repeats": 3,
+  "requirements": "On a 6ms grid spanning 109 to 163ms: each blocking median within 3.5ms of requested, each adjacent median increment 3–9ms, kernel-reported child-end to blocking return p95 below 2ms and max below 6ms. Repeat pairs use 3 trials/duration and one extra untimed strace certification of wait4(..., 0) without WNOHANG. The polling stopwatch remains a measured comparator, never a substitute.",
+  "seed": 2026102912329,
+  "timer": "04942bc147d5ae168e1a91e60b19ea2ef87790ca6d091147015a44315bbd2743",
+  "warmups": 0
+}

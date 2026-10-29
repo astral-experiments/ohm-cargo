@@ -1,0 +1,4 @@
+    if act=='wall':
+        with (out/'stdout').open('xb') as so,(out/'stderr').open('xb') as se:
+            t0=time.perf_counter_ns();x=sp.run(cmd,cwd=SRC,env=env,stdout=so,stderr=se,timeout=120);t1=time.perf_counter_ns()
+        put(out/'clock.json',dict(t0=t0,t1=t1,ns=t1-t0,code=x.returncode,cmd=list(map(str,cmd)),arm=a,side=side,stdout=h(out/'stdout'),stderr=h(out/'stderr'),initial=initial,ending=floor(),cargo=Q[role],cpus=sorted(os.sched_getaffinity(0))))

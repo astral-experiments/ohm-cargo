@@ -1,0 +1,14 @@
+# Repeating the parser workload
+
+Use two private, source-matched Cargo executables and the same stock Linux Rust/Wild SDK. Each SDK must be reachable through its own private rustup home as `+ohm`. The release Cargo hashes, source commits and common rustc, driver and stock Wild hashes are in `../blocking/registration.json`. The historical input is Ruff commit `93526150df078af7dd8fc4226cdcc469539d2001`. The source-only change reverses and restores the three trailing settings from Ruff commit `6dc1031889aa24a0461457409d39861e279242a9`; the active test profile stays the same.
+
+First train a private checkout with the recorded Cargo flags using a fully hydrated offline registry and fresh independent target and build directories. Compile once, repeat and verify all 147 are fresh. To avoid the cold proc-macro diagnostic difference demonstrated in this study, create two independent copies of that complete trained generation. On Linux, bind each arm’s copy of the source, registry, target and shared build directory back to the same respective logical paths inside its own mount namespace. The original trial used the same SDK path, changing only its Cargo executable with a private bind mount. Durable files were on ext4.
+
+```sh
+cargo +ohm test --locked --offline --no-run -j4 -p ruff_python_parser --test generate_inline_tests --test fixtures
+python3 -IB run-current.py --source "$PRIVATE_RUFF" --arm A --records "$NEW_OUTPUT"
+```
+
+Repeat the last command in arm B with its own copied state, its own private rustup home and a new records directory. Set `CARGO_HOME`, `CARGO_TARGET_DIR`, `CARGO_BUILD_BUILD_DIR` and `RUSTUP_HOME` before calling the driver. It verifies the source and installed binary, all 147 fresh units and each of the 265 local output bytes. It applies and restores the real profile change and records blocking process-exit time for each transition and immediate repeat. This short driver provides individual independent observations. The full registered order, timers, cutoffs, physical validation, machine class and all per-command measurements are in the two cohorts; `../verify.py` replays those actual studies without a toolchain or network.
+
+The parent and candidate physical resolver entry locations appear in each public native record. To obtain an off-clock mechanism trace from matching images, compile `watch-resolver.c` with `cc -std=c11 -O2 -g0 -Wall -Wextra -Werror`. Its arguments are the path of the active Cargo ELF, a new trace-file path, the four hexadecimal RVAs in order, `--`, and the ordinary Cargo command above. It follows the proxy and enrolls kernel threads only once the process executes the selected ELF. The candidate typed TOML entry is inlined; the concrete deserializer has exactly the two previously verified decoder return addresses. The numeric RVAs apply only to the listed release binaries.

@@ -1,0 +1,29 @@
+{
+  "arms": [
+    "blocking",
+    "polling"
+  ],
+  "child": "da1deadcc2f65c8bb390e3df0e4273048b3c555274790d63bbdcb17bdaf9a0d9",
+  "child_timestamp": "Pre-fault a private native-endian two-i64 page on tmpfs before the child starts; set nonzero start, absolute nanosleep, store end via volatile memory, call _exit immediately. No userspace flush, write, close or stdio follows the end observation.",
+  "first_calibration": {
+    "plan": "476da7f6a1f7a24f8de9abe1e97d38c0a066490c8e48a0f89d156e31bf244a05",
+    "terminal": "one 7.825070 ms child timestamp→wait return; all other gates held. Physical before timestamp included child printf to a newly created ext4 file. First exit 1 stays excluded from product clocks."
+  },
+  "ms": [
+    109,
+    115,
+    121,
+    127,
+    133,
+    139,
+    145,
+    151,
+    157,
+    163
+  ],
+  "repeats": 3,
+  "requirements": "On a 6ms grid spanning 109 to 163ms: each blocking median within 3.5ms of requested, each adjacent median increment 3–9ms, kernel-reported child-end to blocking return p95 below 2ms and max below 6ms. Repeat pairs use 3 trials/duration and one extra untimed strace certification of wait4(..., 0) without WNOHANG. The polling stopwatch remains a measured comparator, never a substitute.",
+  "seed": 2026102912351,
+  "timer": "04942bc147d5ae168e1a91e60b19ea2ef87790ca6d091147015a44315bbd2743",
+  "warmups": 0
+}
