@@ -1,0 +1,123 @@
+{
+  "all_observer_argvs": {
+    "argv-70386": "41dfcd0d81c6b7aa9f7512b3eb454d29225b23866101f4914bb39ed43a89a126",
+    "argv-70885": "79ca438c4e8725e65e270d385ee2af0fd6e76c6fdfd9f0afe9f5d002ce6132a1",
+    "argv-70886": "53c47b2839b85855ca6bc2b6d1532cd30fde8acd24edbbefc9078b5b23726147",
+    "argv-71030": "078ee897bda07083b00bd4a77ed58e010638386499bc396f452e17a824038fd0",
+    "argv-71033": "a4b3c949bbe48e05cccf52a230981f5f173ceb998008d7126e1e5edf4e71d11b",
+    "argv-71034": "07171e07b9da3f4dd96b63effe18cb1a00bff2f9055eada0ab3dadc67828b8ae",
+    "argv-71151": "85c15aa625ac475a75d4c04342dcd0e89b2c32492f6cc2dbd1f0ba87cf7b2f83",
+    "argv-71162": "eb1518e83447ecfaf13d3e9574f1c1d5984056b5f0e76a9edb7823e60297f4ed",
+    "argv-71163": "2b175d4a017b618093f7ba60fe671a2d7ffa56db08fba18b1d2cbf6c1e63ca93"
+  },
+  "counts": {
+    "fixtures": 1,
+    "generate_inline_tests": 1
+  },
+  "final_cargo_json_sha256": "a2e85fc63a88d677a2822446253ebb235df4aed1f238b6145a550247c6e48866",
+  "jobs": {
+    "fixtures": [
+      {
+        "argv": "79ca438c4e8725e65e270d385ee2af0fd6e76c6fdfd9f0afe9f5d002ce6132a1",
+        "before_gcc_and_linker": true,
+        "bytes": 25878808,
+        "events": [
+          "rustc-exec",
+          "unused JSON write returned",
+          "cc-exec",
+          "collect2-exec",
+          "ld.bfd-exec",
+          "rustc exited"
+        ],
+        "exit": 0,
+        "linker_args": [
+          "2b175d4a017b618093f7ba60fe671a2d7ffa56db08fba18b1d2cbf6c1e63ca93"
+        ],
+        "listed": 557,
+        "listing_sha256": "00ede096ab0d16de80231ebecc2589fab574f6cd062227e0a29db2f15f16894b",
+        "native_sha256": "d4d34218e9fac18a8a0b076494abb2c7aab47912e971f2d20a44e0c5378e44e3",
+        "own_unused": false,
+        "pid": 70885,
+        "proof": {
+          "raw_sha256": "1f2bc2ed391f32fcabd90cea39c624e7bf8c0f5cfb4b809097e4af3db3735195",
+          "thread": 70895,
+          "unused": [
+            "anyhow",
+            "bitflags",
+            "bstr",
+            "drop_bomb",
+            "get_size2",
+            "hashbrown",
+            "memchr",
+            "ruff_python_trivia",
+            "rustc_hash",
+            "stacker",
+            "static_assertions",
+            "thin_vec",
+            "unicode_ident",
+            "unicode_names2",
+            "unicode_normalization",
+            "walkdir"
+          ]
+        }
+      }
+    ],
+    "generate_inline_tests": [
+      {
+        "argv": "53c47b2839b85855ca6bc2b6d1532cd30fde8acd24edbbefc9078b5b23726147",
+        "before_gcc_and_linker": true,
+        "bytes": 1894568,
+        "events": [
+          "rustc-exec",
+          "unused JSON write returned",
+          "cc-exec",
+          "collect2-exec",
+          "ld.bfd-exec",
+          "rustc exited"
+        ],
+        "exit": 0,
+        "linker_args": [
+          "07171e07b9da3f4dd96b63effe18cb1a00bff2f9055eada0ab3dadc67828b8ae"
+        ],
+        "listed": 1,
+        "listing_sha256": "504a030ad930ab9a0fd23076dc6b175d4753c0d56dff49b158ce87b6ca344cc7",
+        "native_sha256": "f811b3fd48145b0fe5b131ec711b8b31c868e1fc9c1fff54bea41969c5ad8d4b",
+        "own_unused": true,
+        "pid": 70886,
+        "proof": {
+          "raw_sha256": "c1778d7b088cda2039ce8f8cab41066c9a2d8d7449ce020830f1ad8c471f2e5f",
+          "thread": 70904,
+          "unused": [
+            "annotate_snippets",
+            "bitflags",
+            "bstr",
+            "datatest_stable",
+            "drop_bomb",
+            "get_size2",
+            "hashbrown",
+            "insta",
+            "itertools",
+            "memchr",
+            "ruff_python_ast",
+            "ruff_python_parser",
+            "ruff_python_trivia",
+            "ruff_source_file",
+            "ruff_text_size",
+            "rustc_hash",
+            "serde",
+            "serde_json",
+            "stacker",
+            "static_assertions",
+            "thin_vec",
+            "unicode_ident",
+            "unicode_names2",
+            "unicode_normalization"
+          ]
+        }
+      }
+    ]
+  },
+  "observer_elf": "52d23e05379f49115e850ee3302d27c74c4c903c9a03df1b22175de2f52d6334",
+  "raw_local_receipt_sha256": "1930199fc5c6b9b3c805b5ed91a96a2363380bb7d8306deb315393c026e3cb35",
+  "raw_trace_sha256": "b5874dd9e5eba03cce61e7068d053ee26bc3d35c3681bfd6d32fd0f986e68d01"
+}

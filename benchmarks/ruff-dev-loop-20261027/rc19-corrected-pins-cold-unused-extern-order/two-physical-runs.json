@@ -1,0 +1,80 @@
+{
+  "actual_compilers": [
+    {
+      "actual_binary_sha256": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+      "argv_count": 386,
+      "argv_raw_expression_sha256": "8d38ee4c516b15e3efc0a3b4f99493a0f32a3f98007074a40f7ff06fd7c9ba5b",
+      "full_execve_line_sha256": "cbd986b205e999433acaec73084ccb4117116205cf4372337e3290d07e9c901b",
+      "pid": 4096992,
+      "same_unit_suffix": "opt-level=1",
+      "tests": false
+    },
+    {
+      "actual_binary_sha256": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+      "argv_count": 386,
+      "argv_raw_expression_sha256": "8d38ee4c516b15e3efc0a3b4f99493a0f32a3f98007074a40f7ff06fd7c9ba5b",
+      "full_execve_line_sha256": "b4f04879d20fff1aa352de1dad686799c6f30b6e4dc6240ce9c763af8f701eb6",
+      "pid": 4098473,
+      "same_unit_suffix": "opt-level=1",
+      "tests": false
+    }
+  ],
+  "actual_linkers": [
+    {
+      "actual_binary_sha256": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+      "argv_count": 196,
+      "argv_raw_expression_sha256": "4718327bf8f7d04c0ab898d2d373100a253c6263e89b220d38d18d9ccb33ad1a",
+      "full_execve_line_sha256": "d14d8276409d2ceeb30f8ad18e985546fc8651047f6764379e5a74afde62ffd7",
+      "output_name": "fixtures-b451a4400cb9fbff",
+      "pid": 4098318
+    },
+    {
+      "actual_binary_sha256": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+      "argv_count": 196,
+      "argv_raw_expression_sha256": "73152293f20c137b261b792701a7177a00f049edb4a991f33e6f99c0979a19c6",
+      "full_execve_line_sha256": "710715224aebf1e37c816f8be328a8d502f30530f6f30b82aeb8e58d61a49e4e",
+      "output_name": "fixtures-b451a4400cb9fbff",
+      "pid": 4099098
+    }
+  ],
+  "cargo_exit": 0,
+  "changed_literal_argv_fields": {
+    "GCC response file": 1,
+    "named object inputs": 42,
+    "raw-dylibs directory": 1,
+    "rustc symbols object": 1
+  },
+  "final_product": {
+    "fresh": false,
+    "list_sha256": "00ede096ab0d16de80231ebecc2589fab574f6cd062227e0a29db2f15f16894b",
+    "listed_tests": 557,
+    "name": "fixtures-b451a4400cb9fbff",
+    "rlink_sha256": "6822e30d3be5727fe502d9ca72ee273f68d02733da2b4bc3f2e8af6b11fcd5ff",
+    "rustc_unused_externs": [
+      "anyhow",
+      "bitflags",
+      "bstr",
+      "drop_bomb",
+      "get_size2",
+      "hashbrown",
+      "memchr",
+      "ruff_python_trivia",
+      "rustc_hash",
+      "stacker",
+      "static_assertions",
+      "thin_vec",
+      "unicode_ident",
+      "unicode_names2",
+      "unicode_normalization",
+      "walkdir"
+    ],
+    "selected_inline_present": false,
+    "sha256": "d4d34218e9fac18a8a0b076494abb2c7aab47912e971f2d20a44e0c5378e44e3",
+    "size": 25878808,
+    "test": "inline_err::ann_assign_stmt_invalid_annotation.py",
+    "test_exit": 0
+  },
+  "first_owned_elf_retained": false,
+  "prior_phase_commitment": "72640a2058d4cd5ee697fce2145fd2c7d735aa7242914c0fda1e1af58da9d2de",
+  "unit_artifact_rows": 1
+}
