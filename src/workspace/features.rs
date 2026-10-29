@@ -948,6 +948,7 @@ unstable_cli_options!(
     git: Option<GitFeatures> = ("Enable support for shallow git fetch operations"),
     #[serde(deserialize_with = "deserialize_gitoxide_features")]
     gitoxide: Option<GitoxideFeatures> = ("Use gitoxide for the given git interactions, or all of them if no argument is given"),
+    headstart: Option<bool> = ("Start metadata-only checks before dependencies finish checking bodies (enabled by Ohm defaults)"),
     hint_msrv: bool = ("Enable passing `package.rust-version` to rustc for lints"),
     host_config: bool = ("Enable the `[host]` section in the .cargo/config.toml file"),
     json_target_spec: bool = ("Enable `.json` target spec files"),
@@ -1316,6 +1317,11 @@ impl CliUnstable {
         self.ohm_defaults.unwrap_or(cfg!(feature = "ohm-defaults"))
     }
 
+    /// Whether checks may start from dependencies' early metadata.
+    pub fn headstart(&self) -> bool {
+        self.headstart.unwrap_or_else(|| self.ohm_defaults())
+    }
+
     /// The bundled linker selected for supported native targets.
     pub fn ohm_linker(&self) -> Option<OhmLinker> {
         self.ohm_linker
@@ -1552,6 +1558,7 @@ impl CliUnstable {
             "host-config" => self.host_config = parse_empty(k, v)?,
             "json-target-spec" => self.json_target_spec = parse_empty(k, v)?,
             "min-publish-age" => self.min_publish_age = parse_empty(k, v)?,
+            "headstart" => self.headstart = Some(parse_bool(k, v)?),
             "hint-msrv" => self.hint_msrv = parse_empty(k, v)?,
             "next-lockfile-bump" => self.next_lockfile_bump = parse_empty(k, v)?,
             "minimal-versions" => self.minimal_versions = parse_empty(k, v)?,

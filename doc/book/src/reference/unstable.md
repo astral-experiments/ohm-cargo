@@ -92,6 +92,7 @@ Each new feature described below should explain how to use it.
     * [build-std-features](#build-std-features) --- Sets features to use with the standard library.
     * [binary-dep-depinfo](#binary-dep-depinfo) --- Causes the dep-info file to track binary dependencies.
     * [checksum-freshness](#checksum-freshness) --- When passed, the decision as to whether a crate needs to be rebuilt is made using file checksums instead of the file mtime.
+    * [headstart](#headstart) --- Overlap dependency checks using early interface metadata in Ohm.
     * [ohm-clippy-seed-isolation](#ohm-clippy-seed-isolation) --- Keep bundled Clippy state out of worktree snapshots.
     * [ohm-worktree-seeds](#ohm-worktree-seeds) --- Prepare build state for seeding new Git worktrees with Ohm.
     * [panic-abort-tests](#panic-abort-tests) --- Allows running tests with the "abort" panic strategy.
@@ -2038,6 +2039,29 @@ The following commands are available under `-Zbuild-analysis`:
 
 Enables the new build-dir filesystem layout.
 This layout change unblocks work towards caching and locking improvements.
+
+## headstart
+
+Ohm lets a check start as soon as a dependency has emitted its interface
+metadata, while that dependency continues checking function bodies. All checks
+must still succeed. Cargo holds a consumer's diagnostics and result until its
+dependencies succeed, and discards that output if a dependency fails. Unchanged
+public interfaces still allow Ohm to skip downstream checks.
+
+```console
+cargo +ohm check
+```
+
+This is enabled by Ohm's defaults. Use `-Zheadstart=no` to disable it for one
+invocation, or set `headstart = false` in the `[unstable]` configuration table.
+`-Zohm-defaults=no` also disables it unless `-Zheadstart` explicitly enables it.
+
+Inspired by [Headstart](https://github.com/PowderworksCode/headstart), it requires the matching
+Ohm compiler with `-Zohm-early-metadata` support. It only advances metadata-only
+checks; build scripts and procedural macros still need executable artifacts.
+Code-generating builds retain their existing scheduling. Changing this setting
+changes compiler arguments and therefore invalidates existing build fingerprints.
+
 
 ## ohm-clippy-seed-isolation
 
