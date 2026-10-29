@@ -484,9 +484,17 @@ impl<'gctx> Compilation<'gctx> {
             search_path.push(PathBuf::from("/usr/local/lib"));
             search_path.push(PathBuf::from("/usr/lib"));
         }
-        let search_path = paths::join_paths(&search_path, paths::dylib_path_envvar())?;
-
-        cmd.env(paths::dylib_path_envvar(), &search_path);
+        let loader_variable = paths::dylib_path_envvar();
+        if search_path.is_empty() && self.gctx.get_env_os(loader_variable).is_none() {
+            // Preserve an unset loader path when Cargo has no directories to add.
+            // An empty path would instead appear to contain a relative directory
+            // when authenticating compiler provenance. Explicit removal also
+            // preserves Cargo's precedence over `[env]` configuration below.
+            cmd.env_remove(loader_variable);
+        } else {
+            let search_path = paths::join_paths(&search_path, loader_variable)?;
+            cmd.env(loader_variable, &search_path);
+        }
         if let Some(meta_vec) = script_metas {
             for meta in meta_vec {
                 if let Some(env) = self.extra_env.get(meta) {
