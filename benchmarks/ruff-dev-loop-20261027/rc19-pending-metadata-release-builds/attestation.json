@@ -1,0 +1,125 @@
+{
+  "both_artifact_dynamic_libraries": [
+    "ld-linux-x86-64.so.2",
+    "libc.so.6",
+    "libcrypto.so.3",
+    "libgcc_s.so.1",
+    "libm.so.6",
+    "libssl.so.3",
+    "libz.so.1"
+  ],
+  "common_pgo_sha256": "481ada8a40c70dad11b3c7e8871e9a52207d78447ca5e8ace06fc4aec2d2b5a7",
+  "compiler_environment_sha256": "3415f300a259a7a84284bdba6f3cd5547aa5a5ccfc53cf03e32d0d069e849ce1",
+  "compiler_sha256": {
+    "bin/cargo": "42e90992cec21a29956e20fd52ab952472a9dbc1dcc7a3b60c92aad101b5f568",
+    "bin/rustc": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+    "lib/librustc_driver-b03bf00bec23bb9a.so": "c442c2a36e1f37c92f138a8fb367fc09982931b5f1055e9742fb402566ad46a4"
+  },
+  "control_version": "cargo 1.99.0 (235f92286 2026-10-28)\nrelease: 1.99.0\ncommit-hash: 235f9228651b74c591e6f62cae4c9b761448dd2d\ncommit-date: 2026-10-28\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.0.13)\nos: Ubuntu 24.4.0 (noble) [64-bit]\n",
+  "control_version_stamp": "cb4b3547db88f27b16f3e8d6444e452cc0cdf23e8cccdf722a96b9b659baf0a2",
+  "current_pair": {
+    "candidate_recompiled_packages": [
+      "cargo"
+    ],
+    "frozen_parent_input_sha256": "87155944c0b8e3930614d77cb03c968574ed46851a94b07067fd49fe17b5e4eb",
+    "full_terminal_receipt_sha256": "3d5437df95c89cf021a2a446018fb61a22d61aa07045094ba73283f5d92d1d59",
+    "independent_input_sha256": "SHA-256",
+    "independent_linker_file_observations": 335,
+    "independent_linker_rlib_observations": 326,
+    "initial_mismatch_receipt_sha256": "49d7358318f353881d0178cb28b58813ba49065260bdff51edaf1c3fe536d63e",
+    "physically_independent_seeded_inputs": 161,
+    "pre_rebuild_input_observations": 241,
+    "selected_native_argument_count": 411,
+    "temporary_linker_roles": [
+      "gcc-resolution",
+      "rustc-raw-dylibs",
+      "rustc-symbols"
+    ]
+  },
+  "elf_needed": [
+    "ld-linux-x86-64.so.2",
+    "libc.so.6",
+    "libcrypto.so.3",
+    "libgcc_s.so.1",
+    "libm.so.6",
+    "libssl.so.3",
+    "libz.so.1"
+  ],
+  "first_preflight": {
+    "admitted": false,
+    "compiler_commands": 0,
+    "effective_uid": 1000,
+    "root_uid": 65534
+  },
+  "historical_control_byte_identical": false,
+  "historical_control_receipt_sha256": "3645753254441c29ea226d038dd65d98c32fb025880b2fa3bd414b8d1d926f8f",
+  "historical_control_sha256": "6aaa263e68d2d77aeb8977166f9744f1fa8e0ea4df3216fe516355be68517bac",
+  "native_inputs_sha256": "85d90727218b48209721b8308a5be38e84ce1305d563f7d7dd0386faceaeabd6",
+  "native_regular_inputs": 404,
+  "native_search_directories": 6,
+  "old_independent_candidate": {
+    "binary_sha256": "46555df39a60f86cee6c6e9007d53f7cfb3f6369e0347a78ed35f60e030295df",
+    "complete_receipt_sha256": "b147ac4e91ba2183a3b9b9befdec7524afd744d7a071c0de3df455eaf38967a8",
+    "differing_ordered_externs": 12,
+    "differing_unique_crates": [
+      "curl",
+      "futures_timer",
+      "git2",
+      "gix",
+      "rusqlite",
+      "rustc_stable_hash"
+    ],
+    "excluded": true,
+    "same_native_rustc_vectors": true
+  },
+  "ordered_stable_externs": 239,
+  "original_reuse_class": "The historical Cargo used workspace-local registry artifacts. Both H4 builds used the same shared registry artifact paths.",
+  "physical_tool_count": 6,
+  "qualified": true,
+  "roles": {
+    "A": {
+      "binary_sha256": "3a94265b0d3c80afd228f575190a8c291506951b1a77e45bb9bac2aa89387df7",
+      "bytes": 43475672,
+      "changed_source_file_sha256": "9542a824a72048885f019aeb967ba56a20eaa328965d3be71afebdedb941d520",
+      "commit": "235f9228651b74c591e6f62cae4c9b761448dd2d",
+      "effective_uid": 1000,
+      "extern_counts": {
+        "src/bin/cargo/main.rs": 161,
+        "src/lib.rs": 80
+      },
+      "receipt_sha256": "9e856c3567a432b7feba434913f88c5124eb3593c3ddaad159eb773df90546cb",
+      "root_uid": 0,
+      "rustc_argv_sha256": {
+        "src/bin/cargo/main.rs": "3daafb75303eaa1d33bd7eb7ea78393ff8c372c4282af53c136e231a2e80ffd2",
+        "src/lib.rs": "d481510cebf1b10f247e072ef346d201bbb58cae9face15f2b212da3d54eff01"
+      },
+      "source_files": 3108,
+      "source_inventory_sha256": "315a6127c310d856395108dbabd377ff51df5bcd0500a4017f1059d8e74b95f9",
+      "trace_sha256": "ab57d4846f137cfcedfbe2e82b773788719647a81ca307f14087e0f2c2ae194e",
+      "tree": "b42209a5876acbaaa7ec1c6b6cfa627ac207b573"
+    },
+    "B": {
+      "binary_sha256": "51eb6c59a38151fbf1a252d7bc39cb45dfa67482a95b526e1301046bbf593ce9",
+      "bytes": 43475432,
+      "changed_source_file_sha256": "f867db045126fe1195ec13ab38b4ec71cf879f89bdbf9901acccca9ebdb30999",
+      "commit": "b3360c5eda186845b9a2ba6e5330a97c07d4acf2",
+      "effective_uid": 1000,
+      "extern_counts": {
+        "src/bin/cargo/main.rs": 161,
+        "src/lib.rs": 80
+      },
+      "receipt_sha256": "d16ca4ad94c1c0c67e0b5647914a0dda41d766f4b88e9a4c2529167606329b6b",
+      "root_uid": 0,
+      "rustc_argv_sha256": {
+        "src/bin/cargo/main.rs": "3daafb75303eaa1d33bd7eb7ea78393ff8c372c4282af53c136e231a2e80ffd2",
+        "src/lib.rs": "d481510cebf1b10f247e072ef346d201bbb58cae9face15f2b212da3d54eff01"
+      },
+      "source_files": 3108,
+      "source_inventory_sha256": "dd9533d999de2af503e4e62a0c1e3205a3ea4bf6281798ef5bc7934cd9c2b6fe",
+      "trace_sha256": "280c464928abec1068323bf0be678a5d6b796f55d854318725f10c5852977226",
+      "tree": "82bae00c990522bd821d1a3ff55ec1cc933faa44"
+    }
+  },
+  "same_cargo_version": true,
+  "schema": 1
+}
