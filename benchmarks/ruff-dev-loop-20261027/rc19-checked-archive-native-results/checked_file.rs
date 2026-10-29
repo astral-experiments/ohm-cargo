@@ -1,0 +1,113 @@
+use std::fs::{File, OpenOptions};
+use std::io::{self, Seek, SeekFrom, Write};
+use std::os::fd::AsRawFd;
+use std::os::unix::fs::{FileExt, MetadataExt, OpenOptionsExt};
+use std::path::Path;
+
+const BLOCK: usize = 64 * 1024;
+
+/// A temporary archive that retains cloned ranges only after comparing their current bytes.
+pub(super) struct CheckedFile {
+    file: File,
+    comparison: Option<Comparison>,
+}
+
+struct Comparison {
+    position: u64,
+    old_len: u64,
+    buffers: Box<[u8]>,
+}
+
+impl CheckedFile {
+    pub(super) fn new(file: File, origin: Option<&Path>) -> io::Result<Self> {
+        let mut comparison = None;
+        if let Some(origin) = origin
+            && unlimited_file_size()
+            && let Some(source) = open_regular_origin(origin, &file)
+        {
+            // SAFETY: both descriptors stay open throughout FICLONE. The destination is private.
+            if unsafe { libc::ioctl(file.as_raw_fd(), libc::FICLONE, source.as_raw_fd()) } == 0 {
+                comparison = Some(Comparison {
+                    position: 0,
+                    old_len: file.metadata()?.len(),
+                    buffers: vec![0; BLOCK * 2].into_boxed_slice(),
+                });
+            } else {
+                file.set_len(0)?;
+            }
+        }
+        Ok(Self { file, comparison })
+    }
+
+    /// Discard the unverified suffix before handing the file back to ordinary I/O.
+    fn finish_comparison(&mut self) -> io::Result<()> {
+        if let Some(c) = &self.comparison {
+            self.file.set_len(c.position)?;
+            self.file.seek(SeekFrom::Start(c.position))?;
+            self.comparison = None;
+        }
+        Ok(())
+    }
+}
+
+fn unlimited_file_size() -> bool {
+    let mut limit = libc::rlimit { rlim_cur: 0, rlim_max: 0 };
+    // SAFETY: limit is writable storage for one rlimit.
+    (unsafe { libc::getrlimit(libc::RLIMIT_FSIZE, &mut limit) }) == 0
+        && limit.rlim_cur == libc::RLIM_INFINITY
+}
+
+fn open_regular_origin(path: &Path, destination: &File) -> Option<File> {
+    // O_PATH lets us check the inode without opening a device or blocking on a FIFO.
+    let handle = OpenOptions::new()
+        .read(true)
+        .custom_flags(libc::O_PATH | libc::O_NOFOLLOW)
+        .open(path)
+        .ok()?;
+    let metadata = handle.metadata().ok()?;
+    if metadata.is_file()
+        && metadata.len() >= BLOCK as u64
+        && metadata.uid() == destination.metadata().ok()?.uid()
+    {
+        File::open(format!("/proc/self/fd/{}", handle.as_raw_fd())).ok()
+    } else {
+        None
+    }
+}
+
+impl Write for CheckedFile {
+    fn write(&mut self, bytes: &[u8]) -> io::Result<usize> {
+        if self.comparison.is_some() && !unlimited_file_size() {
+            self.finish_comparison()?;
+        }
+        let Some(c) = &mut self.comparison else { return self.file.write(bytes) };
+        let len = bytes.len().min(BLOCK - (c.position % BLOCK as u64) as usize);
+        let (current, previous) = c.buffers.split_at_mut(BLOCK);
+        // The current objects can be memory mapped. Write the same snapshot that we compared.
+        let current = &mut current[..len];
+        current.copy_from_slice(&bytes[..len]);
+        let retained = c.old_len.saturating_sub(c.position) >= len as u64
+            && self.file.read_exact_at(&mut previous[..len], c.position).is_ok()
+            && current == &previous[..len];
+        let written = if retained { len } else { self.file.write_at(current, c.position)? };
+        c.position += written as u64;
+        Ok(written)
+    }
+
+    fn flush(&mut self) -> io::Result<()> {
+        self.finish_comparison()?;
+        self.file.flush()
+    }
+}
+
+impl Seek for CheckedFile {
+    fn seek(&mut self, from: SeekFrom) -> io::Result<u64> {
+        if let SeekFrom::Current(0) = from
+            && let Some(c) = &self.comparison
+        {
+            return Ok(c.position);
+        }
+        self.finish_comparison()?;
+        self.file.seek(from)
+    }
+}
