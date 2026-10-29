@@ -125,7 +125,7 @@ jobs:
             "https://labs.astral.sh/ohm/releases/$OHM_VERSION/install.sh"
           printf '%s  %s\n' "$OHM_INSTALLER_SHA256" "$installer" | shasum -a 256 --check
           sh "$installer"
-      - name: Run bundled Clippy worktree tests with Ohm
+      - name: Run profile and bundled Clippy worktree tests with Ohm
         env:
           RUSTUP_TOOLCHAIN: ohm-1.98.0-9
         run: |
@@ -141,6 +141,7 @@ jobs:
             exit 1
           fi
           # The stable-built testsuite marks these nightly tests ignored at compile time.
+          "$testsuite" profiles::ohm_default_debuginfo --include-ignored --nocapture
           for test in \
             worktree_import_requires_cloning \
             bundled_clippy_isolation_defaults_follow_actual_snapshot_cloning \
