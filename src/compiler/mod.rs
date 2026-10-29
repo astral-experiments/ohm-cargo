@@ -130,6 +130,7 @@ use rustfix::diagnostics::Applicability;
 const RUSTDOC_CRATE_VERSION_FLAG: &str = "--crate-version";
 const OHM_DEFAULT_RUSTFLAGS: [&str; 3] =
     ["-Zpublic-api-hash", "-Zcache-proc-macros", "-Zthreads=8"];
+const OHM_EARLY_METADATA_RUSTFLAG: &str = "-Zohm-early-metadata";
 const OHM_INCREMENTAL_CODEGEN_RUSTFLAGS: [&str; 2] =
     ["-Zohm-caller-local-cgus", "-Zohm-stable-cgu-merging"];
 
@@ -431,8 +432,22 @@ fn compile<'gctx>(
             Job::new_fresh()
         } else {
             let force = exec.force_rebuild(unit) || force_rebuild;
-            let mut job = fingerprint::prepare_target(build_runner, unit, force)?;
-            job.before(if job.freshness().is_dirty() {
+            let reused_test = build_runner
+                .reused_test_check(unit)
+                .filter(|_| !force)
+                .cloned();
+            let mut job = if reused_test.is_some() {
+                Job::new_fresh()
+            } else {
+                fingerprint::prepare_target(build_runner, unit, force)?
+            };
+            job.before(if let Some(native) = &reused_test {
+                reused_test_check_work(build_runner, unit, native)?.then(link_targets(
+                    build_runner,
+                    unit,
+                    true,
+                )?)
+            } else if job.freshness().is_dirty() {
                 let work = if unit.mode.is_doc() || unit.mode.is_doc_scrape() {
                     rustdoc(build_runner, unit)?
                 } else {
@@ -455,7 +470,8 @@ fn compile<'gctx>(
 
             // If -Zfine-grain-locking is enabled, we wrap the job with an upgrade to exclusive
             // lock before starting, then downgrade to a shared lock after the job is finished.
-            if build_runner.bcx.gctx.cli_unstable().fine_grain_locking && job.freshness().is_dirty()
+            if build_runner.bcx.gctx.cli_unstable().fine_grain_locking
+                && (job.freshness().is_dirty() || reused_test.is_some())
             {
                 if let Some(lock) = lock {
                     // Here we unlock the current shared lock to avoid deadlocking with other cargo
@@ -1101,12 +1117,15 @@ fn rustc(
         .to_path_buf();
     let fingerprint_dir = build_runner.files().fingerprint_dir(unit);
     let cached_output_path = build_runner.files().message_cache_path(unit);
-    let mut message_provenance = if unit.mode == CompileMode::Build
-        && (unit.pkg.package_id().source_id().is_remote_registry()
-            || (build_runner.bcx.gctx.cli_unstable().ohm_reuse_built_deps()
-                && build_runner.bcx.ws.is_member(&unit.pkg)
-                && unit.target.is_lib()
-                && !unit.target.for_host()))
+    let mut message_provenance = if (unit.mode == CompileMode::Build
+        && unit.pkg.package_id().source_id().is_remote_registry())
+        || (build_runner.bcx.gctx.cli_unstable().ohm_reuse_built_deps()
+            && build_runner.bcx.ws.is_member(&unit.pkg)
+            && !unit.target.for_host()
+            && ((unit.mode == CompileMode::Build && unit.target.is_lib())
+                || (unit.mode == CompileMode::Test
+                    && unit.target.is_test()
+                    && unit.target.harness())))
     {
         build_runner
             .registry_message_provenance()?
@@ -1820,6 +1839,38 @@ fn prebuild_lock_exclusive(lock: LockKey) -> Work {
         state.lock_exclusive(&lock)?;
         Ok(())
     })
+}
+
+/// Replays a validated native test as a check without publishing a check fingerprint.
+/// Test metadata is empty because no crate can import a test harness. Retaining
+/// the ordinary check paths preserves Cargo's artifact protocol; future checks
+/// must still validate the native proof or compile normally.
+fn reused_test_check_work(
+    build_runner: &mut BuildRunner<'_, '_>,
+    check: &Unit,
+    native: &Unit,
+) -> CargoResult<Work> {
+    let outputs = build_runner.outputs(check)?;
+    let fingerprint_path = build_runner.files().fingerprint_file_path(check, "");
+    let messages = replay_output_cache(
+        check.pkg.package_id(),
+        ManifestErrorContext::new(build_runner, check),
+        &check.target,
+        build_runner.files().message_cache_path(native),
+        OutputOptions::for_fresh(build_runner, check),
+    );
+    Ok(Work::new(move |_| {
+        // Restoring an empty metadata file must not revive an older check
+        // fingerprint whose output was missing. The native record remains
+        // the sole proof for this result.
+        paths::write(&fingerprint_path, b"")?;
+        for output in outputs.iter() {
+            paths::create_dir_all(output.path.parent().unwrap())?;
+            paths::write(&output.path, b"")?;
+        }
+        Ok(())
+    })
+    .then(messages))
 }
 
 fn downgrade_lock_to_shared(lock: LockKey) -> Work {

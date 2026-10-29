@@ -526,6 +526,7 @@ fn create_bcx_with_registry_reuse<'a, 'gctx>(
         .collect();
 
     let mut root_units = Vec::new();
+    let mut test_check_candidates = HashMap::default();
     let mut unit_graph = HashMap::default();
     let mut scrape_units = Vec::new();
 
@@ -601,7 +602,7 @@ fn create_bcx_with_registry_reuse<'a, 'gctx>(
             Default::default()
         };
 
-        unit_graph.extend(build_unit_dependencies(
+        let (dependencies, test_candidates) = build_unit_dependencies(
             ws,
             &pkg_set,
             &resolve,
@@ -620,7 +621,9 @@ fn create_bcx_with_registry_reuse<'a, 'gctx>(
                 && !build_config.unit_graph
                 && !build_config.dry_run,
             rejected_built_registry_packages,
-        )?);
+        )?;
+        unit_graph.extend(dependencies);
+        test_check_candidates.extend(test_candidates);
         root_units.extend(targeted_root_units);
         scrape_units.extend(targeted_scrape_units);
     }
@@ -640,7 +643,20 @@ fn create_bcx_with_registry_reuse<'a, 'gctx>(
     // shared with build and artifact dependencies.
     //
     // NOTE: after this point, all units and the unit graph must be immutable.
-    let (root_units, scrape_units, unit_graph) = rebuild_unit_graph_shared(
+    let root_count = root_units.len();
+    let mut candidates = test_check_candidates.into_iter().collect::<Vec<_>>();
+    candidates.sort();
+    let candidate_root_indices = candidates
+        .iter()
+        .map(|(check, _)| {
+            root_units
+                .iter()
+                .position(|unit| unit == check)
+                .expect("test check root")
+        })
+        .collect::<Vec<_>>();
+    root_units.extend(candidates.into_iter().map(|(_, native)| native));
+    let (mut root_units, scrape_units, unit_graph) = rebuild_unit_graph_shared(
         interner,
         unit_graph,
         &root_units,
@@ -651,6 +667,12 @@ fn create_bcx_with_registry_reuse<'a, 'gctx>(
             && target_data.rustc.workspace_wrapper.is_none()
             && target_data.rustc.supports_ohm_shared_stages(gctx),
     );
+    let native_candidates = root_units.split_off(root_count);
+    let test_check_candidates = candidate_root_indices
+        .into_iter()
+        .zip(native_candidates)
+        .map(|(index, native)| (root_units[index].clone(), native))
+        .collect();
 
     let units: Vec<_> = unit_graph.keys().sorted().collect();
     let unit_to_index: HashMap<_, _> = units
@@ -865,6 +887,7 @@ where `<compatible-ver>` is the latest version supporting rustc {rustc_version}"
         extra_compiler_args,
         target_data,
         root_units,
+        test_check_candidates,
         unit_graph,
         audited_proc_macro_packages,
         authenticated_native_tool_packages,

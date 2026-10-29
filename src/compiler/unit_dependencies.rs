@@ -40,7 +40,7 @@ use crate::util::Unhashed;
 use crate::util::interning::InternedString;
 use crate::workspace::dependency::{Artifact, ArtifactKind, ArtifactTarget, DepKind};
 use crate::workspace::features::OhmProcMacroTrust;
-use crate::workspace::profiles::{Profile, Profiles, UnitFor};
+use crate::workspace::profiles::{Profile, ProfileRoot, Profiles, UnitFor};
 use crate::workspace::{
     Dependency, Feature, Package, PackageId, PackageSet, SourceId, Target, TargetKind, Workspace,
 };
@@ -135,12 +135,12 @@ pub fn build_unit_dependencies<'a, 'gctx>(
     interner: &'a UnitInterner,
     reuse_built_registry_dependencies: bool,
     rejected_built_registry_packages: &HashSet<PackageId>,
-) -> CargoResult<UnitGraph> {
+) -> CargoResult<(UnitGraph, HashMap<Unit, Unit>)> {
     if roots.is_empty() {
         // If -Zbuild-std, don't attach units if there is nothing to build.
         // Otherwise, other parts of the code may be confused by seeing units
         // in the dep graph without a root.
-        return Ok(HashMap::default());
+        return Ok((HashMap::default(), HashMap::default()));
     }
     let (std_resolve, std_features) = match std_resolve {
         Some((r, f)) => (Some(r), Some(f)),
@@ -172,6 +172,13 @@ pub fn build_unit_dependencies<'a, 'gctx>(
     let std_unit_deps = calc_deps_of_std(&mut state, std_roots)?;
 
     deps_of_roots(roots, &mut state)?;
+    let mut test_check_candidates = HashMap::default();
+    for root in roots {
+        if let Some(candidate) = state.native_test_check_candidate(root) {
+            deps_of_roots(std::slice::from_ref(&candidate), &mut state)?;
+            test_check_candidates.insert(root.clone(), candidate);
+        }
+    }
     super::links::validate_links(state.resolve(), &state.unit_dependencies)?;
     // Hopefully there aren't any links conflicts with the standard library?
 
@@ -209,7 +216,7 @@ pub fn build_unit_dependencies<'a, 'gctx>(
     }
     trace!("ALL UNIT DEPENDENCIES {:#?}", state.unit_dependencies);
 
-    Ok(state.unit_dependencies)
+    Ok((state.unit_dependencies, test_check_candidates))
 }
 
 /// Compute all the dependencies for the standard library.
@@ -1136,6 +1143,66 @@ fn connect_run_custom_build_deps(state: &mut State<'_, '_>) {
 }
 
 impl<'a, 'gctx> State<'a, 'gctx> {
+    /// Adds a native test only for validation, never as a job to execute.
+    /// Its complete graph preserves the original native fingerprint, including
+    /// package binaries that an ordinary integration-test check does not build.
+    fn native_test_check_candidate(&self, unit: &Unit) -> Option<Unit> {
+        if !self.reuse_built_registry_dependencies
+            || !matches!(self.intent, UserIntent::Check { .. })
+            || unit.mode != (CompileMode::Check { test: true })
+            || !unit.target.is_test()
+            || !unit.target.harness()
+            || !self.ws.is_member(&unit.pkg)
+            || unit.profile.root != ProfileRoot::Debug
+            || !matches!(
+                unit.profile.lto,
+                crate::workspace::profiles::Lto::Bool(false) | crate::workspace::profiles::Lto::Off
+            )
+            || unit.profile.codegen_backend.is_some()
+            || self.std_resolve.is_some()
+            || self.gctx.cli_unstable().bindeps
+            || self.target_data.rustc.wrapper.is_some()
+            || self.target_data.rustc.workspace_wrapper.is_some()
+            || !*self.trusted_registry_reuse_compiler.get_or_init(|| {
+                self.compiler_has_safe_loader_environment()
+                    && !self.compiler_has_observable_logging()
+                    && self.compiler_has_verified_toolchain_identity()
+            })
+            || self.unit_dependencies[unit]
+                .iter()
+                .any(|dependency| dependency.unit.mode.is_check())
+        {
+            return None;
+        }
+        let candidate = self.interner.intern(
+            &unit.pkg,
+            &unit.target,
+            unit.profile.clone(),
+            unit.kind,
+            CompileMode::Test,
+            unit.features.clone(),
+            unit.rustflags.clone(),
+            unit.rustdocflags.clone(),
+            unit.links_overrides.clone(),
+            unit.is_std,
+            unit.dep_hash,
+            unit.artifact,
+            unit.artifact_target_for_features,
+            unit.skip_non_compile_time_dep,
+        );
+        self.unit_dependencies[unit]
+            .iter()
+            .all(|dependency| {
+                self.registry_closure_is_immutable(
+                    &dependency.unit,
+                    dependency.unit_for,
+                    MacroRuntime::None,
+                    &mut HashSet::default(),
+                )
+            })
+            .then_some(candidate)
+    }
+
     /// Tentatively uses build mode for an immutable registry closure or an
     /// owned workspace member. Once all unit hashes and layouts are known,
     /// `BuildRunner` validates the exact existing artifacts and their complete
