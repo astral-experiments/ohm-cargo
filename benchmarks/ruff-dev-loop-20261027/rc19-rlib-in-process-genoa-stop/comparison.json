@@ -1,0 +1,376 @@
+{
+  "additional_cargo_commands_after_stop": 0,
+  "arms": {
+    "A": {
+      "acquisition": "7664da9734ded85920e9137975c068777c08c608050a83490ff5e4f00da45109",
+      "cargo": "6aaa263e68d2d77aeb8977166f9744f1fa8e0ea4df3216fe516355be68517bac",
+      "edited_archive": "c1a5dd1c267fabb19c90f37f0ce1fbb3d9a040644e9275a80b7e143da80fc2c4",
+      "edited_size": 101719820,
+      "initial_warm": {
+        "fresh": 248,
+        "receipt": "ace4f69810e1b9516fea044ef81e96e0338e0fe395b68ffdaa84ab8f8ece887c",
+        "rlib": "d8303473e14d2b087c778e24cfac4ccdb67b12b0ee3f45b0d2d468d17fb5b72f",
+        "units": 248
+      },
+      "native_caller": {
+        "ast": "4f33cadcb41fb0fb9a31f0a6252aaffab63bbedb092e6eaefe4492a366ae2cae",
+        "executable": "c43c42962091e5a21b45d5e13e7a7d0f813dc7b885fc7af825a53cef5ec17bd7",
+        "exit": 0,
+        "input": "e981376810375b7214c83ccd0dd840cd0110c7ce31d90cffc45ae1bd9706c4c2",
+        "linter": "c1a5dd1c267fabb19c90f37f0ce1fbb3d9a040644e9275a80b7e143da80fc2c4",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout": "2 SIM222\n3 SIM222\n4 SIM222\n"
+      },
+      "old_size": 101719820,
+      "original_archive": "d8303473e14d2b087c778e24cfac4ccdb67b12b0ee3f45b0d2d468d17fb5b72f",
+      "phases": {
+        "edit": {
+          "fresh": 238,
+          "hints": [],
+          "normalized_full_argv": [
+            [
+              "ruff_db",
+              "3323f1c26513ea32988ef41fcc61ae58de87c3c3593f336aa39996870dde7356"
+            ],
+            [
+              "ruff_linter",
+              "b36d01bb027730450d98591bb906ca1674cf1c5d388638827f1f8d168b44d84d"
+            ],
+            [
+              "ruff_python_ast",
+              "5a4845792e509c12e428e4fef43fdfc86a89944115a328725fb53b5c95950917"
+            ],
+            [
+              "ruff_python_codegen",
+              "9fe990228ac68943105e2aea7638a7b5f2b0f3fdca22f80c390cb073ef9d572b"
+            ],
+            [
+              "ruff_python_importer",
+              "6b71df5d05946ad52926b46a52963408e8796c2fef54343e93aaa3fa503d9d32"
+            ],
+            [
+              "ruff_python_index",
+              "dcee66e2ad827f4f9df824886794650f25178cb40148f984e8e9d19e88f09b72"
+            ],
+            [
+              "ruff_python_literal",
+              "5c43af0dbbd10389e3b6f5ac56cf03398cc7d6957752897388d897d1e83cd9d8"
+            ],
+            [
+              "ruff_python_parser",
+              "e98bf9b13a88898851b7563d61ad381f2ce9c044290cfdba251da91e881b74be"
+            ],
+            [
+              "ruff_python_semantic",
+              "4bb77b6c91b87ac9403411c8aebed196a587628f91725c29c7126ad354a5a686"
+            ],
+            [
+              "ruff_ranged_value",
+              "334e17ea71ec2d3b693990b8057b8f948892d591f49233b83c34233fe0c60f77"
+            ]
+          ],
+          "raw_argv": [
+            {
+              "argv_sha256": "08ad671f19e2ca59a5a3a32a57f9045e1c2c28c6f071b6c26f34ed80cd6af0ba",
+              "exit": 0,
+              "role": "cargo",
+              "target": null
+            },
+            {
+              "argv_sha256": "5a4845792e509c12e428e4fef43fdfc86a89944115a328725fb53b5c95950917",
+              "exit": 0,
+              "role": "rustc-full",
+              "target": "ruff_python_ast"
+            },
+            {
+              "argv_sha256": "5c43af0dbbd10389e3b6f5ac56cf03398cc7d6957752897388d897d1e83cd9d8",
+              "exit": 0,
+              "role": "rustc-full",
+              "target": "ruff_python_literal"
+            },
+            {
+              "argv_sha256": "e98bf9b13a88898851b7563d61ad381f2ce9c044290cfdba251da91e881b74be",
+              "exit": 0,
+              "role": "rustc-full",
+              "target": "ruff_python_parser"
+            },
+            {
+              "argv_sha256": "dcee66e2ad827f4f9df824886794650f25178cb40148f984e8e9d19e88f09b72",
+              "exit": 0,
+              "role": "rustc-full",
+              "target": "ruff_python_index"
+            },
+            {
+              "argv_sha256": "3323f1c26513ea32988ef41fcc61ae58de87c3c3593f336aa39996870dde7356",
+              "exit": 0,
+              "role": "rustc-full",
+              "target": "ruff_db"
+            },
+            {
+              "argv_sha256": "9fe990228ac68943105e2aea7638a7b5f2b0f3fdca22f80c390cb073ef9d572b",
+              "exit": 0,
+              "role": "rustc-full",
+              "target": "ruff_python_codegen"
+            },
+            {
+              "argv_sha256": "4bb77b6c91b87ac9403411c8aebed196a587628f91725c29c7126ad354a5a686",
+              "exit": 0,
+              "role": "rustc-full",
+              "target": "ruff_python_semantic"
+            },
+            {
+              "argv_sha256": "6b71df5d05946ad52926b46a52963408e8796c2fef54343e93aaa3fa503d9d32",
+              "exit": 0,
+              "role": "rustc-full",
+              "target": "ruff_python_importer"
+            },
+            {
+              "argv_sha256": "334e17ea71ec2d3b693990b8057b8f948892d591f49233b83c34233fe0c60f77",
+              "exit": 0,
+              "role": "rustc-full",
+              "target": "ruff_ranged_value"
+            },
+            {
+              "argv_sha256": "b36d01bb027730450d98591bb906ca1674cf1c5d388638827f1f8d168b44d84d",
+              "exit": 0,
+              "role": "rustc-full",
+              "target": "ruff_linter"
+            }
+          ],
+          "raw_result": "2a829085ac50add5dc0be75ffefadddd5ec6f292bca4934d2b80df52fac712b0",
+          "roles": {
+            "cargo": 1,
+            "rustc-full": 10
+          },
+          "typed_ledger": "c0246e1692305c58d8fb36bdc7cb5be0b2afdc0889d1292b8f7c323801a83275",
+          "typed_units": 248
+        },
+        "repeat": {
+          "fresh": 248,
+          "hints": [],
+          "normalized_full_argv": [],
+          "raw_argv": [
+            {
+              "argv_sha256": "08ad671f19e2ca59a5a3a32a57f9045e1c2c28c6f071b6c26f34ed80cd6af0ba",
+              "exit": 0,
+              "role": "cargo",
+              "target": null
+            }
+          ],
+          "raw_result": "023be45ee10b7682d8a79bc2ae3efbd090a7fa6f5b53e4bcb47445b16a67bd5e",
+          "roles": {
+            "cargo": 1
+          },
+          "typed_ledger": "55a23f51cb45ef9fe4aa03fa47f20fca2dbbd57215527b4acb5e1b06c6b746e7",
+          "typed_units": 248
+        }
+      },
+      "rustc": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+      "stock_wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+    },
+    "B": {
+      "acquisition": "6910a88084e2c174eb29116790ce14776181a4690064a0f62980c521cb01a596",
+      "cargo": "f5523b530225724e91671630257c11b6ba58d18800736a70f6cbe91a31ccd409",
+      "edited_archive": "28e8fb8e35fb16661168ea045ccd17c3620fff405f77bb84c19aeb6368572dc7",
+      "edited_size": 101719820,
+      "initial_warm": {
+        "fresh": 248,
+        "receipt": "e6eb5787d6c5153bdb97889947b2176a3e88794c38620045760a147593eaf56f",
+        "rlib": "d8303473e14d2b087c778e24cfac4ccdb67b12b0ee3f45b0d2d468d17fb5b72f",
+        "units": 248
+      },
+      "native_caller": {
+        "ast": "2b16cc195968d747cfb7f4d18b071bae51b7e1683673b81166468ec12904773b",
+        "executable": "c43c42962091e5a21b45d5e13e7a7d0f813dc7b885fc7af825a53cef5ec17bd7",
+        "exit": 0,
+        "input": "e981376810375b7214c83ccd0dd840cd0110c7ce31d90cffc45ae1bd9706c4c2",
+        "linter": "28e8fb8e35fb16661168ea045ccd17c3620fff405f77bb84c19aeb6368572dc7",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout": "2 SIM222\n3 SIM222\n4 SIM222\n"
+      },
+      "old_size": 101719820,
+      "original_archive": "d8303473e14d2b087c778e24cfac4ccdb67b12b0ee3f45b0d2d468d17fb5b72f",
+      "phases": {
+        "edit": {
+          "fresh": 238,
+          "hints": [
+            "-Zohm-rlib-origin=$TARGET/debug/libruff_linter.rlib"
+          ],
+          "normalized_full_argv": [
+            [
+              "ruff_db",
+              "3323f1c26513ea32988ef41fcc61ae58de87c3c3593f336aa39996870dde7356"
+            ],
+            [
+              "ruff_linter",
+              "b36d01bb027730450d98591bb906ca1674cf1c5d388638827f1f8d168b44d84d"
+            ],
+            [
+              "ruff_python_ast",
+              "5a4845792e509c12e428e4fef43fdfc86a89944115a328725fb53b5c95950917"
+            ],
+            [
+              "ruff_python_codegen",
+              "9fe990228ac68943105e2aea7638a7b5f2b0f3fdca22f80c390cb073ef9d572b"
+            ],
+            [
+              "ruff_python_importer",
+              "6b71df5d05946ad52926b46a52963408e8796c2fef54343e93aaa3fa503d9d32"
+            ],
+            [
+              "ruff_python_index",
+              "dcee66e2ad827f4f9df824886794650f25178cb40148f984e8e9d19e88f09b72"
+            ],
+            [
+              "ruff_python_literal",
+              "5c43af0dbbd10389e3b6f5ac56cf03398cc7d6957752897388d897d1e83cd9d8"
+            ],
+            [
+              "ruff_python_parser",
+              "e98bf9b13a88898851b7563d61ad381f2ce9c044290cfdba251da91e881b74be"
+            ],
+            [
+              "ruff_python_semantic",
+              "4bb77b6c91b87ac9403411c8aebed196a587628f91725c29c7126ad354a5a686"
+            ],
+            [
+              "ruff_ranged_value",
+              "334e17ea71ec2d3b693990b8057b8f948892d591f49233b83c34233fe0c60f77"
+            ]
+          ],
+          "raw_argv": [
+            {
+              "argv_sha256": "08ad671f19e2ca59a5a3a32a57f9045e1c2c28c6f071b6c26f34ed80cd6af0ba",
+              "exit": 0,
+              "role": "cargo",
+              "target": null
+            },
+            {
+              "argv_sha256": "b41844ef9980b83405bedafc39c1276fb5049f24c8b9a841034e1e703f69f0a0",
+              "exit": 0,
+              "role": "rustc-query",
+              "target": null
+            },
+            {
+              "argv_sha256": "5a4845792e509c12e428e4fef43fdfc86a89944115a328725fb53b5c95950917",
+              "exit": 0,
+              "role": "rustc-full",
+              "target": "ruff_python_ast"
+            },
+            {
+              "argv_sha256": "e98bf9b13a88898851b7563d61ad381f2ce9c044290cfdba251da91e881b74be",
+              "exit": 0,
+              "role": "rustc-full",
+              "target": "ruff_python_parser"
+            },
+            {
+              "argv_sha256": "5c43af0dbbd10389e3b6f5ac56cf03398cc7d6957752897388d897d1e83cd9d8",
+              "exit": 0,
+              "role": "rustc-full",
+              "target": "ruff_python_literal"
+            },
+            {
+              "argv_sha256": "dcee66e2ad827f4f9df824886794650f25178cb40148f984e8e9d19e88f09b72",
+              "exit": 0,
+              "role": "rustc-full",
+              "target": "ruff_python_index"
+            },
+            {
+              "argv_sha256": "3323f1c26513ea32988ef41fcc61ae58de87c3c3593f336aa39996870dde7356",
+              "exit": 0,
+              "role": "rustc-full",
+              "target": "ruff_db"
+            },
+            {
+              "argv_sha256": "9fe990228ac68943105e2aea7638a7b5f2b0f3fdca22f80c390cb073ef9d572b",
+              "exit": 0,
+              "role": "rustc-full",
+              "target": "ruff_python_codegen"
+            },
+            {
+              "argv_sha256": "4bb77b6c91b87ac9403411c8aebed196a587628f91725c29c7126ad354a5a686",
+              "exit": 0,
+              "role": "rustc-full",
+              "target": "ruff_python_semantic"
+            },
+            {
+              "argv_sha256": "6b71df5d05946ad52926b46a52963408e8796c2fef54343e93aaa3fa503d9d32",
+              "exit": 0,
+              "role": "rustc-full",
+              "target": "ruff_python_importer"
+            },
+            {
+              "argv_sha256": "334e17ea71ec2d3b693990b8057b8f948892d591f49233b83c34233fe0c60f77",
+              "exit": 0,
+              "role": "rustc-full",
+              "target": "ruff_ranged_value"
+            },
+            {
+              "argv_sha256": "42e8baa2c740bf08c21a8fff13b91e1eb0689950516a7826a7ec7d8b8b33a3b8",
+              "exit": 0,
+              "role": "rustc-full",
+              "target": "ruff_linter"
+            }
+          ],
+          "raw_result": "98d5d878f02058bb384cc7574e06e78b74984088cb2e4ab6bee5267539300a06",
+          "roles": {
+            "cargo": 1,
+            "rustc-full": 10,
+            "rustc-query": 1
+          },
+          "typed_ledger": "c0246e1692305c58d8fb36bdc7cb5be0b2afdc0889d1292b8f7c323801a83275",
+          "typed_units": 248
+        },
+        "repeat": {
+          "fresh": 248,
+          "hints": [],
+          "normalized_full_argv": [],
+          "raw_argv": [
+            {
+              "argv_sha256": "08ad671f19e2ca59a5a3a32a57f9045e1c2c28c6f071b6c26f34ed80cd6af0ba",
+              "exit": 0,
+              "role": "cargo",
+              "target": null
+            }
+          ],
+          "raw_result": "b83988e1bb8594224b53686938ea4c93d6aeefe9f32df0eb163b12b3c0484128",
+          "roles": {
+            "cargo": 1
+          },
+          "typed_ledger": "55a23f51cb45ef9fe4aa03fa47f20fca2dbbd57215527b4acb5e1b06c6b746e7",
+          "typed_units": 248
+        }
+      },
+      "rustc": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+      "stock_wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+    }
+  },
+  "cargo_source": {
+    "A": "235f9228651b74c591e6f62cae4c9b761448dd2d",
+    "B": "0299c77b2ca9707e82bc418976399fdbc75611d8"
+  },
+  "pristine": {
+    "cold_fresh": 0,
+    "cold_units": 248,
+    "native_cli": {
+      "ast": "c79b33880a88a4fdc39eb9a591856a4ffe3bebce924416002678d751a7a634ae",
+      "executable": "06bd72ddd3624b66a219b69080466d6505331fb8375138b529016590230c43c3",
+      "exit": 0,
+      "input": "e981376810375b7214c83ccd0dd840cd0110c7ce31d90cffc45ae1bd9706c4c2",
+      "linter": "d8303473e14d2b087c778e24cfac4ccdb67b12b0ee3f45b0d2d468d17fb5b72f",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "1 SIM222\n"
+    },
+    "starting_file_ledger": "79f53644d2245cb51282fa2c85b91c009b2aa145508ad34b73d7996892dc3624",
+    "starting_files": 452,
+    "unchanged_fresh": 248
+  },
+  "reverse_to": "57d800be552a88751e7ecd06fc87b44714536033",
+  "rust": "ae76b292cb224008e8188a07143797f7a4ce0ec5",
+  "rust_driver": "f5d26f74e970e2891a8cbf8a044244d1cd9c0ca50d3af3894842cfb9858f781c",
+  "source": "1e9287d7654f1dbe4943d67ed5ac5363c9ee2161",
+  "source_parent": "5cf1bf9cd196046897a7aeeaf128833d6a464dfe",
+  "stop": "predeclared raw A/B rlib identity failed on paired first edit",
+  "volumes_detached": true,
+  "wall_samples": 0
+}
