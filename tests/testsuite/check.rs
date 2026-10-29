@@ -84,6 +84,60 @@ fn ohm_workspace_project() -> Project {
         .build()
 }
 
+fn ohm_own_library_project() -> Project {
+    project()
+        .file("Cargo.toml", &basic_manifest("foo", "0.0.1"))
+        .file("src/lib.rs", "fn unused() {}\npub fn value() -> u32 { 42 }")
+        .file(
+            "src/main.rs",
+            "extern crate foo; fn main() { foo::value(); }",
+        )
+        .file(
+            "tests/integration.rs",
+            "extern crate foo; #[test] fn integration() { assert_eq!(foo::value(), 42); }",
+        )
+        .file(
+            "examples/example.rs",
+            "extern crate foo; fn main() { foo::value(); }",
+        )
+        .file(
+            "benches/bench.rs",
+            "extern crate foo; #[test] fn bench() { assert_eq!(foo::value(), 42); }",
+        )
+        .build()
+}
+
+fn ohm_own_library_cargo(project: &Project, command: &str) -> cargo_test_support::Execs {
+    let mut cargo = project.cargo(&format!("-Zohm-reuse-built-deps {command}"));
+    cargo.masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"]);
+    cargo
+}
+
+fn assert_ohm_reused_library(output: &cargo_test_support::RawOutput, name: &str) {
+    let stdout = std::str::from_utf8(&output.stdout).unwrap();
+    let artifact = stdout
+        .lines()
+        .map(|line| serde_json::from_str::<serde_json::Value>(line).unwrap())
+        .find(|event| {
+            event["reason"] == "compiler-artifact"
+                && event["target"]["name"] == name
+                && event["target"]["kind"] == serde_json::json!(["lib"])
+        })
+        .expect("library artifact");
+    assert_eq!(
+        artifact["fresh"], true,
+        "library must be reused: {artifact}"
+    );
+    let filenames = artifact["filenames"].as_array().unwrap();
+    assert!(!filenames.is_empty());
+    assert!(
+        filenames
+            .iter()
+            .all(|name| name.as_str().unwrap().ends_with(".rmeta")),
+        "reused libraries must retain check-mode JSON: {artifact}",
+    );
+}
+
 fn ohm_workspace_macro_project() -> Project {
     let project = ohm_workspace_project();
     project.change_file(
@@ -1795,6 +1849,198 @@ fn ohm_built_registry_dependency_reuse_preserves_cold_checks() {
 
 "#]])
         .run();
+}
+
+#[cargo_test]
+fn ohm_own_library_reuse_preserves_checked_targets_and_warnings() {
+    let project = ohm_own_library_project();
+    ohm_own_library_cargo(&project, "test --no-run --test integration").run();
+
+    for target in [
+        "--test integration",
+        "--bin foo",
+        "--example example",
+        "--bench bench",
+    ] {
+        let command = format!("check {target} --message-format=json");
+        let output = ohm_own_library_cargo(&project, &command).run();
+        assert_ohm_reused_library(&output, "foo");
+        let stdout = std::str::from_utf8(&output.stdout).unwrap();
+        assert!(stdout.contains("function `unused` is never used"));
+    }
+
+    ohm_own_library_cargo(&project, "check --bench bench -v")
+        .with_stderr_does_not_contain("[RUNNING]")
+        .with_stderr_contains("[WARNING] function `unused` is never used")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_own_library_reuse_keeps_explicit_library_roots_checked() {
+    for selection in ["--lib", "--lib --test integration"] {
+        let project = ohm_own_library_project();
+        ohm_own_library_cargo(&project, "test --no-run --test integration").run();
+        let output = ohm_own_library_cargo(
+            &project,
+            &format!("check {selection} -v --message-format=json"),
+        )
+        .run();
+        assert_ohm_metadata_only_check(&output, "foo");
+        let warnings = std::str::from_utf8(&output.stdout)
+            .unwrap()
+            .lines()
+            .map(|line| serde_json::from_str::<serde_json::Value>(line).unwrap())
+            .filter(|event| {
+                event["reason"] == "compiler-message"
+                    && event["target"]["kind"] == serde_json::json!(["lib"])
+                    && event["message"]["code"]["code"] == "dead_code"
+            })
+            .count();
+        assert_eq!(warnings, 1, "the library warning must be emitted once");
+    }
+}
+
+#[cargo_test]
+fn ohm_own_library_reuse_respects_opt_out() {
+    let project = ohm_own_library_project();
+    ohm_own_library_cargo(&project, "test --no-run --test integration").run();
+    let output = project
+        .cargo("-Zohm-defaults=no check --test integration -v")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .run();
+    assert_ohm_metadata_only_check(&output, "foo");
+}
+
+#[cargo_test]
+fn ohm_own_library_reuse_rechecks_changed_source() {
+    let project = ohm_own_library_project();
+    ohm_own_library_cargo(&project, "test --no-run --test integration").run();
+    project.change_file("src/lib.rs", "compile_error!(\"own library changed\");");
+    let output = ohm_own_library_cargo(&project, "check --test integration -v")
+        .with_status(101)
+        .with_stderr_contains("[ERROR] own library changed")
+        .run();
+    assert_ohm_metadata_only_check(&output, "foo");
+}
+
+#[cargo_test]
+fn ohm_own_library_reuse_requires_metadata_and_diagnostics() {
+    for pattern in [
+        "target/debug/deps/libfoo-*.rmeta",
+        "target/debug/.fingerprint/foo-*/output-lib-foo",
+        "target/debug/.fingerprint/foo-*/ohm-message-provenance-lib-foo",
+    ] {
+        let project = ohm_own_library_project();
+        ohm_own_library_cargo(&project, "test --no-run --test integration").run();
+        let artifacts: Vec<_> = project.glob(pattern).map(Result::unwrap).collect();
+        assert_eq!(
+            artifacts.len(),
+            1,
+            "expected one native artifact: {pattern}"
+        );
+        std::fs::remove_file(&artifacts[0]).unwrap();
+        let output = ohm_own_library_cargo(&project, "check --test integration -v")
+            .with_stderr_contains("[WARNING] function `unused` is never used")
+            .run();
+        assert_ohm_metadata_only_check(&output, "foo");
+    }
+}
+
+#[cargo_test]
+fn ohm_own_library_reuse_respects_compiler_wrappers() {
+    for variable in ["RUSTC_WRAPPER", "RUSTC_WORKSPACE_WRAPPER"] {
+        let project = ohm_own_library_project();
+        ohm_own_library_cargo(&project, "test --no-run --test integration")
+            .env(variable, tools::echo_wrapper())
+            .run();
+        let output = ohm_own_library_cargo(&project, "check --test integration -v")
+            .env(variable, tools::echo_wrapper())
+            .with_stderr_contains("WRAPPER CALLED: rustc --crate-name foo [..]")
+            .run();
+        assert_ohm_metadata_only_check(&output, "foo");
+    }
+}
+
+#[cargo_test]
+fn ohm_own_library_reuse_respects_macro_trust() {
+    let project = ohm_workspace_macro_project();
+    project.change_file(
+        "local/tests/integration.rs",
+        "extern crate local; #[test] fn integration() { assert_eq!(local::value(), 42); }",
+    );
+    project.change_file(
+        "helper/src/lib.rs",
+        r#"
+            pub fn expansion() -> &'static str {
+                if std::env::var_os("OHM_OWN_LIBRARY_MACRO_INPUT").is_some() {
+                    "compile_error!(\"untracked own macro input changed\")"
+                } else {
+                    "23u32"
+                }
+            }
+        "#,
+    );
+    let flags = &["ohm-reuse-built-deps", "ohm-proc-macro-trust"];
+    project
+        .cargo("-Zohm-reuse-built-deps -Zohm-proc-macro-trust=all test --no-run -p local --test integration")
+        .masquerade_as_nightly_cargo(flags)
+        .env_remove("OHM_OWN_LIBRARY_MACRO_INPUT")
+        .run();
+    let output = project
+        .cargo("-Zohm-reuse-built-deps -Zohm-proc-macro-trust=all check -p local --test integration --message-format=json")
+        .masquerade_as_nightly_cargo(flags)
+        .env_remove("OHM_OWN_LIBRARY_MACRO_INPUT")
+        .run();
+    assert_ohm_reused_library(&output, "local");
+
+    let output = project
+        .cargo("-Zohm-reuse-built-deps -Zohm-proc-macro-trust=audited check -p local --test integration -v")
+        .masquerade_as_nightly_cargo(flags)
+        .env("OHM_OWN_LIBRARY_MACRO_INPUT", "changed")
+        .with_status(101)
+        .with_stderr_contains("[ERROR] untracked own macro input changed")
+        .run();
+    assert_ohm_metadata_only_check(&output, "local");
+}
+
+#[cargo_test]
+fn ohm_own_library_reuse_revalidates_build_script_inputs() {
+    let project = ohm_workspace_build_script_project();
+    project.change_file(
+        "local/tests/integration.rs",
+        "extern crate local; #[test] fn integration() { assert_eq!(local::value(), 19); }",
+    );
+    let build = "test --no-run -p local --test integration";
+    let check = "check -p local --test integration -v";
+    ohm_workspace_build_script_cargo(&project, build).run();
+    let output =
+        ohm_workspace_build_script_cargo(&project, &format!("{check} --message-format=json"))
+            .with_stderr_does_not_contain("[RUNNING] `[..]build-script-build[..]`")
+            .run();
+    assert_ohm_reused_library(&output, "local");
+
+    let original = project.read_file("local/input.rs");
+    project.change_file(
+        "local/input.rs",
+        "compile_error!(\"own script input changed\");",
+    );
+    let output = ohm_workspace_build_script_cargo(&project, check)
+        .with_status(101)
+        .with_stderr_contains("[ERROR] own script input changed")
+        .run();
+    assert_ohm_metadata_only_check(&output, "local");
+
+    project.change_file("local/input.rs", &original);
+    ohm_workspace_build_script_cargo(&project, build).run();
+    let output = ohm_workspace_build_script_cargo(&project, check)
+        .env(
+            "OHM_LOCAL_BUILD_INPUT",
+            "compile_error!(\"own script environment changed\");",
+        )
+        .with_status(101)
+        .with_stderr_contains("[ERROR] own script environment changed")
+        .run();
+    assert_ohm_metadata_only_check(&output, "local");
 }
 
 #[cargo_test]

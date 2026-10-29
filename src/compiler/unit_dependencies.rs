@@ -53,6 +53,9 @@ struct State<'a, 'gctx> {
     gctx: &'gctx GlobalContext,
     /// Stores the result of building the [`UnitGraph`].
     unit_dependencies: UnitGraph,
+    /// Explicit roots retain their requested mode, including when another
+    /// target depends on them through an implicit own-library edge.
+    root_units: HashSet<Unit>,
     package_set: &'a PackageSet<'gctx>,
     usr_resolve: &'a Resolve,
     usr_features: &'a ResolvedFeatures,
@@ -147,6 +150,7 @@ pub fn build_unit_dependencies<'a, 'gctx>(
         ws,
         gctx: ws.gctx(),
         unit_dependencies: HashMap::default(),
+        root_units: roots.iter().cloned().collect(),
         package_set,
         usr_resolve: resolve,
         usr_features: features,
@@ -797,17 +801,36 @@ fn maybe_lib(
         .map(|t| {
             let mode = check_or_build_mode(unit.mode, t);
             let dep_unit_for = unit_for.with_dependency(unit, t, unit_for.root_compile_kind());
-            new_unit_dep(
-                state,
-                unit,
-                &unit.pkg,
-                t,
-                None,
-                dep_unit_for,
-                unit.kind.for_target(t),
-                mode,
-                IS_NO_ARTIFACT_DEP,
-            )
+            let new_dep = |mode| {
+                new_unit_dep(
+                    state,
+                    unit,
+                    &unit.pkg,
+                    t,
+                    None,
+                    dep_unit_for,
+                    unit.kind.for_target(t),
+                    mode,
+                    IS_NO_ARTIFACT_DEP,
+                )
+            };
+            let dep = new_dep(mode)?;
+            // This implicit dependency follows the same reuse rules as a
+            // library dependency declared in the manifest. If the library is
+            // also a check root, share that unit to avoid duplicate diagnostics.
+            if mode.is_check()
+                && !state.root_units.contains(&dep.unit)
+                && state.can_reuse_built_registry_dependency(
+                    unit,
+                    unit.pkg.package_id(),
+                    t,
+                    dep_unit_for,
+                )
+            {
+                new_dep(CompileMode::Build)
+            } else {
+                Ok(dep)
+            }
         })
         .transpose()
 }
