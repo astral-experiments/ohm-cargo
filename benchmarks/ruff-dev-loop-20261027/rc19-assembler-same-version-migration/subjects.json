@@ -1,0 +1,116 @@
+{
+  "candidate": "749cde35ef1f4fb78954d7110ee4ee9a8271159aec9f9f67390fcb1e5419b3b6",
+  "final_cargo_build": "same-stamp debug build",
+  "initial_stamp_sha256": "9a788145e8e7172a1e397cde2a77250adba7d0e3c7644bdde3ac7a7877259367",
+  "native_roster_training": "e47e24d4cfb174fe11c594d7edcd9fa43960ae5774acdefdb76046552b6fa52f",
+  "original_training": "757c176a74fe2e533913d35dce55450ad0bc696a4fef88bd5a26dc176f1bc348",
+  "previous": {
+    "cases": {
+      "bin-missing-default": 0,
+      "bin-missing-explicit-no": 0,
+      "bin-valid-default": 0,
+      "bin-valid-explicit-no": 0,
+      "broad-native-roster": 1,
+      "test-missing-default": 0,
+      "test-missing-explicit-no": 0,
+      "test-valid-default": 0,
+      "test-valid-explicit-no": 0
+    },
+    "sha": "749cde35ef1f4fb78954d7110ee4ee9a8271159aec9f9f67390fcb1e5419b3b6",
+    "version": "9a788145e8e7172a1e397cde2a77250adba7d0e3c7644bdde3ac7a7877259367"
+  },
+  "previous_runtime_packet": "385ebb21c5717531d56ef46cfeb005a607f1d03e65b6593ed4a7ee9ece7024ed",
+  "sdk": {
+    "physical_sdk_receipt": "d6c119ae52f3bf712b9ae612e8726d79c6d2afaf905003732f5708607740c6f6",
+    "rust_commit": "ca780121cea38bb9b0538d020d4bcce76ca30cbc",
+    "rust_driver": "d8adcc610bdae225344ed1310ff9708784634d1fecafa600f7758a5d48d2cc95",
+    "rustc_build": "optimized stage1",
+    "target_files": 53
+  },
+  "source": {
+    "base": "2447f7f4eacb4fdf499899929f08d0de19abb4d0",
+    "base_archive_sha256": "364fbbaaf855631e32829c10656c6ed218c5e54dbe21bda47b827d4ea1a0d520",
+    "development_stamp": [
+      "34dad66fd2ac823bfb02c2c4a4bab02fb5ac4d31",
+      "34dad66fd",
+      "2026-10-29"
+    ],
+    "patch_sha256": "a8ece61b242750e04a662f6527d61f54917a70d72e1192d9967c10f44f0867a5",
+    "sources": {
+      "src/compiler/fingerprint/mod.rs": "cd1bf905a7061bf59ecfd4593cde37d0c39bdd94a93a325b04bd26e11cf2ae14",
+      "src/compiler/mod.rs": "c74f840bc7e70e49ae9042860c9e2648f588d958b17fd44ea0faff474b6bb1cb",
+      "src/compiler/ohm_deferred_dev_deps.rs": "25a5f1e4ff937df4dc45a0c6b21f886e04742066e5daec3a1a54a34245e81a2a",
+      "src/workspace/features.rs": "6beff06ac31e0310ff37ff53170a59df9cd50871bb496a01dd9bf64bd6c48785",
+      "tests/testsuite/config.rs": "8b842550d924a97b997fe5dc7eda1611e155605df517ece1e33e4e4af4b51692"
+    }
+  },
+  "source_receipt": "d36964ff4b2c5588e7bb815c7e6ccefe5e3efec2c73e40eabd1c984f2be55240",
+  "superseded_fixture": {
+    "first_bin_counts": [
+      {
+        "exe": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+        "incremental": false,
+        "line": "cf20b2ea2f80b789650c0bcff1de70d5915e9fa5f62d701f555b22252b38b6ad",
+        "link_only": false,
+        "pid": 385372,
+        "type": "rustc",
+        "unit": "assembler_reader"
+      },
+      {
+        "exe": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+        "incremental": false,
+        "line": "2b6116ddcf86878d49d561e1dabb1f0fc87a328405ffdc70d8f572b4ff5c40df",
+        "link_only": true,
+        "pid": 385406,
+        "type": "rustc",
+        "unit": "reader"
+      }
+    ],
+    "first_bin_status": 1,
+    "first_bin_trace_files": {
+      "trace.385364": "fdaf56a823d3753730f858131a1f6a203a3e63e05db4d430ab5fb8edcbcdeef7",
+      "trace.385365": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "trace.385366": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "trace.385367": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "trace.385368": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "trace.385369": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "trace.385370": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "trace.385371": "2c34d34d261cdea3a8dfe94802717bcc1fc093cd12ff105b320cd85e12c7a3ca",
+      "trace.385372": "158790afd8d0c53307aa1bdf4bfb531f43f4319841466735adebc1a93cb3bb1a",
+      "trace.385392": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "trace.385393": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "trace.385394": "579ba4f10996a92b1220a665ac4ae870a1c007deb50155788b4b326e01c48ca6",
+      "trace.385395": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "trace.385396": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "trace.385397": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "trace.385398": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "trace.385399": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "trace.385400": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "trace.385401": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "trace.385402": "311cbbacdab2d908554092ee968df0f44d23674a4b7e8172ddf63fc79f9f9127",
+      "trace.385403": "25693f3a5b98a435a0528e7a8dad06894ba4f1fba56e58d318de0e0919527356",
+      "trace.385404": "54c467ddb724605e40aafa3e4e364c8eed73457cfa52c5ae229ea02d72234f01",
+      "trace.385405": "68b159f95d26bb618b48f8ce91b8097b7f4bb8e093a7360594b869c0564c992a",
+      "trace.385406": "814e140bd38d0448fcd21c346c02e8d6600ff244e508a50e00ebc1b09cbaa160",
+      "trace.385407": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "trace.385408": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "trace.385409": "4e4f867855f585bef3e0434001ba410b9bcbeeff9cbad12a0fdd8c9a379c7790",
+      "trace.385410": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "trace.385411": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "trace.385412": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "trace.385413": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "trace.385414": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "trace.385415": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "trace.385416": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "trace.385417": "07d8744be445d7610c3dfc0ad233280790e2bda24d6499b0e3ef41287db4102d",
+      "trace.385418": "fdc7d6a29ef467fccbc06689b94d74a93221d152258ba2a180e3f8e7d6aa1b97",
+      "trace.385419": "20b7170ccfc204e331532b7586ceec4fc06be24c65ba0863ccb477d8413f776e",
+      "trace.385420": "7daa6421915d415a967546cad07b88ffc2b5e1fb56b0ed226ac324b676bb5b9e",
+      "trace.385421": "3073ac2b9c23253a0349ea454a350929067b6cabc15417f18888e1ed16071d28",
+      "trace.385422": "cb104dcabc151e9f0d27b20f45ae961017a1c4d5a4d6085d0a6ad372aae12b00"
+    },
+    "first_bin_traceback": "bd418a04f50b24ef8c21e5529d865ee9beda120dbea8a3683f90de7389d7b70b",
+    "first_fixture_worker": "37bc8010b8e4308201d147dd21933d39a0ba4db3f1a9c2faef548350641c9421",
+    "first_test_status": 0
+  }
+}

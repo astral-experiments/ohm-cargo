@@ -1,0 +1,170 @@
+{
+  "fields": {
+    "build_id": {
+      "bytes": 32,
+      "new": "7003d2913bcbf3d87c2e0dec391cb12a9d2f0724d5c347f3802c8af0a263df9f",
+      "offset": 896,
+      "old": "428f49d17de87fba769eef42f3bf8ed7c80c3972a1882837e15f8b597313cc9f"
+    },
+    "rodata_entsize": {
+      "bytes": 8,
+      "new": "0000000000000000",
+      "offset": 1071808,
+      "old": "0100000000000000"
+    }
+  },
+  "full_argv_identical": true,
+  "incoming_elf_sha": "1573893f42fac1a46a7700fec22cd0fd7ed25e7e1f84fcbb263f1f0d926f02c1",
+  "only_known_bytes": true,
+  "original_inputs": {
+    "only_bin_ex-547429450b4e677b": "1573893f42fac1a46a7700fec22cd0fd7ed25e7e1f84fcbb263f1f0d926f02c1",
+    "only_bin_ex-547429450b4e677b.d": "9d32e3a811c77aff0a98b2c5cdfee42504a5a7c6c28677f8116e9d9a7f821574",
+    "only_bin_ex-547429450b4e677b.rlink": "70737fd9458c9d852535992896b875523f5cb8dec728ae3ff090d18905d55a0e",
+    "only_bin_ex-547429450b4e677b.rlink-cache.json": "39b56f2d3878110935c7fd1137012abb36c8bda79fdc9dd2525ddd8bd242e73e",
+    "only_bin_ex-547429450b4e677b.rlink-objects/only_bin_ex-547429450b4e677b.35ickokcse89oppxkbu8nupp8.rcgu.o": "bda07f8015246d8b459f7e29ce457ac0423b5a35bd4c40dd44ba145837a1aa10",
+    "only_bin_ex-547429450b4e677b.rlink-objects/only_bin_ex-547429450b4e677b.only_bin_ex.2be00e238d1c5499-cgu.0.rcgu.o": "f0228c21e3753b2a7480bea6adcaaaefb0da976125ad7a053194d9a7e5112637"
+  },
+  "previous_elf_sha": "ae9d4177eb75d37a3c23f30e8e46df0a499df3eb9207eaa4c95d376d6452d708",
+  "private_result_sha256": "6f8ff2d0ff498bc537174f8073a91bd5c93eaffe0d55419c4d77fc39efd3a41f",
+  "reconstructed": [
+    "ae9d4177eb75d37a3c23f30e8e46df0a499df3eb9207eaa4c95d376d6452d708",
+    "1573893f42fac1a46a7700fec22cd0fd7ed25e7e1f84fcbb263f1f0d926f02c1"
+  ],
+  "rows": {
+    "1": {
+      "elf": "1573893f42fac1a46a7700fec22cd0fd7ed25e7e1f84fcbb263f1f0d926f02c1",
+      "exit": 0,
+      "requested_width": 1,
+      "runtime": {
+        "execute": {
+          "rc": 0,
+          "stderr": "",
+          "stdout": "\nrunning 0 tests\n\ntest result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n"
+        },
+        "listing": {
+          "rc": 0,
+          "stderr": "",
+          "stdout": "0 tests, 0 benchmarks\n"
+        }
+      },
+      "stderr": "a60882238831f809eae2471712ea7e11d5ea2720b95c3a43e73af6532bee9ff8",
+      "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stock_links": [
+        {
+          "output": "only_bin_ex-547429450b4e677b",
+          "sha": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+          "trace": "8846578aea2f017482320a55f55d5bc19d4b44f51d23357aaf2b04bfc50c33b0",
+          "width_flags": [
+            "--threads=1"
+          ]
+        }
+      ]
+    },
+    "2": {
+      "elf": "ae9d4177eb75d37a3c23f30e8e46df0a499df3eb9207eaa4c95d376d6452d708",
+      "exit": 0,
+      "requested_width": 2,
+      "runtime": {
+        "execute": {
+          "rc": 0,
+          "stderr": "",
+          "stdout": "\nrunning 0 tests\n\ntest result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n"
+        },
+        "listing": {
+          "rc": 0,
+          "stderr": "",
+          "stdout": "0 tests, 0 benchmarks\n"
+        }
+      },
+      "stderr": "a60882238831f809eae2471712ea7e11d5ea2720b95c3a43e73af6532bee9ff8",
+      "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stock_links": [
+        {
+          "output": "only_bin_ex-547429450b4e677b",
+          "sha": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+          "trace": "185e42b0daaeff6dd413be34df00f3ceb5b30fb5429161b2cb3fc1d02d0ced3e",
+          "width_flags": [
+            "--threads=2"
+          ]
+        }
+      ]
+    },
+    "3": {
+      "elf": "ae9d4177eb75d37a3c23f30e8e46df0a499df3eb9207eaa4c95d376d6452d708",
+      "exit": 0,
+      "requested_width": 3,
+      "runtime": {
+        "execute": {
+          "rc": 0,
+          "stderr": "",
+          "stdout": "\nrunning 0 tests\n\ntest result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n"
+        },
+        "listing": {
+          "rc": 0,
+          "stderr": "",
+          "stdout": "0 tests, 0 benchmarks\n"
+        }
+      },
+      "stderr": "a60882238831f809eae2471712ea7e11d5ea2720b95c3a43e73af6532bee9ff8",
+      "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stock_links": [
+        {
+          "output": "only_bin_ex-547429450b4e677b",
+          "sha": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+          "trace": "39491b5e2f807f1c4215797b25b4b55abf8b11c9ad1aedfcb9e1e2b4177cf42d",
+          "width_flags": [
+            "--threads=3"
+          ]
+        }
+      ]
+    },
+    "4": {
+      "elf": "ae9d4177eb75d37a3c23f30e8e46df0a499df3eb9207eaa4c95d376d6452d708",
+      "exit": 0,
+      "requested_width": 4,
+      "runtime": {
+        "execute": {
+          "rc": 0,
+          "stderr": "",
+          "stdout": "\nrunning 0 tests\n\ntest result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n"
+        },
+        "listing": {
+          "rc": 0,
+          "stderr": "",
+          "stdout": "0 tests, 0 benchmarks\n"
+        }
+      },
+      "stderr": "a60882238831f809eae2471712ea7e11d5ea2720b95c3a43e73af6532bee9ff8",
+      "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stock_links": [
+        {
+          "output": "only_bin_ex-547429450b4e677b",
+          "sha": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+          "trace": "358509130e1a76e00641df95fb3685f5bdaae9159a9ebc2efa51ea6912d58117",
+          "width_flags": [
+            "--threads=4"
+          ]
+        }
+      ]
+    }
+  },
+  "size": 1073672,
+  "training_status": 1,
+  "unchanged_ranges": [
+    {
+      "end": 896,
+      "equal_sha256": "aac5809494eae22d3a66dbf41322b4c4c1b331b2f8e400274ab4eb97a3b5ceb4",
+      "start": 0
+    },
+    {
+      "end": 1071808,
+      "equal_sha256": "5d5abc417b1fbf1d35d20a7b6253148d0e99225d7cd85ec9499d8bc8cff68f52",
+      "start": 928
+    },
+    {
+      "end": 1073672,
+      "equal_sha256": "b6572bb92d23307d1f6d6d8ab3a2a5ec74bb7b4e3332426cd2180e80eb7e83cc",
+      "start": 1071816
+    }
+  ]
+}
