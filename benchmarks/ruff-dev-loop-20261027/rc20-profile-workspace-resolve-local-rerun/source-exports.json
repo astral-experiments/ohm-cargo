@@ -1,0 +1,49 @@
+{
+  "arms": {
+    "A": {
+      "cargo_lock": "151c473e1a11532946ba9421ab1beeb238f98eb1f8cd4e5f94f9811003abd5a7",
+      "commit": "2fe90823d8eadc95de56c2cde8d41e0082aac0eb",
+      "files": 3108,
+      "git_tree_listing_sha256": "85bc5d75c5246d6120cb4b97cd1b0c70cd859479491666cc730ab0c3b1dccef7",
+      "stamp": [
+        "2fe90823d8eadc95de56c2cde8d41e0082aac0eb",
+        "2fe90823d",
+        "2026-10-29"
+      ],
+      "tree": "99f8de907ed0bfe7ccab4b22cbebd74b25bb010d"
+    },
+    "B": {
+      "cargo_lock": "151c473e1a11532946ba9421ab1beeb238f98eb1f8cd4e5f94f9811003abd5a7",
+      "commit": "97e5acfb7b8eefde1ce07d703fc4849d6d36e37c",
+      "files": 3108,
+      "git_tree_listing_sha256": "8c949215f8ffd720d80d21e39d6419f5c22830386c43d0c9dad7f338d5a505c3",
+      "stamp": [
+        "2fe90823d8eadc95de56c2cde8d41e0082aac0eb",
+        "2fe90823d",
+        "2026-10-29"
+      ],
+      "tree": "5f178546610e421118c2ad60c8634d97ea06f687"
+    }
+  },
+  "common_build_args": [
+    "+ohm",
+    "-Zohm-defaults=no",
+    "build",
+    "--locked",
+    "--release",
+    "-p",
+    "cargo",
+    "--bin",
+    "cargo",
+    "--features",
+    "ohm-defaults",
+    "--jobs",
+    "4",
+    "--message-format=json"
+  ],
+  "compiler_version": "rustc 1.99.0-dev (a4fa11bcd 2026-10-28) (ohm-1.99.0-18)\nbinary: rustc\ncommit-hash: a4fa11bcd38280639cb94daacc125472657db6c3\ncommit-date: 2026-10-28\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-dev\nLLVM version: 23.1.1\n",
+  "kind": "public Git source build, standard release profile",
+  "qualified_pgo_reconstruction": false,
+  "sdk_rustc_sha256": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+  "sdk_wild_sha256": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+}
