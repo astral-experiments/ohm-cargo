@@ -19,6 +19,10 @@ The extra Wild jobserver retry passed one of four preregistered holdout comparis
 
 A separate 576-command comparison held released rustc and the target standard library fixed. The historical patches missed the registered wall-time threshold across both controls and both edits for all three commands. [Paired results, logs and scorer](released-rustc-wall/README.md)
 
+### Executable-reuse cache controls
+
+Six untimed crossed controls isolated a cache-history difference that had rejected the first executable-reuse comparison before timing. [Products, traces and scorer](executable-reuse-cache-controls/README.md)
+
 ### Standalone Cargo lockfile guard
 
 A nine-line guard on the released Cargo source reduced Cargo-process instructions after real uv edits in all 16 pairs. DynamoRIO measured 0.159% and Cachegrind measured 0.152%. The earlier full-command elapsed-time comparison was inconclusive. [Raw samples, controls and reproduction](standalone-lockfile-guard/README.md)

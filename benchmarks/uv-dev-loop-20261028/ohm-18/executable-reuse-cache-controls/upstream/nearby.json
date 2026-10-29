@@ -1,0 +1,308 @@
+[
+  {
+    "baseRefOid": "030358a15b42ae6c58bba42b45ebdfcbbb623a01",
+    "body": "Prior to this change, we relink integration-test executables whenever their package library changes, even when the compiler confirms the test never uses that library. Preserve compiler-reported unused-extern proofs in the existing relink cache and reuse integration-test executables only when their package library rebuilds with an unchanged public API. Conservatively fall back for unsupported compilers, stale or missing proofs, changed test sources, directly or transitively used libraries, cyclic development dependencies, custom linker inputs, and native-producing build scripts; package binaries still rebuild normally. Across five alternating real edit-to-test comparisons, uv improves from 10.51s to 9.50s with 23.0% less user CPU, and Ruff improves from 5.22s to 4.72s with 16.8% less user CPU. Paired compiler support and Cargo pin: astral-sh/ohm-rust#21.",
+    "files": [
+      {
+        "path": "src/cargo/core/compiler/fingerprint/mod.rs",
+        "additions": 29,
+        "deletions": 0,
+        "changeType": "MODIFIED"
+      },
+      {
+        "path": "src/cargo/core/compiler/job_queue/job_state.rs",
+        "additions": 43,
+        "deletions": 2,
+        "changeType": "MODIFIED"
+      },
+      {
+        "path": "src/cargo/core/compiler/mod.rs",
+        "additions": 263,
+        "deletions": 32,
+        "changeType": "MODIFIED"
+      },
+      {
+        "path": "src/cargo/util/rustc.rs",
+        "additions": 22,
+        "deletions": 1,
+        "changeType": "MODIFIED"
+      },
+      {
+        "path": "tests/testsuite/freshness.rs",
+        "additions": 484,
+        "deletions": 6,
+        "changeType": "MODIFIED"
+      }
+    ],
+    "headRefOid": "f56167ae2ce9239363de162a4cbdd67e7538928f",
+    "mergedAt": null,
+    "number": 28,
+    "state": "CLOSED",
+    "title": "Skip relinking integration tests with unused package libraries",
+    "url": "https://github.com/astral-sh/ohm-cargo/pull/28"
+  },
+  {
+    "baseRefOid": "f56167ae2ce9239363de162a4cbdd67e7538928f",
+    "body": "Prior to this change, we reuse an integration-test executable only when its unused package library rebuilds with an unchanged public API. Extend compiler-proven reuse to public API changes in an unused package library and to unused workspace libraries that cannot be reached through any actually linked Rust dependency. Conservatively reject candidate-exclusive transitive build scripts that contribute native linker inputs, stale compiler proofs, source changes, aliases, cyclic development paths, changed used dependencies, and unsuccessful or warning-denied producers; package binaries still rebuild normally. End-to-end regressions replace a transitive static archive and verify the integration executable observes its updated implementation. Across three alternating real Ruff edit-to-test comparisons, a package-library change improves from 8.26s to 5.14s, and an unused workspace-library change improves from 7.20s to 4.41s.",
+    "files": [
+      {
+        "path": "src/cargo/core/compiler/fingerprint/mod.rs",
+        "additions": 102,
+        "deletions": 1,
+        "changeType": "MODIFIED"
+      },
+      {
+        "path": "src/cargo/core/compiler/mod.rs",
+        "additions": 159,
+        "deletions": 12,
+        "changeType": "MODIFIED"
+      },
+      {
+        "path": "tests/testsuite/freshness.rs",
+        "additions": 960,
+        "deletions": 5,
+        "changeType": "MODIFIED"
+      }
+    ],
+    "headRefOid": "ccc262b800e29c56ee4d45857586d8a94bf9d95a",
+    "mergedAt": null,
+    "number": 29,
+    "state": "CLOSED",
+    "title": "Reuse integration executables across unused dependency changes",
+    "url": "https://github.com/astral-sh/ohm-cargo/pull/29"
+  },
+  {
+    "baseRefOid": "242e7bdc885910beff6872f71300968933293410",
+    "body": "Skip relinking an integration test when its only changed dependency is an unused package library with an unchanged public API. For example, a test that only launches the package's executable does not need to relink after a private library edit.\n\nReuse requires rustc's unused-extern report from a successful compilation and checks that the library is not linked through another dependency.\n",
+    "files": [
+      {
+        "path": "src/compiler/fingerprint/mod.rs",
+        "additions": 29,
+        "deletions": 0,
+        "changeType": "MODIFIED"
+      },
+      {
+        "path": "src/compiler/job_queue/job_state.rs",
+        "additions": 43,
+        "deletions": 2,
+        "changeType": "MODIFIED"
+      },
+      {
+        "path": "src/compiler/mod.rs",
+        "additions": 263,
+        "deletions": 32,
+        "changeType": "MODIFIED"
+      },
+      {
+        "path": "src/util/rustc.rs",
+        "additions": 22,
+        "deletions": 1,
+        "changeType": "MODIFIED"
+      },
+      {
+        "path": "tests/testsuite/freshness.rs",
+        "additions": 484,
+        "deletions": 6,
+        "changeType": "MODIFIED"
+      }
+    ],
+    "headRefOid": "0d46e4115020c4fa5b60b5377e29d69dd5b85a04",
+    "mergedAt": null,
+    "number": 72,
+    "state": "OPEN",
+    "title": "Skip relinking integration tests with unused package libraries",
+    "url": "https://github.com/astral-sh/ohm-cargo/pull/72"
+  },
+  {
+    "baseRefOid": "0d46e4115020c4fa5b60b5377e29d69dd5b85a04",
+    "body": "Extend integration-test executable reuse to public API changes in unused libraries, including other workspace members. A library must be proven unused by rustc and absent from every dependency the test actually links.\n\nNative link inputs still matter: changing a transitive static archive must rebuild the test even when the corresponding Rust library is unused. Source changes, stale compiler reports, and changes to used dependencies also prevent reuse.\n\nThe original Ruff measurements reduced edit-to-test time from 8.26 s to 5.14 s for a package-library edit and from 7.20 s to 4.41 s for an unused workspace-library edit, across three alternating comparisons. Those measurements predate this Rust 1.98 port.\n",
+    "files": [
+      {
+        "path": "src/compiler/fingerprint/mod.rs",
+        "additions": 102,
+        "deletions": 1,
+        "changeType": "MODIFIED"
+      },
+      {
+        "path": "src/compiler/mod.rs",
+        "additions": 159,
+        "deletions": 12,
+        "changeType": "MODIFIED"
+      },
+      {
+        "path": "tests/testsuite/freshness.rs",
+        "additions": 960,
+        "deletions": 5,
+        "changeType": "MODIFIED"
+      }
+    ],
+    "headRefOid": "e64b02dc5ffabee4c5da90620bb8534ce1ee225b",
+    "mergedAt": null,
+    "number": 73,
+    "state": "OPEN",
+    "title": "Reuse integration executables across unused dependency changes",
+    "url": "https://github.com/astral-sh/ohm-cargo/pull/73"
+  },
+  {
+    "baseRefOid": "bfbafc7e2b073292f783f336f225b430aa7fb38d",
+    "body": "Automatic Wild selection adds linker flags that our unused integration-test checks mistake for user inputs. This prevents harnesses from collecting unused-extern proof, so they rebuild after changes to libraries they do not use. We now exclude only the exact bundled-linker suffix recorded during target discovery from those checks; explicit linker inputs retain the existing checks, and the full flags remain in fingerprints and compiler invocations.\n\nThe regression exercises automatic Wild selection and verifies that the unchanged harness still runs the updated CLI. This extends #123's registry-cache fix to integration-test reuse.\n\nAll seven focused native Linux regression tests pass on this branch. Applied to the assembled Ohm 1.99.0-2 Cargo, the same patch reduces a focused uv production-edit-and-test command from a median 9.11 s to 6.26 s across three alternating pairs. Both arms use matched source-built Cargo binaries, the same packaged compiler and Wild, warm dependencies, and eight build jobs. Test-only edits still rebuild the harness.\n",
+    "files": [
+      {
+        "path": "src/compiler/build_runner/mod.rs",
+        "additions": 13,
+        "deletions": 6,
+        "changeType": "MODIFIED"
+      },
+      {
+        "path": "src/compiler/mod.rs",
+        "additions": 6,
+        "deletions": 1,
+        "changeType": "MODIFIED"
+      },
+      {
+        "path": "tests/testsuite/freshness.rs",
+        "additions": 71,
+        "deletions": 36,
+        "changeType": "MODIFIED"
+      }
+    ],
+    "headRefOid": "ed8a56d917f53b6e629d9fe21c5ecd9d79dd2760",
+    "mergedAt": null,
+    "number": 139,
+    "state": "OPEN",
+    "title": "Preserve unused integration-test reuse with bundled Wild",
+    "url": "https://github.com/astral-sh/ohm-cargo/pull/139"
+  },
+  {
+    "baseRefOid": "ce9e64d2457dd132f50446a3ed5778f1c8f4b74b",
+    "body": "A native test build already produces a package's library, but checking its integration tests then checks that library again. Apply the existing built-dependency reuse rules to a target's dependency on its own library. This also covers selected binaries, examples, and benchmarks.\n\nExplicit library roots remain checked, including mixed selections such as `check --lib --test integration`. Existing freshness, diagnostic, wrapper, and macro-trust guards and opt-outs still apply.\n\nOn a Linux devbox, eight balanced pairs of uv checks gave these wall-time medians:\n\n| Workload | #150 | This PR | New compilations |\n| --- | ---: | ---: | ---: |\n| Native test \u2192 check | 1.9799 s | 1.3996 s | 3 \u2192 2 |\n| Artifact-cold check | 93.9666 s | 94.0972 s | 655 \u2192 655 |\n\nThe warm measurement excludes the native build and restores the same native-test snapshot for each arm. Cold checks started with empty build artifacts but warm registry and OS caches. Cold and no-op measurements do not establish zero overhead. Both arms used full macro and native-tool trust and an experimental compiler, not a verified release toolchain.\n",
+    "files": [
+      {
+        "path": "doc/book/src/reference/unstable.md",
+        "additions": 4,
+        "deletions": 0,
+        "changeType": "MODIFIED"
+      },
+      {
+        "path": "src/compiler/unit_dependencies.rs",
+        "additions": 34,
+        "deletions": 11,
+        "changeType": "MODIFIED"
+      },
+      {
+        "path": "tests/testsuite/check.rs",
+        "additions": 246,
+        "deletions": 0,
+        "changeType": "MODIFIED"
+      }
+    ],
+    "headRefOid": "ffaea2d27707d22c674446653eb9faf4b1ea7eb1",
+    "mergedAt": null,
+    "number": 152,
+    "state": "OPEN",
+    "title": "Reuse built package libraries when checking other targets",
+    "url": "https://github.com/astral-sh/ohm-cargo/pull/152"
+  },
+  {
+    "baseRefOid": "da7ad362e2b460b1639fbaafc160b67a76c6a837",
+    "body": "With Ohm defaults, `cargo +ohm test -p app --lib selected` can skip unused workspace dev dependencies on rebuilds. This can also avoid compiling the ordinary library needed only by an unused test helper. Features, compiler arguments, and optimization settings stay the same.\n\nWe use the previous executable's unused-dependency report to choose what to skip. The new compilation must confirm those dependencies are still unused before we accept the executable. Otherwise, we discard the output and retry once with all dependencies. Crashes and interruptions stop the command.\n\nNative dependencies still build normally. We check their current outputs after build scripts finish. Unsupported native inputs retain the full build.\n\nSkipped dependencies' errors and warnings are not reported. Use `-Zohm-defer-dev-deps=no` when you need to validate all declared dependencies. A failed attempt can cost an extra compilation.\n\nOne uncontended off/on pair per workload, with optimized Cargo, LLD, and the same warm checkpoint and settings within each pair:\n\n| Targeted test rebuild | Off | On | Saved |\n| --- | ---: | ---: | ---: |\n| ty | 72.22s | 37.72s | 34.50s |\n| uv | 30.97s | 26.22s | 4.76s |\n\nThese are single-pair results. In uv, the skipped helper accounted for 2.65s; the main compiler's additional 1.49s improvement needs more samples to establish.\n\nSeven focused regressions cover stale archives, unsafe native inputs, changed dependency usage, and failed attempts. Linux and macOS CI pass.\n",
+    "files": [
+      {
+        "path": "README.md",
+        "additions": 17,
+        "deletions": 0,
+        "changeType": "MODIFIED"
+      },
+      {
+        "path": "doc/book/src/reference/unstable.md",
+        "additions": 49,
+        "deletions": 0,
+        "changeType": "MODIFIED"
+      },
+      {
+        "path": "src/bin/cargo/main.rs",
+        "additions": 6,
+        "deletions": 0,
+        "changeType": "MODIFIED"
+      },
+      {
+        "path": "src/compiler/build_runner/mod.rs",
+        "additions": 16,
+        "deletions": 1,
+        "changeType": "MODIFIED"
+      },
+      {
+        "path": "src/compiler/job_queue/mod.rs",
+        "additions": 15,
+        "deletions": 3,
+        "changeType": "MODIFIED"
+      },
+      {
+        "path": "src/compiler/mod.rs",
+        "additions": 144,
+        "deletions": 31,
+        "changeType": "MODIFIED"
+      },
+      {
+        "path": "src/compiler/ohm_deferred_dev_deps.rs",
+        "additions": 342,
+        "deletions": 0,
+        "changeType": "ADDED"
+      },
+      {
+        "path": "src/context/mod.rs",
+        "additions": 7,
+        "deletions": 0,
+        "changeType": "MODIFIED"
+      },
+      {
+        "path": "src/lib.rs",
+        "additions": 4,
+        "deletions": 0,
+        "changeType": "MODIFIED"
+      },
+      {
+        "path": "src/workspace/features.rs",
+        "additions": 8,
+        "deletions": 0,
+        "changeType": "MODIFIED"
+      },
+      {
+        "path": "tests/testsuite/cargo/z_help/stdout.term.svg",
+        "additions": 38,
+        "deletions": 36,
+        "changeType": "MODIFIED"
+      },
+      {
+        "path": "tests/testsuite/config.rs",
+        "additions": 16,
+        "deletions": 0,
+        "changeType": "MODIFIED"
+      },
+      {
+        "path": "tests/testsuite/freshness.rs",
+        "additions": 19,
+        "deletions": 4,
+        "changeType": "MODIFIED"
+      },
+      {
+        "path": "tests/testsuite/main.rs",
+        "additions": 1,
+        "deletions": 0,
+        "changeType": "MODIFIED"
+      },
+      {
+        "path": "tests/testsuite/ohm_deferred_dev_deps.rs",
+        "additions": 646,
+        "deletions": 0,
+        "changeType": "ADDED"
+      }
+    ],
+    "headRefOid": "19f9ebd5eba6ae2e7ef65a0dead5ac4e87b29953",
+    "mergedAt": null,
+    "number": 161,
+    "state": "OPEN",
+    "title": "Skip unused dev dependencies in targeted test rebuilds",
+    "url": "https://github.com/astral-sh/ohm-cargo/pull/161"
+  }
+]
