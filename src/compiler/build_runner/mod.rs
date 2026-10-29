@@ -1864,7 +1864,9 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         unit: &Unit,
         expected: &RegistryMessageProvenance,
     ) -> Option<RegistryMessageProvenance> {
-        let bytes = std::fs::read(self.registry_message_provenance_path(unit)).ok()?;
+        let bytes =
+            paths::read_regular_bounded(&self.registry_message_provenance_path(unit), 1024 * 1024)
+                .ok()?;
         let provenance: RegistryMessageProvenance = serde_json::from_slice(&bytes).ok()?;
         (provenance.version == expected.version
             && provenance.compiler_context == expected.compiler_context
