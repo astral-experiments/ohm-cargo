@@ -1,0 +1,3108 @@
+{
+  "control/check/ordinary": {
+    "control": [],
+    "phases": {
+      "edited": {
+        "artifacts": {
+          "api": true,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "b2d99b92834b1b715c174c5df3ec18190bdc9fd2d99d0d013a1f2841d966adae",
+        "stdout": "54d42d37736abc1df0d3ad70747324e036e414e3290fd2d99fbe2d141d264ae1",
+        "success": false
+      },
+      "edited-clean": {
+        "artifacts": {
+          "api": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "35c9af4516ca7d285839ca6023568888a2fa6cfa6c463b334f83b41544892965",
+        "stdout": "5f1961a367d384ab18fc4c6964092ec920a5f3ef50de849ddffafd5bbcd97a1b",
+        "success": false
+      },
+      "edited-repeat": {
+        "artifacts": {
+          "api": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "9b21d27f43d0bfd52d51d439994127dab984185927296ec555f3fe990dd301a6",
+        "stdout": "ade1dfda520df4bff5ead55865c25f51f8a55d7f323cf7148f48c338a2b26b2c",
+        "success": false
+      },
+      "original": {
+        "artifacts": {
+          "api": false,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "c3bef02c5b1ac6aa251e2e368ac1f0d8186810a3041d1b7b4aa9aa308f26b88c",
+        "stdout": "474a483270d6269a220836a2aeb6762f61ffb97fd7817e39c71406d0a5f40f5c",
+        "success": true
+      },
+      "original-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "25040da28fca43574a890b50dafc9eaf6ca94e95a61e2f125a57d82e2107705e",
+        "success": true
+      },
+      "restore": {
+        "artifacts": {
+          "api": true,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "ecc85955ed03c31d4f92cbf70c03ffd66430d666889f9e19403209aac5e3a692",
+        "stdout": "e5a80e6f6f45f025752be8dc2dc0e086a8c3cde9dc4081ba5e7d766dc3510fb7",
+        "success": true
+      },
+      "restore-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "25040da28fca43574a890b50dafc9eaf6ca94e95a61e2f125a57d82e2107705e",
+        "success": true
+      }
+    },
+    "trace": null
+  },
+  "control/check/unavailable": {
+    "control": [
+      [
+        "hold-fd",
+        1,
+        0
+      ],
+      [
+        "timeout-fd",
+        1,
+        0
+      ]
+    ],
+    "phases": {
+      "edited": {
+        "artifacts": {
+          "api": true,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "2249c358bf35279d1062c485a9e3b3d8c9ff36765490fe9a55d96f8917f82004",
+        "stdout": "c0118859f9b4b60f70e9d08002e045526617f85acbaf8f3c16b994254527c74a",
+        "success": false
+      },
+      "edited-clean": {
+        "artifacts": {
+          "api": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "c647d752de3ddefac7f143b209eb4baccad88400f7998445086d266d61b9ce91",
+        "stdout": "62131232f269c67e0c16e40e0eb3e55b5d7519cc52ad8d1e2c109f1d2060cc43",
+        "success": false
+      },
+      "edited-repeat": {
+        "artifacts": {
+          "api": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "4f7590cb9277bd8daac7038676ed1bd0d21250942a92d4cc9c72d9ab44a03e05",
+        "stdout": "7b8533608c4d3723a1408f7b5239b023f5f9cd6c7671f65a33ae41aa56a99739",
+        "success": false
+      },
+      "original": {
+        "artifacts": {
+          "api": false,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "182be7d38175e9488c00934a5e94d073884b3d6d41f8480044501baf1cdbdb3c",
+        "stdout": "7380dba1712d584f837488976311f83f1996310362b9bec717ad99b87390399d",
+        "success": true
+      },
+      "original-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "c45ee96802f60f996af9aa76e7910f40def545f997fc91159a8de33b515327c3",
+        "success": true
+      },
+      "restore": {
+        "artifacts": {
+          "api": true,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "545793df2fc0cb54d8f31083fecba7322a19f35604147e37ee29d8ea202c8856",
+        "stdout": "96ba91c5e7f397f1c92043f9e988c10578dfedf87e2889f3ca682e9518a94595",
+        "success": true
+      },
+      "restore-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "c45ee96802f60f996af9aa76e7910f40def545f997fc91159a8de33b515327c3",
+        "success": true
+      }
+    },
+    "trace": "a3ec93057534e4d2e7312c1dab480d1c8afedf7b72858bd2a60e9f59ea234c49"
+  },
+  "control/defaults/ordinary": {
+    "control": [],
+    "phases": {
+      "edited": {
+        "artifacts": {
+          "api": true,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "2d00e697a45ad7fdbb47695ad5879ce4d4a7242088fe67938c17f431e2f9a875",
+        "stdout": "e6e05d2e7645cad1b92087f81e720c7b646c4d4b6afd9a78df7b06c54b3e7c35",
+        "success": false
+      },
+      "edited-clean": {
+        "artifacts": {
+          "api": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "7ec7c0ad99ea41ac99420dc3e21d6063da0bd747462f33f7df5956a504274db8",
+        "stdout": "f288e3f87fb5ea79c65584172679ff475ba40d7061aae4d88f540fc3a1ed5a01",
+        "success": false
+      },
+      "edited-repeat": {
+        "artifacts": {
+          "api": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "2ba3885bdd2436c4e6b7baa645e2c9be741845d8aeff416647f98322e81e0a90",
+        "stdout": "f23a6e13e76a57d0d4ddbbaa1b10446c717534a6799a8b472407558a067cc9e2",
+        "success": false
+      },
+      "original": {
+        "artifacts": {
+          "api": false,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "7e8e6d816ac864f2eca931763fa6085d085764fc0ae2804f7e2a436a7e7a13d7",
+        "stdout": "fdfdc116b6e0d168109fd1635aa83bc3fe906d583adb366b88c3fd7abf801930",
+        "success": true
+      },
+      "original-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "341129c2a35b45263244b4bc3ed65e51d05506ea4d7dd47ecf1b70c94fd6706d",
+        "success": true
+      },
+      "restore": {
+        "artifacts": {
+          "api": true,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "cbd7fdccff8cbb8490774ee694b8ea879a884be29911079a8d23fa648b8ddd29",
+        "stdout": "fba4cc5c7c538dcdfb089468d432e696364437ca80e7084e842f5be1950c8a3e",
+        "success": true
+      },
+      "restore-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "341129c2a35b45263244b4bc3ed65e51d05506ea4d7dd47ecf1b70c94fd6706d",
+        "success": true
+      }
+    },
+    "trace": null
+  },
+  "control/transport/ordinary": {
+    "control": [],
+    "phases": {
+      "edited": {
+        "artifacts": {
+          "api": true,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "a27bc2daa3c3705a350fecb57cf2a173cb22f0f96953500386a9dd12434fd360",
+        "stdout": "29c2101e708cd0c8f028decd68382f0effa228a260f3747adadf484f3cdcade3",
+        "success": false
+      },
+      "edited-clean": {
+        "artifacts": {
+          "api": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "9e58a9118ece868c53e31112e65e5bcdc1707322f5f3034974eed22cab8a908d",
+        "stdout": "0052a5b736400c13da8fecd8820d6d329b20d351d189f567d05581bf7375487d",
+        "success": false
+      },
+      "edited-repeat": {
+        "artifacts": {
+          "api": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "114d0395887fa5c12d8ef4f6c468bc896d20d73bac51d9a00666e44db2514b2e",
+        "stdout": "202c486a00947b54c8db489964b98b67dc32daa698b416359ff5cf3b37495543",
+        "success": false
+      },
+      "original": {
+        "artifacts": {
+          "api": false,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "7eafc40a1a0757a4c51cddb04d3d4d1001d803472df090d583438412016080f9",
+        "stdout": "4022ae98b530a970c435cc2ca1053add8cb7ddd8913054313918567127251c12",
+        "success": true
+      },
+      "original-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "56a7cadad54208dc1165efdefde644c229d977180106440a06598a638f1eedd5",
+        "success": true
+      },
+      "restore": {
+        "artifacts": {
+          "api": true,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "0ac413edb5aada0758f9090ed571a38251ee6141b3c13c48b1000791aca90660",
+        "stdout": "d894894fa9403ad7b203f9657430c128f37338acca9df91cae209345f29e9b53",
+        "success": true
+      },
+      "restore-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "56a7cadad54208dc1165efdefde644c229d977180106440a06598a638f1eedd5",
+        "success": true
+      }
+    },
+    "trace": null
+  },
+  "control/transport/unavailable": {
+    "control": [
+      [
+        "hold-fd",
+        1,
+        0
+      ],
+      [
+        "timeout-fd",
+        1,
+        0
+      ]
+    ],
+    "phases": {
+      "edited": {
+        "artifacts": {
+          "api": true,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "c748bd595fa259ebe343b62f8be0ca29c9aae4329a33bbf61d3677e57327866d",
+        "stdout": "08266e0fd5974382d12fdfbc8834640f43c18ff8225fcebafd5dbc53c478e0a2",
+        "success": false
+      },
+      "edited-clean": {
+        "artifacts": {
+          "api": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "614a9146720fa625d67f006cf2d8f0e21b8b201dc111c0bd15d952fa8b699cc9",
+        "stdout": "b1747b4034d095a25bbef35757c6db16b9017800f1839c87ee4f25360056b3ff",
+        "success": false
+      },
+      "edited-repeat": {
+        "artifacts": {
+          "api": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "b0899a759745aafffb95f35bce913bd6e43fc9eda5d79fd144126e0dfb40f2ab",
+        "stdout": "e2b9bbc1cf1a6307fd7805cffc50fadb43cca5af8f0b9bab11343d548f6644a1",
+        "success": false
+      },
+      "original": {
+        "artifacts": {
+          "api": false,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "f3e327ba584a1a81fb479605c8c8dd13857de8901690f03768f3af4115dc0416",
+        "stdout": "f3c1777dfd97386a842d71eb0b367822f12747d22131ece1595bf5a97e4334cc",
+        "success": true
+      },
+      "original-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "a7650644f6673e928dcb56a62e5a8c2cdf087e29e31e23611f81220014a87081",
+        "success": true
+      },
+      "restore": {
+        "artifacts": {
+          "api": true,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "c2324a910ef08565f5007c5bda33d581fa3461931b80d86529a65dcaacc311f4",
+        "stdout": "f3fdc6dd26c85c9093855cbfecdaf0b0cfa5736ea032b2c806a10ad32cb5ab6a",
+        "success": true
+      },
+      "restore-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "a7650644f6673e928dcb56a62e5a8c2cdf087e29e31e23611f81220014a87081",
+        "success": true
+      }
+    },
+    "trace": "42b6bb2d26a4504190bd57be87d7528ca144e7052fd4a1f0ff8f4612333cf7af"
+  },
+  "fixed/defaults/ordinary-provider-late": {
+    "control": [],
+    "phases": {
+      "edited": {
+        "artifacts": {
+          "api": true,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "97dcab14e6e09650216346a66d84ccd92e74e2c139445024f55c3745dbd9d1da",
+        "stdout": "bbc28e5c07facf80e787ea9b6180fbaf20bb940f9f0e572f34edfd59e20793fd",
+        "success": false
+      },
+      "edited-clean": {
+        "artifacts": {
+          "api": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "3df1b10bb8eeb86c1582daebfc263031e95f3664b7590adc140e962efcbfd918",
+        "stdout": "65eab7d76290a7243872880f1c40f86f0424d035411460d4cecfa31e2b52927b",
+        "success": false
+      },
+      "edited-repeat": {
+        "artifacts": {
+          "api": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "d04fde163afa4aaa771d6aeb5162c8862541c1702bd2643a3874bddd1400abef",
+        "stdout": "6820a09df33799ec7a3145afeec6259a8d7356b50d5cd059a46a669672791f34",
+        "success": false
+      },
+      "original": {
+        "artifacts": {
+          "api": false,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "114951f2b6ccbabf215c91188dba833374139ff97a8d47a64d0c99be475f34e7",
+        "stdout": "6fe782aa2587323c65a1567ef56f6ae17b27d89c84fe001d4da7877c8b83574e",
+        "success": true
+      },
+      "original-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "81cb08a50eb7494eb880fa1720f94a546785f00bc69dafc3bc91dc00c57d6589",
+        "success": true
+      },
+      "restore": {
+        "artifacts": {
+          "api": true,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "ca47873a8656ced2cf9f1f88c7d45edfd0ae23d147eeb90d00b89f951fa1648a",
+        "stdout": "5ddef4f88e68670f69561dc2c6e5bd6a6ec1a37c33359a9f8ae7a10335c89392",
+        "success": true
+      },
+      "restore-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "81cb08a50eb7494eb880fa1720f94a546785f00bc69dafc3bc91dc00c57d6589",
+        "success": true
+      }
+    },
+    "trace": null
+  },
+  "fixed/defaults/reproduce-provider-first": {
+    "control": [
+      [
+        "hold-fd",
+        2,
+        0
+      ],
+      [
+        "release-fd",
+        2,
+        0
+      ]
+    ],
+    "phases": {
+      "edited": {
+        "artifacts": {
+          "api": true,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "c642bb51b67be66de5754b00192f53031ed72c9197b69f1d1365d7cd24b0b2f8",
+        "stdout": "ece731308dd6249b0affb12ef45f8f214a3af62947c829b1397c7ac7e6f60e69",
+        "success": false
+      },
+      "edited-clean": {
+        "artifacts": {
+          "api": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "a4318443fc304d9b324ace32e9574e51893ac17661970d58b45811a7a56f54c4",
+        "stdout": "c1ac82aeda4a96ac8d2054e64c348c7ec914d957c416d255115659ea32cd3f7b",
+        "success": false
+      },
+      "edited-repeat": {
+        "artifacts": {
+          "api": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "810104561850ff3375b2162f7d50d5a5a24a52c2735635f6e9896402c5b18f32",
+        "stdout": "290af6ad9ad2003c28bc52b0b7452b7ec9d28565f90d51b47a43c9bf3aa0c0b1",
+        "success": false
+      },
+      "original": {
+        "artifacts": {
+          "api": false,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "63491cd08151ca7f16725432b82a4c5403c4bd3b8c8cd520014789f0a9cd0073",
+        "stdout": "1260fba57eac4919106fc364b12d8669812ffd871b46fe8ab127ef1bb53a6971",
+        "success": true
+      },
+      "original-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "e1980389e67d4bc98ca1b4a407ac93044cf191e3d80f4fa8c0a86a472d1e4f8a",
+        "success": true
+      },
+      "restore": {
+        "artifacts": {
+          "api": true,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "3154cd20af1d3f2223fed7d5ad8f44a00606c32fbffc46b100540110a88c2613",
+        "stdout": "92b52ac3fb7ef03190365d1f583a53b6abe6909625c5dcf238d72454192fbb4b",
+        "success": true
+      },
+      "restore-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "e1980389e67d4bc98ca1b4a407ac93044cf191e3d80f4fa8c0a86a472d1e4f8a",
+        "success": true
+      }
+    },
+    "trace": "e8be729901bdc38f34f2437f0bbcdb155537ef4ba319cc3dccffa4deaa811c03"
+  },
+  "fixed/defaults/reproduce-provider-late": {
+    "control": [
+      [
+        "hold-fd",
+        1,
+        0
+      ],
+      [
+        "release-fd",
+        1,
+        0
+      ]
+    ],
+    "phases": {
+      "edited": {
+        "artifacts": {
+          "api": true,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "ff8c27b3eb3f6b78f919e3683947d0f6cf2e420e110a392964104e0b3169504b",
+        "stdout": "038c353d146968bc3c73ab4fa3c44ccc01dc8e4a043944013fa5516356754a15",
+        "success": false
+      },
+      "edited-clean": {
+        "artifacts": {
+          "api": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "fa337de21e999c526caf9322e4ad251919ca6267252102920ee962a3351a046f",
+        "stdout": "688e5b619d3e4dfffa2bb1d24d8398a8c656db417f2d767ad1b25f9d42764daf",
+        "success": false
+      },
+      "edited-repeat": {
+        "artifacts": {
+          "api": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "a42b07f3163de143cb5879e0bd5de1897167b2ab7c54386c08aa934af88022a2",
+        "stdout": "bfb09ccbd5b8c41a2e9e653ee64ec6970f4e9b885cdd555291e253cccd61fb65",
+        "success": false
+      },
+      "original": {
+        "artifacts": {
+          "api": false,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "932b425033663e4368f1f4dc34a3e469ab73c436e380f24ef373e33564587f46",
+        "stdout": "c35a3760db411ebe3c193c48c04b218a245c424713539704c05c05bc2c500abc",
+        "success": true
+      },
+      "original-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "7d2433c9fedbf4824c7f7d87d6a797e0273824755013b9f62dc4f440d1b029c0",
+        "success": true
+      },
+      "restore": {
+        "artifacts": {
+          "api": true,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "bc358fb9565f2f29a2929eac4ee78b616df6cc0a34d5a9d3926b7f7a7a36838a",
+        "stdout": "a9f95b1205a31fe929d1a2d12958738e099e3ca8e6a539103252dc846bdb5813",
+        "success": true
+      },
+      "restore-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "7d2433c9fedbf4824c7f7d87d6a797e0273824755013b9f62dc4f440d1b029c0",
+        "success": true
+      }
+    },
+    "trace": "25b19f73c6ffbb6aa2c7528e1ec52220d9e840a017f1da8ec1bd8b082422a580"
+  },
+  "fixed/transport/ordinary-provider-late": {
+    "control": [],
+    "phases": {
+      "edited": {
+        "artifacts": {
+          "api": true,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "729813e66552a9905581db2e6cd565ebfbc1b4f16663383b43120fb1e1b9144a",
+        "stdout": "4082e873d78be0bd970e7cb62a3b075190473ff34bd6b4bdbb799cf1aec88b96",
+        "success": false
+      },
+      "edited-clean": {
+        "artifacts": {
+          "api": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "b6e9adf1d41464185ed9e90a40401bca94c42a9ef143c44c7ff8af3e848696a0",
+        "stdout": "d3562cfaa71657ae95e9baffefe5f5ed2148c21b9251533b388d50a36c76b00f",
+        "success": false
+      },
+      "edited-repeat": {
+        "artifacts": {
+          "api": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "08f460607516272329dd505a9cd44f8a00678d438f64c4190e828533a6810d74",
+        "stdout": "3475aad5d103181e3097ca4e4c08a90dd59edd81c9eab13228c1de08df1429ea",
+        "success": false
+      },
+      "original": {
+        "artifacts": {
+          "api": false,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "6cec0bf49be2250dd40ae7cfc654ed5e20d159f475d10841385806c7441f9b2b",
+        "stdout": "0a8ade407504f0a789536b4e9a6dc1a4edc1b6c985f43f481ab92db052b98736",
+        "success": true
+      },
+      "original-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "2f2a00c2ec0c94cd8e083db6f1001bcb021a44e448280e5b01174f96dcf5856e",
+        "success": true
+      },
+      "restore": {
+        "artifacts": {
+          "api": true,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "54481a9fe9514df1bbbe163a7d7998f89d7e52c5bb3bca295bb53116410d124d",
+        "stdout": "2e4e4e81010a0fc878ef9f995629aac214d8743b81067edc10e1271c409dc679",
+        "success": true
+      },
+      "restore-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "2f2a00c2ec0c94cd8e083db6f1001bcb021a44e448280e5b01174f96dcf5856e",
+        "success": true
+      }
+    },
+    "trace": null
+  },
+  "fixed/transport/reproduce-provider-first": {
+    "control": [
+      [
+        "hold-fd",
+        2,
+        0
+      ],
+      [
+        "release-fd",
+        2,
+        0
+      ]
+    ],
+    "phases": {
+      "edited": {
+        "artifacts": {
+          "api": true,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "1b57395966f0c89f0e0460f1fc78930e63d5383b4448a5662d07999f1adba3dd",
+        "stdout": "4b4c7e52b1fabf93ea979b6a6b3d7e66389e6cb4875c00d0ecc4b78dd2ca9346",
+        "success": false
+      },
+      "edited-clean": {
+        "artifacts": {
+          "api": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "15b0f3699acc49003a728a32c52d027809f36675dfd2e6b64786ddcd62d0e65f",
+        "stdout": "a76d582a78a9e1083c390cdef09efda82f4e65f4cfd8d169d844b29c587f5ec8",
+        "success": false
+      },
+      "edited-repeat": {
+        "artifacts": {
+          "api": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "e3805e674c769b4c158f0a797537bfb5c8177afa8ec4f39cc9052076a1465427",
+        "stdout": "2bb05d0beda0d957a507f3e390021426703dfd9b2abf73241944266fee6a474c",
+        "success": false
+      },
+      "original": {
+        "artifacts": {
+          "api": false,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "3405a497c1f2898e9e3ffa39514e446ec207ab444b3e016df1594eb70aaeef16",
+        "stdout": "1172ada18ab2be7628bb6e9050c2567c72d97be99f1eb6c38f936f70f092f40a",
+        "success": true
+      },
+      "original-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "f1ae0257d028fd19cc56fe7e0ef5b6b03b8877b0d776d913d9c1cfb7ec1d0378",
+        "success": true
+      },
+      "restore": {
+        "artifacts": {
+          "api": true,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "6c827d721e953915b4302eba3c0ddc7ca1342a5ab0cb40667fa91a17f077b457",
+        "stdout": "1cfd8b76cffd953f7d87458fb09367324b92fe2615ff4e88a484c58dfc93bc6f",
+        "success": true
+      },
+      "restore-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "f1ae0257d028fd19cc56fe7e0ef5b6b03b8877b0d776d913d9c1cfb7ec1d0378",
+        "success": true
+      }
+    },
+    "trace": "1e25e3926172d83c3f72b85942558a0f6bb1f716e03d5f5dcbc7dfddedb53f35"
+  },
+  "fixed/transport/unavailable-provider-late": {
+    "control": [
+      [
+        "hold-fd",
+        1,
+        0
+      ],
+      [
+        "timeout-fd",
+        1,
+        0
+      ]
+    ],
+    "phases": {
+      "edited": {
+        "artifacts": {
+          "api": true,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "f1738eb1b54d072802ad5e5e3862250ad35e09f0688b7c91d862000462b6e746",
+        "stdout": "01191c58d220fc56d616ef13936a78b47a389641b1971ff494fd501b4fa3494b",
+        "success": false
+      },
+      "edited-clean": {
+        "artifacts": {
+          "api": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "0ecb7e73fadf7808f455bdcc6a1883ab4a7133e2f4ae031e429511c2b78df462",
+        "stdout": "a93c760cc610fd6abd01636df06a74f3327d30e0ac4da98aa5d85380096f1dc3",
+        "success": false
+      },
+      "edited-repeat": {
+        "artifacts": {
+          "api": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "d77b595f42f4528d05232a2a3894295d13b7d6107cf55cb54261c057d9b5120e",
+        "stdout": "6c402a0e42eec1adccdf02a8bbb9de569bcef5470a1e130d6fabdbf82dc3522c",
+        "success": false
+      },
+      "original": {
+        "artifacts": {
+          "api": false,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "070fc167319e127cf1c20fcb12878a29fa957b7ba2f2b1d34ca492bf47b97b2d",
+        "stdout": "b9cb24731db797ef60714d3151c42eaabdbca631d4d5235462ad99a034f32030",
+        "success": true
+      },
+      "original-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "331041700f06b388b9432ce451a67b057dff208061d0cafd815a67b7ff1c0166",
+        "success": true
+      },
+      "restore": {
+        "artifacts": {
+          "api": true,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "3ab4f8aeab36cc454b3b50c00431c08dd90e026b1dac1f1eb5ff8974a70ef3d6",
+        "stdout": "1660b324ff5b1e8e44e2ddc9f0f98166a6103010b42a2a50d82ea825838423d3",
+        "success": true
+      },
+      "restore-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "331041700f06b388b9432ce451a67b057dff208061d0cafd815a67b7ff1c0166",
+        "success": true
+      }
+    },
+    "trace": "e64c88d91fff124f4108b4a5da48690b853e9e25298b7eb75d0f2ff40e2edae7"
+  },
+  "historical/head/provider-first": {
+    "control": [
+      [
+        "hold-fd",
+        2,
+        0
+      ],
+      [
+        "release-fd",
+        2,
+        0
+      ]
+    ],
+    "phases": {
+      "edited": {
+        "artifacts": {
+          "api": true,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "8b07ac6fac9b565dc4df6f2b559cc8e1f76691ab4ec95ee919066270bc8442c9",
+        "stdout": "f6ea11f08ee59ac2242f21526c3b246da396a3ab1b53d6036ae16c212d07f805",
+        "success": false
+      },
+      "edited-clean": {
+        "artifacts": {
+          "api": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "f4d4528d1d05d0f7b6da733d43431494c963f3bc96e5f6211d0aae74205ae1de",
+        "stdout": "a09905fa2df0a9b54baddd81048c9cb16f2e4d3c2b4eddec6c98a992897e569a",
+        "success": false
+      },
+      "edited-repeat": {
+        "artifacts": {
+          "api": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "2da7f64a5dbc813be5b36218f69f3257118e20210a904f753f2c8c64e44ec78c",
+        "stdout": "1422ec12acdbb4be65998a307f809b8352592dc9f8b03fe420a50b81531a49af",
+        "success": false
+      },
+      "original": {
+        "artifacts": {
+          "api": false,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "5cebb8ebb78921ab8b8f415355f265c34efb946aaa5f14816d83604595e84442",
+        "stdout": "9c0529939101fdd1606ee7733e0d540df5971d1c4764ba5d2b60cb51865eb143",
+        "success": true
+      },
+      "original-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "b957931dbd093c9a72105c8488e4a590226874de848741781536f264556e47cf",
+        "success": true
+      },
+      "restore": {
+        "artifacts": {
+          "api": true,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "d47f17f11835c3782182955fd878ca6ffb3eaab73093742ce1f5a6344271c6cc",
+        "stdout": "47640534c96d650ba12a659e6d3b4563df3ea3d35590b482ccf4fe986e50f450",
+        "success": true
+      },
+      "restore-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "b957931dbd093c9a72105c8488e4a590226874de848741781536f264556e47cf",
+        "success": true
+      }
+    },
+    "trace": "69050daa9efb6d2a46280fcbf6fab895c27f9ee87d5a9b2099dd23ef56d54085"
+  },
+  "historical/head/provider-late": {
+    "control": [
+      [
+        "hold-fd",
+        1,
+        0
+      ],
+      [
+        "release-fd",
+        1,
+        0
+      ]
+    ],
+    "phases": {
+      "edited": {
+        "artifacts": {
+          "api": true,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "8f8cdb5791a0002ef43b4b303119a3802b7d412f4f3d03f5fe58099c25615454",
+        "stdout": "fd7240918804581de1d9bd0a3fc568d21ed55cada91519fa0d88b8faf0458af9",
+        "success": true
+      },
+      "edited-clean": {
+        "artifacts": {
+          "api": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "90fcf8be4c5722b3dc3b4ed573b3f077f8149e995a129b5a5cb2a61eecadfbdc",
+        "stdout": "5d04b3fa745a5ec518fcf1f120ac685a9474d0525dc1f7ff89468a9daa53ffea",
+        "success": false
+      },
+      "edited-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "a0a6af38c3a0e68dceb4d68a666a74643956824cb9acf2c60303233d485a09f2",
+        "success": true
+      },
+      "original": {
+        "artifacts": {
+          "api": false,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "7a6ccdfd582d70c0b2d5407177b3c723c9209c171e4891b997e74b20fc43f9c1",
+        "stdout": "a668ad4b8c5fda2d6bfd12ca05a0255786c7332a2a714e51b7240d6bff736e11",
+        "success": true
+      },
+      "original-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "a0a6af38c3a0e68dceb4d68a666a74643956824cb9acf2c60303233d485a09f2",
+        "success": true
+      },
+      "restore": {
+        "artifacts": {
+          "api": true,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "13c3a98c1b12afb16de89c97a147a6c135b9c106e6dd242c8e9718feac537933",
+        "stdout": "514feaca2b1cc685be32ba1199d3fb8ed609d4b563686315f0ab17ed0e964913",
+        "success": true
+      },
+      "restore-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "a0a6af38c3a0e68dceb4d68a666a74643956824cb9acf2c60303233d485a09f2",
+        "success": true
+      }
+    },
+    "trace": "c6acfa8362720c75452a1f5ae9fe8387352b7126b0eafe518c21cc68a090dca8"
+  },
+  "historical/parent/provider-first": {
+    "control": [
+      [
+        "hold-fd",
+        2,
+        0
+      ],
+      [
+        "release-fd",
+        2,
+        0
+      ]
+    ],
+    "phases": {
+      "edited": {
+        "artifacts": {
+          "api": true,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "edcfbbfeb1d4065f4af2d9146fbb0a57f4c5c137f98774463c6d5fdb3d736bd3",
+        "stdout": "9e67dc497342443ecc21456d839baf17be8b4947426029f1673661bb05152560",
+        "success": false
+      },
+      "edited-clean": {
+        "artifacts": {
+          "api": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "c231e609d4a4c0aacd7b2adbb6764ecc2d1898dd5aed7e9c5155abe0b0ae777e",
+        "stdout": "7b0543dc75e46f7d78d7635030377211c2b6e0d9642f452258016ed6cd6beba7",
+        "success": false
+      },
+      "edited-repeat": {
+        "artifacts": {
+          "api": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "82638b5653f226e92213525bceb7d7d68e44deb5b407769d5e1fb7b8e29a8153",
+        "stdout": "079994f0022d905cdcb46c33a52d45a51f14f7fe70f1ef6d7ce775973c8d6757",
+        "success": false
+      },
+      "original": {
+        "artifacts": {
+          "api": false,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "bde1ce3cbb2326943ac66305f01dfd5f93e76456ba48f69bc7f20bfeb13fc7c8",
+        "stdout": "87d0f02c0b765187db0135c05496ad8c0e13c6a5e9804f822bfdaed5c19fcf14",
+        "success": true
+      },
+      "original-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "3303417e4864bbe894ac12d45909f3d9ec8c373e4f33aafaf13d241d9cee539b",
+        "success": true
+      },
+      "restore": {
+        "artifacts": {
+          "api": true,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "a1ce81353fc70a2cca04d1db7acfd4d1e5351fdac0e799e9573006ca7b2cf68b",
+        "stdout": "0239d1ce4fd67235bc967709c733b5af4073e62f736ecf30048d443396862620",
+        "success": true
+      },
+      "restore-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "3303417e4864bbe894ac12d45909f3d9ec8c373e4f33aafaf13d241d9cee539b",
+        "success": true
+      }
+    },
+    "trace": "753f92fc25f85327b1ff5dff05bc4ad15df1adfd45dbea8becd52e616b85c916"
+  },
+  "historical/parent/provider-late": {
+    "control": [
+      [
+        "hold-fd",
+        1,
+        0
+      ],
+      [
+        "release-fd",
+        1,
+        0
+      ]
+    ],
+    "phases": {
+      "edited": {
+        "artifacts": {
+          "api": true,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "4680669cbe9d36740ec44172ff119f9d8fbf50eea5ce571fcf6a42f0b50719fe",
+        "stdout": "ae18f59a0ff427d4f60391ccdab6054042f163a9f93d6ac39370425aad710252",
+        "success": true
+      },
+      "edited-clean": {
+        "artifacts": {
+          "api": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "60488a244405d9cb6e42c5ce6780316b52cdb4316965f6a1fd17b586cd9660b7",
+        "stdout": "93ecb95647ed4ab699112048c1652202125055406dceb6a4be098f7323730527",
+        "success": false
+      },
+      "edited-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "8a9411edd00c909557fbb53d3888c3e6a01641ecedfc9a16433b4cde0b812151",
+        "success": true
+      },
+      "original": {
+        "artifacts": {
+          "api": false,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "ea04e26189d868490b17e2a02a01fd6ff5ef00aa685314705f671f01c69a795c",
+        "stdout": "0d6694adaf3dcd3f3c75ba85e0865611f87baeceb79170558381889043ca57b5",
+        "success": true
+      },
+      "original-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "ee1d3fffa2022e962e63e0dbe4d35c9c198450a20c29fc09030f635dbb38bfcd",
+        "stdout": "8a9411edd00c909557fbb53d3888c3e6a01641ecedfc9a16433b4cde0b812151",
+        "success": true
+      },
+      "restore": {
+        "artifacts": {
+          "api": true,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "637ce2c3032911c499c53f365b6c107841c0ad01e3417c0b449ed344e57dbe73",
+        "stdout": "fd1dca8578b0808b8e770749047d9d1ccd3e31b2f53a63fa516bad3df312000d",
+        "success": true
+      },
+      "restore-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "8a9411edd00c909557fbb53d3888c3e6a01641ecedfc9a16433b4cde0b812151",
+        "success": true
+      }
+    },
+    "trace": "8ac73244695194102dc8eae30f0ad04d051ec74b69426a6cb6ec9b5a035c0f04"
+  },
+  "historical/seeddefault/provider-first": {
+    "control": [
+      [
+        "hold-fd",
+        2,
+        0
+      ],
+      [
+        "release-fd",
+        2,
+        0
+      ]
+    ],
+    "phases": {
+      "edited": {
+        "artifacts": {
+          "api": true,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "f09237b5ff766c1778ab440aef639d56081a02f298291bab629c89996eb10dfc",
+        "stdout": "7bc225c89b30229afc11a224e09e34f67d412808b72f1bb611d76d8fb159ba59",
+        "success": false
+      },
+      "edited-clean": {
+        "artifacts": {
+          "api": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "9415f774a1628ac4f1149bb679baf1a88e56b9e29b68b32771d4512523428fca",
+        "stdout": "d3d2746dc03788e5ecfc4bf0eb82096622302e64501cc2fdf3591d65ab50e14b",
+        "success": false
+      },
+      "edited-repeat": {
+        "artifacts": {
+          "api": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "7d854af5ae05c6dc66fdcb308adb43c372a6f9b73f22d15892f66c897578f8a5",
+        "stdout": "b655c2763a5c4625dbfe2a87762976e4951341cd41678fc5c72df86adffdec4e",
+        "success": false
+      },
+      "original": {
+        "artifacts": {
+          "api": false,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "0b44dc606b24b6b73a76c77f29349375a5f6733900494836b7b18a4f1e418263",
+        "stdout": "a210308fc48672cb133bcc9d45780a9fa645f9a4d3edcc0fdba808ca0681bee1",
+        "success": true
+      },
+      "original-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "f781c9f9785ba07e23f074988519467b6d1fffdb8ee443d7e876b28f97ad766d",
+        "success": true
+      },
+      "restore": {
+        "artifacts": {
+          "api": true,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "0e7413f683053ffe5353e2a0d7cbe66608252e0abbfc71f83fba1dbfb4d12519",
+        "stdout": "94051c0fd81cf403eb1c2837b62b0328fdab8b774296124ac34815059435f805",
+        "success": true
+      },
+      "restore-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "f781c9f9785ba07e23f074988519467b6d1fffdb8ee443d7e876b28f97ad766d",
+        "success": true
+      }
+    },
+    "trace": "04db796aa97efc51c03fe083542f3e19628a526ab08025b087101a9c37594c01"
+  },
+  "historical/seeddefault/provider-late": {
+    "control": [
+      [
+        "hold-fd",
+        1,
+        0
+      ],
+      [
+        "release-fd",
+        1,
+        0
+      ]
+    ],
+    "phases": {
+      "edited": {
+        "artifacts": {
+          "api": true,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "012634664ac7745f0a2dcfcc7de6c4b5f22d0c357473b3aa630b44262064e6b3",
+        "stdout": "dd3c265df7dfab5f7b5ca59cf3e9c70d57f39bbc666ce529230fb06f7bbd5a31",
+        "success": true
+      },
+      "edited-clean": {
+        "artifacts": {
+          "api": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "71753f851b6cb26e17486e56ddf2c58b5e9cfd5aa90950a5764e2ae7551c10a8",
+        "stdout": "51542a53a9e26cd23d5e74e0875b4f0fe7e32bbf31c0678c90a2a336280ec8b8",
+        "success": false
+      },
+      "edited-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "bc2db072b350c2c2730f346bfc0b6fc3dccf23db90021ffe97ef7676f74f3d19",
+        "success": true
+      },
+      "original": {
+        "artifacts": {
+          "api": false,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "a19f73aef434b49385f3cc76ee8d4881fe08d6a7195c5570d508016588d7628d",
+        "stdout": "e23f2e9f5ec39158fcf12aaf5ac5f8f8a696b6e667a76cef3c24291e8f82c1ca",
+        "success": true
+      },
+      "original-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "bc2db072b350c2c2730f346bfc0b6fc3dccf23db90021ffe97ef7676f74f3d19",
+        "success": true
+      },
+      "restore": {
+        "artifacts": {
+          "api": true,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "5265592cf8d215c24058e83e2328aded0a1588286c82597a17fb1104cbd9acb0",
+        "stdout": "d25c31fd87e9c76253212d87846d203f3ecc8a124f61429b3d77db2b7e3af34c",
+        "success": true
+      },
+      "restore-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "bc2db072b350c2c2730f346bfc0b6fc3dccf23db90021ffe97ef7676f74f3d19",
+        "success": true
+      }
+    },
+    "trace": "94608bae870c65cb0166fda8d79c36e9e4168a5c1cc224d197598304f9e67a7c"
+  },
+  "historical/seedparent/provider-first": {
+    "control": [
+      [
+        "hold-fd",
+        2,
+        0
+      ],
+      [
+        "release-fd",
+        2,
+        0
+      ]
+    ],
+    "phases": {
+      "edited": {
+        "artifacts": {
+          "api": true,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "4138d8cf1e4f39bda7be7ca82733fb4b77e77bd3a8d45ff60bdfcb36b2fd8936",
+        "stdout": "babbbe682037a5a26ca6487355c2b68277fa559d6402b014c01e804565187a18",
+        "success": false
+      },
+      "edited-clean": {
+        "artifacts": {
+          "api": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "f626221d67ea3be75d4668314cdf5fff6bd2b372cd01056b67eba4e44982bd2f",
+        "stdout": "39c7b3582a0624e1900c719d679ea8bfd798ab6f406cf7c98e751ca70ba68d19",
+        "success": false
+      },
+      "edited-repeat": {
+        "artifacts": {
+          "api": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "c251eb255b9e3b634707a0a72f1bec641e27c01aae97afa56f382da78797f7e2",
+        "stdout": "89d9e69dd294336c363e113708e92f950fab9d32b0915056d377b2d990c1d1c0",
+        "success": false
+      },
+      "original": {
+        "artifacts": {
+          "api": false,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "1b073f59969ebcf86c0c1d6c7314af217ba7e4bc63e0ef9f024b692f9a915831",
+        "stdout": "73f992240873e2f3365b909595fb38f190fa9d390f91e1213659a6b5fc97b285",
+        "success": true
+      },
+      "original-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "a61cf858d013fc0e2771c2e13ebeee5c60e5867b6f67b33c235cdc1930380568",
+        "success": true
+      },
+      "restore": {
+        "artifacts": {
+          "api": true,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "f0bd62c64c700555c7042aa95f56cabe8289ad2000cefcd9c7c19205b2e88f90",
+        "stdout": "18413d5c52e2482798c6afe83e5d17163fd2a2f6fec366d6ce2227f512cd24bd",
+        "success": true
+      },
+      "restore-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "ee1d3fffa2022e962e63e0dbe4d35c9c198450a20c29fc09030f635dbb38bfcd",
+        "stdout": "a61cf858d013fc0e2771c2e13ebeee5c60e5867b6f67b33c235cdc1930380568",
+        "success": true
+      }
+    },
+    "trace": "93962f4b695136027eae863f8e010806b9d8459bcce8b5e3b2e0587cb6974a08"
+  },
+  "historical/seedparent/provider-late": {
+    "control": [
+      [
+        "hold-fd",
+        1,
+        0
+      ],
+      [
+        "release-fd",
+        1,
+        0
+      ]
+    ],
+    "phases": {
+      "edited": {
+        "artifacts": {
+          "api": true,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "a0e760b1b1dac1dda813b3445ad238003e24d5afc29a309a762b2a7dc16225f0",
+        "stdout": "dd51a71cdd9ce27cb1041c42b190000b1d3e5e50abacc598ee8667199acd02cd",
+        "success": true
+      },
+      "edited-clean": {
+        "artifacts": {
+          "api": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "5795194d2acaaf28a98da839985b1d8670323312bb5e0a48c2371e726630d9a3",
+        "stdout": "f3ed7ec501958e435a135d084bdd9cdaf77611ba286e765be82a1a39f53633df",
+        "success": false
+      },
+      "edited-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "bbe107639b6d69ef6d5dc0b21e3a5728a0ba67036ac5e15421924f0bc39f25a5",
+        "success": true
+      },
+      "original": {
+        "artifacts": {
+          "api": false,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "d5c0504f4f413019b0c5380f1deee0867d05af82d5065fe213463190283ef268",
+        "stdout": "fc8a98f34d298caa7fa0f3362e83c0778fb2d541521c1cd1b7bf10227e5d1619",
+        "success": true
+      },
+      "original-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "bbe107639b6d69ef6d5dc0b21e3a5728a0ba67036ac5e15421924f0bc39f25a5",
+        "success": true
+      },
+      "restore": {
+        "artifacts": {
+          "api": true,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "d12a24244c19b2e33fd503f357eb7ce1af9e1b29f93de7d9da5ead831df6a844",
+        "stdout": "2d117d2550339dddc759d4d8226d2eb2786a849e1612faecacf49dd9727274e3",
+        "success": true
+      },
+      "restore-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "bbe107639b6d69ef6d5dc0b21e3a5728a0ba67036ac5e15421924f0bc39f25a5",
+        "success": true
+      }
+    },
+    "trace": "7baad2f239188fb6fc2d8445e6352c2bcf7df94c5f272f4c39f87c18e9382645"
+  },
+  "original/check/provider-first": {
+    "control": [
+      [
+        "hold-fd",
+        2,
+        0
+      ],
+      [
+        "release-fd",
+        2,
+        0
+      ]
+    ],
+    "phases": {
+      "edited": {
+        "artifacts": {
+          "api": true,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "db442549964ffb47f8d11dd4e2e6598c0ef80a63afa4cecad73f29cfcff83272",
+        "stdout": "2e4847b5f9326b5ff52b6ecfda6df045f04423fcfb4e3274629f277987ca1ffe",
+        "success": false
+      },
+      "edited-clean": {
+        "artifacts": {
+          "api": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "942c32ef113fab51723819b1dfe32c11be3d2e9c3c7e7b82efbf3f582f431218",
+        "stdout": "f77d723da60a9df208fbc29f7e358db3027133fdfb72f919376c74298568c465",
+        "success": false
+      },
+      "edited-repeat": {
+        "artifacts": {
+          "api": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "95330b10769fa0d1584390778c327e276b9a2b0e69db14ffe27fdecaa8b8e846",
+        "stdout": "fba46a5c6ae196e9c2aaad7821cfcc08dae45a57b130cb3a6e367d67d3223dda",
+        "success": false
+      },
+      "original": {
+        "artifacts": {
+          "api": false,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "d307dc392ef216998237b08cbd4de554ef78749be037f6cb0502f8d39a85bbc3",
+        "stdout": "fb6fb3555d423b53191d7ee517abb7367262d4979b6a134d11e85f0498519d4a",
+        "success": true
+      },
+      "original-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "99f71393b9903dca098310bb446022a4bdee195ea9996f351a787195555210a6",
+        "stdout": "038e28c7faa8a10d3a15511685fe46a6c8b23265449f3309e3cf6aa84c5285e0",
+        "success": true
+      },
+      "restore": {
+        "artifacts": {
+          "api": true,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "02c68ae6610420051fa94d9ee2c8ee927d7a143faa9b42ce0752458850224a00",
+        "stdout": "2b47c14ea1e080d2f5b6ca6b2cbba0cdf6bc818e4e3550ef0e7db5576dd83704",
+        "success": true
+      },
+      "restore-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "038e28c7faa8a10d3a15511685fe46a6c8b23265449f3309e3cf6aa84c5285e0",
+        "success": true
+      }
+    },
+    "trace": "d74fd9bc071eaf5c5b15b6e7e7a43b53753520763c42e7b8b887300f596401f9"
+  },
+  "original/check/provider-late": {
+    "control": [
+      [
+        "hold-fd",
+        1,
+        0
+      ],
+      [
+        "timeout-fd",
+        1,
+        0
+      ]
+    ],
+    "phases": {
+      "edited": {
+        "artifacts": {
+          "api": true,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "cc00219fc0848d632bbf0ce3091f59a07b6780991b354211b6396c01188d7b76",
+        "stdout": "163fedb67e6ba0278710654662cd5ac43889c75fff3e1107c912f40fec12750e",
+        "success": false
+      },
+      "original": {
+        "artifacts": {
+          "api": false,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "9646403f569de4f05d1d522c88e0bc4a1ddb794f688447c68d2bb669ce58a60f",
+        "stdout": "75103859f827ced2afe88475a0d0869cc4c51b00391b67eb298dbe0890e4db6d",
+        "success": true
+      },
+      "original-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "064c5975788edc78e1fda77a12e754a37f450a91abf64b415a7c56d8dcfe415f",
+        "success": true
+      }
+    },
+    "trace": "eac4b52db74a62897f9901926cb478d5684909871485d7d6c621968c4803d31a"
+  },
+  "original/defaults/provider-first": {
+    "control": [
+      [
+        "hold-fd",
+        2,
+        0
+      ],
+      [
+        "release-fd",
+        2,
+        0
+      ]
+    ],
+    "phases": {
+      "edited": {
+        "artifacts": {
+          "api": true,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "93cee0fe72eb6727c66be864b10d68bc6305f70e0076d2780f997587143c9af0",
+        "stdout": "628ee927e06e77caf9f8ed863d8c3eb3a6df3ebb1a3ed787138e225be78d54dd",
+        "success": false
+      },
+      "edited-clean": {
+        "artifacts": {
+          "api": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "39ef1b8de32cbaa9bf9bd56fde75c6fe80f441fb8893bf05a7f962cb8b447016",
+        "stdout": "fd2556fafd06f4d7846c3dc0c95ce493dd38dc5af6ba3163534e4232d99060ad",
+        "success": false
+      },
+      "edited-repeat": {
+        "artifacts": {
+          "api": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "c39d54cc5d419ceb3bd47157538f44383c7a791696fec6c42e6ae666d2354555",
+        "stdout": "ea48e01c484c8cf88cf4a425bf24a96eee0100e8d98d8c2a633b59e75e92a684",
+        "success": false
+      },
+      "original": {
+        "artifacts": {
+          "api": false,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "ebdba64809bd376c041d59f21937ad6ba1ecdceac6617c6aad0a0e038cf5ea03",
+        "stdout": "5afc85b7063ff6488f38c71bc3052bdcc412026417166732dca8f7a58fe8518f",
+        "success": true
+      },
+      "original-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "625da7e8c0367b3ee558593067a039cf1ce8e7147bddbea8a58caefeb16cb46c",
+        "success": true
+      },
+      "restore": {
+        "artifacts": {
+          "api": true,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "32d85712410dbecdd29d44da5c8cb40e162c619c9b4dac8549f04c87de170288",
+        "stdout": "c23702dce54dcf002c1c8846e9c424fa86d6f1b91a209d90188cf1c6ba73458d",
+        "success": true
+      },
+      "restore-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "625da7e8c0367b3ee558593067a039cf1ce8e7147bddbea8a58caefeb16cb46c",
+        "success": true
+      }
+    },
+    "trace": "97c273de5186b206a31671c54eae7ef6279828a31522915027590abba364f5c5"
+  },
+  "original/defaults/provider-late": {
+    "control": [
+      [
+        "hold-fd",
+        1,
+        0
+      ],
+      [
+        "release-fd",
+        1,
+        0
+      ]
+    ],
+    "phases": {
+      "edited": {
+        "artifacts": {
+          "api": true,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "fd3068d9828b4a44038e4ffd29fad34e9ac07f8533593ab0095c886d61e3b57e",
+        "stdout": "6386b5513c95686e80f44b401dd1f2aac03ee60054f29c1c13aad3081ec9ecdc",
+        "success": true
+      },
+      "edited-clean": {
+        "artifacts": {
+          "api": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "ca968f32827ce6ddee6394a570a4abcd6ccbed1d4e7a516c6df5d10310a27263",
+        "stdout": "9fdf8924d52221f064fead8aeb929caae29a9d0fd606808fa450707ac0fe4fab",
+        "success": false
+      },
+      "edited-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "3781bd91e0a29b6a13fb3c4b05923bb98f3d40dd44ff0508f55630bc1e0862b4",
+        "success": true
+      },
+      "original": {
+        "artifacts": {
+          "api": false,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "2de47181b3c8bd4351dd8bd2e82b626fe9ca47915ef82f93d8b229e77d3eb70f",
+        "stdout": "06fb44bfa2918ca3b7afe2543969728d4ca04bd93633e3c1ca671d87a19d2ecf",
+        "success": true
+      },
+      "original-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "ee1d3fffa2022e962e63e0dbe4d35c9c198450a20c29fc09030f635dbb38bfcd",
+        "stdout": "3781bd91e0a29b6a13fb3c4b05923bb98f3d40dd44ff0508f55630bc1e0862b4",
+        "success": true
+      },
+      "restore": {
+        "artifacts": {
+          "api": true,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "68cc708124507b4fc289f55bf59be4f5d9c24edd3e0cbd44d4a27434f2039fb5",
+        "stdout": "8c11ccf58d537c8ca537eb5684706fa4c2879fb7996788d11c598cf21b90c850",
+        "success": true
+      },
+      "restore-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "3781bd91e0a29b6a13fb3c4b05923bb98f3d40dd44ff0508f55630bc1e0862b4",
+        "success": true
+      }
+    },
+    "trace": "3902b0a26d6473a3e3eef883c0024d13a04703b5104cc9327e1b7b817fccdaf7"
+  },
+  "original/transport/provider-first": {
+    "control": [
+      [
+        "hold-fd",
+        2,
+        0
+      ],
+      [
+        "release-fd",
+        2,
+        0
+      ]
+    ],
+    "phases": {
+      "edited": {
+        "artifacts": {
+          "api": true,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "5bcaecc52f30f88dfb6910d81ba9964bb2fa5e480c5b444b740ddde91b68d64b",
+        "stdout": "fec582ea1b5e146332860efa4d6fd7e6d9732666a9339c2cf36e44957c5a8407",
+        "success": false
+      },
+      "edited-clean": {
+        "artifacts": {
+          "api": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "4b6a7acecfe21ae43d79d84784812754cded7e63030cc802d43c2f9f1645f040",
+        "stdout": "fcf7f9505b7435b921d51b5084acae5eb82a57dba5d6d191aabdcf8c6272bde6",
+        "success": false
+      },
+      "edited-repeat": {
+        "artifacts": {
+          "api": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "3e205c12fab7dcbc350169723430481c61076549fef00e333990529d0557845e",
+        "stdout": "22d72121939fb9ec964f73aecf5fc9326924c18d86b4f6e136284d173dbd03fa",
+        "success": false
+      },
+      "original": {
+        "artifacts": {
+          "api": false,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "10544e40674146dc990096c20f9aef5b1fced7fd502015bd72a957d55100af1e",
+        "stdout": "e032b238f32de9b7191d26d097d6728e5600937d56268f6589d3907caf551322",
+        "success": true
+      },
+      "original-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "80f748cccbc7e1011024ca2b325a814320295f9a425ffd4a86793cdb5150db0a",
+        "success": true
+      },
+      "restore": {
+        "artifacts": {
+          "api": true,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "f3be5a748fa0620e7738073a5a5c07f1c54ca62d34cb5c31f6c208984261a776",
+        "stdout": "b7da9fa0a29c21f4e5537b4f18c67eb2d3358f32b2d4f94fb49c81834b74616f",
+        "success": true
+      },
+      "restore-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "80f748cccbc7e1011024ca2b325a814320295f9a425ffd4a86793cdb5150db0a",
+        "success": true
+      }
+    },
+    "trace": "461657b71007b70d4eff42338bd26ecf80d704c497ec697652332fcc2316ed90"
+  },
+  "original/transport/provider-late": {
+    "control": [
+      [
+        "hold-fd",
+        1,
+        0
+      ],
+      [
+        "timeout-fd",
+        1,
+        0
+      ]
+    ],
+    "phases": {
+      "edited": {
+        "artifacts": {
+          "api": true,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [
+          [
+            "client",
+            "E0034",
+            "multiple applicable items in scope",
+            [
+              [
+                "client/src/main.rs",
+                3
+              ]
+            ],
+            "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+          ]
+        ],
+        "stderr": "9b775ad1537108304ec24dfa51460d68d994337026bf83f087c5a9d90b61ede4",
+        "stdout": "d3958ad6e08147144c7008a083e7936768f677cf35a62b4e03a105a04c802d17",
+        "success": false
+      },
+      "original": {
+        "artifacts": {
+          "api": false,
+          "client": false,
+          "provider": false,
+          "reader": false
+        },
+        "errors": [],
+        "stderr": "1ee3da1a489d345e615f821834638c41b306c79e0219c8c97b2f27845e9639a2",
+        "stdout": "01640475f1dc11345d45991feeb4398f36e56ff840380c98862a8eba4a07d7da",
+        "success": true
+      },
+      "original-repeat": {
+        "artifacts": {
+          "api": true,
+          "client": true,
+          "provider": true,
+          "reader": true
+        },
+        "errors": [],
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "b7802d6ca0416b5ff7261c01393503bf65488d7fe42fdcf450108e1d8698f8bf",
+        "success": true
+      }
+    },
+    "trace": "126c6c0af13176cf6e3b19aca1f329fd35dba5d646a990247d4e4d191e168049"
+  }
+}
