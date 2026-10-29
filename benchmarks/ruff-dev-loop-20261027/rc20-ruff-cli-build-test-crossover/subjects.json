@@ -1,0 +1,111 @@
+{
+  "cargo_source": "2fe90823d8eadc95de56c2cde8d41e0082aac0eb",
+  "cargo_tree": "99f8de907ed0bfe7ccab4b22cbebd74b25bb010d",
+  "driver": "f772b49abec18759edbd9cb7f9f2930097d6ba64d9a2b82837edf4451acc3014",
+  "enrollment": {
+    "cap_eff": 0,
+    "cargo": "967f5f1db2938847fac22d78dc222054cbb143a5fabcffcad0bd15f8929b47e9",
+    "integration_source": "b3b074a02107ebcbb9cb0fdf2d1ab214255448617877f61296ea611f427b3d08",
+    "lower_main_before": "88b016e89f5c4e13deebf38b5f1ba0697769c54b982874decafd27915bbc9140",
+    "old_cargo": "8c1717fa9786e16d3bec0c3181c02c1803484ed857d262580ce88d54056504c5",
+    "pristine": "86e708be2e31f82d453530226637e4d54ef8a7c251ccdaf0801b67e573d692e3",
+    "reversed": "8e5f0216304be94db181c9586b7acb37fe128c42653f8e20f2139192bb99c432",
+    "root_uid": 0,
+    "rustc": "5694abe50767a22cebeccb767143f7404d5e81c4b1760cff4426466bf410e511",
+    "source_clean": true,
+    "space": [
+      28268929024,
+      30480470016,
+      46647283712,
+      80286056448
+    ],
+    "target_manifest": "1882b933b101d223c731f1a712731f52c837dd3a867b451c80220e5d0118dd4f",
+    "uid": 1000,
+    "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+  },
+  "historical": "7d7237c6606fa621485cf3cb982f107ce0f48db3",
+  "release_rust": "eef2f3425c1c6f7fddfb4555769a9f90fe1e0f53",
+  "ruff": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "signed_archive": "ef21d83519bc376479811a7e01fa5ac8915ac0a500c6859bc22a1e0b4913d812",
+  "survey": {
+    "named_branches": 293,
+    "nearby": {
+      "153": {
+        "head": "674e12e710317c4b2b060b82df08aebe52340a77",
+        "patch_sha256": "7c2b6fbd1634430ba328c7e345745e783b5bb9f5d47c55ecd78a4877bdb16867",
+        "title": "Opt in to running ready test binaries during compilation"
+      },
+      "165": {
+        "head": "99f31d6610e799edd3969a106d129652f73d83b3",
+        "patch_sha256": "7123bae46696a866c27a4c50b4f83e95a0e2ee9800a35d29c1c108a2e21156bd",
+        "title": "Apply guarded CGU defaults with an integration test exception"
+      },
+      "28": {
+        "head": "f56167ae2ce9239363de162a4cbdd67e7538928f",
+        "patch_sha256": "06a5e6c7432a1cc92888d63da9fb4142775ac175ce9aff9bf35d944134d3a694",
+        "title": "Skip relinking integration tests with unused package libraries"
+      },
+      "281": {
+        "head": "2447f7f4eacb4fdf499899929f08d0de19abb4d0",
+        "patch_sha256": "3c3e95f6ab7cfeec0e98af92d3688037e77d35d4b23155494472eda1514c8356",
+        "title": "Relink dirty integration tests with unused Rust dependencies"
+      },
+      "282": {
+        "head": "e2fa457aa7e8e99275a69bbf2e72856f4b767d0d",
+        "patch_sha256": "a8ca5912b70c9dcc849e0efd3d0ab61fcaed66412d7cc5ebdf087c49fa8da9db",
+        "title": "Recompile dirty native targets by default"
+      },
+      "283": {
+        "head": "dd76f958cc8bcc0fd806ee1da318d5ac94f3f756",
+        "patch_sha256": "a5970c222a7c949619c63fe858919e7d808d1c343eb53f52088f45fad4b80633",
+        "title": "Replace symlinked relink manifests on write"
+      },
+      "284": {
+        "head": "2fe90823d8eadc95de56c2cde8d41e0082aac0eb",
+        "patch_sha256": "dc86bfb1702ae944a51b67ad605ccb5e2acbeaaa52dce9644cbc6cd4b41d8208",
+        "title": "Replace symlinked Ohm cache entries on write"
+      },
+      "45": {
+        "head": "059525baa6c20c8545203645f2d4271e82a363b5",
+        "patch_sha256": "3f619cb776f442d31fca7e9e6de8fd906f462c61415659059969a52e66adf16f",
+        "title": "Preserve compatible registry reuse across mixed test graphs"
+      },
+      "72": {
+        "head": "0d46e4115020c4fa5b60b5377e29d69dd5b85a04",
+        "patch_sha256": "88e3fa559265295de8ffe110274aff9c98df401dd4cbd1320863b637ccd99490",
+        "title": "Skip relinking integration tests with unused package libraries"
+      },
+      "85": {
+        "head": "53e801e9f0d9a00550cb347bcca8a346103ba9bd",
+        "patch_sha256": "d8a091e8b42aef1ae540772cf7c786540bc07605832a19cb69fbca2188cd1e43",
+        "title": "Preserve compatible registry reuse across mixed test graphs"
+      },
+      "93": {
+        "head": "6ff75d8e71dcd4448afaf3f18781cc79eba0c456",
+        "patch_sha256": "ed29ea96559705dd1648a2601ec81000b5dcc5d4a08b1da3f26f5d16031cb1de",
+        "title": "Enable test-binary monomorphization reuse in Ohm defaults"
+      }
+    },
+    "pull_requests": 237,
+    "raw_branch_sha256": "95cb721ac7368f36833e92c348d1ed0ecc1658929470291fce270f6b2de0a448",
+    "raw_pr_sha256": "3fadd0e24ec6d101f7e746396d04fd31da947af3eef4daba2e38287538509068"
+  },
+  "terminal": {
+    "codegen_objects_receipt": "40531eb581cea71e8ff28f1f516dedc751dbb8cd9d38bf63f614c5ed6c8e0091",
+    "lower_unchanged": true,
+    "original": {
+      "controller/controller.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "controller/controller.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "enrolled.json": "6f0b7c2321c5a7fb400ccec50850d508dbb8ab62ecadb9c60df67250e7f1d55b",
+      "family-dependency-bytes.json": "abe6b0f17bf8c52652f656e374ce00b76557924ec70711398882202e58c97e8d",
+      "outside-terminal.json": "decb3474fd2afd1ade2b7e8e0984a19856ec1d6e7faa3fb29822b6fbb205e848",
+      "preflight.json": "bd6a956a2014b18d79faabcab7aa9f013bc961c4b0a296353141a0f732f8f8ff",
+      "warm-complete.json": "080a1f0e4cf9e17de5fbc0bf400679303d15451e5fc48df7a8e166101db072db"
+    },
+    "original_bytes": 18302830,
+    "original_files": 384,
+    "raw_tar_sha256": "94efdc55e4645d7554bd5ecb25d7ac4e7064e5e03812e9ed39f61ccf7f06d830",
+    "receiver": "e84e0e4883ecbe3deef22eb725366c6fae4929fca18e1958288f9a89fc0a890b",
+    "runner": "18d63a9ae4aa97ce7b0d8022acee085cdd817242bca7627593270ebec8696fde"
+  }
+}
