@@ -1151,9 +1151,13 @@ fn rustc(
         || (build_runner.bcx.gctx.cli_unstable().ohm_reuse_built_deps()
             && build_runner.bcx.ws.is_member(&unit.pkg)
             && !unit.target.for_host()
-            && ((unit.mode == CompileMode::Build && unit.target.is_lib())
+            && ((unit.mode == CompileMode::Build
+                && (unit.target.is_lib() || unit.target.is_executable()))
                 || (unit.mode == CompileMode::Test
-                    && unit.target.is_test()
+                    && (unit.target.is_lib()
+                        || unit.target.is_executable()
+                        || unit.target.is_test()
+                        || unit.target.is_bench())
                     && unit.target.harness())))
     {
         build_runner
@@ -1958,16 +1962,29 @@ fn prebuild_lock_exclusive(lock: LockKey) -> Work {
     })
 }
 
-/// Replays a validated native test as a check without publishing a check fingerprint.
-/// Test metadata is empty because no crate can import a test harness. Retaining
-/// the ordinary check paths preserves Cargo's artifact protocol; future checks
-/// must still validate the native proof or compile normally.
+/// Replays a validated native root as a check without publishing a check fingerprint.
+/// Libraries retain their real native metadata. Executables and test harnesses
+/// have empty metadata because no crate can import them. Future checks must
+/// still validate the native proof or compile normally.
 fn reused_test_check_work(
     build_runner: &mut BuildRunner<'_, '_>,
     check: &Unit,
     native: &Unit,
 ) -> CargoResult<Work> {
     let outputs = build_runner.outputs(check)?;
+    let metadata = if native.mode == CompileMode::Build && native.target.is_lib() {
+        Some(
+            build_runner
+                .outputs(native)?
+                .iter()
+                .find(|output| output.flavor == FileFlavor::Rmeta)
+                .expect("validated native library metadata")
+                .path
+                .clone(),
+        )
+    } else {
+        None
+    };
     let fingerprint_path = build_runner.files().fingerprint_file_path(check, "");
     let messages = replay_output_cache(
         check.pkg.package_id(),
@@ -1977,13 +1994,17 @@ fn reused_test_check_work(
         OutputOptions::for_fresh(build_runner, check),
     );
     Ok(Work::new(move |_| {
-        // Restoring an empty metadata file must not revive an older check
+        // Restoring a metadata file must not revive an older check
         // fingerprint whose output was missing. The native record remains
         // the sole proof for this result.
         paths::write(&fingerprint_path, b"")?;
         for output in outputs.iter() {
             paths::create_dir_all(output.path.parent().unwrap())?;
-            paths::write(&output.path, b"")?;
+            if let Some(metadata) = &metadata {
+                paths::copy(metadata, &output.path)?;
+            } else {
+                paths::write(&output.path, b"")?;
+            }
         }
         Ok(())
     })
