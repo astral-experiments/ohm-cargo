@@ -5718,23 +5718,56 @@ fn dependency_edit_reassembles_native_targets_by_default() {
 
 #[cargo_test]
 #[cfg(not(windows))]
-fn changing_relink_cache_collection_rebuilds_the_binary() {
+fn switching_relink_cache_collection_runs_the_matching_binary() {
     let wrapper = relink_only_wrapper();
     let p = project()
-        .file("Cargo.toml", &basic_manifest("app", "0.1.0"))
-        .file("src/main.rs", "fn main() {}")
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "app"
+                version = "0.1.0"
+                edition = "2024"
+
+                [dependencies]
+                probe = { path = "probe" }
+            "#,
+        )
+        .file(
+            "src/main.rs",
+            r#"fn main() { println!("{}", probe::collecting!()); }"#,
+        )
+        .file(
+            "probe/Cargo.toml",
+            r#"
+                [package]
+                name = "probe"
+                version = "0.1.0"
+                edition = "2024"
+
+                [lib]
+                proc-macro = true
+            "#,
+        )
+        .file(
+            "probe/src/lib.rs",
+            r#"
+                use proc_macro::TokenStream;
+
+                #[proc_macro]
+                pub fn collecting(_: TokenStream) -> TokenStream {
+                    // The wrapper consumes emit-rlink but forwards its temps-dir to rustc.
+                    let collecting = std::env::args_os()
+                        .any(|arg| arg.to_string_lossy().starts_with("temps-dir="));
+                    collecting.to_string().parse().unwrap()
+                }
+            "#,
+        )
         .build();
     let log = p.root().join("relink-wrapper.log");
 
-    for (collect, expected) in [
-        (true, "compile-link:app\n"),
-        (false, "compile:app\n"),
-        (false, ""),
-        (true, "compile-link:app\n"),
-        (true, ""),
-    ] {
-        fs::write(&log, "").unwrap();
-        let mut build = p.cargo("-Zohm-defaults build");
+    for collect in [true, false, false, true, true] {
+        let mut build = p.cargo("-Zohm-defaults run --quiet");
         if !collect {
             build.arg("-Zrelink-only=no");
         }
@@ -5742,8 +5775,8 @@ fn changing_relink_cache_collection_rebuilds_the_binary() {
             .masquerade_as_nightly_cargo(&["ohm-defaults", "relink-only"])
             .env("RUSTC_WRAPPER", &wrapper)
             .env("RELINK_WRAPPER_LOG", &log)
+            .with_stdout_data(if collect { "true\n" } else { "false\n" })
             .run();
-        assert_eq!(fs::read_to_string(&log).unwrap(), expected);
     }
 }
 
