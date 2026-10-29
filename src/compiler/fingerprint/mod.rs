@@ -2714,11 +2714,13 @@ fn calculate_normal(
         ("ohm-terminal-check-public-api-hash", 1_u8).hash(&mut config);
     }
     if unit_can_use_relink_only(build_runner, unit) {
-        // Older Cargo could mark a stale executable fresh. Rebuild it once on
-        // upgrade and when switching between full and cached codegen.
+        // Cache collection changes the rustc arguments even when both modes
+        // use full codegen. A proc macro can observe those arguments.
+        let unstable = build_runner.bcx.gctx.cli_unstable();
         (
             "ohm-native-codegen-reuse",
-            build_runner.bcx.gctx.cli_unstable().relink_only(),
+            unstable.relink_only(),
+            unstable.collect_relink_cache(),
         )
             .hash(&mut config);
     }
