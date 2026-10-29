@@ -1,0 +1,388 @@
+{
+  "cargo": {
+    "attestation": "0e22704a41dd42ce4cfcb6b9fa0e673864685ba69dede36fa98c0c3a3cdd35cc",
+    "diff_names": [
+      "src/compiler/fingerprint/mod.rs"
+    ],
+    "release_build_manifest": "66f974005cef1bc9841158e1fcac08e249256df89be3aa1d62c920c2e45705b2"
+  },
+  "ruff": {
+    "files": {
+      ".github/workflows/ci.yaml": {
+        "child": {
+          "bytes": 46686,
+          "git_blob": "39ecec7e99667ee29b1fcda25ca3d3568c692fae",
+          "sha256": "2336e94d3a226abb5a03c48b57b895eebd3db1345e27090c944f5245f586c0c3"
+        },
+        "parent": {
+          "bytes": 46670,
+          "git_blob": "5e8b9cbbfe889bc6b4035cbd94253a5c3cb38977",
+          "sha256": "dab782fd056b78cd5df175fd7df2b21ee32f5cce5e4a5f35ac1a5b6d379c2bc7"
+        }
+      },
+      "Cargo.lock": {
+        "child": {
+          "bytes": 136302,
+          "git_blob": "8136705964adb86573dad86f72e5081c426dd892",
+          "sha256": "34e5c62a1d7c45679fc0113e8a8814452e67d9969dd1079adb234bd7803ddc6d"
+        },
+        "parent": {
+          "bytes": 136302,
+          "git_blob": "8136705964adb86573dad86f72e5081c426dd892",
+          "sha256": "34e5c62a1d7c45679fc0113e8a8814452e67d9969dd1079adb234bd7803ddc6d"
+        }
+      },
+      "Cargo.toml": {
+        "child": {
+          "bytes": 12474,
+          "git_blob": "a6e14800235b97a3bd2f5825834da893ef9a88ac",
+          "sha256": "0f1f230cfe8b53178ac9d511eb621b33cc054239b3ff47be304e722e47cdf3e1"
+        },
+        "parent": {
+          "bytes": 12532,
+          "git_blob": "0dbfa645f8b750bc417fff3122a6f31a544cd843",
+          "sha256": "5604a6de4305b0edbdd1e2a96a806bb6697d8d874b6b24e796a1ad79b7baee02"
+        }
+      },
+      "crates/ruff/Cargo.toml": {
+        "child": {
+          "bytes": 3309,
+          "git_blob": "301bb5d0707f60bfdba432e006db840fc976bd8f",
+          "sha256": "a1f4f430ac846a55f59734c14da35effd11f0299d10e8759b9683bf6306cfef0"
+        },
+        "parent": {
+          "bytes": 3286,
+          "git_blob": "835e5483a7cb7ec4e61e873c2d60e113ca900621",
+          "sha256": "1109da83934c10227dd5b55cba120cdb2c93354adac652ad4d6ea304c5a7db70"
+        }
+      },
+      "crates/ruff_annotate_snippets/Cargo.toml": {
+        "child": {
+          "bytes": 878,
+          "git_blob": "8cf201bde3df27788ab589cdd12a9df40f9329ba",
+          "sha256": "b47b879349111beae96a9f570726447e25d6c67b1f0cbb025d7e0c567ab37295"
+        },
+        "parent": {
+          "bytes": 865,
+          "git_blob": "91b9e28baf063f968b0f5b5bd8f6000a76609556",
+          "sha256": "b7518e8f4ca32d26085abb53e0ffda76b55e9d1706476fc65deab0f4cbab2714"
+        }
+      },
+      "crates/ruff_benchmark/Cargo.toml": {
+        "child": {
+          "bytes": 2983,
+          "git_blob": "f3eaaafddcfa69ecec6191b3c955d11fecf1b998",
+          "sha256": "47d4b1dc1c001edd234179603468507c23d217bf3eed8e29b24583714c84aa83"
+        },
+        "parent": {
+          "bytes": 2631,
+          "git_blob": "760aed7b1eb93711ad75450fb70549dda6f3df63",
+          "sha256": "56e44ff50cb823a32e712ff3fa007f0bf546d6c07bad9412fd82cb02d3992bf1"
+        }
+      },
+      "crates/ruff_cache/Cargo.toml": {
+        "child": {
+          "bytes": 597,
+          "git_blob": "1684a8629ae9a3a1d739302cbbdf24b4965fd21c",
+          "sha256": "b43e63bf81286a2f8d617260105faf5e9a0120ff2e3a82a1ee394ce8aed07f61"
+        },
+        "parent": {
+          "bytes": 577,
+          "git_blob": "c8788dbc8b2e46c14bec3481d48d5e8f40bfef44",
+          "sha256": "abac94942eb47fe7619bd76ee35d3091509ee3e34593a9d4ba3633e9575eca37"
+        }
+      },
+      "crates/ruff_diagnostics/Cargo.toml": {
+        "child": {
+          "bytes": 602,
+          "git_blob": "da28a5466111f647438978062b7555eda5a81296",
+          "sha256": "d3dfeb47d3f585bd1531bcb6cd75a5b2f21fad6240809fec4d6ed2e74b7e13e3"
+        },
+        "parent": {
+          "bytes": 589,
+          "git_blob": "b2241f7423c0b889881ed669ac44aac55499c734",
+          "sha256": "e2f94a13046965051ff6e9776e4a121bab8ad9a769a4676b6331ea1a51ca2ab8"
+        }
+      },
+      "crates/ruff_graph/Cargo.toml": {
+        "child": {
+          "bytes": 1004,
+          "git_blob": "bb4a18b255376768febf1a77fe337500200c1291",
+          "sha256": "75ee579a5d11ee36150597a2cc29a71b073850495c30897e8737d1b4ea3fc3cd"
+        },
+        "parent": {
+          "bytes": 968,
+          "git_blob": "d4f2de5d215d70cb5a24c94ca295a1c487f8e96b",
+          "sha256": "1a105180c2bce793b15fee8f848a9c30c7e033b7928a7e4ba8949d70b1c7ea7d"
+        }
+      },
+      "crates/ruff_macros/Cargo.toml": {
+        "child": {
+          "bytes": 675,
+          "git_blob": "301be8329a6228090a00f1ad979ade8a4b9dc968",
+          "sha256": "7bba8107b2ec241978b4a9d510d9b0792bd89042691f4b62cc382a2446388c02"
+        },
+        "parent": {
+          "bytes": 662,
+          "git_blob": "6a712c7747e3af03a587c00c8a16fac5b2031521",
+          "sha256": "c819e0f60612bb9ac2946f1d37f364ecb24479704c9dd8c723e6da5aa12af5d6"
+        }
+      },
+      "crates/ruff_markdown/Cargo.toml": {
+        "child": {
+          "bytes": 705,
+          "git_blob": "989fb7489498b78214883d0d918ada1ff19d8742",
+          "sha256": "168f9e42f3ccab035380bd3e79f3fd12fac95af676ad193cf9f2e1c6f169c597"
+        },
+        "parent": {
+          "bytes": 682,
+          "git_blob": "f40d1e3b8cacb07fa8530f956a10a1a7b0fafcce",
+          "sha256": "18b796b3e00108ab38042bf2488493cbab3f9e15c21cbf0241773da4d5d31dac"
+        }
+      },
+      "crates/ruff_memory_usage/Cargo.toml": {
+        "child": {
+          "bytes": 414,
+          "git_blob": "56be835750f466a7a1ab2857cf00e9223c040c32",
+          "sha256": "644c3c676a05f37a8f2201fe8c1150f66067bd5a6eb3941f801abb22e3995e3d"
+        },
+        "parent": {
+          "bytes": 378,
+          "git_blob": "1b87de4bbf0977d604d88a914aa716030e785c97",
+          "sha256": "bd6fdd7f43a80dbcefcd191f7e9e3fe660bf5dcb8ec2afe0f68f91bb171b14ad"
+        }
+      },
+      "crates/ruff_notebook/Cargo.toml": {
+        "child": {
+          "bytes": 833,
+          "git_blob": "21c2d935665d34a6675ecd41eb16dcaeacf33f38",
+          "sha256": "9c438b69ab775271c1a1ecf65c8f40c0d1515649056a02b48960aefb2f937d5f"
+        },
+        "parent": {
+          "bytes": 856,
+          "git_blob": "636efd402aa3106851c07043a81ef2acb8da4890",
+          "sha256": "79f18639f16174a7fb0bcee4172d4fe76b04839ca88016b8e69dba1fcfe7da4f"
+        }
+      },
+      "crates/ruff_options_metadata/Cargo.toml": {
+        "child": {
+          "bytes": 415,
+          "git_blob": "ecc34976afda9e5a2d890383fd77b1962eb54959",
+          "sha256": "efd5050c080450b79a0b64c1293f27e336d621664abf01bdf3242d8f2ac1457d"
+        },
+        "parent": {
+          "bytes": 415,
+          "git_blob": "55f3f4ad19df2899cc1d7d766f35bbab41dccc3c",
+          "sha256": "37ff9735926806e906ccb09df8ebc53696fc2db77a5c0cc39453b53c5849cf5e"
+        }
+      },
+      "crates/ruff_python_ast_integration_tests/Cargo.toml": {
+        "child": {
+          "bytes": 534,
+          "git_blob": "c0748aba1d5112a5e8afc84f87e9a542f712b707",
+          "sha256": "2419434d0fc3e0c7a4739cb11f360c889575a38748faf6bc3479d05c3785590a"
+        },
+        "parent": {
+          "bytes": 514,
+          "git_blob": "b115d712a51288c0f688f9c07a6988b4b5500bb5",
+          "sha256": "66da89e9f8c3998a00fd30dd0838e086be365191fe906cb6b6f23bd2703e4d9c"
+        }
+      },
+      "crates/ruff_python_importer/Cargo.toml": {
+        "child": {
+          "bytes": 770,
+          "git_blob": "65722a0db6ec9ce7c8b86231819228708ed08a55",
+          "sha256": "1628e3445c46bca0136ebaccdece8f2050dfb432e4293dc85147ca24e76fecda"
+        },
+        "parent": {
+          "bytes": 747,
+          "git_blob": "a563d79e290638e572a0bf802c742bb4fe0ec4a9",
+          "sha256": "3f0b089953f3cd66ba115ec69e23858d7fa4d4f93e40d114ab500c548b5c629d"
+        }
+      },
+      "crates/ruff_python_semantic/Cargo.toml": {
+        "child": {
+          "bytes": 1127,
+          "git_blob": "e62968f1467ae795d0f4f444e4f01806cd08a308",
+          "sha256": "115ea2b2510f9ced9e54eb30a75e7f3c9cc9c552a6caf78cce7d7f9fde1bbc5d"
+        },
+        "parent": {
+          "bytes": 1104,
+          "git_blob": "530635455d01c3744e02dcfb633bc80db75aee00",
+          "sha256": "da2c93af4de373bfc8d46d0378c18c8e72a0fd2da80239ae83798b4d99124238"
+        }
+      },
+      "crates/ruff_python_trivia_integration_tests/Cargo.toml": {
+        "child": {
+          "bytes": 498,
+          "git_blob": "2433a03dde5f2d596e66b8188126756ae15af5c4",
+          "sha256": "9b21c99d7e2d4de3397bb4cde7500283d48071fce87add2e7ecfe8c2daf09acb"
+        },
+        "parent": {
+          "bytes": 478,
+          "git_blob": "749001b3885417f7ff1e9e3bdf6b4319dec90af7",
+          "sha256": "d6f471af6411673c69ebdd87c1c6d2ac4219576f246910b7fc24506f8f5e43ea"
+        }
+      },
+      "crates/ruff_server/Cargo.toml": {
+        "child": {
+          "bytes": 1610,
+          "git_blob": "d4db3174cbf78f63ad3a0341411f04b8f897d81a",
+          "sha256": "83e262dd7ceddd212cdfee8d37baf4349a51b3559e1c1136b193497765144f3a"
+        },
+        "parent": {
+          "bytes": 1594,
+          "git_blob": "ac23cf6416991a005a13afd3548d30aa33b8e7e9",
+          "sha256": "176a5e70a5d766544a9b15c316d602f3cdf0a0b2ce1dfd58a39f3032ca655bfb"
+        }
+      },
+      "crates/ruff_text_size/Cargo.toml": {
+        "child": {
+          "bytes": 744,
+          "git_blob": "e1f14de35d1139c6e8d0e461ad142bf5b08b2e70",
+          "sha256": "f96a631a70af4945428cdf3648a36c3f207e59400da4f685d1ae5b89142f5f53"
+        },
+        "parent": {
+          "bytes": 724,
+          "git_blob": "a7ea1865ee14f3c2ca2eae7aa1e3f59c5dc04488",
+          "sha256": "562d6169f590f56437ef1d45b88978442c866e8d74d4a4c125680e36d0056fdc"
+        }
+      },
+      "crates/ruff_wasm/Cargo.toml": {
+        "child": {
+          "bytes": 1634,
+          "git_blob": "3d07380d02fcd750956a01b42c8adf4f20dc3e2c",
+          "sha256": "1783badb8342f6eaab619f01a2645ad28b0cf79f68ee3d648a3772ad6243ac2c"
+        },
+        "parent": {
+          "bytes": 1563,
+          "git_blob": "9736f1159bf38ac6f324fc30c83d78fe11bac1a5",
+          "sha256": "cd421be0451b80cc5baebf20d5585514ce980b8bf5596f19efe5398e7d98dd55"
+        }
+      },
+      "crates/ty/Cargo.toml": {
+        "child": {
+          "bytes": 2273,
+          "git_blob": "6d88e8e0d3c3a999d5e1837e43503f67cb45c1ba",
+          "sha256": "26aac539f27493be4ea1e7b8e5b8e2c8b77e2513399f1d61a5d6c1807daea62e"
+        },
+        "parent": {
+          "bytes": 2250,
+          "git_blob": "03a755781f705c8d6299f8629a147ab2757a99b9",
+          "sha256": "4907e69543653d29998f91d3aafd686a0032ad4b0a26172b1cb417f0f366e25d"
+        }
+      },
+      "crates/ty_combine/Cargo.toml": {
+        "child": {
+          "bytes": 406,
+          "git_blob": "56e72a74e7c62f0a31e04ca5caddec63451d6b60",
+          "sha256": "525da6578c1df0ba9ff5bf83d1b1ddd9e86a9ab04d0858bd3e00079933ad4579"
+        },
+        "parent": {
+          "bytes": 383,
+          "git_blob": "04eef763c2c07d40bd4e9a39807fd18e4430a518",
+          "sha256": "71a828f30771a81e4ebf6012ca1f3189544870d7e9a27cf177fd1f29358f7103"
+        }
+      },
+      "crates/ty_ide/Cargo.toml": {
+        "child": {
+          "bytes": 1418,
+          "git_blob": "f846b970a9a1c13704f68587cb0d72bc463e7b4c",
+          "sha256": "9fe69a031beb8a792afc2d499024f96831c268f6f9ef222a807d5c440408b5fd"
+        },
+        "parent": {
+          "bytes": 1395,
+          "git_blob": "76555ac2449c66951c64a7361fb6418072f35257",
+          "sha256": "8cb477f0c59b3437a04a78cd11bd8f722e0b430c24f7868510c5f60f739852de"
+        }
+      },
+      "crates/ty_project/Cargo.toml": {
+        "child": {
+          "bytes": 2262,
+          "git_blob": "b0db920c2a842696ff76b7124af5d2b9cac21eb3",
+          "sha256": "2473876c6a4a473d829027bf54bafea8311a86235dcaae82d440334a94410cb2"
+        },
+        "parent": {
+          "bytes": 2238,
+          "git_blob": "0764fbcbe7652cf9c8a323aec71c139972259906",
+          "sha256": "17fb50ff314c6689e6fd9462e2c8016881aa216235c743742959fb52db7e0260"
+        }
+      },
+      "crates/ty_server/Cargo.toml": {
+        "child": {
+          "bytes": 1594,
+          "git_blob": "5779e9bdbdebda67a1f9f3d1352b7c30caf04d1e",
+          "sha256": "44df14b16fc58cc1dd859cddaf6f543031236f51475726c2d91f22fd32eea5cc"
+        },
+        "parent": {
+          "bytes": 1571,
+          "git_blob": "d3597df57cce1c64da3af816d2e98143374ac353",
+          "sha256": "d959826776e63b34bc2c7af7af876af5d5ff17e378798163f50fd222d18b5d3f"
+        }
+      },
+      "crates/ty_site_packages/Cargo.toml": {
+        "child": {
+          "bytes": 940,
+          "git_blob": "1ab731f03efe0937e0d622cc4e2deb3cbb4c0b12",
+          "sha256": "c79b760222f78481191188c35aec40298cc454aff791ff34ac78454f6b65ee5f"
+        },
+        "parent": {
+          "bytes": 917,
+          "git_blob": "1c3451c5e3cd0b9831249559a1bad8d0776412d3",
+          "sha256": "b4a6274b5fa1f05e4ad89a2dc58f667b08a0638c2360b563e75547d0e73dd7a0"
+        }
+      },
+      "crates/ty_static/Cargo.toml": {
+        "child": {
+          "bytes": 392,
+          "git_blob": "c34dfcc358825495f7dbe6e072dcba4d0d7ef700",
+          "sha256": "378ae062272d69b3805a87fff4a96d43e8af0768c9ee182bd5c3a57842e290c2"
+        },
+        "parent": {
+          "bytes": 379,
+          "git_blob": "2f7c2c6e5f8fab72e0c4a1174716af1faa9bcfab",
+          "sha256": "48a45cc8a7b9ede9b763fbd10060eecb6f48fcc6ca2701166030c99db3f80e46"
+        }
+      },
+      "crates/ty_test/Cargo.toml": {
+        "child": {
+          "bytes": 1388,
+          "git_blob": "30cefb79374d65f0198c8e276792d3f5db3a58d8",
+          "sha256": "6cf0cf728b54a4d334019d5448021af09f531bc181d455b3018aebac002efd38"
+        },
+        "parent": {
+          "bytes": 1365,
+          "git_blob": "8e8aec9eb51c682f39c27ff4891272a915d60da9",
+          "sha256": "5f9a5486ba375fb958b83955c1e6deae7aafc1d57de5e778ac3f9e4656fc79a1"
+        }
+      },
+      "crates/ty_vendored/Cargo.toml": {
+        "child": {
+          "bytes": 716,
+          "git_blob": "a9b70a07ec525d84cb35cbd0a782c2bcae332f28",
+          "sha256": "ac266a19347682ec2967f72815e019c66dca12c84bb5e152ab5061a75a888e82"
+        },
+        "parent": {
+          "bytes": 693,
+          "git_blob": "2f9eefca2793740bb607f4fc11a6c4be37fb7150",
+          "sha256": "8f849d8faa408ad0029701945c790640ff1ce041f727890a61e221e2ff90f277"
+        }
+      },
+      "crates/ty_wasm/Cargo.toml": {
+        "child": {
+          "bytes": 1741,
+          "git_blob": "9622b9ea487f815559073583f648a4ff0754294f",
+          "sha256": "014bd9be841f289e492085224aefcd023e49d3fd87bf95915719eccb0c3cf75c"
+        },
+        "parent": {
+          "bytes": 1704,
+          "git_blob": "66fe1d1bdf4313a07f3e7deb7c0ec2304e46d105",
+          "sha256": "cf5fc0befc5bc3e6548af7ee0543d0d6780877f069e92b8cec560cc83c7d6ac9"
+        }
+      }
+    },
+    "new": "2d6ce561250a464e1fa231ef30e54d0f029f76a4",
+    "old": "716260bf10d7ae1d965ed9b22653e57fbc960582",
+    "subject": "Fix all `cargo shear` warnings (#24268)"
+  }
+}
