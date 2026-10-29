@@ -967,6 +967,7 @@ unstable_cli_options!(
     ohm_proc_macro_trust: OhmProcMacroTrust = ("Set procedural-macro trust for shared registry artifacts and workspace snapshots: audited (default) or all (potentially unsound)"),
     ohm_reuse_built_deps: bool = ("Reuse already-built registry dependencies when checking a package"),
     ohm_shared_registry_cache: bool = ("Share deterministic registry artifacts across isolated workspaces without global compiler wrappers"),
+    ohm_shared_stages: Option<bool> = ("Reuse compatible frontend queries between check and build (enabled by Ohm defaults)"),
     ohm_thinlto_cache: Option<bool> = ("Cache native ThinLTO objects in the build directory (enabled by Ohm defaults)"),
     ohm_worktree_seeds: Option<bool> = ("Prepare mutable packages for worktree seeding (enabled by Ohm defaults)"),
     panic_abort_tests: bool = ("Enable support to run tests with -Cpanic=abort"),
@@ -1318,6 +1319,12 @@ impl CliUnstable {
         self.ohm_defaults.unwrap_or(cfg!(feature = "ohm-defaults"))
     }
 
+    /// Whether compatible checks and builds share frontend incremental state.
+    pub fn ohm_shared_stages(&self) -> bool {
+        self.ohm_shared_stages
+            .unwrap_or_else(|| self.ohm_defaults())
+    }
+
     /// Whether supported ThinLTO builds use Cargo's managed backend cache.
     pub fn ohm_thinlto_cache(&self) -> bool {
         self.ohm_thinlto_cache
@@ -1576,6 +1583,7 @@ impl CliUnstable {
             "no-index-update" => self.no_index_update = parse_empty(k, v)?,
             "ohm-defaults" => self.ohm_defaults = Some(parse_bool(k, v)?),
             "ohm-thinlto-cache" => self.ohm_thinlto_cache = Some(parse_bool(k, v)?),
+            "ohm-shared-stages" => self.ohm_shared_stages = Some(parse_bool(k, v)?),
             "ohm-focused-tests" => self.ohm_focused_tests = parse_empty(k, v)?,
             "ohm-linker" => {
                 self.ohm_linker = Some(match v {

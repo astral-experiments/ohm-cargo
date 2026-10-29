@@ -2635,6 +2635,9 @@ fn calculate_normal(
     // Legacy dynamic-library and executable outputs may omit the unit-id suffix,
     // so this injected default must also invalidate their shared fingerprint.
     super::unit_uses_ohm_incremental_mono_partitions(build_runner, unit).hash(&mut config);
+    if super::unit_uses_ohm_shared_stages(build_runner, unit) {
+        "ohm-shared-stages-v1".hash(&mut config);
+    }
     if super::unit_uses_ohm_worktree_seeds(build_runner, unit) {
         // An ordinary build must not appear prepared just because its outputs
         // were copied. This injected path mapping also changes rustc's output.

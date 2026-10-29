@@ -47,7 +47,7 @@ use crate::compiler::unit_dependencies::{
 };
 use crate::compiler::unit_graph::{self, UnitDep, UnitGraph};
 use crate::compiler::{BuildConfig, BuildContext, BuildRunner, Compilation};
-use crate::compiler::{CompileKind, CompileTarget, RustcTargetData, Unit};
+use crate::compiler::{CompileKind, CompileMode, CompileTarget, RustcTargetData, Unit};
 use crate::compiler::{CrateType, TargetInfo, apply_env_config, standard_lib};
 use crate::compiler::{DefaultExecutor, Executor, UnitInterner};
 use crate::compiler::{DepKindSet, UnitIndex};
@@ -64,7 +64,7 @@ use crate::util::machine_message;
 use crate::util::machine_message::Message as _;
 use crate::util::{CargoResult, StableHasher};
 use crate::workspace::features::{OhmNativeToolTrust, OhmProcMacroTrust};
-use crate::workspace::profiles::Profiles;
+use crate::workspace::profiles::{ProfileRoot, Profiles};
 use crate::workspace::{PackageId, PackageSet, SourceId, TargetKind, Workspace};
 
 mod compile_filter;
@@ -647,6 +647,9 @@ fn create_bcx_with_registry_reuse<'a, 'gctx>(
         &scrape_units,
         host_kind_requested.then_some(explicit_host_kind),
         build_config.compile_time_deps_only,
+        gctx.cli_unstable().ohm_shared_stages()
+            && target_data.rustc.workspace_wrapper.is_none()
+            && target_data.rustc.supports_ohm_shared_stages(gctx),
     );
 
     let units: Vec<_> = unit_graph.keys().sorted().collect();
@@ -1012,6 +1015,7 @@ fn rebuild_unit_graph_shared(
     scrape_units: &[Unit],
     to_host: Option<CompileKind>,
     compile_time_deps_only: bool,
+    shared_stages: bool,
 ) -> (Vec<Unit>, Vec<Unit>, UnitGraph) {
     let mut result = UnitGraph::default();
     // Map of the old unit to the new unit, used to avoid recursing into units
@@ -1030,6 +1034,7 @@ fn rebuild_unit_graph_shared(
                 false,
                 to_host,
                 compile_time_deps_only,
+                shared_stages,
             )
         })
         .collect();
@@ -1058,6 +1063,7 @@ fn traverse_and_share(
     unit_is_for_host: bool,
     to_host: Option<CompileKind>,
     compile_time_deps_only: bool,
+    shared_stages: bool,
 ) -> Unit {
     if let Some(new_unit) = memo.get(unit) {
         // Already computed, no need to recompute.
@@ -1085,6 +1091,7 @@ fn traverse_and_share(
                 // its dependencies. And if not, we should compile compile time
                 // dependencies only.
                 skip_non_compile_time_deps,
+                shared_stages,
             );
             new_dep_unit.hash(&mut dep_hash);
             UnitDep {
@@ -1139,7 +1146,7 @@ fn traverse_and_share(
         let unit_probe = interner.intern(
             &unit.pkg,
             &unit.target,
-            canonical_profile,
+            canonical_profile.clone(),
             to_host.unwrap(),
             unit.mode,
             unit.features.clone(),
@@ -1153,8 +1160,31 @@ fn traverse_and_share(
             unit.skip_non_compile_time_dep,
         );
 
+        // A runtime dependency is checked, while its build-time counterpart is built.
+        // Keep the same resolved profile in both command modes so their identities agree.
+        let checked_counterpart = shared_stages
+            && profile.root == ProfileRoot::Debug
+            && unit.mode == CompileMode::Build
+            && !unit.is_std
+            && unit_graph.contains_key(&interner.intern(
+                &unit.pkg,
+                &unit.target,
+                canonical_profile,
+                to_host.unwrap(),
+                CompileMode::Check { test: false },
+                unit.features.clone(),
+                unit.rustflags.clone(),
+                unit.rustdocflags.clone(),
+                unit.links_overrides.clone(),
+                unit.is_std,
+                unit.dep_hash,
+                unit.artifact,
+                unit.artifact_target_for_features,
+                unit.skip_non_compile_time_dep,
+            ));
+
         // We can now turn the deferred value into its actual final value.
-        profile.debuginfo = if unit_graph.contains_key(&unit_probe) {
+        profile.debuginfo = if unit_graph.contains_key(&unit_probe) || checked_counterpart {
             // The unit is present in both build time and runtime subgraphs: we canonicalize its
             // level to the other unit's, thus ensuring reuse between the two to optimize build times.
             canonical_debuginfo
