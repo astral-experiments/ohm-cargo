@@ -1,0 +1,44 @@
+{
+  "cases": {
+    "head-dangling": {
+      "02": true,
+      "03": false,
+      "04": true,
+      "07": true
+    },
+    "head-flag-only": {
+      "02": false,
+      "03": false,
+      "04": false,
+      "07": false
+    },
+    "head-public-only": {
+      "02": false,
+      "03": false,
+      "04": false
+    },
+    "head-traced": {
+      "02": true,
+      "03": false,
+      "04": true
+    },
+    "head-unwrapped": {
+      "02": true,
+      "03": false,
+      "04": true
+    },
+    "parent-default": {
+      "02": false,
+      "03": false,
+      "04": false
+    },
+    "parent-public-only": {
+      "02": false,
+      "03": false,
+      "04": false
+    }
+  },
+  "ordinary_builds": 44,
+  "traced_builds": 38,
+  "without_external_trace": 6
+}

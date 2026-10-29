@@ -1,0 +1,68 @@
+{
+  "head-dangling": {
+    "flag_parser": {
+      "Zrelink-only=yes": {
+        "exit": 101,
+        "stderr": "error: flag -Zrelink-only does not take a value, found: `yes`"
+      }
+    },
+    "mode": "head-relink",
+    "reproducer_sha256": "502e80c8a3c38c7bea042c1bb694b67aeab5bcdde494a884234254a898450743",
+    "traced": true
+  },
+  "head-flag-only": {
+    "flag_parser": {},
+    "mode": "head-flag-only",
+    "reproducer_sha256": "502e80c8a3c38c7bea042c1bb694b67aeab5bcdde494a884234254a898450743",
+    "traced": true
+  },
+  "head-public-only": {
+    "flag_parser": {},
+    "mode": "head-public",
+    "reproducer_sha256": "5d5e3129a4094cf3fa3463601d8ee1fe227f4311935728bbe4ac61abc6df26ea",
+    "traced": true
+  },
+  "head-traced": {
+    "flag_parser": {
+      "Zrelink-only=yes": {
+        "exit": 101,
+        "stderr": "error: flag -Zrelink-only does not take a value, found: `yes`"
+      }
+    },
+    "mode": "head-relink",
+    "reproducer_sha256": "5d5e3129a4094cf3fa3463601d8ee1fe227f4311935728bbe4ac61abc6df26ea",
+    "traced": true
+  },
+  "head-unwrapped": {
+    "flag_parser": {
+      "Zrelink-only=yes": {
+        "exit": 101,
+        "stderr": "error: flag -Zrelink-only does not take a value, found: `yes`"
+      }
+    },
+    "mode": "head-relink",
+    "reproducer_sha256": "5d5e3129a4094cf3fa3463601d8ee1fe227f4311935728bbe4ac61abc6df26ea",
+    "traced": false
+  },
+  "parent-default": {
+    "flag_parser": {
+      "Zrelink-only": {
+        "exit": 101,
+        "stderr": "error: unknown `-Z` flag specified: relink-only\n\nFor available unstable features, see https://doc.rust-lang.org/nightly/cargo/reference/unstable.html\nIf you intended to use an unstable rustc feature, try setting `RUSTFLAGS=\"-Zrelink-only\"`"
+      },
+      "Zrelink-only=yes": {
+        "exit": 101,
+        "stderr": "error: unknown `-Z` flag specified: relink-only\n\nFor available unstable features, see https://doc.rust-lang.org/nightly/cargo/reference/unstable.html\nIf you intended to use an unstable rustc feature, try setting `RUSTFLAGS=\"-Zrelink-only\"`"
+      }
+    },
+    "mode": "parent-plain",
+    "reproducer_sha256": "5d5e3129a4094cf3fa3463601d8ee1fe227f4311935728bbe4ac61abc6df26ea",
+    "traced": true
+  },
+  "parent-public-only": {
+    "flag_parser": {},
+    "mode": "parent-public",
+    "reproducer_sha256": "5d5e3129a4094cf3fa3463601d8ee1fe227f4311935728bbe4ac61abc6df26ea",
+    "traced": true
+  }
+}
