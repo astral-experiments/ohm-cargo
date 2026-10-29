@@ -5351,7 +5351,13 @@ pub(super) fn relink_only_wrapper() -> PathBuf {
                             "-Clink-arg=-B{sysroot}/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld"
                         ));
                     while index < args.len() {
-                        if matches!(
+                        if args[index] == OsStr::new("-Zohm-check-relink-inputs") {
+                            if env::var_os("RELINK_WRAPPER_LEGACY_COMPILER").is_some() {
+                                eprintln!("unknown unstable option: ohm-check-relink-inputs");
+                                exit(1);
+                            }
+                            index += 1;
+                        } else if matches!(
                             args[index].to_str(),
                             Some(
                                 "-Zpublic-api-hash"
@@ -5651,6 +5657,17 @@ pub(super) fn relink_only_wrapper() -> PathBuf {
 #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
 #[cargo_test]
 fn dependency_edit_reassembles_native_targets_by_default() {
+    check_assembler_input_after_dependency_edit(false);
+}
+
+#[cfg(all(target_os = "linux", target_arch = "x86_64"))]
+#[cargo_test]
+fn explicit_relink_falls_back_with_an_older_compiler() {
+    check_assembler_input_after_dependency_edit(true);
+}
+
+#[cfg(all(target_os = "linux", target_arch = "x86_64"))]
+fn check_assembler_input_after_dependency_edit(legacy_relink: bool) {
     let wrapper = relink_only_wrapper();
     let p = project()
         .file("Cargo.toml", &basic_manifest("app", "0.1.0"))
@@ -5677,8 +5694,14 @@ fn dependency_edit_reassembles_native_targets_by_default() {
         .build();
     let log = p.root().join("compiler.log");
     let test = |expected| {
-        let mut cmd = p.cargo("-Zohm-defaults test --test integration");
-        cmd.masquerade_as_nightly_cargo(&["ohm-defaults"])
+        let mut cmd = if legacy_relink {
+            let mut cmd = p.cargo("-Zohm-defaults -Zrelink-only=yes test --test integration");
+            cmd.env("RELINK_WRAPPER_LEGACY_COMPILER", "1");
+            cmd
+        } else {
+            p.cargo("-Zohm-defaults test --test integration")
+        };
+        cmd.masquerade_as_nightly_cargo(&["ohm-defaults", "relink-only"])
             .env("CARGO_INCREMENTAL", "0")
             .env("RUSTC_WRAPPER", &wrapper)
             .env("RELINK_WRAPPER_LOG", &log)

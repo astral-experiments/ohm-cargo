@@ -2723,6 +2723,18 @@ fn calculate_normal(
             unstable.collect_relink_cache(),
         )
             .hash(&mut config);
+        if unstable.relink_only() {
+            // Rebuild targets from older Cargo even when their cached objects still hash
+            // correctly. Their dep-info predates rustc's assembler-input check.
+            (
+                "ohm-checked-relink-inputs",
+                build_runner
+                    .bcx
+                    .rustc()
+                    .supports_relink_input_checks(build_runner.bcx.gctx),
+            )
+                .hash(&mut config);
+        }
     }
 
     let compile_kind = unit.kind.fingerprint_hash();

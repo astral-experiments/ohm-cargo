@@ -980,7 +980,7 @@ unstable_cli_options!(
     profile_rustflags: bool = ("Enable the `rustflags` option in profiles in .cargo/config.toml file"),
     public_dependency: bool = ("Respect a dependency's `public` field in Cargo.toml to control public/private dependencies"),
     publish_timeout: bool = ("Enable the `publish.timeout` key in .cargo/config.toml file"),
-    relink_only: Option<bool> = ("Reuse cached rustc codegen when only dependencies changed (assumes all assembler inputs are tracked)"),
+    relink_only: Option<bool> = ("Reuse cached native codegen when rustc can account for the target's inputs"),
     root_dir: Option<PathBuf> = ("Set the root directory relative to which paths are printed (defaults to workspace root)"),
     rustc_unicode: bool = ("Enable `rustc`'s unicode error format in Cargo's error messages"),
     rustdoc_depinfo: bool = ("Use dep-info files in rustdoc rebuild detection"),

@@ -1121,7 +1121,6 @@ fn rustc(
     let outputs = build_runner.outputs(unit)?;
     let root = build_runner.files().output_dir(unit);
     let unstable = build_runner.bcx.gctx.cli_unstable();
-    let reuse_codegen = unstable.relink_only();
     let relink_cache = (unstable.collect_relink_cache()
         && fingerprint::unit_can_use_relink_only(build_runner, unit))
     .then(|| {
@@ -1131,6 +1130,12 @@ fn rustc(
             .map(|output| RelinkCachePaths::new(output.path.clone()))
     })
     .flatten();
+    let reuse_codegen = relink_cache.is_some()
+        && unstable.relink_only()
+        && build_runner
+            .bcx
+            .rustc()
+            .supports_relink_input_checks(build_runner.bcx.gctx);
     let source_arg = path_args(build_runner.bcx.ws, unit).0;
     let relinkable_dependencies = build_runner
         .unit_deps(unit)
@@ -1191,6 +1196,9 @@ fn rustc(
         // keep them outside the dependency search directory while completing
         // the initial link.
         rustc.arg("-Z").arg("emit-rlink");
+        if reuse_codegen {
+            rustc.arg("-Zohm-check-relink-inputs");
+        }
         let mut temps_dir = OsString::from("temps-dir=");
         temps_dir.push(&cache.objects);
         rustc.arg("-Z").arg(temps_dir);
