@@ -264,7 +264,7 @@ fn unit_uses_ohm_shared_stages(build_runner: &BuildRunner<'_, '_>, unit: &Unit) 
         && !unit.is_std
         && !unit.target.is_compile_time_dependency()
         && !unit.artifact.is_true()
-        && bcx.rustc().workspace_wrapper.is_none()
+        && (bcx.rustc().workspace_wrapper.is_none() || !bcx.ws.is_member(&unit.pkg))
         && bcx.rustc().supports_ohm_shared_stages(bcx.gctx)
 }
 
