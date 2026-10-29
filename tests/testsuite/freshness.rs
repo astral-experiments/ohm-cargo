@@ -2882,6 +2882,44 @@ fn lld_is_fresh() {
         .run();
 }
 
+#[cfg(unix)]
+#[cargo_test]
+fn build_script_tracks_non_unicode_environment_values() {
+    use std::os::unix::ffi::OsStrExt;
+
+    let p = project()
+        .file(
+            "src/main.rs",
+            r#"fn main() { println!("{}", env!("SEEN")); }"#,
+        )
+        .file(
+            "build.rs",
+            r#"
+            use std::os::unix::ffi::OsStrExt;
+            fn main() {
+                println!("cargo:rerun-if-env-changed=TRACKED");
+                let value = std::env::var_os("TRACKED");
+                println!("cargo:rustc-env=SEEN={:?}", value.as_deref().map(OsStrExt::as_bytes));
+            }
+        "#,
+        )
+        .build();
+
+    for (value, expected) in [
+        (Some(0xff), "Some([255])"),
+        (Some(0xfe), "Some([254])"),
+        (None, "None"),
+    ] {
+        let mut run = p.cargo("run --quiet");
+        if let Some(value) = value {
+            run.env("TRACKED", OsStr::from_bytes(&[value]));
+        } else {
+            run.env_remove("TRACKED");
+        }
+        run.with_stdout_data(format!("{expected}\n")).run();
+    }
+}
+
 #[cargo_test]
 fn env_in_code_causes_rebuild() {
     let p = project()
