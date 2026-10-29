@@ -1,0 +1,111 @@
+{
+  "all_required_positive_and_negative_gates": true,
+  "architecture": "Linux x86_64 AMD Genoa",
+  "archiver": [
+    "Ubuntu LLVM version 18.1.3",
+    "  Optimized build."
+  ],
+  "capture_bin": "55221c05e0a0023f378440bf17a2977c66d0c2f09a36f31cfc7b36a25e94b430",
+  "cargo": {
+    "A": "6aaa263e68d2d77aeb8977166f9744f1fa8e0ea4df3216fe516355be68517bac",
+    "B": "f5523b530225724e91671630257c11b6ba58d18800736a70f6cbe91a31ccd409"
+  },
+  "clean": {
+    "historical": {
+      "caller": {
+        "ast": "c79b33880a88a4fdc39eb9a591856a4ffe3bebce924416002678d751a7a634ae",
+        "executable": "06bd72ddd3624b66a219b69080466d6505331fb8375138b529016590230c43c3",
+        "exit": 0,
+        "input": "e981376810375b7214c83ccd0dd840cd0110c7ce31d90cffc45ae1bd9706c4c2",
+        "linter": "d8303473e14d2b087c778e24cfac4ccdb67b12b0ee3f45b0d2d468d17fb5b72f",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout": "1 SIM222\n"
+      },
+      "states": {
+        "empty": {
+          "fresh": 0,
+          "sha256": "d8303473e14d2b087c778e24cfac4ccdb67b12b0ee3f45b0d2d468d17fb5b72f",
+          "size": 101719820,
+          "typed_sha256": "cc523aafe78ace8b6e44eda9063b2fdfd86b47bb9d4c1852a39b5c9e2e0d3c0c",
+          "units": 248
+        },
+        "settled": {
+          "fresh": 248,
+          "sha256": "d8303473e14d2b087c778e24cfac4ccdb67b12b0ee3f45b0d2d468d17fb5b72f",
+          "size": 101719820,
+          "typed_sha256": "c6178b2c111f446b70b74497bd28950edfde0eb64909fd8935d893c5fc456c0b",
+          "units": 248
+        }
+      }
+    },
+    "parent": {
+      "caller": {
+        "ast": "11919b0bfa4e4e20807f073e99e8fbd9581e79ffdfd3269e5bbcf4810a4fc34e",
+        "executable": "1fc06e57a1c8c41a4772ca343523c2a466a70ae7d9e76189a9543dec39af5f44",
+        "exit": 0,
+        "input": "e981376810375b7214c83ccd0dd840cd0110c7ce31d90cffc45ae1bd9706c4c2",
+        "linter": "fe7b972118f6d08cf74f5fd97bfb84924c9419b3877ddacb03de301f8d29f782",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout": "2 SIM222\n3 SIM222\n4 SIM222\n"
+      },
+      "states": {
+        "empty": {
+          "fresh": 0,
+          "sha256": "fe7b972118f6d08cf74f5fd97bfb84924c9419b3877ddacb03de301f8d29f782",
+          "size": 101719820,
+          "typed_sha256": "e69d36aa7fca19217803c54dfefa72b981191d0e65e3f41aa74fea749f788e19",
+          "units": 248
+        },
+        "settled": {
+          "fresh": 248,
+          "sha256": "fe7b972118f6d08cf74f5fd97bfb84924c9419b3877ddacb03de301f8d29f782",
+          "size": 101719820,
+          "typed_sha256": "c28202d5bacb889fc49484f38e6c3ec2f67dda3a2bcabb7efcdd7e9b16a9fec2",
+          "units": 248
+        }
+      }
+    }
+  },
+  "freshly_copied_original_files": 452,
+  "initial_unchanged_disk_preserved": true,
+  "isolated_cpus": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "manifest": "327f73c1f3d1e372358ea209223ad992087c2d54e093a2440d75e4d7eb2336f1",
+  "new_filesystems": {
+    "A": {
+      "filesystem": "b79d99100b2d016642dd0f3defe1fa0f93dab942d80d4f77d7082f60524a2e33",
+      "inventory": "1c04c7651c56a4db2746c4c0f3f0d140415d80a2828d08a284d8740209fbd362",
+      "received": "ac81eab5f254a4b1c91534036ab5cb21dd2a914651bae3920ecbe98b4fb9edad"
+    },
+    "B": {
+      "filesystem": "e3979dc24ad8f0550de21f554f94050fc9cbd47838358991c76ed345bb3d8a86",
+      "inventory": "ba268449372c711b404997f8f04db6618d1725bd37f369e61d700fdb8d3a0ddb",
+      "received": "633d5239edbd83c47b484c19c6272822648700ebf4be788d46c9f18cbd7574bf"
+    }
+  },
+  "ordinary_native_attempts": {
+    "A": 1,
+    "B": 1
+  },
+  "post_qualification_loops": {
+    "A": "",
+    "B": "",
+    "C": ""
+  },
+  "prerun_EROFS": "3e1ec70bf997e6f428aa6736ea1f55e7f593d563b4c7e249e1610380cefbc474",
+  "protocol": "a644772c28607282fc06bb7c72f08225ea04f0a6",
+  "rust": "ae76b292cb224008e8188a07143797f7a4ce0ec5",
+  "rust_driver": "f5d26f74e970e2891a8cbf8a044244d1cd9c0ca50d3af3894842cfb9858f781c",
+  "starting_sha256": "d8303473e14d2b087c778e24cfac4ccdb67b12b0ee3f45b0d2d468d17fb5b72f",
+  "stock_wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+  "unscored": true,
+  "verified_disposable_source_copy": "09f033ec293b043404ff542592db86dc2a4c93ad0acf8c1945ec57f4a1b6e4dd"
+}
