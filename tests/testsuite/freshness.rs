@@ -6638,23 +6638,54 @@ fn unused_workspace_integration_relinks_transitive_native_archive() {
 #[cargo_test(requires = "cc", requires = "ar")]
 fn unused_package_library_relinks_with_dependency_search_path() {
     let wrapper = relink_only_wrapper();
+    let app_source =
+        |n| format!("extern crate middle; pub fn value() -> i32 {{ middle::value() + {n} }}");
     let p = project()
         .file(
             "Cargo.toml",
             &format!(
-                "{}\n[dependencies]\nprovider = {{ path = 'provider' }}",
+                "{}\n[workspace]\nmembers = ['middle', 'provider']\n[dependencies]\nmiddle = {{ path = 'middle' }}",
                 basic_manifest("app", "0.1.0")
             ),
         )
-        .file("src/lib.rs", "pub fn value() -> i32 { 1 }")
+        .file("src/lib.rs", &app_source(1))
+        .file(
+            "middle/Cargo.toml",
+            &format!(
+                "{}\n[dependencies]\nprovider = {{ path = '../provider' }}",
+                basic_lib_manifest("middle")
+            ),
+        )
+        .file(
+            "middle/src/lib.rs",
+            "extern crate provider; pub fn value() -> i32 { provider::value() }",
+        )
         .file("provider/Cargo.toml", &basic_lib_manifest("provider"))
-        .file("provider/src/lib.rs", "")
+        .file("provider/src/lib.rs", "pub fn value() -> i32 { 1 }")
+        .file("provider/value", "17")
         .file(
             "provider/build.rs",
-            r#"fn main() {
-                println!("cargo::rerun-if-changed=build.rs");
-                println!("cargo::rustc-link-search=native={}", env!("CARGO_MANIFEST_DIR"));
-            }"#,
+            r#"
+                use std::{env, fs, path::PathBuf, process::Command};
+                fn main() {
+                    let out = PathBuf::from(env::var_os("OUT_DIR").unwrap());
+                    println!("cargo::rerun-if-changed=value");
+                    println!("cargo::rustc-link-search=native={}", out.display());
+                    let value = fs::read_to_string("value").unwrap();
+                    if value == "malformed" {
+                        fs::write(out.join("libchoice.a"), "malformed archive").unwrap();
+                    } else {
+                        let source = format!("int choice(void) {{ return {value}; }}");
+                        fs::write(out.join("choice.c"), source).unwrap();
+                        let run = |tool, args: &[&str]| {
+                            assert!(Command::new(tool).args(args).current_dir(&out)
+                                .status().unwrap().success());
+                        };
+                        run("cc", &["-c", "choice.c"]);
+                        run("ar", &["crs", "libchoice.a", "choice.o"]);
+                    }
+                }
+            "#,
         )
         .file(
             "tests/integration.rs",
@@ -6669,39 +6700,31 @@ fn unused_package_library_relinks_with_dependency_search_path() {
             "#,
         )
         .build();
-    let run = |value: &str| {
-        let mut cmd = p.cargo("-Zohm-defaults test --test integration");
+    let cargo = |args: &str| {
+        let mut cmd = p.cargo(args);
         cmd.masquerade_as_nightly_cargo(&["ohm-defaults"])
             .env("RUSTC_WRAPPER", &wrapper)
             .env("RELINK_WRAPPER_LOG", p.root().join("compiler.log"))
-            .env("UNUSED_INTEGRATION_DEPENDENCY_PROOF", "1")
-            .env("EXPECTED", value);
+            .env("UNUSED_INTEGRATION_DEPENDENCY_PROOF", "1");
         cmd
     };
-    for value in ["17", "29"] {
-        // The native library is supplied independently of the build script.
-        p.change_file(
-            "choice.c",
-            &format!("int choice(void) {{ return {value}; }}"),
-        );
-        p.process("cc")
-            .args(&["-c", "choice.c", "-o", "choice.o"])
-            .run();
-        p.process("ar")
-            .args(&["crs", "provider/libchoice.a", "choice.o"])
-            .run();
-        p.change_file(
-            "src/lib.rs",
-            &format!("pub fn value() -> i32 {{ {value} }}"),
-        );
-        run(value).run();
+    let stage = |provider, app_value| {
         if is_coarse_mtime() {
             sleep_ms(1000);
         }
-    }
-    p.change_file("provider/libchoice.a", "malformed archive");
-    p.change_file("src/lib.rs", "pub fn value() -> i32 { 0 }");
-    run("29")
+        // Publish the archive in a separate command, so the script is already
+        // fresh when the unused package library changes.
+        p.change_file("provider/value", provider);
+        cargo("-Zohm-defaults build -p provider").run();
+        p.change_file("src/lib.rs", &app_source(app_value));
+    };
+    let test = "-Zohm-defaults test --test integration";
+    cargo(test).env("EXPECTED", "17").run();
+    stage("29", 2);
+    cargo(test).env("EXPECTED", "29").run();
+    stage("malformed", 3);
+    cargo(test)
+        .env("EXPECTED", "29")
         .with_status(101)
         .with_stderr_contains("[..]linking with [..] failed[..]")
         .run();
