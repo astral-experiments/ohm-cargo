@@ -703,6 +703,8 @@ pub fn unit_can_use_early_cutoff(build_runner: &BuildRunner<'_, '_>, unit: &Unit
         && unit_consumes_public_api_hash(build_runner, unit)
 }
 
+const RECHECK_DEPENDENT_LINKS: &str = "/dev/null/ohm-recheck-dependent-links";
+
 /// Returns whether this unit can be split into codegen and reusable link steps.
 ///
 /// The first prototype is intentionally limited to executable build and test
@@ -1063,6 +1065,7 @@ pub fn prepare_target(
             && has_exclusive_metadata_access,
     );
     if fingerprint.ohm_worktree_namespace.is_some()
+        && !fingerprint.must_recheck_native_link(unit)
         && !force
         && !unit.artifact.is_true()
         && !previous_dependency_changes.any
@@ -1390,6 +1393,9 @@ pub struct Fingerprint {
     /// Used for early cutoff propagation through the dependency graph.
     #[serde(skip)]
     build_state: Mutex<BuildState>,
+    /// Whether this unit or a dependency reused assembly that still requires native link checks.
+    #[serde(skip)]
+    recheck_dependent_links: bool,
     /// Whether a procedural macro read foreign span data during the previous compile.
     #[serde(skip)]
     observes_foreign_span: bool,
@@ -1766,6 +1772,7 @@ impl LocalFingerprint {
         worktree_seed: bool,
         checksum_parallelism: ChecksumParallelism<'_>,
         observes_foreign_span: &mut bool,
+        recheck_dependent_links: &mut bool,
     ) -> CargoResult<Option<StaleItem>> {
         let pkg_root = pkg.root();
         match self {
@@ -1780,6 +1787,7 @@ impl LocalFingerprint {
                 let Some(info) = parse_dep_info(pkg_root, build_root, &dep_info)? else {
                     return Ok(Some(StaleItem::MissingFile { path: dep_info }));
                 };
+                *recheck_dependent_links |= info.recheck_dependent_links;
                 if let Some(path) = info.foreign_span_marker {
                     *observes_foreign_span = true;
                     return Ok(Some(StaleItem::MissingFile { path }));
@@ -1879,6 +1887,7 @@ impl Fingerprint {
             index: UnitIndex::default(),
             fs_status: Mutex::new(FsStatus::Stale),
             build_state: Mutex::new(BuildState::Pending),
+            recheck_dependent_links: false,
             observes_foreign_span: false,
             early_cutoff_candidate: AtomicBool::new(false),
             previously_changed_metadata_dependency: AtomicBool::new(false),
@@ -1915,6 +1924,13 @@ impl Fingerprint {
     pub(super) fn mark_worktree_reused(&self) {
         self.worktree_reused.store(true, Ordering::Release);
         self.set_build_state(BuildState::SkippedEarlyCutoff);
+    }
+
+    /// Native links can read inputs that are absent from an upstream rlib's dep-info.
+    fn must_recheck_native_link(&self, unit: &Unit) -> bool {
+        self.recheck_dependent_links
+            && matches!(unit.mode, CompileMode::Build | CompileMode::Test)
+            && unit.requires_upstream_objects()
     }
 
     /// These compilers can read bytes that are absent from the public dependency metadata.
@@ -2200,6 +2216,7 @@ impl Fingerprint {
                 worktree_seed,
                 checksum_parallelism,
                 &mut self.observes_foreign_span,
+                &mut self.recheck_dependent_links,
             )? {
                 item.log();
                 *self.fs_status.get_mut().unwrap() = FsStatus::StaleItem(item);
@@ -2525,6 +2542,18 @@ fn calculate(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
         },
     )?;
 
+    // Public metadata can remain unchanged through arbitrarily many rlibs. The final
+    // native link still observes external files, including libraries newly visible in -L.
+    fingerprint.recheck_dependent_links |= fingerprint
+        .deps
+        .iter()
+        .any(|dep| dep.fingerprint.recheck_dependent_links);
+    if fingerprint.must_recheck_native_link(unit) {
+        *fingerprint.fs_status.get_mut().unwrap() = FsStatus::StaleItem(StaleItem::MissingFile {
+            path: RECHECK_DEPENDENT_LINKS.into(),
+        });
+    }
+
     // A downstream library may have finished using provisional metadata before
     // this producer failed. Reverting the source can satisfy the old dep-info
     // checksums, but an uncommitted producer must still dirty its dependents.
@@ -2726,7 +2755,7 @@ fn calculate_normal(
     }
     if super::unit_checks_relink_inputs(build_runner, unit) {
         // Dep-info from an older or unwrapped compiler may omit assembler inputs.
-        "ohm-checked-native-inputs-v1".hash(&mut config);
+        "ohm-checked-native-inputs-v2".hash(&mut config);
     }
 
     let compile_kind = unit.kind.fingerprint_hash();
@@ -2755,6 +2784,7 @@ fn calculate_normal(
         config: Hasher::finish(&config),
         compile_kind,
         index: build_runner.bcx.unit_to_index[unit],
+        recheck_dependent_links: false,
         observes_foreign_span: false,
         rustflags: extra_flags,
         fs_status: Mutex::new(FsStatus::Stale),
