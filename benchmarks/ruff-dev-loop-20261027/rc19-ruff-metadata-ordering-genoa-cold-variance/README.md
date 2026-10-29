@@ -1,0 +1,11 @@
+# Cargo check from four independent empty Ruff states
+
+The workspace source was 2d6ce561250a464e1fa231ef30e54d0f029f76a4, with all 47 default members. Both release-PGO Cargo binaries used the same literal executable pathname and the same stock Ohm -18 Rust, Wild, registry inputs and compiler settings. Each of four independent empty checks selected 510 dirty units. Two settled repeats of each check ran only ty_python_semantic.
+
+The first A and B states had the same 597 output paths. Their full bytes differed in 37 standalone Rust metadata files, three Rust archives and the get-size-derive2 0.7.4 proc-macro binary. A second empty build with unchanged Cargo A reproduced the first B build's complete Ruff AST and index metadata bytes. Independent B2 reproduced those same two files. The all-product comparison applies to A1 and B1. These cold pairs were excluded from the timing study.
+
+The first changed dependency credential is the native get-size-derive2 macro. Its source files, ordinary dep-info, Cargo fingerprints and imported dependency credentials matched. Its own private/public hash changed, with the same StableCrateId. The changed identity is present downstream in get-size2, ruff_text_size, ruff_python_ast and ruff_python_index. The ELF code differs in 755 bytes. The two native files also contain the six mutually exclusive attribute messages in different orders.
+
+The locked attribute-derive-macro 0.10.3 builds conflict checks by iterating a HashSet. Its generated first matching check returns a diagnostic immediately. The locked get-size-derive2 uses this macro with the three pairwise-conflicting fields size, size_fn and ignore. On the same external caller and compiler args, both binaries rejected all three fields together. The first A image reported size versus size_fn. The first B image reported ignore versus size_fn. Reordering in this case has an ordinary, observable effect.
+
+Run `python3 -IB verify.py` for the portable comparison. With matching native binaries and installed Ohm -18, `python3 -IB replay-oracle.py A.so B.so` reruns the reader using one image path for both. The public projection includes full A1/B1 literal product hashes and changed dependency credentials. The original two binary files and full private process outputs are retained separately.
