@@ -167,8 +167,8 @@ struct Seeded {
 
 /// Clones private state between target directories while holding their local guards.
 ///
-/// Seeding does not stop builds in other worktrees. The new recipient cannot be
-/// another seeding operation's donor.
+/// The global consumer lease protects registry references without stopping builds
+/// in other worktrees. The new recipient cannot be another seeding operation's donor.
 fn seed_shared_build(donor: &Workspace<'_>, recipient: &Workspace<'_>) -> CargoResult<Seeded> {
     let shared_root = donor.canonical_build_path(donor.configured_build_dir().as_path_unlocked());
     ensure!(
@@ -176,6 +176,7 @@ fn seed_shared_build(donor: &Workspace<'_>, recipient: &Workspace<'_>) -> CargoR
             == recipient.canonical_build_path(recipient.configured_build_dir().as_path_unlocked()),
         "worktree seeding requires the same separate build directory in both worktrees"
     );
+    let _consumer = crate::workspace::build_cache_gc_lease::ConsumerLease::acquire(&shared_root)?;
     let _donor_guard = Layout::lock_private_root(donor, true)?;
     let _recipient_guard = Layout::lock_private_root(recipient, true)?;
     let source_root = donor.canonical_build_path(donor.build_dir().as_path_unlocked());
@@ -188,6 +189,12 @@ fn seed_shared_build(donor: &Workspace<'_>, recipient: &Workspace<'_>) -> CargoR
     );
     let profiles = build_profiles(&source_root)?;
     let mut seeded = Seeded::default();
+    if cfg!(any(target_os = "linux", target_os = "macos"))
+        && let Err(error) =
+            crate::workspace::build_cache_gc_roots::register_root(recipient.gctx(), &shared_root)
+    {
+        tracing::debug!(?error, "could not register shared build root");
+    }
     for profile in &profiles {
         ensure_plain_descendants(&source_root, profile)?;
         ensure_regular(&profile.join(".cargo-build-lock"))?;
@@ -201,6 +208,15 @@ fn seed_shared_build(donor: &Workspace<'_>, recipient: &Workspace<'_>) -> CargoR
             seeded.skipped_profiles += 1;
             continue;
         }
+        let _context_uses = if cfg!(any(target_os = "linux", target_os = "macos")) {
+            crate::workspace::build_cache_gc::record_seed_contexts(&shared_root, &source)
+                .unwrap_or_else(|error| {
+                    tracing::debug!(?error, "could not record seeded context usage");
+                    Vec::new()
+                })
+        } else {
+            Vec::new()
+        };
         if let Some(profile_seeded) = seed_profile(
             &source_root,
             &destination_root,

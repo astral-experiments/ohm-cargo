@@ -9,7 +9,6 @@ use std::hash::{Hash, Hasher};
 use std::os::unix::fs::{MetadataExt, PermissionsExt};
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
-use std::time::SystemTime;
 
 use cargo_platform::CfgExpr;
 use cargo_util::paths;
@@ -20,6 +19,7 @@ use crate::compiler::custom_build::OHM_SHARED_RUSTC_LOG_ENVIRONMENT;
 use crate::compiler::trim_paths;
 use crate::compiler::{CompileMode, CompileTarget, CrateType, FileType, Unit, UserIntent};
 use crate::util::{self, CargoResult, OnceExt, StableHasher};
+use crate::workspace::build_cache_gc::{self, FileIdentity};
 use crate::workspace::features::{OhmNativeToolTrust, OhmProcMacroTrust};
 use crate::workspace::profiles::StripInner;
 use crate::workspace::{Target, TargetKind, Workspace};
@@ -158,6 +158,8 @@ struct SharedRegistryCache {
     rustc: String,
     /// Canonical implementation dynamically loaded by the verified compiler launcher.
     compiler_driver: Option<PathBuf>,
+    /// Immutable provenance captured with the inputs to the context hash.
+    provenance: Option<(FileIdentity, FileIdentity)>,
     /// Whether compiler execution satisfies the shared cache's ambient-input checks.
     trusted_context: bool,
     #[cfg(windows)]
@@ -166,22 +168,7 @@ struct SharedRegistryCache {
 }
 
 /// The compiler implementation is a dynamic library, not its small executable launcher.
-#[derive(Debug, Eq, Hash, PartialEq)]
-struct CompilerDriverIdentity {
-    path: PathBuf,
-    length: u64,
-    modified: SystemTime,
-    #[cfg(unix)]
-    device: u64,
-    #[cfg(unix)]
-    inode: u64,
-    #[cfg(unix)]
-    changed: i64,
-    #[cfg(unix)]
-    changed_nanoseconds: i64,
-    #[cfg(not(unix))]
-    created: Option<SystemTime>,
-}
+type CompilerDriverIdentity = FileIdentity;
 
 /// Info about a single file emitted by the compiler.
 #[derive(Debug)]
@@ -327,32 +314,33 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                     configured_environment.as_ref().is_some_and(|configured| {
                         !configured_environment_has_sensitive_case_alias(configured, cfg!(windows))
                     });
-                let compiler_file_identity = resolve_effective_executable(
+                let compiler_identity = resolve_effective_executable(
                     &compiler.path,
                     effective_executable_path.as_deref(),
                 )
                 .ok()
                 .flatten()
                 .and_then(|path| path.canonicalize().ok())
-                .and_then(|path| std::fs::metadata(path).ok())
-                .and_then(|metadata| {
-                    let modified = metadata.modified().ok()?;
-
+                .and_then(|path| {
+                    let metadata = std::fs::metadata(&path).ok()?;
+                    FileIdentity::from_metadata(path, &metadata).ok()
+                });
+                // Preserve the existing hash representation when adding provenance.
+                let compiler_file_identity = compiler_identity.as_ref().map(|identity| {
                     #[cfg(unix)]
                     {
-                        Some((
-                            metadata.len(),
-                            modified,
-                            metadata.dev(),
-                            metadata.ino(),
-                            metadata.ctime(),
-                            metadata.ctime_nsec(),
-                        ))
+                        (
+                            identity.length,
+                            identity.modified,
+                            identity.device,
+                            identity.inode,
+                            identity.changed,
+                            identity.changed_nanoseconds,
+                        )
                     }
-
                     #[cfg(not(unix))]
                     {
-                        Some((metadata.len(), modified, metadata.created().ok()))
+                        (identity.length, identity.modified, identity.created)
                     }
                 });
                 let compiler_driver_identity = compiler_driver_identity_for_sysroot(
@@ -655,7 +643,10 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                     workspace,
                     isolated_clippy,
                     rustc,
-                    compiler_driver: compiler_driver_identity.map(|driver| driver.path),
+                    compiler_driver: compiler_driver_identity
+                        .as_ref()
+                        .map(|driver| driver.path.clone()),
+                    provenance: compiler_identity.zip(compiler_driver_identity),
                     trusted_context,
                     #[cfg(windows)]
                     implicit_native_tools,
@@ -686,6 +677,25 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
         }
 
         files
+    }
+
+    /// Enrolls immutable ownership and starts context usage tracking, including cache hits.
+    pub(super) fn record_gc_metadata(&self) -> CargoResult<Option<build_cache_gc::ContextUse>> {
+        if !cfg!(any(target_os = "linux", target_os = "macos")) {
+            return Ok(None);
+        }
+        let Some(cache) = &self.shared_registry_cache else {
+            return Ok(None);
+        };
+        let root = self
+            .ws
+            .canonical_build_path(self.ws.configured_build_dir().as_path_unlocked());
+        crate::workspace::build_cache_gc_roots::register_root(self.ws.gctx(), &root)?;
+        if let Some((compiler, driver)) = &cache.provenance {
+            build_cache_gc::record_context(&root, &cache.rustc, compiler.clone(), driver.clone())?;
+            return build_cache_gc::ContextUse::new(&root, &cache.rustc).map(Some);
+        }
+        Ok(None)
     }
 
     /// Records the admission policy before any selected compiler can create outputs.

@@ -99,7 +99,7 @@ you use bash, it makes sense to add `export RUSTC_WRAPPER=sccache` to
 `.bashrc`. Alternatively, you can set [`build.rustc-wrapper`] in the [Cargo
 configuration][config]. Refer to sccache documentation for more details.
 
-## Ohm shared build storage
+## Ohm shared build cleanup
 
 With a separate `CARGO_BUILD_BUILD_DIR`, Ohm shares compatible registry builds
 and keeps each workspace's private state in its own `target` directory. This
@@ -117,13 +117,101 @@ state from the donor's target into the recipient's target. Removing a worktree
 also removes its default target, so this private state needs no global ownership
 record or GC pass. Explicit targets outside the checkout need separate cleanup.
 
+On Linux and macOS, `cargo +ohm gc` reclaims these categories from shared
+build directories:
+
+* Global registry contexts from older Ohm releases, immediately after an upgrade,
+  even if the old compiler remains installed and was used recently. A concrete
+  compiler executable or driver library being removed or replaced also makes its
+  context eligible immediately.
+* Other tracked registry contexts that have not been used for at least one hour.
+  Private state in existing worktrees is preserved.
+* Recognized legacy registry namespaces with no context or usage records, and
+  private intermediates, incremental state, and scratch files left in the global
+  directory by the old layout. These are eligible immediately, regardless of age
+  or whether the original worktree still exists. A colocated target's private
+  state is preserved.
+
+A build context groups artifacts that share a compiler, build tools, and relevant
+configuration and environment. Multiple projects, crate versions, and feature
+combinations can share one context. Removing a dependency from a lockfile does not
+retire its shared artifacts: any use of a context refreshes the whole context.
+There is no per-dependency reference counting or age tracking.
+
+Compiler identity already partitions the cache. The context record also captures
+the installed Ohm release, without changing cache paths or invalidating current
+artifacts. GC compares it with the selected compiler's Ohm release. Older records
+can use the installation's `.ohm-version` marker while that compiler is still
+installed. Unknown releases are not assumed obsolete, and selecting an older
+Ohm release does not immediately evict newer releases' contexts.
+
+There is no grace period. After upgrading, explicitly running `cargo +ohm gc`
+can reclaim the previous release's global registry contexts immediately; an
+upgrade does not invoke GC automatically. The one-hour inactivity rule still
+applies to the current release's contexts. Legacy namespaces without records are
+also discarded immediately, even if their artifacts could still be reused.
+They rebuild on demand if needed again.
+
+Ohm records each shared context once. Normal builds refresh a separate empty
+`.ohm-gc-v1/last-used/<context>` file at start and completion, including cache hits
+and failures; importing a worktree snapshot also refreshes its contexts. Builds
+do not scan artifacts, maintain a usage database, record workspace ownership, or
+rewrite context records. Malformed or unfamiliar records are preserved; a
+tracked context without a usage marker does not expire by age.
+Cleanup runs only when you explicitly invoke `cargo +ohm gc`; builds, tests,
+worktree commands, and upgrades do not trigger it.
+
+Cleanup skips a root while it is in use. Builds, tests, and programs launched by
+this version of Cargo retain a shared lease for their lifetime, including after
+Cargo exits. Older Cargo versions may only hold compilation locks, so their
+running programs do not have the same protection.
+
 `cargo clean` cleans the current workspace's target, including private
 intermediates and incremental state. A target-local lock prevents cleaning state
 still used by its builds or launched programs, without blocking other worktrees.
 The tiny `.ohm-build-lock` and `CACHEDIR.TAG` files remain after a full clean.
-Shared registry artifacts and legacy global state remain in the global directory.
+Shared registry artifacts and legacy global state are left for `cargo +ohm gc`.
 The first build after switching to this layout rebuilds private intermediates;
 existing global registry artifacts remain reusable.
+
+`cargo +ohm gc` performs global maintenance across registered shared build roots.
+It also discovers marked legacy roots in the configured build directory and up
+to four directory levels beneath `$HOME/.cache`, `$XDG_CACHE_HOME`, and, on macOS,
+`$HOME/Library/Caches`. Discovery does not follow directory symlinks or descend
+into build profiles. Roots elsewhere can be selected with `--build-dir`; an
+actual collection registers them for subsequent runs. Dry runs do not enroll
+roots or create metadata. The command can run from any directory, without a
+Cargo workspace:
+
+```console
+cargo +ohm gc --dry-run
+cargo +ohm gc
+```
+
+To select one root explicitly, add `--build-dir /path/to/shared-build`.
+`--dry-run` lists eligible contexts and legacy workspaces, estimates their file
+and byte totals, and leaves artifacts and records unchanged. For example:
+
+```text
+Would remove context 6f4e82a9c1d037ab (from ohm-1.98.1-1; current is ohm-1.98.1-2)
+     Summary 1248 files, 842.6MiB total
+warning: no files deleted due to --dry-run
+```
+
+The preview includes all eligible artifacts and files left by interrupted
+cleanup, without holding build locks while counting them. Actual collection
+reports `Removing` and `Removed`, counts files as it deletes them, and uses small
+batches to yield to active builds. Counts exclude GC bookkeeping; like
+`cargo clean`, byte totals use file lengths rather than physical disk usage.
+Concurrent builds or cleanup can change the preview's estimate.
+If a root is busy or work remains after the per-root budget, invoke
+`cargo +ohm gc` again to continue. `--quiet` suppresses the output.
+
+Cleanup only removes recognized namespaces inside marked shared build roots.
+It preserves external targets, ordinary checkout targets, unknown directory
+shapes, and downloaded sources in `CARGO_HOME`. The content-addressed ThinLTO
+backend cache retains its separate size and age policy. This command does not
+apply a disk-size limit to the active registry build cache.
 
 [`RUSTFLAGS`]: ../reference/config.md#buildrustflags
 [`build.dep-info-basedir`]: ../reference/config.md#builddep-info-basedir

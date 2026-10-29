@@ -2229,11 +2229,9 @@ each workspace's own `target` directory:
 
 ```console
 export CARGO_BUILD_BUILD_DIR=/path/to/shared-build
-export CARGO_TARGET_DIR=/path/to/targets/source
 cargo +ohm build
-cargo +ohm worktree add -b charlie/my-change ../my-change --target-dir /path/to/targets/my-change
+cargo +ohm worktree add -b charlie/my-change ../my-change
 cd ../my-change
-export CARGO_TARGET_DIR=/path/to/targets/my-change
 cargo +ohm build
 ```
 
@@ -2248,7 +2246,9 @@ checked out normally. Use `-b`/`--branch` to create a named branch or
 command, `--target-dir` selects only the destination target directory and defaults
 to the new workspace's `target` directory; the donor target still follows its
 existing environment and configuration. Use the chosen destination target for
-subsequent builds so they find the seeded state.
+subsequent builds so they find the seeded state. If you configure an external
+`CARGO_TARGET_DIR`, keep it distinct for each worktree and pass the recipient's
+directory with `worktree add --target-dir`.
 
 This mode enables checksum-based freshness checks so a new checkout's timestamps
 do not determine whether copied source-dependent artifacts are reusable. Cargo
@@ -2270,7 +2270,7 @@ outputs for a particular import, set the existing procedural-macro trust option
 on `worktree add`:
 
 ```sh
-CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST=all cargo +ohm worktree add -b charlie/my-change ../my-change --target-dir /path/to/targets/my-change
+CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST=all cargo +ohm worktree add -b charlie/my-change ../my-change
 ```
 
 This opt-in is potentially unsound: a macro can read the donor's environment,
@@ -2305,8 +2305,9 @@ donor. Metadata relocation and new session lock files are still written
 independently. Seeding is a one-time operation and does not share later workspace
 compilations. Removing the recipient worktree also removes its default target,
 including an imported snapshot that has never been built. An explicit target
-outside the checkout needs separate cleanup. See [shared build
-storage](build-cache.md#ohm-shared-build-storage) for the directory layout.
+outside the checkout needs separate cleanup. [Shared build
+cleanup](build-cache.md#ohm-shared-build-cleanup) reclaims global registry contexts
+and legacy private state left by earlier layouts.
 
 ## compile-time-deps
 
