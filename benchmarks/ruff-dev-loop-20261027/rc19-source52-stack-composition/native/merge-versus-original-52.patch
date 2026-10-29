@@ -1,0 +1,189 @@
+diff --git a/crates/cargo-util/src/paths.rs b/crates/cargo-util/src/paths.rs
+index d7d4f6a32e..d0dbaf2ae8 100644
+--- a/crates/cargo-util/src/paths.rs
++++ b/crates/cargo-util/src/paths.rs
+@@ -194,11 +194,17 @@ pub fn write<P: AsRef<Path>, C: AsRef<[u8]>>(path: P, contents: C) -> Result<()>
+ /// This uses `tempfile::persist` to accomplish atomic writes.
+ /// If the path is a symlink, it will follow the symlink and write to the actual target.
+ pub fn write_atomic<P: AsRef<Path>, C: AsRef<[u8]>>(path: P, contents: C) -> Result<()> {
+-    let path = path.as_ref();
++    write_atomic_impl(path.as_ref(), contents.as_ref(), true)
++}
++
++/// Atomically replaces the directory entry itself, including an existing symlink.
++pub fn write_atomic_no_follow<P: AsRef<Path>, C: AsRef<[u8]>>(path: P, contents: C) -> Result<()> {
++    write_atomic_impl(path.as_ref(), contents.as_ref(), false)
++}
+ 
+-    // Check if the path is a symlink and follow it if it is
++fn write_atomic_impl(path: &Path, contents: &[u8], follow_symlink: bool) -> Result<()> {
+     let resolved_path;
+-    let path = if path.is_symlink() {
++    let path = if follow_symlink && path.is_symlink() {
+         resolved_path = fs::read_link(path)
+             .with_context(|| format!("failed to read symlink at `{}`", path.display()))?;
+         &resolved_path
+@@ -210,7 +216,12 @@ pub fn write_atomic<P: AsRef<Path>, C: AsRef<[u8]>>(path: P, contents: C) -> Res
+     // read/write/execute permission bits. The tempfile lib defaults to an initial mode of 0o600,
+     // and we'll set the proper permissions after creating the file.
+     #[cfg(unix)]
+-    let perms = path.metadata().ok().map(|meta| {
++    let perms = if follow_symlink {
++        path.metadata().ok()
++    } else {
++        path.symlink_metadata().ok().filter(Metadata::is_file)
++    }
++    .map(|meta| {
+         use std::os::unix::fs::PermissionsExt;
+ 
+         // these constants are u16 on macOS and i32 on Redox
+@@ -223,7 +234,7 @@ pub fn write_atomic<P: AsRef<Path>, C: AsRef<[u8]>>(path: P, contents: C) -> Res
+     let mut tmp = TempFileBuilder::new()
+         .prefix(path.file_name().unwrap())
+         .tempfile_in(path.parent().unwrap())?;
+-    tmp.write_all(contents.as_ref())?;
++    tmp.write_all(contents)?;
+ 
+     // On unix platforms, set the permissions on the newly created file. We can use fchmod (called
+     // by the std lib; subject to change) which ignores the umask so that the new file has the same
+@@ -889,6 +900,7 @@ mod tests {
+     use super::normalize_path;
+     use super::write;
+     use super::write_atomic;
++    use super::write_atomic_no_follow;
+ 
+     #[test]
+     fn test_normalize_path() {
+@@ -1031,6 +1043,11 @@ mod tests {
+         // Verify symlink still exists and points to the same target
+         assert!(symlink_path.is_symlink());
+         assert_eq!(std::fs::read_link(&symlink_path).unwrap(), target_path);
++
++        write_atomic_no_follow(&symlink_path, "marker").unwrap();
++        assert!(!symlink_path.is_symlink());
++        assert_eq!(std::fs::read_to_string(&symlink_path).unwrap(), "marker");
++        assert_eq!(std::fs::read_to_string(&target_path).unwrap(), "updated");
+     }
+ 
+     #[test]
+diff --git a/src/compiler/fingerprint/mod.rs b/src/compiler/fingerprint/mod.rs
+index 3cc137b8ea..9dd3a9a291 100644
+--- a/src/compiler/fingerprint/mod.rs
++++ b/src/compiler/fingerprint/mod.rs
+@@ -592,7 +592,8 @@ fn previous_dependency_changes(fingerprint: &Fingerprint) -> PreviousDependencyC
+ 
+ /// An unchanged crate-local API hash cannot hide changed metadata inherited
+ /// from a dependency, such as a newly available foreign trait implementation.
+-fn has_changed_metadata_dependency(fingerprint: &Fingerprint) -> bool {
++/// A pipelined check can finish before its dependency finalizes that metadata.
++fn metadata_dependency_may_have_changed(fingerprint: &Fingerprint) -> bool {
+     fingerprint
+         .previously_changed_metadata_dependency
+         .load(Ordering::Acquire)
+@@ -600,7 +601,7 @@ fn has_changed_metadata_dependency(fingerprint: &Fingerprint) -> bool {
+             dependency.only_requires_rmeta
+                 && matches!(
+                     dependency.fingerprint.build_state(),
+-                    BuildState::BuiltChanged
++                    BuildState::Pending | BuildState::BuiltChanged
+                 )
+         })
+ }
+@@ -891,7 +892,7 @@ pub fn prepare_target(
+ 
+             let unchanged_public_api_hash =
+                 old_public_api_hash.as_ref() == Some(&new_public_api_hash);
+-            if unchanged_public_api_hash && !has_changed_metadata_dependency(fingerprint) {
++            if unchanged_public_api_hash && !metadata_dependency_may_have_changed(fingerprint) {
+                 preserve_metadata_generation(fingerprint, previous_metadata.as_ref());
+                 *fingerprint.fs_status.lock().unwrap() = FsStatus::OutputUnchanged {
+                     unit: fingerprint.index,
+@@ -2517,7 +2518,10 @@ fn write_fingerprint_and_public_api_hash(
+     match public_api_hash_update {
+         PublicApiHashUpdate::Preserve => {}
+         PublicApiHashUpdate::Write(public_api_hash) => {
+-            paths::write_atomic(public_api_hash_path, serde_json::to_vec(&public_api_hash)?)?;
++            paths::write_atomic_no_follow(
++                public_api_hash_path,
++                serde_json::to_vec(&public_api_hash)?,
++            )?;
+         }
+         PublicApiHashUpdate::Remove => {
+             if public_api_hash_path.exists() {
+@@ -2903,6 +2907,29 @@ mod early_cutoff_tests {
+         ));
+     }
+ 
++    #[cfg(unix)]
++    #[test]
++    fn public_api_hash_replaces_a_symlink() {
++        let dir = tempfile::tempdir().unwrap();
++        let target = dir.path().join("target");
++        let sidecar = dir.path().join("unit.public-api-hash");
++        fs::write(&target, "keep").unwrap();
++        std::os::unix::fs::symlink(&target, &sidecar).unwrap();
++        let mut fingerprint = Fingerprint::new();
++        fingerprint.rustc = 1;
++        let hash = PublicApiHash::new(1, "11111111111111111111111111111111").unwrap();
++
++        write_fingerprint_and_public_api_hash(
++            &dir.path().join("unit"),
++            &fingerprint,
++            &sidecar,
++            PublicApiHashUpdate::Write(hash),
++        )
++        .unwrap();
++        assert_eq!(fs::read(target).unwrap(), b"keep");
++        assert!(read_public_api_hash(&sidecar).is_some());
++    }
++
+     #[test]
+     fn public_api_hash_is_not_advanced_before_fingerprint_commit() {
+         let temp_dir = tempfile::tempdir().unwrap();
+@@ -2964,12 +2991,14 @@ mod early_cutoff_tests {
+     }
+ 
+     #[test]
+-    fn changed_metadata_dependency_propagates_through_unchanged_public_api() {
+-        let dependency = make_fingerprint(FsStatus::Stale, BuildState::BuiltChanged);
+-        let mut fingerprint = make_stale_due_to_dep();
+-        fingerprint.deps.push(make_dep_fingerprint(dependency));
++    fn changed_or_pending_metadata_dependency_propagates_through_unchanged_public_api() {
++        for state in [BuildState::BuiltChanged, BuildState::Pending] {
++            let dependency = make_fingerprint(FsStatus::Stale, state);
++            let mut fingerprint = make_stale_due_to_dep();
++            fingerprint.deps.push(make_dep_fingerprint(dependency));
+ 
+-        assert!(has_changed_metadata_dependency(&fingerprint));
++            assert!(metadata_dependency_may_have_changed(&fingerprint));
++        }
+     }
+ 
+     #[test]
+@@ -2987,7 +3016,7 @@ mod early_cutoff_tests {
+             .previously_changed_metadata_dependency
+             .store(true, Ordering::Release);
+ 
+-        assert!(has_changed_metadata_dependency(&fingerprint));
++        assert!(metadata_dependency_may_have_changed(&fingerprint));
+     }
+ 
+     #[test]
+@@ -2998,7 +3027,7 @@ mod early_cutoff_tests {
+         let mut fingerprint = make_stale_due_to_dep();
+         fingerprint.deps.push(dependency);
+ 
+-        assert!(!has_changed_metadata_dependency(&fingerprint));
++        assert!(!metadata_dependency_may_have_changed(&fingerprint));
+     }
+ 
+     #[test]
+@@ -3007,7 +3036,7 @@ mod early_cutoff_tests {
+         let mut fingerprint = make_stale_due_to_dep();
+         fingerprint.deps.push(make_dep_fingerprint(dependency));
+ 
+-        assert!(!has_changed_metadata_dependency(&fingerprint));
++        assert!(!metadata_dependency_may_have_changed(&fingerprint));
+     }
+ 
+     #[test]

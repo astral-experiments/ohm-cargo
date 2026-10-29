@@ -1,0 +1,67 @@
+{
+  "authenticated_child_exec_files": [
+    "eee4b8bb1544d9b9738899b0acd8187467a30665ab65772885cb0d4bfea1f657",
+    "839afc8b9582fe0b9f113a440c3358a2042976e9cbe1012de139dd86891ae2e0",
+    "8dcfb5b9e92cf0ff5a93e7297ad61a53704cc97ce58a69bedb6862eb6f54b8df",
+    "438ba8d2b4cafbbca1743466477935b94ea9c236301eaca165f88a9fff998231",
+    "cf4fb44693a2d712768df43d098276c030c2160f329500800056b8830697a048",
+    "170acedbb9d12c98ee6902b5ffe75bbcd1c7ba5a0fb55c3c680700c112f3b335",
+    "dd31159c76be85c83cc5ca59f0e8a021c3b2a0b65ec523e501d9f2b556294dec",
+    "b38f904cd8ae81dd02064c63cd80c22992b3c28af2f6425bd4cf81b879243dc9",
+    "30d47dd3a309c2cbe671f1555d2900f2e201f27e0103c8690275b465b5ecc20a",
+    "0060f60a72a1a58d3ac2b46a934c629a6904811b3fb41d2177eda89eaafb51c9",
+    "ede5bcade59465f9264af9800cd987b43036f64b3674197b3bb22cef6aaa3ec5",
+    "8d3fbd702e20e440f832eea700fc3296d87398c00b87fb59332eae889857394e",
+    "98a09afbf2f317e5b6ca0f6c2c7883f5e8c4112f92d03fd3689f0cf0aef86503",
+    "dda0f87d0e97a60ab5a613de878c9bcf237b2da31139b95a9169e9e0dde1f059",
+    "1f1adf6e3c7861bd67d05ece4a42453638837f1d73bed821b939e9a00c0aef26",
+    "c6dd365702358d40ed10fa4530f3144023cad9c2b86645bff07d75d5468ba1a7",
+    "b59255bc473e3c1deeaf0df4be5cd06812a767c86635c1ce6127aea1f8536065",
+    "eaa235e2dbb343d0d8119c01d47030e8a3620aaf4a4cfa6838b90a3202512e13",
+    "5beea6d2a46fd76ffe2f6758cfc19e24eac3a684141162e817690c842e23cf67",
+    "95a549f8e516efc5465d4fc7973aea336c536a7899da55b3224a58373ab22b8d"
+  ],
+  "bound_cargo": "740e39ed21737a28a7edfbc4d779c20420f1f518d4187cfbb953c426a61767f6",
+  "cargo": "740e39ed21737a28a7edfbc4d779c20420f1f518d4187cfbb953c426a61767f6",
+  "dynamic_cow_scratch_bytes": 40859865088,
+  "first_tmp_was_preserved": true,
+  "initial_exit": 101,
+  "initial_outcomes": [
+    [
+      "freshness::private_dependency_rebuild_preserves_build_metadata_generation",
+      "FAILED"
+    ],
+    [
+      "freshness::private_dependency_rebuild_preserves_check_metadata_generation",
+      "FAILED"
+    ],
+    [
+      "freshness::separately_rebuilt_dependency_propagates_transitive_link_generation",
+      "ok"
+    ],
+    [
+      "freshness::skipped_dependency_preserves_metadata_and_propagates_link_generation",
+      "ok"
+    ],
+    [
+      "freshness::unchanged_check_metadata_does_not_fall_behind_rerun_build_script",
+      "FAILED"
+    ]
+  ],
+  "initial_stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "initial_stdout": "7a439641efd2ac8faa381da3091f81f1c33b09561c24f2dbe9b8462f8efcd402",
+  "literal_spelling_verified": true,
+  "runner_generated_cargo": "f97efcdae6798d0330ec49ac939fe34918f2fe83c6302fa325e6476922f1633a",
+  "source": "756f52243de60b645e132d5aca95944cca5ce030",
+  "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdout": "3188ad693af8922e52ee8486bdf61e2000b2c0b2d7969996c0b95a847cfc439a",
+  "suite": "86d7a15833212b20f57054d686dbb8e4952a6520268a091ff4b9baedad903451",
+  "tests": [
+    "freshness::private_dependency_rebuild_preserves_build_metadata_generation",
+    "freshness::private_dependency_rebuild_preserves_check_metadata_generation",
+    "freshness::separately_rebuilt_dependency_propagates_transitive_link_generation",
+    "freshness::skipped_dependency_preserves_metadata_and_propagates_link_generation",
+    "freshness::unchanged_check_metadata_does_not_fall_behind_rerun_build_script"
+  ],
+  "version": "cargo 1.99.0 (756f52243 2026-10-29)\nrelease: 1.99.0\ncommit-hash: 756f52243de60b645e132d5aca95944cca5ce030\ncommit-date: 2026-10-29\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.0.13)\nos: Ubuntu 24.4.0 (noble) [64-bit]\n"
+}

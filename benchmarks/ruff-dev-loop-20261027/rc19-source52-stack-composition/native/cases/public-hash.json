@@ -1,0 +1,236 @@
+[
+  {
+    "case": {
+      "after_sha": "3e3ba3a927c7cd1c1497c37ec2f46c3da9c455721e666efd04bcc2706ec36e0e",
+      "before_sha": "3e3ba3a927c7cd1c1497c37ec2f46c3da9c455721e666efd04bcc2706ec36e0e",
+      "cache_name": "lib-cache_witness_lib.public-api-hash",
+      "cache_symlink": false,
+      "cargo": "740e39ed21737a28a7edfbc4d779c20420f1f518d4187cfbb953c426a61767f6",
+      "case": "public-api",
+      "command": [
+        "+ohm",
+        "--config",
+        "build.rustflags=[\"-Zpublic-api-hash\"]",
+        "build",
+        "--offline",
+        "-j1",
+        "--message-format=json",
+        "-p",
+        "cache_witness_app"
+      ],
+      "compiler": "e173035a5dd384e17ca6a178e1987a0a746260c3669459cfab3af580880927ba",
+      "dangling": false,
+      "inode_preserved": true,
+      "records": [
+        {
+          "executable": "e2a507fecd1f08b694840bb5425350a842f6f200d77afe3ebf5ed0da21b522c1",
+          "exit": 0,
+          "phase": "cold",
+          "stderr": "cbfb55045b99cf8595bf596885899c121119c587b76f6c1052736dd720cafd27",
+          "stdout": "c3c0f30a756a9476289d30fad5ef30c29af9dc68a282e4ccde4c316a7e98fbc5",
+          "typed": [
+            [
+              "cache_witness_lib",
+              false
+            ],
+            [
+              "cache_witness_app",
+              false
+            ]
+          ],
+          "value": 17
+        },
+        {
+          "executable": "5e26254abb51505bd114a66009282c36a88c43b54441c34a26de571ea54dff8d",
+          "exit": 0,
+          "phase": "changed",
+          "stderr": "3b24971ff21e6ded405b38f1b56b037440e9540c6249d35b03f786ffd3ee816c",
+          "stdout": "c3c0f30a756a9476289d30fad5ef30c29af9dc68a282e4ccde4c316a7e98fbc5",
+          "typed": [
+            [
+              "cache_witness_lib",
+              false
+            ],
+            [
+              "cache_witness_app",
+              false
+            ]
+          ],
+          "value": 29
+        },
+        {
+          "executable": "5e26254abb51505bd114a66009282c36a88c43b54441c34a26de571ea54dff8d",
+          "exit": 0,
+          "phase": "repeat",
+          "stderr": "736e2582f563605dd272e5fb977840b0c0767377d27b6940c440caf75eec7157",
+          "stdout": "030abc63713424594b8cd9ba1dd0b066387357aad5bdae2da20a6a5287aa4dd4",
+          "typed": [
+            [
+              "cache_witness_lib",
+              true
+            ],
+            [
+              "cache_witness_app",
+              true
+            ]
+          ],
+          "value": 29
+        }
+      ],
+      "sentinel_replaced": false,
+      "victim_existed_after": true
+    },
+    "name": "live",
+    "receipt": "2198ee4e859c9503580b730a6e83532f17c2de9ceb509137b0c8dd791f727884"
+  },
+  {
+    "case": {
+      "after_sha": null,
+      "before_sha": null,
+      "cache_name": "lib-cache_witness_lib.public-api-hash",
+      "cache_symlink": false,
+      "cargo": "740e39ed21737a28a7edfbc4d779c20420f1f518d4187cfbb953c426a61767f6",
+      "case": "public-api",
+      "command": [
+        "+ohm",
+        "--config",
+        "build.rustflags=[\"-Zpublic-api-hash\"]",
+        "build",
+        "--offline",
+        "-j1",
+        "--message-format=json",
+        "-p",
+        "cache_witness_app"
+      ],
+      "compiler": "e173035a5dd384e17ca6a178e1987a0a746260c3669459cfab3af580880927ba",
+      "dangling": true,
+      "inode_preserved": null,
+      "records": [
+        {
+          "executable": "1237a5874ae50937815a8e77d129102457003f5f4c843a56936f6af4b59c8b25",
+          "exit": 0,
+          "phase": "cold",
+          "stderr": "3ddcbcf7618db1364510358ff9517eaa7839b2cf0f871268adad6754847dcbec",
+          "stdout": "34c9519d7e5d59fc04bef79f776bee9b2adbd8712d0a8bd277c6195433c0455a",
+          "typed": [
+            [
+              "cache_witness_lib",
+              false
+            ],
+            [
+              "cache_witness_app",
+              false
+            ]
+          ],
+          "value": 17
+        },
+        {
+          "executable": "171edfffd27b963c27a30c6f12ec83d4eac019b31aa9c679da0c1f9b609f6092",
+          "exit": 0,
+          "phase": "changed",
+          "stderr": "17d6a35d0b2f4894300db0ce06984f57426c5323112998c73d572098a8988010",
+          "stdout": "34c9519d7e5d59fc04bef79f776bee9b2adbd8712d0a8bd277c6195433c0455a",
+          "typed": [
+            [
+              "cache_witness_lib",
+              false
+            ],
+            [
+              "cache_witness_app",
+              false
+            ]
+          ],
+          "value": 29
+        },
+        {
+          "executable": "171edfffd27b963c27a30c6f12ec83d4eac019b31aa9c679da0c1f9b609f6092",
+          "exit": 0,
+          "phase": "repeat",
+          "stderr": "736e2582f563605dd272e5fb977840b0c0767377d27b6940c440caf75eec7157",
+          "stdout": "c63e32f196f8c5c31d4b5761c6d5283bc536d7f5a1e58684687917c13e9709c5",
+          "typed": [
+            [
+              "cache_witness_lib",
+              true
+            ],
+            [
+              "cache_witness_app",
+              true
+            ]
+          ],
+          "value": 29
+        }
+      ],
+      "sentinel_replaced": false,
+      "victim_existed_after": false
+    },
+    "name": "dangling",
+    "receipt": "fa708304ac6ba8d28ae3c678172f524f7c52839bf20064a5bf4ab4646d576ef5"
+  },
+  {
+    "case": {
+      "cargo": "740e39ed21737a28a7edfbc4d779c20420f1f518d4187cfbb953c426a61767f6",
+      "case": "public-api",
+      "compiler": "e173035a5dd384e17ca6a178e1987a0a746260c3669459cfab3af580880927ba",
+      "disabled": true,
+      "rows": [
+        {
+          "executable": "969c3dec1c404ca9efa959ee4bf61224759b32b9c61ba6d4d4b096a013bd4c92",
+          "exit": 0,
+          "phase": "cold",
+          "stderr": "11d860cdb6838ac9fe9182400a358f3faadb4768399e08bdd5a75ef689ea5d91",
+          "stdout": "56e0b83f6b055e8a945eedc659aaddeaa91024be087b8161b3f2fe5ea11d18e4",
+          "typed": [
+            [
+              "cache_witness_lib",
+              false
+            ],
+            [
+              "cache_witness_app",
+              false
+            ]
+          ],
+          "value": 17
+        },
+        {
+          "executable": "8c887a83eef6440871c06158d677dba25bdad4c09d374aa8435fec7a9f577329",
+          "exit": 0,
+          "phase": "changed",
+          "stderr": "859051b44482cc2cbb801b7d4f5c629259ed2d8d0033ae32af5330bd98a9743d",
+          "stdout": "56e0b83f6b055e8a945eedc659aaddeaa91024be087b8161b3f2fe5ea11d18e4",
+          "typed": [
+            [
+              "cache_witness_lib",
+              false
+            ],
+            [
+              "cache_witness_app",
+              false
+            ]
+          ],
+          "value": 29
+        },
+        {
+          "executable": "8c887a83eef6440871c06158d677dba25bdad4c09d374aa8435fec7a9f577329",
+          "exit": 0,
+          "phase": "repeat",
+          "stderr": "736e2582f563605dd272e5fb977840b0c0767377d27b6940c440caf75eec7157",
+          "stdout": "3e86a8d4f9fdd742051680a484bf3ca5580da4e5e50115016c6039ca9fbdbaf1",
+          "typed": [
+            [
+              "cache_witness_lib",
+              true
+            ],
+            [
+              "cache_witness_app",
+              true
+            ]
+          ],
+          "value": 29
+        }
+      ]
+    },
+    "name": "disabled",
+    "receipt": "8a651385812cb57157ceba91a1ba452474887c702bb31c0116d06bd3800976e6"
+  }
+]

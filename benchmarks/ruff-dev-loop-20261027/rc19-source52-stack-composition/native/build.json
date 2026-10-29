@@ -1,0 +1,36 @@
+{
+  "argv": [
+    "cargo",
+    "+ohm",
+    "-Zohm-defaults=no",
+    "build",
+    "--offline",
+    "--locked",
+    "-j4",
+    "-p",
+    "cargo",
+    "--bin",
+    "cargo",
+    "--message-format=json"
+  ],
+  "cargo": "740e39ed21737a28a7edfbc4d779c20420f1f518d4187cfbb953c426a61767f6",
+  "cargo_builder": "02a86ebd2d9e4f237b33f212102b81ed145eb77fae090d67e379cb6f1d70a573",
+  "exit": 0,
+  "features": [
+    "default",
+    "http-transport-curl"
+  ],
+  "fresh_cargo_exe": false,
+  "fresh_cargo_lib": false,
+  "minimum_free_bytes": [
+    41616855040
+  ],
+  "qualified_genuine_compiler": "e173035a5dd384e17ca6a178e1987a0a746260c3669459cfab3af580880927ba",
+  "rustc_builder": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+  "seconds_unscored": 95.305962375,
+  "source": "756f52243de60b645e132d5aca95944cca5ce030",
+  "stderr": "1f30843137dc72b9f3f926219d3fc5ae184ebdb3d83d5e1682cd517051ef822c",
+  "stdout": "b425e3792192a446efac518a7303a15c44b6f30009ffcfc37cb855689a837e63",
+  "tree": "903c2baf771803bf449357f7a369085ede89bcc0",
+  "version": "cargo 1.99.0 (756f52243 2026-10-29)\nrelease: 1.99.0\ncommit-hash: 756f52243de60b645e132d5aca95944cca5ce030\ncommit-date: 2026-10-29\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.0.13)\nos: Ubuntu 24.4.0 (noble) [64-bit]\n"
+}

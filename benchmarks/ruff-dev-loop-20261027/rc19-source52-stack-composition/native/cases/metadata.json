@@ -1,0 +1,1022 @@
+[
+  {
+    "actual_order": {
+      "held": "2",
+      "public_api": false,
+      "publication": "release-fd",
+      "target": "provider-first"
+    },
+    "case": "metadata-ordered-provider-first-original",
+    "flag": false,
+    "method": "ordered",
+    "raw_events": "1ec1f9669ea64d8ae32da1c3f3b0ca13cfb2e99d59be621c859438e5d4469c64",
+    "requested_order": "provider-first",
+    "rows": [
+      {
+        "diag": null,
+        "phase": "original",
+        "stderr": "ef073c84e08b6a0ed3420154f29e201c562173b534b44e6a35dd832b7d7ecf0b",
+        "stdout": "d1965657802014669607a060d48966fe9f45ba0db7fb23f8b04e72d4299624e5",
+        "success": true,
+        "units": [
+          [
+            "api",
+            false
+          ],
+          [
+            "provider",
+            false
+          ],
+          [
+            "reader",
+            false
+          ],
+          [
+            "client",
+            false
+          ]
+        ]
+      },
+      {
+        "diag": null,
+        "phase": "original-repeat",
+        "stderr": "ee1d3fffa2022e962e63e0dbe4d35c9c198450a20c29fc09030f635dbb38bfcd",
+        "stdout": "6511b548e1a229eb3536d30264c5323fd85bf565ae7a223c6231614c3fa110dc",
+        "success": true,
+        "units": [
+          [
+            "api",
+            true
+          ],
+          [
+            "provider",
+            true
+          ],
+          [
+            "reader",
+            true
+          ],
+          [
+            "client",
+            true
+          ]
+        ]
+      },
+      {
+        "diag": {
+          "code": "E0034",
+          "columns": [
+            30,
+            38
+          ],
+          "file": "client/src/main.rs",
+          "line": 3,
+          "rendered": "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+        },
+        "phase": "edited",
+        "stderr": "f8efcf551087b50a6f807337b4186733cdc6fc4050ecda698ce139d8f200735a",
+        "stdout": "7ca224f8768147839c832fc3c4e76db6167b261f695bc2c652c6d56ab6a2aebf",
+        "success": false,
+        "units": [
+          [
+            "api",
+            true
+          ],
+          [
+            "provider",
+            false
+          ],
+          [
+            "reader",
+            false
+          ]
+        ]
+      },
+      {
+        "diag": {
+          "code": "E0034",
+          "columns": [
+            30,
+            38
+          ],
+          "file": "client/src/main.rs",
+          "line": 3,
+          "rendered": "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+        },
+        "phase": "edited-repeat",
+        "stderr": "2e3a424ef178e5224e6b1c9f09069252a447a88209ef242f2bb8f4b56e1806d4",
+        "stdout": "2f9b5581aa43b71e6ea967a1c4d85bfa0adca8882fa30c1422715313cf59e877",
+        "success": false,
+        "units": [
+          [
+            "api",
+            true
+          ],
+          [
+            "provider",
+            true
+          ],
+          [
+            "reader",
+            true
+          ]
+        ]
+      },
+      {
+        "diag": {
+          "code": "E0034",
+          "columns": [
+            30,
+            38
+          ],
+          "file": "client/src/main.rs",
+          "line": 3,
+          "rendered": "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+        },
+        "phase": "edited-clean",
+        "stderr": "7cfd12f2d4a73d0c69f0f7fcbf6db5ba252af5655f7e67bdab14987e8618f5e5",
+        "stdout": "366d535afd1bcd02a706361de5a2502c55ed550b39812b4d75e1fb1cd28f50ed",
+        "success": false,
+        "units": [
+          [
+            "api",
+            false
+          ],
+          [
+            "provider",
+            false
+          ],
+          [
+            "reader",
+            false
+          ]
+        ]
+      },
+      {
+        "diag": null,
+        "phase": "restore",
+        "stderr": "26c809bc7d4bc7bd439f95d74b710a8c0125c3602bab21046f5d2108ee3c7a64",
+        "stdout": "899583968fdada808bb4d485a7d4df9ee68aa242f71136403eeb11e6e76c9d8e",
+        "success": true,
+        "units": [
+          [
+            "api",
+            true
+          ],
+          [
+            "provider",
+            false
+          ],
+          [
+            "reader",
+            false
+          ],
+          [
+            "client",
+            false
+          ]
+        ]
+      },
+      {
+        "diag": null,
+        "phase": "restore-repeat",
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "6511b548e1a229eb3536d30264c5323fd85bf565ae7a223c6231614c3fa110dc",
+        "success": true,
+        "units": [
+          [
+            "api",
+            true
+          ],
+          [
+            "provider",
+            true
+          ],
+          [
+            "reader",
+            true
+          ],
+          [
+            "client",
+            true
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "actual_order": {
+      "held": "1",
+      "public_api": false,
+      "publication": "timeout-fd",
+      "target": "provider-late"
+    },
+    "case": "metadata-ordered-provider-late-original",
+    "flag": false,
+    "method": "ordered",
+    "raw_events": "49d8e2dcc055955ea4ad03fab56383a521ed0a0374633b9be89a7861534fe9d2",
+    "requested_order": "provider-late",
+    "rows": [
+      {
+        "diag": null,
+        "phase": "original",
+        "stderr": "30bfb0900fd43fdb5368bb04abf16f30bd3cac4d5b277e46bb58eb7a33e02957",
+        "stdout": "a547d6a8a05250eb1f58c83fe1a9ecd7e16c778bb657c1f9b2d5060645a78685",
+        "success": true,
+        "units": [
+          [
+            "api",
+            false
+          ],
+          [
+            "provider",
+            false
+          ],
+          [
+            "reader",
+            false
+          ],
+          [
+            "client",
+            false
+          ]
+        ]
+      },
+      {
+        "diag": null,
+        "phase": "original-repeat",
+        "stderr": "736e2582f563605dd272e5fb977840b0c0767377d27b6940c440caf75eec7157",
+        "stdout": "3ef3f6bde677ace88859d57da2b8a11fbf3e2d89046e8d042235574e6ff8c87b",
+        "success": true,
+        "units": [
+          [
+            "api",
+            true
+          ],
+          [
+            "provider",
+            true
+          ],
+          [
+            "reader",
+            true
+          ],
+          [
+            "client",
+            true
+          ]
+        ]
+      },
+      {
+        "diag": {
+          "code": "E0034",
+          "columns": [
+            30,
+            38
+          ],
+          "file": "client/src/main.rs",
+          "line": 3,
+          "rendered": "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+        },
+        "phase": "edited",
+        "stderr": "ec88d2981530268a539fb072841b79ffcac37252595d928b92be1138cee08300",
+        "stdout": "2679a0d2a8918431843de9190e125d39007f29df2823bd72ad1fbc23fcb755de",
+        "success": false,
+        "units": [
+          [
+            "api",
+            true
+          ],
+          [
+            "provider",
+            false
+          ],
+          [
+            "reader",
+            false
+          ]
+        ]
+      },
+      {
+        "diag": {
+          "code": "E0034",
+          "columns": [
+            30,
+            38
+          ],
+          "file": "client/src/main.rs",
+          "line": 3,
+          "rendered": "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+        },
+        "phase": "edited-repeat",
+        "stderr": "76943cc26b4a7dc23f76b81869a09a7cbe7a13834dada12a4343bf985a4eca92",
+        "stdout": "140924dc58fdd8e61426e0ba8270ab784edddc0db7197b25e4bd66e7d4fc8d07",
+        "success": false,
+        "units": [
+          [
+            "api",
+            true
+          ],
+          [
+            "provider",
+            true
+          ],
+          [
+            "reader",
+            true
+          ]
+        ]
+      },
+      {
+        "diag": {
+          "code": "E0034",
+          "columns": [
+            30,
+            38
+          ],
+          "file": "client/src/main.rs",
+          "line": 3,
+          "rendered": "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+        },
+        "phase": "edited-clean",
+        "stderr": "fe38288db0af155c4e6e67ded20e48b3fdf15faff5c5c78aaf504f6773a0d8ab",
+        "stdout": "977f95bac68921e7fde2120f73053c293c6e56acfe4f348a1dfa99a0d5dae7d4",
+        "success": false,
+        "units": [
+          [
+            "api",
+            false
+          ],
+          [
+            "provider",
+            false
+          ],
+          [
+            "reader",
+            false
+          ]
+        ]
+      },
+      {
+        "diag": null,
+        "phase": "restore",
+        "stderr": "dd7c8e6b7b1f11892e0a1b13b51f6e325f5d2b17aac5177fd2989811b41dd846",
+        "stdout": "a0d320ed7a83efedad587e99a340f6181ff094def5c2053d3ce28d756d80bf07",
+        "success": true,
+        "units": [
+          [
+            "api",
+            true
+          ],
+          [
+            "provider",
+            false
+          ],
+          [
+            "reader",
+            false
+          ],
+          [
+            "client",
+            false
+          ]
+        ]
+      },
+      {
+        "diag": null,
+        "phase": "restore-repeat",
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "3ef3f6bde677ace88859d57da2b8a11fbf3e2d89046e8d042235574e6ff8c87b",
+        "success": true,
+        "units": [
+          [
+            "api",
+            true
+          ],
+          [
+            "provider",
+            true
+          ],
+          [
+            "reader",
+            true
+          ],
+          [
+            "client",
+            true
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "actual_order": null,
+    "case": "metadata-ordinary-provider-late-original",
+    "flag": false,
+    "method": "ordinary",
+    "raw_events": null,
+    "requested_order": "provider-late",
+    "rows": [
+      {
+        "diag": null,
+        "phase": "original",
+        "stderr": "894f90213a491bb5546e0ea3ffcb7729bc5e9239554637eb973e5ea6a11382bf",
+        "stdout": "d45c7edc4a8356b391bc6d1838fc0f69cdcaa1ab9ede70e895f1bf10adead3f9",
+        "success": true,
+        "units": [
+          [
+            "api",
+            false
+          ],
+          [
+            "provider",
+            false
+          ],
+          [
+            "reader",
+            false
+          ],
+          [
+            "client",
+            false
+          ]
+        ]
+      },
+      {
+        "diag": null,
+        "phase": "original-repeat",
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "1afa2ca0d90eda0fe2e2531c3269dfb40e87e7b18b594a818c1fb2e7caee84ba",
+        "success": true,
+        "units": [
+          [
+            "api",
+            true
+          ],
+          [
+            "provider",
+            true
+          ],
+          [
+            "reader",
+            true
+          ],
+          [
+            "client",
+            true
+          ]
+        ]
+      },
+      {
+        "diag": {
+          "code": "E0034",
+          "columns": [
+            30,
+            38
+          ],
+          "file": "client/src/main.rs",
+          "line": 3,
+          "rendered": "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+        },
+        "phase": "edited",
+        "stderr": "e5a916a8e3b59d7c5540d564dbfb398f7e40d86a83cf5429ddb05973c84cd659",
+        "stdout": "69a21bc883656dd314dd6c78f3d3f87d533f9c5ee317a7760690c65a2350d127",
+        "success": false,
+        "units": [
+          [
+            "api",
+            true
+          ],
+          [
+            "provider",
+            false
+          ],
+          [
+            "reader",
+            false
+          ]
+        ]
+      },
+      {
+        "diag": {
+          "code": "E0034",
+          "columns": [
+            30,
+            38
+          ],
+          "file": "client/src/main.rs",
+          "line": 3,
+          "rendered": "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+        },
+        "phase": "edited-repeat",
+        "stderr": "c334b375d1841898fefc013e9f910d403f1e517ec0f36fbe64e93a48c9d485ed",
+        "stdout": "88fcdd5835ee6cd4a894f7eb678c02c6bb97bf3d1e2b0b1d38c95b39107b56ee",
+        "success": false,
+        "units": [
+          [
+            "api",
+            true
+          ],
+          [
+            "provider",
+            true
+          ],
+          [
+            "reader",
+            true
+          ]
+        ]
+      },
+      {
+        "diag": {
+          "code": "E0034",
+          "columns": [
+            30,
+            38
+          ],
+          "file": "client/src/main.rs",
+          "line": 3,
+          "rendered": "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+        },
+        "phase": "edited-clean",
+        "stderr": "769e1799611f074ed65d5519a5a290c5e071244d4524eb52e2c66bb530c56025",
+        "stdout": "ba6081149cc9d55f3af449c1d9cd940fef7a68f50140301835ef10406c9ddfbe",
+        "success": false,
+        "units": [
+          [
+            "api",
+            false
+          ],
+          [
+            "provider",
+            false
+          ],
+          [
+            "reader",
+            false
+          ]
+        ]
+      },
+      {
+        "diag": null,
+        "phase": "restore",
+        "stderr": "e64b714fa06efd453a7ca9649160ba0bc67c7d12466e57515c38c2a81a571f17",
+        "stdout": "1e04407109c91623480a304189ea013a94eb9bb6a101d331de3f7dc153d45072",
+        "success": true,
+        "units": [
+          [
+            "api",
+            true
+          ],
+          [
+            "provider",
+            false
+          ],
+          [
+            "reader",
+            false
+          ],
+          [
+            "client",
+            false
+          ]
+        ]
+      },
+      {
+        "diag": null,
+        "phase": "restore-repeat",
+        "stderr": "736e2582f563605dd272e5fb977840b0c0767377d27b6940c440caf75eec7157",
+        "stdout": "1afa2ca0d90eda0fe2e2531c3269dfb40e87e7b18b594a818c1fb2e7caee84ba",
+        "success": true,
+        "units": [
+          [
+            "api",
+            true
+          ],
+          [
+            "provider",
+            true
+          ],
+          [
+            "reader",
+            true
+          ],
+          [
+            "client",
+            true
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "actual_order": {
+      "held": "2",
+      "public_api": true,
+      "publication": "release-fd",
+      "target": "provider-first"
+    },
+    "case": "metadata-ordered-provider-first-explicit",
+    "flag": true,
+    "method": "ordered",
+    "raw_events": "2673d2557e6c07d0b9dd99de4d113d89a0fa6c04ca6d7d4d2cfeb0cedace1d0c",
+    "requested_order": "provider-first",
+    "rows": [
+      {
+        "diag": null,
+        "phase": "original",
+        "stderr": "cb721ad521aea841cc57ee1eb4e5fe198b763f7d6f59f6fab4ac1f4b58be9247",
+        "stdout": "6e1e3a81c357b7d708190a5a99efda60a4ca2795103af387e01c42580a7795dd",
+        "success": true,
+        "units": [
+          [
+            "api",
+            false
+          ],
+          [
+            "provider",
+            false
+          ],
+          [
+            "reader",
+            false
+          ],
+          [
+            "client",
+            false
+          ]
+        ]
+      },
+      {
+        "diag": null,
+        "phase": "original-repeat",
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "4ee06ba906d7d832fc9fc08c5efabcc457f85fcec345beff91410d7b8f00c623",
+        "success": true,
+        "units": [
+          [
+            "api",
+            true
+          ],
+          [
+            "provider",
+            true
+          ],
+          [
+            "reader",
+            true
+          ],
+          [
+            "client",
+            true
+          ]
+        ]
+      },
+      {
+        "diag": {
+          "code": "E0034",
+          "columns": [
+            30,
+            38
+          ],
+          "file": "client/src/main.rs",
+          "line": 3,
+          "rendered": "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+        },
+        "phase": "edited",
+        "stderr": "d3694114ec24e09d1eac3b2d74b064ce4cb7e390aaae4e600d769a7b45257e85",
+        "stdout": "9a2eb28e63fbb94c7b2fb8ad65184741126f116c8d076409c550a4561626dde2",
+        "success": false,
+        "units": [
+          [
+            "api",
+            true
+          ],
+          [
+            "provider",
+            false
+          ],
+          [
+            "reader",
+            false
+          ]
+        ]
+      },
+      {
+        "diag": {
+          "code": "E0034",
+          "columns": [
+            30,
+            38
+          ],
+          "file": "client/src/main.rs",
+          "line": 3,
+          "rendered": "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+        },
+        "phase": "edited-repeat",
+        "stderr": "f9cd98ee22449f01180de4657d9e515ad16265926ac25b30c941a627913358ac",
+        "stdout": "0beb70b82620180f2808b60e76b21d4844a45cc6fd14ee6f0b451ded9669b628",
+        "success": false,
+        "units": [
+          [
+            "api",
+            true
+          ],
+          [
+            "provider",
+            true
+          ],
+          [
+            "reader",
+            true
+          ]
+        ]
+      },
+      {
+        "diag": {
+          "code": "E0034",
+          "columns": [
+            30,
+            38
+          ],
+          "file": "client/src/main.rs",
+          "line": 3,
+          "rendered": "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+        },
+        "phase": "edited-clean",
+        "stderr": "b034c5ea53c1007d2ff28f37f64d55d23219b6d1fd832fbc55a1bb1a729bd8a8",
+        "stdout": "c96904120a27b87e74346f2b06db3a3d4ecb5084c4290f4474f538faaa84160d",
+        "success": false,
+        "units": [
+          [
+            "api",
+            false
+          ],
+          [
+            "provider",
+            false
+          ],
+          [
+            "reader",
+            false
+          ]
+        ]
+      },
+      {
+        "diag": null,
+        "phase": "restore",
+        "stderr": "fc0ee9159b8020147d7eb8dfb74da4fecb6a9cd70e4c559904e286f4f19e7317",
+        "stdout": "1e5d298d267b1c90a98e82d76660e6ced01860a2d08ce21fd56eba9ee71e0a77",
+        "success": true,
+        "units": [
+          [
+            "api",
+            true
+          ],
+          [
+            "provider",
+            false
+          ],
+          [
+            "reader",
+            false
+          ],
+          [
+            "client",
+            false
+          ]
+        ]
+      },
+      {
+        "diag": null,
+        "phase": "restore-repeat",
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "4ee06ba906d7d832fc9fc08c5efabcc457f85fcec345beff91410d7b8f00c623",
+        "success": true,
+        "units": [
+          [
+            "api",
+            true
+          ],
+          [
+            "provider",
+            true
+          ],
+          [
+            "reader",
+            true
+          ],
+          [
+            "client",
+            true
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "actual_order": {
+      "held": "1",
+      "public_api": true,
+      "publication": "timeout-fd",
+      "target": "provider-late"
+    },
+    "case": "metadata-ordered-provider-late-explicit",
+    "flag": true,
+    "method": "ordered",
+    "raw_events": "b1a2a25e4dbe18de1003de292d4b0db7ef4b8cc58ddb5c5a821b628e2bdcacb3",
+    "requested_order": "provider-late",
+    "rows": [
+      {
+        "diag": null,
+        "phase": "original",
+        "stderr": "3973bcfd94a81cb7878f4391913b917f23069de26f8eba2787e9f2d2d73cd470",
+        "stdout": "39c0de36bb8b5cc9f570bf1152577c1697b579de9214322e36949926e99ca77c",
+        "success": true,
+        "units": [
+          [
+            "api",
+            false
+          ],
+          [
+            "provider",
+            false
+          ],
+          [
+            "reader",
+            false
+          ],
+          [
+            "client",
+            false
+          ]
+        ]
+      },
+      {
+        "diag": null,
+        "phase": "original-repeat",
+        "stderr": "736e2582f563605dd272e5fb977840b0c0767377d27b6940c440caf75eec7157",
+        "stdout": "79318aa521e93d18295bc621dac468802e1197550c4ddbdc93becac86bf028cf",
+        "success": true,
+        "units": [
+          [
+            "api",
+            true
+          ],
+          [
+            "provider",
+            true
+          ],
+          [
+            "reader",
+            true
+          ],
+          [
+            "client",
+            true
+          ]
+        ]
+      },
+      {
+        "diag": {
+          "code": "E0034",
+          "columns": [
+            30,
+            38
+          ],
+          "file": "client/src/main.rs",
+          "line": 3,
+          "rendered": "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+        },
+        "phase": "edited",
+        "stderr": "add575c8d2e251b76618832508a51eeab3c4a1f461334e1bd0f5f38002997925",
+        "stdout": "420468a23911483bb25102fdd268e51c771003999f12332db98c65c5a68f85d7",
+        "success": false,
+        "units": [
+          [
+            "api",
+            true
+          ],
+          [
+            "provider",
+            false
+          ],
+          [
+            "reader",
+            false
+          ]
+        ]
+      },
+      {
+        "diag": {
+          "code": "E0034",
+          "columns": [
+            30,
+            38
+          ],
+          "file": "client/src/main.rs",
+          "line": 3,
+          "rendered": "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+        },
+        "phase": "edited-repeat",
+        "stderr": "29ce95dc064a1ab56cb83c9ea89e366b0bc1d0f6e8c9b1b61cc2c32c67668795",
+        "stdout": "2cd68377d2b6cdace79d85bf7c92aaced34706fd5800aefa6a8292c02c85a99b",
+        "success": false,
+        "units": [
+          [
+            "api",
+            true
+          ],
+          [
+            "provider",
+            true
+          ],
+          [
+            "reader",
+            true
+          ]
+        ]
+      },
+      {
+        "diag": {
+          "code": "E0034",
+          "columns": [
+            30,
+            38
+          ],
+          "file": "client/src/main.rs",
+          "line": 3,
+          "rendered": "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56"
+        },
+        "phase": "edited-clean",
+        "stderr": "c36dfcabf696febf6b0e52c71fa5dc958e9c40445b2d3566a5cb5da382ef0a63",
+        "stdout": "698cb693d4153e5e6cd220ad6303ca4da843441c99fd617163396a03d09dbcd7",
+        "success": false,
+        "units": [
+          [
+            "api",
+            false
+          ],
+          [
+            "provider",
+            false
+          ],
+          [
+            "reader",
+            false
+          ]
+        ]
+      },
+      {
+        "diag": null,
+        "phase": "restore",
+        "stderr": "234f9401e2306cfbe2ff0441c98884bcbe04e15b7305bcaaef48dac90361a2b1",
+        "stdout": "c537a01fb5b6383b9017a02927ba844f92f2f82d98096703d046ab7ab263d10e",
+        "success": true,
+        "units": [
+          [
+            "api",
+            true
+          ],
+          [
+            "provider",
+            false
+          ],
+          [
+            "reader",
+            false
+          ],
+          [
+            "client",
+            false
+          ]
+        ]
+      },
+      {
+        "diag": null,
+        "phase": "restore-repeat",
+        "stderr": "736e2582f563605dd272e5fb977840b0c0767377d27b6940c440caf75eec7157",
+        "stdout": "79318aa521e93d18295bc621dac468802e1197550c4ddbdc93becac86bf028cf",
+        "success": true,
+        "units": [
+          [
+            "api",
+            true
+          ],
+          [
+            "provider",
+            true
+          ],
+          [
+            "reader",
+            true
+          ],
+          [
+            "client",
+            true
+          ]
+        ]
+      }
+    ]
+  }
+]

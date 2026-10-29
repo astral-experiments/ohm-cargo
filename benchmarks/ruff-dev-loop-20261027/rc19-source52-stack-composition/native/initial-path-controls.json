@@ -1,0 +1,36 @@
+{
+  "canonical_proof_sha256": "83405c94ec000a6cca6839a330df89631e93f629e839a5cd6b468e1a3b101153",
+  "fixed_root_matches_exact_compile_time_path": true,
+  "genuine_tests_launched_by_unsupported_preflight": 0,
+  "initial_command_exit": 101,
+  "initial_stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "initial_stdout": "7a439641efd2ac8faa381da3091f81f1c33b09561c24f2dbe9b8462f8efcd402",
+  "initial_terminal": "0ad5756d82b8613be8b48dd2567931ef56a34bdd6f5eae058feaab7ccd021258",
+  "initial_tests": [
+    [
+      "freshness::private_dependency_rebuild_preserves_build_metadata_generation",
+      "FAILED"
+    ],
+    [
+      "freshness::private_dependency_rebuild_preserves_check_metadata_generation",
+      "FAILED"
+    ],
+    [
+      "freshness::separately_rebuilt_dependency_propagates_transitive_link_generation",
+      "ok"
+    ],
+    [
+      "freshness::skipped_dependency_preserves_metadata_and_propagates_link_generation",
+      "ok"
+    ],
+    [
+      "freshness::unchanged_check_metadata_does_not_fall_behind_rerun_build_script",
+      "FAILED"
+    ]
+  ],
+  "same_effective_uid": 1000,
+  "separate_unsupported_preflight": "77c792fa2d2f0e2b3e8cf3a6378e7b4a3ad18a7f2747159cc41590f176d152f6",
+  "snapshot_root_was_alias": true,
+  "verified_same_binary": "740e39ed21737a28a7edfbc4d779c20420f1f518d4187cfbb953c426a61767f6",
+  "verified_same_suite_bytes": "86d7a15833212b20f57054d686dbb8e4952a6520268a091ff4b9baedad903451"
+}
