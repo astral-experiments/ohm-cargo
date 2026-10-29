@@ -30,3 +30,5 @@ for mode in build test; do
   done
 done
 ```
+
+An independent Linux host ran the published script on the patched toolchain from two empty installations. All 18 Cargo commands succeeded. Six unchanged builds ran zero full compilers and zero Wild links. Six unchanged test builds each ran one full compiler and one Wild link. Editing and restoring the source recompiled the root each time. The restored libtest listed 54 tests with the four expected historical failures. The individual command counts and binary identities are in [independent-replay.json](./independent-replay.json).
