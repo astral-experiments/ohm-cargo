@@ -1,0 +1,82 @@
+diff --git a/crates/ruff_python_parser/resources/inline/err/from_import_parenthesized_star.py b/crates/ruff_python_parser/resources/inline/err/from_import_parenthesized_star.py
+new file mode 100644
+index 0000000000..20a5e67605
+--- /dev/null
++++ b/crates/ruff_python_parser/resources/inline/err/from_import_parenthesized_star.py
+@@ -0,0 +1 @@
++from x import (*)
+diff --git a/crates/ruff_python_parser/src/parser/statement.rs b/crates/ruff_python_parser/src/parser/statement.rs
+index de80496725..8185faeea2 100644
+--- a/crates/ruff_python_parser/src/parser/statement.rs
++++ b/crates/ruff_python_parser/src/parser/statement.rs
+@@ -722,6 +722,15 @@ impl<'src> Parser<'src> {
+             self.add_error(ParseErrorType::EmptyImportNames, self.current_token_range());
+         }
+ 
++        if seen_star_import && parenthesized.is_yes() {
++            // test_err from_import_parenthesized_star
++            // from x import (*)
++            self.add_error(
++                ParseErrorType::OtherError("Star import cannot be parenthesized".to_string()),
++                self.node_range(names_start),
++            );
++        }
++
+         if seen_star_import && names.len() > 1 {
+             // test_err from_import_star_with_other_names
+             // from x import *, a
+diff --git a/crates/ruff_python_parser/tests/snapshots/invalid_syntax@from_import_parenthesized_star.py.snap b/crates/ruff_python_parser/tests/snapshots/invalid_syntax@from_import_parenthesized_star.py.snap
+new file mode 100644
+index 0000000000..c58ee28937
+--- /dev/null
++++ b/crates/ruff_python_parser/tests/snapshots/invalid_syntax@from_import_parenthesized_star.py.snap
+@@ -0,0 +1,49 @@
++---
++source: crates/ruff_python_parser/tests/fixtures.rs
++input_file: crates/ruff_python_parser/resources/inline/err/from_import_parenthesized_star.py
++---
++## AST
++
++```
++Module(
++    ModModule {
++        node_index: NodeIndex(None),
++        range: 0..18,
++        body: [
++            ImportFrom(
++                StmtImportFrom {
++                    node_index: NodeIndex(None),
++                    range: 0..17,
++                    module: Some(
++                        Identifier {
++                            id: Name("x"),
++                            range: 5..6,
++                            node_index: NodeIndex(None),
++                        },
++                    ),
++                    names: [
++                        Alias {
++                            range: 15..16,
++                            node_index: NodeIndex(None),
++                            name: Identifier {
++                                id: Name("*"),
++                                range: 15..16,
++                                node_index: NodeIndex(None),
++                            },
++                            asname: None,
++                        },
++                    ],
++                    level: 0,
++                    is_lazy: false,
++                },
++            ),
++        ],
++    },
++)
++```
++## Errors
++
++  |
++1 | from x import (*)
++  |               ^^ Syntax Error: Star import cannot be parenthesized
++  |

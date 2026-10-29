@@ -1,0 +1,111 @@
+{
+  "01-original-cold": [
+    {
+      "argv_sha256": "5e49569f5a76070b5464fd7c574b20ca97d17eb9a4d631adcfad86a742e00a43",
+      "exe": "cc",
+      "exec_sha256": "993a6c6793fc3cabcfdeb117fedf29158fbf148ce2aef64da97d947b080c1ff1",
+      "output": "e2e-8945421a8b988468",
+      "pid": 639247,
+      "sha256": "1b99826121ae6682a634e5efe09bd3e3df58ce58e0b28f849114ab5b89139c26"
+    },
+    {
+      "argv_sha256": "41ac1d51ef51ebdb667b88bed8de4e344ddf3a5705824d92c99803f2a51874c6",
+      "exe": "collect2",
+      "exec_sha256": "0d16bafcac8e0ce6d29c0e6fc6f12aa3eb6452aede6fcd907d747338c7647566",
+      "output": "e2e-8945421a8b988468",
+      "pid": 639324,
+      "sha256": "4d1f341ae5b763b513258ee2812422a45e063c30a2f1924a0cf63d3699f3a158"
+    },
+    {
+      "argv_sha256": "44186213cdbc7ca295e23ba5ccdb1a5cc3fafdede33620836cf54e140db3666c",
+      "exe": "ld.bfd",
+      "exec_sha256": "90879d6750c1d6fc6abd538dc469aed59c5f7b5341651a80590b2983f7f91b03",
+      "output": "e2e-8945421a8b988468",
+      "pid": 639325,
+      "sha256": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+    }
+  ],
+  "02-original-repeat": [],
+  "03-historical": [
+    {
+      "argv_sha256": "5516bdaf080c51101aa50371478e7a85ee23623ab5d13f3eaff8272910029618",
+      "exe": "cc",
+      "exec_sha256": "ea9152f7f07fd63e239292cc317ed0b4a152192db61a792eb3955f2bb66c3f03",
+      "output": "e2e-8945421a8b988468",
+      "pid": 640632,
+      "sha256": "1b99826121ae6682a634e5efe09bd3e3df58ce58e0b28f849114ab5b89139c26"
+    },
+    {
+      "argv_sha256": "6b478fb16cf10bec7b83c55b21437179f15f03fd38ced3a2f64a50e47ac32e72",
+      "exe": "collect2",
+      "exec_sha256": "179297c71bc79522ae90084c789ee96e8092586a1f260fe6c8c72e3415ecca4f",
+      "output": "e2e-8945421a8b988468",
+      "pid": 640634,
+      "sha256": "4d1f341ae5b763b513258ee2812422a45e063c30a2f1924a0cf63d3699f3a158"
+    },
+    {
+      "argv_sha256": "599256e54ea4daf7538a28d027dceae4b441d2b476650ca1fb207e9a4c171145",
+      "exe": "ld.bfd",
+      "exec_sha256": "72e0a793f4a4e2982efd9481add18f84f10a17eceb4f6fa4c31ab8d7a7e29694",
+      "output": "e2e-8945421a8b988468",
+      "pid": 640635,
+      "sha256": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+    }
+  ],
+  "04-historical-repeat": [],
+  "05-invalid": [],
+  "06-restore": [
+    {
+      "argv_sha256": "24f893760f34f3a19028b7f235af869663b0bf6444141ee9168659f6fc1350cb",
+      "exe": "cc",
+      "exec_sha256": "6e6faccc621d89efc53da3a1a964e7b5430451ac2dee8099749cf2e6e9980114",
+      "output": "e2e-8945421a8b988468",
+      "pid": 644219,
+      "sha256": "1b99826121ae6682a634e5efe09bd3e3df58ce58e0b28f849114ab5b89139c26"
+    },
+    {
+      "argv_sha256": "7fc71ce4c38fdcd1879151effa4570034e3d0e0f6f0d80342ea520cd74f9c2c5",
+      "exe": "collect2",
+      "exec_sha256": "5254fdb375391f06c4d782e16e53337c4508912b645af5a706560a52c9c7e9a1",
+      "output": "e2e-8945421a8b988468",
+      "pid": 644220,
+      "sha256": "4d1f341ae5b763b513258ee2812422a45e063c30a2f1924a0cf63d3699f3a158"
+    },
+    {
+      "argv_sha256": "0d35d94c217ee0fcd80a9b3e1ee4e58bb581876bdf4ddbddbecd4573a7300811",
+      "exe": "ld.bfd",
+      "exec_sha256": "dfccb938da073d17e7a5a0029e17cb9c05325f315ee3bd63fd42cc09d404adb0",
+      "output": "e2e-8945421a8b988468",
+      "pid": 644221,
+      "sha256": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+    }
+  ],
+  "07-restored-repeat": [],
+  "08-independent-empty-edited": [
+    {
+      "argv_sha256": "d084da19a4183a269465d1c00032e89e58903f082dac53ccf894829e0dfc09ba",
+      "exe": "cc",
+      "exec_sha256": "4fb12ca739db81c4c242d4e7f2aa4e2193bd1bd018a8772fca3eea8ee327fe73",
+      "output": "e2e-8945421a8b988468",
+      "pid": 680919,
+      "sha256": "1b99826121ae6682a634e5efe09bd3e3df58ce58e0b28f849114ab5b89139c26"
+    },
+    {
+      "argv_sha256": "ce2ddbdfdcc94de80ad81b9b7d8e600be4b4de806a4d34a5785ff1c942a64fc8",
+      "exe": "collect2",
+      "exec_sha256": "e191fa74a529f3f3a230149e2c930c8dc46dd6ce23f39eea2d8980d5b9a87c0b",
+      "output": "e2e-8945421a8b988468",
+      "pid": 680924,
+      "sha256": "4d1f341ae5b763b513258ee2812422a45e063c30a2f1924a0cf63d3699f3a158"
+    },
+    {
+      "argv_sha256": "f519cc7a63e9cca420059f99a63b20947af775532723198c232d3e4671e85665",
+      "exe": "ld.bfd",
+      "exec_sha256": "ca21ec26788ce1490fcc3c51e18855e68b9ed4831af449b299c900b205bb3c1a",
+      "output": "e2e-8945421a8b988468",
+      "pid": 680929,
+      "sha256": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+    }
+  ],
+  "09-independent-empty-invalid": []
+}

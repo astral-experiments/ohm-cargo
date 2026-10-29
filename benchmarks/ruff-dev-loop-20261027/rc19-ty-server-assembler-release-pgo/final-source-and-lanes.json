@@ -1,0 +1,40 @@
+{
+  "binary_expected": "ad893345f66ade1c886309b0fc2f98ec5b225d206c176e356531f0e3467eff81",
+  "final": "a8f0c9aa0412aa259c686416a48aa8d2cf92da72",
+  "floor": 48318382080,
+  "free_after": 69183954944,
+  "gate": "Wait for parent's full PGO binary receipt and peer's current timed window to close.",
+  "help_new": "0d7277ae955d5f617e6555e79287db68a294907af4aa4b3855812e5304b8a683",
+  "help_previous": "b989f9c32aeee3e390fd38f75a6df73e75345329f742749f7f5a43a94836c7f9",
+  "only_final_change": "tests/testsuite/cargo/z_help/stdout.term.svg",
+  "parent": "34f497bc7a9beb1b91990e737d86a2c520664d39",
+  "physical_lanes": {
+    "empty-bad": {
+      "directory_name": "pgo-final-B-empty-bad",
+      "independent_copies": 498,
+      "shared_inode": 190060916,
+      "target_inode": 190060915
+    },
+    "empty-good": {
+      "directory_name": "pgo-final-B-empty-good",
+      "independent_copies": 498,
+      "shared_inode": 189551607,
+      "target_inode": 189551606
+    },
+    "warm": {
+      "directory_name": "pgo-final-B-warm",
+      "independent_copies": 498,
+      "shared_inode": 189538866,
+      "target_inode": 189538865
+    }
+  },
+  "production_files_and_regression_unchanged": {
+    "src/compiler/fingerprint/mod.rs": "cd1bf905a7061bf59ecfd4593cde37d0c39bdd94a93a325b04bd26e11cf2ae14",
+    "src/compiler/mod.rs": "c74f840bc7e70e49ae9042860c9e2648f588d958b17fd44ea0faff474b6bb1cb",
+    "src/compiler/ohm_deferred_dev_deps.rs": "25a5f1e4ff937df4dc45a0c6b21f886e04742066e5daec3a1a54a34245e81a2a",
+    "src/workspace/features.rs": "6beff06ac31e0310ff37ff53170a59df9cd50871bb496a01dd9bf64bd6c48785",
+    "tests/testsuite/config.rs": "8b842550d924a97b997fe5dc7eda1611e155605df517ece1e33e4e4af4b51692",
+    "tests/testsuite/freshness.rs": "cc24115f4f6deca3113e2c2407a15b4b1034ea253e0e8d0e0de241377a865fb2"
+  },
+  "tree": "3d68b73ad08a7eb8a4e285b3e22626f3abb0a527"
+}

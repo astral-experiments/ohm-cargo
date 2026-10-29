@@ -1,0 +1,389 @@
+{
+  "01-original-cold": {
+    "rustup-proxy": {
+      "argv": [
+        "+ohm",
+        "test",
+        "--locked",
+        "--offline",
+        "--no-run",
+        "-j4",
+        "-p",
+        "ty_server",
+        "--test",
+        "e2e",
+        "--message-format=json"
+      ],
+      "argv_sha256": "af1996535f427b9ed856babf632a5af612936e8d9b9079db5029090a8e19f4da",
+      "bound_image_sha256": "dda7234360b7f578ca8b0ddcb80145646fa61a67c1720a5abc7051b35c9fcb71",
+      "exe_role": "rustup-proxy",
+      "exec_line_sha256": "4283b1812fd32e5cf439a26c97049316708313be7c5c18a7ebee4d170313119a",
+      "pid": 615975,
+      "trace_sha256": "daabcfc8a10c67eba1b54c73b1c4849f1537355745e20ee291dfacb5bdcd5dfe"
+    },
+    "selected-cargo": {
+      "argv": [
+        "test",
+        "--locked",
+        "--offline",
+        "--no-run",
+        "-j4",
+        "-p",
+        "ty_server",
+        "--test",
+        "e2e",
+        "--message-format=json"
+      ],
+      "argv_sha256": "573a830b96bccafe4349c47446459c53b0110beb28f6763c5f7b7d4d8e25ff29",
+      "bound_image_sha256": "ad893345f66ade1c886309b0fc2f98ec5b225d206c176e356531f0e3467eff81",
+      "exe_role": "selected-cargo",
+      "exec_line_sha256": "b78bdf16087bb672cb6577feb21e7fcdf3ed6f1f0e4641a9802e7ef533cdbb88",
+      "pid": 615975,
+      "trace_sha256": "daabcfc8a10c67eba1b54c73b1c4849f1537355745e20ee291dfacb5bdcd5dfe"
+    }
+  },
+  "02-original-repeat": {
+    "rustup-proxy": {
+      "argv": [
+        "+ohm",
+        "test",
+        "--locked",
+        "--offline",
+        "--no-run",
+        "-j4",
+        "-p",
+        "ty_server",
+        "--test",
+        "e2e",
+        "--message-format=json"
+      ],
+      "argv_sha256": "af1996535f427b9ed856babf632a5af612936e8d9b9079db5029090a8e19f4da",
+      "bound_image_sha256": "dda7234360b7f578ca8b0ddcb80145646fa61a67c1720a5abc7051b35c9fcb71",
+      "exe_role": "rustup-proxy",
+      "exec_line_sha256": "d895f774499c83ef0d02d33512675b6c5427022b10d3976316c5a82377ca3e54",
+      "pid": 639408,
+      "trace_sha256": "3c679549cca58fc1c53c320cf2d3d075a10f9a76d2c7ffc7a964ba24e8eb4c6a"
+    },
+    "selected-cargo": {
+      "argv": [
+        "test",
+        "--locked",
+        "--offline",
+        "--no-run",
+        "-j4",
+        "-p",
+        "ty_server",
+        "--test",
+        "e2e",
+        "--message-format=json"
+      ],
+      "argv_sha256": "573a830b96bccafe4349c47446459c53b0110beb28f6763c5f7b7d4d8e25ff29",
+      "bound_image_sha256": "ad893345f66ade1c886309b0fc2f98ec5b225d206c176e356531f0e3467eff81",
+      "exe_role": "selected-cargo",
+      "exec_line_sha256": "88ba0a6f040047e2512fc24a324f69da13ba97f946af005169187cae0ab2fa5e",
+      "pid": 639408,
+      "trace_sha256": "3c679549cca58fc1c53c320cf2d3d075a10f9a76d2c7ffc7a964ba24e8eb4c6a"
+    }
+  },
+  "03-historical": {
+    "rustup-proxy": {
+      "argv": [
+        "+ohm",
+        "test",
+        "--locked",
+        "--offline",
+        "--no-run",
+        "-j4",
+        "-p",
+        "ty_server",
+        "--test",
+        "e2e",
+        "--message-format=json"
+      ],
+      "argv_sha256": "af1996535f427b9ed856babf632a5af612936e8d9b9079db5029090a8e19f4da",
+      "bound_image_sha256": "dda7234360b7f578ca8b0ddcb80145646fa61a67c1720a5abc7051b35c9fcb71",
+      "exe_role": "rustup-proxy",
+      "exec_line_sha256": "0d8c42816953168d07c67a9bd8ba11bd35c8e167367b7a86b051640d00b9e876",
+      "pid": 639806,
+      "trace_sha256": "9aeb77b73940e90d1e5f1c4ab672e3a4bb8ffcdea931dfa02853abacbb8d1f41"
+    },
+    "selected-cargo": {
+      "argv": [
+        "test",
+        "--locked",
+        "--offline",
+        "--no-run",
+        "-j4",
+        "-p",
+        "ty_server",
+        "--test",
+        "e2e",
+        "--message-format=json"
+      ],
+      "argv_sha256": "573a830b96bccafe4349c47446459c53b0110beb28f6763c5f7b7d4d8e25ff29",
+      "bound_image_sha256": "ad893345f66ade1c886309b0fc2f98ec5b225d206c176e356531f0e3467eff81",
+      "exe_role": "selected-cargo",
+      "exec_line_sha256": "81a71fc3afb22940409caa8037856b019c6823ea61cedc4174b001ecf732904b",
+      "pid": 639806,
+      "trace_sha256": "9aeb77b73940e90d1e5f1c4ab672e3a4bb8ffcdea931dfa02853abacbb8d1f41"
+    }
+  },
+  "04-historical-repeat": {
+    "rustup-proxy": {
+      "argv": [
+        "+ohm",
+        "test",
+        "--locked",
+        "--offline",
+        "--no-run",
+        "-j4",
+        "-p",
+        "ty_server",
+        "--test",
+        "e2e",
+        "--message-format=json"
+      ],
+      "argv_sha256": "af1996535f427b9ed856babf632a5af612936e8d9b9079db5029090a8e19f4da",
+      "bound_image_sha256": "dda7234360b7f578ca8b0ddcb80145646fa61a67c1720a5abc7051b35c9fcb71",
+      "exe_role": "rustup-proxy",
+      "exec_line_sha256": "175c39b4830e2445a209f03cb4ef68045f1f333d9034a0fe513d37039c34917a",
+      "pid": 640714,
+      "trace_sha256": "a2e4779c779e00d2cafa2413d6769d06a553321c1dcbcd1b16746b8182d4f897"
+    },
+    "selected-cargo": {
+      "argv": [
+        "test",
+        "--locked",
+        "--offline",
+        "--no-run",
+        "-j4",
+        "-p",
+        "ty_server",
+        "--test",
+        "e2e",
+        "--message-format=json"
+      ],
+      "argv_sha256": "573a830b96bccafe4349c47446459c53b0110beb28f6763c5f7b7d4d8e25ff29",
+      "bound_image_sha256": "ad893345f66ade1c886309b0fc2f98ec5b225d206c176e356531f0e3467eff81",
+      "exe_role": "selected-cargo",
+      "exec_line_sha256": "229fe9811e961a8061e3c46ef39efa93173e4a08f597f0070742c1b6a40b28e1",
+      "pid": 640714,
+      "trace_sha256": "a2e4779c779e00d2cafa2413d6769d06a553321c1dcbcd1b16746b8182d4f897"
+    }
+  },
+  "05-invalid": {
+    "rustup-proxy": {
+      "argv": [
+        "+ohm",
+        "test",
+        "--locked",
+        "--offline",
+        "--no-run",
+        "-j4",
+        "-p",
+        "ty_server",
+        "--test",
+        "e2e",
+        "--message-format=json"
+      ],
+      "argv_sha256": "af1996535f427b9ed856babf632a5af612936e8d9b9079db5029090a8e19f4da",
+      "bound_image_sha256": "dda7234360b7f578ca8b0ddcb80145646fa61a67c1720a5abc7051b35c9fcb71",
+      "exe_role": "rustup-proxy",
+      "exec_line_sha256": "091c5e1e182c2ed88a40a92b11f76a38c8bad0780578faf7cb41dd9ebae74231",
+      "pid": 641005,
+      "trace_sha256": "c4c0151f4dec0cacadda8e013f160d7e5609a4f7a7d4001b06eeffeded2704b8"
+    },
+    "selected-cargo": {
+      "argv": [
+        "test",
+        "--locked",
+        "--offline",
+        "--no-run",
+        "-j4",
+        "-p",
+        "ty_server",
+        "--test",
+        "e2e",
+        "--message-format=json"
+      ],
+      "argv_sha256": "573a830b96bccafe4349c47446459c53b0110beb28f6763c5f7b7d4d8e25ff29",
+      "bound_image_sha256": "ad893345f66ade1c886309b0fc2f98ec5b225d206c176e356531f0e3467eff81",
+      "exe_role": "selected-cargo",
+      "exec_line_sha256": "ed5d02ad352673c37222c8c5f8d8d1254f818549385d0b0b5f345ca74af5f789",
+      "pid": 641005,
+      "trace_sha256": "c4c0151f4dec0cacadda8e013f160d7e5609a4f7a7d4001b06eeffeded2704b8"
+    }
+  },
+  "06-restore": {
+    "rustup-proxy": {
+      "argv": [
+        "+ohm",
+        "test",
+        "--locked",
+        "--offline",
+        "--no-run",
+        "-j4",
+        "-p",
+        "ty_server",
+        "--test",
+        "e2e",
+        "--message-format=json"
+      ],
+      "argv_sha256": "af1996535f427b9ed856babf632a5af612936e8d9b9079db5029090a8e19f4da",
+      "bound_image_sha256": "dda7234360b7f578ca8b0ddcb80145646fa61a67c1720a5abc7051b35c9fcb71",
+      "exe_role": "rustup-proxy",
+      "exec_line_sha256": "7d511eb06261152142eb5b7879154ac81f93111ef39b6f81e8db3000f150ec1b",
+      "pid": 641171,
+      "trace_sha256": "780d45ff11d6d113b53efafb91c28e13c79b3dcc694c39b1b17ca070888c7725"
+    },
+    "selected-cargo": {
+      "argv": [
+        "test",
+        "--locked",
+        "--offline",
+        "--no-run",
+        "-j4",
+        "-p",
+        "ty_server",
+        "--test",
+        "e2e",
+        "--message-format=json"
+      ],
+      "argv_sha256": "573a830b96bccafe4349c47446459c53b0110beb28f6763c5f7b7d4d8e25ff29",
+      "bound_image_sha256": "ad893345f66ade1c886309b0fc2f98ec5b225d206c176e356531f0e3467eff81",
+      "exe_role": "selected-cargo",
+      "exec_line_sha256": "cc16c2187d9ee0fcb77ef2c096a83ccf8849c6387f5238c2f71d72ad22de2cab",
+      "pid": 641171,
+      "trace_sha256": "780d45ff11d6d113b53efafb91c28e13c79b3dcc694c39b1b17ca070888c7725"
+    }
+  },
+  "07-restored-repeat": {
+    "rustup-proxy": {
+      "argv": [
+        "+ohm",
+        "test",
+        "--locked",
+        "--offline",
+        "--no-run",
+        "-j4",
+        "-p",
+        "ty_server",
+        "--test",
+        "e2e",
+        "--message-format=json"
+      ],
+      "argv_sha256": "af1996535f427b9ed856babf632a5af612936e8d9b9079db5029090a8e19f4da",
+      "bound_image_sha256": "dda7234360b7f578ca8b0ddcb80145646fa61a67c1720a5abc7051b35c9fcb71",
+      "exe_role": "rustup-proxy",
+      "exec_line_sha256": "7b04d9747940fb5cd39b0be62f02dcf2002aad81b4d626cc0263081e6e354c25",
+      "pid": 644596,
+      "trace_sha256": "1339f2ac56918191b671d4afbe08f58d3f862fafafacf30ff7f2d0e028f1dd77"
+    },
+    "selected-cargo": {
+      "argv": [
+        "test",
+        "--locked",
+        "--offline",
+        "--no-run",
+        "-j4",
+        "-p",
+        "ty_server",
+        "--test",
+        "e2e",
+        "--message-format=json"
+      ],
+      "argv_sha256": "573a830b96bccafe4349c47446459c53b0110beb28f6763c5f7b7d4d8e25ff29",
+      "bound_image_sha256": "ad893345f66ade1c886309b0fc2f98ec5b225d206c176e356531f0e3467eff81",
+      "exe_role": "selected-cargo",
+      "exec_line_sha256": "1727ae51ed6966c19010b0498e3bfffa11e5be576892e829057093be93594a89",
+      "pid": 644596,
+      "trace_sha256": "1339f2ac56918191b671d4afbe08f58d3f862fafafacf30ff7f2d0e028f1dd77"
+    }
+  },
+  "08-independent-empty-edited": {
+    "rustup-proxy": {
+      "argv": [
+        "+ohm",
+        "test",
+        "--locked",
+        "--offline",
+        "--no-run",
+        "-j4",
+        "-p",
+        "ty_server",
+        "--test",
+        "e2e",
+        "--message-format=json"
+      ],
+      "argv_sha256": "af1996535f427b9ed856babf632a5af612936e8d9b9079db5029090a8e19f4da",
+      "bound_image_sha256": "dda7234360b7f578ca8b0ddcb80145646fa61a67c1720a5abc7051b35c9fcb71",
+      "exe_role": "rustup-proxy",
+      "exec_line_sha256": "8b8c3399dd01c7b7d20dc31469ba5f4259de23adfa67a461c1fc7a622a206d3e",
+      "pid": 645093,
+      "trace_sha256": "39f81d48b96d2da072510595fb828bb2893a9e1870533c7baad003afe923eb42"
+    },
+    "selected-cargo": {
+      "argv": [
+        "test",
+        "--locked",
+        "--offline",
+        "--no-run",
+        "-j4",
+        "-p",
+        "ty_server",
+        "--test",
+        "e2e",
+        "--message-format=json"
+      ],
+      "argv_sha256": "573a830b96bccafe4349c47446459c53b0110beb28f6763c5f7b7d4d8e25ff29",
+      "bound_image_sha256": "ad893345f66ade1c886309b0fc2f98ec5b225d206c176e356531f0e3467eff81",
+      "exe_role": "selected-cargo",
+      "exec_line_sha256": "16565a9273519c26d6b3fc4d637af02d5ba90fff02bddcb1a541c17a37de30ed",
+      "pid": 645093,
+      "trace_sha256": "39f81d48b96d2da072510595fb828bb2893a9e1870533c7baad003afe923eb42"
+    }
+  },
+  "09-independent-empty-invalid": {
+    "rustup-proxy": {
+      "argv": [
+        "+ohm",
+        "test",
+        "--locked",
+        "--offline",
+        "--no-run",
+        "-j4",
+        "-p",
+        "ty_server",
+        "--test",
+        "e2e",
+        "--message-format=json"
+      ],
+      "argv_sha256": "af1996535f427b9ed856babf632a5af612936e8d9b9079db5029090a8e19f4da",
+      "bound_image_sha256": "dda7234360b7f578ca8b0ddcb80145646fa61a67c1720a5abc7051b35c9fcb71",
+      "exe_role": "rustup-proxy",
+      "exec_line_sha256": "10eae726b3b7baa00da17cde0e762cd2f1c6aa37b4ea8989ab5957103e1d1e19",
+      "pid": 681197,
+      "trace_sha256": "eafb1463ea685f4256bc3ed25c283439f19a6074e0ff56bdb1e767d644854e44"
+    },
+    "selected-cargo": {
+      "argv": [
+        "test",
+        "--locked",
+        "--offline",
+        "--no-run",
+        "-j4",
+        "-p",
+        "ty_server",
+        "--test",
+        "e2e",
+        "--message-format=json"
+      ],
+      "argv_sha256": "573a830b96bccafe4349c47446459c53b0110beb28f6763c5f7b7d4d8e25ff29",
+      "bound_image_sha256": "ad893345f66ade1c886309b0fc2f98ec5b225d206c176e356531f0e3467eff81",
+      "exe_role": "selected-cargo",
+      "exec_line_sha256": "2cd7152aabe284e7510aeac514cbceb2e68e9607090dbc4aaeca36e462386c78",
+      "pid": 681197,
+      "trace_sha256": "eafb1463ea685f4256bc3ed25c283439f19a6074e0ff56bdb1e767d644854e44"
+    }
+  }
+}
