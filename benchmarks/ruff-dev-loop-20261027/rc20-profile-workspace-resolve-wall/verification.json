@@ -1,0 +1,67 @@
+{
+  "adversarial_refusals": 10,
+  "calculated_raw_statistics_sha256": "fca7d613206cee04ee2f3f78c7e974439be2154b739338285ad1089eb373790d",
+  "clocked_commands": 256,
+  "clocked_resolver_logging": false,
+  "full_profiles_in_clock": 0,
+  "independent_logger_commands": 40,
+  "logging_archive": {
+    "bytes": 551718,
+    "members": 181,
+    "sha256": "4e1041cdbb131277c357df61d3f8edc5d27446357e5f319718f0dd2e7be5b029"
+  },
+  "matched_product_files": {
+    "A": "967f5f1db2938847fac22d78dc222054cbb143a5fabcffcad0bd15f8929b47e9",
+    "B": "80356b8237d3089d3360b6de5abfc64a17e4b8d3f0ec1fb64e09254418b5c5e5"
+  },
+  "native_wall_controls": 24,
+  "original_receipt_sha256": "94ea50204f754c19af985386ac7605f1b9b4f7639a7370b924f390d340c38007",
+  "portable_clock_ast": "48907ed144d2dce668fa45521c2122428dbe3833c89c7249ef6eb2af2266ee9c",
+  "portable_controller_checked_for_both_modes_and_error": true,
+  "portable_csv_sha256": "b78c29dec29133316246e92bd50a787daaa28fc89525ba144ec504d94b092123",
+  "portable_full_timing_repeated": false,
+  "raw_start_envelope": "6e85efdd579d70f459ead9d2ae7e2ad105d874e8eb3d3417b9ea42b1c8431055",
+  "related_unscored": {
+    "active_ruff_sha256sums": "41567680dd68eab73ab4134f493d5209ebd391edae7d6df1a04510d3d926420f",
+    "synthetic_sha256sums": "d36987babfb42913ba5106e5dd602517a0d25cdf21a995bf54c3008e91e65a30"
+  },
+  "reported_native_compound_sha256": "22651ac8f6222e83e60b970b5ad501c558bf70b75fc3827447857720633a3ce0",
+  "reported_native_digest_differences": {
+    "build": {
+      "A_edited_commands": 4,
+      "A_edited_full": 4,
+      "A_edited_hits": 0,
+      "B_edited_commands": 4,
+      "B_edited_full": 0,
+      "B_edited_hits": 4,
+      "commands": 20,
+      "different_product_sha256_between_independent_common_warmups": {
+        "products/debug/libruff_text_size.rlib": {
+          "logging": "e2c2b6470ca59855b197710855f1b716a9958acab92ad68881fc63fd70fee565",
+          "wall": "bf871a8505ccce290ad2c6afc929ec548017b104858c79d23a40702dc0c4b8e5"
+        }
+      }
+    },
+    "test": {
+      "A_edited_commands": 4,
+      "A_edited_full": 4,
+      "A_edited_hits": 0,
+      "B_edited_commands": 4,
+      "B_edited_full": 0,
+      "B_edited_hits": 4,
+      "commands": 20,
+      "different_product_sha256_between_independent_common_warmups": {
+        "products/debug/build/workspaces/90fabf96b51f8fb4/v2-403b6758c0cdc0a5/ruff_text_size/c3e97c006fec5154/out/libruff_text_size-c3e97c006fec5154.rlib": {
+          "logging": "d0890ba038f708e92ee5f0d1bf5773f5900fb1977c53038087833436d660e0f6",
+          "wall": "d0ea6ab90edadfd82f7419a624f80fd7501bac9fdee3479bf2ff5caaaed9ed88"
+        }
+      }
+    }
+  },
+  "source_check_executed": true,
+  "wall_archive": {
+    "bytes": 101934,
+    "members": 885,
+    "sha256": "8d3d6a9ed202365bd5119a5a6039d3dc8f4b03c6d576610ff5591cc53be68d46"
+  }
+}
