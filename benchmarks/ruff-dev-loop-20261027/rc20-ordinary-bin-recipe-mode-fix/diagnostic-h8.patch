@@ -1,0 +1,11 @@
+--- a/qualify-relink-collection-verdict.py
++++ b/qualify-relink-collection-verdict.py
+@@ -18,7 +18,7 @@
+ dest, sdk = (Path(p).resolve() for p in sys.argv[1:3])
+ assert not dest.exists() and (sdk/'bin/cargo').is_file()
+ assert digest(sdk/'bin/cargo') == sys.argv[3] and digest(sdk/'bin/rustc') == sys.argv[4]
+-assert shutil.disk_usage(dest.parent).free > 45*2**30 + 600*2**20
++assert shutil.disk_usage(dest.parent).free > 24*2**30 + 600*2**20
+ dest.mkdir(mode=0o700)
+ source=dest/'source'
+ files={

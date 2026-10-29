@@ -1,0 +1,109 @@
+{
+  "archive_sha256": {
+    "h8-native.tgz": "bd4b3eef0dfa923f4a14d80197e8fcbb25b10e1847a24b788f176118c479b059",
+    "h8-upgrade.tgz": "131e132e8227b80454dfa8d1afd7b4725cb3a11827169e06a8d503c0a2e9e99a"
+  },
+  "cargo": "6d0449d4eb0aa490e04aa553bab278c7818efe2c7d529b1d5c9536f01ef90168",
+  "cargo_bytes": 43342056,
+  "cargo_source": "e2fa457aa7e8e99275a69bbf2e72856f4b767d0d",
+  "cargo_tree": "da9c1246f3ad023da25fb60979a5e486863233e2",
+  "diagnostic_source_unchanged_in_upgrade": true,
+  "diagnostic_sources": {
+    "Cargo.toml": "4a3f8ac63ef4a6780f2a22acc3e0d8324fccae9587746b5a72dacfa3e0e984c0",
+    "consumer/Cargo.toml": "3f400a1bf682fcd2170dd1b802ced1ad0a51c635b9d04c42c7699aad440e3e1d",
+    "consumer/src/main.rs": "44bc67f7154693af01414ad82cf78bc21667bfebcafdaa12f21d24e8f3b3488f",
+    "facade/Cargo.toml": "548fe17a25f0ac6dff897e8eb08e414668a7def1a369aa813ef8833cbdb543ce",
+    "facade/src/lib.rs": "bfd3be14bcbddac8a679d3825854a14f3545cdeff2ee65e785c66b4c7c9227a2",
+    "report/Cargo.toml": "eff3bafef7678a902a6772408b6a9ee00b799daef63bf09f9abcacc8ff8b2d93",
+    "report/src/lib.rs": "f98878262d0fac3e848325587a78b3614d0b3f0b7a45e7d3f2bfdba40fbfc2fa"
+  },
+  "driver": "f772b49abec18759edbd9cb7f9f2930097d6ba64d9a2b82837edf4451acc3014",
+  "extra": {
+    "diagnostic_at_acquisition": "57e6a04ce727f77bb154261c9dc7d29f659b9b03bb09356aff8db0b37882b50e",
+    "diagnostic_h8_diff": "0633b6c6216aa145eff2bec875bd7176a3553598bea5302982a5382d6fe1df45",
+    "diagnostic_original": "5ed55ae83de8b1238c2504ba1a59702435a8e12318b6ea4415b2ec74d7feb2df",
+    "matrix_at_acquisition": "956e3dae2a1b1ca85d58ea85ae8aa8cece19e1a51c071f49318b8ba1866a5323",
+    "matrix_historical": "3676c4ecdbc0f28a67510860a569c8ec4929977fefb31202da3cd36700124942",
+    "upgrade_at_acquisition": "b4e9d0dcfad403594dd5fc4a3e3bfe48ed95b2012116aacaa34d812056da368a",
+    "upgrade_h8_diff": "3c4bac68dfbe0f670f57a210e6edc1a1ad5270753bd0c3b835be7de89ea0c2b9",
+    "upgrade_original": "faf882789c3fc957e692a0f06e191732ea8ecaa89ff5144f6a5d860d601ff527"
+  },
+  "linker_inputs": 335,
+  "matrix_versions": {
+    "cargo": "cargo 1.99.0 (e2fa457aa 2026-10-29)\nrelease: 1.99.0\ncommit-hash: e2fa457aa7e8e99275a69bbf2e72856f4b767d0d\ncommit-date: 2026-10-29\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.0.13)\nos: Ubuntu 24.4.0 (noble) [64-bit]\n",
+    "rustc": "rustc 1.99.0-dev (eef2f3425 2026-10-28) (ohm-1.99.0-19)\nbinary: rustc\ncommit-hash: eef2f3425c1c6f7fddfb4555769a9f90fe1e0f53\ncommit-date: 2026-10-28\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-dev\nLLVM version: 23.1.1\n"
+  },
+  "older_results_sha256": "2ea3d01d54760ac50e00902f83cf638678e0ee320e65d37334aaa80507ec9db7",
+  "ordered_externs": 239,
+  "pgo": "481ada8a40c70dad11b3c7e8871e9a52207d78447ca5e8ace06fc4aec2d2b5a7",
+  "pgo_complete_sha256": "2b3248812a3acc76663d91ce7e9fb212e7a43bd244b4195d8c41f597de47dd26",
+  "pgo_terminal_sha256": "6facc1d4aa6ec513f8322ae96b5707940cbd78dbad827dcf2d8d90ef9718fef0",
+  "receipt_sha256": "4752eec07fd6c2ac6e4591d084d195446c61409671dc9b6bae12072f32f65f4e",
+  "release_asset": "ef21d83519bc376479811a7e01fa5ac8915ac0a500c6859bc22a1e0b4913d812",
+  "rlibs": 326,
+  "rustc": "5694abe50767a22cebeccb767143f7404d5e81c4b1760cff4426466bf410e511",
+  "rustc_source": "eef2f3425c1c6f7fddfb4555769a9f90fe1e0f53",
+  "source_parent": "a8f0c9aa0412aa259c686416a48aa8d2cf92da72",
+  "upgrade_swaps": [
+    {
+      "cargo": "789c2f116732ed642565d0f92c500838f8cd53664fbe60f205a5621c43cbecf1",
+      "label": "released",
+      "version": "cargo 1.99.0-dev (235f92286 2026-10-28) (ohm-1.99.0-19)\nrelease: 1.99.0-dev\ncommit-hash: 235f9228651b74c591e6f62cae4c9b761448dd2d\ncommit-date: 2026-10-28\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.6.3)\nssl: OpenSSL 3.6.3 9 Jun 2026\nos: Ubuntu 24.4.0 (noble) [64-bit]\n"
+    },
+    {
+      "cargo": "789c2f116732ed642565d0f92c500838f8cd53664fbe60f205a5621c43cbecf1",
+      "label": "released",
+      "version": "cargo 1.99.0-dev (235f92286 2026-10-28) (ohm-1.99.0-19)\nrelease: 1.99.0-dev\ncommit-hash: 235f9228651b74c591e6f62cae4c9b761448dd2d\ncommit-date: 2026-10-28\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.6.3)\nssl: OpenSSL 3.6.3 9 Jun 2026\nos: Ubuntu 24.4.0 (noble) [64-bit]\n"
+    },
+    {
+      "cargo": "6d0449d4eb0aa490e04aa553bab278c7818efe2c7d529b1d5c9536f01ef90168",
+      "label": "fixed",
+      "version": "cargo 1.99.0 (e2fa457aa 2026-10-29)\nrelease: 1.99.0\ncommit-hash: e2fa457aa7e8e99275a69bbf2e72856f4b767d0d\ncommit-date: 2026-10-29\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.0.13)\nos: Ubuntu 24.4.0 (noble) [64-bit]\n"
+    },
+    {
+      "cargo": "ad893345f66ade1c886309b0fc2f98ec5b225d206c176e356531f0e3467eff81",
+      "label": "original_282",
+      "version": "cargo 1.99.0 (a8f0c9aa0 2026-10-29)\nrelease: 1.99.0\ncommit-hash: a8f0c9aa0412aa259c686416a48aa8d2cf92da72\ncommit-date: 2026-10-29\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.0.13)\nos: Ubuntu 24.4.0 (noble) [64-bit]\n"
+    },
+    {
+      "cargo": "8c1717fa9786e16d3bec0c3181c02c1803484ed857d262580ce88d54056504c5",
+      "label": "original_284",
+      "version": "cargo 1.99.0 (8dc33c9cc 2026-10-29)\nrelease: 1.99.0\ncommit-hash: 8dc33c9cc641e2b641c5b8e7075652a3e9e1f70b\ncommit-date: 2026-10-29\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.0.13)\nos: Ubuntu 24.4.0 (noble) [64-bit]\n"
+    },
+    {
+      "cargo": "6d0449d4eb0aa490e04aa553bab278c7818efe2c7d529b1d5c9536f01ef90168",
+      "label": "fixed",
+      "version": "cargo 1.99.0 (e2fa457aa 2026-10-29)\nrelease: 1.99.0\ncommit-hash: e2fa457aa7e8e99275a69bbf2e72856f4b767d0d\ncommit-date: 2026-10-29\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.0.13)\nos: Ubuntu 24.4.0 (noble) [64-bit]\n"
+    }
+  ],
+  "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+  "witnesses": {
+    "diagnostic": {
+      "inputs": "5327b2290e4ba30de928a05f263d7496fbaed246e03bee69605538913530bf1a",
+      "rows": "b704a8b9d95de63372b74822664dcea7c9afe76be0171c8cf8629e9bea040769",
+      "terminal_sha256": "c9894a7695eb15cb72290bd97262259978ef0391377ce4b9a50a6bde598a3edf",
+      "visits": 15
+    },
+    "matrix": {
+      "cargo": "6d0449d4eb0aa490e04aa553bab278c7818efe2c7d529b1d5c9536f01ef90168",
+      "rows": "027a1e93aca53558aaf87872275252317b20d6c6f803a5d4de6d0601527e1389",
+      "runner": "956e3dae2a1b1ca85d58ea85ae8aa8cece19e1a51c071f49318b8ba1866a5323",
+      "rustc": "5694abe50767a22cebeccb767143f7404d5e81c4b1760cff4426466bf410e511",
+      "source": {
+        "facade/src/lib.rs": "b0ed9f877d58906102e9b605929791e3d0584f6c9b96ba27193db97dd2110167",
+        "origin/src/lib.rs": "ac079cbb0d7b0f0df510882ddaa5d08373311682a14e7e7e1a2a368b53a319c0",
+        "probe/src/main.rs": "54ea1e9cc94ea790993ba6d3eb920110c9be088bbaa15e838fd4748fc7aaff91"
+      },
+      "terminal_sha256": "38e5ac26a2775468dfda731a3b782f88e09a67166790f270d83b424e90a167c5",
+      "total": 14
+    },
+    "upgrade": {
+      "driver": "b4e9d0dcfad403594dd5fc4a3e3bfe48ed95b2012116aacaa34d812056da368a",
+      "helper": "5ed55ae83de8b1238c2504ba1a59702435a8e12318b6ea4415b2ec74d7feb2df",
+      "inputs": "2354d30db13b1d1faad8e1f7b80ddb55adeadd970b0fe797ee35ce624d96ff3a",
+      "migration": "ecc3391f023d60fcb572e76844e19c573d5f562a088195e05e6c9e422db301c3",
+      "terminal_sha256": "718500dd206c227a47fe1258c42cab09e9c4305fcf838988c3417b889cf4e50c",
+      "visits": 18
+    }
+  }
+}
