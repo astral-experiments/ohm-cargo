@@ -1,0 +1,374 @@
+[
+  {
+    "a": [
+      "A",
+      "original"
+    ],
+    "b": [
+      "B",
+      "original"
+    ],
+    "byte_identical": 50,
+    "compared": 50,
+    "differing_known_fields": []
+  },
+  {
+    "a": [
+      "A",
+      "edit"
+    ],
+    "b": [
+      "B",
+      "edit"
+    ],
+    "byte_identical": 52,
+    "compared": 52,
+    "differing_known_fields": []
+  },
+  {
+    "a": [
+      "A",
+      "edit-followup"
+    ],
+    "b": [
+      "B",
+      "edit-followup"
+    ],
+    "byte_identical": 48,
+    "compared": 50,
+    "differing_known_fields": [
+      {
+        "a_build_id": "802798d9ff4b5844f74293eddc482b3b0dfdb51bd791b48d9601d3ee69e2dbcf",
+        "a_rodata_entsize": 0,
+        "a_sha256": "59bc896972a1a0c8db0b29955d31431fb3300d69e092621a382842306d3cdcb2",
+        "b_build_id": "ffcdff04de596ca48c4e03554d73ac089f107cb13a306eddb526b69c708f6df5",
+        "b_rodata_entsize": 8,
+        "b_sha256": "c6344ce05c664e4ec25d80902c92b2e650d1d16af55e26ca52b551ebcec1070c",
+        "file": "direxist_guard-b52833c6d634e45b"
+      },
+      {
+        "a_build_id": "48f70f7ddc08c8c1c85059b9ca7d3fec13fcf8734a99fa48c52d5705f51de465",
+        "a_rodata_entsize": 0,
+        "a_sha256": "4c275867c54534e74612eecef02d75337256d57a228ba40d2efb41ad12dab3fd",
+        "b_build_id": "333d062bae6defdc19f9e64b8b79f12db60aa3bd5b31e986e323417564714876",
+        "b_rodata_entsize": 8,
+        "b_sha256": "6f796622a9d6c0237f0f36da6aeb96a1c6f9355c2b30461941614ebd6df15ead",
+        "file": "normalizer-f1f64f446d159d08"
+      }
+    ]
+  },
+  {
+    "a": [
+      "A",
+      "restore"
+    ],
+    "b": [
+      "B",
+      "restore"
+    ],
+    "byte_identical": 51,
+    "compared": 52,
+    "differing_known_fields": [
+      {
+        "a_build_id": "48f70f7ddc08c8c1c85059b9ca7d3fec13fcf8734a99fa48c52d5705f51de465",
+        "a_rodata_entsize": 0,
+        "a_sha256": "4c275867c54534e74612eecef02d75337256d57a228ba40d2efb41ad12dab3fd",
+        "b_build_id": "333d062bae6defdc19f9e64b8b79f12db60aa3bd5b31e986e323417564714876",
+        "b_rodata_entsize": 8,
+        "b_sha256": "6f796622a9d6c0237f0f36da6aeb96a1c6f9355c2b30461941614ebd6df15ead",
+        "file": "normalizer-f1f64f446d159d08"
+      }
+    ]
+  },
+  {
+    "a": [
+      "A",
+      "final"
+    ],
+    "b": [
+      "B",
+      "final"
+    ],
+    "byte_identical": 46,
+    "compared": 50,
+    "differing_known_fields": [
+      {
+        "a_build_id": "802798d9ff4b5844f74293eddc482b3b0dfdb51bd791b48d9601d3ee69e2dbcf",
+        "a_rodata_entsize": 0,
+        "a_sha256": "59bc896972a1a0c8db0b29955d31431fb3300d69e092621a382842306d3cdcb2",
+        "b_build_id": "ffcdff04de596ca48c4e03554d73ac089f107cb13a306eddb526b69c708f6df5",
+        "b_rodata_entsize": 8,
+        "b_sha256": "c6344ce05c664e4ec25d80902c92b2e650d1d16af55e26ca52b551ebcec1070c",
+        "file": "direxist_guard-b52833c6d634e45b"
+      },
+      {
+        "a_build_id": "cd04fc30770c2400eee44d163aa7a85123d420405d861d10ddb5a970e80ccf76",
+        "a_rodata_entsize": 1,
+        "a_sha256": "08bd7bef6feaba0423ce12b182e6a1a093f7d0823f59697808a82f0f15800c29",
+        "b_build_id": "374ac5cd14c1fe084d01198892bf3f63bac0ff8e7ef836f6010dfb64223809b0",
+        "b_rodata_entsize": 0,
+        "b_sha256": "a36192facbdecaae1babf6e28027416efd24b1fd5d5cb9018da94da807d25a03",
+        "file": "fixtures-cfa340005b9ad559"
+      },
+      {
+        "a_build_id": "48f70f7ddc08c8c1c85059b9ca7d3fec13fcf8734a99fa48c52d5705f51de465",
+        "a_rodata_entsize": 0,
+        "a_sha256": "4c275867c54534e74612eecef02d75337256d57a228ba40d2efb41ad12dab3fd",
+        "b_build_id": "333d062bae6defdc19f9e64b8b79f12db60aa3bd5b31e986e323417564714876",
+        "b_rodata_entsize": 8,
+        "b_sha256": "6f796622a9d6c0237f0f36da6aeb96a1c6f9355c2b30461941614ebd6df15ead",
+        "file": "normalizer-f1f64f446d159d08"
+      },
+      {
+        "a_build_id": "8964e1fee3694c69853c3691f4b70c929af7f47bbc2568283337da69a2902de1",
+        "a_rodata_entsize": 8,
+        "a_sha256": "e3efd534de8ba8440e797379fbe86a355f31f30ef3b62e3189802bc622a62e9e",
+        "b_build_id": "f0f76193c5991ee6e94b019adf151beb88e0805ef6003a4f1e3b2aebd1ec77f8",
+        "b_rodata_entsize": 0,
+        "b_sha256": "524f8a44ac9781487b45692bc72ba7525c807cf2ce652ac638b234ef76f57153",
+        "file": "simple_tokenizer-ae776ba28706b31b"
+      }
+    ]
+  },
+  {
+    "a": [
+      "A",
+      "cold-edit"
+    ],
+    "b": [
+      "B",
+      "cold-edit"
+    ],
+    "byte_identical": 52,
+    "compared": 52,
+    "differing_known_fields": []
+  },
+  {
+    "a": [
+      "A",
+      "edit"
+    ],
+    "b": [
+      "A",
+      "cold-edit"
+    ],
+    "byte_identical": 50,
+    "compared": 52,
+    "differing_known_fields": [
+      {
+        "a_build_id": "4775e065455c9edc4c52bf287fe12bd854ee0120ec22d0b9f2ac378aa3569b25",
+        "a_rodata_entsize": 0,
+        "a_sha256": "ac5bf9c73552897d3a4f7c0534939ffb3126cd036a8991b6000cc5d6a2aa5b85",
+        "b_build_id": "22e909ffc7eebfc3783899558dbf69ada307a438edc9716d57bdb0d4108a642d",
+        "b_rodata_entsize": 8,
+        "b_sha256": "cd9b4b01f587524d6e4615259a3b5de6912036421604ae9366d8048f7f0bfa84",
+        "file": "ty_python_semantic-0c91f7de1f26917a"
+      },
+      {
+        "a_build_id": "1d40f67b8fc6b73973661e1b85ac33c0f65839e5ff9d1709505e27038bdb2c74",
+        "a_rodata_entsize": 0,
+        "a_sha256": "6e4ec98f79d9e1147484cd7caad1418f36e42e70263a5c96d5b18d550dc36404",
+        "b_build_id": "5edbfe6fb0897dcef45546e8b2664afe65f368b0448d9e31b2b40e8b6a7665be",
+        "b_rodata_entsize": 8,
+        "b_sha256": "7f85bb1c832ddffa656e62718d0f97993f270a304ae7593b3e0eb8a9b04afe1c",
+        "file": "ty_server-4973c777e0baa104"
+      }
+    ]
+  },
+  {
+    "a": [
+      "A",
+      "edit-followup"
+    ],
+    "b": [
+      "A",
+      "cold-edit"
+    ],
+    "byte_identical": 49,
+    "compared": 50,
+    "differing_known_fields": [
+      {
+        "a_build_id": "4775e065455c9edc4c52bf287fe12bd854ee0120ec22d0b9f2ac378aa3569b25",
+        "a_rodata_entsize": 0,
+        "a_sha256": "ac5bf9c73552897d3a4f7c0534939ffb3126cd036a8991b6000cc5d6a2aa5b85",
+        "b_build_id": "22e909ffc7eebfc3783899558dbf69ada307a438edc9716d57bdb0d4108a642d",
+        "b_rodata_entsize": 8,
+        "b_sha256": "cd9b4b01f587524d6e4615259a3b5de6912036421604ae9366d8048f7f0bfa84",
+        "file": "ty_python_semantic-0c91f7de1f26917a"
+      }
+    ]
+  },
+  {
+    "a": [
+      "A",
+      "final"
+    ],
+    "b": [
+      "A",
+      "original"
+    ],
+    "byte_identical": 48,
+    "compared": 50,
+    "differing_known_fields": [
+      {
+        "a_build_id": "cd04fc30770c2400eee44d163aa7a85123d420405d861d10ddb5a970e80ccf76",
+        "a_rodata_entsize": 1,
+        "a_sha256": "08bd7bef6feaba0423ce12b182e6a1a093f7d0823f59697808a82f0f15800c29",
+        "b_build_id": "374ac5cd14c1fe084d01198892bf3f63bac0ff8e7ef836f6010dfb64223809b0",
+        "b_rodata_entsize": 0,
+        "b_sha256": "a36192facbdecaae1babf6e28027416efd24b1fd5d5cb9018da94da807d25a03",
+        "file": "fixtures-cfa340005b9ad559"
+      },
+      {
+        "a_build_id": "8964e1fee3694c69853c3691f4b70c929af7f47bbc2568283337da69a2902de1",
+        "a_rodata_entsize": 8,
+        "a_sha256": "e3efd534de8ba8440e797379fbe86a355f31f30ef3b62e3189802bc622a62e9e",
+        "b_build_id": "f0f76193c5991ee6e94b019adf151beb88e0805ef6003a4f1e3b2aebd1ec77f8",
+        "b_rodata_entsize": 0,
+        "b_sha256": "524f8a44ac9781487b45692bc72ba7525c807cf2ce652ac638b234ef76f57153",
+        "file": "simple_tokenizer-ae776ba28706b31b"
+      }
+    ]
+  },
+  {
+    "a": [
+      "A",
+      "restore"
+    ],
+    "b": [
+      "A",
+      "original"
+    ],
+    "byte_identical": 50,
+    "compared": 50,
+    "differing_known_fields": []
+  },
+  {
+    "a": [
+      "B",
+      "edit"
+    ],
+    "b": [
+      "B",
+      "cold-edit"
+    ],
+    "byte_identical": 50,
+    "compared": 52,
+    "differing_known_fields": [
+      {
+        "a_build_id": "4775e065455c9edc4c52bf287fe12bd854ee0120ec22d0b9f2ac378aa3569b25",
+        "a_rodata_entsize": 0,
+        "a_sha256": "ac5bf9c73552897d3a4f7c0534939ffb3126cd036a8991b6000cc5d6a2aa5b85",
+        "b_build_id": "22e909ffc7eebfc3783899558dbf69ada307a438edc9716d57bdb0d4108a642d",
+        "b_rodata_entsize": 8,
+        "b_sha256": "cd9b4b01f587524d6e4615259a3b5de6912036421604ae9366d8048f7f0bfa84",
+        "file": "ty_python_semantic-0c91f7de1f26917a"
+      },
+      {
+        "a_build_id": "1d40f67b8fc6b73973661e1b85ac33c0f65839e5ff9d1709505e27038bdb2c74",
+        "a_rodata_entsize": 0,
+        "a_sha256": "6e4ec98f79d9e1147484cd7caad1418f36e42e70263a5c96d5b18d550dc36404",
+        "b_build_id": "5edbfe6fb0897dcef45546e8b2664afe65f368b0448d9e31b2b40e8b6a7665be",
+        "b_rodata_entsize": 8,
+        "b_sha256": "7f85bb1c832ddffa656e62718d0f97993f270a304ae7593b3e0eb8a9b04afe1c",
+        "file": "ty_server-4973c777e0baa104"
+      }
+    ]
+  },
+  {
+    "a": [
+      "B",
+      "edit-followup"
+    ],
+    "b": [
+      "B",
+      "cold-edit"
+    ],
+    "byte_identical": 47,
+    "compared": 50,
+    "differing_known_fields": [
+      {
+        "a_build_id": "ffcdff04de596ca48c4e03554d73ac089f107cb13a306eddb526b69c708f6df5",
+        "a_rodata_entsize": 8,
+        "a_sha256": "c6344ce05c664e4ec25d80902c92b2e650d1d16af55e26ca52b551ebcec1070c",
+        "b_build_id": "802798d9ff4b5844f74293eddc482b3b0dfdb51bd791b48d9601d3ee69e2dbcf",
+        "b_rodata_entsize": 0,
+        "b_sha256": "59bc896972a1a0c8db0b29955d31431fb3300d69e092621a382842306d3cdcb2",
+        "file": "direxist_guard-b52833c6d634e45b"
+      },
+      {
+        "a_build_id": "333d062bae6defdc19f9e64b8b79f12db60aa3bd5b31e986e323417564714876",
+        "a_rodata_entsize": 8,
+        "a_sha256": "6f796622a9d6c0237f0f36da6aeb96a1c6f9355c2b30461941614ebd6df15ead",
+        "b_build_id": "48f70f7ddc08c8c1c85059b9ca7d3fec13fcf8734a99fa48c52d5705f51de465",
+        "b_rodata_entsize": 0,
+        "b_sha256": "4c275867c54534e74612eecef02d75337256d57a228ba40d2efb41ad12dab3fd",
+        "file": "normalizer-f1f64f446d159d08"
+      },
+      {
+        "a_build_id": "4775e065455c9edc4c52bf287fe12bd854ee0120ec22d0b9f2ac378aa3569b25",
+        "a_rodata_entsize": 0,
+        "a_sha256": "ac5bf9c73552897d3a4f7c0534939ffb3126cd036a8991b6000cc5d6a2aa5b85",
+        "b_build_id": "22e909ffc7eebfc3783899558dbf69ada307a438edc9716d57bdb0d4108a642d",
+        "b_rodata_entsize": 8,
+        "b_sha256": "cd9b4b01f587524d6e4615259a3b5de6912036421604ae9366d8048f7f0bfa84",
+        "file": "ty_python_semantic-0c91f7de1f26917a"
+      }
+    ]
+  },
+  {
+    "a": [
+      "B",
+      "final"
+    ],
+    "b": [
+      "B",
+      "original"
+    ],
+    "byte_identical": 48,
+    "compared": 50,
+    "differing_known_fields": [
+      {
+        "a_build_id": "ffcdff04de596ca48c4e03554d73ac089f107cb13a306eddb526b69c708f6df5",
+        "a_rodata_entsize": 8,
+        "a_sha256": "c6344ce05c664e4ec25d80902c92b2e650d1d16af55e26ca52b551ebcec1070c",
+        "b_build_id": "802798d9ff4b5844f74293eddc482b3b0dfdb51bd791b48d9601d3ee69e2dbcf",
+        "b_rodata_entsize": 0,
+        "b_sha256": "59bc896972a1a0c8db0b29955d31431fb3300d69e092621a382842306d3cdcb2",
+        "file": "direxist_guard-b52833c6d634e45b"
+      },
+      {
+        "a_build_id": "333d062bae6defdc19f9e64b8b79f12db60aa3bd5b31e986e323417564714876",
+        "a_rodata_entsize": 8,
+        "a_sha256": "6f796622a9d6c0237f0f36da6aeb96a1c6f9355c2b30461941614ebd6df15ead",
+        "b_build_id": "48f70f7ddc08c8c1c85059b9ca7d3fec13fcf8734a99fa48c52d5705f51de465",
+        "b_rodata_entsize": 0,
+        "b_sha256": "4c275867c54534e74612eecef02d75337256d57a228ba40d2efb41ad12dab3fd",
+        "file": "normalizer-f1f64f446d159d08"
+      }
+    ]
+  },
+  {
+    "a": [
+      "B",
+      "restore"
+    ],
+    "b": [
+      "B",
+      "original"
+    ],
+    "byte_identical": 49,
+    "compared": 50,
+    "differing_known_fields": [
+      {
+        "a_build_id": "333d062bae6defdc19f9e64b8b79f12db60aa3bd5b31e986e323417564714876",
+        "a_rodata_entsize": 8,
+        "a_sha256": "6f796622a9d6c0237f0f36da6aeb96a1c6f9355c2b30461941614ebd6df15ead",
+        "b_build_id": "48f70f7ddc08c8c1c85059b9ca7d3fec13fcf8734a99fa48c52d5705f51de465",
+        "b_rodata_entsize": 0,
+        "b_sha256": "4c275867c54534e74612eecef02d75337256d57a228ba40d2efb41ad12dab3fd",
+        "file": "normalizer-f1f64f446d159d08"
+      }
+    ]
+  }
+]
