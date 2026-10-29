@@ -43,6 +43,10 @@ pub(crate) mod layout;
 mod links;
 mod locking;
 mod lto;
+#[cfg(all(feature = "ohm-defaults", target_os = "macos", target_arch = "aarch64"))]
+mod native_link;
+#[cfg(all(feature = "ohm-defaults", target_os = "macos", target_arch = "aarch64"))]
+pub mod native_link_driver;
 mod ohm_deferred_dev_deps;
 mod ohm_early_tests;
 mod ohm_linker;
@@ -1146,6 +1150,9 @@ fn rustc(
             .map(|output| RelinkCachePaths::new(output.path.clone()))
     })
     .flatten();
+    #[cfg(all(feature = "ohm-defaults", target_os = "macos", target_arch = "aarch64"))]
+    let use_native_driver =
+        relink_cache.is_some() && native_link_driver::supported(build_runner, unit);
     let check_relink_inputs = unit_checks_relink_inputs(build_runner, unit);
     if check_relink_inputs {
         rustc.arg("-Zohm-check-relink-inputs");
@@ -1342,6 +1349,14 @@ fn rustc(
 
     let fingerprint = build_runner.fingerprints.get(unit).cloned();
     let unit_name = format!("{} v{}", unit.pkg.name(), unit.pkg.version());
+    let consumes_native_inputs = matches!(unit.mode, CompileMode::Build | CompileMode::Test)
+        && unit.requires_upstream_objects();
+    let recheck_rebuilt_dependencies = !force
+        && check_relink_inputs
+        && relink_cache.is_some()
+        && fingerprint
+            .as_ref()
+            .is_some_and(|fp| fp.native_recheck_can_reuse_codegen(build_runner, unit));
     let can_skip_compilation = fingerprint::unit_can_use_early_cutoff(build_runner, unit)
         && fingerprint
             .as_ref()
@@ -1457,9 +1472,7 @@ fn rustc(
                     // don't see them as stale compared to rebuilt dependencies.
                     let now = filetime::FileTime::now();
                     for output in &essential_outputs {
-                        if output.path.extension() == Some(OsStr::new("rmeta"))
-                            && fingerprint::can_preserve_metadata_generation(fp, &output.path)
-                        {
+                        if fingerprint::can_preserve_skipped_output(fp, &output.path) {
                             continue;
                         }
                         if let Err(e) = filetime::set_file_mtime(&output.path, now) {
@@ -1486,19 +1499,20 @@ fn rustc(
             }
         }
 
-        let can_relink_dependencies = reuse_codegen
+        let can_relink_dependencies = (reuse_codegen || recheck_rebuilt_dependencies)
             && fingerprint.as_ref().is_some_and(|fingerprint| {
                 // An unused Rust library can leave this test's codegen valid even if its
                 // public API changed. Native inputs are resolved independently by the linker.
                 fingerprint::can_relink_due_to_early_cutoff(fingerprint, &relinkable_dependencies)
-                    || unused_integration_dependency.is_some_and(|(dependency, extern_name)| {
-                        fingerprint::can_relink_unused_integration_dependency(
-                            fingerprint,
-                            dependency,
-                        ) && relink_cache
-                            .as_ref()
-                            .is_some_and(|cache| cache.proves_unused_extern(extern_name))
-                    })
+                    || reuse_codegen
+                        && unused_integration_dependency.is_some_and(|(dependency, extern_name)| {
+                            fingerprint::can_relink_unused_integration_dependency(
+                                fingerprint,
+                                dependency,
+                            ) && relink_cache
+                                .as_ref()
+                                .is_some_and(|cache| cache.proves_unused_extern(extern_name))
+                        })
             });
         let recheck_native_link = !force
             && check_relink_inputs
@@ -1543,6 +1557,8 @@ fn rustc(
         // located somewhere in there.
         // Finally, if custom environment variables have been produced by
         // previous build scripts, we include them in the rustc invocation.
+        #[cfg(all(feature = "ohm-defaults", target_os = "macos", target_arch = "aarch64"))]
+        let before_script_args = rustc.get_args().count();
         let mut build_script_overrides_loader = false;
         if let Some(build_scripts) = build_scripts {
             let script_outputs = build_script_outputs.lock().unwrap();
@@ -1591,6 +1607,7 @@ fn rustc(
                 namespace,
                 &rustc_dep_info_loc,
                 &rustc,
+                consumes_native_inputs,
             )
         {
             replay_output_cache_inner(
@@ -1613,6 +1630,22 @@ fn rustc(
             provenance.capture_compiler_environment(&rustc, build_script_overrides_loader);
         }
 
+        #[cfg(all(feature = "ohm-defaults", target_os = "macos", target_arch = "aarch64"))]
+        if use_native_driver
+            && check_relink_inputs
+            && let (Some(cache), Some(fp)) = (relink_cache.as_ref(), fingerprint.as_ref())
+            && fp.needs_native_link_driver()
+            && rustc.get_args().skip(before_script_args).all(|arg| {
+                arg.to_str().is_some_and(|arg| {
+                    !arg.starts_with("link-arg")
+                        && !arg.starts_with("link_arg")
+                        && !arg.starts_with("-Clink-arg")
+                        && !arg.starts_with('@')
+                })
+            })
+        {
+            native_link_driver::install(&mut rustc, cache);
+        }
         let link_only = if let Some(cache) = &relink_cache {
             let mut link_only = rustc.clone();
             if !link_only.replace_arg(&source_arg, &cache.rlink) {
@@ -1938,7 +1971,7 @@ fn rustc(
         }
 
         if rustc_dep_info_loc.exists() {
-            fingerprint::translate_dep_info(
+            let marked = fingerprint::translate_dep_info(
                 &rustc_dep_info_loc,
                 &dep_info_loc,
                 &cwd,
@@ -1956,6 +1989,9 @@ fn rustc(
                     rustc_dep_info_loc.display()
                 ))
             })?;
+            if let Some(fp) = &fingerprint {
+                fp.record_native_link_inputs(marked);
+            }
             // This mtime shift allows Cargo to detect if a source file was
             // modified in the middle of the build.
             paths::set_file_time_no_err(dep_info_loc, timestamp);
