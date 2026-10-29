@@ -22,6 +22,57 @@ use filetime::FileTime;
 use super::death;
 
 #[cargo_test]
+fn shared_build_directory_distinguishes_workspace_sources() {
+    let shared = paths::root().join("shared");
+    let [first, second] = ["first", "second"].map(|name| {
+        project()
+            .at(name)
+            .file("Cargo.toml", &basic_manifest("demo", "0.1.0"))
+            .file(
+                "build.rs",
+                r#"
+                    fn main() {
+                        let out = std::path::PathBuf::from(std::env::var_os("OUT_DIR").unwrap());
+                        let output = out.join("name");
+                        if !output.exists() {
+                            std::fs::copy("name", output).unwrap();
+                        }
+                    }
+                "#,
+            )
+            .file("name", name)
+            .file(
+                "src/main.rs",
+                r#"fn main() { println!("{}", include_str!(concat!(env!("OUT_DIR"), "/name"))); }"#,
+            )
+            .build()
+    });
+    #[cfg(unix)]
+    {
+        fs::create_dir(&shared).unwrap();
+        for project in [&first, &second] {
+            project.symlink(&shared, "build-cache");
+        }
+    }
+    for (project, expected) in [(&first, "first"), (&second, "second"), (&first, "first")] {
+        #[cfg(unix)]
+        let shared = project.root().join("build-cache");
+        project
+            .cargo("-Zohm-defaults=no run --quiet")
+            .masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("CARGO_BUILD_BUILD_DIR", &shared)
+            .env("CARGO_TARGET_DIR", project.root().join("target"))
+            .with_stdout_data(format!("{expected}\n"))
+            .run();
+    }
+    second
+        .process(&second.bin("demo"))
+        .with_stdout_data("second\n")
+        .run();
+    assert!(shared.join("debug/.fingerprint").is_dir());
+}
+
+#[cargo_test]
 fn modifying_and_moving() {
     let p = project()
         .file("src/main.rs", "mod a; fn main() {}")
