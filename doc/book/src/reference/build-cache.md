@@ -109,7 +109,8 @@ documentation, and test scratch files. An explicit `CARGO_TARGET_DIR` or
 keep it distinct for each worktree.
 
 The global directory holds compatible registry artifacts under
-`<profile>/build/registries/<context>` and reusable ThinLTO backend cache entries.
+`<profile>/build/registries/<context>` and reusable ThinLTO backend cache entries
+under `.ohm-thinlto-cache/<context>/<backend-options>/<object>.cache`.
 Private intermediates live under
 `target/<profile>/build/workspaces/<workspace>/<context>`, and incremental state
 under `target/<profile>/incremental/<workspace>`. Worktree seeding clones private
@@ -120,18 +121,22 @@ record or GC pass. Explicit targets outside the checkout need separate cleanup.
 On Linux and macOS, `cargo +ohm gc` reclaims these categories from shared
 build directories:
 
-* Global registry contexts from older Ohm releases, immediately after an upgrade,
+* Global registry and ThinLTO contexts from older Ohm releases, immediately after an upgrade,
   even if the old compiler remains installed and was used recently. A concrete
   compiler executable or driver library being removed or replaced also makes its
   context eligible immediately.
-* Other tracked registry contexts that have not been used for at least one hour.
+* Other tracked compiler contexts that have not been used for at least one hour.
   Private state in existing worktrees is preserved.
 * Individual tracked dependency builds that have not been used for at least one
   hour, even while other dependencies keep their compiler context active. Versions,
   feature combinations, profiles, and targets retain their own usage histories.
+* Individual ThinLTO backend objects that have not been used for at least one
+  hour, even within a context still used by other builds. Abandoned temporary
+  entries use the same inactivity threshold.
 * Recognized legacy registry namespaces with no context or usage records, and
   private intermediates, incremental state, and scratch files left in the global
-  directory by the old layout. These are eligible immediately, regardless of age
+  directory by the old layout, including the old flat ThinLTO namespaces. These
+  are eligible immediately, regardless of age
   or whether the original worktree still exists. A colocated target's private
   state is preserved.
 
@@ -144,14 +149,13 @@ context does not extend that deadline. Cargo removes the complete build director
 including its fingerprints and build-script state, and rebuilds it on demand.
 
 Compiler identity already partitions the cache. The context record also captures
-the installed Ohm release, without changing cache paths or invalidating current
-artifacts. GC compares it with the selected compiler's Ohm release. Older records
+the installed Ohm release. GC compares it with the selected compiler's Ohm release. Older records
 can use the installation's `.ohm-version` marker while that compiler is still
 installed. Unknown releases are not assumed obsolete, and selecting an older
 Ohm release does not immediately evict newer releases' contexts.
 
 Older releases have no grace period. After upgrading, explicitly running `cargo +ohm gc`
-can reclaim the previous release's global registry contexts immediately; an
+can reclaim the previous release's global registry and ThinLTO contexts immediately; an
 upgrade does not invoke GC automatically. The one-hour inactivity rule still
 applies to the current release's contexts. Legacy namespaces without records are
 also discarded immediately, even if their artifacts could still be reused.
@@ -174,6 +178,18 @@ with automatic size-based checkpoints, so warm builds do not force each timestam
 update to durable storage. Transactions remain atomic; after a machine crash,
 some recent cache-usage timestamps may be lost, as with the old unsynced file
 markers. This can cause reusable artifacts to be reclaimed and rebuilt.
+
+ThinLTO reuses the same SQLite compiler record and active-build lease. Rustc
+already refreshes an object's filesystem modification time on a cache hit, so
+objects need no additional database rows or per-build bookkeeping. Explicit GC
+scans these timestamps outside build locks and rechecks them before retirement.
+Fresh builds that do not invoke the backend do not count as use of these optional
+objects; removing them does not invalidate existing compiled artifacts. Shared
+ThinLTO caches no longer run a directory scan or size-based prune after a build.
+If compiler provenance cannot be recorded, new ThinLTO state stays in the
+workspace's private build directory instead.
+The new context directory preserves reuse across compatible worktrees. Existing
+flat ThinLTO namespaces are not imported; they are legacy data for manual GC.
 
 Explicit GC queries expired entries, scans outside build locks, and rechecks their
 usage before bounded retirement. Rows are removed with their artifacts, including
@@ -199,7 +215,7 @@ running programs do not have the same protection.
 intermediates and incremental state. A target-local lock prevents cleaning state
 still used by its builds or launched programs, without blocking other worktrees.
 The tiny `.ohm-build-lock` and `CACHEDIR.TAG` files remain after a full clean.
-Shared registry artifacts and legacy global state are left for `cargo +ohm gc`.
+Shared registry and ThinLTO artifacts and legacy global state are left for `cargo +ohm gc`.
 The first build after switching to this layout rebuilds private intermediates;
 existing global registry artifacts remain reusable.
 
@@ -238,9 +254,10 @@ If a root is busy or work remains after the per-root budget, invoke
 
 Cleanup only removes recognized namespaces inside marked shared build roots.
 It preserves external targets, ordinary checkout targets, unknown directory
-shapes, and downloaded sources in `CARGO_HOME`. The content-addressed ThinLTO
-backend cache retains its separate size and age policy. This command does not
-apply a disk-size limit to the active registry build cache.
+shapes, and downloaded sources in `CARGO_HOME`. ThinLTO caches in private build
+directories retain their separate size and age policy and are removed by
+`cargo clean`. This command does not apply a disk-size limit to active shared
+build caches.
 
 [`RUSTFLAGS`]: ../reference/config.md#buildrustflags
 [`build.dep-info-basedir`]: ../reference/config.md#builddep-info-basedir
