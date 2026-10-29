@@ -483,7 +483,7 @@ fn build_path_deps(
         if visited.contains(&id) || !id.is_path() {
             return;
         }
-        let path = match id.url().to_file_path() {
+        let path = match id.local_path_ref() {
             Ok(p) => p.join("Cargo.toml"),
             Err(_) => return,
         };
