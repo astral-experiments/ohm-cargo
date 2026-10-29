@@ -1,0 +1,136 @@
+{
+  "created_ns": 1793278861335351546,
+  "script_sha256": "7b82e8679bcef0a6c7dac433368954d31d6e07e3f14c549c00ff51b182c479ad",
+  "cpu": 29,
+  "physical_cell": "replica-test",
+  "supervisor_session": 91078,
+  "supervisor_chunk": "296d24",
+  "supervisor_exit": 0,
+  "subject_exit": 1,
+  "historical_gate": null,
+  "historical_scored_rows": 0,
+  "closure_sha256": "7ce6d653e7e21d5bd36d7498d048a5d787d3bee09d760fa105f3b3af9dc1eea1",
+  "ordinary_reference": "edited-roles/results/replica/test/admit-0-native-base/receipt.json",
+  "ordinary_reference_sha256": "3784e712230397f1a10510debcf1fd63260a71856a3c369f88067f1dde9d0ac9",
+  "role": "debug/build/uv/e6ac92541876a4a1/out/uv",
+  "per_elf_scan_bytes": 316713312,
+  "ordinary_reference_baseline_raw_sha256": "37a15de60cfcbbcd9df27161565080b419c18aca5792908e5fca0dc901d858cc",
+  "source_sha256": "aebcd3493f0abd3dfb8000e83799d732bc05e44a09c4a4b87b6cfa268bc7652d",
+  "source_mtime_ns": 1793232670779137273,
+  "role_counts": {
+    "cargo": 1,
+    "rustc": 6,
+    "wild": 5
+  },
+  "test_executables": 72,
+  "actual_tool_inodes": {
+    "cargo": [
+      64769,
+      138962484
+    ],
+    "rustc": [
+      64769,
+      41198842
+    ],
+    "wild": [
+      64769,
+      138962693
+    ]
+  },
+  "files": {
+    "previous_counted_base": {
+      "bank": "/tmp/ohm-uv-bench.0H03f2TH/role-studies-18/replica/rejected-test-target",
+      "root_inode": [
+        64769,
+        128450561
+      ],
+      "regular_inode": [
+        64769,
+        128516869
+      ],
+      "nlink": 2,
+      "mode": "0o100775",
+      "mtime_ns": 1793232900871990197,
+      "receipt": "edited-roles/results/replica/test/admit-1-count-base/receipt.json",
+      "receipt_sha256": "3eb51c1d2461817fdba257acf0391920a5d0a17dea6b569d5b860206e96e3ef1",
+      "metadata": {
+        "elf_header": "0bbc9527625279c7677c08edd5cdf20c19a2b831585f3b0af7abca5996d13f68",
+        "program_headers": "3d3b23176ed380c87cc165d03b61c0e51ee9f986bb0532dde8a18d31a752e29c",
+        "section_headers": "455fafa9fd47df34dc36c020ac50797fc45491eae09256f132bdf44cbdcb54b3",
+        "section_names": "af11c830b043e08a888b80f928401310a68a520bb40fa313e35332e9791ba3d5",
+        "sections": 42,
+        "header_bytes_read": 4037,
+        "fields": {
+          "gnu_build_id": [
+            896,
+            928,
+            "fd82cde619cca8a586bdc148758377ffece242b9ba66ed2f7e39084796825f1b"
+          ],
+          "rodata_sh_entsize": [
+            316711384,
+            316711392,
+            "0000000000000000"
+          ]
+        }
+      },
+      "actual_raw_sha256": "37a15de60cfcbbcd9df27161565080b419c18aca5792908e5fca0dc901d858cc",
+      "mask_40_bytes_sha256": "04a44484d4a33669e3f422190c92083f07f2aa3bf22777843f4a1288c86919e9"
+    },
+    "rejected_native_base": {
+      "bank": "/tmp/ohm-uv-bench.0H03f2TH/role-studies-18/replica/rejected-recovery-test-target",
+      "root_inode": [
+        64769,
+        128715612
+      ],
+      "regular_inode": [
+        64769,
+        128737932
+      ],
+      "nlink": 2,
+      "mode": "0o100775",
+      "mtime_ns": 1793278586484453539,
+      "receipt": "edited-role-recovery/results/replica/test/admit-0-native-base/receipt.json",
+      "receipt_sha256": "d05b8b094d2fd26ebe9f64b891da62785194bb8e6c8d707fb243a8a6e1f014bf",
+      "metadata": {
+        "elf_header": "0bbc9527625279c7677c08edd5cdf20c19a2b831585f3b0af7abca5996d13f68",
+        "program_headers": "3d3b23176ed380c87cc165d03b61c0e51ee9f986bb0532dde8a18d31a752e29c",
+        "section_headers": "91ea96a6998f5844fb7f51bc062f445e593b6f70feef3fd9784cd44be859c737",
+        "section_names": "af11c830b043e08a888b80f928401310a68a520bb40fa313e35332e9791ba3d5",
+        "sections": 42,
+        "header_bytes_read": 4037,
+        "fields": {
+          "gnu_build_id": [
+            896,
+            928,
+            "710b3be7612e7a4efe2a348ce26a5e0ce9a9c8aff8b8fa45ecf27657275b7015"
+          ],
+          "rodata_sh_entsize": [
+            316711384,
+            316711392,
+            "0800000000000000"
+          ]
+        }
+      },
+      "actual_raw_sha256": "c9f698ca2c9b0673d35c560375b1751b241ac3f9cfb4ec23534aa448dc4f5b91",
+      "mask_40_bytes_sha256": "04a44484d4a33669e3f422190c92083f07f2aa3bf22777843f4a1288c86919e9"
+    }
+  },
+  "divergent_groups": [
+    {
+      "begin": 896,
+      "end": 928,
+      "old": "fd82cde619cca8a586bdc148758377ffece242b9ba66ed2f7e39084796825f1b",
+      "new": "710b3be7612e7a4efe2a348ce26a5e0ce9a9c8aff8b8fa45ecf27657275b7015"
+    },
+    {
+      "begin": 316711384,
+      "end": 316711385,
+      "old": "00",
+      "new": "08"
+    }
+  ],
+  "different_bytes": 33,
+  "different_outside_mask": 0,
+  "unchanged_bytes": 316713279,
+  "identical_after_proved_40_byte_mask": true
+}
