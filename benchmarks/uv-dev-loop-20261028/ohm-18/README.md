@@ -17,7 +17,7 @@ The extra Wild jobserver retry passed one of four preregistered holdout comparis
 
 ### Instruction counts
 
-On fully warm uv commands, the five Cargo changes and the std change in the Cargo executable reduced driver instructions by about 2.3% for check, 5.6% and 7.8% for build, and 2.5% for test preparation across two counters. Cargo launched no compiler in these commands. The historical counter logs establish the unwrapped compiler identity but do not record every profiler-injected loader variable. [Per-command intervals and raw counts](warm-cargo/README.md) · [Observer audit](observer-audit/README.md)
+On fully warm uv commands, the five Cargo changes and the std change in the Cargo executable reduced driver instructions by about 2.3% for check, 5.6% and 7.8% for build, and 2.5% for test preparation across two counters. Cargo launched no compiler. A stock-executable replay of the same parent-only profiler launch showed that Cachegrind sets `LD_PRELOAD`, which changes Cargo check-mode reuse eligibility. DynamoRIO added three private variables. [Per-command intervals and raw counts](warm-cargo/README.md) · [Observer audit](observer-audit/README.md)
 
 After an edit, the historical stack saved 0.4722% and 0.4728% in the measured Cargo and rustc processes in two independent eight-pair runs. This instrumented configuration set `RUSTC_WRAPPER`, which excludes two release Cargo check-mode artifact reuse paths on marker-bearing targets. The elapsed-time observations above used ordinary compiler launches. [Instrumented counts and scorer](edited-check/README.md) · [Exact source conditions and fixture receipts](observer-audit/README.md)
 

@@ -1,0 +1,67 @@
+{
+  "native": {
+    "command": [
+      "/usr/bin/env",
+      "-0"
+    ],
+    "app_visible_environment_changes": {},
+    "stderr": "",
+    "sha256_stdout": "7d19bb9d7924241dc9a5dc7f2849cda8a77254146dd84b23c3e0443d07498460"
+  },
+  "dynamorio": {
+    "command": [
+      "python3",
+      "-B",
+      "/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/dynamorio/count.py",
+      "--",
+      "/usr/bin/env",
+      "-0"
+    ],
+    "app_visible_environment_changes": {
+      "DYNAMORIO_CONFIGDIR": [
+        null,
+        "/tmp/ohm-dr-2mugqbv4"
+      ],
+      "DYNAMORIO_EXE_PATH": [
+        null,
+        "/usr/bin/env"
+      ],
+      "DYNAMORIO_TAKEOVER_IN_INIT": [
+        null,
+        "1"
+      ]
+    },
+    "stderr": "DynamoRIO {\"pid\":2156550,\"threads\":{\"2156550\":345257},\"instructions\":345257}\n",
+    "sha256_stdout": "f8fdb0ce9bb5704d30ba33720e8f5904a4b315e284be68264190a61cf780636c"
+  },
+  "cachegrind": {
+    "command": [
+      "/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/profiler/usr/bin/valgrind",
+      "--tool=cachegrind",
+      "--trace-children=no",
+      "--cachegrind-out-file=/dev/null",
+      "/usr/bin/env",
+      "-0"
+    ],
+    "app_visible_environment_changes": {
+      "GLIBCPP_FORCE_NEW": [
+        null,
+        "1"
+      ],
+      "GLIBCXX_FORCE_NEW": [
+        null,
+        "1"
+      ],
+      "LD_LIBRARY_PATH": [
+        null,
+        "/usr/lib/debug"
+      ],
+      "LD_PRELOAD": [
+        null,
+        "/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/profiler/usr/libexec/valgrind/vgpreload_core-amd64-linux.so"
+      ]
+    },
+    "stderr": "==2156551== Cachegrind, a high-precision tracing profiler\n==2156551== Copyright (C) 2002-2017, and GNU GPL'd, by Nicholas Nethercote et al.\n==2156551== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info\n==2156551== Command: /usr/bin/env -0\n==2156551== \n==2156551== \n==2156551== I refs:        367,621\n",
+    "sha256_stdout": "fd7c9ae953783bf0a3935e21100f59cf035a61ac95dd679e40c02299ac4f0c23"
+  }
+}
