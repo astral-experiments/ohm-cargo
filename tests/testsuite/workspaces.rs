@@ -3051,12 +3051,18 @@ fn workspace_resolve_cache_applies_edited_profiles() {
         .build();
 
     workspace_resolve_cache_command(&project, "run --package selected")
-        .with_stdout_data(str!["true\n"])
+        .with_stdout_data(str![[r#"
+true
+
+"#]])
         .run();
     project.change_file("Cargo.toml", &manifest.replace("= true", "= false"));
     workspace_resolve_cache_command(&project, "run --package selected")
         .with_stderr_contains(WORKSPACE_RESOLVE_CACHE_HIT)
-        .with_stdout_data(str!["false\n"])
+        .with_stdout_data(str![[r#"
+false
+
+"#]])
         .run();
 }
 
