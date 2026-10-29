@@ -259,6 +259,10 @@ Would remove context 6f4e82a9c1d037ab (from ohm-1.98.1-1; current is ohm-1.98.1-
 warning: no files deleted due to --dry-run
 ```
 
+Longer runs show a pulsing progress bar with running file and byte counts.
+A dry run labels them `eligible`. Cleanup labels them `removed` as each deletion
+succeeds. The display follows Cargo's [progress settings](config.md#termprogresswhen).
+
 The preview includes all eligible artifacts and files left by interrupted
 cleanup, without holding build locks while counting them. Actual collection
 reports `Removing` and `Removed`, counts files as it deletes them, and uses small

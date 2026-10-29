@@ -87,6 +87,7 @@ impl<'gctx> Progress<'gctx> {
                 },
                 name: name.to_string(),
                 done: false,
+                pulse: 0,
                 throttle: Throttle::new(),
                 last_line: None,
                 fixed_width: progress_config.width,
@@ -107,7 +108,8 @@ impl<'gctx> Progress<'gctx> {
     /// Updates the state of the progress bar.
     ///
     /// * `cur` should be how far along the progress is.
-    /// * `max` is the maximum value for the progress bar.
+    /// * `max` is the maximum value for the progress bar. Pass zero for both
+    ///   values to pulse an indeterminate bar when the total is unknown.
     /// * `msg` is a small piece of text to display at the end of the progress
     ///   bar. It will be truncated with `…` if it does not fit on the terminal.
     ///
@@ -179,7 +181,10 @@ impl<'gctx> Progress<'gctx> {
         let mut shell = self.gctx.shell();
 
         match &mut self.state {
-            Some(s) => s.print(ProgressOutput::PrintNow, msg, &mut shell),
+            Some(s) => {
+                s.try_update_max_width(&shell);
+                s.print(ProgressOutput::PrintNow, msg, &mut shell)
+            }
             None => Ok(()),
         }
     }
@@ -236,6 +241,7 @@ struct State {
     format: Format,
     name: String,
     done: bool,
+    pulse: usize,
     throttle: Throttle,
     last_line: Option<String>,
     fixed_width: Option<usize>,
@@ -255,15 +261,17 @@ impl State {
         // Write out a pretty header, then the progress bar itself, and then
         // return back to the beginning of the line for the next print.
         self.try_update_max_width(shell);
-        if let Some(pbar) = self.format.progress(cur, max) {
+        if let Some(pbar) = self.format.progress(cur, max, self.pulse) {
             self.print(pbar, msg, shell)?;
+            if max == 0 {
+                self.pulse = self.pulse.wrapping_add(1);
+            }
         }
         Ok(())
     }
 
     fn print(&mut self, progress: ProgressOutput, msg: &str, shell: &mut Shell) -> CargoResult<()> {
         self.throttle.update();
-        self.try_update_max_width(shell);
 
         let (mut line, report) = match progress {
             ProgressOutput::PrintNow => (String::new(), None),
@@ -311,7 +319,7 @@ impl State {
         }
     }
 
-    fn try_update_max_width(&mut self, shell: &mut Shell) {
+    fn try_update_max_width(&mut self, shell: &Shell) {
         if self.fixed_width.is_none() {
             if let Some(n) = shell.err_width().progress_max_width() {
                 self.format.max_width = n;
@@ -329,8 +337,21 @@ struct Format {
 }
 
 impl Format {
-    fn progress(&self, cur: usize, max: usize) -> Option<ProgressOutput> {
+    fn progress(&self, cur: usize, max: usize, pulse: usize) -> Option<ProgressOutput> {
         assert!(cur <= max);
+        if max == 0 && matches!(self.style, ProgressStyle::Indeterminate) {
+            const FRAMES: [&str; 6] = [
+                "[==   ]", "[ ==  ]", "[  == ]", "[   ==]", "[  == ]", "[ ==  ]",
+            ];
+            let frame = FRAMES[pulse % FRAMES.len()];
+            let report = self.term_integration.indeterminate();
+            return Some(if self.max_width >= 15 + frame.len() {
+                ProgressOutput::TextAndReport(frame.to_owned(), report)
+            } else {
+                ProgressOutput::Report(report)
+            });
+        }
+
         // Render the percentage at the far right and then figure how long the
         // progress bar is
         let pct = (cur as f64) / (max as f64);
@@ -411,7 +432,7 @@ impl Format {
 
     #[cfg(test)]
     fn progress_status(&self, cur: usize, max: usize, msg: &str) -> Option<String> {
-        let mut ret = match self.progress(cur, max)? {
+        let mut ret = match self.progress(cur, max, 0)? {
             // Check only the variant that contains text.
             ProgressOutput::TextAndReport(text, _) => text,
             _ => return None,
@@ -628,6 +649,30 @@ fn test_progress_status() {
         format.progress_status(3, 4, "：-每個漢字佔據了兩個字元"),
         Some("[=============>     ] 3/4：-每個漢字佔據了兩…".to_string())
     );
+}
+
+#[test]
+fn unknown_total_pulses_and_respects_terminal_width() {
+    let mut format = Format {
+        style: ProgressStyle::Indeterminate,
+        max_print: 50,
+        max_width: 80,
+        term_integration: TerminalIntegration::new(true),
+        unicode: false,
+    };
+    for (tick, expected) in [(0, "[==   ]"), (1, "[ ==  ]"), (6, "[==   ]")] {
+        let Some(ProgressOutput::TextAndReport(frame, StatusValue::Indeterminate)) =
+            format.progress(0, 0, tick)
+        else {
+            panic!("expected an indeterminate progress frame");
+        };
+        assert_eq!(frame, expected);
+    }
+    format.max_width = 20;
+    assert!(matches!(
+        format.progress(0, 0, 0),
+        Some(ProgressOutput::Report(StatusValue::Indeterminate))
+    ));
 }
 
 #[test]

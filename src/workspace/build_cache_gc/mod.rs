@@ -363,14 +363,16 @@ pub(crate) fn record_context(
     Ok(tracker)
 }
 
-#[derive(Default, Debug)]
-pub(crate) struct Summary {
+#[derive(Default)]
+pub(crate) struct Summary<'a> {
     pub retired: usize,
     pub retained: usize,
     /// A partial retirement or newly deferred candidate advanced this pass.
     pub advanced: bool,
     pub deleted_entries: usize,
     pub counts: FileCounts,
+    /// Reports cumulative payload counts during unlocked discovery and traversal.
+    pub progress: Option<&'a mut dyn FnMut(&FileCounts)>,
     pub errors: BTreeSet<String>,
     pub pending: bool,
     pub busy: bool,
@@ -386,7 +388,13 @@ pub(crate) struct CollectionState {
     dependencies: Option<VecDeque<Namespace>>,
 }
 
-impl Summary {
+impl Summary<'_> {
+    fn tick(&mut self) {
+        if let Some(update) = &mut self.progress {
+            update(&self.counts);
+        }
+    }
+
     fn payload_entries(&mut self, path: &Path) -> CargoResult<Option<fs::ReadDir>> {
         match fs::read_dir(path) {
             Ok(entries) => Ok(Some(entries)),
@@ -443,7 +451,7 @@ impl CollectionLocks {
         profiles: &[PathBuf],
         namespace: &Namespace,
         dry_run: bool,
-        summary: &mut Summary,
+        summary: &mut Summary<'_>,
     ) -> CargoResult<bool> {
         let context = namespace.scoped_context().map(str::to_owned);
         if let Some(guards) = self.domains.get(&context) {
@@ -516,7 +524,8 @@ impl FileCounts {
         }
     }
 
-    pub(crate) fn include(&mut self, other: &Self) {
+    #[cfg(test)]
+    fn include(&mut self, other: &Self) {
         self.files += other.files;
         self.directories += other.directories;
         self.bytes = self.bytes.saturating_add(other.bytes);
@@ -529,7 +538,7 @@ pub(crate) fn collect(
     dry_run: bool,
     current_ohm: Option<&str>,
     state: &mut CollectionState,
-    summary: &mut Summary,
+    summary: &mut Summary<'_>,
 ) -> CargoResult<()> {
     collect_with_lock_budget(
         root,
@@ -550,7 +559,7 @@ fn collect_with_lock_budget(
     lock_budget: Duration,
     current_ohm: Option<&str>,
     state: &mut CollectionState,
-    summary: &mut Summary,
+    summary: &mut Summary<'_>,
 ) -> CargoResult<()> {
     if !cfg!(any(target_os = "linux", target_os = "macos")) {
         return Ok(());
@@ -602,6 +611,7 @@ fn collect_with_lock_budget(
     }
     // Namespace discovery never holds consumer or build locks.
     for namespace in namespaces(root, &profiles, tracker.as_ref(), summary)? {
+        summary.tick();
         if namespace
             .detail(root, &profiles, now, current_ohm, tracker.as_ref())
             .is_none()
@@ -610,7 +620,7 @@ fn collect_with_lock_budget(
             if let Namespace::Context(context) = &namespace {
                 if state.dependencies.is_none() {
                     discovered_dependencies.extend(
-                        idle_dependencies(root, &profiles, context, now, tracker.as_ref())
+                        idle_dependencies(root, &profiles, context, now, tracker.as_ref(), summary)
                             .unwrap_or_default(),
                     );
                 }
@@ -646,6 +656,7 @@ fn collect_with_lock_budget(
             (dependency, paths)
         });
         for (namespace, paths) in ready.into_iter().chain(dependencies) {
+            summary.tick();
             if !locks.acquire(root, &profiles, &namespace, true, summary)? {
                 continue;
             }
@@ -871,7 +882,7 @@ fn thinlto_entries(
     now: SystemTime,
     limit: usize,
     state: &CollectionState,
-    summary: &mut Summary,
+    summary: &mut Summary<'_>,
 ) -> CargoResult<Vec<Namespace>> {
     let parent = Path::new(THINLTO).join(context);
     let mut entries = Vec::new();
@@ -884,6 +895,7 @@ fn thinlto_entries(
             continue;
         };
         for entry in children {
+            summary.tick();
             let entry = entry?;
             let name = entry.file_name();
             let Some(name) = name.to_str() else { continue };
@@ -935,6 +947,7 @@ fn idle_dependencies(
     context: &str,
     now: SystemTime,
     tracker: Option<&Tracker>,
+    summary: &mut Summary<'_>,
 ) -> Option<Vec<Namespace>> {
     let tracker = tracker?;
     let state = tracker.supported_context(context)?;
@@ -959,6 +972,7 @@ fn idle_dependencies(
         .collect::<HashSet<_>>();
     let mut idle = Vec::new();
     for entry in tracker.idle_dependencies(context, cutoff).ok()? {
+        summary.tick();
         if !entry
             .components()
             .all(|part| matches!(part, Component::Normal(_)))
@@ -1204,7 +1218,7 @@ impl Namespace {
         &self,
         directory: &Path,
         tracker: Option<&Tracker>,
-        summary: &mut Summary,
+        summary: &mut Summary<'_>,
     ) -> CargoResult<bool> {
         let paths = match self {
             Self::Dependency { .. } | Self::ThinLto { .. } | Self::LegacyThinLto(_) => Vec::new(),
@@ -1248,7 +1262,7 @@ fn namespaces(
     root: &Path,
     profiles: &[PathBuf],
     tracker: Option<&Tracker>,
-    summary: &mut Summary,
+    summary: &mut Summary<'_>,
 ) -> CargoResult<Vec<Namespace>> {
     let mut namespaces = HashSet::default();
     if let Some(tracker) = tracker {
@@ -1261,6 +1275,7 @@ fn namespaces(
     let records = root.join(DIRECTORY).join("contexts");
     if plain_ancestors(root, &records)? && plain_directory(&records) {
         for entry in fs::read_dir(records)? {
+            summary.tick();
             let entry = entry?;
             let path = entry.path();
             if entry.file_type()?.is_file()
@@ -1329,13 +1344,18 @@ fn namespaces(
     Ok(namespaces)
 }
 
-fn directory_names(root: &Path, parent: &Path, summary: &mut Summary) -> CargoResult<Vec<String>> {
+fn directory_names(
+    root: &Path,
+    parent: &Path,
+    summary: &mut Summary<'_>,
+) -> CargoResult<Vec<String>> {
     let mut names = Vec::new();
     if plain_ancestors(root, parent)?
         && plain_directory(parent)
         && let Some(entries) = summary.payload_entries(parent)?
     {
         for entry in entries {
+            summary.tick();
             let entry = entry?;
             if entry.file_type()?.is_dir()
                 && let Some(name) = entry.file_name().to_str()
@@ -1395,7 +1415,7 @@ fn retire(
     source: &Path,
     trash: &Path,
     dry_run: bool,
-    summary: &mut Summary,
+    summary: &mut Summary<'_>,
 ) -> CargoResult<bool> {
     if safely_absent(root, source) {
         return Ok(false);
@@ -1449,7 +1469,7 @@ fn retire(
 fn drain_trash(
     trash: &Path,
     remaining: &mut usize,
-    summary: &mut Summary,
+    summary: &mut Summary<'_>,
     dry_run: bool,
 ) -> CargoResult<()> {
     if !plain_directory(trash) {
@@ -1460,6 +1480,7 @@ fn drain_trash(
     };
     let device = filesystem_device(&fs::symlink_metadata(trash)?);
     for entry in entries {
+        summary.tick();
         let entry = entry?;
         if !entry.file_type()?.is_dir() {
             continue;
@@ -1480,7 +1501,7 @@ fn drain_entry(
     path: &Path,
     device: u64,
     remaining: &mut usize,
-    summary: &mut Summary,
+    summary: &mut Summary<'_>,
     dry_run: bool,
 ) -> CargoResult<()> {
     let owner = path.join("owner");
@@ -1514,7 +1535,7 @@ fn remove_bounded(
     path: &Path,
     device: u64,
     remaining: &mut usize,
-    summary: &mut Summary,
+    summary: &mut Summary<'_>,
     dry_run: bool,
 ) -> CargoResult<bool> {
     remove_entry(path, device, remaining, summary, dry_run)
@@ -1525,7 +1546,7 @@ fn remove_entry(
     path: &Path,
     device: u64,
     remaining: &mut usize,
-    summary: &mut Summary,
+    summary: &mut Summary<'_>,
     dry_run: bool,
 ) -> CargoResult<bool> {
     if absent(path) {
@@ -1565,6 +1586,7 @@ fn remove_entry(
     *remaining -= 1;
     summary.deleted_entries += 1;
     summary.counts.record(&metadata);
+    summary.tick();
     Ok(true)
 }
 
@@ -1712,7 +1734,11 @@ mod tests {
 
     /// Eligibility assertions should not depend on runner scheduling. Count limits
     /// remain active; the deadline test supplies its own explicit time budget.
-    fn collect(root: &Path, dry_run: bool, current_ohm: Option<&str>) -> CargoResult<Summary> {
+    fn collect(
+        root: &Path,
+        dry_run: bool,
+        current_ohm: Option<&str>,
+    ) -> CargoResult<Summary<'static>> {
         collect_at(root, dry_run, SystemTime::now(), current_ohm)
     }
 
@@ -1721,7 +1747,7 @@ mod tests {
         dry_run: bool,
         now: SystemTime,
         current_ohm: Option<&str>,
-    ) -> CargoResult<Summary> {
+    ) -> CargoResult<Summary<'static>> {
         collect_with_lock_budget(
             root,
             dry_run,
@@ -1739,7 +1765,7 @@ mod tests {
         lock_budget: Duration,
         current_ohm: Option<&str>,
         state: &mut CollectionState,
-    ) -> CargoResult<Summary> {
+    ) -> CargoResult<Summary<'static>> {
         let mut summary = Summary::default();
         super::collect_with_lock_budget(
             root,
@@ -2350,8 +2376,15 @@ mod tests {
         dependency_use(&cache, &[entry], now - CONTEXT_MAX_IDLE)?;
         let profiles = profiles(&cache.root)?;
         let tracker = cache.tracker()?;
-        let candidates =
-            idle_dependencies(&cache.root, &profiles, "abcdef", now, Some(&tracker)).unwrap();
+        let candidates = idle_dependencies(
+            &cache.root,
+            &profiles,
+            "abcdef",
+            now,
+            Some(&tracker),
+            &mut Summary::default(),
+        )
+        .unwrap();
         assert_eq!(candidates.len(), 1);
         let lease = crate::workspace::build_cache_gc_lease::ConsumerLease::acquire(&cache.root)?;
         let mut usage = ContextUse::new(cache.tracker()?, "abcdef", Some(vec![entry.into()]))?;
