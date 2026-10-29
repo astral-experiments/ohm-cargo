@@ -3095,6 +3095,23 @@ fn workspace_resolve_cache_applies_edited_workspace_lints() {
         .run();
 }
 
+#[cargo_test]
+fn workspace_resolve_cache_does_not_publish_a_noncanonical_locked_file() {
+    let project = workspace_resolve_cache_project();
+    workspace_resolve_cache_command(&project, "build -p selected").run();
+    let cache = project.build_dir().join(".cargo-resolve-cache-v1");
+    let fingerprint = fs::read(&cache).unwrap();
+
+    let original = project.read_lockfile();
+    let equivalent = original.replacen("[[package]]", "\n[[package]]", 1);
+    assert_ne!(equivalent, original);
+    project.change_file("Cargo.lock", &equivalent);
+    workspace_resolve_cache_command(&project, "build --locked -p selected").run();
+
+    assert_eq!(project.read_lockfile(), equivalent);
+    assert_eq!(fs::read(cache).unwrap(), fingerprint);
+}
+
 #[cfg(unix)]
 #[cargo_test]
 fn workspace_resolve_cache_replaces_a_symlink() {

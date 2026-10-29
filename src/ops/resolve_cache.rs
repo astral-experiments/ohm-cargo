@@ -33,9 +33,13 @@ pub(super) fn mark_workspace_resolve_fresh(
     workspace: &Workspace<'_>,
     resolve: &Resolve,
     rustc: &Rustc,
+    encoding: &str,
 ) -> CargoResult<()> {
     lockfile::with_pkg_lockfile(workspace, |lockfile_contents, _path| {
-        if !lockfile::lockfile_matches_resolve(lockfile_contents, resolve) {
+        // A concurrent writer may have changed the lockfile, including its preserved comments.
+        if !lockfile_contents.lines().eq(encoding.lines())
+            && !lockfile::lockfile_matches_resolve(lockfile_contents, resolve)
+        {
             return Ok(());
         }
 
