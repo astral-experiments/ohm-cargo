@@ -1,0 +1,2120 @@
+{
+  "A-behavior-before/behavior.json": {
+    "held_reader": "3062c6897baa0a9d436979e2a3f3dc4c43306067cda13c501f32402f7658a44f",
+    "held_verdict": "rejected: Star import cannot be parenthesized",
+    "tests": {
+      "fixtures": {
+        "code": 0,
+        "elf": "f502d5919920f81692487761e975a69ced9c722e889e9884786a6a3850cfcfd1",
+        "inventory": "1a74b33866d7c6c01aa048e440d779c41e138eb8575181ff689af23d5501da8c",
+        "names": 558,
+        "ran": "inline_err::from_import_parenthesized_star.py"
+      },
+      "generate_inline_tests": {
+        "code": 0,
+        "elf": "576f1c40fa2653d9d35dec2511371ed3e70838880e61a117b959093280395c33",
+        "inventory": "504a030ad930ab9a0fd23076dc6b175d4753c0d56dff49b158ce87b6ca344cc7",
+        "names": 1,
+        "ran": "generate_inline_tests"
+      }
+    }
+  },
+  "A-behavior-final/behavior.json": {
+    "held_reader": "3062c6897baa0a9d436979e2a3f3dc4c43306067cda13c501f32402f7658a44f",
+    "held_verdict": "rejected: Star import cannot be parenthesized",
+    "tests": {
+      "fixtures": {
+        "code": 0,
+        "elf": "f502d5919920f81692487761e975a69ced9c722e889e9884786a6a3850cfcfd1",
+        "inventory": "1a74b33866d7c6c01aa048e440d779c41e138eb8575181ff689af23d5501da8c",
+        "names": 558,
+        "ran": "inline_err::from_import_parenthesized_star.py"
+      },
+      "generate_inline_tests": {
+        "code": 0,
+        "elf": "576f1c40fa2653d9d35dec2511371ed3e70838880e61a117b959093280395c33",
+        "inventory": "504a030ad930ab9a0fd23076dc6b175d4753c0d56dff49b158ce87b6ca344cc7",
+        "names": 1,
+        "ran": "generate_inline_tests"
+      }
+    }
+  },
+  "A-conflict-before/conflict.json": {
+    "argv": [
+      "@HOME@/.cargo/bin/rustc",
+      "+ohm",
+      "--edition=2021",
+      "--crate-name",
+      "macro_conflict",
+      "--crate-type",
+      "lib",
+      "--error-format=json",
+      "--emit=metadata=@HOME@/.cache/ohm-profile-header-147-h7-ir-v1/unexpected.rmeta",
+      "--extern",
+      "get_size_derive2=@HOME@/.cache/ohm-relink-edge-demand-20261029/default/target/debug/build/workspaces/1b2441f367ef905b/v2-7a25c8503164bc7a/get-size-derive2/965a33a995f4c045/out/libget_size_derive2-965a33a995f4c045.so",
+      "@HOME@/.cache/ohm-profile-header-147-h7-ir-v1/conflict.rs"
+    ],
+    "dso": "3b3f0f70196628ba5a08d5faeedc0f30ed633e81eff08040cb565e746955cf7e",
+    "errors": [
+      "`size` conflicts with mutually exclusive `size_fn`"
+    ],
+    "raw": {
+      "exec-open.471362": "d823fb7e56ab1a2746df53ded75cd8cab26a401137ea4cb45716d7d57da86c29",
+      "exec-open.471363": "29d50c6fb633dc49972d8ca854afcecf7e4bb5f479cb870f89ccdf6ff854bf31",
+      "exec-open.471364": "29d50c6fb633dc49972d8ca854afcecf7e4bb5f479cb870f89ccdf6ff854bf31",
+      "exec-open.471365": "29d50c6fb633dc49972d8ca854afcecf7e4bb5f479cb870f89ccdf6ff854bf31",
+      "exec-open.471366": "29d50c6fb633dc49972d8ca854afcecf7e4bb5f479cb870f89ccdf6ff854bf31",
+      "exec-open.471367": "60a6949a3c7223cbc875dd8496c4baa8a9a61a7bbeccf01425fcc4e70d2e8ace",
+      "exec-open.471368": "ff34a8c720dd549917f5ee3c9dfa1d8ea969f4ce1e28992cce50e9248cd92514"
+    },
+    "source": "21578cae444fcba37594a437050ff41e8ba95f14e32a580b92b1c125a938997f",
+    "status": 1,
+    "stderr": "d1b64439e5a7ef6f918448647a348d129d2f7faf54cc96a0e5ce3cbd871350df",
+    "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "successful_dso_opens": [
+      [
+        "exec-open.471368",
+        "openat(AT_FDCWD, \"@HOME@/.cache/ohm-relink-edge-demand-20261029/default/target/debug/build/workspaces/1b2441f367ef905b/v2-7a25c8503164bc7a/get-size-derive2/965a33a995f4c045/out/libget_size_derive2-965a33a995f4c045.so\", O_RDONLY|O_CLOEXEC) = 5"
+      ],
+      [
+        "exec-open.471368",
+        "openat(AT_FDCWD, \"@HOME@/.cache/ohm-relink-edge-demand-20261029/default/target/debug/build/workspaces/1b2441f367ef905b/v2-7a25c8503164bc7a/get-size-derive2/965a33a995f4c045/out/libget_size_derive2-965a33a995f4c045.so\", O_RDONLY|O_CLOEXEC) = 5"
+      ],
+      [
+        "exec-open.471368",
+        "openat(AT_FDCWD, \"@HOME@/.cache/ohm-relink-edge-demand-20261029/default/target/debug/build/workspaces/1b2441f367ef905b/v2-7a25c8503164bc7a/get-size-derive2/965a33a995f4c045/out/libget_size_derive2-965a33a995f4c045.so\", O_RDONLY|O_CLOEXEC) = 5"
+      ],
+      [
+        "exec-open.471368",
+        "openat(AT_FDCWD, \"@HOME@/.cache/ohm-relink-edge-demand-20261029/default/target/debug/build/workspaces/1b2441f367ef905b/v2-7a25c8503164bc7a/get-size-derive2/965a33a995f4c045/out/libget_size_derive2-965a33a995f4c045.so\", O_RDONLY|O_CLOEXEC) = 5"
+      ],
+      [
+        "exec-open.471368",
+        "openat(AT_FDCWD, \"@HOME@/.cache/ohm-relink-edge-demand-20261029/default/target/debug/build/workspaces/1b2441f367ef905b/v2-7a25c8503164bc7a/get-size-derive2/965a33a995f4c045/out/libget_size_derive2-965a33a995f4c045.so\", O_RDONLY|O_CLOEXEC) = 5"
+      ]
+    ],
+    "successful_execs": [
+      "@HOME@/.cargo/bin/rustc",
+      "@HOME@/.cache/ohm-relink-edge-demand-20261029/rustup/toolchains/ohm/bin/rustc"
+    ],
+    "true_compiler": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60"
+  },
+  "A-conflict-final/conflict.json": {
+    "argv": [
+      "@HOME@/.cargo/bin/rustc",
+      "+ohm",
+      "--edition=2021",
+      "--crate-name",
+      "macro_conflict",
+      "--crate-type",
+      "lib",
+      "--error-format=json",
+      "--emit=metadata=@HOME@/.cache/ohm-profile-header-147-h7-ir-v1/unexpected.rmeta",
+      "--extern",
+      "get_size_derive2=@HOME@/.cache/ohm-relink-edge-demand-20261029/default/target/debug/build/workspaces/1b2441f367ef905b/v2-7a25c8503164bc7a/get-size-derive2/965a33a995f4c045/out/libget_size_derive2-965a33a995f4c045.so",
+      "@HOME@/.cache/ohm-profile-header-147-h7-ir-v1/conflict.rs"
+    ],
+    "dso": "3b3f0f70196628ba5a08d5faeedc0f30ed633e81eff08040cb565e746955cf7e",
+    "errors": [
+      "`size` conflicts with mutually exclusive `size_fn`"
+    ],
+    "raw": {
+      "exec-open.476501": "c2b829f03c904bd80fed1f8b3679ed6a5d968c9b6c52f186054d0816ce00af03",
+      "exec-open.476502": "29d50c6fb633dc49972d8ca854afcecf7e4bb5f479cb870f89ccdf6ff854bf31",
+      "exec-open.476503": "29d50c6fb633dc49972d8ca854afcecf7e4bb5f479cb870f89ccdf6ff854bf31",
+      "exec-open.476504": "29d50c6fb633dc49972d8ca854afcecf7e4bb5f479cb870f89ccdf6ff854bf31",
+      "exec-open.476505": "29d50c6fb633dc49972d8ca854afcecf7e4bb5f479cb870f89ccdf6ff854bf31",
+      "exec-open.476506": "60a6949a3c7223cbc875dd8496c4baa8a9a61a7bbeccf01425fcc4e70d2e8ace",
+      "exec-open.476507": "ff34a8c720dd549917f5ee3c9dfa1d8ea969f4ce1e28992cce50e9248cd92514"
+    },
+    "source": "21578cae444fcba37594a437050ff41e8ba95f14e32a580b92b1c125a938997f",
+    "status": 1,
+    "stderr": "d1b64439e5a7ef6f918448647a348d129d2f7faf54cc96a0e5ce3cbd871350df",
+    "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "successful_dso_opens": [
+      [
+        "exec-open.476507",
+        "openat(AT_FDCWD, \"@HOME@/.cache/ohm-relink-edge-demand-20261029/default/target/debug/build/workspaces/1b2441f367ef905b/v2-7a25c8503164bc7a/get-size-derive2/965a33a995f4c045/out/libget_size_derive2-965a33a995f4c045.so\", O_RDONLY|O_CLOEXEC) = 5"
+      ],
+      [
+        "exec-open.476507",
+        "openat(AT_FDCWD, \"@HOME@/.cache/ohm-relink-edge-demand-20261029/default/target/debug/build/workspaces/1b2441f367ef905b/v2-7a25c8503164bc7a/get-size-derive2/965a33a995f4c045/out/libget_size_derive2-965a33a995f4c045.so\", O_RDONLY|O_CLOEXEC) = 5"
+      ],
+      [
+        "exec-open.476507",
+        "openat(AT_FDCWD, \"@HOME@/.cache/ohm-relink-edge-demand-20261029/default/target/debug/build/workspaces/1b2441f367ef905b/v2-7a25c8503164bc7a/get-size-derive2/965a33a995f4c045/out/libget_size_derive2-965a33a995f4c045.so\", O_RDONLY|O_CLOEXEC) = 5"
+      ],
+      [
+        "exec-open.476507",
+        "openat(AT_FDCWD, \"@HOME@/.cache/ohm-relink-edge-demand-20261029/default/target/debug/build/workspaces/1b2441f367ef905b/v2-7a25c8503164bc7a/get-size-derive2/965a33a995f4c045/out/libget_size_derive2-965a33a995f4c045.so\", O_RDONLY|O_CLOEXEC) = 5"
+      ],
+      [
+        "exec-open.476507",
+        "openat(AT_FDCWD, \"@HOME@/.cache/ohm-relink-edge-demand-20261029/default/target/debug/build/workspaces/1b2441f367ef905b/v2-7a25c8503164bc7a/get-size-derive2/965a33a995f4c045/out/libget_size_derive2-965a33a995f4c045.so\", O_RDONLY|O_CLOEXEC) = 5"
+      ]
+    ],
+    "successful_execs": [
+      "@HOME@/.cargo/bin/rustc",
+      "@HOME@/.cache/ohm-relink-edge-demand-20261029/rustup/toolchains/ohm/bin/rustc"
+    ],
+    "true_compiler": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60"
+  },
+  "A-native-before": {
+    "command": {
+      "arm": "A",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "elapsed_ns": 537317289,
+      "endfloor": {
+        "durable_home": 27002142720,
+        "durable_scratch": 27514019840,
+        "memory": 95732211712,
+        "workspace_tmpfs": 47710744576
+      },
+      "executable": "@HOME@/.cargo/bin/cargo",
+      "exit": 0,
+      "floor": {
+        "durable_home": 27002335232,
+        "durable_scratch": 27514019840,
+        "memory": 95727013888,
+        "workspace_tmpfs": 47710752768
+      },
+      "monotonic_end": 398740120512495,
+      "monotonic_start": 398739583195206,
+      "physical": "967f5f1db2938847fac22d78dc222054cbb143a5fabcffcad0bd15f8929b47e9",
+      "requested_command": [
+        "+ohm",
+        "test",
+        "--locked",
+        "--offline",
+        "--no-run",
+        "-j4",
+        "-p",
+        "ruff_python_parser",
+        "--test",
+        "generate_inline_tests",
+        "--test",
+        "fixtures"
+      ],
+      "source": "893b5ff55f23fde170f5079766ebbe20937419a24296394a6dd0f326b8ccba88",
+      "stderr": "5919ec2294a2ebc24f51628aa7dffb15e0430459362e6d4cb42af9fac61dffe0",
+      "stdout": "b3c78219b45a78b6602bcf19f1dee246e3878a6319f61ba2e19763f0d93e2698",
+      "target_roster": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+      "uid": 1000
+    },
+    "execs": [
+      {
+        "identity": [
+          64769,
+          2626243
+        ],
+        "pid": 471270,
+        "role": "proxy"
+      },
+      {
+        "identity": [
+          64769,
+          28051222
+        ],
+        "pid": 471270,
+        "role": "cargo"
+      }
+    ],
+    "reported": {
+      "fresh": 147,
+      "map": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+      "output_sha": "b3c78219b45a78b6602bcf19f1dee246e3878a6319f61ba2e19763f0d93e2698",
+      "physical_execs": [
+        "proxy",
+        "cargo"
+      ],
+      "products": 265,
+      "typed": "0ae8d79d159cbdeebb008cba1baf6ac3c6aa97e821ed4d134c5e3cac09f0c6e2",
+      "units": 147
+    }
+  },
+  "A-native-before-hit": {
+    "command": {
+      "arm": "A",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "elapsed_ns": 278688439,
+      "endfloor": {
+        "durable_home": 27001937920,
+        "durable_scratch": 27514019840,
+        "memory": 95688495104,
+        "workspace_tmpfs": 47710744576
+      },
+      "executable": "@HOME@/.cargo/bin/cargo",
+      "exit": 0,
+      "floor": {
+        "durable_home": 27002130432,
+        "durable_scratch": 27514019840,
+        "memory": 95715721216,
+        "workspace_tmpfs": 47710744576
+      },
+      "monotonic_end": 398741696607398,
+      "monotonic_start": 398741417918959,
+      "physical": "967f5f1db2938847fac22d78dc222054cbb143a5fabcffcad0bd15f8929b47e9",
+      "requested_command": [
+        "+ohm",
+        "test",
+        "--locked",
+        "--offline",
+        "--no-run",
+        "-j4",
+        "-p",
+        "ruff_python_parser",
+        "--test",
+        "generate_inline_tests",
+        "--test",
+        "fixtures"
+      ],
+      "source": "893b5ff55f23fde170f5079766ebbe20937419a24296394a6dd0f326b8ccba88",
+      "stderr": "38e8feae2a3c157ac928785aa4e58e423f4c3e309b8c2c3a4f934b8e6fd65f92",
+      "stdout": "175f0be6ecfec4076986d73cd4d56ab79236bbc555f6912ecdd8385a3db8730c",
+      "target_roster": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+      "uid": 1000
+    },
+    "execs": [
+      {
+        "identity": [
+          64769,
+          2626243
+        ],
+        "pid": 471303,
+        "role": "proxy"
+      },
+      {
+        "identity": [
+          64769,
+          28051222
+        ],
+        "pid": 471303,
+        "role": "cargo"
+      }
+    ],
+    "reported": {
+      "fresh": 147,
+      "map": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+      "output_sha": "175f0be6ecfec4076986d73cd4d56ab79236bbc555f6912ecdd8385a3db8730c",
+      "physical_execs": [
+        "proxy",
+        "cargo"
+      ],
+      "products": 265,
+      "typed": "0ae8d79d159cbdeebb008cba1baf6ac3c6aa97e821ed4d134c5e3cac09f0c6e2",
+      "units": 147
+    }
+  },
+  "A-native-final": {
+    "command": {
+      "arm": "A",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "elapsed_ns": 454352056,
+      "endfloor": {
+        "durable_home": 26995474432,
+        "durable_scratch": 27514019840,
+        "memory": 95779016704,
+        "workspace_tmpfs": 47710703616
+      },
+      "executable": "@HOME@/.cargo/bin/cargo",
+      "exit": 0,
+      "floor": {
+        "durable_home": 26995666944,
+        "durable_scratch": 27514019840,
+        "memory": 95754362880,
+        "workspace_tmpfs": 47710703616
+      },
+      "monotonic_end": 399212475236479,
+      "monotonic_start": 399212020884423,
+      "physical": "967f5f1db2938847fac22d78dc222054cbb143a5fabcffcad0bd15f8929b47e9",
+      "requested_command": [
+        "+ohm",
+        "test",
+        "--locked",
+        "--offline",
+        "--no-run",
+        "-j4",
+        "-p",
+        "ruff_python_parser",
+        "--test",
+        "generate_inline_tests",
+        "--test",
+        "fixtures"
+      ],
+      "source": "893b5ff55f23fde170f5079766ebbe20937419a24296394a6dd0f326b8ccba88",
+      "stderr": "bf947a10dc7ea89798618c73c3c4b756d0d6d54c624d29a20c126e256499df5b",
+      "stdout": "a9d82a5725cf88b87ca6698f7eb6b9bed090b0660f79dabef99b1be3e401e803",
+      "target_roster": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+      "uid": 1000
+    },
+    "execs": [
+      {
+        "identity": [
+          64769,
+          2626243
+        ],
+        "pid": 476442,
+        "role": "proxy"
+      },
+      {
+        "identity": [
+          64769,
+          28051222
+        ],
+        "pid": 476442,
+        "role": "cargo"
+      }
+    ],
+    "reported": {
+      "fresh": 147,
+      "map": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+      "output_sha": "a9d82a5725cf88b87ca6698f7eb6b9bed090b0660f79dabef99b1be3e401e803",
+      "physical_execs": [
+        "proxy",
+        "cargo"
+      ],
+      "products": 265,
+      "typed": "0ae8d79d159cbdeebb008cba1baf6ac3c6aa97e821ed4d134c5e3cac09f0c6e2",
+      "units": 147
+    }
+  },
+  "A-qualify-restore-edit": {
+    "command": {
+      "arm": "A",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "elapsed_ns": 309147168,
+      "endfloor": {
+        "durable_home": 27001196544,
+        "durable_scratch": 27514019840,
+        "memory": 95640227840,
+        "workspace_tmpfs": 47710744576
+      },
+      "executable": "@HOME@/.cargo/bin/cargo",
+      "exit": 0,
+      "floor": {
+        "durable_home": 27001389056,
+        "durable_scratch": 27514019840,
+        "memory": 95679606784,
+        "workspace_tmpfs": 47710744576
+      },
+      "monotonic_end": 398746252346848,
+      "monotonic_start": 398745943199680,
+      "physical": "967f5f1db2938847fac22d78dc222054cbb143a5fabcffcad0bd15f8929b47e9",
+      "requested_command": [
+        "+ohm",
+        "test",
+        "--locked",
+        "--offline",
+        "--no-run",
+        "-j4",
+        "-p",
+        "ruff_python_parser",
+        "--test",
+        "generate_inline_tests",
+        "--test",
+        "fixtures"
+      ],
+      "source": "893b5ff55f23fde170f5079766ebbe20937419a24296394a6dd0f326b8ccba88",
+      "stderr": "98667615e220ab802e1d4e30a26418a9c405d5a02e68d3fb3524113705705c96",
+      "stdout": "1c3351ac4cf083995feb515f5d5b32f02cfff448a6c6c4a8b1778aa2230f8304",
+      "target_roster": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+      "uid": 1000
+    },
+    "execs": [
+      {
+        "identity": [
+          64769,
+          2626243
+        ],
+        "pid": 471459,
+        "role": "proxy"
+      },
+      {
+        "identity": [
+          64769,
+          28051222
+        ],
+        "pid": 471459,
+        "role": "cargo"
+      }
+    ],
+    "reported": {
+      "fresh": 147,
+      "map": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+      "output_sha": "1c3351ac4cf083995feb515f5d5b32f02cfff448a6c6c4a8b1778aa2230f8304",
+      "physical_execs": [
+        "proxy",
+        "cargo"
+      ],
+      "products": 265,
+      "typed": "0ae8d79d159cbdeebb008cba1baf6ac3c6aa97e821ed4d134c5e3cac09f0c6e2",
+      "units": 147
+    }
+  },
+  "A-qualify-restore-unchanged": {
+    "command": {
+      "arm": "A",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "elapsed_ns": 218135271,
+      "endfloor": {
+        "durable_home": 27000991744,
+        "durable_scratch": 27514019840,
+        "memory": 95655522304,
+        "workspace_tmpfs": 47710744576
+      },
+      "executable": "@HOME@/.cargo/bin/cargo",
+      "exit": 0,
+      "floor": {
+        "durable_home": 27001184256,
+        "durable_scratch": 27514019840,
+        "memory": 95665713152,
+        "workspace_tmpfs": 47710744576
+      },
+      "monotonic_end": 398747082634887,
+      "monotonic_start": 398746864499616,
+      "physical": "967f5f1db2938847fac22d78dc222054cbb143a5fabcffcad0bd15f8929b47e9",
+      "requested_command": [
+        "+ohm",
+        "test",
+        "--locked",
+        "--offline",
+        "--no-run",
+        "-j4",
+        "-p",
+        "ruff_python_parser",
+        "--test",
+        "generate_inline_tests",
+        "--test",
+        "fixtures"
+      ],
+      "source": "893b5ff55f23fde170f5079766ebbe20937419a24296394a6dd0f326b8ccba88",
+      "stderr": "6b434502d81642cfa3a663adb2c3812e9c8626aecf70cd061ca0ba1e624b1558",
+      "stdout": "14e8dc0e2ec024e7b3f9fc180bd3f1632a987db8efd0c7607c5fe47b6cceae66",
+      "target_roster": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+      "uid": 1000
+    },
+    "execs": [
+      {
+        "identity": [
+          64769,
+          2626243
+        ],
+        "pid": 471484,
+        "role": "proxy"
+      },
+      {
+        "identity": [
+          64769,
+          28051222
+        ],
+        "pid": 471484,
+        "role": "cargo"
+      }
+    ],
+    "reported": {
+      "fresh": 147,
+      "map": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+      "output_sha": "14e8dc0e2ec024e7b3f9fc180bd3f1632a987db8efd0c7607c5fe47b6cceae66",
+      "physical_execs": [
+        "proxy",
+        "cargo"
+      ],
+      "products": 265,
+      "typed": "0ae8d79d159cbdeebb008cba1baf6ac3c6aa97e821ed4d134c5e3cac09f0c6e2",
+      "units": 147
+    }
+  },
+  "A-qualify-reverse-edit": {
+    "command": {
+      "arm": "A",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "elapsed_ns": 396298700,
+      "endfloor": {
+        "durable_home": 27001606144,
+        "durable_scratch": 27514019840,
+        "memory": 95660576768,
+        "workspace_tmpfs": 47710744576
+      },
+      "executable": "@HOME@/.cargo/bin/cargo",
+      "exit": 0,
+      "floor": {
+        "durable_home": 27001798656,
+        "durable_scratch": 27514019840,
+        "memory": 95657635840,
+        "workspace_tmpfs": 47710744576
+      },
+      "monotonic_end": 398744518047579,
+      "monotonic_start": 398744121748879,
+      "physical": "967f5f1db2938847fac22d78dc222054cbb143a5fabcffcad0bd15f8929b47e9",
+      "requested_command": [
+        "+ohm",
+        "test",
+        "--locked",
+        "--offline",
+        "--no-run",
+        "-j4",
+        "-p",
+        "ruff_python_parser",
+        "--test",
+        "generate_inline_tests",
+        "--test",
+        "fixtures"
+      ],
+      "source": "cd6179ed534ae36214b5554461d767080c86a3dad2652f15f304ca31d4da77a2",
+      "stderr": "c7abfa6e011293b437d3ecd4f9b21d2ba3f7dc0fcdabf7cf3e7d7b316c7efa00",
+      "stdout": "95a17f363bbd514538bc4a57587e6f7e7da97f1bed4bb841fbab44785eb897d9",
+      "target_roster": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+      "uid": 1000
+    },
+    "execs": [
+      {
+        "identity": [
+          64769,
+          2626243
+        ],
+        "pid": 471409,
+        "role": "proxy"
+      },
+      {
+        "identity": [
+          64769,
+          28051222
+        ],
+        "pid": 471409,
+        "role": "cargo"
+      }
+    ],
+    "reported": {
+      "fresh": 147,
+      "map": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+      "output_sha": "95a17f363bbd514538bc4a57587e6f7e7da97f1bed4bb841fbab44785eb897d9",
+      "physical_execs": [
+        "proxy",
+        "cargo"
+      ],
+      "products": 265,
+      "typed": "0ae8d79d159cbdeebb008cba1baf6ac3c6aa97e821ed4d134c5e3cac09f0c6e2",
+      "units": 147
+    }
+  },
+  "A-qualify-reverse-unchanged": {
+    "command": {
+      "arm": "A",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "elapsed_ns": 218547837,
+      "endfloor": {
+        "durable_home": 27001401344,
+        "durable_scratch": 27514019840,
+        "memory": 95686180864,
+        "workspace_tmpfs": 47710744576
+      },
+      "executable": "@HOME@/.cargo/bin/cargo",
+      "exit": 0,
+      "floor": {
+        "durable_home": 27001593856,
+        "durable_scratch": 27514019840,
+        "memory": 95672344576,
+        "workspace_tmpfs": 47710744576
+      },
+      "monotonic_end": 398745350105255,
+      "monotonic_start": 398745131557418,
+      "physical": "967f5f1db2938847fac22d78dc222054cbb143a5fabcffcad0bd15f8929b47e9",
+      "requested_command": [
+        "+ohm",
+        "test",
+        "--locked",
+        "--offline",
+        "--no-run",
+        "-j4",
+        "-p",
+        "ruff_python_parser",
+        "--test",
+        "generate_inline_tests",
+        "--test",
+        "fixtures"
+      ],
+      "source": "cd6179ed534ae36214b5554461d767080c86a3dad2652f15f304ca31d4da77a2",
+      "stderr": "6b434502d81642cfa3a663adb2c3812e9c8626aecf70cd061ca0ba1e624b1558",
+      "stdout": "cd2abf84b9d28185e636e6dbfbe286bbb6c7f6c028cbb4116abd34b851f8ddfa",
+      "target_roster": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+      "uid": 1000
+    },
+    "execs": [
+      {
+        "identity": [
+          64769,
+          2626243
+        ],
+        "pid": 471433,
+        "role": "proxy"
+      },
+      {
+        "identity": [
+          64769,
+          28051222
+        ],
+        "pid": 471433,
+        "role": "cargo"
+      }
+    ],
+    "reported": {
+      "fresh": 147,
+      "map": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+      "output_sha": "cd2abf84b9d28185e636e6dbfbe286bbb6c7f6c028cbb4116abd34b851f8ddfa",
+      "physical_execs": [
+        "proxy",
+        "cargo"
+      ],
+      "products": 265,
+      "typed": "0ae8d79d159cbdeebb008cba1baf6ac3c6aa97e821ed4d134c5e3cac09f0c6e2",
+      "units": 147
+    }
+  },
+  "B-behavior-before/behavior.json": {
+    "held_reader": "3062c6897baa0a9d436979e2a3f3dc4c43306067cda13c501f32402f7658a44f",
+    "held_verdict": "rejected: Star import cannot be parenthesized",
+    "tests": {
+      "fixtures": {
+        "code": 0,
+        "elf": "f502d5919920f81692487761e975a69ced9c722e889e9884786a6a3850cfcfd1",
+        "inventory": "1a74b33866d7c6c01aa048e440d779c41e138eb8575181ff689af23d5501da8c",
+        "names": 558,
+        "ran": "inline_err::from_import_parenthesized_star.py"
+      },
+      "generate_inline_tests": {
+        "code": 0,
+        "elf": "576f1c40fa2653d9d35dec2511371ed3e70838880e61a117b959093280395c33",
+        "inventory": "504a030ad930ab9a0fd23076dc6b175d4753c0d56dff49b158ce87b6ca344cc7",
+        "names": 1,
+        "ran": "generate_inline_tests"
+      }
+    }
+  },
+  "B-behavior-final/behavior.json": {
+    "held_reader": "3062c6897baa0a9d436979e2a3f3dc4c43306067cda13c501f32402f7658a44f",
+    "held_verdict": "rejected: Star import cannot be parenthesized",
+    "tests": {
+      "fixtures": {
+        "code": 0,
+        "elf": "f502d5919920f81692487761e975a69ced9c722e889e9884786a6a3850cfcfd1",
+        "inventory": "1a74b33866d7c6c01aa048e440d779c41e138eb8575181ff689af23d5501da8c",
+        "names": 558,
+        "ran": "inline_err::from_import_parenthesized_star.py"
+      },
+      "generate_inline_tests": {
+        "code": 0,
+        "elf": "576f1c40fa2653d9d35dec2511371ed3e70838880e61a117b959093280395c33",
+        "inventory": "504a030ad930ab9a0fd23076dc6b175d4753c0d56dff49b158ce87b6ca344cc7",
+        "names": 1,
+        "ran": "generate_inline_tests"
+      }
+    }
+  },
+  "B-conflict-before/conflict.json": {
+    "argv": [
+      "@HOME@/.cargo/bin/rustc",
+      "+ohm",
+      "--edition=2021",
+      "--crate-name",
+      "macro_conflict",
+      "--crate-type",
+      "lib",
+      "--error-format=json",
+      "--emit=metadata=@HOME@/.cache/ohm-profile-header-147-h7-ir-v1/unexpected.rmeta",
+      "--extern",
+      "get_size_derive2=@HOME@/.cache/ohm-relink-edge-demand-20261029/default/target/debug/build/workspaces/1b2441f367ef905b/v2-7a25c8503164bc7a/get-size-derive2/965a33a995f4c045/out/libget_size_derive2-965a33a995f4c045.so",
+      "@HOME@/.cache/ohm-profile-header-147-h7-ir-v1/conflict.rs"
+    ],
+    "dso": "3b3f0f70196628ba5a08d5faeedc0f30ed633e81eff08040cb565e746955cf7e",
+    "errors": [
+      "`size` conflicts with mutually exclusive `size_fn`"
+    ],
+    "raw": {
+      "exec-open.471621": "0ce71e8e5ab50514df6ff230bf27a11e726a50ba611733e28d32d098e1e8777b",
+      "exec-open.471622": "29d50c6fb633dc49972d8ca854afcecf7e4bb5f479cb870f89ccdf6ff854bf31",
+      "exec-open.471623": "29d50c6fb633dc49972d8ca854afcecf7e4bb5f479cb870f89ccdf6ff854bf31",
+      "exec-open.471624": "29d50c6fb633dc49972d8ca854afcecf7e4bb5f479cb870f89ccdf6ff854bf31",
+      "exec-open.471625": "29d50c6fb633dc49972d8ca854afcecf7e4bb5f479cb870f89ccdf6ff854bf31",
+      "exec-open.471626": "60a6949a3c7223cbc875dd8496c4baa8a9a61a7bbeccf01425fcc4e70d2e8ace",
+      "exec-open.471627": "ff34a8c720dd549917f5ee3c9dfa1d8ea969f4ce1e28992cce50e9248cd92514"
+    },
+    "source": "21578cae444fcba37594a437050ff41e8ba95f14e32a580b92b1c125a938997f",
+    "status": 1,
+    "stderr": "d1b64439e5a7ef6f918448647a348d129d2f7faf54cc96a0e5ce3cbd871350df",
+    "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "successful_dso_opens": [
+      [
+        "exec-open.471627",
+        "openat(AT_FDCWD, \"@HOME@/.cache/ohm-relink-edge-demand-20261029/default/target/debug/build/workspaces/1b2441f367ef905b/v2-7a25c8503164bc7a/get-size-derive2/965a33a995f4c045/out/libget_size_derive2-965a33a995f4c045.so\", O_RDONLY|O_CLOEXEC) = 5"
+      ],
+      [
+        "exec-open.471627",
+        "openat(AT_FDCWD, \"@HOME@/.cache/ohm-relink-edge-demand-20261029/default/target/debug/build/workspaces/1b2441f367ef905b/v2-7a25c8503164bc7a/get-size-derive2/965a33a995f4c045/out/libget_size_derive2-965a33a995f4c045.so\", O_RDONLY|O_CLOEXEC) = 5"
+      ],
+      [
+        "exec-open.471627",
+        "openat(AT_FDCWD, \"@HOME@/.cache/ohm-relink-edge-demand-20261029/default/target/debug/build/workspaces/1b2441f367ef905b/v2-7a25c8503164bc7a/get-size-derive2/965a33a995f4c045/out/libget_size_derive2-965a33a995f4c045.so\", O_RDONLY|O_CLOEXEC) = 5"
+      ],
+      [
+        "exec-open.471627",
+        "openat(AT_FDCWD, \"@HOME@/.cache/ohm-relink-edge-demand-20261029/default/target/debug/build/workspaces/1b2441f367ef905b/v2-7a25c8503164bc7a/get-size-derive2/965a33a995f4c045/out/libget_size_derive2-965a33a995f4c045.so\", O_RDONLY|O_CLOEXEC) = 5"
+      ],
+      [
+        "exec-open.471627",
+        "openat(AT_FDCWD, \"@HOME@/.cache/ohm-relink-edge-demand-20261029/default/target/debug/build/workspaces/1b2441f367ef905b/v2-7a25c8503164bc7a/get-size-derive2/965a33a995f4c045/out/libget_size_derive2-965a33a995f4c045.so\", O_RDONLY|O_CLOEXEC) = 5"
+      ]
+    ],
+    "successful_execs": [
+      "@HOME@/.cargo/bin/rustc",
+      "@HOME@/.cache/ohm-relink-edge-demand-20261029/rustup/toolchains/ohm/bin/rustc"
+    ],
+    "true_compiler": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60"
+  },
+  "B-conflict-final/conflict.json": {
+    "argv": [
+      "@HOME@/.cargo/bin/rustc",
+      "+ohm",
+      "--edition=2021",
+      "--crate-name",
+      "macro_conflict",
+      "--crate-type",
+      "lib",
+      "--error-format=json",
+      "--emit=metadata=@HOME@/.cache/ohm-profile-header-147-h7-ir-v1/unexpected.rmeta",
+      "--extern",
+      "get_size_derive2=@HOME@/.cache/ohm-relink-edge-demand-20261029/default/target/debug/build/workspaces/1b2441f367ef905b/v2-7a25c8503164bc7a/get-size-derive2/965a33a995f4c045/out/libget_size_derive2-965a33a995f4c045.so",
+      "@HOME@/.cache/ohm-profile-header-147-h7-ir-v1/conflict.rs"
+    ],
+    "dso": "3b3f0f70196628ba5a08d5faeedc0f30ed633e81eff08040cb565e746955cf7e",
+    "errors": [
+      "`size` conflicts with mutually exclusive `size_fn`"
+    ],
+    "raw": {
+      "exec-open.476608": "efc6a511e278e5a1bc2deccf18c309086185ea8f3759e46a8fee719c476f09e3",
+      "exec-open.476609": "29d50c6fb633dc49972d8ca854afcecf7e4bb5f479cb870f89ccdf6ff854bf31",
+      "exec-open.476610": "29d50c6fb633dc49972d8ca854afcecf7e4bb5f479cb870f89ccdf6ff854bf31",
+      "exec-open.476611": "29d50c6fb633dc49972d8ca854afcecf7e4bb5f479cb870f89ccdf6ff854bf31",
+      "exec-open.476612": "29d50c6fb633dc49972d8ca854afcecf7e4bb5f479cb870f89ccdf6ff854bf31",
+      "exec-open.476613": "60a6949a3c7223cbc875dd8496c4baa8a9a61a7bbeccf01425fcc4e70d2e8ace",
+      "exec-open.476614": "ff34a8c720dd549917f5ee3c9dfa1d8ea969f4ce1e28992cce50e9248cd92514"
+    },
+    "source": "21578cae444fcba37594a437050ff41e8ba95f14e32a580b92b1c125a938997f",
+    "status": 1,
+    "stderr": "d1b64439e5a7ef6f918448647a348d129d2f7faf54cc96a0e5ce3cbd871350df",
+    "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "successful_dso_opens": [
+      [
+        "exec-open.476614",
+        "openat(AT_FDCWD, \"@HOME@/.cache/ohm-relink-edge-demand-20261029/default/target/debug/build/workspaces/1b2441f367ef905b/v2-7a25c8503164bc7a/get-size-derive2/965a33a995f4c045/out/libget_size_derive2-965a33a995f4c045.so\", O_RDONLY|O_CLOEXEC) = 5"
+      ],
+      [
+        "exec-open.476614",
+        "openat(AT_FDCWD, \"@HOME@/.cache/ohm-relink-edge-demand-20261029/default/target/debug/build/workspaces/1b2441f367ef905b/v2-7a25c8503164bc7a/get-size-derive2/965a33a995f4c045/out/libget_size_derive2-965a33a995f4c045.so\", O_RDONLY|O_CLOEXEC) = 5"
+      ],
+      [
+        "exec-open.476614",
+        "openat(AT_FDCWD, \"@HOME@/.cache/ohm-relink-edge-demand-20261029/default/target/debug/build/workspaces/1b2441f367ef905b/v2-7a25c8503164bc7a/get-size-derive2/965a33a995f4c045/out/libget_size_derive2-965a33a995f4c045.so\", O_RDONLY|O_CLOEXEC) = 5"
+      ],
+      [
+        "exec-open.476614",
+        "openat(AT_FDCWD, \"@HOME@/.cache/ohm-relink-edge-demand-20261029/default/target/debug/build/workspaces/1b2441f367ef905b/v2-7a25c8503164bc7a/get-size-derive2/965a33a995f4c045/out/libget_size_derive2-965a33a995f4c045.so\", O_RDONLY|O_CLOEXEC) = 5"
+      ],
+      [
+        "exec-open.476614",
+        "openat(AT_FDCWD, \"@HOME@/.cache/ohm-relink-edge-demand-20261029/default/target/debug/build/workspaces/1b2441f367ef905b/v2-7a25c8503164bc7a/get-size-derive2/965a33a995f4c045/out/libget_size_derive2-965a33a995f4c045.so\", O_RDONLY|O_CLOEXEC) = 5"
+      ]
+    ],
+    "successful_execs": [
+      "@HOME@/.cargo/bin/rustc",
+      "@HOME@/.cache/ohm-relink-edge-demand-20261029/rustup/toolchains/ohm/bin/rustc"
+    ],
+    "true_compiler": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60"
+  },
+  "B-native-before": {
+    "command": {
+      "arm": "B",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "elapsed_ns": 424790095,
+      "endfloor": {
+        "durable_home": 27000737792,
+        "durable_scratch": 27514019840,
+        "memory": 95713034240,
+        "workspace_tmpfs": 47710736384
+      },
+      "executable": "@HOME@/.cargo/bin/cargo",
+      "exit": 0,
+      "floor": {
+        "durable_home": 27000930304,
+        "durable_scratch": 27514019840,
+        "memory": 95705513984,
+        "workspace_tmpfs": 47710744576
+      },
+      "monotonic_end": 398757474933361,
+      "monotonic_start": 398757050143266,
+      "physical": "80356b8237d3089d3360b6de5abfc64a17e4b8d3f0ec1fb64e09254418b5c5e5",
+      "requested_command": [
+        "+ohm",
+        "test",
+        "--locked",
+        "--offline",
+        "--no-run",
+        "-j4",
+        "-p",
+        "ruff_python_parser",
+        "--test",
+        "generate_inline_tests",
+        "--test",
+        "fixtures"
+      ],
+      "source": "893b5ff55f23fde170f5079766ebbe20937419a24296394a6dd0f326b8ccba88",
+      "stderr": "6789b66207235143d1280f572934a2bea52f1a68163482d59ead38a73d317331",
+      "stdout": "00d081e0d565926f194f7b0fd7cb84297cfd16a73d7d34d32db89d92f6516621",
+      "target_roster": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+      "uid": 1000
+    },
+    "execs": [
+      {
+        "identity": [
+          64769,
+          2626243
+        ],
+        "pid": 471540,
+        "role": "proxy"
+      },
+      {
+        "identity": [
+          64769,
+          28652103
+        ],
+        "pid": 471540,
+        "role": "cargo"
+      }
+    ],
+    "reported": {
+      "fresh": 147,
+      "map": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+      "output_sha": "00d081e0d565926f194f7b0fd7cb84297cfd16a73d7d34d32db89d92f6516621",
+      "physical_execs": [
+        "proxy",
+        "cargo"
+      ],
+      "products": 265,
+      "typed": "0ae8d79d159cbdeebb008cba1baf6ac3c6aa97e821ed4d134c5e3cac09f0c6e2",
+      "units": 147
+    }
+  },
+  "B-native-before-hit": {
+    "command": {
+      "arm": "B",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "elapsed_ns": 220175840,
+      "endfloor": {
+        "durable_home": 27000532992,
+        "durable_scratch": 27514019840,
+        "memory": 95717847040,
+        "workspace_tmpfs": 47710736384
+      },
+      "executable": "@HOME@/.cargo/bin/cargo",
+      "exit": 0,
+      "floor": {
+        "durable_home": 27000725504,
+        "durable_scratch": 27514019840,
+        "memory": 95712043008,
+        "workspace_tmpfs": 47710736384
+      },
+      "monotonic_end": 398758323825128,
+      "monotonic_start": 398758103649288,
+      "physical": "80356b8237d3089d3360b6de5abfc64a17e4b8d3f0ec1fb64e09254418b5c5e5",
+      "requested_command": [
+        "+ohm",
+        "test",
+        "--locked",
+        "--offline",
+        "--no-run",
+        "-j4",
+        "-p",
+        "ruff_python_parser",
+        "--test",
+        "generate_inline_tests",
+        "--test",
+        "fixtures"
+      ],
+      "source": "893b5ff55f23fde170f5079766ebbe20937419a24296394a6dd0f326b8ccba88",
+      "stderr": "6b434502d81642cfa3a663adb2c3812e9c8626aecf70cd061ca0ba1e624b1558",
+      "stdout": "bc6634563a0df26d3680d0920a8618c6b1b9611fdc29496e0dd029c6010a81fb",
+      "target_roster": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+      "uid": 1000
+    },
+    "execs": [
+      {
+        "identity": [
+          64769,
+          2626243
+        ],
+        "pid": 471564,
+        "role": "proxy"
+      },
+      {
+        "identity": [
+          64769,
+          28652103
+        ],
+        "pid": 471564,
+        "role": "cargo"
+      }
+    ],
+    "reported": {
+      "fresh": 147,
+      "map": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+      "output_sha": "bc6634563a0df26d3680d0920a8618c6b1b9611fdc29496e0dd029c6010a81fb",
+      "physical_execs": [
+        "proxy",
+        "cargo"
+      ],
+      "products": 265,
+      "typed": "0ae8d79d159cbdeebb008cba1baf6ac3c6aa97e821ed4d134c5e3cac09f0c6e2",
+      "units": 147
+    }
+  },
+  "B-native-final": {
+    "command": {
+      "arm": "B",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "elapsed_ns": 1053965997,
+      "endfloor": {
+        "durable_home": 26995142656,
+        "durable_scratch": 27514019840,
+        "memory": 95749619712,
+        "workspace_tmpfs": 47710703616
+      },
+      "executable": "@HOME@/.cargo/bin/cargo",
+      "exit": 0,
+      "floor": {
+        "durable_home": 26995335168,
+        "durable_scratch": 27514019840,
+        "memory": 95736123392,
+        "workspace_tmpfs": 47710703616
+      },
+      "monotonic_end": 399220421249526,
+      "monotonic_start": 399219367283529,
+      "physical": "80356b8237d3089d3360b6de5abfc64a17e4b8d3f0ec1fb64e09254418b5c5e5",
+      "requested_command": [
+        "+ohm",
+        "test",
+        "--locked",
+        "--offline",
+        "--no-run",
+        "-j4",
+        "-p",
+        "ruff_python_parser",
+        "--test",
+        "generate_inline_tests",
+        "--test",
+        "fixtures"
+      ],
+      "source": "893b5ff55f23fde170f5079766ebbe20937419a24296394a6dd0f326b8ccba88",
+      "stderr": "d58a4dc8445d9f9138aab516171e019cfbfbe3ff3b35e5776f089350e65dcb3b",
+      "stdout": "00e422b1294d5ab7fbdc813bb9ca62b904b40094d9721278db760ce8adafce4d",
+      "target_roster": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+      "uid": 1000
+    },
+    "execs": [
+      {
+        "identity": [
+          64769,
+          2626243
+        ],
+        "pid": 476548,
+        "role": "proxy"
+      },
+      {
+        "identity": [
+          64769,
+          28652103
+        ],
+        "pid": 476548,
+        "role": "cargo"
+      }
+    ],
+    "reported": {
+      "fresh": 147,
+      "map": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+      "output_sha": "00e422b1294d5ab7fbdc813bb9ca62b904b40094d9721278db760ce8adafce4d",
+      "physical_execs": [
+        "proxy",
+        "cargo"
+      ],
+      "products": 265,
+      "typed": "0ae8d79d159cbdeebb008cba1baf6ac3c6aa97e821ed4d134c5e3cac09f0c6e2",
+      "units": 147
+    }
+  },
+  "B-qualify-restore-edit": {
+    "command": {
+      "arm": "B",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "elapsed_ns": 231697260,
+      "endfloor": {
+        "durable_home": 26999791616,
+        "durable_scratch": 27514019840,
+        "memory": 95681191936,
+        "workspace_tmpfs": 47710736384
+      },
+      "executable": "@HOME@/.cargo/bin/cargo",
+      "exit": 0,
+      "floor": {
+        "durable_home": 26999984128,
+        "durable_scratch": 27514019840,
+        "memory": 95656574976,
+        "workspace_tmpfs": 47710736384
+      },
+      "monotonic_end": 398762685520793,
+      "monotonic_start": 398762453823533,
+      "physical": "80356b8237d3089d3360b6de5abfc64a17e4b8d3f0ec1fb64e09254418b5c5e5",
+      "requested_command": [
+        "+ohm",
+        "test",
+        "--locked",
+        "--offline",
+        "--no-run",
+        "-j4",
+        "-p",
+        "ruff_python_parser",
+        "--test",
+        "generate_inline_tests",
+        "--test",
+        "fixtures"
+      ],
+      "source": "893b5ff55f23fde170f5079766ebbe20937419a24296394a6dd0f326b8ccba88",
+      "stderr": "6b434502d81642cfa3a663adb2c3812e9c8626aecf70cd061ca0ba1e624b1558",
+      "stdout": "8a40de8076c35d13cf69dbf8f1939afb18518594bc00f33953d0a730bdcbb22f",
+      "target_roster": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+      "uid": 1000
+    },
+    "execs": [
+      {
+        "identity": [
+          64769,
+          2626243
+        ],
+        "pid": 471724,
+        "role": "proxy"
+      },
+      {
+        "identity": [
+          64769,
+          28652103
+        ],
+        "pid": 471724,
+        "role": "cargo"
+      }
+    ],
+    "reported": {
+      "fresh": 147,
+      "map": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+      "output_sha": "8a40de8076c35d13cf69dbf8f1939afb18518594bc00f33953d0a730bdcbb22f",
+      "physical_execs": [
+        "proxy",
+        "cargo"
+      ],
+      "products": 265,
+      "typed": "0ae8d79d159cbdeebb008cba1baf6ac3c6aa97e821ed4d134c5e3cac09f0c6e2",
+      "units": 147
+    }
+  },
+  "B-qualify-restore-unchanged": {
+    "command": {
+      "arm": "B",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "elapsed_ns": 233514489,
+      "endfloor": {
+        "durable_home": 26999586816,
+        "durable_scratch": 27514019840,
+        "memory": 95680835584,
+        "workspace_tmpfs": 47710736384
+      },
+      "executable": "@HOME@/.cargo/bin/cargo",
+      "exit": 0,
+      "floor": {
+        "durable_home": 26999779328,
+        "durable_scratch": 27514019840,
+        "memory": 95681294336,
+        "workspace_tmpfs": 47710736384
+      },
+      "monotonic_end": 398763513274356,
+      "monotonic_start": 398763279759867,
+      "physical": "80356b8237d3089d3360b6de5abfc64a17e4b8d3f0ec1fb64e09254418b5c5e5",
+      "requested_command": [
+        "+ohm",
+        "test",
+        "--locked",
+        "--offline",
+        "--no-run",
+        "-j4",
+        "-p",
+        "ruff_python_parser",
+        "--test",
+        "generate_inline_tests",
+        "--test",
+        "fixtures"
+      ],
+      "source": "893b5ff55f23fde170f5079766ebbe20937419a24296394a6dd0f326b8ccba88",
+      "stderr": "ec6f7975438b93df1dc260337285501deb9da0b5f46b5c63e13f7f605a4ef8bb",
+      "stdout": "094690547f2c80b16c41b6040ee8d2d948565e437609199fdda3693f8bf50e02",
+      "target_roster": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+      "uid": 1000
+    },
+    "execs": [
+      {
+        "identity": [
+          64769,
+          2626243
+        ],
+        "pid": 471748,
+        "role": "proxy"
+      },
+      {
+        "identity": [
+          64769,
+          28652103
+        ],
+        "pid": 471748,
+        "role": "cargo"
+      }
+    ],
+    "reported": {
+      "fresh": 147,
+      "map": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+      "output_sha": "094690547f2c80b16c41b6040ee8d2d948565e437609199fdda3693f8bf50e02",
+      "physical_execs": [
+        "proxy",
+        "cargo"
+      ],
+      "products": 265,
+      "typed": "0ae8d79d159cbdeebb008cba1baf6ac3c6aa97e821ed4d134c5e3cac09f0c6e2",
+      "units": 147
+    }
+  },
+  "B-qualify-reverse-edit": {
+    "command": {
+      "arm": "B",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "elapsed_ns": 229930210,
+      "endfloor": {
+        "durable_home": 27000201216,
+        "durable_scratch": 27514019840,
+        "memory": 95681945600,
+        "workspace_tmpfs": 47710736384
+      },
+      "executable": "@HOME@/.cargo/bin/cargo",
+      "exit": 0,
+      "floor": {
+        "durable_home": 27000393728,
+        "durable_scratch": 27514019840,
+        "memory": 95705935872,
+        "workspace_tmpfs": 47710736384
+      },
+      "monotonic_end": 398760953832370,
+      "monotonic_start": 398760723902160,
+      "physical": "80356b8237d3089d3360b6de5abfc64a17e4b8d3f0ec1fb64e09254418b5c5e5",
+      "requested_command": [
+        "+ohm",
+        "test",
+        "--locked",
+        "--offline",
+        "--no-run",
+        "-j4",
+        "-p",
+        "ruff_python_parser",
+        "--test",
+        "generate_inline_tests",
+        "--test",
+        "fixtures"
+      ],
+      "source": "cd6179ed534ae36214b5554461d767080c86a3dad2652f15f304ca31d4da77a2",
+      "stderr": "6b434502d81642cfa3a663adb2c3812e9c8626aecf70cd061ca0ba1e624b1558",
+      "stdout": "1c30ab6bc44117201cad7cc6c2918c2b2ff5abbc1e06aea4249891d9578707f5",
+      "target_roster": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+      "uid": 1000
+    },
+    "execs": [
+      {
+        "identity": [
+          64769,
+          2626243
+        ],
+        "pid": 471673,
+        "role": "proxy"
+      },
+      {
+        "identity": [
+          64769,
+          28652103
+        ],
+        "pid": 471673,
+        "role": "cargo"
+      }
+    ],
+    "reported": {
+      "fresh": 147,
+      "map": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+      "output_sha": "1c30ab6bc44117201cad7cc6c2918c2b2ff5abbc1e06aea4249891d9578707f5",
+      "physical_execs": [
+        "proxy",
+        "cargo"
+      ],
+      "products": 265,
+      "typed": "0ae8d79d159cbdeebb008cba1baf6ac3c6aa97e821ed4d134c5e3cac09f0c6e2",
+      "units": 147
+    }
+  },
+  "B-qualify-reverse-unchanged": {
+    "command": {
+      "arm": "B",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "elapsed_ns": 230653347,
+      "endfloor": {
+        "durable_home": 26999996416,
+        "durable_scratch": 27514019840,
+        "memory": 95665762304,
+        "workspace_tmpfs": 47710736384
+      },
+      "executable": "@HOME@/.cargo/bin/cargo",
+      "exit": 0,
+      "floor": {
+        "durable_home": 27000188928,
+        "durable_scratch": 27514019840,
+        "memory": 95681884160,
+        "workspace_tmpfs": 47710736384
+      },
+      "monotonic_end": 398761822715716,
+      "monotonic_start": 398761592062369,
+      "physical": "80356b8237d3089d3360b6de5abfc64a17e4b8d3f0ec1fb64e09254418b5c5e5",
+      "requested_command": [
+        "+ohm",
+        "test",
+        "--locked",
+        "--offline",
+        "--no-run",
+        "-j4",
+        "-p",
+        "ruff_python_parser",
+        "--test",
+        "generate_inline_tests",
+        "--test",
+        "fixtures"
+      ],
+      "source": "cd6179ed534ae36214b5554461d767080c86a3dad2652f15f304ca31d4da77a2",
+      "stderr": "ec6f7975438b93df1dc260337285501deb9da0b5f46b5c63e13f7f605a4ef8bb",
+      "stdout": "6aeb5a52d4efc1c825a51ac7978c623594d0a51b3700279835ef64223f8b4551",
+      "target_roster": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+      "uid": 1000
+    },
+    "execs": [
+      {
+        "identity": [
+          64769,
+          2626243
+        ],
+        "pid": 471700,
+        "role": "proxy"
+      },
+      {
+        "identity": [
+          64769,
+          28652103
+        ],
+        "pid": 471700,
+        "role": "cargo"
+      }
+    ],
+    "reported": {
+      "fresh": 147,
+      "map": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+      "output_sha": "6aeb5a52d4efc1c825a51ac7978c623594d0a51b3700279835ef64223f8b4551",
+      "physical_execs": [
+        "proxy",
+        "cargo"
+      ],
+      "products": 265,
+      "typed": "0ae8d79d159cbdeebb008cba1baf6ac3c6aa97e821ed4d134c5e3cac09f0c6e2",
+      "units": 147
+    }
+  },
+  "C-behavior-before/behavior.json": {
+    "held_reader": "3062c6897baa0a9d436979e2a3f3dc4c43306067cda13c501f32402f7658a44f",
+    "held_verdict": "rejected: Star import cannot be parenthesized",
+    "tests": {
+      "fixtures": {
+        "code": 0,
+        "elf": "f502d5919920f81692487761e975a69ced9c722e889e9884786a6a3850cfcfd1",
+        "inventory": "1a74b33866d7c6c01aa048e440d779c41e138eb8575181ff689af23d5501da8c",
+        "names": 558,
+        "ran": "inline_err::from_import_parenthesized_star.py"
+      },
+      "generate_inline_tests": {
+        "code": 0,
+        "elf": "576f1c40fa2653d9d35dec2511371ed3e70838880e61a117b959093280395c33",
+        "inventory": "504a030ad930ab9a0fd23076dc6b175d4753c0d56dff49b158ce87b6ca344cc7",
+        "names": 1,
+        "ran": "generate_inline_tests"
+      }
+    }
+  },
+  "C-behavior-final/behavior.json": {
+    "held_reader": "3062c6897baa0a9d436979e2a3f3dc4c43306067cda13c501f32402f7658a44f",
+    "held_verdict": "rejected: Star import cannot be parenthesized",
+    "tests": {
+      "fixtures": {
+        "code": 0,
+        "elf": "f502d5919920f81692487761e975a69ced9c722e889e9884786a6a3850cfcfd1",
+        "inventory": "1a74b33866d7c6c01aa048e440d779c41e138eb8575181ff689af23d5501da8c",
+        "names": 558,
+        "ran": "inline_err::from_import_parenthesized_star.py"
+      },
+      "generate_inline_tests": {
+        "code": 0,
+        "elf": "576f1c40fa2653d9d35dec2511371ed3e70838880e61a117b959093280395c33",
+        "inventory": "504a030ad930ab9a0fd23076dc6b175d4753c0d56dff49b158ce87b6ca344cc7",
+        "names": 1,
+        "ran": "generate_inline_tests"
+      }
+    }
+  },
+  "C-conflict-before/conflict.json": {
+    "argv": [
+      "@HOME@/.cargo/bin/rustc",
+      "+ohm",
+      "--edition=2021",
+      "--crate-name",
+      "macro_conflict",
+      "--crate-type",
+      "lib",
+      "--error-format=json",
+      "--emit=metadata=@HOME@/.cache/ohm-profile-header-147-h7-ir-v1/unexpected.rmeta",
+      "--extern",
+      "get_size_derive2=@HOME@/.cache/ohm-relink-edge-demand-20261029/default/target/debug/build/workspaces/1b2441f367ef905b/v2-7a25c8503164bc7a/get-size-derive2/965a33a995f4c045/out/libget_size_derive2-965a33a995f4c045.so",
+      "@HOME@/.cache/ohm-profile-header-147-h7-ir-v1/conflict.rs"
+    ],
+    "dso": "3b3f0f70196628ba5a08d5faeedc0f30ed633e81eff08040cb565e746955cf7e",
+    "errors": [
+      "`size` conflicts with mutually exclusive `size_fn`"
+    ],
+    "raw": {
+      "exec-open.471897": "3fcd7e44eb5135359c12c21720da355e15521f01263912f7e910e2ed8a939d38",
+      "exec-open.471898": "29d50c6fb633dc49972d8ca854afcecf7e4bb5f479cb870f89ccdf6ff854bf31",
+      "exec-open.471899": "29d50c6fb633dc49972d8ca854afcecf7e4bb5f479cb870f89ccdf6ff854bf31",
+      "exec-open.471900": "29d50c6fb633dc49972d8ca854afcecf7e4bb5f479cb870f89ccdf6ff854bf31",
+      "exec-open.471901": "29d50c6fb633dc49972d8ca854afcecf7e4bb5f479cb870f89ccdf6ff854bf31",
+      "exec-open.471902": "60a6949a3c7223cbc875dd8496c4baa8a9a61a7bbeccf01425fcc4e70d2e8ace",
+      "exec-open.471903": "ff34a8c720dd549917f5ee3c9dfa1d8ea969f4ce1e28992cce50e9248cd92514"
+    },
+    "source": "21578cae444fcba37594a437050ff41e8ba95f14e32a580b92b1c125a938997f",
+    "status": 1,
+    "stderr": "d1b64439e5a7ef6f918448647a348d129d2f7faf54cc96a0e5ce3cbd871350df",
+    "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "successful_dso_opens": [
+      [
+        "exec-open.471903",
+        "openat(AT_FDCWD, \"@HOME@/.cache/ohm-relink-edge-demand-20261029/default/target/debug/build/workspaces/1b2441f367ef905b/v2-7a25c8503164bc7a/get-size-derive2/965a33a995f4c045/out/libget_size_derive2-965a33a995f4c045.so\", O_RDONLY|O_CLOEXEC) = 5"
+      ],
+      [
+        "exec-open.471903",
+        "openat(AT_FDCWD, \"@HOME@/.cache/ohm-relink-edge-demand-20261029/default/target/debug/build/workspaces/1b2441f367ef905b/v2-7a25c8503164bc7a/get-size-derive2/965a33a995f4c045/out/libget_size_derive2-965a33a995f4c045.so\", O_RDONLY|O_CLOEXEC) = 5"
+      ],
+      [
+        "exec-open.471903",
+        "openat(AT_FDCWD, \"@HOME@/.cache/ohm-relink-edge-demand-20261029/default/target/debug/build/workspaces/1b2441f367ef905b/v2-7a25c8503164bc7a/get-size-derive2/965a33a995f4c045/out/libget_size_derive2-965a33a995f4c045.so\", O_RDONLY|O_CLOEXEC) = 5"
+      ],
+      [
+        "exec-open.471903",
+        "openat(AT_FDCWD, \"@HOME@/.cache/ohm-relink-edge-demand-20261029/default/target/debug/build/workspaces/1b2441f367ef905b/v2-7a25c8503164bc7a/get-size-derive2/965a33a995f4c045/out/libget_size_derive2-965a33a995f4c045.so\", O_RDONLY|O_CLOEXEC) = 5"
+      ],
+      [
+        "exec-open.471903",
+        "openat(AT_FDCWD, \"@HOME@/.cache/ohm-relink-edge-demand-20261029/default/target/debug/build/workspaces/1b2441f367ef905b/v2-7a25c8503164bc7a/get-size-derive2/965a33a995f4c045/out/libget_size_derive2-965a33a995f4c045.so\", O_RDONLY|O_CLOEXEC) = 5"
+      ]
+    ],
+    "successful_execs": [
+      "@HOME@/.cargo/bin/rustc",
+      "@HOME@/.cache/ohm-relink-edge-demand-20261029/rustup/toolchains/ohm/bin/rustc"
+    ],
+    "true_compiler": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60"
+  },
+  "C-conflict-final/conflict.json": {
+    "argv": [
+      "@HOME@/.cargo/bin/rustc",
+      "+ohm",
+      "--edition=2021",
+      "--crate-name",
+      "macro_conflict",
+      "--crate-type",
+      "lib",
+      "--error-format=json",
+      "--emit=metadata=@HOME@/.cache/ohm-profile-header-147-h7-ir-v1/unexpected.rmeta",
+      "--extern",
+      "get_size_derive2=@HOME@/.cache/ohm-relink-edge-demand-20261029/default/target/debug/build/workspaces/1b2441f367ef905b/v2-7a25c8503164bc7a/get-size-derive2/965a33a995f4c045/out/libget_size_derive2-965a33a995f4c045.so",
+      "@HOME@/.cache/ohm-profile-header-147-h7-ir-v1/conflict.rs"
+    ],
+    "dso": "3b3f0f70196628ba5a08d5faeedc0f30ed633e81eff08040cb565e746955cf7e",
+    "errors": [
+      "`size` conflicts with mutually exclusive `size_fn`"
+    ],
+    "raw": {
+      "exec-open.476712": "7e48294b5339d79b2c5650db2db0ddfacc78434fcc47f4873673dea5fbac496c",
+      "exec-open.476713": "29d50c6fb633dc49972d8ca854afcecf7e4bb5f479cb870f89ccdf6ff854bf31",
+      "exec-open.476714": "29d50c6fb633dc49972d8ca854afcecf7e4bb5f479cb870f89ccdf6ff854bf31",
+      "exec-open.476715": "29d50c6fb633dc49972d8ca854afcecf7e4bb5f479cb870f89ccdf6ff854bf31",
+      "exec-open.476716": "29d50c6fb633dc49972d8ca854afcecf7e4bb5f479cb870f89ccdf6ff854bf31",
+      "exec-open.476717": "60a6949a3c7223cbc875dd8496c4baa8a9a61a7bbeccf01425fcc4e70d2e8ace",
+      "exec-open.476718": "ff34a8c720dd549917f5ee3c9dfa1d8ea969f4ce1e28992cce50e9248cd92514"
+    },
+    "source": "21578cae444fcba37594a437050ff41e8ba95f14e32a580b92b1c125a938997f",
+    "status": 1,
+    "stderr": "d1b64439e5a7ef6f918448647a348d129d2f7faf54cc96a0e5ce3cbd871350df",
+    "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "successful_dso_opens": [
+      [
+        "exec-open.476718",
+        "openat(AT_FDCWD, \"@HOME@/.cache/ohm-relink-edge-demand-20261029/default/target/debug/build/workspaces/1b2441f367ef905b/v2-7a25c8503164bc7a/get-size-derive2/965a33a995f4c045/out/libget_size_derive2-965a33a995f4c045.so\", O_RDONLY|O_CLOEXEC) = 5"
+      ],
+      [
+        "exec-open.476718",
+        "openat(AT_FDCWD, \"@HOME@/.cache/ohm-relink-edge-demand-20261029/default/target/debug/build/workspaces/1b2441f367ef905b/v2-7a25c8503164bc7a/get-size-derive2/965a33a995f4c045/out/libget_size_derive2-965a33a995f4c045.so\", O_RDONLY|O_CLOEXEC) = 5"
+      ],
+      [
+        "exec-open.476718",
+        "openat(AT_FDCWD, \"@HOME@/.cache/ohm-relink-edge-demand-20261029/default/target/debug/build/workspaces/1b2441f367ef905b/v2-7a25c8503164bc7a/get-size-derive2/965a33a995f4c045/out/libget_size_derive2-965a33a995f4c045.so\", O_RDONLY|O_CLOEXEC) = 5"
+      ],
+      [
+        "exec-open.476718",
+        "openat(AT_FDCWD, \"@HOME@/.cache/ohm-relink-edge-demand-20261029/default/target/debug/build/workspaces/1b2441f367ef905b/v2-7a25c8503164bc7a/get-size-derive2/965a33a995f4c045/out/libget_size_derive2-965a33a995f4c045.so\", O_RDONLY|O_CLOEXEC) = 5"
+      ],
+      [
+        "exec-open.476718",
+        "openat(AT_FDCWD, \"@HOME@/.cache/ohm-relink-edge-demand-20261029/default/target/debug/build/workspaces/1b2441f367ef905b/v2-7a25c8503164bc7a/get-size-derive2/965a33a995f4c045/out/libget_size_derive2-965a33a995f4c045.so\", O_RDONLY|O_CLOEXEC) = 5"
+      ]
+    ],
+    "successful_execs": [
+      "@HOME@/.cargo/bin/rustc",
+      "@HOME@/.cache/ohm-relink-edge-demand-20261029/rustup/toolchains/ohm/bin/rustc"
+    ],
+    "true_compiler": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60"
+  },
+  "C-native-before": {
+    "command": {
+      "arm": "C",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "elapsed_ns": 366478191,
+      "endfloor": {
+        "durable_home": 26999332864,
+        "durable_scratch": 27514019840,
+        "memory": 95674269696,
+        "workspace_tmpfs": 47710728192
+      },
+      "executable": "@HOME@/.cargo/bin/cargo",
+      "exit": 0,
+      "floor": {
+        "durable_home": 26999525376,
+        "durable_scratch": 27514019840,
+        "memory": 95717421056,
+        "workspace_tmpfs": 47710736384
+      },
+      "monotonic_end": 398774500206922,
+      "monotonic_start": 398774133728731,
+      "physical": "473fda5712ef8afdb3b84c819d8b27e09547a6deb5b0c067c22a2159929c57a5",
+      "requested_command": [
+        "+ohm",
+        "test",
+        "--locked",
+        "--offline",
+        "--no-run",
+        "-j4",
+        "-p",
+        "ruff_python_parser",
+        "--test",
+        "generate_inline_tests",
+        "--test",
+        "fixtures"
+      ],
+      "source": "893b5ff55f23fde170f5079766ebbe20937419a24296394a6dd0f326b8ccba88",
+      "stderr": "4ed19306cc38a858697421d1ab83519f606fda1c5c084bc113137b37a7c3d25e",
+      "stdout": "c19c5bbed81552ea4e325467715a40266c0f4251c542fb78fe960d5071acf015",
+      "target_roster": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+      "uid": 1000
+    },
+    "execs": [
+      {
+        "identity": [
+          64769,
+          2626243
+        ],
+        "pid": 471812,
+        "role": "proxy"
+      },
+      {
+        "identity": [
+          64769,
+          29105630
+        ],
+        "pid": 471812,
+        "role": "cargo"
+      }
+    ],
+    "reported": {
+      "fresh": 147,
+      "map": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+      "output_sha": "c19c5bbed81552ea4e325467715a40266c0f4251c542fb78fe960d5071acf015",
+      "physical_execs": [
+        "proxy",
+        "cargo"
+      ],
+      "products": 265,
+      "typed": "0ae8d79d159cbdeebb008cba1baf6ac3c6aa97e821ed4d134c5e3cac09f0c6e2",
+      "units": 147
+    }
+  },
+  "C-native-before-hit": {
+    "command": {
+      "arm": "C",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "elapsed_ns": 227993363,
+      "endfloor": {
+        "durable_home": 26999123968,
+        "durable_scratch": 27514019840,
+        "memory": 95673786368,
+        "workspace_tmpfs": 47710728192
+      },
+      "executable": "@HOME@/.cargo/bin/cargo",
+      "exit": 0,
+      "floor": {
+        "durable_home": 26999316480,
+        "durable_scratch": 27514019840,
+        "memory": 95679348736,
+        "workspace_tmpfs": 47710728192
+      },
+      "monotonic_end": 398775324404325,
+      "monotonic_start": 398775096410962,
+      "physical": "473fda5712ef8afdb3b84c819d8b27e09547a6deb5b0c067c22a2159929c57a5",
+      "requested_command": [
+        "+ohm",
+        "test",
+        "--locked",
+        "--offline",
+        "--no-run",
+        "-j4",
+        "-p",
+        "ruff_python_parser",
+        "--test",
+        "generate_inline_tests",
+        "--test",
+        "fixtures"
+      ],
+      "source": "893b5ff55f23fde170f5079766ebbe20937419a24296394a6dd0f326b8ccba88",
+      "stderr": "ec6f7975438b93df1dc260337285501deb9da0b5f46b5c63e13f7f605a4ef8bb",
+      "stdout": "07124a6c7fb69972ba18a55904362fe1de3d701ee3f0b1348f0776086d7502e6",
+      "target_roster": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+      "uid": 1000
+    },
+    "execs": [
+      {
+        "identity": [
+          64769,
+          2626243
+        ],
+        "pid": 471837,
+        "role": "proxy"
+      },
+      {
+        "identity": [
+          64769,
+          29105630
+        ],
+        "pid": 471837,
+        "role": "cargo"
+      }
+    ],
+    "reported": {
+      "fresh": 147,
+      "map": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+      "output_sha": "07124a6c7fb69972ba18a55904362fe1de3d701ee3f0b1348f0776086d7502e6",
+      "physical_execs": [
+        "proxy",
+        "cargo"
+      ],
+      "products": 265,
+      "typed": "0ae8d79d159cbdeebb008cba1baf6ac3c6aa97e821ed4d134c5e3cac09f0c6e2",
+      "units": 147
+    }
+  },
+  "C-native-final": {
+    "command": {
+      "arm": "C",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "elapsed_ns": 393251758,
+      "endfloor": {
+        "durable_home": 26994810880,
+        "durable_scratch": 27514019840,
+        "memory": 95745093632,
+        "workspace_tmpfs": 47710703616
+      },
+      "executable": "@HOME@/.cargo/bin/cargo",
+      "exit": 0,
+      "floor": {
+        "durable_home": 26995003392,
+        "durable_scratch": 27514019840,
+        "memory": 95713890304,
+        "workspace_tmpfs": 47710703616
+      },
+      "monotonic_end": 399224360985829,
+      "monotonic_start": 399223967734071,
+      "physical": "473fda5712ef8afdb3b84c819d8b27e09547a6deb5b0c067c22a2159929c57a5",
+      "requested_command": [
+        "+ohm",
+        "test",
+        "--locked",
+        "--offline",
+        "--no-run",
+        "-j4",
+        "-p",
+        "ruff_python_parser",
+        "--test",
+        "generate_inline_tests",
+        "--test",
+        "fixtures"
+      ],
+      "source": "893b5ff55f23fde170f5079766ebbe20937419a24296394a6dd0f326b8ccba88",
+      "stderr": "c7abfa6e011293b437d3ecd4f9b21d2ba3f7dc0fcdabf7cf3e7d7b316c7efa00",
+      "stdout": "dd17afe3452c722f2df5f51cd1fe260688712ea41495f5a95e70a3a1d76b4f29",
+      "target_roster": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+      "uid": 1000
+    },
+    "execs": [
+      {
+        "identity": [
+          64769,
+          2626243
+        ],
+        "pid": 476655,
+        "role": "proxy"
+      },
+      {
+        "identity": [
+          64769,
+          29105630
+        ],
+        "pid": 476655,
+        "role": "cargo"
+      }
+    ],
+    "reported": {
+      "fresh": 147,
+      "map": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+      "output_sha": "dd17afe3452c722f2df5f51cd1fe260688712ea41495f5a95e70a3a1d76b4f29",
+      "physical_execs": [
+        "proxy",
+        "cargo"
+      ],
+      "products": 265,
+      "typed": "0ae8d79d159cbdeebb008cba1baf6ac3c6aa97e821ed4d134c5e3cac09f0c6e2",
+      "units": 147
+    }
+  },
+  "C-qualify-restore-edit": {
+    "command": {
+      "arm": "C",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "elapsed_ns": 238710996,
+      "endfloor": {
+        "durable_home": 26998386688,
+        "durable_scratch": 27514019840,
+        "memory": 95668150272,
+        "workspace_tmpfs": 47710728192
+      },
+      "executable": "@HOME@/.cargo/bin/cargo",
+      "exit": 0,
+      "floor": {
+        "durable_home": 26998579200,
+        "durable_scratch": 27514019840,
+        "memory": 95679909888,
+        "workspace_tmpfs": 47710728192
+      },
+      "monotonic_end": 398779806781988,
+      "monotonic_start": 398779568070992,
+      "physical": "473fda5712ef8afdb3b84c819d8b27e09547a6deb5b0c067c22a2159929c57a5",
+      "requested_command": [
+        "+ohm",
+        "test",
+        "--locked",
+        "--offline",
+        "--no-run",
+        "-j4",
+        "-p",
+        "ruff_python_parser",
+        "--test",
+        "generate_inline_tests",
+        "--test",
+        "fixtures"
+      ],
+      "source": "893b5ff55f23fde170f5079766ebbe20937419a24296394a6dd0f326b8ccba88",
+      "stderr": "ec6f7975438b93df1dc260337285501deb9da0b5f46b5c63e13f7f605a4ef8bb",
+      "stdout": "b395428d59c826b2ad38ac767919eb0e04dcb76e45de46fbab2d1bd84fc88a78",
+      "target_roster": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+      "uid": 1000
+    },
+    "execs": [
+      {
+        "identity": [
+          64769,
+          2626243
+        ],
+        "pid": 471993,
+        "role": "proxy"
+      },
+      {
+        "identity": [
+          64769,
+          29105630
+        ],
+        "pid": 471993,
+        "role": "cargo"
+      }
+    ],
+    "reported": {
+      "fresh": 147,
+      "map": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+      "output_sha": "b395428d59c826b2ad38ac767919eb0e04dcb76e45de46fbab2d1bd84fc88a78",
+      "physical_execs": [
+        "proxy",
+        "cargo"
+      ],
+      "products": 265,
+      "typed": "0ae8d79d159cbdeebb008cba1baf6ac3c6aa97e821ed4d134c5e3cac09f0c6e2",
+      "units": 147
+    }
+  },
+  "C-qualify-restore-unchanged": {
+    "command": {
+      "arm": "C",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "elapsed_ns": 223470750,
+      "endfloor": {
+        "durable_home": 26998177792,
+        "durable_scratch": 27514019840,
+        "memory": 95693406208,
+        "workspace_tmpfs": 47710728192
+      },
+      "executable": "@HOME@/.cargo/bin/cargo",
+      "exit": 0,
+      "floor": {
+        "durable_home": 26998370304,
+        "durable_scratch": 27514019840,
+        "memory": 95672483840,
+        "workspace_tmpfs": 47710728192
+      },
+      "monotonic_end": 398780642102939,
+      "monotonic_start": 398780418632189,
+      "physical": "473fda5712ef8afdb3b84c819d8b27e09547a6deb5b0c067c22a2159929c57a5",
+      "requested_command": [
+        "+ohm",
+        "test",
+        "--locked",
+        "--offline",
+        "--no-run",
+        "-j4",
+        "-p",
+        "ruff_python_parser",
+        "--test",
+        "generate_inline_tests",
+        "--test",
+        "fixtures"
+      ],
+      "source": "893b5ff55f23fde170f5079766ebbe20937419a24296394a6dd0f326b8ccba88",
+      "stderr": "6b434502d81642cfa3a663adb2c3812e9c8626aecf70cd061ca0ba1e624b1558",
+      "stdout": "08e7089c7b78dbfcea4864f0b7b90419ec44ddfcc2d690ef481112a85b58cb2a",
+      "target_roster": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+      "uid": 1000
+    },
+    "execs": [
+      {
+        "identity": [
+          64769,
+          2626243
+        ],
+        "pid": 472017,
+        "role": "proxy"
+      },
+      {
+        "identity": [
+          64769,
+          29105630
+        ],
+        "pid": 472017,
+        "role": "cargo"
+      }
+    ],
+    "reported": {
+      "fresh": 147,
+      "map": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+      "output_sha": "08e7089c7b78dbfcea4864f0b7b90419ec44ddfcc2d690ef481112a85b58cb2a",
+      "physical_execs": [
+        "proxy",
+        "cargo"
+      ],
+      "products": 265,
+      "typed": "0ae8d79d159cbdeebb008cba1baf6ac3c6aa97e821ed4d134c5e3cac09f0c6e2",
+      "units": 147
+    }
+  },
+  "C-qualify-reverse-edit": {
+    "command": {
+      "arm": "C",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "elapsed_ns": 231103968,
+      "endfloor": {
+        "durable_home": 26998796288,
+        "durable_scratch": 27514019840,
+        "memory": 95687061504,
+        "workspace_tmpfs": 47710728192
+      },
+      "executable": "@HOME@/.cargo/bin/cargo",
+      "exit": 0,
+      "floor": {
+        "durable_home": 26998988800,
+        "durable_scratch": 27514019840,
+        "memory": 95675015168,
+        "workspace_tmpfs": 47710728192
+      },
+      "monotonic_end": 398778061758894,
+      "monotonic_start": 398777830654926,
+      "physical": "473fda5712ef8afdb3b84c819d8b27e09547a6deb5b0c067c22a2159929c57a5",
+      "requested_command": [
+        "+ohm",
+        "test",
+        "--locked",
+        "--offline",
+        "--no-run",
+        "-j4",
+        "-p",
+        "ruff_python_parser",
+        "--test",
+        "generate_inline_tests",
+        "--test",
+        "fixtures"
+      ],
+      "source": "cd6179ed534ae36214b5554461d767080c86a3dad2652f15f304ca31d4da77a2",
+      "stderr": "ec6f7975438b93df1dc260337285501deb9da0b5f46b5c63e13f7f605a4ef8bb",
+      "stdout": "9fb02b65b3155fc33363e70430b6797e7224cd63b94f00a8f618e02cc05b621f",
+      "target_roster": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+      "uid": 1000
+    },
+    "execs": [
+      {
+        "identity": [
+          64769,
+          2626243
+        ],
+        "pid": 471944,
+        "role": "proxy"
+      },
+      {
+        "identity": [
+          64769,
+          29105630
+        ],
+        "pid": 471944,
+        "role": "cargo"
+      }
+    ],
+    "reported": {
+      "fresh": 147,
+      "map": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+      "output_sha": "9fb02b65b3155fc33363e70430b6797e7224cd63b94f00a8f618e02cc05b621f",
+      "physical_execs": [
+        "proxy",
+        "cargo"
+      ],
+      "products": 265,
+      "typed": "0ae8d79d159cbdeebb008cba1baf6ac3c6aa97e821ed4d134c5e3cac09f0c6e2",
+      "units": 147
+    }
+  },
+  "C-qualify-reverse-unchanged": {
+    "command": {
+      "arm": "C",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "elapsed_ns": 226048971,
+      "endfloor": {
+        "durable_home": 26998591488,
+        "durable_scratch": 27514019840,
+        "memory": 95687401472,
+        "workspace_tmpfs": 47710728192
+      },
+      "executable": "@HOME@/.cargo/bin/cargo",
+      "exit": 0,
+      "floor": {
+        "durable_home": 26998784000,
+        "durable_scratch": 27514019840,
+        "memory": 95682367488,
+        "workspace_tmpfs": 47710728192
+      },
+      "monotonic_end": 398778923004517,
+      "monotonic_start": 398778696955546,
+      "physical": "473fda5712ef8afdb3b84c819d8b27e09547a6deb5b0c067c22a2159929c57a5",
+      "requested_command": [
+        "+ohm",
+        "test",
+        "--locked",
+        "--offline",
+        "--no-run",
+        "-j4",
+        "-p",
+        "ruff_python_parser",
+        "--test",
+        "generate_inline_tests",
+        "--test",
+        "fixtures"
+      ],
+      "source": "cd6179ed534ae36214b5554461d767080c86a3dad2652f15f304ca31d4da77a2",
+      "stderr": "6b434502d81642cfa3a663adb2c3812e9c8626aecf70cd061ca0ba1e624b1558",
+      "stdout": "48deb5dc3f6abc52b54a53bfd793294dcd3d7fd08c7c1fe1aa35e5813187867f",
+      "target_roster": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+      "uid": 1000
+    },
+    "execs": [
+      {
+        "identity": [
+          64769,
+          2626243
+        ],
+        "pid": 471969,
+        "role": "proxy"
+      },
+      {
+        "identity": [
+          64769,
+          29105630
+        ],
+        "pid": 471969,
+        "role": "cargo"
+      }
+    ],
+    "reported": {
+      "fresh": 147,
+      "map": "c3d1a59cfe743211ec88461f829da28730af3678d91d221f89ecd74dc6aa6159",
+      "output_sha": "48deb5dc3f6abc52b54a53bfd793294dcd3d7fd08c7c1fe1aa35e5813187867f",
+      "physical_execs": [
+        "proxy",
+        "cargo"
+      ],
+      "products": 265,
+      "typed": "0ae8d79d159cbdeebb008cba1baf6ac3c6aa97e821ed4d134c5e3cac09f0c6e2",
+      "units": 147
+    }
+  }
+}

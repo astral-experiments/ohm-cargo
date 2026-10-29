@@ -1,0 +1,3566 @@
+{
+  "b01-restore-A-unchanged": {
+    "argv_sha": "7d636956fc1d9f256b13d7dc6165c294cff2cc96d5ef3abace866d60397e38c8",
+    "command": [
+      "+ohm",
+      "test",
+      "--locked",
+      "--offline",
+      "--no-run",
+      "-j4",
+      "-p",
+      "ruff_python_parser",
+      "--test",
+      "generate_inline_tests",
+      "--test",
+      "fixtures"
+    ],
+    "counts": [
+      "B 472339 @HOME@/.cache/ohm-relink-edge-demand-20261029/sdk/bin/cargo",
+      "T 472339",
+      "T 472347",
+      "T 472348",
+      "F 472348 10784 0 0 0 0 0",
+      "F 472347 146117 0 0 0 0 0",
+      "F 472339 281146698 0 1 0 0 0",
+      "P 472339"
+    ],
+    "elapsed_ns_instrumented_only": 9096783748,
+    "forked_processes": [],
+    "kernel_execs": [
+      [
+        472339,
+        "@HOME@/.cargo/bin/cargo"
+      ],
+      [
+        472339,
+        "@HOME@/.cache/ohm-relink-edge-demand-20261029/rustup/toolchains/ohm/bin/cargo"
+      ],
+      [
+        472339,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/drrun"
+      ],
+      [
+        472339,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/../lib64/release/libdynamorio.so"
+      ]
+    ],
+    "kernel_threads": [
+      [
+        472339,
+        472340,
+        true
+      ],
+      [
+        472339,
+        472341,
+        true
+      ],
+      [
+        472339,
+        472342,
+        true
+      ],
+      [
+        472339,
+        472343,
+        true
+      ],
+      [
+        472339,
+        472347,
+        true
+      ],
+      [
+        472339,
+        472348,
+        true
+      ]
+    ],
+    "monotonic_ns": [
+      398833949301790,
+      398843046085538
+    ],
+    "physical_cargo": "967f5f1db2938847fac22d78dc222054cbb143a5fabcffcad0bd15f8929b47e9",
+    "physical_kernel_sha": {
+      "kernel.472339": "d83e12696f9ecb9a731a3d747878280dc139d3f156ac126baade032cba0564b5",
+      "kernel.472340": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472341": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472342": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472343": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472347": "b3cd8739e4da9bd1bc124e0b3d8c17a8a5be1ea7a87184c2b364635739047e13",
+      "kernel.472348": "a6a61c278c730ae6a9ba2fbdf5efb9de55705a938acf3ebb8deddb25934ad14d"
+    },
+    "physical_profile_sha": "326e091dba5df279cabe9d1e028bea10b6c58d34ce7e309a9987be68235778c0",
+    "source_sha": "893b5ff55f23fde170f5079766ebbe20937419a24296394a6dd0f326b8ccba88",
+    "status": 0,
+    "stderr_sha": "3ff97b85e5104a7e8b9264570ed32d7dc454b99b5996cb3a680c1ba358e9c7fd",
+    "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "unchanged_transition_sha": "54088baf72c2857e03128ec4254cdacd2e6b6b7c084910d69b6fdb020d8522a4"
+  },
+  "b01-restore-B-unchanged": {
+    "argv_sha": "7d636956fc1d9f256b13d7dc6165c294cff2cc96d5ef3abace866d60397e38c8",
+    "command": [
+      "+ohm",
+      "test",
+      "--locked",
+      "--offline",
+      "--no-run",
+      "-j4",
+      "-p",
+      "ruff_python_parser",
+      "--test",
+      "generate_inline_tests",
+      "--test",
+      "fixtures"
+    ],
+    "counts": [
+      "B 472284 @HOME@/.cache/ohm-relink-edge-demand-20261029/sdk/bin/cargo",
+      "T 472284",
+      "T 472295",
+      "T 472296",
+      "F 472296 10784 0 0 0 0 0",
+      "F 472295 146533 0 0 0 0 0",
+      "F 472284 283801291 1 1 194798 1 0",
+      "P 472284"
+    ],
+    "elapsed_ns_instrumented_only": 9523835655,
+    "forked_processes": [],
+    "kernel_execs": [
+      [
+        472284,
+        "@HOME@/.cargo/bin/cargo"
+      ],
+      [
+        472284,
+        "@HOME@/.cache/ohm-relink-edge-demand-20261029/rustup/toolchains/ohm/bin/cargo"
+      ],
+      [
+        472284,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/drrun"
+      ],
+      [
+        472284,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/../lib64/release/libdynamorio.so"
+      ]
+    ],
+    "kernel_threads": [
+      [
+        472284,
+        472285,
+        true
+      ],
+      [
+        472284,
+        472286,
+        true
+      ],
+      [
+        472284,
+        472287,
+        true
+      ],
+      [
+        472284,
+        472288,
+        true
+      ],
+      [
+        472284,
+        472295,
+        true
+      ],
+      [
+        472284,
+        472296,
+        true
+      ]
+    ],
+    "monotonic_ns": [
+      398823003611129,
+      398832527446784
+    ],
+    "physical_cargo": "80356b8237d3089d3360b6de5abfc64a17e4b8d3f0ec1fb64e09254418b5c5e5",
+    "physical_kernel_sha": {
+      "kernel.472284": "28195fb52687aaea9392bb4667d8f9a8788d702354da92a29c0149c4bd7882aa",
+      "kernel.472285": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472286": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472287": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472288": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472295": "b3cd8739e4da9bd1bc124e0b3d8c17a8a5be1ea7a87184c2b364635739047e13",
+      "kernel.472296": "3b82c563aeb961221d32c1dc144aeff5db2ef373c5e82edc9e4a82258efa0e98"
+    },
+    "physical_profile_sha": "5f71526cf155d2c5c6f140fa2c9ac1d4891da51eaf021a44e88e3f43e5ab8cf7",
+    "source_sha": "893b5ff55f23fde170f5079766ebbe20937419a24296394a6dd0f326b8ccba88",
+    "status": 0,
+    "stderr_sha": "139e24f165dc0d74f1a7748b1ac0c71d281574af367a425f1247eddbafa484f6",
+    "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "unchanged_transition_sha": "019c39ab6d833bbfb4e05e8887997cee093a46ce7499a61602c56aa5b11d1822"
+  },
+  "b01-restore-C-unchanged": {
+    "argv_sha": "7d636956fc1d9f256b13d7dc6165c294cff2cc96d5ef3abace866d60397e38c8",
+    "command": [
+      "+ohm",
+      "test",
+      "--locked",
+      "--offline",
+      "--no-run",
+      "-j4",
+      "-p",
+      "ruff_python_parser",
+      "--test",
+      "generate_inline_tests",
+      "--test",
+      "fixtures"
+    ],
+    "counts": [
+      "B 472391 @HOME@/.cache/ohm-relink-edge-demand-20261029/sdk/bin/cargo",
+      "T 472391",
+      "T 472398",
+      "T 472404",
+      "F 472404 10784 0 0 0 0 0",
+      "F 472398 144531 0 0 0 0 0",
+      "F 472391 281128356 0 1 0 0 0",
+      "P 472391"
+    ],
+    "elapsed_ns_instrumented_only": 9332203380,
+    "forked_processes": [],
+    "kernel_execs": [
+      [
+        472391,
+        "@HOME@/.cargo/bin/cargo"
+      ],
+      [
+        472391,
+        "@HOME@/.cache/ohm-relink-edge-demand-20261029/rustup/toolchains/ohm/bin/cargo"
+      ],
+      [
+        472391,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/drrun"
+      ],
+      [
+        472391,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/../lib64/release/libdynamorio.so"
+      ]
+    ],
+    "kernel_threads": [
+      [
+        472391,
+        472392,
+        true
+      ],
+      [
+        472391,
+        472393,
+        true
+      ],
+      [
+        472391,
+        472394,
+        true
+      ],
+      [
+        472391,
+        472395,
+        true
+      ],
+      [
+        472391,
+        472398,
+        true
+      ],
+      [
+        472391,
+        472404,
+        true
+      ]
+    ],
+    "monotonic_ns": [
+      398844296337967,
+      398853628541347
+    ],
+    "physical_cargo": "473fda5712ef8afdb3b84c819d8b27e09547a6deb5b0c067c22a2159929c57a5",
+    "physical_kernel_sha": {
+      "kernel.472391": "5f2f89013acb28d4c298f83972f39a70abde6c03de4fec9d674bcc68a087fe9d",
+      "kernel.472392": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472393": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472394": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472395": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472398": "b3cd8739e4da9bd1bc124e0b3d8c17a8a5be1ea7a87184c2b364635739047e13",
+      "kernel.472404": "4ddfaf63d9bc474a352c24c5e1fb6d58f4be1d75f3e2ff25525fef74bce58245"
+    },
+    "physical_profile_sha": "d65526642c8962a5f4741be5c051286fb691335537b3024d9b604839599692fa",
+    "source_sha": "893b5ff55f23fde170f5079766ebbe20937419a24296394a6dd0f326b8ccba88",
+    "status": 0,
+    "stderr_sha": "314f466b679f6edff0671583b6982bb33f07e7d29d784f79cebd6a03e5151da4",
+    "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "unchanged_transition_sha": "a59aec8deb9e16ee84c44a08716cf8310be48232d095114b499be6ef2db96b71"
+  },
+  "b01-reverse-A-unchanged": {
+    "argv_sha": "7d636956fc1d9f256b13d7dc6165c294cff2cc96d5ef3abace866d60397e38c8",
+    "command": [
+      "+ohm",
+      "test",
+      "--locked",
+      "--offline",
+      "--no-run",
+      "-j4",
+      "-p",
+      "ruff_python_parser",
+      "--test",
+      "generate_inline_tests",
+      "--test",
+      "fixtures"
+    ],
+    "counts": [
+      "B 472114 @HOME@/.cache/ohm-relink-edge-demand-20261029/sdk/bin/cargo",
+      "T 472114",
+      "T 472119",
+      "T 472123",
+      "F 472123 10784 0 0 0 0 0",
+      "F 472119 144794 0 0 0 0 0",
+      "F 472114 281068729 0 1 0 0 0",
+      "P 472114"
+    ],
+    "elapsed_ns_instrumented_only": 9212290136,
+    "forked_processes": [],
+    "kernel_execs": [
+      [
+        472114,
+        "@HOME@/.cargo/bin/cargo"
+      ],
+      [
+        472114,
+        "@HOME@/.cache/ohm-relink-edge-demand-20261029/rustup/toolchains/ohm/bin/cargo"
+      ],
+      [
+        472114,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/drrun"
+      ],
+      [
+        472114,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/../lib64/release/libdynamorio.so"
+      ]
+    ],
+    "kernel_threads": [
+      [
+        472114,
+        472115,
+        true
+      ],
+      [
+        472114,
+        472116,
+        true
+      ],
+      [
+        472114,
+        472117,
+        true
+      ],
+      [
+        472114,
+        472118,
+        true
+      ],
+      [
+        472114,
+        472119,
+        true
+      ],
+      [
+        472114,
+        472123,
+        true
+      ]
+    ],
+    "monotonic_ns": [
+      398791404505969,
+      398800616796105
+    ],
+    "physical_cargo": "967f5f1db2938847fac22d78dc222054cbb143a5fabcffcad0bd15f8929b47e9",
+    "physical_kernel_sha": {
+      "kernel.472114": "e95b92cf8f5db8695e05fd45558d4e8d073605ec27fb301a52cda051b89ba00a",
+      "kernel.472115": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472116": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472117": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472118": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472119": "b3cd8739e4da9bd1bc124e0b3d8c17a8a5be1ea7a87184c2b364635739047e13",
+      "kernel.472123": "12eae84f356cb49bf2f3c41de0850ef8b2f6ef30cada4ed83e0ae461e6c573ff"
+    },
+    "physical_profile_sha": "aa765dc74ae5db8ab7ef672f0aff9f5d9f61dc61f4fdce5f586543f69a7f4db5",
+    "source_sha": "cd6179ed534ae36214b5554461d767080c86a3dad2652f15f304ca31d4da77a2",
+    "status": 0,
+    "stderr_sha": "387b3ed4022ace7fd72fc9d2fbdcaa8ae3957df7c53b9157f47cc19e6de97ac3",
+    "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "unchanged_transition_sha": "bb9c07235a0d67bed881c0321ccf44c0aef721d9b91a4e1e7c641811c0b26adb"
+  },
+  "b01-reverse-B-unchanged": {
+    "argv_sha": "7d636956fc1d9f256b13d7dc6165c294cff2cc96d5ef3abace866d60397e38c8",
+    "command": [
+      "+ohm",
+      "test",
+      "--locked",
+      "--offline",
+      "--no-run",
+      "-j4",
+      "-p",
+      "ruff_python_parser",
+      "--test",
+      "generate_inline_tests",
+      "--test",
+      "fixtures"
+    ],
+    "counts": [
+      "B 472174 @HOME@/.cache/ohm-relink-edge-demand-20261029/sdk/bin/cargo",
+      "T 472174",
+      "T 472179",
+      "T 472182",
+      "F 472182 10784 0 0 0 0 0",
+      "F 472179 146426 0 0 0 0 0",
+      "F 472174 283767545 1 1 186990 1 0",
+      "P 472174"
+    ],
+    "elapsed_ns_instrumented_only": 9116732897,
+    "forked_processes": [],
+    "kernel_execs": [
+      [
+        472174,
+        "@HOME@/.cargo/bin/cargo"
+      ],
+      [
+        472174,
+        "@HOME@/.cache/ohm-relink-edge-demand-20261029/rustup/toolchains/ohm/bin/cargo"
+      ],
+      [
+        472174,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/drrun"
+      ],
+      [
+        472174,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/../lib64/release/libdynamorio.so"
+      ]
+    ],
+    "kernel_threads": [
+      [
+        472174,
+        472175,
+        true
+      ],
+      [
+        472174,
+        472176,
+        true
+      ],
+      [
+        472174,
+        472177,
+        true
+      ],
+      [
+        472174,
+        472178,
+        true
+      ],
+      [
+        472174,
+        472179,
+        true
+      ],
+      [
+        472174,
+        472182,
+        true
+      ]
+    ],
+    "monotonic_ns": [
+      398801904953389,
+      398811021686286
+    ],
+    "physical_cargo": "80356b8237d3089d3360b6de5abfc64a17e4b8d3f0ec1fb64e09254418b5c5e5",
+    "physical_kernel_sha": {
+      "kernel.472174": "6e67f17f3100b8e877afc09e30fdc1d125a6c9eb28c769fd00b0442b218885d9",
+      "kernel.472175": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472176": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472177": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472178": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472179": "b3cd8739e4da9bd1bc124e0b3d8c17a8a5be1ea7a87184c2b364635739047e13",
+      "kernel.472182": "69571f630706ce487d09281d3a07c6610026adfcd71b1551a288188acef045be"
+    },
+    "physical_profile_sha": "673878183bca4989b5a4342b676fb299c6adaea6544053497ba40911a996657b",
+    "source_sha": "cd6179ed534ae36214b5554461d767080c86a3dad2652f15f304ca31d4da77a2",
+    "status": 0,
+    "stderr_sha": "f29f8b5aca9bc69319d9bdc44d04dca6437d1046946da5bbd124962fac490530",
+    "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "unchanged_transition_sha": "5f0c2c8b7ad3e4df66c6611c828cb94d1b5dc52de89466cba35ac5a7aa5b4982"
+  },
+  "b01-reverse-C-unchanged": {
+    "argv_sha": "7d636956fc1d9f256b13d7dc6165c294cff2cc96d5ef3abace866d60397e38c8",
+    "command": [
+      "+ohm",
+      "test",
+      "--locked",
+      "--offline",
+      "--no-run",
+      "-j4",
+      "-p",
+      "ruff_python_parser",
+      "--test",
+      "generate_inline_tests",
+      "--test",
+      "fixtures"
+    ],
+    "counts": [
+      "B 472227 @HOME@/.cache/ohm-relink-edge-demand-20261029/sdk/bin/cargo",
+      "T 472227",
+      "T 472232",
+      "T 472241",
+      "F 472241 10784 0 0 0 0 0",
+      "F 472232 146780 0 0 0 0 0",
+      "F 472227 281215224 0 1 0 0 0",
+      "P 472227"
+    ],
+    "elapsed_ns_instrumented_only": 9510338062,
+    "forked_processes": [],
+    "kernel_execs": [
+      [
+        472227,
+        "@HOME@/.cargo/bin/cargo"
+      ],
+      [
+        472227,
+        "@HOME@/.cache/ohm-relink-edge-demand-20261029/rustup/toolchains/ohm/bin/cargo"
+      ],
+      [
+        472227,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/drrun"
+      ],
+      [
+        472227,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/../lib64/release/libdynamorio.so"
+      ]
+    ],
+    "kernel_threads": [
+      [
+        472227,
+        472228,
+        true
+      ],
+      [
+        472227,
+        472229,
+        true
+      ],
+      [
+        472227,
+        472230,
+        true
+      ],
+      [
+        472227,
+        472231,
+        true
+      ],
+      [
+        472227,
+        472232,
+        true
+      ],
+      [
+        472227,
+        472241,
+        true
+      ]
+    ],
+    "monotonic_ns": [
+      398812236920385,
+      398821747258447
+    ],
+    "physical_cargo": "473fda5712ef8afdb3b84c819d8b27e09547a6deb5b0c067c22a2159929c57a5",
+    "physical_kernel_sha": {
+      "kernel.472227": "e43241f2e931b52c93d510d37a9a59edd0cad71c1e21a8402cfe8210edda9c47",
+      "kernel.472228": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472229": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472230": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472231": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472232": "b3cd8739e4da9bd1bc124e0b3d8c17a8a5be1ea7a87184c2b364635739047e13",
+      "kernel.472241": "7155f4ec2a551e436c8d0af60d2b746b02a0875347885e01b0ab85b5d60229e7"
+    },
+    "physical_profile_sha": "06452e65d9548211f551232c112f9dcafa537d18e7a1abb2b4d72fbbd4c64b3b",
+    "source_sha": "cd6179ed534ae36214b5554461d767080c86a3dad2652f15f304ca31d4da77a2",
+    "status": 0,
+    "stderr_sha": "da19ccc790f297d3d97a8d5d33c83246e665070583fee8b9da2dd984de9da5e2",
+    "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "unchanged_transition_sha": "1b3b972a7f95e563d3f4a2bfdee34f519cae60aa03d6ee860a0ed3188365883d"
+  },
+  "b02-restore-A-unchanged": {
+    "argv_sha": "7d636956fc1d9f256b13d7dc6165c294cff2cc96d5ef3abace866d60397e38c8",
+    "command": [
+      "+ohm",
+      "test",
+      "--locked",
+      "--offline",
+      "--no-run",
+      "-j4",
+      "-p",
+      "ruff_python_parser",
+      "--test",
+      "generate_inline_tests",
+      "--test",
+      "fixtures"
+    ],
+    "counts": [
+      "B 472703 @HOME@/.cache/ohm-relink-edge-demand-20261029/sdk/bin/cargo",
+      "T 472703",
+      "T 472713",
+      "T 472714",
+      "F 472714 10784 0 0 0 0 0",
+      "F 472713 145168 0 0 0 0 0",
+      "F 472703 281142986 0 1 0 0 0",
+      "P 472703"
+    ],
+    "elapsed_ns_instrumented_only": 9178621522,
+    "forked_processes": [],
+    "kernel_execs": [
+      [
+        472703,
+        "@HOME@/.cargo/bin/cargo"
+      ],
+      [
+        472703,
+        "@HOME@/.cache/ohm-relink-edge-demand-20261029/rustup/toolchains/ohm/bin/cargo"
+      ],
+      [
+        472703,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/drrun"
+      ],
+      [
+        472703,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/../lib64/release/libdynamorio.so"
+      ]
+    ],
+    "kernel_threads": [
+      [
+        472703,
+        472704,
+        true
+      ],
+      [
+        472703,
+        472705,
+        true
+      ],
+      [
+        472703,
+        472706,
+        true
+      ],
+      [
+        472703,
+        472707,
+        true
+      ],
+      [
+        472703,
+        472713,
+        true
+      ],
+      [
+        472703,
+        472714,
+        true
+      ]
+    ],
+    "monotonic_ns": [
+      398909258224605,
+      398918436846127
+    ],
+    "physical_cargo": "967f5f1db2938847fac22d78dc222054cbb143a5fabcffcad0bd15f8929b47e9",
+    "physical_kernel_sha": {
+      "kernel.472703": "083ac004bce079baee21bbcb6ba8caab984574605b0d07f652d21b8bc97533d2",
+      "kernel.472704": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472705": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472706": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472707": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472713": "b3cd8739e4da9bd1bc124e0b3d8c17a8a5be1ea7a87184c2b364635739047e13",
+      "kernel.472714": "a5ef3f8b53e561cfb6fdb6933d73540ea77f49ffb83d2df62d23b90d61a18f38"
+    },
+    "physical_profile_sha": "aea466c6ee0bd53154793c4778bb15b5b2d42817ea2a1307d497c9a819d6d47a",
+    "source_sha": "893b5ff55f23fde170f5079766ebbe20937419a24296394a6dd0f326b8ccba88",
+    "status": 0,
+    "stderr_sha": "5855b8e61fc546a17a3ef700394579884106b4805c2e80c0ecfb4413ee5d6b3b",
+    "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "unchanged_transition_sha": "15c87add0b9df16e97533a4fe3a0934fbc359cb5040d3d98a9a4c515598c8f60"
+  },
+  "b02-restore-B-unchanged": {
+    "argv_sha": "7d636956fc1d9f256b13d7dc6165c294cff2cc96d5ef3abace866d60397e38c8",
+    "command": [
+      "+ohm",
+      "test",
+      "--locked",
+      "--offline",
+      "--no-run",
+      "-j4",
+      "-p",
+      "ruff_python_parser",
+      "--test",
+      "generate_inline_tests",
+      "--test",
+      "fixtures"
+    ],
+    "counts": [
+      "B 472604 @HOME@/.cache/ohm-relink-edge-demand-20261029/sdk/bin/cargo",
+      "T 472604",
+      "T 472609",
+      "T 472610",
+      "F 472610 10784 0 0 0 0 0",
+      "F 472609 143936 0 0 0 0 0",
+      "F 472604 283808729 1 1 194817 1 0",
+      "P 472604"
+    ],
+    "elapsed_ns_instrumented_only": 9085857825,
+    "forked_processes": [],
+    "kernel_execs": [
+      [
+        472604,
+        "@HOME@/.cargo/bin/cargo"
+      ],
+      [
+        472604,
+        "@HOME@/.cache/ohm-relink-edge-demand-20261029/rustup/toolchains/ohm/bin/cargo"
+      ],
+      [
+        472604,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/drrun"
+      ],
+      [
+        472604,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/../lib64/release/libdynamorio.so"
+      ]
+    ],
+    "kernel_threads": [
+      [
+        472604,
+        472605,
+        true
+      ],
+      [
+        472604,
+        472606,
+        true
+      ],
+      [
+        472604,
+        472607,
+        true
+      ],
+      [
+        472604,
+        472608,
+        true
+      ],
+      [
+        472604,
+        472609,
+        true
+      ],
+      [
+        472604,
+        472610,
+        true
+      ]
+    ],
+    "monotonic_ns": [
+      398888394546649,
+      398897480404474
+    ],
+    "physical_cargo": "80356b8237d3089d3360b6de5abfc64a17e4b8d3f0ec1fb64e09254418b5c5e5",
+    "physical_kernel_sha": {
+      "kernel.472604": "4642b6a4d9e5f8441d6346ddd1433a3836438063510069f4efcc659f844d471f",
+      "kernel.472605": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472606": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472607": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472608": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472609": "b3cd8739e4da9bd1bc124e0b3d8c17a8a5be1ea7a87184c2b364635739047e13",
+      "kernel.472610": "499d9c84e5ca64513d8eaa36ae33c3454217fa150716d8fad35f1de9a8768058"
+    },
+    "physical_profile_sha": "243303eb9035c8c7e0022a22ff589af0a6700c573c272b7d8f48d4e905781071",
+    "source_sha": "893b5ff55f23fde170f5079766ebbe20937419a24296394a6dd0f326b8ccba88",
+    "status": 0,
+    "stderr_sha": "8815192517aceb3e0fa8662c714382e5812ab350bec6c86fa7de342a675a3605",
+    "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "unchanged_transition_sha": "300689823eaf75b4578484ba8eaa8b4d2e9c2f737f2c2a2e27cfa802edb8e230"
+  },
+  "b02-restore-C-unchanged": {
+    "argv_sha": "7d636956fc1d9f256b13d7dc6165c294cff2cc96d5ef3abace866d60397e38c8",
+    "command": [
+      "+ohm",
+      "test",
+      "--locked",
+      "--offline",
+      "--no-run",
+      "-j4",
+      "-p",
+      "ruff_python_parser",
+      "--test",
+      "generate_inline_tests",
+      "--test",
+      "fixtures"
+    ],
+    "counts": [
+      "B 472654 @HOME@/.cache/ohm-relink-edge-demand-20261029/sdk/bin/cargo",
+      "T 472654",
+      "T 472659",
+      "T 472660",
+      "F 472660 10784 0 0 0 0 0",
+      "F 472659 144581 0 0 0 0 0",
+      "F 472654 281124474 0 1 0 0 0",
+      "P 472654"
+    ],
+    "elapsed_ns_instrumented_only": 9154763731,
+    "forked_processes": [],
+    "kernel_execs": [
+      [
+        472654,
+        "@HOME@/.cargo/bin/cargo"
+      ],
+      [
+        472654,
+        "@HOME@/.cache/ohm-relink-edge-demand-20261029/rustup/toolchains/ohm/bin/cargo"
+      ],
+      [
+        472654,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/drrun"
+      ],
+      [
+        472654,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/../lib64/release/libdynamorio.so"
+      ]
+    ],
+    "kernel_threads": [
+      [
+        472654,
+        472655,
+        true
+      ],
+      [
+        472654,
+        472656,
+        true
+      ],
+      [
+        472654,
+        472657,
+        true
+      ],
+      [
+        472654,
+        472658,
+        true
+      ],
+      [
+        472654,
+        472659,
+        true
+      ],
+      [
+        472654,
+        472660,
+        true
+      ]
+    ],
+    "monotonic_ns": [
+      398898765706866,
+      398907920470597
+    ],
+    "physical_cargo": "473fda5712ef8afdb3b84c819d8b27e09547a6deb5b0c067c22a2159929c57a5",
+    "physical_kernel_sha": {
+      "kernel.472654": "3e81067af0a137b62b1f8d6de91b209549c319a6eafc10705eed8bdbe70087a0",
+      "kernel.472655": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472656": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472657": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472658": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472659": "b3cd8739e4da9bd1bc124e0b3d8c17a8a5be1ea7a87184c2b364635739047e13",
+      "kernel.472660": "9c47515be38b54ed528234ff94cc4cac1573be5f16429dea5feb7b470218860c"
+    },
+    "physical_profile_sha": "58433798eaf14bd3241603dfc298fea11e559fd31d5e988945eba0be865afebb",
+    "source_sha": "893b5ff55f23fde170f5079766ebbe20937419a24296394a6dd0f326b8ccba88",
+    "status": 0,
+    "stderr_sha": "2d930417731405ef7e7905f34a98341c17690b0c41e8d873cc4b508e21895d93",
+    "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "unchanged_transition_sha": "6f748a2e4a57d8063f06ba49188fd72614fa7560b6694b06178422a59c5bad72"
+  },
+  "b02-reverse-A-unchanged": {
+    "argv_sha": "7d636956fc1d9f256b13d7dc6165c294cff2cc96d5ef3abace866d60397e38c8",
+    "command": [
+      "+ohm",
+      "test",
+      "--locked",
+      "--offline",
+      "--no-run",
+      "-j4",
+      "-p",
+      "ruff_python_parser",
+      "--test",
+      "generate_inline_tests",
+      "--test",
+      "fixtures"
+    ],
+    "counts": [
+      "B 472550 @HOME@/.cache/ohm-relink-edge-demand-20261029/sdk/bin/cargo",
+      "T 472550",
+      "T 472560",
+      "T 472561",
+      "F 472561 10894 0 0 0 0 0",
+      "F 472560 144638 0 0 0 0 0",
+      "F 472550 281101706 0 1 0 0 0",
+      "P 472550"
+    ],
+    "elapsed_ns_instrumented_only": 9069000771,
+    "forked_processes": [],
+    "kernel_execs": [
+      [
+        472550,
+        "@HOME@/.cargo/bin/cargo"
+      ],
+      [
+        472550,
+        "@HOME@/.cache/ohm-relink-edge-demand-20261029/rustup/toolchains/ohm/bin/cargo"
+      ],
+      [
+        472550,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/drrun"
+      ],
+      [
+        472550,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/../lib64/release/libdynamorio.so"
+      ]
+    ],
+    "kernel_threads": [
+      [
+        472550,
+        472551,
+        true
+      ],
+      [
+        472550,
+        472552,
+        true
+      ],
+      [
+        472550,
+        472553,
+        true
+      ],
+      [
+        472550,
+        472554,
+        true
+      ],
+      [
+        472550,
+        472560,
+        true
+      ],
+      [
+        472550,
+        472561,
+        true
+      ]
+    ],
+    "monotonic_ns": [
+      398877850109525,
+      398886919110296
+    ],
+    "physical_cargo": "967f5f1db2938847fac22d78dc222054cbb143a5fabcffcad0bd15f8929b47e9",
+    "physical_kernel_sha": {
+      "kernel.472550": "a8185d2beed04bb4791918f9f62b15278b829b1b10aeb705939e4313e386dff2",
+      "kernel.472551": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472552": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472553": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472554": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472560": "b3cd8739e4da9bd1bc124e0b3d8c17a8a5be1ea7a87184c2b364635739047e13",
+      "kernel.472561": "0801a3e036d3f0d9593b6b86f1edda4c727476544ee9ede1d86bf2ac94a46973"
+    },
+    "physical_profile_sha": "90388f0649decc58485078827b141355ae10e88784a80e4cafdd33b83c169c8b",
+    "source_sha": "cd6179ed534ae36214b5554461d767080c86a3dad2652f15f304ca31d4da77a2",
+    "status": 0,
+    "stderr_sha": "721d8d4e68a01c36d427c4ce949f37713e993c5d1bb4ff27e6e49a29611e26ee",
+    "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "unchanged_transition_sha": "8cf8f1a672bd30cd4521645cbf81299c9f17a1fc73e6d1bdf087bc57f245899c"
+  },
+  "b02-reverse-B-unchanged": {
+    "argv_sha": "7d636956fc1d9f256b13d7dc6165c294cff2cc96d5ef3abace866d60397e38c8",
+    "command": [
+      "+ohm",
+      "test",
+      "--locked",
+      "--offline",
+      "--no-run",
+      "-j4",
+      "-p",
+      "ruff_python_parser",
+      "--test",
+      "generate_inline_tests",
+      "--test",
+      "fixtures"
+    ],
+    "counts": [
+      "B 472450 @HOME@/.cache/ohm-relink-edge-demand-20261029/sdk/bin/cargo",
+      "T 472450",
+      "T 472455",
+      "T 472456",
+      "F 472456 10784 0 0 0 0 0",
+      "F 472455 144614 0 0 0 0 0",
+      "F 472450 283755338 1 1 186879 1 0",
+      "P 472450"
+    ],
+    "elapsed_ns_instrumented_only": 9131847203,
+    "forked_processes": [],
+    "kernel_execs": [
+      [
+        472450,
+        "@HOME@/.cargo/bin/cargo"
+      ],
+      [
+        472450,
+        "@HOME@/.cache/ohm-relink-edge-demand-20261029/rustup/toolchains/ohm/bin/cargo"
+      ],
+      [
+        472450,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/drrun"
+      ],
+      [
+        472450,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/../lib64/release/libdynamorio.so"
+      ]
+    ],
+    "kernel_threads": [
+      [
+        472450,
+        472451,
+        true
+      ],
+      [
+        472450,
+        472452,
+        true
+      ],
+      [
+        472450,
+        472453,
+        true
+      ],
+      [
+        472450,
+        472454,
+        true
+      ],
+      [
+        472450,
+        472455,
+        true
+      ],
+      [
+        472450,
+        472456,
+        true
+      ]
+    ],
+    "monotonic_ns": [
+      398856531510936,
+      398865663358139
+    ],
+    "physical_cargo": "80356b8237d3089d3360b6de5abfc64a17e4b8d3f0ec1fb64e09254418b5c5e5",
+    "physical_kernel_sha": {
+      "kernel.472450": "c70913c6d861c57452b7d6fedb043638968e0d86775d9757cb5ace831ef82995",
+      "kernel.472451": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472452": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472453": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472454": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472455": "b3cd8739e4da9bd1bc124e0b3d8c17a8a5be1ea7a87184c2b364635739047e13",
+      "kernel.472456": "be91f4482b9ed17ecd6522088cebac26ea5ceef01289a836608762f131e4fac7"
+    },
+    "physical_profile_sha": "b357f7d72b6ff95614b8ace367b5ce0cdcc51650a135d60be6b00ded6875854c",
+    "source_sha": "cd6179ed534ae36214b5554461d767080c86a3dad2652f15f304ca31d4da77a2",
+    "status": 0,
+    "stderr_sha": "0bbd6c2c36fbd8480b6402b85edc9a16d2d88c2e7edc962c8f1d7aad45fc5d82",
+    "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "unchanged_transition_sha": "54688abdb9a3545a72a4fe04eef6bf45325cc43d235a3a1d947fd3f901175744"
+  },
+  "b02-reverse-C-unchanged": {
+    "argv_sha": "7d636956fc1d9f256b13d7dc6165c294cff2cc96d5ef3abace866d60397e38c8",
+    "command": [
+      "+ohm",
+      "test",
+      "--locked",
+      "--offline",
+      "--no-run",
+      "-j4",
+      "-p",
+      "ruff_python_parser",
+      "--test",
+      "generate_inline_tests",
+      "--test",
+      "fixtures"
+    ],
+    "counts": [
+      "B 472499 @HOME@/.cache/ohm-relink-edge-demand-20261029/sdk/bin/cargo",
+      "T 472499",
+      "T 472506",
+      "T 472507",
+      "F 472507 10784 0 0 0 0 0",
+      "F 472506 147344 0 0 0 0 0",
+      "F 472499 281095357 0 1 0 0 0",
+      "P 472499"
+    ],
+    "elapsed_ns_instrumented_only": 9230428642,
+    "forked_processes": [],
+    "kernel_execs": [
+      [
+        472499,
+        "@HOME@/.cargo/bin/cargo"
+      ],
+      [
+        472499,
+        "@HOME@/.cache/ohm-relink-edge-demand-20261029/rustup/toolchains/ohm/bin/cargo"
+      ],
+      [
+        472499,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/drrun"
+      ],
+      [
+        472499,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/../lib64/release/libdynamorio.so"
+      ]
+    ],
+    "kernel_threads": [
+      [
+        472499,
+        472500,
+        true
+      ],
+      [
+        472499,
+        472501,
+        true
+      ],
+      [
+        472499,
+        472502,
+        true
+      ],
+      [
+        472499,
+        472503,
+        true
+      ],
+      [
+        472499,
+        472506,
+        true
+      ],
+      [
+        472499,
+        472507,
+        true
+      ]
+    ],
+    "monotonic_ns": [
+      398867112060560,
+      398876342489202
+    ],
+    "physical_cargo": "473fda5712ef8afdb3b84c819d8b27e09547a6deb5b0c067c22a2159929c57a5",
+    "physical_kernel_sha": {
+      "kernel.472499": "00731875849c7b9be4c3e443c37090bfebdb457073f3e4a90b45f489f00c6f9e",
+      "kernel.472500": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472501": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472502": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472503": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472506": "b3cd8739e4da9bd1bc124e0b3d8c17a8a5be1ea7a87184c2b364635739047e13",
+      "kernel.472507": "ebfb4f17e9ff1db84e93bf7d96ef9d34d3269a396e5aaa0b54e6bd8b16c0511f"
+    },
+    "physical_profile_sha": "6ad2247a1064f316bc789a534fa76327e37d4f89ad736ec59aa9e303524081e2",
+    "source_sha": "cd6179ed534ae36214b5554461d767080c86a3dad2652f15f304ca31d4da77a2",
+    "status": 0,
+    "stderr_sha": "1a3ff4463f39d9d5d018fa2d25c1b22e5f14ab5203908046dbd2693ddd414be3",
+    "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "unchanged_transition_sha": "5bf6998fcf9b3001a99bca5f8e5e8c746bfe316eb60f7a1fa60218713684a933"
+  },
+  "b03-restore-A-unchanged": {
+    "argv_sha": "7d636956fc1d9f256b13d7dc6165c294cff2cc96d5ef3abace866d60397e38c8",
+    "command": [
+      "+ohm",
+      "test",
+      "--locked",
+      "--offline",
+      "--no-run",
+      "-j4",
+      "-p",
+      "ruff_python_parser",
+      "--test",
+      "generate_inline_tests",
+      "--test",
+      "fixtures"
+    ],
+    "counts": [
+      "B 474356 @HOME@/.cache/ohm-relink-edge-demand-20261029/sdk/bin/cargo",
+      "T 474356",
+      "T 474362",
+      "T 474364",
+      "F 474364 10784 0 0 0 0 0",
+      "F 474362 146071 0 0 0 0 0",
+      "F 474356 281158831 0 1 0 0 0",
+      "P 474356"
+    ],
+    "elapsed_ns_instrumented_only": 9025536367,
+    "forked_processes": [],
+    "kernel_execs": [
+      [
+        474356,
+        "@HOME@/.cargo/bin/cargo"
+      ],
+      [
+        474356,
+        "@HOME@/.cache/ohm-relink-edge-demand-20261029/rustup/toolchains/ohm/bin/cargo"
+      ],
+      [
+        474356,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/drrun"
+      ],
+      [
+        474356,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/../lib64/release/libdynamorio.so"
+      ]
+    ],
+    "kernel_threads": [
+      [
+        474356,
+        474357,
+        true
+      ],
+      [
+        474356,
+        474358,
+        true
+      ],
+      [
+        474356,
+        474359,
+        true
+      ],
+      [
+        474356,
+        474360,
+        true
+      ],
+      [
+        474356,
+        474362,
+        true
+      ],
+      [
+        474356,
+        474364,
+        true
+      ]
+    ],
+    "monotonic_ns": [
+      398979070564626,
+      398988096100993
+    ],
+    "physical_cargo": "967f5f1db2938847fac22d78dc222054cbb143a5fabcffcad0bd15f8929b47e9",
+    "physical_kernel_sha": {
+      "kernel.474356": "29993e9a4acaec3814d9a34e8fd314cc88ad7f93b33045fbd2266fd37d12af23",
+      "kernel.474357": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.474358": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.474359": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.474360": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.474362": "b3cd8739e4da9bd1bc124e0b3d8c17a8a5be1ea7a87184c2b364635739047e13",
+      "kernel.474364": "a6f4a1c44385f87b91f3fcdd29bfe75b1f632d194d56aaa4691b96a85a5146a4"
+    },
+    "physical_profile_sha": "ac3a3bc816e587d5592fc1677502e7107ef3f53ffce13e1d639a4f448c78c744",
+    "source_sha": "893b5ff55f23fde170f5079766ebbe20937419a24296394a6dd0f326b8ccba88",
+    "status": 0,
+    "stderr_sha": "d064a7d8371f413af6ccf5be262021b3fc2b0b574ed787655240a329e8fa03bb",
+    "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "unchanged_transition_sha": "d537c3c835997de9ed3a91a7da9ab8a2ce2e37f96774e5bc713eba1b8c429803"
+  },
+  "b03-restore-B-unchanged": {
+    "argv_sha": "7d636956fc1d9f256b13d7dc6165c294cff2cc96d5ef3abace866d60397e38c8",
+    "command": [
+      "+ohm",
+      "test",
+      "--locked",
+      "--offline",
+      "--no-run",
+      "-j4",
+      "-p",
+      "ruff_python_parser",
+      "--test",
+      "generate_inline_tests",
+      "--test",
+      "fixtures"
+    ],
+    "counts": [
+      "B 474299 @HOME@/.cache/ohm-relink-edge-demand-20261029/sdk/bin/cargo",
+      "T 474299",
+      "T 474310",
+      "T 474312",
+      "F 474312 10826 0 0 0 0 0",
+      "F 474310 145291 0 0 0 0 0",
+      "F 474299 283787151 1 1 194808 1 0",
+      "P 474299"
+    ],
+    "elapsed_ns_instrumented_only": 9224061779,
+    "forked_processes": [],
+    "kernel_execs": [
+      [
+        474299,
+        "@HOME@/.cargo/bin/cargo"
+      ],
+      [
+        474299,
+        "@HOME@/.cache/ohm-relink-edge-demand-20261029/rustup/toolchains/ohm/bin/cargo"
+      ],
+      [
+        474299,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/drrun"
+      ],
+      [
+        474299,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/../lib64/release/libdynamorio.so"
+      ]
+    ],
+    "kernel_threads": [
+      [
+        474299,
+        474300,
+        true
+      ],
+      [
+        474299,
+        474301,
+        true
+      ],
+      [
+        474299,
+        474302,
+        true
+      ],
+      [
+        474299,
+        474303,
+        true
+      ],
+      [
+        474299,
+        474310,
+        true
+      ],
+      [
+        474299,
+        474312,
+        true
+      ]
+    ],
+    "monotonic_ns": [
+      398967589240328,
+      398976813302107
+    ],
+    "physical_cargo": "80356b8237d3089d3360b6de5abfc64a17e4b8d3f0ec1fb64e09254418b5c5e5",
+    "physical_kernel_sha": {
+      "kernel.474299": "479665ff3dc9094a4705179840102ac3da824a116d616681b224cf8210e4a416",
+      "kernel.474300": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.474301": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.474302": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.474303": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.474310": "b3cd8739e4da9bd1bc124e0b3d8c17a8a5be1ea7a87184c2b364635739047e13",
+      "kernel.474312": "f4aaba3ba2da11ad2f057e127cd52ffc5b38b6bda7c6f842c73b5589e2c1e2cd"
+    },
+    "physical_profile_sha": "6a48a8fadb90062905c224543e729115979140bb9733c19035db4b44bfb6e4b4",
+    "source_sha": "893b5ff55f23fde170f5079766ebbe20937419a24296394a6dd0f326b8ccba88",
+    "status": 0,
+    "stderr_sha": "2f657963afe1b3042fcf1993054e9166de327449be2a209466ee84edd03cc7df",
+    "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "unchanged_transition_sha": "cb58bb7b8da70d2d28b2e87f5bb5e73732d31bd1599787504c098803dd066530"
+  },
+  "b03-restore-C-unchanged": {
+    "argv_sha": "7d636956fc1d9f256b13d7dc6165c294cff2cc96d5ef3abace866d60397e38c8",
+    "command": [
+      "+ohm",
+      "test",
+      "--locked",
+      "--offline",
+      "--no-run",
+      "-j4",
+      "-p",
+      "ruff_python_parser",
+      "--test",
+      "generate_inline_tests",
+      "--test",
+      "fixtures"
+    ],
+    "counts": [
+      "B 474240 @HOME@/.cache/ohm-relink-edge-demand-20261029/sdk/bin/cargo",
+      "T 474240",
+      "T 474254",
+      "T 474255",
+      "F 474255 10784 0 0 0 0 0",
+      "F 474254 145814 0 0 0 0 0",
+      "F 474240 281128013 0 1 0 0 0",
+      "P 474240"
+    ],
+    "elapsed_ns_instrumented_only": 10443345229,
+    "forked_processes": [],
+    "kernel_execs": [
+      [
+        474240,
+        "@HOME@/.cargo/bin/cargo"
+      ],
+      [
+        474240,
+        "@HOME@/.cache/ohm-relink-edge-demand-20261029/rustup/toolchains/ohm/bin/cargo"
+      ],
+      [
+        474240,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/drrun"
+      ],
+      [
+        474240,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/../lib64/release/libdynamorio.so"
+      ]
+    ],
+    "kernel_threads": [
+      [
+        474240,
+        474241,
+        true
+      ],
+      [
+        474240,
+        474242,
+        true
+      ],
+      [
+        474240,
+        474243,
+        true
+      ],
+      [
+        474240,
+        474244,
+        true
+      ],
+      [
+        474240,
+        474254,
+        true
+      ],
+      [
+        474240,
+        474255,
+        true
+      ]
+    ],
+    "monotonic_ns": [
+      398954954375501,
+      398965397720730
+    ],
+    "physical_cargo": "473fda5712ef8afdb3b84c819d8b27e09547a6deb5b0c067c22a2159929c57a5",
+    "physical_kernel_sha": {
+      "kernel.474240": "8a4f991b73e80bdb91b4c62990eb8f6d3b07f3732583247ca3e37e3bcb021d1f",
+      "kernel.474241": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.474242": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.474243": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.474244": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.474254": "b3cd8739e4da9bd1bc124e0b3d8c17a8a5be1ea7a87184c2b364635739047e13",
+      "kernel.474255": "68f9d592dabdf0b2328443d8ae4ec5226a4782e84d90d39df925a71378f3b7bf"
+    },
+    "physical_profile_sha": "172e43e724be1b377cc665358fa354fcee7e0d801e2b0a9b791b385e77c0733e",
+    "source_sha": "893b5ff55f23fde170f5079766ebbe20937419a24296394a6dd0f326b8ccba88",
+    "status": 0,
+    "stderr_sha": "1e4bb1982aa5b744cc8be1a9adf0f1c7e0801791cac105b7f8aaa2c2ea54d048",
+    "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "unchanged_transition_sha": "c0114b30f22b90df5dc48769d57dcb5955b564ffe1213eb75c8f5796c572ef77"
+  },
+  "b03-reverse-A-unchanged": {
+    "argv_sha": "7d636956fc1d9f256b13d7dc6165c294cff2cc96d5ef3abace866d60397e38c8",
+    "command": [
+      "+ohm",
+      "test",
+      "--locked",
+      "--offline",
+      "--no-run",
+      "-j4",
+      "-p",
+      "ruff_python_parser",
+      "--test",
+      "generate_inline_tests",
+      "--test",
+      "fixtures"
+    ],
+    "counts": [
+      "B 472838 @HOME@/.cache/ohm-relink-edge-demand-20261029/sdk/bin/cargo",
+      "T 472838",
+      "T 473115",
+      "T 473340",
+      "F 473340 10784 0 0 0 0 0",
+      "F 473115 152034 0 0 0 0 0",
+      "F 472838 281131420 0 1 0 0 0",
+      "P 472838"
+    ],
+    "elapsed_ns_instrumented_only": 11032521007,
+    "forked_processes": [],
+    "kernel_execs": [
+      [
+        472838,
+        "@HOME@/.cargo/bin/cargo"
+      ],
+      [
+        472838,
+        "@HOME@/.cache/ohm-relink-edge-demand-20261029/rustup/toolchains/ohm/bin/cargo"
+      ],
+      [
+        472838,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/drrun"
+      ],
+      [
+        472838,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/../lib64/release/libdynamorio.so"
+      ]
+    ],
+    "kernel_threads": [
+      [
+        472838,
+        472839,
+        true
+      ],
+      [
+        472838,
+        472840,
+        true
+      ],
+      [
+        472838,
+        472841,
+        true
+      ],
+      [
+        472838,
+        472842,
+        true
+      ],
+      [
+        472838,
+        473115,
+        true
+      ],
+      [
+        472838,
+        473340,
+        true
+      ]
+    ],
+    "monotonic_ns": [
+      398930127123470,
+      398941159644477
+    ],
+    "physical_cargo": "967f5f1db2938847fac22d78dc222054cbb143a5fabcffcad0bd15f8929b47e9",
+    "physical_kernel_sha": {
+      "kernel.472838": "d94a483a6f5db82927bb3936dfe93ab9f9c16f4359f97aa41fd33102f8dad03c",
+      "kernel.472839": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472840": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472841": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472842": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.473115": "b3cd8739e4da9bd1bc124e0b3d8c17a8a5be1ea7a87184c2b364635739047e13",
+      "kernel.473340": "2a6d3f5bad8a89c539bef1ae40b3b78dce1cd76c8bdbe47ac9c0ff00741c97ca"
+    },
+    "physical_profile_sha": "7e9d226aec347ae072ba07ccb0608661045f68b5a271dc7b21ebcbb28c3d98ac",
+    "source_sha": "cd6179ed534ae36214b5554461d767080c86a3dad2652f15f304ca31d4da77a2",
+    "status": 0,
+    "stderr_sha": "1c2698c9c295229bc0e4706284ae1c45d83118f652dc2a8470ee25a70a050355",
+    "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "unchanged_transition_sha": "579bdada6e87ff2435eda73075991d1cfe70bbd32e6aa0c1b5a09dc25b945c03"
+  },
+  "b03-reverse-B-unchanged": {
+    "argv_sha": "7d636956fc1d9f256b13d7dc6165c294cff2cc96d5ef3abace866d60397e38c8",
+    "command": [
+      "+ohm",
+      "test",
+      "--locked",
+      "--offline",
+      "--no-run",
+      "-j4",
+      "-p",
+      "ruff_python_parser",
+      "--test",
+      "generate_inline_tests",
+      "--test",
+      "fixtures"
+    ],
+    "counts": [
+      "B 472757 @HOME@/.cache/ohm-relink-edge-demand-20261029/sdk/bin/cargo",
+      "T 472757",
+      "T 472763",
+      "T 472764",
+      "F 472764 10784 0 0 0 0 0",
+      "F 472763 145698 0 0 0 0 0",
+      "F 472757 283801505 1 1 186914 1 0",
+      "P 472757"
+    ],
+    "elapsed_ns_instrumented_only": 9105310937,
+    "forked_processes": [],
+    "kernel_execs": [
+      [
+        472757,
+        "@HOME@/.cargo/bin/cargo"
+      ],
+      [
+        472757,
+        "@HOME@/.cache/ohm-relink-edge-demand-20261029/rustup/toolchains/ohm/bin/cargo"
+      ],
+      [
+        472757,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/drrun"
+      ],
+      [
+        472757,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/../lib64/release/libdynamorio.so"
+      ]
+    ],
+    "kernel_threads": [
+      [
+        472757,
+        472758,
+        true
+      ],
+      [
+        472757,
+        472759,
+        true
+      ],
+      [
+        472757,
+        472760,
+        true
+      ],
+      [
+        472757,
+        472761,
+        true
+      ],
+      [
+        472757,
+        472763,
+        true
+      ],
+      [
+        472757,
+        472764,
+        true
+      ]
+    ],
+    "monotonic_ns": [
+      398919646844428,
+      398928752155365
+    ],
+    "physical_cargo": "80356b8237d3089d3360b6de5abfc64a17e4b8d3f0ec1fb64e09254418b5c5e5",
+    "physical_kernel_sha": {
+      "kernel.472757": "3895774839c059e5091d1f10f209e8696276a1ea967287679658662a6ca471e3",
+      "kernel.472758": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472759": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472760": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472761": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.472763": "b3cd8739e4da9bd1bc124e0b3d8c17a8a5be1ea7a87184c2b364635739047e13",
+      "kernel.472764": "d56bd3142a4171279d95acffc032827807718a4a9c06429042f6776d5cdf2b0a"
+    },
+    "physical_profile_sha": "b61f165bee4c2d684a450ea289da9a2e609349607466edeb650d5e90549dfe4e",
+    "source_sha": "cd6179ed534ae36214b5554461d767080c86a3dad2652f15f304ca31d4da77a2",
+    "status": 0,
+    "stderr_sha": "f29f8b5aca9bc69319d9bdc44d04dca6437d1046946da5bbd124962fac490530",
+    "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "unchanged_transition_sha": "9286a2b25ed16427cbcf7781a5377f8544b0a523348aafd8188321d1935d0d25"
+  },
+  "b03-reverse-C-unchanged": {
+    "argv_sha": "7d636956fc1d9f256b13d7dc6165c294cff2cc96d5ef3abace866d60397e38c8",
+    "command": [
+      "+ohm",
+      "test",
+      "--locked",
+      "--offline",
+      "--no-run",
+      "-j4",
+      "-p",
+      "ruff_python_parser",
+      "--test",
+      "generate_inline_tests",
+      "--test",
+      "fixtures"
+    ],
+    "counts": [
+      "B 473529 @HOME@/.cache/ohm-relink-edge-demand-20261029/sdk/bin/cargo",
+      "T 473529",
+      "T 473886",
+      "T 474048",
+      "F 474048 10784 0 0 0 0 0",
+      "F 473886 146917 0 0 0 0 0",
+      "F 473529 281099943 0 1 0 0 0",
+      "P 473529"
+    ],
+    "elapsed_ns_instrumented_only": 10444843141,
+    "forked_processes": [],
+    "kernel_execs": [
+      [
+        473529,
+        "@HOME@/.cargo/bin/cargo"
+      ],
+      [
+        473529,
+        "@HOME@/.cache/ohm-relink-edge-demand-20261029/rustup/toolchains/ohm/bin/cargo"
+      ],
+      [
+        473529,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/drrun"
+      ],
+      [
+        473529,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/../lib64/release/libdynamorio.so"
+      ]
+    ],
+    "kernel_threads": [
+      [
+        473529,
+        473530,
+        true
+      ],
+      [
+        473529,
+        473531,
+        true
+      ],
+      [
+        473529,
+        473532,
+        true
+      ],
+      [
+        473529,
+        473533,
+        true
+      ],
+      [
+        473529,
+        473886,
+        true
+      ],
+      [
+        473529,
+        474048,
+        true
+      ]
+    ],
+    "monotonic_ns": [
+      398942742658511,
+      398953187501652
+    ],
+    "physical_cargo": "473fda5712ef8afdb3b84c819d8b27e09547a6deb5b0c067c22a2159929c57a5",
+    "physical_kernel_sha": {
+      "kernel.473529": "97685b4d83a3bb6b96b1f808bf208c548f4359906074ce11317a1558f8c72352",
+      "kernel.473530": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.473531": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.473532": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.473533": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.473886": "b3cd8739e4da9bd1bc124e0b3d8c17a8a5be1ea7a87184c2b364635739047e13",
+      "kernel.474048": "0497b5a2800dcf3d48aa5438133ba6149af1110d39aa53d4a021f1da7aa9ce97"
+    },
+    "physical_profile_sha": "61534ab5267033b5c3131412ec72bef6c10867ca2014dc2a6594c30e8b232024",
+    "source_sha": "cd6179ed534ae36214b5554461d767080c86a3dad2652f15f304ca31d4da77a2",
+    "status": 0,
+    "stderr_sha": "91b5fa7d23e5140c5e2d1e2b952299069f3b1d78cda3fff52f4d598513cc8096",
+    "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "unchanged_transition_sha": "d330a2fd35b859fd98e3f47e3729973f63a6b4adcd4820f4489c1b3329cfa40e"
+  },
+  "b04-restore-A-unchanged": {
+    "argv_sha": "7d636956fc1d9f256b13d7dc6165c294cff2cc96d5ef3abace866d60397e38c8",
+    "command": [
+      "+ohm",
+      "test",
+      "--locked",
+      "--offline",
+      "--no-run",
+      "-j4",
+      "-p",
+      "ruff_python_parser",
+      "--test",
+      "generate_inline_tests",
+      "--test",
+      "fixtures"
+    ],
+    "counts": [
+      "B 474678 @HOME@/.cache/ohm-relink-edge-demand-20261029/sdk/bin/cargo",
+      "T 474678",
+      "T 474950",
+      "T 475186",
+      "F 475186 10784 0 0 0 0 0",
+      "F 474950 146641 0 0 0 0 0",
+      "F 474678 281116362 0 1 0 0 0",
+      "P 474678"
+    ],
+    "elapsed_ns_instrumented_only": 9733356826,
+    "forked_processes": [],
+    "kernel_execs": [
+      [
+        474678,
+        "@HOME@/.cargo/bin/cargo"
+      ],
+      [
+        474678,
+        "@HOME@/.cache/ohm-relink-edge-demand-20261029/rustup/toolchains/ohm/bin/cargo"
+      ],
+      [
+        474678,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/drrun"
+      ],
+      [
+        474678,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/../lib64/release/libdynamorio.so"
+      ]
+    ],
+    "kernel_threads": [
+      [
+        474678,
+        474679,
+        true
+      ],
+      [
+        474678,
+        474680,
+        true
+      ],
+      [
+        474678,
+        474681,
+        true
+      ],
+      [
+        474678,
+        474682,
+        true
+      ],
+      [
+        474678,
+        474950,
+        true
+      ],
+      [
+        474678,
+        475186,
+        true
+      ]
+    ],
+    "monotonic_ns": [
+      399027171980636,
+      399036905337462
+    ],
+    "physical_cargo": "967f5f1db2938847fac22d78dc222054cbb143a5fabcffcad0bd15f8929b47e9",
+    "physical_kernel_sha": {
+      "kernel.474678": "03318f123a2ad045a299948cea6b172d2a506e26600446191c7bb54bc8d9ed7d",
+      "kernel.474679": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.474680": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.474681": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.474682": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.474950": "b3cd8739e4da9bd1bc124e0b3d8c17a8a5be1ea7a87184c2b364635739047e13",
+      "kernel.475186": "ae5cd71afc00e1307d214d280390d401d19bd94c0337cbbe17a35ccccb8f6959"
+    },
+    "physical_profile_sha": "e1a248e761f8206cb8c2d99121efc4732269715b9d0bc15bc2d5ce577f2376de",
+    "source_sha": "893b5ff55f23fde170f5079766ebbe20937419a24296394a6dd0f326b8ccba88",
+    "status": 0,
+    "stderr_sha": "fe18ce34d19a7f5b55a4f521c92d6d7af3d23dd0ec1298af37cc15455991e6f5",
+    "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "unchanged_transition_sha": "27cdc67c49f750d0841ae11ff6f9e01a02730411ba2471c214b7220e94270afb"
+  },
+  "b04-restore-B-unchanged": {
+    "argv_sha": "7d636956fc1d9f256b13d7dc6165c294cff2cc96d5ef3abace866d60397e38c8",
+    "command": [
+      "+ohm",
+      "test",
+      "--locked",
+      "--offline",
+      "--no-run",
+      "-j4",
+      "-p",
+      "ruff_python_parser",
+      "--test",
+      "generate_inline_tests",
+      "--test",
+      "fixtures"
+    ],
+    "counts": [
+      "B 475753 @HOME@/.cache/ohm-relink-edge-demand-20261029/sdk/bin/cargo",
+      "T 475753",
+      "T 475759",
+      "T 475760",
+      "F 475760 10784 0 0 0 0 0",
+      "F 475759 146320 0 0 0 0 0",
+      "F 475753 283771016 1 1 194880 1 0",
+      "P 475753"
+    ],
+    "elapsed_ns_instrumented_only": 9136462928,
+    "forked_processes": [],
+    "kernel_execs": [
+      [
+        475753,
+        "@HOME@/.cargo/bin/cargo"
+      ],
+      [
+        475753,
+        "@HOME@/.cache/ohm-relink-edge-demand-20261029/rustup/toolchains/ohm/bin/cargo"
+      ],
+      [
+        475753,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/drrun"
+      ],
+      [
+        475753,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/../lib64/release/libdynamorio.so"
+      ]
+    ],
+    "kernel_threads": [
+      [
+        475753,
+        475754,
+        true
+      ],
+      [
+        475753,
+        475755,
+        true
+      ],
+      [
+        475753,
+        475756,
+        true
+      ],
+      [
+        475753,
+        475757,
+        true
+      ],
+      [
+        475753,
+        475759,
+        true
+      ],
+      [
+        475753,
+        475760,
+        true
+      ]
+    ],
+    "monotonic_ns": [
+      399050452922424,
+      399059589385352
+    ],
+    "physical_cargo": "80356b8237d3089d3360b6de5abfc64a17e4b8d3f0ec1fb64e09254418b5c5e5",
+    "physical_kernel_sha": {
+      "kernel.475753": "2e3300c96777030c18a30e6fd2b1ad2dbab4a1156a14bca3c200b1db3a9bb349",
+      "kernel.475754": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.475755": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.475756": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.475757": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.475759": "b3cd8739e4da9bd1bc124e0b3d8c17a8a5be1ea7a87184c2b364635739047e13",
+      "kernel.475760": "4c5a227b09a5e905663d888a945885e938643ebf5e132679e6e1ae7aac96cfca"
+    },
+    "physical_profile_sha": "f835feb40494a8d738fbdfd47f69236cea39f53b46ce55ef1c44276d0cbc5cd4",
+    "source_sha": "893b5ff55f23fde170f5079766ebbe20937419a24296394a6dd0f326b8ccba88",
+    "status": 0,
+    "stderr_sha": "f29f8b5aca9bc69319d9bdc44d04dca6437d1046946da5bbd124962fac490530",
+    "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "unchanged_transition_sha": "32ed221b0202230e2d0b44ddc5ab245bc8c89ab4c8f22b2b2c033f4211abdfad"
+  },
+  "b04-restore-C-unchanged": {
+    "argv_sha": "7d636956fc1d9f256b13d7dc6165c294cff2cc96d5ef3abace866d60397e38c8",
+    "command": [
+      "+ohm",
+      "test",
+      "--locked",
+      "--offline",
+      "--no-run",
+      "-j4",
+      "-p",
+      "ruff_python_parser",
+      "--test",
+      "generate_inline_tests",
+      "--test",
+      "fixtures"
+    ],
+    "counts": [
+      "B 475422 @HOME@/.cache/ohm-relink-edge-demand-20261029/sdk/bin/cargo",
+      "T 475422",
+      "T 475678",
+      "T 475682",
+      "F 475682 10784 0 0 0 0 0",
+      "F 475678 143501 0 0 0 0 0",
+      "F 475422 281099711 0 1 0 0 0",
+      "P 475422"
+    ],
+    "elapsed_ns_instrumented_only": 9296538903,
+    "forked_processes": [],
+    "kernel_execs": [
+      [
+        475422,
+        "@HOME@/.cargo/bin/cargo"
+      ],
+      [
+        475422,
+        "@HOME@/.cache/ohm-relink-edge-demand-20261029/rustup/toolchains/ohm/bin/cargo"
+      ],
+      [
+        475422,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/drrun"
+      ],
+      [
+        475422,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/../lib64/release/libdynamorio.so"
+      ]
+    ],
+    "kernel_threads": [
+      [
+        475422,
+        475423,
+        true
+      ],
+      [
+        475422,
+        475424,
+        true
+      ],
+      [
+        475422,
+        475425,
+        true
+      ],
+      [
+        475422,
+        475426,
+        true
+      ],
+      [
+        475422,
+        475678,
+        true
+      ],
+      [
+        475422,
+        475682,
+        true
+      ]
+    ],
+    "monotonic_ns": [
+      399039188610314,
+      399048485149217
+    ],
+    "physical_cargo": "473fda5712ef8afdb3b84c819d8b27e09547a6deb5b0c067c22a2159929c57a5",
+    "physical_kernel_sha": {
+      "kernel.475422": "248f31ab42e85bbada646391faf2e782441ce3ff122b7f38df6a8f8d2dea32e1",
+      "kernel.475423": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.475424": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.475425": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.475426": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.475678": "b3cd8739e4da9bd1bc124e0b3d8c17a8a5be1ea7a87184c2b364635739047e13",
+      "kernel.475682": "2652845a8074e714ff7fe4181d75f9bf6ccf294e61040102b6b948852e55de16"
+    },
+    "physical_profile_sha": "fe1b63668438358467b7b60a21e7c1432b629d0d6ece059c0b62bac3696c9e9f",
+    "source_sha": "893b5ff55f23fde170f5079766ebbe20937419a24296394a6dd0f326b8ccba88",
+    "status": 0,
+    "stderr_sha": "da19ccc790f297d3d97a8d5d33c83246e665070583fee8b9da2dd984de9da5e2",
+    "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "unchanged_transition_sha": "8b7900dedaa9f0542f13660a4ee43e5180a66d59c0f0e9a3fb8dc265de780c11"
+  },
+  "b04-reverse-A-unchanged": {
+    "argv_sha": "7d636956fc1d9f256b13d7dc6165c294cff2cc96d5ef3abace866d60397e38c8",
+    "command": [
+      "+ohm",
+      "test",
+      "--locked",
+      "--offline",
+      "--no-run",
+      "-j4",
+      "-p",
+      "ruff_python_parser",
+      "--test",
+      "generate_inline_tests",
+      "--test",
+      "fixtures"
+    ],
+    "counts": [
+      "B 474465 @HOME@/.cache/ohm-relink-edge-demand-20261029/sdk/bin/cargo",
+      "T 474465",
+      "T 474473",
+      "T 474474",
+      "F 474474 10784 0 0 0 0 0",
+      "F 474473 144338 0 0 0 0 0",
+      "F 474465 281109739 0 1 0 0 0",
+      "P 474465"
+    ],
+    "elapsed_ns_instrumented_only": 9487734168,
+    "forked_processes": [],
+    "kernel_execs": [
+      [
+        474465,
+        "@HOME@/.cargo/bin/cargo"
+      ],
+      [
+        474465,
+        "@HOME@/.cache/ohm-relink-edge-demand-20261029/rustup/toolchains/ohm/bin/cargo"
+      ],
+      [
+        474465,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/drrun"
+      ],
+      [
+        474465,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/../lib64/release/libdynamorio.so"
+      ]
+    ],
+    "kernel_threads": [
+      [
+        474465,
+        474466,
+        true
+      ],
+      [
+        474465,
+        474467,
+        true
+      ],
+      [
+        474465,
+        474468,
+        true
+      ],
+      [
+        474465,
+        474469,
+        true
+      ],
+      [
+        474465,
+        474473,
+        true
+      ],
+      [
+        474465,
+        474474,
+        true
+      ]
+    ],
+    "monotonic_ns": [
+      399001978496559,
+      399011466230727
+    ],
+    "physical_cargo": "967f5f1db2938847fac22d78dc222054cbb143a5fabcffcad0bd15f8929b47e9",
+    "physical_kernel_sha": {
+      "kernel.474465": "e3d8a1c1f1223f65fe8493ebfbe83e8ecd7ca82c9eb31bb6b3688ff8ec79bfaf",
+      "kernel.474466": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.474467": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.474468": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.474469": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.474473": "b3cd8739e4da9bd1bc124e0b3d8c17a8a5be1ea7a87184c2b364635739047e13",
+      "kernel.474474": "a1a21796ad07fcf79b057860ba64821ee3b93b4f2098cb3acd685b48fbff705c"
+    },
+    "physical_profile_sha": "2e0cc01577802fcf497b79d1da30f44ddc00bf59ff6d049d3385b0df4d9002bb",
+    "source_sha": "cd6179ed534ae36214b5554461d767080c86a3dad2652f15f304ca31d4da77a2",
+    "status": 0,
+    "stderr_sha": "08d52f9ee3541c5b978b88fa78b1751efdb0d1b42d22e4e92d93ae18d526eed8",
+    "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "unchanged_transition_sha": "d1c6d8f5e8c9af8c667687d3055be5626ee58b00266ad52664fd074a605bb572"
+  },
+  "b04-reverse-B-unchanged": {
+    "argv_sha": "7d636956fc1d9f256b13d7dc6165c294cff2cc96d5ef3abace866d60397e38c8",
+    "command": [
+      "+ohm",
+      "test",
+      "--locked",
+      "--offline",
+      "--no-run",
+      "-j4",
+      "-p",
+      "ruff_python_parser",
+      "--test",
+      "generate_inline_tests",
+      "--test",
+      "fixtures"
+    ],
+    "counts": [
+      "B 474527 @HOME@/.cache/ohm-relink-edge-demand-20261029/sdk/bin/cargo",
+      "T 474527",
+      "T 474542",
+      "T 474543",
+      "F 474543 10784 0 0 0 0 0",
+      "F 474542 145537 0 0 0 0 0",
+      "F 474527 283805999 1 1 186874 1 0",
+      "P 474527"
+    ],
+    "elapsed_ns_instrumented_only": 11936470005,
+    "forked_processes": [],
+    "kernel_execs": [
+      [
+        474527,
+        "@HOME@/.cargo/bin/cargo"
+      ],
+      [
+        474527,
+        "@HOME@/.cache/ohm-relink-edge-demand-20261029/rustup/toolchains/ohm/bin/cargo"
+      ],
+      [
+        474527,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/drrun"
+      ],
+      [
+        474527,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/../lib64/release/libdynamorio.so"
+      ]
+    ],
+    "kernel_threads": [
+      [
+        474527,
+        474528,
+        true
+      ],
+      [
+        474527,
+        474529,
+        true
+      ],
+      [
+        474527,
+        474530,
+        true
+      ],
+      [
+        474527,
+        474531,
+        true
+      ],
+      [
+        474527,
+        474542,
+        true
+      ],
+      [
+        474527,
+        474543,
+        true
+      ]
+    ],
+    "monotonic_ns": [
+      399012874136543,
+      399024810606548
+    ],
+    "physical_cargo": "80356b8237d3089d3360b6de5abfc64a17e4b8d3f0ec1fb64e09254418b5c5e5",
+    "physical_kernel_sha": {
+      "kernel.474527": "c1e9eed528eb8d1065f4f8bd40fa6402b7fa462bbc5ec9afdf25a684135573cf",
+      "kernel.474528": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.474529": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.474530": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.474531": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.474542": "b3cd8739e4da9bd1bc124e0b3d8c17a8a5be1ea7a87184c2b364635739047e13",
+      "kernel.474543": "35c395800d1051b5efe83e0cfd7bff58a1ae7582100cd52d9dcaddbaacc4babe"
+    },
+    "physical_profile_sha": "d1afad904b4e2b51df9f020abcf878b6ed687a4cb6912fc500fc377c65fbe6a5",
+    "source_sha": "cd6179ed534ae36214b5554461d767080c86a3dad2652f15f304ca31d4da77a2",
+    "status": 0,
+    "stderr_sha": "ecef1b14f4f466d636cd0b7aa2605d302357e8ffe9df925d1ce93d446f2e3686",
+    "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "unchanged_transition_sha": "0ad5608f4c2e8a89d19f8a0f9175804938ec6d88ddd4146b68f1746b2928dee0"
+  },
+  "b04-reverse-C-unchanged": {
+    "argv_sha": "7d636956fc1d9f256b13d7dc6165c294cff2cc96d5ef3abace866d60397e38c8",
+    "command": [
+      "+ohm",
+      "test",
+      "--locked",
+      "--offline",
+      "--no-run",
+      "-j4",
+      "-p",
+      "ruff_python_parser",
+      "--test",
+      "generate_inline_tests",
+      "--test",
+      "fixtures"
+    ],
+    "counts": [
+      "B 474408 @HOME@/.cache/ohm-relink-edge-demand-20261029/sdk/bin/cargo",
+      "T 474408",
+      "T 474415",
+      "T 474417",
+      "F 474417 10805 0 0 0 0 0",
+      "F 474415 145057 0 0 0 0 0",
+      "F 474408 281085181 0 1 0 0 0",
+      "P 474408"
+    ],
+    "elapsed_ns_instrumented_only": 10328095937,
+    "forked_processes": [],
+    "kernel_execs": [
+      [
+        474408,
+        "@HOME@/.cargo/bin/cargo"
+      ],
+      [
+        474408,
+        "@HOME@/.cache/ohm-relink-edge-demand-20261029/rustup/toolchains/ohm/bin/cargo"
+      ],
+      [
+        474408,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/drrun"
+      ],
+      [
+        474408,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/../lib64/release/libdynamorio.so"
+      ]
+    ],
+    "kernel_threads": [
+      [
+        474408,
+        474409,
+        true
+      ],
+      [
+        474408,
+        474410,
+        true
+      ],
+      [
+        474408,
+        474411,
+        true
+      ],
+      [
+        474408,
+        474412,
+        true
+      ],
+      [
+        474408,
+        474415,
+        true
+      ],
+      [
+        474408,
+        474417,
+        true
+      ]
+    ],
+    "monotonic_ns": [
+      398990013611235,
+      399000341707172
+    ],
+    "physical_cargo": "473fda5712ef8afdb3b84c819d8b27e09547a6deb5b0c067c22a2159929c57a5",
+    "physical_kernel_sha": {
+      "kernel.474408": "bba4d96375128ab35f0b7df40be355fd7905ec1d97e5a6e10aa943e853e71639",
+      "kernel.474409": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.474410": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.474411": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.474412": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.474415": "b3cd8739e4da9bd1bc124e0b3d8c17a8a5be1ea7a87184c2b364635739047e13",
+      "kernel.474417": "aab8b81cda6904621c8a71e0ca1c76d2d2c83305bedf0dcbdec6f2a281a474fe"
+    },
+    "physical_profile_sha": "1450fe522563abc2927031b26ec365da46dd8188b5e90ab6c427a623603cab96",
+    "source_sha": "cd6179ed534ae36214b5554461d767080c86a3dad2652f15f304ca31d4da77a2",
+    "status": 0,
+    "stderr_sha": "e4d9a5e3fecfde0ddb2002607834a6d931b1a0a2164303a00dbb772a0e461e44",
+    "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "unchanged_transition_sha": "ab96fc197b84a00ef66eb399543315abf146facd43966278c5e16d65761aae41"
+  },
+  "b05-restore-A-unchanged": {
+    "argv_sha": "7d636956fc1d9f256b13d7dc6165c294cff2cc96d5ef3abace866d60397e38c8",
+    "command": [
+      "+ohm",
+      "test",
+      "--locked",
+      "--offline",
+      "--no-run",
+      "-j4",
+      "-p",
+      "ruff_python_parser",
+      "--test",
+      "generate_inline_tests",
+      "--test",
+      "fixtures"
+    ],
+    "counts": [
+      "B 475978 @HOME@/.cache/ohm-relink-edge-demand-20261029/sdk/bin/cargo",
+      "T 475978",
+      "T 475987",
+      "T 475990",
+      "F 475990 10784 0 0 0 0 0",
+      "F 475987 146468 0 0 0 0 0",
+      "F 475978 281148446 0 1 0 0 0",
+      "P 475978"
+    ],
+    "elapsed_ns_instrumented_only": 8984911941,
+    "forked_processes": [],
+    "kernel_execs": [
+      [
+        475978,
+        "@HOME@/.cargo/bin/cargo"
+      ],
+      [
+        475978,
+        "@HOME@/.cache/ohm-relink-edge-demand-20261029/rustup/toolchains/ohm/bin/cargo"
+      ],
+      [
+        475978,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/drrun"
+      ],
+      [
+        475978,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/../lib64/release/libdynamorio.so"
+      ]
+    ],
+    "kernel_threads": [
+      [
+        475978,
+        475979,
+        true
+      ],
+      [
+        475978,
+        475980,
+        true
+      ],
+      [
+        475978,
+        475981,
+        true
+      ],
+      [
+        475978,
+        475982,
+        true
+      ],
+      [
+        475978,
+        475987,
+        true
+      ],
+      [
+        475978,
+        475990,
+        true
+      ]
+    ],
+    "monotonic_ns": [
+      399099077682078,
+      399108062594019
+    ],
+    "physical_cargo": "967f5f1db2938847fac22d78dc222054cbb143a5fabcffcad0bd15f8929b47e9",
+    "physical_kernel_sha": {
+      "kernel.475978": "5e9ffe362e04425dd35efcbda046c3d6e1f96422ae91b6925ceb3d5b19556cc6",
+      "kernel.475979": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.475980": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.475981": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.475982": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.475987": "b3cd8739e4da9bd1bc124e0b3d8c17a8a5be1ea7a87184c2b364635739047e13",
+      "kernel.475990": "5089ebebe21bbc9f49862abb34e435e12e76eb7c0d740e88dacb5a3897d8a66f"
+    },
+    "physical_profile_sha": "49c8cd234685f270f02b58b431b2b16e97e0ac0cf22af9ac2e519dc6b5f6a23a",
+    "source_sha": "893b5ff55f23fde170f5079766ebbe20937419a24296394a6dd0f326b8ccba88",
+    "status": 0,
+    "stderr_sha": "d54a8e046b60e647179eeabc443ff462f9093dae93465ecd25bf7a864cac380f",
+    "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "unchanged_transition_sha": "4a9dc14309ddf8a71242b5107197985353e21b0d484db6600b819a1f8090ab75"
+  },
+  "b05-restore-B-unchanged": {
+    "argv_sha": "7d636956fc1d9f256b13d7dc6165c294cff2cc96d5ef3abace866d60397e38c8",
+    "command": [
+      "+ohm",
+      "test",
+      "--locked",
+      "--offline",
+      "--no-run",
+      "-j4",
+      "-p",
+      "ruff_python_parser",
+      "--test",
+      "generate_inline_tests",
+      "--test",
+      "fixtures"
+    ],
+    "counts": [
+      "B 476035 @HOME@/.cache/ohm-relink-edge-demand-20261029/sdk/bin/cargo",
+      "T 476035",
+      "T 476041",
+      "T 476045",
+      "F 476045 10784 0 0 0 0 0",
+      "F 476041 144661 0 0 0 0 0",
+      "F 476035 283897750 1 1 194803 1 0",
+      "P 476035"
+    ],
+    "elapsed_ns_instrumented_only": 9527077530,
+    "forked_processes": [],
+    "kernel_execs": [
+      [
+        476035,
+        "@HOME@/.cargo/bin/cargo"
+      ],
+      [
+        476035,
+        "@HOME@/.cache/ohm-relink-edge-demand-20261029/rustup/toolchains/ohm/bin/cargo"
+      ],
+      [
+        476035,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/drrun"
+      ],
+      [
+        476035,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/../lib64/release/libdynamorio.so"
+      ]
+    ],
+    "kernel_threads": [
+      [
+        476035,
+        476036,
+        true
+      ],
+      [
+        476035,
+        476037,
+        true
+      ],
+      [
+        476035,
+        476038,
+        true
+      ],
+      [
+        476035,
+        476039,
+        true
+      ],
+      [
+        476035,
+        476041,
+        true
+      ],
+      [
+        476035,
+        476045,
+        true
+      ]
+    ],
+    "monotonic_ns": [
+      399109351798922,
+      399118878876452
+    ],
+    "physical_cargo": "80356b8237d3089d3360b6de5abfc64a17e4b8d3f0ec1fb64e09254418b5c5e5",
+    "physical_kernel_sha": {
+      "kernel.476035": "1c3116522a908260604396886a101849dfe9cfd9709ba9be68fd52fbc498d3d8",
+      "kernel.476036": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.476037": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.476038": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.476039": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.476041": "b3cd8739e4da9bd1bc124e0b3d8c17a8a5be1ea7a87184c2b364635739047e13",
+      "kernel.476045": "09ce093e22b5340da100253b2afd33a82c63811b0f00db85123c78aeddbac1a2"
+    },
+    "physical_profile_sha": "b7bce70873c5b3c115b4105d6f514dcf7d2790c105d748b9dbe178e6aaa6a092",
+    "source_sha": "893b5ff55f23fde170f5079766ebbe20937419a24296394a6dd0f326b8ccba88",
+    "status": 0,
+    "stderr_sha": "be1f06a8849dcc7c09f543afa9873b4fd66e2a94eea8cea68a37f53ed4562886",
+    "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "unchanged_transition_sha": "08c141d34d1a9d1d090f7617fd8562a955e9fcfe63ec3ee43c8ef8ebe88a52c6"
+  },
+  "b05-restore-C-unchanged": {
+    "argv_sha": "7d636956fc1d9f256b13d7dc6165c294cff2cc96d5ef3abace866d60397e38c8",
+    "command": [
+      "+ohm",
+      "test",
+      "--locked",
+      "--offline",
+      "--no-run",
+      "-j4",
+      "-p",
+      "ruff_python_parser",
+      "--test",
+      "generate_inline_tests",
+      "--test",
+      "fixtures"
+    ],
+    "counts": [
+      "B 476093 @HOME@/.cache/ohm-relink-edge-demand-20261029/sdk/bin/cargo",
+      "T 476093",
+      "T 476101",
+      "T 476102",
+      "F 476102 10784 0 0 0 0 0",
+      "F 476101 145619 0 0 0 0 0",
+      "F 476093 281167270 0 1 0 0 0",
+      "P 476093"
+    ],
+    "elapsed_ns_instrumented_only": 11532027519,
+    "forked_processes": [],
+    "kernel_execs": [
+      [
+        476093,
+        "@HOME@/.cargo/bin/cargo"
+      ],
+      [
+        476093,
+        "@HOME@/.cache/ohm-relink-edge-demand-20261029/rustup/toolchains/ohm/bin/cargo"
+      ],
+      [
+        476093,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/drrun"
+      ],
+      [
+        476093,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/../lib64/release/libdynamorio.so"
+      ]
+    ],
+    "kernel_threads": [
+      [
+        476093,
+        476094,
+        true
+      ],
+      [
+        476093,
+        476095,
+        true
+      ],
+      [
+        476093,
+        476096,
+        true
+      ],
+      [
+        476093,
+        476097,
+        true
+      ],
+      [
+        476093,
+        476101,
+        true
+      ],
+      [
+        476093,
+        476102,
+        true
+      ]
+    ],
+    "monotonic_ns": [
+      399120310929874,
+      399131842957393
+    ],
+    "physical_cargo": "473fda5712ef8afdb3b84c819d8b27e09547a6deb5b0c067c22a2159929c57a5",
+    "physical_kernel_sha": {
+      "kernel.476093": "5c9bb747e8e2ff41afbccf179f8102cf02060cef8d7dd5719a414d6e9d0f9e2f",
+      "kernel.476094": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.476095": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.476096": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.476097": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.476101": "b3cd8739e4da9bd1bc124e0b3d8c17a8a5be1ea7a87184c2b364635739047e13",
+      "kernel.476102": "62adc386f111290e40f9028679bb53a32ddad797389dfb00395fa14bf49ee100"
+    },
+    "physical_profile_sha": "bd779af2da37a63196afdacf0313a768418a1583451f06c4e294df52ce5bad02",
+    "source_sha": "893b5ff55f23fde170f5079766ebbe20937419a24296394a6dd0f326b8ccba88",
+    "status": 0,
+    "stderr_sha": "2bd16b0dc460caa721ab434474fbec190ca170691b885b4b255e770c27c7df36",
+    "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "unchanged_transition_sha": "0bf6f20e4b3ece0d5cf7eadaa73a51fe5b7ef5edc25565950bc6d0ff30b7a9ec"
+  },
+  "b05-reverse-A-unchanged": {
+    "argv_sha": "7d636956fc1d9f256b13d7dc6165c294cff2cc96d5ef3abace866d60397e38c8",
+    "command": [
+      "+ohm",
+      "test",
+      "--locked",
+      "--offline",
+      "--no-run",
+      "-j4",
+      "-p",
+      "ruff_python_parser",
+      "--test",
+      "generate_inline_tests",
+      "--test",
+      "fixtures"
+    ],
+    "counts": [
+      "B 475923 @HOME@/.cache/ohm-relink-edge-demand-20261029/sdk/bin/cargo",
+      "T 475923",
+      "T 475933",
+      "T 475935",
+      "F 475935 10784 0 0 0 0 0",
+      "F 475933 145737 0 0 0 0 0",
+      "F 475923 281084333 0 1 0 0 0",
+      "P 475923"
+    ],
+    "elapsed_ns_instrumented_only": 9473167548,
+    "forked_processes": [],
+    "kernel_execs": [
+      [
+        475923,
+        "@HOME@/.cargo/bin/cargo"
+      ],
+      [
+        475923,
+        "@HOME@/.cache/ohm-relink-edge-demand-20261029/rustup/toolchains/ohm/bin/cargo"
+      ],
+      [
+        475923,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/drrun"
+      ],
+      [
+        475923,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/../lib64/release/libdynamorio.so"
+      ]
+    ],
+    "kernel_threads": [
+      [
+        475923,
+        475924,
+        true
+      ],
+      [
+        475923,
+        475925,
+        true
+      ],
+      [
+        475923,
+        475926,
+        true
+      ],
+      [
+        475923,
+        475927,
+        true
+      ],
+      [
+        475923,
+        475933,
+        true
+      ],
+      [
+        475923,
+        475935,
+        true
+      ]
+    ],
+    "monotonic_ns": [
+      399087646369898,
+      399097119537446
+    ],
+    "physical_cargo": "967f5f1db2938847fac22d78dc222054cbb143a5fabcffcad0bd15f8929b47e9",
+    "physical_kernel_sha": {
+      "kernel.475923": "ef79f3dafa4bc3b290f950ee514d150479fa11644b7da87598d2943ee0e831ef",
+      "kernel.475924": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.475925": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.475926": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.475927": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.475933": "b3cd8739e4da9bd1bc124e0b3d8c17a8a5be1ea7a87184c2b364635739047e13",
+      "kernel.475935": "e9e1a18767c534d3d29fdd8b29998d5c299574923d25d1b87cedb9126f641c82"
+    },
+    "physical_profile_sha": "6ef3d56f47ae9c2990300f15e1f5cef80b430f9d93fe1b8af511c5b541b20ab1",
+    "source_sha": "cd6179ed534ae36214b5554461d767080c86a3dad2652f15f304ca31d4da77a2",
+    "status": 0,
+    "stderr_sha": "c84ec375f2a7cd865be37904eb2d920b4de52794d3b1fdddfe989897816d9343",
+    "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "unchanged_transition_sha": "5b69d39dee33c24cae435f8ff26c60bab77ce88f1b3828773c3e5db1d25981de"
+  },
+  "b05-reverse-B-unchanged": {
+    "argv_sha": "7d636956fc1d9f256b13d7dc6165c294cff2cc96d5ef3abace866d60397e38c8",
+    "command": [
+      "+ohm",
+      "test",
+      "--locked",
+      "--offline",
+      "--no-run",
+      "-j4",
+      "-p",
+      "ruff_python_parser",
+      "--test",
+      "generate_inline_tests",
+      "--test",
+      "fixtures"
+    ],
+    "counts": [
+      "B 475866 @HOME@/.cache/ohm-relink-edge-demand-20261029/sdk/bin/cargo",
+      "T 475866",
+      "T 475879",
+      "T 475880",
+      "F 475880 10784 0 0 0 0 0",
+      "F 475879 144617 0 0 0 0 0",
+      "F 475866 283764317 1 1 186874 1 0",
+      "P 475866"
+    ],
+    "elapsed_ns_instrumented_only": 10783171031,
+    "forked_processes": [],
+    "kernel_execs": [
+      [
+        475866,
+        "@HOME@/.cargo/bin/cargo"
+      ],
+      [
+        475866,
+        "@HOME@/.cache/ohm-relink-edge-demand-20261029/rustup/toolchains/ohm/bin/cargo"
+      ],
+      [
+        475866,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/drrun"
+      ],
+      [
+        475866,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/../lib64/release/libdynamorio.so"
+      ]
+    ],
+    "kernel_threads": [
+      [
+        475866,
+        475867,
+        true
+      ],
+      [
+        475866,
+        475868,
+        true
+      ],
+      [
+        475866,
+        475869,
+        true
+      ],
+      [
+        475866,
+        475870,
+        true
+      ],
+      [
+        475866,
+        475879,
+        true
+      ],
+      [
+        475866,
+        475880,
+        true
+      ]
+    ],
+    "monotonic_ns": [
+      399074858617267,
+      399085641788298
+    ],
+    "physical_cargo": "80356b8237d3089d3360b6de5abfc64a17e4b8d3f0ec1fb64e09254418b5c5e5",
+    "physical_kernel_sha": {
+      "kernel.475866": "f0e91daee51d8f7c1056df988ddf5773564f61dcbcc6bb74205856ff19aaf68e",
+      "kernel.475867": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.475868": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.475869": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.475870": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.475879": "b3cd8739e4da9bd1bc124e0b3d8c17a8a5be1ea7a87184c2b364635739047e13",
+      "kernel.475880": "e9123faffbdfd796a1d1a066382bb5374f9332a0dfa45d5d265a5ce1d816ce07"
+    },
+    "physical_profile_sha": "942bff78d2a1e1c83137ec6234bb93b9977c9ab4fcd678eeac940f5e45570777",
+    "source_sha": "cd6179ed534ae36214b5554461d767080c86a3dad2652f15f304ca31d4da77a2",
+    "status": 0,
+    "stderr_sha": "27f3f04125ef1039ea23f1bbe5443673c470345b8d345fb8d72cc549c644550d",
+    "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "unchanged_transition_sha": "3247955c8c4d59b77a71ac71d19e782324ccb47e9537104cc5de16905f3db847"
+  },
+  "b05-reverse-C-unchanged": {
+    "argv_sha": "7d636956fc1d9f256b13d7dc6165c294cff2cc96d5ef3abace866d60397e38c8",
+    "command": [
+      "+ohm",
+      "test",
+      "--locked",
+      "--offline",
+      "--no-run",
+      "-j4",
+      "-p",
+      "ruff_python_parser",
+      "--test",
+      "generate_inline_tests",
+      "--test",
+      "fixtures"
+    ],
+    "counts": [
+      "B 475811 @HOME@/.cache/ohm-relink-edge-demand-20261029/sdk/bin/cargo",
+      "T 475811",
+      "T 475822",
+      "T 475823",
+      "F 475823 10784 0 0 0 0 0",
+      "F 475822 148061 0 0 0 0 0",
+      "F 475811 281042348 0 1 0 0 0",
+      "P 475811"
+    ],
+    "elapsed_ns_instrumented_only": 11550125133,
+    "forked_processes": [],
+    "kernel_execs": [
+      [
+        475811,
+        "@HOME@/.cargo/bin/cargo"
+      ],
+      [
+        475811,
+        "@HOME@/.cache/ohm-relink-edge-demand-20261029/rustup/toolchains/ohm/bin/cargo"
+      ],
+      [
+        475811,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/drrun"
+      ],
+      [
+        475811,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/../lib64/release/libdynamorio.so"
+      ]
+    ],
+    "kernel_threads": [
+      [
+        475811,
+        475812,
+        true
+      ],
+      [
+        475811,
+        475813,
+        true
+      ],
+      [
+        475811,
+        475814,
+        true
+      ],
+      [
+        475811,
+        475815,
+        true
+      ],
+      [
+        475811,
+        475822,
+        true
+      ],
+      [
+        475811,
+        475823,
+        true
+      ]
+    ],
+    "monotonic_ns": [
+      399061462943147,
+      399073013068280
+    ],
+    "physical_cargo": "473fda5712ef8afdb3b84c819d8b27e09547a6deb5b0c067c22a2159929c57a5",
+    "physical_kernel_sha": {
+      "kernel.475811": "c82b514f26e3ad3d34df53d060af9921572b3f80a2023c88cf08b45b5e6243b7",
+      "kernel.475812": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.475813": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.475814": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.475815": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.475822": "b3cd8739e4da9bd1bc124e0b3d8c17a8a5be1ea7a87184c2b364635739047e13",
+      "kernel.475823": "d7a661a3bfa9d0d616fe1456acf8e99d951822affad1176dfb5724a80378653e"
+    },
+    "physical_profile_sha": "bd8fb2fbc0af168852189eec7ec4bf569dee9285299ebb655520450545a75ee4",
+    "source_sha": "cd6179ed534ae36214b5554461d767080c86a3dad2652f15f304ca31d4da77a2",
+    "status": 0,
+    "stderr_sha": "ac3814c313f8393b336092f7c4050fbf9f7646dcb9bb10a55e1bc4d4b51da295",
+    "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "unchanged_transition_sha": "515e8f1d25a47a0125b22e4fbca7c2d39d4327bfa9ef3e928f6d1187ac1822e8"
+  },
+  "b06-restore-A-unchanged": {
+    "argv_sha": "7d636956fc1d9f256b13d7dc6165c294cff2cc96d5ef3abace866d60397e38c8",
+    "command": [
+      "+ohm",
+      "test",
+      "--locked",
+      "--offline",
+      "--no-run",
+      "-j4",
+      "-p",
+      "ruff_python_parser",
+      "--test",
+      "generate_inline_tests",
+      "--test",
+      "fixtures"
+    ],
+    "counts": [
+      "B 476359 @HOME@/.cache/ohm-relink-edge-demand-20261029/sdk/bin/cargo",
+      "T 476359",
+      "T 476364",
+      "T 476367",
+      "F 476367 10784 0 0 0 0 0",
+      "F 476364 144994 0 0 0 0 0",
+      "F 476359 281154226 0 1 0 0 0",
+      "P 476359"
+    ],
+    "elapsed_ns_instrumented_only": 11024448762,
+    "forked_processes": [],
+    "kernel_execs": [
+      [
+        476359,
+        "@HOME@/.cargo/bin/cargo"
+      ],
+      [
+        476359,
+        "@HOME@/.cache/ohm-relink-edge-demand-20261029/rustup/toolchains/ohm/bin/cargo"
+      ],
+      [
+        476359,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/drrun"
+      ],
+      [
+        476359,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/../lib64/release/libdynamorio.so"
+      ]
+    ],
+    "kernel_threads": [
+      [
+        476359,
+        476360,
+        true
+      ],
+      [
+        476359,
+        476361,
+        true
+      ],
+      [
+        476359,
+        476362,
+        true
+      ],
+      [
+        476359,
+        476363,
+        true
+      ],
+      [
+        476359,
+        476364,
+        true
+      ],
+      [
+        476359,
+        476367,
+        true
+      ]
+    ],
+    "monotonic_ns": [
+      399183167151461,
+      399194191600223
+    ],
+    "physical_cargo": "967f5f1db2938847fac22d78dc222054cbb143a5fabcffcad0bd15f8929b47e9",
+    "physical_kernel_sha": {
+      "kernel.476359": "d213c80a898b0eee8ebb77b526872d5d188cc53a8d11ed14499a32899f4c6ad8",
+      "kernel.476360": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.476361": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.476362": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.476363": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.476364": "b3cd8739e4da9bd1bc124e0b3d8c17a8a5be1ea7a87184c2b364635739047e13",
+      "kernel.476367": "21af3f9581f94c6072045e736f1e09cfd8e4a4b2e474ce0f2f2c0d25badf1cba"
+    },
+    "physical_profile_sha": "5ca4750fc87e3eb39c77adb7cce2af644949f310318a30f613f7fe358c3df6b9",
+    "source_sha": "893b5ff55f23fde170f5079766ebbe20937419a24296394a6dd0f326b8ccba88",
+    "status": 0,
+    "stderr_sha": "d0ebdc77cbaf629476c80cbe222e1d20b90a873dea8bd388cdd829e29fcd1728",
+    "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "unchanged_transition_sha": "6324c9eda117d49f61148211612e175e786468420f95cf6e5b7b8b2a82023f77"
+  },
+  "b06-restore-B-unchanged": {
+    "argv_sha": "7d636956fc1d9f256b13d7dc6165c294cff2cc96d5ef3abace866d60397e38c8",
+    "command": [
+      "+ohm",
+      "test",
+      "--locked",
+      "--offline",
+      "--no-run",
+      "-j4",
+      "-p",
+      "ruff_python_parser",
+      "--test",
+      "generate_inline_tests",
+      "--test",
+      "fixtures"
+    ],
+    "counts": [
+      "B 476410 @HOME@/.cache/ohm-relink-edge-demand-20261029/sdk/bin/cargo",
+      "T 476410",
+      "T 476418",
+      "T 476419",
+      "F 476419 10784 0 0 0 0 0",
+      "F 476418 145865 0 0 0 0 0",
+      "F 476410 283759842 1 1 194909 1 0",
+      "P 476410"
+    ],
+    "elapsed_ns_instrumented_only": 12153627796,
+    "forked_processes": [],
+    "kernel_execs": [
+      [
+        476410,
+        "@HOME@/.cargo/bin/cargo"
+      ],
+      [
+        476410,
+        "@HOME@/.cache/ohm-relink-edge-demand-20261029/rustup/toolchains/ohm/bin/cargo"
+      ],
+      [
+        476410,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/drrun"
+      ],
+      [
+        476410,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/../lib64/release/libdynamorio.so"
+      ]
+    ],
+    "kernel_threads": [
+      [
+        476410,
+        476411,
+        true
+      ],
+      [
+        476410,
+        476412,
+        true
+      ],
+      [
+        476410,
+        476413,
+        true
+      ],
+      [
+        476410,
+        476414,
+        true
+      ],
+      [
+        476410,
+        476418,
+        true
+      ],
+      [
+        476410,
+        476419,
+        true
+      ]
+    ],
+    "monotonic_ns": [
+      399198196265024,
+      399210349892820
+    ],
+    "physical_cargo": "80356b8237d3089d3360b6de5abfc64a17e4b8d3f0ec1fb64e09254418b5c5e5",
+    "physical_kernel_sha": {
+      "kernel.476410": "8dc89fdf4b07047edb7e97a4671525a3ee4da4e598a3c06ffc8517b3ff32c34e",
+      "kernel.476411": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.476412": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.476413": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.476414": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.476418": "b3cd8739e4da9bd1bc124e0b3d8c17a8a5be1ea7a87184c2b364635739047e13",
+      "kernel.476419": "8094502f012588f8337bcf0b850db9c7849f523d612c07c50ac5ac6027a1b230"
+    },
+    "physical_profile_sha": "1fb68a912f86d5b0b847646aa6da9b9904d4515a5dd68a405c8f7434b6a5ef2f",
+    "source_sha": "893b5ff55f23fde170f5079766ebbe20937419a24296394a6dd0f326b8ccba88",
+    "status": 0,
+    "stderr_sha": "1777b87cc95dcba5d7e4b0e8c6c070996c4770919ac2f6b6efb96ff56f58d143",
+    "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "unchanged_transition_sha": "48d2dfac4081198a5a23eedbc985e4eed86119e35f930a93cb51f47dde54b263"
+  },
+  "b06-restore-C-unchanged": {
+    "argv_sha": "7d636956fc1d9f256b13d7dc6165c294cff2cc96d5ef3abace866d60397e38c8",
+    "command": [
+      "+ohm",
+      "test",
+      "--locked",
+      "--offline",
+      "--no-run",
+      "-j4",
+      "-p",
+      "ruff_python_parser",
+      "--test",
+      "generate_inline_tests",
+      "--test",
+      "fixtures"
+    ],
+    "counts": [
+      "B 476305 @HOME@/.cache/ohm-relink-edge-demand-20261029/sdk/bin/cargo",
+      "T 476305",
+      "T 476310",
+      "T 476316",
+      "F 476316 10784 0 0 0 0 0",
+      "F 476310 145585 0 0 0 0 0",
+      "F 476305 281139100 0 1 0 0 0",
+      "P 476305"
+    ],
+    "elapsed_ns_instrumented_only": 9182902777,
+    "forked_processes": [],
+    "kernel_execs": [
+      [
+        476305,
+        "@HOME@/.cargo/bin/cargo"
+      ],
+      [
+        476305,
+        "@HOME@/.cache/ohm-relink-edge-demand-20261029/rustup/toolchains/ohm/bin/cargo"
+      ],
+      [
+        476305,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/drrun"
+      ],
+      [
+        476305,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/../lib64/release/libdynamorio.so"
+      ]
+    ],
+    "kernel_threads": [
+      [
+        476305,
+        476306,
+        true
+      ],
+      [
+        476305,
+        476307,
+        true
+      ],
+      [
+        476305,
+        476308,
+        true
+      ],
+      [
+        476305,
+        476309,
+        true
+      ],
+      [
+        476305,
+        476310,
+        true
+      ],
+      [
+        476305,
+        476316,
+        true
+      ]
+    ],
+    "monotonic_ns": [
+      399172014590807,
+      399181197493584
+    ],
+    "physical_cargo": "473fda5712ef8afdb3b84c819d8b27e09547a6deb5b0c067c22a2159929c57a5",
+    "physical_kernel_sha": {
+      "kernel.476305": "876a30b812721f4b5cf550ba8ca87ad80a4f162fd0c193f636851063a4701697",
+      "kernel.476306": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.476307": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.476308": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.476309": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.476310": "b3cd8739e4da9bd1bc124e0b3d8c17a8a5be1ea7a87184c2b364635739047e13",
+      "kernel.476316": "6f87f6d9d65e56780e750e269505263f41ca864be3da1e91fa3875b9f4a46e82"
+    },
+    "physical_profile_sha": "ccfeeeee23c64d23b1756df9aaeae52849866a447c9b7ff76a026f9b3f8256d5",
+    "source_sha": "893b5ff55f23fde170f5079766ebbe20937419a24296394a6dd0f326b8ccba88",
+    "status": 0,
+    "stderr_sha": "8c2307f16b7df87c3ff08748d57ea62f0e4e5dc13468d13d32c0a16169e382e2",
+    "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "unchanged_transition_sha": "449ed193d5565f4f2f5e501a0baf7c994cedbaf8d3a4615bb2c8b57fb23026b4"
+  },
+  "b06-reverse-A-unchanged": {
+    "argv_sha": "7d636956fc1d9f256b13d7dc6165c294cff2cc96d5ef3abace866d60397e38c8",
+    "command": [
+      "+ohm",
+      "test",
+      "--locked",
+      "--offline",
+      "--no-run",
+      "-j4",
+      "-p",
+      "ruff_python_parser",
+      "--test",
+      "generate_inline_tests",
+      "--test",
+      "fixtures"
+    ],
+    "counts": [
+      "B 476145 @HOME@/.cache/ohm-relink-edge-demand-20261029/sdk/bin/cargo",
+      "T 476145",
+      "T 476153",
+      "T 476154",
+      "F 476154 10826 0 0 0 0 0",
+      "F 476153 143364 0 0 0 0 0",
+      "F 476145 281080298 0 1 0 0 0",
+      "P 476145"
+    ],
+    "elapsed_ns_instrumented_only": 10370828886,
+    "forked_processes": [],
+    "kernel_execs": [
+      [
+        476145,
+        "@HOME@/.cargo/bin/cargo"
+      ],
+      [
+        476145,
+        "@HOME@/.cache/ohm-relink-edge-demand-20261029/rustup/toolchains/ohm/bin/cargo"
+      ],
+      [
+        476145,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/drrun"
+      ],
+      [
+        476145,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/../lib64/release/libdynamorio.so"
+      ]
+    ],
+    "kernel_threads": [
+      [
+        476145,
+        476146,
+        true
+      ],
+      [
+        476145,
+        476147,
+        true
+      ],
+      [
+        476145,
+        476148,
+        true
+      ],
+      [
+        476145,
+        476149,
+        true
+      ],
+      [
+        476145,
+        476153,
+        true
+      ],
+      [
+        476145,
+        476154,
+        true
+      ]
+    ],
+    "monotonic_ns": [
+      399134420299962,
+      399144791128848
+    ],
+    "physical_cargo": "967f5f1db2938847fac22d78dc222054cbb143a5fabcffcad0bd15f8929b47e9",
+    "physical_kernel_sha": {
+      "kernel.476145": "e0f90656a72e699515dd8954d33e978a1b23f3e57514725bb3ff1d016d724bd6",
+      "kernel.476146": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.476147": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.476148": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.476149": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.476153": "b3cd8739e4da9bd1bc124e0b3d8c17a8a5be1ea7a87184c2b364635739047e13",
+      "kernel.476154": "af415bd65aff0427f55694206d85a29dea507dbd13d9862b99bb6fd33134fb0f"
+    },
+    "physical_profile_sha": "482e3fd6b5a382a4cd369837686b5302561d727f353724a7efcbb09f97857008",
+    "source_sha": "cd6179ed534ae36214b5554461d767080c86a3dad2652f15f304ca31d4da77a2",
+    "status": 0,
+    "stderr_sha": "510bca0f063cb125dc229f3e60769728784ed13d786c6e719e1e5b5531baaff6",
+    "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "unchanged_transition_sha": "32b433d1b27bffc5c2c9c1809b80f803d4c938464172268d40f7744fa5be68e2"
+  },
+  "b06-reverse-B-unchanged": {
+    "argv_sha": "7d636956fc1d9f256b13d7dc6165c294cff2cc96d5ef3abace866d60397e38c8",
+    "command": [
+      "+ohm",
+      "test",
+      "--locked",
+      "--offline",
+      "--no-run",
+      "-j4",
+      "-p",
+      "ruff_python_parser",
+      "--test",
+      "generate_inline_tests",
+      "--test",
+      "fixtures"
+    ],
+    "counts": [
+      "B 476253 @HOME@/.cache/ohm-relink-edge-demand-20261029/sdk/bin/cargo",
+      "T 476253",
+      "T 476258",
+      "T 476259",
+      "F 476259 10784 0 0 0 0 0",
+      "F 476258 145352 0 0 0 0 0",
+      "F 476253 283780146 1 1 186879 1 0",
+      "P 476253"
+    ],
+    "elapsed_ns_instrumented_only": 9276949014,
+    "forked_processes": [],
+    "kernel_execs": [
+      [
+        476253,
+        "@HOME@/.cargo/bin/cargo"
+      ],
+      [
+        476253,
+        "@HOME@/.cache/ohm-relink-edge-demand-20261029/rustup/toolchains/ohm/bin/cargo"
+      ],
+      [
+        476253,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/drrun"
+      ],
+      [
+        476253,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/../lib64/release/libdynamorio.so"
+      ]
+    ],
+    "kernel_threads": [
+      [
+        476253,
+        476254,
+        true
+      ],
+      [
+        476253,
+        476255,
+        true
+      ],
+      [
+        476253,
+        476256,
+        true
+      ],
+      [
+        476253,
+        476257,
+        true
+      ],
+      [
+        476253,
+        476258,
+        true
+      ],
+      [
+        476253,
+        476259,
+        true
+      ]
+    ],
+    "monotonic_ns": [
+      399160278342862,
+      399169555291876
+    ],
+    "physical_cargo": "80356b8237d3089d3360b6de5abfc64a17e4b8d3f0ec1fb64e09254418b5c5e5",
+    "physical_kernel_sha": {
+      "kernel.476253": "0b854a36e969853c33370b5929f367f27db53b7b7d69cc6dc47da157bff707a5",
+      "kernel.476254": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.476255": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.476256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.476257": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.476258": "b3cd8739e4da9bd1bc124e0b3d8c17a8a5be1ea7a87184c2b364635739047e13",
+      "kernel.476259": "88f63d83aacee782d5749c6792caae5a23cf89204aa4b7d5813dadcd101eddef"
+    },
+    "physical_profile_sha": "1778ab0a31d17f410b7a049418840b51567a4b95000573fd70a259f1f1000819",
+    "source_sha": "cd6179ed534ae36214b5554461d767080c86a3dad2652f15f304ca31d4da77a2",
+    "status": 0,
+    "stderr_sha": "0fc35d0579f93879cc235fdc9acad09278c713890074eb45da502cfc30619735",
+    "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "unchanged_transition_sha": "47b410d9dedf49aa168bbebeba9cf3bb2e83c1bdaabfa52e5e2b016559f915be"
+  },
+  "b06-reverse-C-unchanged": {
+    "argv_sha": "7d636956fc1d9f256b13d7dc6165c294cff2cc96d5ef3abace866d60397e38c8",
+    "command": [
+      "+ohm",
+      "test",
+      "--locked",
+      "--offline",
+      "--no-run",
+      "-j4",
+      "-p",
+      "ruff_python_parser",
+      "--test",
+      "generate_inline_tests",
+      "--test",
+      "fixtures"
+    ],
+    "counts": [
+      "B 476197 @HOME@/.cache/ohm-relink-edge-demand-20261029/sdk/bin/cargo",
+      "T 476197",
+      "T 476209",
+      "T 476210",
+      "F 476210 10784 0 0 0 0 0",
+      "F 476209 144764 0 0 0 0 0",
+      "F 476197 281091009 0 1 0 0 0",
+      "P 476197"
+    ],
+    "elapsed_ns_instrumented_only": 10951568602,
+    "forked_processes": [],
+    "kernel_execs": [
+      [
+        476197,
+        "@HOME@/.cargo/bin/cargo"
+      ],
+      [
+        476197,
+        "@HOME@/.cache/ohm-relink-edge-demand-20261029/rustup/toolchains/ohm/bin/cargo"
+      ],
+      [
+        476197,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/drrun"
+      ],
+      [
+        476197,
+        "@HOME@/.cache/ohm-settled-cargo-20261028/counter-sdk/sdk/bin64/../lib64/release/libdynamorio.so"
+      ]
+    ],
+    "kernel_threads": [
+      [
+        476197,
+        476198,
+        true
+      ],
+      [
+        476197,
+        476199,
+        true
+      ],
+      [
+        476197,
+        476200,
+        true
+      ],
+      [
+        476197,
+        476201,
+        true
+      ],
+      [
+        476197,
+        476209,
+        true
+      ],
+      [
+        476197,
+        476210,
+        true
+      ]
+    ],
+    "monotonic_ns": [
+      399146894112551,
+      399157845681153
+    ],
+    "physical_cargo": "473fda5712ef8afdb3b84c819d8b27e09547a6deb5b0c067c22a2159929c57a5",
+    "physical_kernel_sha": {
+      "kernel.476197": "7f21626cb460c984311726d29a14ddfcdd4df53d343229259ed42c628d6dabe7",
+      "kernel.476198": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.476199": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.476200": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.476201": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kernel.476209": "b3cd8739e4da9bd1bc124e0b3d8c17a8a5be1ea7a87184c2b364635739047e13",
+      "kernel.476210": "06fbb8c0e78ac93602e2c78c98b52c15ea77649dc176842bc647e0dedd608cf4"
+    },
+    "physical_profile_sha": "c30d077b94c2cc678e625a82fbcc6b3c495bcdac3e3583cf56be3bb8b79d7205",
+    "source_sha": "cd6179ed534ae36214b5554461d767080c86a3dad2652f15f304ca31d4da77a2",
+    "status": 0,
+    "stderr_sha": "1d8164c49ff15280915cc7088ae5cbf8f335ddfc3f8ade0831f7645f4fc7c315",
+    "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "unchanged_transition_sha": "148aa93da4db4b753bae602798c5be97ecfec92ebb61e230b6f3a2e6b7b7e371"
+  }
+}
