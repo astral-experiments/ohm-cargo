@@ -1,0 +1,33 @@
+--- hardware-observer.c
++++ return-observer.c
+@@ -25,9 +25,9 @@
+ static unsigned long base;
+ static FILE *ledger;
+ static unsigned serial,seq,swapped;
+-static unsigned long loc[4]={0x9f88d0,0x9f91c0,0xf8cb40,0xb97d10};
+-static char const *labels[4]={"cache_loader","registry_loader","toml_lockfile","into_resolve"};
+-struct state {pid_t tid;int cargo;int sys;unsigned long arg[3];};
++static unsigned long loc[4]={0xa77dc0,0xa6c090,0xa7a678,0xa6c2d1};
++static char const *labels[4]={"serialize_resolve","mark_workspace_cache","encoded_at_write","encoded_at_mark"};
++struct state {pid_t tid;int cargo;int sys;unsigned long arg[3];unsigned long result_slot;};
+ static struct state ts[256]; static unsigned nt;
+ static int fds[8192]; /* file-descriptor table shared by Cargo threads. */
+ static struct state *state(pid_t t){
+@@ -89,8 +89,15 @@
+   else if(signal==(SIGTRAP|0x80)&&st->cargo)syscall_stop(st);
+   else if(signal==SIGSTOP){if(tgroup(t)==root&&base){st->cargo=1;setdbg(t);}else if(base){pt(PTRACE_POKEUSER,t,(void*)offsetof(struct user,u_debugreg[7]),0);}}
+   else if(signal==SIGTRAP&&st->cargo){struct user_regs_struct reg;pt(PTRACE_GETREGS,t,0,&reg);int k=-1;for(int i=0;i<4;i++)if(reg.rip==base+loc[i])k=i;CHECK(k>=0);
+-   long ret=pt(PTRACE_PEEKDATA,t,(void*)reg.rsp,0);unsigned b=0;if(k==2)b=capture(t,reg.rsi,reg.rdx);
+-   fprintf(ledger,"%u FUNCTION %d %s %lx %lu %u\n",++seq,t,labels[k],(unsigned long)ret-base,k==2?(unsigned long)reg.rdx:0,b);
++   unsigned long witness=k>=2?reg.rip-base:(unsigned long)pt(PTRACE_PEEKDATA,t,(void*)reg.rsp,0)-base;
++   unsigned long length=0;unsigned b=0;
++   if(k==0){st->result_slot=reg.rdi;if(reg.rdx){length=reg.rcx;b=capture(t,reg.rdx,length);}}
++   if(k>=2){
++    CHECK(st->result_slot);unsigned long words[3];
++    struct iovec dst={words,sizeof(words)},src={(void*)st->result_slot,sizeof(words)};
++    CHECK(process_vm_readv(t,&dst,1,&src,1,0)==sizeof(words));length=words[2];CHECK(length<=words[0]&&length<1024*1024);b=capture(t,words[1],length);st->result_slot=0;
++   }
++   fprintf(ledger,"%u FUNCTION %d %s %lx %lu %u\n",++seq,t,labels[k],witness,length,b);
+    if(k==1 && strcmp(actor,"-")&&!swapped++){for(int fd=0;fd<8192;fd++)CHECK(!fds[fd]);
+     pid_t helper=fork();CHECK(helper>=0);if(!helper){execl("/usr/bin/python3","python3","-IB",actor,lockpath,output,NULL);_exit(126);}
+     int hs;CHECK(waitpid(helper,&hs,0)==helper && WIFEXITED(hs)&&WEXITSTATUS(hs)==0);fprintf(ledger,"%u CHANGED %d\n",++seq,t);}

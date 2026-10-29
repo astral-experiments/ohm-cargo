@@ -1,0 +1,158 @@
+{
+ "audit": {
+  "13": {
+   "headRefOid": "9261a0e85fae28c5bc1a2c41d2d1873edb4e20b7",
+   "patch_sha256": "6ea2ab1dfa74ea324971861f0a0d0183164d1d269684e26861c6d5bed2df4834",
+   "state": "CLOSED",
+   "title": "Avoid parsing unchanged lockfiles"
+  },
+  "243": {
+   "headRefOid": "184e50b93316db9478f82eae2e35b789ba6ab1e9",
+   "patch_sha256": "3cfa099c88148910a22b48cc3655a0d6c20670c11556e6d612710a372d27bc41",
+   "state": "OPEN",
+   "title": "Reuse consecutive source IDs when decoding Cargo.lock"
+  },
+  "266": {
+   "headRefOid": "80c1cf288211a324bdc5725d014589e9f244a313",
+   "patch_sha256": "beb6a4c1ead21e04418bcbe0040626b28751434923ebf2b94b9ab398abf21660",
+   "state": "CLOSED",
+   "title": "Resolve unique lockfile package names without nested maps"
+  },
+  "275": {
+   "headRefOid": "cc0fa6ce2d46c4d87f2c0abbd64d63be2afe1d90",
+   "patch_sha256": "30803b079eab33f3b70ef543782e02bd1d50c9afb98ebe578b7e499ddb67ced4",
+   "state": "OPEN",
+   "title": "Index workspace members when checking resolve-cache eligibility"
+  },
+  "276": {
+   "headRefOid": "693599325e47a8c5f59ecd1118893e86eded5c12",
+   "patch_sha256": "be206094c6d6c3294cb308fdcaa883cd4c758be9c81d117e974ddb7744b04f5c",
+   "state": "OPEN",
+   "title": "Reuse resolved package IDs across package spec queries"
+  },
+  "277": {
+   "headRefOid": "45be87c5164be332ddff1a586641e5f0318b87c9",
+   "patch_sha256": "30573794f0aac139e3f1ead64f1b243ef8277cb69f2e7d28d81bda0a43f69824",
+   "state": "OPEN",
+   "title": "Skip lockfile encoding for unambiguous package IDs"
+  },
+  "42": {
+   "headRefOid": "c835cbb2a58e1285fe4e28cbe35c2729378a6df1",
+   "patch_sha256": "2e3a2566aeea58cbf6414eb979d016061a2c9d8bb5e8d85dab30608a8796ee00",
+   "state": "CLOSED",
+   "title": "Avoid resolver cache misses for execution-only settings"
+  },
+  "60": {
+   "headRefOid": "309b42ea09bfbc6bf44ffb8427245ecd33a4f47a",
+   "patch_sha256": "1129f3aba231fb812d6b4558bdd05668d4ab1e9eb401923c405182a1feaab383",
+   "state": "CLOSED",
+   "title": "Avoid parsing unchanged lockfiles"
+  },
+  "88": {
+   "headRefOid": "ead6f8be471216de32624c005f61070734fe90b2",
+   "patch_sha256": "a2228cebde5ab8a6323ede3b1f552879b494a69856463eb274c7c4b5d34fa0e4",
+   "state": "OPEN",
+   "title": "Avoid resolver cache misses for execution-only settings"
+  },
+  "97": {
+   "headRefOid": "4abb9b781e6a0044a6bcccd26112a8d3107f8c38",
+   "patch_sha256": "95d60ab2863006a8e061b5e5b731af07398da28055efc0a07fdc2ec051d1fdb0",
+   "state": "CLOSED",
+   "title": "Experiment with caching parsed lockfiles"
+  }
+ },
+ "capture": {
+  "decoder": {
+   "actor_source": "a60a5a71554168304f7d7009dc40de4d36942fce5c6b4ef870a2f5c8fd52d61b",
+   "controller_exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+   "enrolled": "bcf2f200ec483fbd975508c9ba80f6c36a9845a495b27e4f61a7a7c526fd19b6",
+   "min_available_at_terminal": [
+    28268498944,
+    30460731392,
+    52006838272
+   ],
+   "run_source": "b093c080b72180aa3784abb56e03f5a0b36f1cdf9bfff52c23c2ffded0213455",
+   "source_observer": "a27bb96c2add6b29597906a3574b14916fda77b9b1ede7e5a2ce868b3b7ae748",
+   "terminal": "93003407dbdd19335d4c3317e87be4a8ddc3a021b9ba7663eb5208db1dfadb94"
+  },
+  "returns": {
+   "actor_source": "f9b0a6abbd98fead9b662861aa63882a078e98ef6f7213d9b739d68192687d27",
+   "controller_exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+   "enrolled": "ad0c4eaae7f1a15988839f8acb7189f8afec8d5e30a1e03d02e5f3dead072d49",
+   "min_available_at_terminal": [
+    28268449792,
+    30460026880,
+    51994558464
+   ],
+   "run_source": "1620b63126c4034cfca4185b60339f42acaa630448877a8813e301ee11482508",
+   "source_observer": "7b395b53ecfb5130214ff50bcd19b7fa1bf9ff24df1b9a36563a157b8755af4c",
+   "terminal": "cc455dc3e6c5521743e6fe1ab0a6f863562656930c18165101fd9d70a782feeb"
+  },
+  "serializer": {
+   "actor_source": "a60a5a71554168304f7d7009dc40de4d36942fce5c6b4ef870a2f5c8fd52d61b",
+   "controller_exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+   "enrolled": "5eb27acbfc05db9f23858ae163a75e7b125613eaf6368f438e8d45afc72f9e2a",
+   "min_available_at_terminal": [
+    28268474368,
+    30460420096,
+    52002717696
+   ],
+   "run_source": "b3fdbbb8a3735083d9e36e10291f843dde2cca51c219ec8ac577a5c5416453e9",
+   "source_observer": "a298638d080a009558701e79ef825f26b68b3e40bbadb1b1d448bbbf0bd7f8ac",
+   "terminal": "efbce7a5a0d650d3e897b1d05c77399b2e6df2ba4fe1bad3d1e9ba32989c7336"
+  }
+ },
+ "cargo": "2fe90823d8eadc95de56c2cde8d41e0082aac0eb",
+ "error_returns": {
+  "locked-stale": 101,
+  "malformed": 101
+ },
+ "historical": "6dc1031889aa24a0461457409d39861e279242a9",
+ "lock": "c9e345325bec5ff08dbbe3916edd39ad0c3d1c7797a8c241ae32f62754e764bf",
+ "lockfile_bytes": 138994,
+ "manifest": {
+  "edited": "cd6179ed534ae36214b5554461d767080c86a3dad2652f15f304ca31d4da77a2",
+  "original": "893b5ff55f23fde170f5079766ebbe20937419a24296394a6dd0f326b8ccba88"
+ },
+ "observer_binary": {
+  "decoder": "fff66ca5a4f1cd7ad143c85f525e2bf01015d1d173b8e221a8285c3285832756",
+  "returns": "2dc29ca33ff74f6c7bfef60e60f365fe69a76e3112183d20170bcb449efe7566",
+  "serializer": "09e954f89e946c4ac15c170f7adbf12ae5d5bec2a972e261ce3e4a86c909d4eb"
+ },
+ "packages": 553,
+ "raw_archives": {
+  "native-all.tgz": "7b81e807a7a987f173c6f76a4fd44458b547229db8d86aebb6a85f870b320bcd",
+  "native-returns.tgz": "c0005c641344fb1ffae24b233d256b4fe307c7d1b128aaa766341d2fea8a6cf2"
+ },
+ "required_control": "TextRange::new(TextSize::from(17),TextSize::from(29))",
+ "ruff": "93526150df078af7dd8fc4226cdcc469539d2001",
+ "test_discovery": {
+  "sha256": "a0f6e8f0e3f0de58c2893ce49032cfc4a1b5569649c8ab15416741e40cf58328",
+  "units": [
+   "proc_macro2",
+   "build-script-build",
+   "build-script-build",
+   "quote",
+   "build-script-build",
+   "build-script-build",
+   "ruff_text_size",
+   "serde",
+   "serde",
+   "build-script-build",
+   "build-script-build",
+   "serde_core",
+   "build-script-build",
+   "build-script-build",
+   "serde_derive",
+   "serde_test",
+   "static_assertions",
+   "syn",
+   "unicode_ident"
+  ]
+ },
+ "tools": {
+  "cargo": "967f5f1db2938847fac22d78dc222054cbb143a5fabcffcad0bd15f8929b47e9",
+  "rustc": "5694abe50767a22cebeccb767143f7404d5e81c4b1760cff4426466bf410e511",
+  "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+ }
+}
