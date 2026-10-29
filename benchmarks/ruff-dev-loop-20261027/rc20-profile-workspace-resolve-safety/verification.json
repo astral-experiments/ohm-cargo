@@ -1,0 +1,43 @@
+{
+  "counts": {
+    "adversarial_checks": 9,
+    "build_script_compiles_per_arm": 5,
+    "build_scripts_run_per_arm": 9,
+    "expected_exit_101_per_capture": 14,
+    "independently_replayed_native_cargo_builds": 38,
+    "main_compiles_per_arm": 9,
+    "native_cargo_builds_per_capture": 38,
+    "real_execs_across_both": 444,
+    "rustc_probes_per_arm": 8,
+    "successful_per_capture": 24,
+    "wild_links_per_arm": 14
+  },
+  "evidence_sha256": "1d638408b8ac0d82b85dfd8cfbe69d6a791b592eae40af47a92c19301c90d51b",
+  "exact_edited_elf": "d435949a102e29c1cda271e85af819969264db3ccf19b057088b5a6c9bd23cb3",
+  "expected_successful_typed_path_differences_per_capture": {
+    "build_script_out_dir": 12,
+    "custom_build_filename": 12
+  },
+  "fresh_replay_terminal": "da533731ec039f8ff5b7f80799ca4986c0710bc5674a5a7e71d3e96f66f8b124",
+  "full_controller_terminals_byte_identical": true,
+  "original_terminal": "da533731ec039f8ff5b7f80799ca4986c0710bc5674a5a7e71d3e96f66f8b124",
+  "physical_elf_sizes": {
+    "0c039b2901d9fba755d31ee3a6e080426cf37e21608f06286f336daa0e9602ee": 434152,
+    "54116cf36740cc5410bd297ab85040c99df7d46611f669c7abaf29e9f1707533": 434152,
+    "d435949a102e29c1cda271e85af819969264db3ccf19b057088b5a6c9bd23cb3": 434152,
+    "e8a5d32e4538747589ea3d74e8457007fece7be9e4df133b45bc6bcef33be73e": 434152
+  },
+  "raw_file_counts": {
+    "original": 153,
+    "replay": 295
+  },
+  "raw_original_sha256": "4063a2b8cd185d5a7d7bf7690c36a66c8be846b9aebcf621e0809aadda6105b7",
+  "replay_storage_bytes": {
+    "retained_trace_and_executable_evidence": 2949562,
+    "retained_workspace_trees": 9702897
+  },
+  "same_enrolled_19_structural_source_calls": true,
+  "source": "97e5acfb7b8eefde1ce07d703fc4849d6d36e37c",
+  "terminal_raw_replay_command_checked": true,
+  "verified_complete_user_facing_diagnostics": true
+}

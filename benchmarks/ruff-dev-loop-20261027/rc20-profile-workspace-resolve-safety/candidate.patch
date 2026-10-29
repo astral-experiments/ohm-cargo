@@ -1,0 +1,103 @@
+diff --git a/src/ops/resolve_cache.rs b/src/ops/resolve_cache.rs
+index cc6e571ae89f7fdca885238c1602ad8f58252b26..390f3adae99faf7f5e131d869625520d095fdcaa 100644
+--- a/src/ops/resolve_cache.rs
++++ b/src/ops/resolve_cache.rs
+@@ -102,7 +102,12 @@ fn workspace_resolve_fingerprint(
+                     manifest.display()
+                 );
+             };
+-            contents.as_bytes().hash(&mut hasher);
++            let inputs = workspace
++                .root_maybe()
++                .document()
++                .and_then(|document| before_trailing_profiles(contents, document))
++                .unwrap_or(contents);
++            inputs.as_bytes().hash(&mut hasher);
+         } else {
+             let package = workspace.load(&manifest)?;
+             let Some(contents) = package.manifest().contents() else {
+@@ -136,6 +141,22 @@ fn workspace_resolve_fingerprint(
+     Ok(Hasher::finish(&hasher))
+ }
+ 
++/// Profiles are applied to the resolved packages. Ignore a trailing profile section only
++/// when the parsed header belongs to the root table and the entire suffix contains profiles.
++fn before_trailing_profiles<'a>(
++    contents: &'a str,
++    document: &toml::Spanned<toml::de::DeTable<'_>>,
++) -> Option<&'a str> {
++    let (key, _) = document.get_ref().get_key_value("profile")?;
++    let start = key.span().start.checked_sub(1)?;
++    let (before, suffix) = contents.split_at_checked(start)?;
++    if !(before.is_empty() || before.ends_with('\n')) || !suffix.starts_with("[profile.") {
++        return None;
++    }
++    let parsed = toml::de::DeTable::parse(suffix).ok()?;
++    (parsed.get_ref().len() == 1 && parsed.get_ref().contains_key("profile")).then_some(before)
++}
++
+ /// Excludes execution and presentation settings that cannot affect dependency resolution.
+ fn environment_affects_workspace_resolution(name: &str) -> bool {
+     (name.starts_with("CARGO_") || name.starts_with("RUST"))
+@@ -192,7 +213,25 @@ fn hash_config_value(value: &ConfigValue, hasher: &mut StableHasher) {
+ 
+ #[cfg(test)]
+ mod tests {
+-    use super::environment_affects_workspace_resolution;
++    use super::{before_trailing_profiles, environment_affects_workspace_resolution};
++
++    #[test]
++    fn trailing_profile_tables_preserve_the_other_manifest_inputs() {
++        let prefix = "[package]\ndescription = '''\n[profile.example]\n'''\n";
++        let profile = "[profile.dev]\nopt-level = 1\n";
++        for (contents, expected) in [
++            (format!("{prefix}{profile}"), Some(prefix)),
++            (prefix.to_owned(), None),
++            (
++                format!("{prefix}{profile}[dependencies]\ndep = '1'\n"),
++                None,
++            ),
++            (format!("{prefix}['profile'.dev]\nopt-level = 1\n"), None),
++        ] {
++            let document = toml::de::DeTable::parse(&contents).unwrap();
++            assert_eq!(before_trailing_profiles(&contents, &document), expected);
++        }
++    }
+ 
+     #[test]
+     fn execution_only_environment_does_not_affect_workspace_resolution() {
+diff --git a/tests/testsuite/workspaces.rs b/tests/testsuite/workspaces.rs
+index b956b50ef3af1ef1a9393ad90f515bfce690c63c..092aa85cdc70ac9fa2e3cf6ef8f43af9c3f26310 100644
+--- a/tests/testsuite/workspaces.rs
++++ b/tests/testsuite/workspaces.rs
+@@ -3036,6 +3036,30 @@ fn workspace_resolve_cache_reuses_unchanged_workspace() {
+         .run();
+ }
+ 
++#[cargo_test]
++fn workspace_resolve_cache_applies_edited_profiles() {
++    let manifest = format!(
++        "{}\n[profile.dev]\ndebug-assertions = true\n",
++        basic_manifest("selected", "0.1.0")
++    );
++    let project = project()
++        .file("Cargo.toml", &manifest)
++        .file(
++            "src/main.rs",
++            "fn main() { println!(\"{}\", cfg!(debug_assertions)); }",
++        )
++        .build();
++
++    workspace_resolve_cache_command(&project, "run --package selected")
++        .with_stdout_data(str!["true\n"])
++        .run();
++    project.change_file("Cargo.toml", &manifest.replace("= true", "= false"));
++    workspace_resolve_cache_command(&project, "run --package selected")
++        .with_stderr_contains(WORKSPACE_RESOLVE_CACHE_HIT)
++        .with_stdout_data(str!["false\n"])
++        .run();
++}
++
+ #[cfg(unix)]
+ #[cargo_test]
+ fn workspace_resolve_cache_replaces_a_symlink() {
