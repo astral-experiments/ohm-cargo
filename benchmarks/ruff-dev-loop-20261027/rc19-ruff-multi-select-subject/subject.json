@@ -1,0 +1,414 @@
+{
+  "commit": "2d6ce561250a464e1fa231ef30e54d0f029f76a4",
+  "lock_sha256": "34e5c62a1d7c45679fc0113e8a8814452e67d9969dd1079adb234bd7803ddc6d",
+  "manifests": [
+    {
+      "edits": {
+        "workspace.metadata.cargo-shear.ignored": [
+          [
+            "getrandom",
+            "ruff_options_metadata",
+            "uuid",
+            "get-size2",
+            "ty_completion_bench",
+            "ty_completion_eval"
+          ],
+          [
+            "getrandom",
+            "ty_completion_bench",
+            "ty_completion_eval"
+          ]
+        ]
+      },
+      "new": "0f1f230cfe8b53178ac9d511eb621b33cc054239b3ff47be304e722e47cdf3e1",
+      "old": "5604a6de4305b0edbdd1e2a96a806bb6697d8d874b6b24e796a1ad79b7baee02",
+      "path": "Cargo.toml"
+    },
+    {
+      "edits": {
+        "lib.doctest": [
+          null,
+          false
+        ]
+      },
+      "new": "a1f4f430ac846a55f59734c14da35effd11f0299d10e8759b9683bf6306cfef0",
+      "old": "1109da83934c10227dd5b55cba120cdb2c93354adac652ad4d6ea304c5a7db70",
+      "path": "crates/ruff/Cargo.toml"
+    },
+    {
+      "edits": {
+        "lib.test": [
+          null,
+          false
+        ]
+      },
+      "new": "b47b879349111beae96a9f570726447e25d6c67b1f0cbb025d7e0c567ab37295",
+      "old": "b7518e8f4ca32d26085abb53e0ffda76b55e9d1706476fc65deab0f4cbab2714",
+      "path": "crates/ruff_annotate_snippets/Cargo.toml"
+    },
+    {
+      "edits": {
+        "package.metadata.cargo-shear.ignored": [
+          null,
+          [
+            "divan",
+            "ruff_linter",
+            "ruff_python_formatter",
+            "ruff_python_parser",
+            "ruff_python_trivia",
+            "ty-project",
+            "mimalloc",
+            "tikv-jemallocator"
+          ]
+        ]
+      },
+      "new": "47d4b1dc1c001edd234179603468507c23d217bf3eed8e29b24583714c84aa83",
+      "old": "56e44ff50cb823a32e712ff3fa007f0bf546d6c07bad9412fd82cb02d3992bf1",
+      "path": "crates/ruff_benchmark/Cargo.toml"
+    },
+    {
+      "edits": {
+        "lib.test": [
+          null,
+          false
+        ]
+      },
+      "new": "b43e63bf81286a2f8d617260105faf5e9a0120ff2e3a82a1ee394ce8aed07f61",
+      "old": "abac94942eb47fe7619bd76ee35d3091509ee3e34593a9d4ba3633e9575eca37",
+      "path": "crates/ruff_cache/Cargo.toml"
+    },
+    {
+      "edits": {
+        "lib.test": [
+          null,
+          false
+        ]
+      },
+      "new": "d3dfeb47d3f585bd1531bcb6cd75a5b2f21fad6240809fec4d6ed2e74b7e13e3",
+      "old": "e2f94a13046965051ff6e9776e4a121bab8ad9a769a4676b6331ea1a51ca2ab8",
+      "path": "crates/ruff_diagnostics/Cargo.toml"
+    },
+    {
+      "edits": {
+        "lib.doctest": [
+          null,
+          false
+        ],
+        "lib.test": [
+          null,
+          false
+        ]
+      },
+      "new": "75ee579a5d11ee36150597a2cc29a71b073850495c30897e8737d1b4ea3fc3cd",
+      "old": "1a105180c2bce793b15fee8f848a9c30c7e033b7928a7e4ba8949d70b1c7ea7d",
+      "path": "crates/ruff_graph/Cargo.toml"
+    },
+    {
+      "edits": {
+        "lib.test": [
+          null,
+          false
+        ]
+      },
+      "new": "7bba8107b2ec241978b4a9d510d9b0792bd89042691f4b62cc382a2446388c02",
+      "old": "c819e0f60612bb9ac2946f1d37f364ecb24479704c9dd8c723e6da5aa12af5d6",
+      "path": "crates/ruff_macros/Cargo.toml"
+    },
+    {
+      "edits": {
+        "lib.doctest": [
+          null,
+          false
+        ]
+      },
+      "new": "168f9e42f3ccab035380bd3e79f3fd12fac95af676ad193cf9f2e1c6f169c597",
+      "old": "18b796b3e00108ab38042bf2488493cbab3f9e15c21cbf0241773da4d5d31dac",
+      "path": "crates/ruff_markdown/Cargo.toml"
+    },
+    {
+      "edits": {
+        "lib.doctest": [
+          null,
+          false
+        ],
+        "lib.test": [
+          null,
+          false
+        ]
+      },
+      "new": "644c3c676a05f37a8f2201fe8c1150f66067bd5a6eb3941f801abb22e3995e3d",
+      "old": "bd6fdd7f43a80dbcefcd191f7e9e3fe660bf5dcb8ec2afe0f68f91bb171b14ad",
+      "path": "crates/ruff_memory_usage/Cargo.toml"
+    },
+    {
+      "edits": {
+        "lib.doctest": [
+          false,
+          null
+        ]
+      },
+      "new": "9c438b69ab775271c1a1ecf65c8f40c0d1515649056a02b48960aefb2f937d5f",
+      "old": "79f18639f16174a7fb0bcee4172d4fe76b04839ca88016b8e69dba1fcfe7da4f",
+      "path": "crates/ruff_notebook/Cargo.toml"
+    },
+    {
+      "edits": {
+        "lib.test": [
+          null,
+          false
+        ]
+      },
+      "new": "efd5050c080450b79a0b64c1293f27e336d621664abf01bdf3242d8f2ac1457d",
+      "old": "37ff9735926806e906ccb09df8ebc53696fc2db77a5c0cc39453b53c5849cf5e",
+      "path": "crates/ruff_options_metadata/Cargo.toml"
+    },
+    {
+      "edits": {
+        "lib.doctest": [
+          null,
+          false
+        ],
+        "lib.test": [
+          null,
+          false
+        ]
+      },
+      "new": "2419434d0fc3e0c7a4739cb11f360c889575a38748faf6bc3479d05c3785590a",
+      "old": "66da89e9f8c3998a00fd30dd0838e086be365191fe906cb6b6f23bd2703e4d9c",
+      "path": "crates/ruff_python_ast_integration_tests/Cargo.toml"
+    },
+    {
+      "edits": {
+        "lib.doctest": [
+          null,
+          false
+        ]
+      },
+      "new": "1628e3445c46bca0136ebaccdece8f2050dfb432e4293dc85147ca24e76fecda",
+      "old": "3f0b089953f3cd66ba115ec69e23858d7fa4d4f93e40d114ab500c548b5c629d",
+      "path": "crates/ruff_python_importer/Cargo.toml"
+    },
+    {
+      "edits": {
+        "lib.doctest": [
+          null,
+          false
+        ]
+      },
+      "new": "115ea2b2510f9ced9e54eb30a75e7f3c9cc9c552a6caf78cce7d7f9fde1bbc5d",
+      "old": "da2c93af4de373bfc8d46d0378c18c8e72a0fd2da80239ae83798b4d99124238",
+      "path": "crates/ruff_python_semantic/Cargo.toml"
+    },
+    {
+      "edits": {
+        "lib.doctest": [
+          null,
+          false
+        ],
+        "lib.test": [
+          null,
+          false
+        ]
+      },
+      "new": "9b21c99d7e2d4de3397bb4cde7500283d48071fce87add2e7ecfe8c2daf09acb",
+      "old": "d6f471af6411673c69ebdd87c1c6d2ac4219576f246910b7fc24506f8f5e43ea",
+      "path": "crates/ruff_python_trivia_integration_tests/Cargo.toml"
+    },
+    {
+      "edits": {
+        "lib.doctest": [
+          null,
+          false
+        ]
+      },
+      "new": "83e262dd7ceddd212cdfee8d37baf4349a51b3559e1c1136b193497765144f3a",
+      "old": "176a5e70a5d766544a9b15c316d602f3cdf0a0b2ce1dfd58a39f3032ca655bfb",
+      "path": "crates/ruff_server/Cargo.toml"
+    },
+    {
+      "edits": {
+        "lib.test": [
+          null,
+          false
+        ]
+      },
+      "new": "f96a631a70af4945428cdf3648a36c3f207e59400da4f685d1ae5b89142f5f53",
+      "old": "562d6169f590f56437ef1d45b88978442c866e8d74d4a4c125680e36d0056fdc",
+      "path": "crates/ruff_text_size/Cargo.toml"
+    },
+    {
+      "edits": {
+        "lib.test": [
+          null,
+          false
+        ],
+        "package.metadata.cargo-shear.ignored": [
+          null,
+          [
+            "uuid"
+          ]
+        ]
+      },
+      "new": "1783badb8342f6eaab619f01a2645ad28b0cf79f68ee3d648a3772ad6243ac2c",
+      "old": "cd421be0451b80cc5baebf20d5585514ce980b8bf5596f19efe5398e7d98dd55",
+      "path": "crates/ruff_wasm/Cargo.toml"
+    },
+    {
+      "edits": {
+        "lib.doctest": [
+          null,
+          false
+        ]
+      },
+      "new": "26aac539f27493be4ea1e7b8e5b8e2c8b77e2513399f1d61a5d6c1807daea62e",
+      "old": "4907e69543653d29998f91d3aafd686a0032ad4b0a26172b1cb417f0f366e25d",
+      "path": "crates/ty/Cargo.toml"
+    },
+    {
+      "edits": {
+        "lib.doctest": [
+          null,
+          false
+        ]
+      },
+      "new": "525da6578c1df0ba9ff5bf83d1b1ddd9e86a9ab04d0858bd3e00079933ad4579",
+      "old": "71a828f30771a81e4ebf6012ca1f3189544870d7e9a27cf177fd1f29358f7103",
+      "path": "crates/ty_combine/Cargo.toml"
+    },
+    {
+      "edits": {
+        "lib.doctest": [
+          null,
+          false
+        ]
+      },
+      "new": "9fe69a031beb8a792afc2d499024f96831c268f6f9ef222a807d5c440408b5fd",
+      "old": "8cb477f0c59b3437a04a78cd11bd8f722e0b430c24f7868510c5f60f739852de",
+      "path": "crates/ty_ide/Cargo.toml"
+    },
+    {
+      "edits": {
+        "lib.doctest": [
+          null,
+          false
+        ]
+      },
+      "new": "2473876c6a4a473d829027bf54bafea8311a86235dcaae82d440334a94410cb2",
+      "old": "17fb50ff314c6689e6fd9462e2c8016881aa216235c743742959fb52db7e0260",
+      "path": "crates/ty_project/Cargo.toml"
+    },
+    {
+      "edits": {
+        "lib.doctest": [
+          null,
+          false
+        ]
+      },
+      "new": "44df14b16fc58cc1dd859cddaf6f543031236f51475726c2d91f22fd32eea5cc",
+      "old": "d959826776e63b34bc2c7af7af876af5d5ff17e378798163f50fd222d18b5d3f",
+      "path": "crates/ty_server/Cargo.toml"
+    },
+    {
+      "edits": {
+        "lib.doctest": [
+          null,
+          false
+        ]
+      },
+      "new": "c79b760222f78481191188c35aec40298cc454aff791ff34ac78454f6b65ee5f",
+      "old": "b4a6274b5fa1f05e4ad89a2dc58f667b08a0638c2360b563e75547d0e73dd7a0",
+      "path": "crates/ty_site_packages/Cargo.toml"
+    },
+    {
+      "edits": {
+        "lib.test": [
+          null,
+          false
+        ]
+      },
+      "new": "378ae062272d69b3805a87fff4a96d43e8af0768c9ee182bd5c3a57842e290c2",
+      "old": "48a45cc8a7b9ede9b763fbd10060eecb6f48fcc6ca2701166030c99db3f80e46",
+      "path": "crates/ty_static/Cargo.toml"
+    },
+    {
+      "edits": {
+        "lib.doctest": [
+          null,
+          false
+        ]
+      },
+      "new": "6cf0cf728b54a4d334019d5448021af09f531bc181d455b3018aebac002efd38",
+      "old": "5f9a5486ba375fb958b83955c1e6deae7aafc1d57de5e778ac3f9e4656fc79a1",
+      "path": "crates/ty_test/Cargo.toml"
+    },
+    {
+      "edits": {
+        "lib.doctest": [
+          null,
+          false
+        ]
+      },
+      "new": "ac266a19347682ec2967f72815e019c66dca12c84bb5e152ab5061a75a888e82",
+      "old": "8f849d8faa408ad0029701945c790640ff1ce041f727890a61e221e2ff90f277",
+      "path": "crates/ty_vendored/Cargo.toml"
+    },
+    {
+      "edits": {
+        "lib.test": [
+          null,
+          false
+        ],
+        "package.metadata.cargo-shear.ignored": [
+          [
+            "tracing"
+          ],
+          [
+            "tracing",
+            "uuid"
+          ]
+        ]
+      },
+      "new": "014bd9be841f289e492085224aefcd023e49d3fd87bf95915719eccb0c3cf75c",
+      "old": "cf5fc0befc5bc3e6548af7ee0543d0d6780877f069e92b8cec560cc83c7d6ac9",
+      "path": "crates/ty_wasm/Cargo.toml"
+    }
+  ],
+  "parent": "716260bf10d7ae1d965ed9b22653e57fbc960582",
+  "paths": [
+    ".github/workflows/ci.yaml",
+    "Cargo.toml",
+    "crates/ruff/Cargo.toml",
+    "crates/ruff_annotate_snippets/Cargo.toml",
+    "crates/ruff_benchmark/Cargo.toml",
+    "crates/ruff_cache/Cargo.toml",
+    "crates/ruff_diagnostics/Cargo.toml",
+    "crates/ruff_graph/Cargo.toml",
+    "crates/ruff_macros/Cargo.toml",
+    "crates/ruff_markdown/Cargo.toml",
+    "crates/ruff_memory_usage/Cargo.toml",
+    "crates/ruff_notebook/Cargo.toml",
+    "crates/ruff_options_metadata/Cargo.toml",
+    "crates/ruff_python_ast_integration_tests/Cargo.toml",
+    "crates/ruff_python_importer/Cargo.toml",
+    "crates/ruff_python_semantic/Cargo.toml",
+    "crates/ruff_python_trivia_integration_tests/Cargo.toml",
+    "crates/ruff_server/Cargo.toml",
+    "crates/ruff_text_size/Cargo.toml",
+    "crates/ruff_wasm/Cargo.toml",
+    "crates/ty/Cargo.toml",
+    "crates/ty_combine/Cargo.toml",
+    "crates/ty_ide/Cargo.toml",
+    "crates/ty_project/Cargo.toml",
+    "crates/ty_server/Cargo.toml",
+    "crates/ty_site_packages/Cargo.toml",
+    "crates/ty_static/Cargo.toml",
+    "crates/ty_test/Cargo.toml",
+    "crates/ty_vendored/Cargo.toml",
+    "crates/ty_wasm/Cargo.toml"
+  ],
+  "selected_manifests": 27,
+  "source_tree_sha256": {
+    "2d6ce561250a464e1fa231ef30e54d0f029f76a4": "4432392b4cb1d6307a4a39cd0cae94d8c149fd0d6488afc73518e39f5ffabcbf",
+    "716260bf10d7ae1d965ed9b22653e57fbc960582": "7eca1b23c5b2f9005a25d7f2b02d99f51f21bedb5b4f5c27e28eabcf95f78253"
+  }
+}
