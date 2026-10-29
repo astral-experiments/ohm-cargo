@@ -2027,6 +2027,9 @@ fn link_targets(
 ) -> CargoResult<Work> {
     let bcx = build_runner.bcx;
     let outputs = build_runner.outputs(unit)?;
+    if !bcx.build_config.emit_json() && outputs.iter().all(|output| output.hardlink.is_none()) {
+        return Ok(Work::noop());
+    }
     let export_dir = build_runner.files().export_dir();
     let package_id = unit.pkg.package_id();
     let manifest_path = PathBuf::from(unit.pkg.manifest_path());
@@ -3526,12 +3529,18 @@ impl OutputOptions {
 /// contains a `Send`-able copy of the manifest information that we need for the
 /// enriched errors.
 struct ManifestErrorContext {
-    /// The path to the manifest.
+    /// The path to the manifest, also used by machine-readable compiler messages.
     path: PathBuf,
+    /// Source information available for annotating compiler diagnostics.
+    annotation: Option<ManifestDiagnosticContext>,
+}
+
+/// Retained manifest source and dependency information for diagnostic annotations.
+struct ManifestDiagnosticContext {
     /// The locations of various spans within the manifest.
-    spans: Option<Arc<toml::Spanned<toml::de::DeTable<'static>>>>,
+    spans: Arc<toml::Spanned<toml::de::DeTable<'static>>>,
     /// The raw manifest contents.
-    contents: Option<String>,
+    contents: String,
     /// A lookup for all the unambiguous renamings, mapping from the original package
     /// name to the renamed one.
     rename_table: HashMap<InternedString, InternedString>,
@@ -3635,6 +3644,9 @@ fn on_stderr_line_inner(
 
     // Returns `true` if the diagnostic was modified.
     let add_pub_in_priv_diagnostic = |diag: &mut String| -> bool {
+        let Some(annotation) = &manifest.annotation else {
+            return false;
+        };
         // We are parsing the compiler diagnostic here, as this information isn't
         // currently exposed elsewhere.
         // At the time of writing this comment, rustc emits two different
@@ -3646,10 +3658,9 @@ fn on_stderr_line_inner(
         static PRIV_DEP_REGEX: LazyLock<Regex> =
             LazyLock::new(|| Regex::new("from private dependency '([A-Za-z0-9-_]+)'").unwrap());
         if let Some(crate_name) = PRIV_DEP_REGEX.captures(diag).and_then(|m| m.get(1))
-            && let Some(ref contents) = manifest.contents
-            && let Some(span) = manifest.find_crate_span(crate_name.as_str())
+            && let Some(span) = annotation.find_crate_span(crate_name.as_str())
         {
-            let rel_path = pathdiff::diff_paths(&manifest.path, &manifest.cwd)
+            let rel_path = pathdiff::diff_paths(&manifest.path, &annotation.cwd)
                 .unwrap_or_else(|| manifest.path.clone())
                 .display()
                 .to_string();
@@ -3658,13 +3669,13 @@ fn on_stderr_line_inner(
                 crate_name.as_str()
             )))
             .element(
-                Snippet::source(contents)
+                Snippet::source(&annotation.contents)
                     .path(rel_path)
                     .annotation(AnnotationKind::Context.span(span)),
             )];
 
             let rendered = Renderer::styled()
-                .term_width(manifest.term_width)
+                .term_width(annotation.term_width)
                 .render(&report);
             diag.push_str(&rendered);
             diag.push('\n');
@@ -3926,6 +3937,18 @@ fn on_stderr_line_inner(
 
 impl ManifestErrorContext {
     fn new(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> ManifestErrorContext {
+        ManifestErrorContext {
+            path: unit.pkg.manifest_path().to_owned(),
+            annotation: ManifestDiagnosticContext::new(build_runner, unit),
+        }
+    }
+}
+
+impl ManifestDiagnosticContext {
+    /// Skips annotation-only allocations when source spans or contents are unavailable.
+    fn new(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> Option<Self> {
+        let spans = unit.pkg.manifest().document_rc()?;
+        let contents = unit.pkg.manifest().contents()?;
         let mut duplicates = HashSet::default();
         let mut rename_table = HashMap::default();
 
@@ -3946,10 +3969,9 @@ impl ManifestErrorContext {
         }
 
         let bcx = build_runner.bcx;
-        ManifestErrorContext {
-            path: unit.pkg.manifest_path().to_owned(),
-            spans: unit.pkg.manifest().document_rc(),
-            contents: unit.pkg.manifest().contents().map(String::from),
+        Some(Self {
+            spans,
+            contents: contents.to_owned(),
             requested_kinds: bcx.target_data.requested_kinds().to_owned(),
             host_name: bcx.rustc().host,
             rename_table,
@@ -3966,7 +3988,7 @@ impl ManifestErrorContext {
                 .err_width()
                 .diagnostic_terminal_width()
                 .unwrap_or(cargo_util_terminal::report::renderer::DEFAULT_TERM_WIDTH),
-        }
+        })
     }
 
     fn requested_target_names(&self) -> impl Iterator<Item = &str> {
@@ -3990,9 +4012,7 @@ impl ManifestErrorContext {
     /// baz = { path = "../bar", package = "bar" }
     /// ```
     fn find_crate_span(&self, unrenamed: &str) -> Option<Range<usize>> {
-        let Some(ref spans) = self.spans else {
-            return None;
-        };
+        let spans = &self.spans;
 
         let orig_name = self.rename_table.get(unrenamed)?.as_str();
 

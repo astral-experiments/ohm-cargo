@@ -151,18 +151,109 @@ fn dep_path_inside_target_has_correct_path() {
 
 #[cargo_test]
 fn no_rewrite_if_no_change() {
-    let p = project().file("src/lib.rs", "").build();
+    let p = project()
+        .file(
+            "src/lib.rs",
+            "mod first; mod second; const _: &str = include_str!(\"data with spaces.txt\");",
+        )
+        .file("src/first.rs", "")
+        .file("src/second.rs", "")
+        .file("src/data with spaces.txt", "data")
+        .build();
 
     p.cargo("build").run();
     let dep_info = p.root().join("target/debug/libfoo.d");
-    let metadata1 = dep_info.metadata().unwrap();
+    let preserved_mtime = FileTime::from_unix_time(1, 0);
+    filetime::set_file_mtime(&dep_info, preserved_mtime).unwrap();
     p.cargo("build").run();
-    let metadata2 = dep_info.metadata().unwrap();
-
     assert_eq!(
-        FileTime::from_last_modification_time(&metadata1),
-        FileTime::from_last_modification_time(&metadata2),
+        FileTime::from_last_modification_time(&dep_info.metadata().unwrap()),
+        preserved_mtime,
     );
+
+    p.change_file(
+        "src/lib.rs",
+        "mod third; mod second; const _: &str = include_str!(\"data with spaces.txt\");",
+    );
+    p.change_file("src/third.rs", "");
+    p.cargo("build").run();
+    let updated_contents = p.read_file(&dep_info);
+    assert!(updated_contents.contains("third.rs"));
+    assert!(!updated_contents.contains("first.rs"));
+    assert_ne!(
+        FileTime::from_last_modification_time(&dep_info.metadata().unwrap()),
+        preserved_mtime,
+    );
+
+    filetime::set_file_mtime(&dep_info, preserved_mtime).unwrap();
+    p.cargo("build").run();
+    assert_eq!(p.read_file(&dep_info), updated_contents);
+    assert_eq!(
+        FileTime::from_last_modification_time(&dep_info.metadata().unwrap()),
+        preserved_mtime,
+    );
+}
+
+#[cargo_test]
+fn multiple_crate_types_preserve_dep_info_target() {
+    let p = project()
+        .file(
+            "Cargo.toml",
+            &format!(
+                "{}\n[lib]\ncrate-type = [\"rlib\", \"cdylib\"]\n",
+                basic_manifest("foo", "0.0.1")
+            ),
+        )
+        .file("src/lib.rs", "")
+        .build();
+
+    // Relative paths keep the single dependency unescaped even if the test root has spaces.
+    let expected = format!(
+        "{}: {}\n",
+        Path::new("target")
+            .join("debug")
+            .join("libfoo.rlib")
+            .display(),
+        Path::new("src").join("lib.rs").display(),
+    );
+    p.cargo("build")
+        .env("CARGO_BUILD_DEP_INFO_BASEDIR", p.root())
+        .run();
+    assert_eq!(p.read_file("target/debug/libfoo.d"), expected);
+
+    p.cargo("build")
+        .env("CARGO_BUILD_DEP_INFO_BASEDIR", p.root())
+        .with_stderr_data(str![[r#"
+[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
+
+"#]])
+        .run();
+    assert_eq!(p.read_file("target/debug/libfoo.d"), expected);
+}
+
+#[cargo_test]
+fn shared_dependencies_are_refreshed_after_rebuild() {
+    let p = project()
+        .file("src/lib.rs", "mod first;")
+        .file("src/main.rs", "extern crate foo; fn main() {}")
+        .file("src/first.rs", "")
+        .file("src/second.rs", "")
+        .build();
+
+    let dep_info_paths = [
+        p.root().join("target/debug/libfoo.d"),
+        p.bin("foo").with_extension("d"),
+    ];
+    for (module, previous) in [("first", "second"), ("second", "first")] {
+        p.root().move_into_the_past();
+        p.change_file("src/lib.rs", &format!("mod {module};"));
+        p.cargo("build").run();
+        for path in &dep_info_paths {
+            let contents = p.read_file(path);
+            assert!(contents.contains(&format!("{module}.rs")), "{contents}");
+            assert!(!contents.contains(&format!("{previous}.rs")), "{contents}");
+        }
+    }
 }
 
 #[cargo_test(nightly, reason = "-Z binary-dep-depinfo is unstable")]
