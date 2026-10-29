@@ -1,0 +1,150 @@
+{
+  "all_state_prs": 221,
+  "archive_blobs": {
+    "4fc516b24485734b9faf919ba56ac0d11050957d": {
+      "direct_buffered_file": true,
+      "file_sha256": "46fa71c97b14b02aabc8bed9f00be2b54fdb577098efcb2ea9e7029c731db42f",
+      "flush_then_rename": true,
+      "full_writer": true,
+      "new_empty_file": true,
+      "prior_copy_or_comparison_tokens": {
+        "clonefile": false,
+        "copy_file_range": false,
+        "ficlone": false,
+        "read_exact_at": false,
+        "reflink": false,
+        "write_all_at": false
+      },
+      "writer_sha256": "55eeb25c0f09d4ea1c1b0b7fbccdd57290bfb449b4998e4092e3710cc6019374"
+    },
+    "572e5ddec2584f534755c89ea9579e9c6e724386": {
+      "direct_buffered_file": true,
+      "file_sha256": "e9abed3f2a2a872d27fbf163fd01ec60e02b90911244d89a5d357b975f7a3388",
+      "flush_then_rename": true,
+      "full_writer": true,
+      "new_empty_file": true,
+      "prior_copy_or_comparison_tokens": {
+        "clonefile": false,
+        "copy_file_range": false,
+        "ficlone": false,
+        "read_exact_at": false,
+        "reflink": false,
+        "write_all_at": false
+      },
+      "writer_sha256": "bb39741ac9aab059de66fd6ef2b3eee29f54ce4550584390c9f2ea1b89080b57"
+    },
+    "ba811825dce233fd7e3486b1e4e7925aec35df99": {
+      "direct_buffered_file": true,
+      "file_sha256": "0406fefb6a0c608c16bfd6cb119ecc07683e1c47eadd0128b9f5f944f38e07d3",
+      "flush_then_rename": true,
+      "full_writer": true,
+      "new_empty_file": true,
+      "prior_copy_or_comparison_tokens": {
+        "clonefile": false,
+        "copy_file_range": false,
+        "ficlone": false,
+        "read_exact_at": false,
+        "reflink": false,
+        "write_all_at": false
+      },
+      "writer_sha256": "41707bbed078518477038666e7b214237c35e1a6f58c5e5872d8b6137b04b8d5"
+    },
+    "c4107b4a60f27200351f57652413abefb6f0b4ea": {
+      "direct_buffered_file": true,
+      "file_sha256": "a8ec1f6888a0ac30971f7220c55752845bc46a55927effc9bc6597307584173b",
+      "flush_then_rename": true,
+      "full_writer": true,
+      "new_empty_file": true,
+      "prior_copy_or_comparison_tokens": {
+        "clonefile": false,
+        "copy_file_range": false,
+        "ficlone": false,
+        "read_exact_at": false,
+        "reflink": false,
+        "write_all_at": false
+      },
+      "writer_sha256": "55eeb25c0f09d4ea1c1b0b7fbccdd57290bfb449b4998e4092e3710cc6019374"
+    }
+  },
+  "branches": 313,
+  "current": {
+    "ohm": {
+      "default": "main",
+      "head": "885faf0af725074adc31080a1c732c60965d8bbe",
+      "open_count": 6,
+      "related_titles": [],
+      "uncovered_rust_pr_heads": []
+    },
+    "ohm-cargo": {
+      "default": "ohm-1.98.1",
+      "head": "5819763564a25251b83e168217c619ee1f943293",
+      "open_count": 143,
+      "related_titles": [
+        {
+          "html_url": "https://github.com/astral-sh/ohm-cargo/pull/224",
+          "number": 224,
+          "title": "Drain terminal signals before retiring the ready-test relay"
+        },
+        {
+          "html_url": "https://github.com/astral-sh/ohm-cargo/pull/184",
+          "number": 184,
+          "title": "Use bounded bitsets for scheduler reachability"
+        },
+        {
+          "html_url": "https://github.com/astral-sh/ohm-cargo/pull/172",
+          "number": 172,
+          "title": "Document ready-test execution as opt-in"
+        },
+        {
+          "html_url": "https://github.com/astral-sh/ohm-cargo/pull/153",
+          "number": 153,
+          "title": "Opt in to running ready test binaries during compilation"
+        }
+      ],
+      "uncovered_rust_pr_heads": []
+    },
+    "ohm-rust": {
+      "default": "ohm-1.98.1",
+      "head": "ead219ee7b07ffa78472a1043bd5806f67dfdac9",
+      "open_count": 140,
+      "related_titles": [
+        {
+          "html_url": "https://github.com/astral-sh/ohm-rust/pull/233",
+          "number": 233,
+          "title": "Keep unreachable private impls out of incremental rlib interface hashes"
+        },
+        {
+          "html_url": "https://github.com/astral-sh/ohm-rust/pull/219",
+          "number": 219,
+          "title": "Skip the extern lookup for dependencies already known to be public"
+        }
+      ],
+      "uncovered_rust_pr_heads": []
+    }
+  },
+  "different_heads": 350,
+  "heads_with_archive_code": 348,
+  "pin_files": 55,
+  "source_survey_sha256": "05f46421827371726cf93e5b89244d54f76295d8660de3a0b66b7650909182a8",
+  "trees_without_compiler": {
+    "52627489f8f2bacc6204571430f682a8013a72b5": {
+      "branches": [
+        "codex/uv-attribute-cache-evidence-full-20261023"
+      ],
+      "entries": [
+        "benchmarks"
+      ],
+      "tree": "52627489f8f2bacc6204571430f682a8013a72b5"
+    },
+    "684921c9838cd25db28cec4ff9c58c4d67abea61": {
+      "branches": [
+        "codex/uv-attribute-cache-evidence-20261023"
+      ],
+      "entries": [
+        "benchmarks"
+      ],
+      "tree": "684921c9838cd25db28cec4ff9c58c4d67abea61"
+    }
+  },
+  "unique_pins": 51
+}

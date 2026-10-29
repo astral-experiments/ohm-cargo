@@ -1,0 +1,301 @@
+{
+  "admission": "all ext4 and Btrfs native oracles and hostile controls; actual shared extents; prior artifact supplied before invocation",
+  "decision": "extend only with a real reachable earlier archive and a materially favorable whole-writer effect. A candidate PR additionally requires replicated statistically significant ordinary Cargo build measurements.",
+  "labels": [
+    "formatter",
+    "linter",
+    "parser"
+  ],
+  "purpose": "standalone real GNU rlib writer feasibility on private Btrfs",
+  "rows": [
+    {
+      "library": "formatter",
+      "order": [
+        "normal",
+        "cow"
+      ],
+      "pair": 0
+    },
+    {
+      "library": "linter",
+      "order": [
+        "normal",
+        "cow"
+      ],
+      "pair": 0
+    },
+    {
+      "library": "parser",
+      "order": [
+        "normal",
+        "cow"
+      ],
+      "pair": 0
+    },
+    {
+      "library": "linter",
+      "order": [
+        "cow",
+        "normal"
+      ],
+      "pair": 1
+    },
+    {
+      "library": "parser",
+      "order": [
+        "cow",
+        "normal"
+      ],
+      "pair": 1
+    },
+    {
+      "library": "formatter",
+      "order": [
+        "normal",
+        "cow"
+      ],
+      "pair": 1
+    },
+    {
+      "library": "parser",
+      "order": [
+        "normal",
+        "cow"
+      ],
+      "pair": 2
+    },
+    {
+      "library": "formatter",
+      "order": [
+        "cow",
+        "normal"
+      ],
+      "pair": 2
+    },
+    {
+      "library": "linter",
+      "order": [
+        "cow",
+        "normal"
+      ],
+      "pair": 2
+    },
+    {
+      "library": "parser",
+      "order": [
+        "cow",
+        "normal"
+      ],
+      "pair": 3
+    },
+    {
+      "library": "linter",
+      "order": [
+        "normal",
+        "cow"
+      ],
+      "pair": 3
+    },
+    {
+      "library": "formatter",
+      "order": [
+        "cow",
+        "normal"
+      ],
+      "pair": 3
+    },
+    {
+      "library": "formatter",
+      "order": [
+        "cow",
+        "normal"
+      ],
+      "pair": 4
+    },
+    {
+      "library": "parser",
+      "order": [
+        "normal",
+        "cow"
+      ],
+      "pair": 4
+    },
+    {
+      "library": "linter",
+      "order": [
+        "normal",
+        "cow"
+      ],
+      "pair": 4
+    },
+    {
+      "library": "linter",
+      "order": [
+        "cow",
+        "normal"
+      ],
+      "pair": 5
+    },
+    {
+      "library": "parser",
+      "order": [
+        "cow",
+        "normal"
+      ],
+      "pair": 5
+    },
+    {
+      "library": "formatter",
+      "order": [
+        "normal",
+        "cow"
+      ],
+      "pair": 5
+    },
+    {
+      "library": "parser",
+      "order": [
+        "cow",
+        "normal"
+      ],
+      "pair": 6
+    },
+    {
+      "library": "linter",
+      "order": [
+        "normal",
+        "cow"
+      ],
+      "pair": 6
+    },
+    {
+      "library": "formatter",
+      "order": [
+        "cow",
+        "normal"
+      ],
+      "pair": 6
+    },
+    {
+      "library": "formatter",
+      "order": [
+        "normal",
+        "cow"
+      ],
+      "pair": 7
+    },
+    {
+      "library": "linter",
+      "order": [
+        "cow",
+        "normal"
+      ],
+      "pair": 7
+    },
+    {
+      "library": "parser",
+      "order": [
+        "normal",
+        "cow"
+      ],
+      "pair": 7
+    },
+    {
+      "library": "formatter",
+      "order": [
+        "cow",
+        "normal"
+      ],
+      "pair": 8
+    },
+    {
+      "library": "parser",
+      "order": [
+        "normal",
+        "cow"
+      ],
+      "pair": 8
+    },
+    {
+      "library": "linter",
+      "order": [
+        "normal",
+        "cow"
+      ],
+      "pair": 8
+    },
+    {
+      "library": "parser",
+      "order": [
+        "normal",
+        "cow"
+      ],
+      "pair": 9
+    },
+    {
+      "library": "formatter",
+      "order": [
+        "normal",
+        "cow"
+      ],
+      "pair": 9
+    },
+    {
+      "library": "linter",
+      "order": [
+        "normal",
+        "cow"
+      ],
+      "pair": 9
+    },
+    {
+      "library": "parser",
+      "order": [
+        "cow",
+        "normal"
+      ],
+      "pair": 10
+    },
+    {
+      "library": "linter",
+      "order": [
+        "cow",
+        "normal"
+      ],
+      "pair": 10
+    },
+    {
+      "library": "formatter",
+      "order": [
+        "normal",
+        "cow"
+      ],
+      "pair": 10
+    },
+    {
+      "library": "linter",
+      "order": [
+        "cow",
+        "normal"
+      ],
+      "pair": 11
+    },
+    {
+      "library": "formatter",
+      "order": [
+        "cow",
+        "normal"
+      ],
+      "pair": 11
+    },
+    {
+      "library": "parser",
+      "order": [
+        "cow",
+        "normal"
+      ],
+      "pair": 11
+    }
+  ],
+  "scoring": "per-library median of paired (normal-cow)/normal; raw medians; sign and block bootstrap by three blocks of four equal-order pairs; never a Cargo end-to-end performance claim"
+}

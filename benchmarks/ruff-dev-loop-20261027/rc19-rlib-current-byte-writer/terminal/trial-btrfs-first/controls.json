@@ -1,0 +1,138 @@
+{
+  "before-rename": {
+    "exit": 1,
+    "ns": 26956017,
+    "stderr": "Error: Custom { kind: Other, error: \"injected failure before publication\" }\n"
+  },
+  "fifo": {
+    "cloned": false,
+    "exit": 0,
+    "fallback": -1,
+    "length": 6010742,
+    "ns": 31382945,
+    "retained": 0
+  },
+  "formatter-cow": {
+    "cloned": true,
+    "exit": 0,
+    "fallback": 0,
+    "length": 15188914,
+    "ns": 43692497,
+    "retained": 14861234,
+    "shared_physical_bytes": 14861234
+  },
+  "formatter-normal": {
+    "cloned": false,
+    "exit": 0,
+    "fallback": 0,
+    "length": 15188914,
+    "ns": 182159800,
+    "retained": 0,
+    "shared_physical_bytes": 0
+  },
+  "larger": {
+    "cloned": true,
+    "exit": 0,
+    "fallback": 0,
+    "length": 6010742,
+    "ns": 44518048,
+    "retained": 5814134
+  },
+  "limited-write": {
+    "exit": 1,
+    "ns": 27709414,
+    "stderr": "Error: Os { code: 27, kind: FileTooLarge, message: \"File too large\" }\n"
+  },
+  "linter-cow": {
+    "cloned": true,
+    "exit": 0,
+    "fallback": 0,
+    "length": 103905374,
+    "ns": 772601219,
+    "retained": 103118942,
+    "shared_physical_bytes": 103118942
+  },
+  "linter-normal": {
+    "cloned": false,
+    "exit": 0,
+    "fallback": 0,
+    "length": 103905374,
+    "ns": 580988788,
+    "retained": 0,
+    "shared_physical_bytes": 0
+  },
+  "no-incumbent": {
+    "cloned": false,
+    "exit": 0,
+    "fallback": 2,
+    "length": 6010742,
+    "ns": 33070394,
+    "retained": 0
+  },
+  "parser-cow": {
+    "cloned": true,
+    "exit": 0,
+    "fallback": 0,
+    "length": 6010742,
+    "ns": 27305696,
+    "retained": 5814134,
+    "shared_physical_bytes": 5814134
+  },
+  "parser-normal": {
+    "cloned": false,
+    "exit": 0,
+    "fallback": 0,
+    "length": 6010742,
+    "ns": 45485991,
+    "retained": 0,
+    "shared_physical_bytes": 0
+  },
+  "readonly": {
+    "cloned": true,
+    "exit": 0,
+    "fallback": 0,
+    "length": 6010742,
+    "ns": 40677507,
+    "retained": 5814134
+  },
+  "shorter": {
+    "cloned": true,
+    "exit": 0,
+    "fallback": 0,
+    "length": 6010742,
+    "ns": 37485178,
+    "retained": 1769472
+  },
+  "socket": {
+    "cloned": false,
+    "exit": 0,
+    "fallback": 6,
+    "length": 6010742,
+    "ns": 33385839,
+    "retained": 0
+  },
+  "symlink": {
+    "cloned": false,
+    "exit": 0,
+    "fallback": 40,
+    "length": 6010742,
+    "ns": 31542130,
+    "retained": 0
+  },
+  "wrong-middle": {
+    "cloned": true,
+    "exit": 0,
+    "fallback": 0,
+    "length": 6010742,
+    "ns": 44206240,
+    "retained": 5748598
+  },
+  "zero": {
+    "cloned": true,
+    "exit": 0,
+    "fallback": 0,
+    "length": 6010742,
+    "ns": 28847254,
+    "retained": 0
+  }
+}
