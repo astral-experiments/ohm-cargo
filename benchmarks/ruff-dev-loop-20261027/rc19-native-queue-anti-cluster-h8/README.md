@@ -1,0 +1,22 @@
+# Avoiding clusters of large executable links
+
+The scheduling treatment missed its registered native gate. It changed 21 of 689 dispatches in the diagnostic command. Across six adjacent control/treatment pairs, large-link overlap decreased in two. The paired median B/A ratio was 1.03683, against a requirement of at most 0.90 and at least four favorable pairs. There were no uninstrumented whole-Cargo samples. [Registered protocol](https://github.com/astral-sh/ohm-cargo/tree/f8208b91eb7765ad9f88f0d6d8c88b71b8d63091/benchmarks/ruff-dev-loop-20261027/rc19-native-queue-anti-cluster-plan)
+
+| Native mechanism, arm median | A, existing Cargo | B, anti-clustering |
+| --- | ---: | ---: |
+| Large-pair overlap, pair-seconds | 24.844 | 24.490 |
+| Peak concurrent large Wild processes | 7 | 8 |
+| Last Wild start to final Wild exit, seconds | 0.998 | 1.068 |
+| First Wild start to final Wild exit, seconds | 4.164 | 4.132 |
+
+The ratio is calculated within adjacent pairs. Comparing the two marginal arm medians gives a different number. The future native work of a running Cargo unit includes rustc driver setup and teardown. Counting active eligible units at dispatch did not reliably control concurrency inside the linker.
+
+A is the matched PGO Cargo built from `235f9228651b74c591e6f62cae4c9b761448dd2d`. B is its isolated scheduler child `76bec5f0997c6f804234e7351611850ec683e9e4`. Both had the same version stamp, compiler, profile, literal lib/bin compiler commands and unrelated extern bytes. The diagnostic build adds decision reporting. All 3,108 Git source leaves and their modes were checked for each build. The archive includes the scheduler patch and the result of its checked-in unit test. Two preliminary build setups were excluded before the qualified Ruff commands; the extraction setup lost a literal symlink step and the first compiled setup selected the wrong dependency namespace. Qualified image and input digests are under `image` in the recorded evidence.
+
+The stock Rust/Wild SDK was Linux -18, Ruff was `93526150df078af7dd8fc4226cdcc469539d2001` and the host was a 32-CPU AMD Milan. Two same-medium writable build states were physically independent with checked contents, ownership and hardlink relationships. All four qualifying runs and the six pairs executed the ordinary 619-unit Ruff test build. Each issued one full rustc for ron, 50 rustc link-only calls and 50 real GCC/collect2/Wild chains. The output comparison included all 110 workspace ELFs, the complete typeshed ZIP, the 200-test ty_server e2e inventory and both notebook tests. Per-target intervals, actual argv digests, typed unit rosters, raw ELF hashes and original receipt digests are retained in `evidence.json.gz`.
+
+Both arms also ran the historical reverse notebook edit and restoration. Each transition ran 12 full compilers, 43 link-only compilers and 52 stock Wild processes. The edited arms matched byte-for-byte on 108/110 workspace ELFs; the other two matched after isolating the previously qualified GNU build ID and .rodata section-entry size. Restored arms matched on 110/110. Compared with the saved pre-edit baseline, all non-width bytes of restored ELFs matched. Both tests failed with the same assertions under the edit and passed after restoration.
+
+The first collector exited 1 after an independent cold selected-target build had already succeeded. Its blanket `no nonzero children` assertion rejected one intentional `cc -?` compiler-family probe from the cc crate. The narrow continuation accepted exactly its complete argv SHA and exit 1, verified all real compiler and linker exits, rechecked the original six-pair and raw cold receipts, and used only the already-emitted cold executable. That binary listed all 200 tests and reproduced both edited assertions independently. Its selected package graph has a different Cargo unit ID and binary from the full workspace. The two originally unrun restorations then ran once. The original collector exit, bounded grant, original hashes and both observed binaries are retained. No sampled command was replaced.
+
+Run `python3 -IB verify.py` to recompute all twelve native rows, then `python3 -IB screen.py` for the fixed null, favorable and queue-tail controls. `resume_cold.py` is the historical continuation source with its original private acquisition-module imports; `verify.py` verifies the exported observations offline with the standard library.
