@@ -1,0 +1,560 @@
+[
+  {
+    "actual_compiler": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+    "actual_parser": "6b100c43eb51302bfbdf8c093cb2d522a45927cdfadc323505bbc738343597ab",
+    "actually_opened": [
+      "libheld_bridge.rmeta",
+      "libruff_python_parser-a700dfeada09004e.rmeta"
+    ],
+    "benign_edit": false,
+    "bridge": null,
+    "case": "bridge",
+    "diagnostics": [],
+    "label": "train-cold",
+    "parser": "cold",
+    "raw_result_sha256": "14869fbf8a396f4dab4bdffec61a1780026619a4df357cf9eb502a3874fe51d1",
+    "rest": "cold",
+    "source_sha256": "cbcd81f54d86a96f8f506e9bec792065f2f17ec02b7d177ae754de64234db822",
+    "status": 0,
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "actual_compiler": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+    "actual_parser": "67918a4225fc6ceb5639d7869355ef8514140d3e4150443083a333e858724fa3",
+    "actually_opened": [
+      "libheld_bridge.rmeta",
+      "libruff_python_parser-a700dfeada09004e.rmeta"
+    ],
+    "benign_edit": false,
+    "bridge": null,
+    "case": "bridge",
+    "diagnostics": [],
+    "label": "train-warm",
+    "parser": "warm",
+    "raw_result_sha256": "83ac8bd46b290d4b982becebe554b1ecef027be9956f0b0d7516d68160a98ad3",
+    "rest": "warm",
+    "source_sha256": "cbcd81f54d86a96f8f506e9bec792065f2f17ec02b7d177ae754de64234db822",
+    "status": 0,
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "actual_compiler": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+    "actual_parser": "6b100c43eb51302bfbdf8c093cb2d522a45927cdfadc323505bbc738343597ab",
+    "actually_opened": [
+      "libheld_bridge.rmeta",
+      "libruff_python_parser-a700dfeada09004e.rmeta"
+    ],
+    "benign_edit": false,
+    "bridge": "cold",
+    "case": "consumer",
+    "diagnostics": [],
+    "label": "consumer-base-cold-cold",
+    "parser": "cold",
+    "raw_result_sha256": "631930d1c966dd38a6da01b604bdf008b3fd592c4aec3e97511e276fd1b47331",
+    "rest": "cold",
+    "source_sha256": "87179e05888701020b0d189bfe709e10e3883977fa8c3bd5ded4f97808d7e7b5",
+    "status": 0,
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "actual_compiler": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+    "actual_parser": "67918a4225fc6ceb5639d7869355ef8514140d3e4150443083a333e858724fa3",
+    "actually_opened": [
+      "libheld_bridge.rmeta",
+      "libruff_python_parser-a700dfeada09004e.rmeta"
+    ],
+    "benign_edit": false,
+    "bridge": "cold",
+    "case": "consumer",
+    "diagnostics": [
+      {
+        "code": "E0460",
+        "message": "found possibly newer version of crate `ruff_python_parser` which `held_bridge` depends on",
+        "spans": [
+          [
+            "input.rs",
+            1,
+            1,
+            1,
+            26
+          ]
+        ]
+      },
+      {
+        "code": "E0460",
+        "message": "found possibly newer version of crate `ruff_python_ast` which `ruff_python_parser` depends on",
+        "spans": [
+          [
+            "input.rs",
+            2,
+            1,
+            2,
+            33
+          ]
+        ]
+      }
+    ],
+    "label": "consumer-base-cold-warm",
+    "parser": "warm",
+    "raw_result_sha256": "900b7922f12769c5a6673776b913dd5798c9ecc829b07bbfbd1bc3131e5e7c22",
+    "rest": "cold",
+    "source_sha256": "87179e05888701020b0d189bfe709e10e3883977fa8c3bd5ded4f97808d7e7b5",
+    "status": 1,
+    "stderr_sha256": "cabdb46f887acbef3eeb3298c46a24c683252c8cb3aa9796923d1e8107da8e4f"
+  },
+  {
+    "actual_compiler": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+    "actual_parser": "6b100c43eb51302bfbdf8c093cb2d522a45927cdfadc323505bbc738343597ab",
+    "actually_opened": [
+      "libheld_bridge.rmeta",
+      "libruff_python_parser-a700dfeada09004e.rmeta"
+    ],
+    "benign_edit": false,
+    "bridge": "warm",
+    "case": "consumer",
+    "diagnostics": [
+      {
+        "code": "E0460",
+        "message": "found possibly newer version of crate `ruff_python_parser` which `held_bridge` depends on",
+        "spans": [
+          [
+            "input.rs",
+            1,
+            1,
+            1,
+            26
+          ]
+        ]
+      },
+      {
+        "code": "E0460",
+        "message": "found possibly newer version of crate `ruff_python_ast` which `ruff_python_parser` depends on",
+        "spans": [
+          [
+            "input.rs",
+            2,
+            1,
+            2,
+            33
+          ]
+        ]
+      }
+    ],
+    "label": "consumer-base-warm-cold",
+    "parser": "cold",
+    "raw_result_sha256": "220c94c37905e9855f17d5139047e8b8b7869b28e259962bd92553b9be345782",
+    "rest": "warm",
+    "source_sha256": "87179e05888701020b0d189bfe709e10e3883977fa8c3bd5ded4f97808d7e7b5",
+    "status": 1,
+    "stderr_sha256": "ee7ddce1c6e3e81fe900bf2ca5a729f67c45f72aea11c550b5909a02afc3930c"
+  },
+  {
+    "actual_compiler": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+    "actual_parser": "67918a4225fc6ceb5639d7869355ef8514140d3e4150443083a333e858724fa3",
+    "actually_opened": [
+      "libheld_bridge.rmeta",
+      "libruff_python_parser-a700dfeada09004e.rmeta"
+    ],
+    "benign_edit": false,
+    "bridge": "warm",
+    "case": "consumer",
+    "diagnostics": [],
+    "label": "consumer-base-warm-warm",
+    "parser": "warm",
+    "raw_result_sha256": "e34d84151fb625edfdfd1501dece30c59e52efd745e63369194695924dd249a4",
+    "rest": "warm",
+    "source_sha256": "87179e05888701020b0d189bfe709e10e3883977fa8c3bd5ded4f97808d7e7b5",
+    "status": 0,
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "actual_compiler": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+    "actual_parser": "6b100c43eb51302bfbdf8c093cb2d522a45927cdfadc323505bbc738343597ab",
+    "actually_opened": [
+      "libheld_bridge.rmeta",
+      "libruff_python_parser-a700dfeada09004e.rmeta"
+    ],
+    "benign_edit": true,
+    "bridge": "cold",
+    "case": "consumer",
+    "diagnostics": [],
+    "label": "consumer-comment-cold-cold",
+    "parser": "cold",
+    "raw_result_sha256": "30cdeef8ed25b5638726a90117f572a26e1485937b05b97e0946740b2f73a363",
+    "rest": "cold",
+    "source_sha256": "9eb51514248f3fdd9e8291c2b857085bce93791ac1088c5a3ddbc3a6ce07e08e",
+    "status": 0,
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "actual_compiler": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+    "actual_parser": "67918a4225fc6ceb5639d7869355ef8514140d3e4150443083a333e858724fa3",
+    "actually_opened": [
+      "libheld_bridge.rmeta",
+      "libruff_python_parser-a700dfeada09004e.rmeta"
+    ],
+    "benign_edit": true,
+    "bridge": "cold",
+    "case": "consumer",
+    "diagnostics": [
+      {
+        "code": "E0460",
+        "message": "found possibly newer version of crate `ruff_python_parser` which `held_bridge` depends on",
+        "spans": [
+          [
+            "input.rs",
+            1,
+            1,
+            1,
+            26
+          ]
+        ]
+      },
+      {
+        "code": "E0460",
+        "message": "found possibly newer version of crate `ruff_python_ast` which `ruff_python_parser` depends on",
+        "spans": [
+          [
+            "input.rs",
+            2,
+            1,
+            2,
+            33
+          ]
+        ]
+      }
+    ],
+    "label": "consumer-comment-cold-warm",
+    "parser": "warm",
+    "raw_result_sha256": "3a8e97327a158966616527596800c303448904d5e999836087f343f8df8557fe",
+    "rest": "cold",
+    "source_sha256": "9eb51514248f3fdd9e8291c2b857085bce93791ac1088c5a3ddbc3a6ce07e08e",
+    "status": 1,
+    "stderr_sha256": "cabdb46f887acbef3eeb3298c46a24c683252c8cb3aa9796923d1e8107da8e4f"
+  },
+  {
+    "actual_compiler": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+    "actual_parser": "6b100c43eb51302bfbdf8c093cb2d522a45927cdfadc323505bbc738343597ab",
+    "actually_opened": [
+      "libheld_bridge.rmeta",
+      "libruff_python_parser-a700dfeada09004e.rmeta"
+    ],
+    "benign_edit": true,
+    "bridge": "warm",
+    "case": "consumer",
+    "diagnostics": [
+      {
+        "code": "E0460",
+        "message": "found possibly newer version of crate `ruff_python_parser` which `held_bridge` depends on",
+        "spans": [
+          [
+            "input.rs",
+            1,
+            1,
+            1,
+            26
+          ]
+        ]
+      },
+      {
+        "code": "E0460",
+        "message": "found possibly newer version of crate `ruff_python_ast` which `ruff_python_parser` depends on",
+        "spans": [
+          [
+            "input.rs",
+            2,
+            1,
+            2,
+            33
+          ]
+        ]
+      }
+    ],
+    "label": "consumer-comment-warm-cold",
+    "parser": "cold",
+    "raw_result_sha256": "c546a4b1c5daf294b78a0a7148f28328f87e61031cc55de0d0eca61c9e436b22",
+    "rest": "warm",
+    "source_sha256": "9eb51514248f3fdd9e8291c2b857085bce93791ac1088c5a3ddbc3a6ce07e08e",
+    "status": 1,
+    "stderr_sha256": "ee7ddce1c6e3e81fe900bf2ca5a729f67c45f72aea11c550b5909a02afc3930c"
+  },
+  {
+    "actual_compiler": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+    "actual_parser": "67918a4225fc6ceb5639d7869355ef8514140d3e4150443083a333e858724fa3",
+    "actually_opened": [
+      "libheld_bridge.rmeta",
+      "libruff_python_parser-a700dfeada09004e.rmeta"
+    ],
+    "benign_edit": true,
+    "bridge": "warm",
+    "case": "consumer",
+    "diagnostics": [],
+    "label": "consumer-comment-warm-warm",
+    "parser": "warm",
+    "raw_result_sha256": "61f780d71f2a14c891f92fd83875e5ae69907d250068ac9b761d8688e21efc72",
+    "rest": "warm",
+    "source_sha256": "9eb51514248f3fdd9e8291c2b857085bce93791ac1088c5a3ddbc3a6ce07e08e",
+    "status": 0,
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "actual_compiler": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+    "actual_parser": "6b100c43eb51302bfbdf8c093cb2d522a45927cdfadc323505bbc738343597ab",
+    "actually_opened": [
+      "libruff_db-02882724dd8ba829.rmeta",
+      "libruff_python_parser-a700dfeada09004e.rmeta"
+    ],
+    "benign_edit": false,
+    "bridge": null,
+    "case": "natural",
+    "diagnostics": [],
+    "label": "natural-base-cold-cold",
+    "parser": "cold",
+    "raw_result_sha256": "868db86fb378e1c39d49adf88083e14bb0a085e8f534b33f455f821d15bfe2d3",
+    "rest": "cold",
+    "source_sha256": "b0b709493826dee7591d50a98ea1f405db10789e7a17f86f1dcf14bdb5c8822c",
+    "status": 0,
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "actual_compiler": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+    "actual_parser": "67918a4225fc6ceb5639d7869355ef8514140d3e4150443083a333e858724fa3",
+    "actually_opened": [
+      "libruff_db-02882724dd8ba829.rmeta",
+      "libruff_python_parser-a700dfeada09004e.rmeta"
+    ],
+    "benign_edit": false,
+    "bridge": null,
+    "case": "natural",
+    "diagnostics": [
+      {
+        "code": "E0460",
+        "message": "found possibly newer version of crate `ruff_python_parser` which `ruff_db` depends on",
+        "spans": [
+          [
+            "input.rs",
+            1,
+            1,
+            1,
+            22
+          ]
+        ]
+      },
+      {
+        "code": "E0460",
+        "message": "found possibly newer version of crate `ruff_python_ast` which `ruff_python_parser` depends on",
+        "spans": [
+          [
+            "input.rs",
+            2,
+            1,
+            2,
+            33
+          ]
+        ]
+      }
+    ],
+    "label": "natural-base-cold-warm",
+    "parser": "warm",
+    "raw_result_sha256": "e162228e16021eb0767f14c2f3e8bb93c544b18ffef876e85902fd497d28d63c",
+    "rest": "cold",
+    "source_sha256": "b0b709493826dee7591d50a98ea1f405db10789e7a17f86f1dcf14bdb5c8822c",
+    "status": 1,
+    "stderr_sha256": "5841fdae9163ff5a0bbcc79bc664bbccf09661800de6c5f742ad3fabc0ef5c47"
+  },
+  {
+    "actual_compiler": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+    "actual_parser": "6b100c43eb51302bfbdf8c093cb2d522a45927cdfadc323505bbc738343597ab",
+    "actually_opened": [
+      "libruff_db-02882724dd8ba829.rmeta",
+      "libruff_python_parser-a700dfeada09004e.rmeta"
+    ],
+    "benign_edit": false,
+    "bridge": null,
+    "case": "natural",
+    "diagnostics": [
+      {
+        "code": "E0460",
+        "message": "found possibly newer version of crate `ruff_python_parser` which `ruff_db` depends on",
+        "spans": [
+          [
+            "input.rs",
+            1,
+            1,
+            1,
+            22
+          ]
+        ]
+      },
+      {
+        "code": "E0460",
+        "message": "found possibly newer version of crate `ruff_python_ast` which `ruff_python_parser` depends on",
+        "spans": [
+          [
+            "input.rs",
+            2,
+            1,
+            2,
+            33
+          ]
+        ]
+      }
+    ],
+    "label": "natural-base-warm-cold",
+    "parser": "cold",
+    "raw_result_sha256": "b7b4a7c60e181682d303d82b56728cfde63a561eecba64a87c4c485f05b20bf9",
+    "rest": "warm",
+    "source_sha256": "b0b709493826dee7591d50a98ea1f405db10789e7a17f86f1dcf14bdb5c8822c",
+    "status": 1,
+    "stderr_sha256": "2c34733bc66d201e6b6329acb44e9c6a7b849443a036a910bb8e087d5100037e"
+  },
+  {
+    "actual_compiler": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+    "actual_parser": "67918a4225fc6ceb5639d7869355ef8514140d3e4150443083a333e858724fa3",
+    "actually_opened": [
+      "libruff_db-02882724dd8ba829.rmeta",
+      "libruff_python_parser-a700dfeada09004e.rmeta"
+    ],
+    "benign_edit": false,
+    "bridge": null,
+    "case": "natural",
+    "diagnostics": [],
+    "label": "natural-base-warm-warm",
+    "parser": "warm",
+    "raw_result_sha256": "e17324e80d98a384bfb3b6f39dbcd7e9f024810e78d9b031eb7f0aa5e22dc0fb",
+    "rest": "warm",
+    "source_sha256": "b0b709493826dee7591d50a98ea1f405db10789e7a17f86f1dcf14bdb5c8822c",
+    "status": 0,
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "actual_compiler": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+    "actual_parser": "6b100c43eb51302bfbdf8c093cb2d522a45927cdfadc323505bbc738343597ab",
+    "actually_opened": [
+      "libruff_db-02882724dd8ba829.rmeta",
+      "libruff_python_parser-a700dfeada09004e.rmeta"
+    ],
+    "benign_edit": true,
+    "bridge": null,
+    "case": "natural",
+    "diagnostics": [],
+    "label": "natural-comment-cold-cold",
+    "parser": "cold",
+    "raw_result_sha256": "359676362d58c1dcb2a0ff9dfcfe2a025cfadbb114de0666950ed2a914c694a7",
+    "rest": "cold",
+    "source_sha256": "faa430e1c1778da17d2ed6235f0d358eb0c48d3d7fba1e267664f500935175f1",
+    "status": 0,
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "actual_compiler": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+    "actual_parser": "67918a4225fc6ceb5639d7869355ef8514140d3e4150443083a333e858724fa3",
+    "actually_opened": [
+      "libruff_db-02882724dd8ba829.rmeta",
+      "libruff_python_parser-a700dfeada09004e.rmeta"
+    ],
+    "benign_edit": true,
+    "bridge": null,
+    "case": "natural",
+    "diagnostics": [
+      {
+        "code": "E0460",
+        "message": "found possibly newer version of crate `ruff_python_parser` which `ruff_db` depends on",
+        "spans": [
+          [
+            "input.rs",
+            1,
+            1,
+            1,
+            22
+          ]
+        ]
+      },
+      {
+        "code": "E0460",
+        "message": "found possibly newer version of crate `ruff_python_ast` which `ruff_python_parser` depends on",
+        "spans": [
+          [
+            "input.rs",
+            2,
+            1,
+            2,
+            33
+          ]
+        ]
+      }
+    ],
+    "label": "natural-comment-cold-warm",
+    "parser": "warm",
+    "raw_result_sha256": "96323623c21932ecf66497adb824ec0c0855ebecc4fcc02054a26a0a97d67307",
+    "rest": "cold",
+    "source_sha256": "faa430e1c1778da17d2ed6235f0d358eb0c48d3d7fba1e267664f500935175f1",
+    "status": 1,
+    "stderr_sha256": "5841fdae9163ff5a0bbcc79bc664bbccf09661800de6c5f742ad3fabc0ef5c47"
+  },
+  {
+    "actual_compiler": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+    "actual_parser": "6b100c43eb51302bfbdf8c093cb2d522a45927cdfadc323505bbc738343597ab",
+    "actually_opened": [
+      "libruff_db-02882724dd8ba829.rmeta",
+      "libruff_python_parser-a700dfeada09004e.rmeta"
+    ],
+    "benign_edit": true,
+    "bridge": null,
+    "case": "natural",
+    "diagnostics": [
+      {
+        "code": "E0460",
+        "message": "found possibly newer version of crate `ruff_python_parser` which `ruff_db` depends on",
+        "spans": [
+          [
+            "input.rs",
+            1,
+            1,
+            1,
+            22
+          ]
+        ]
+      },
+      {
+        "code": "E0460",
+        "message": "found possibly newer version of crate `ruff_python_ast` which `ruff_python_parser` depends on",
+        "spans": [
+          [
+            "input.rs",
+            2,
+            1,
+            2,
+            33
+          ]
+        ]
+      }
+    ],
+    "label": "natural-comment-warm-cold",
+    "parser": "cold",
+    "raw_result_sha256": "a51a706c4a1cc918a2bbc6a8ab323ec41f3be672bf5eee88fe1a146f66bd238b",
+    "rest": "warm",
+    "source_sha256": "faa430e1c1778da17d2ed6235f0d358eb0c48d3d7fba1e267664f500935175f1",
+    "status": 1,
+    "stderr_sha256": "2c34733bc66d201e6b6329acb44e9c6a7b849443a036a910bb8e087d5100037e"
+  },
+  {
+    "actual_compiler": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+    "actual_parser": "67918a4225fc6ceb5639d7869355ef8514140d3e4150443083a333e858724fa3",
+    "actually_opened": [
+      "libruff_db-02882724dd8ba829.rmeta",
+      "libruff_python_parser-a700dfeada09004e.rmeta"
+    ],
+    "benign_edit": true,
+    "bridge": null,
+    "case": "natural",
+    "diagnostics": [],
+    "label": "natural-comment-warm-warm",
+    "parser": "warm",
+    "raw_result_sha256": "d7d8769f9083892104f86707c26379efbd7e06abadc4c8b8bd81338d1ec7b346",
+    "rest": "warm",
+    "source_sha256": "faa430e1c1778da17d2ed6235f0d358eb0c48d3d7fba1e267664f500935175f1",
+    "status": 0,
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]

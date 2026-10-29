@@ -1,0 +1,319 @@
+Crate info:
+name ruff_python_parser-a700dfeada09004e
+private hash ed5ba509f947560e1501137837417b2d stable_crate_id StableCrateId(7562960017637653934)
+public_hash 1986bda46169ed942fcbff87680ee3e8
+proc_macro false
+triple x86_64-unknown-linux-gnu
+edition 2024
+symbol_mangling_version V0
+required_panic_strategy None panic_in_drop_strategy Unwind
+has_global_allocator false has_alloc_error_handler false has_panic_handler false has_default_lib_allocator false
+compiler_builtins false needs_allocator false needs_panic_runtime false no_builtins false panic_runtime false profiler_runtime false
+=External Dependencies=
+1 std-2938453352845601 hash daa41833b02a22a160f7b6ad3b634d3d host_hash None kind Unconditional public
+2 core-25f2a875ad28f903 hash a63bcf86e4ccb5a9497ec5c324530c83 host_hash None kind Unconditional public
+3 alloc-5ec1bb43fdca384b hash b40d3f8a5de0db6be5399c93a6ea19e8 host_hash None kind Unconditional public
+4 compiler_builtins-a280af8ddbe14daf hash 84a667f0d1b2bcab3d2cdb42029a5838 host_hash None kind Unconditional private
+5 libc-92f687c39789ad74 hash 0da768d498799884465451cad176d7d8 host_hash None kind Unconditional public
+6 rustc_std_workspace_core-a80aade9fcd73db4 hash f7afc123662a9ae2145e108b20b45b4f host_hash None kind Unconditional public
+7 unwind-169b1770424bb908 hash 4385c94e13ad4596fdabdcac21157b2d host_hash None kind Unconditional private
+8 miniz_oxide-c54af1741d09864d hash 6735013e11f994e92507d344e788a73a host_hash None kind Unconditional private
+9 adler2-6a08ce9a9d86afb8 hash b8a9fe3bf3c7551d4377fa9b475599df host_hash None kind Unconditional private
+10 hashbrown-1e04a2372500f70b hash dffd1263ef01ac0544047ec597573b1d host_hash None kind Unconditional public
+11 rustc_std_workspace_alloc-f7c95ae66f62c024 hash 39839f362c49f6d80903cc0b1790a12b host_hash None kind Unconditional public
+12 std_detect-2583d1743b7c90d6 hash 98b6499d9d45c29540d27d35e69ca1e9 host_hash None kind Unconditional public
+13 rustc_demangle-f50af5c2136e3ec8 hash 131b5a32ca15bf72e0ff614c881b43e7 host_hash None kind Unconditional private
+14 cfg_if-1ecd1837d539b049 hash cd37e437f8d4b30cea7b5d3f9738ee66 host_hash None kind Unconditional public
+15 addr2line-a8a739e2e1b28a8c hash 3f7ec5f7225c32053067503df9cfbf9b host_hash None kind Unconditional private
+16 gimli-477763a63d9d8223 hash 11278fe4e922587e4e88fb2f34a5f004 host_hash None kind Unconditional private
+17 object-f60748dd81484aad hash b66177b626d70365e09cad3a7a3ce7a3 host_hash None kind Unconditional private
+18 memchr-eec8d6602b9c38cf hash b66e6d6295e96d235efe5f8ef2fcb7ec host_hash None kind Unconditional public
+19 panic_unwind-ef5350c88274274d hash 840c85c064b30aad66fca84d5a25cdf9 host_hash None kind Conditional private
+20 ruff_python_ast-9d95aafdbd7339f7 hash be189ebb9200f611fcdc4d5acf26b121 host_hash None kind Unconditional public
+21 ruff_text_size-1e149bf2e61ace34 hash c74e4ba7587b111d7b06ec2d7676515f host_hash None kind Unconditional public
+22 serde-db508af467226e7d hash 4c2ae017785622beccb401679d0e78c4 host_hash None kind Unconditional public
+23 serde_derive-b22e8f2cd881327f hash 34ec145f89d2546c1bca3b3295498af1 host_hash None kind MacrosOnly public
+24 serde_core-af95bd287f39b018 hash ca6f840a5ce6a4a22dec685f636e1be9 host_hash None kind Unconditional public
+25 get_size2-294400633542e773 hash 473dc7f4098e0df071f449fd0ab758d5 host_hash None kind Unconditional public
+26 get_size_derive2-81d37b36a76a07e8 hash 1bc40224c9e730579584c1ad73fdbfc9 host_hash None kind MacrosOnly public
+27 compact_str-302bfbcb84da2a35 hash 4e282d2c7a67937549540eb4cef14c59 host_hash None kind Unconditional public
+28 castaway-07ceae64718c5143 hash 4bb605717edbb1c09404424abc8b68ca host_hash None kind Unconditional public
+29 rustversion-f2598f67734cce98 hash 2d543ed3b317e20544c65348b92cf0bc host_hash None kind MacrosOnly public
+30 static_assertions-462343a38bf2d0db hash 2d022852dd608302520bd0f5b954a9ae host_hash None kind Unconditional public
+31 cfg_if-50ff34825adf09b4 hash 9e46b6f372a52215ec9edab0f07b8c49 host_hash None kind Unconditional public
+32 itoa-960ca84ea7bf8544 hash f718915e9d50a1636d3fb6e688ff482f host_hash None kind Unconditional public
+33 zmij-7af79d6b8c738aff hash bb99f26c1c2bca1fc7ea7d7aa837d2f4 host_hash None kind Unconditional public
+34 hashbrown-df2c425d13d0bd05 hash 8a433531893ddbf28514109f6ab5765a host_hash None kind Unconditional public
+35 allocator_api2-670a2c98408f6389 hash c6a6c777ecbf56e771e0739a83b4df32 host_hash None kind Unconditional public
+36 foldhash-f71c9ebaf2bd946d hash 66ccf5de7cf11c7086a0dae7af29e98c host_hash None kind Unconditional public
+37 equivalent-5c0a88eecb762d32 hash 87c48cd742bca48f8cc62f5b5d189bbe host_hash None kind Unconditional public
+38 indexmap-3993910cf366532d hash 0c71929f69a86c3bdfe11a94ff7d8b57 host_hash None kind Unconditional public
+39 ordermap-1d27cb2705632e61 hash 43c221597c45d686d146188d4d6e5048 host_hash None kind Unconditional public
+40 parking_lot-829f343c610249d5 hash f36ce4f1e759311287e52acd0356193c host_hash None kind Unconditional public
+41 lock_api-c695a24738b055d5 hash ce87fbdae6ed960e0344afe5e25395b0 host_hash None kind Unconditional public
+42 scopeguard-656cd627ea0a8379 hash e666ca8cc1da1d0100a8d0c12ad85efe host_hash None kind Unconditional public
+43 parking_lot_core-093d8c1ba778b49f hash 0a2a6e98a577906857d4385b6c9da6fb host_hash None kind Unconditional public
+44 smallvec-4b28500880bf22a3 hash 2949b505aab707f33ba96e8ef703aa1b host_hash None kind Unconditional public
+45 libc-d145f90676964e3e hash b17eca74f02d6a467e7db656042a3e3b host_hash None kind Unconditional public
+46 thin_vec-ad792e3f5954f29e hash 8f82322bb55b3f5a19a5e69743b60fea host_hash None kind Unconditional public
+47 rustc_hash-039108f0d9beb116 hash e674fa6472fa724dc4344fcad300edca host_hash None kind Unconditional public
+48 ruff_python_trivia-e4e017cc920db779 hash 9c12a980fe27392bf8d644c121af3839 host_hash None kind Unconditional public
+49 itertools-c05c442ab2ba02fe hash bff5523e79a85a138231f70b478b60ff host_hash None kind Unconditional public
+50 either-c57419d4b71c4ea6 hash b3a6a1dea251da91ba4ddc56f08551df host_hash None kind Unconditional public
+51 ruff_source_file-058844319f2ceff3 hash 266887ee076ae4d663a388347d5268cc host_hash None kind Unconditional public
+52 memchr-e8ba7e50e6d18592 hash 092475a304d42851812140b03d790eef host_hash None kind Unconditional public
+53 unicode_normalization-2f5e0a4f83cfe532 hash 841d9ce870b59e4f14b2f3288ae421c9 host_hash None kind Unconditional public
+54 tinyvec-dfb9dda6303b9ee1 hash 81d2768f311cd511c0844ce76befc807 host_hash None kind Unconditional public
+55 tinyvec_macros-24f0c7e7eb003845 hash 706a92c78e865468ee3af576c8b9b05e host_hash None kind Unconditional public
+56 unicode_ident-73fe58a661dd9796 hash e4e3ece4c0aba1595ebf4dcadbfd38bd host_hash None kind Unconditional public
+57 arrayvec-c414a391277bd28c hash 15635bc99f51ddf306d82393fa546756 host_hash None kind Unconditional public
+58 char_str-249d9c8e8581cdb0 hash 5a4c8a16f4bf43086f03654f27847e71 host_hash None kind Unconditional public
+59 ryu-d952083b3a91814b hash 293531d7c7549ea20615a1b4cd602159 host_hash None kind Unconditional public
+60 bitflags-b9005edb76c90b0c hash 863f2348f72a4695f40360942f45d954 host_hash None kind Unconditional public
+61 aho_corasick-fa6f6524f9b96747 hash 3a6baa416fdd206392e01eb4bfae5b13 host_hash None kind Unconditional public
+62 is_macro-b42b3129b264d45a hash 2e4d057498ec82278c466d1162f318da host_hash None kind MacrosOnly public
+63 salsa-bf9166a9bd036f2b hash 8276354465a9e3da55344fddfe28cbb8 host_hash None kind Unconditional public
+64 tracing-217ca9fe8aeafb95 hash 9cac121cb064c434a0f21ecef60a45a9 host_hash None kind Unconditional public
+65 tracing_core-8a6ec7d419391835 hash d40fbe6e9c7391424afceccf3ecdb624 host_hash None kind Unconditional public
+66 once_cell-83de273e0be80f9e hash 4ce6026877a5bd247b4074d33d3ae9e6 host_hash None kind Unconditional public
+67 tracing_attributes-ccb1fdaf86cde623 hash dcec04ec0a6fad6f7fc927e17f5031e1 host_hash None kind MacrosOnly public
+68 pin_project_lite-65f3914bc7845fde hash d6621b6b5b202ef342b1fc39c51dc61d host_hash None kind Unconditional public
+69 crossbeam_utils-d9790e4093867840 hash 525e44af46a612b0b66ad25b1af9a42a host_hash None kind Unconditional public
+70 intrusive_collections-3467cb3100d90a55 hash 1e314d8f807d7ccbc32fa8438b7bea5c host_hash None kind Unconditional public
+71 memoffset-e12f38c98d3f9dde hash 68e521d5bd2b8cf67c6541db91bc73d2 host_hash None kind Unconditional public
+72 portable_atomic-cd1c3474dff4fc94 hash b24658716a9e87105f30d78b6c578f0d host_hash None kind Unconditional public
+73 crossbeam_queue-e3bef6e6556405c9 hash 01330573dfd7c19777eb18364bd9f6d7 host_hash None kind Unconditional public
+74 inventory-cc06bb1f0c373f05 hash cb2055fa525787ffcd581d24f958052b host_hash None kind Unconditional public
+75 salsa_macros-7bbfbac81317e99c hash 7c29bfbd5a1084651253e2fbb1243e06 host_hash None kind MacrosOnly public
+76 typeid-7994e365470dc16e hash dd8169b2845947bf065766bd35e50fc7 host_hash None kind Unconditional public
+77 salsa_macro_rules-51370f9d67272063 hash fe4f833a30606684a8e5db6fc6848598 host_hash None kind Unconditional public
+78 boxcar-2845d0ec94a293bb hash 27b3d9640e82dd4e96188d63404cf7f3 host_hash None kind Unconditional public
+79 hashlink-a449aeaebac2440b hash 0037013b67b270b1cf5b99ea4007f959 host_hash None kind Unconditional public
+80 thiserror-e199afe2399ea4b8 hash 01c0ed3c91623d424506f41348bfa521 host_hash None kind Unconditional public
+81 thiserror_impl-7cd301b966d1f82d hash 0cf955f6f5bfa07c62f4da419c34015a host_hash None kind MacrosOnly public
+82 drop_bomb-5d14710fcab99b8a hash 130da878581b883ced7f542ce8a3947c host_hash None kind Unconditional public
+83 bstr-1774a0dc3e9209e0 hash 988d2e6d8d8c9e57599ba2b9c406ea3c host_hash None kind Unconditional public
+84 stacker-e16f602ad5be6d71 hash b726281a60f136f32b28bfe5b75ea45c host_hash None kind Unconditional public
+85 psm-08a288990358ad0b hash e9125093623635b7ea96f65121916d94 host_hash None kind Unconditional public
+86 unicode_names2-b90c7d28f01ec0a1 hash c9a55b09743a2241effc204af0416087 host_hash None kind Unconditional public
+87 phf-f0d9a05c331e55ab hash fa330db5183fac08f1e71c5831a1be4b host_hash None kind Unconditional public
+88 phf_shared-76e2adea085ac9e0 hash 16b646357bc532c3b848c04fac4105d4 host_hash None kind Unconditional public
+89 siphasher-8c0e537449ebb9d6 hash edf4f4124e8d990500a246b7518c0f4d host_hash None kind Unconditional public
+
+=Lang items=
+
+=Lib features=
+
+=Items=
+Public Mod crate {
+    Public Mod lexer {
+        Public Fn lex {}
+        Public Struct Lexer {}
+    }
+    Public Mod semantic_errors {
+        Public Trait SemanticSyntaxContext {
+            Public AssocFn future_annotations_or_stub {}
+            Public AssocFn lazy_import_context {}
+            Public AssocFn python_version {}
+            Public AssocFn source {}
+            Public AssocFn global {}
+            Public AssocFn has_nonlocal_binding {}
+            Public AssocFn in_async_context {}
+            Public AssocFn in_await_allowed_context {}
+            Public AssocFn in_yield_allowed_context {}
+            Public AssocFn in_sync_comprehension {}
+            Public AssocFn in_class_body_comprehension {}
+            Public AssocFn in_module_scope {}
+            Public AssocFn in_function_scope {}
+            Public AssocFn in_generator_context {}
+            Public AssocFn in_notebook {}
+            Public AssocFn report_semantic_error {}
+            Public AssocFn in_loop_context {}
+            Public AssocFn is_bound_parameter {}
+        }
+        Public Struct SemanticSyntaxChecker {}
+        Public Enum LazyImportKind {
+            Public Variant Import {}
+            Public Ctor(Variant, Const) ??? {}
+            Public Variant ImportFrom {}
+            Public Ctor(Variant, Const) ??? {}
+        }
+        Public Enum LazyImportContext {
+            Public Variant Function {}
+            Public Ctor(Variant, Const) ??? {}
+            Public Variant Class {}
+            Public Ctor(Variant, Const) ??? {}
+            Public Variant TryExceptBlocks {}
+            Public Ctor(Variant, Const) ??? {}
+        }
+        Public Struct SemanticSyntaxError {}
+        Public Enum SemanticSyntaxErrorKind {
+            Public Variant LazyImportNotAllowed {}
+            Public Variant LazyImportStar {}
+            Public Ctor(Variant, Const) ??? {}
+            Public Variant LazyFutureImport {}
+            Public Ctor(Variant, Const) ??? {}
+            Public Variant LateFutureImport {}
+            Public Ctor(Variant, Const) ??? {}
+            Public Variant NamedExpressionInComprehensionIterable {}
+            Public Ctor(Variant, Const) ??? {}
+            Public Variant NamedExpressionInClassBodyComprehension {}
+            Public Ctor(Variant, Const) ??? {}
+            Public Variant ReboundComprehensionVariable {}
+            Public Ctor(Variant, Const) ??? {}
+            Public Variant DuplicateTypeParameter {}
+            Public Ctor(Variant, Const) ??? {}
+            Public Variant MultipleCaseAssignment {}
+            Public Ctor(Variant, Fn) ??? {}
+            Public Variant MultipleStarredNamesInSequencePattern {}
+            Public Ctor(Variant, Const) ??? {}
+            Public Variant IrrefutableCasePattern {}
+            Public Ctor(Variant, Fn) ??? {}
+            Public Variant SingleStarredAssignment {}
+            Public Ctor(Variant, Const) ??? {}
+            Public Variant WriteToDebug {}
+            Public Ctor(Variant, Fn) ??? {}
+            Public Variant InvalidExpression {}
+            Public Ctor(Variant, Fn) ??? {}
+            Public Variant DuplicateMatchKey {}
+            Public Ctor(Variant, Fn) ??? {}
+            Public Variant DuplicateMatchClassAttribute {}
+            Public Ctor(Variant, Fn) ??? {}
+            Public Variant LoadBeforeGlobalDeclaration {}
+            Public Variant LoadBeforeNonlocalDeclaration {}
+            Public Variant InvalidStarExpression {}
+            Public Ctor(Variant, Const) ??? {}
+            Public Variant AsyncComprehensionInSyncComprehension {}
+            Public Ctor(Variant, Fn) ??? {}
+            Public Variant YieldOutsideFunction {}
+            Public Ctor(Variant, Fn) ??? {}
+            Public Variant ReturnOutsideFunction {}
+            Public Ctor(Variant, Const) ??? {}
+            Public Variant AwaitOutsideAsyncFunction {}
+            Public Ctor(Variant, Fn) ??? {}
+            Public Variant DuplicateParameter {}
+            Public Ctor(Variant, Fn) ??? {}
+            Public Variant DuplicateKeywordArgument {}
+            Public Ctor(Variant, Fn) ??? {}
+            Public Variant NonlocalDeclarationAtModuleLevel {}
+            Public Ctor(Variant, Const) ??? {}
+            Public Variant NonlocalAndGlobal {}
+            Public Ctor(Variant, Fn) ??? {}
+            Public Variant AnnotatedGlobal {}
+            Public Ctor(Variant, Fn) ??? {}
+            Public Variant AnnotatedNonlocal {}
+            Public Ctor(Variant, Fn) ??? {}
+            Public Variant YieldFromInAsyncFunction {}
+            Public Ctor(Variant, Const) ??? {}
+            Public Variant NonModuleImportStar {}
+            Public Ctor(Variant, Fn) ??? {}
+            Public Variant MultipleStarredExpressions {}
+            Public Ctor(Variant, Const) ??? {}
+            Public Variant FutureFeatureNotDefined {}
+            Public Ctor(Variant, Fn) ??? {}
+            Public Variant BreakOutsideLoop {}
+            Public Ctor(Variant, Const) ??? {}
+            Public Variant ContinueOutsideLoop {}
+            Public Ctor(Variant, Const) ??? {}
+            Public Variant GlobalParameter {}
+            Public Ctor(Variant, Fn) ??? {}
+            Public Variant NonlocalParameter {}
+            Public Ctor(Variant, Fn) ??? {}
+            Public Variant DifferentMatchPatternBindings {}
+            Public Ctor(Variant, Const) ??? {}
+            Public Variant NonlocalWithoutBinding {}
+            Public Ctor(Variant, Fn) ??? {}
+            Public Variant TypeParameterDefaultOrder {}
+            Public Ctor(Variant, Fn) ??? {}
+            Public Variant ReturnInGenerator {}
+            Public Ctor(Variant, Const) ??? {}
+        }
+        Public Enum AwaitOutsideAsyncFunctionKind {
+            Public Variant Await {}
+            Public Ctor(Variant, Const) ??? {}
+            Public Variant AsyncFor {}
+            Public Ctor(Variant, Const) ??? {}
+            Public Variant AsyncWith {}
+            Public Ctor(Variant, Const) ??? {}
+            Public Variant AsyncComprehension {}
+            Public Ctor(Variant, Const) ??? {}
+        }
+        Public Enum YieldOutsideFunctionKind {
+            Public Variant Yield {}
+            Public Ctor(Variant, Const) ??? {}
+            Public Variant YieldFrom {}
+            Public Ctor(Variant, Const) ??? {}
+            Public Variant Await {}
+            Public Ctor(Variant, Const) ??? {}
+        }
+        Public Enum InvalidExpressionPosition {
+            Public Variant TypeVarBound {}
+            Public Ctor(Variant, Const) ??? {}
+            Public Variant TypeVarDefault {}
+            Public Ctor(Variant, Const) ??? {}
+            Public Variant TypeVarTupleDefault {}
+            Public Ctor(Variant, Const) ??? {}
+            Public Variant ParamSpecDefault {}
+            Public Ctor(Variant, Const) ??? {}
+            Public Variant TypeAnnotation {}
+            Public Ctor(Variant, Const) ??? {}
+            Public Variant GenericDefinition {}
+            Public Ctor(Variant, Const) ??? {}
+            Public Variant TypeAlias {}
+            Public Ctor(Variant, Const) ??? {}
+        }
+        Public Enum InvalidExpressionKind {
+            Public Variant Yield {}
+            Public Ctor(Variant, Const) ??? {}
+            Public Variant NamedExpr {}
+            Public Ctor(Variant, Const) ??? {}
+            Public Variant Await {}
+            Public Ctor(Variant, Const) ??? {}
+        }
+        Public Enum WriteToDebugKind {
+            Public Variant Store {}
+            Public Ctor(Variant, Const) ??? {}
+            Public Variant Delete {}
+            Public Ctor(Variant, Fn) ??? {}
+        }
+    }
+    Public Mod typing {
+        Public Fn parse_type_annotation {}
+        Public Struct ParsedAnnotation {}
+        Public Enum AnnotationKind {
+            Public Variant Simple {}
+            Public Ctor(Variant, Const) ??? {}
+            Public Variant Complex {}
+            Public Ctor(Variant, Const) ??? {}
+        }
+    }
+    Public Fn parse_module {}
+    Public Fn parse_expression {}
+    Public Fn parse_expression_range {}
+    Public Fn parse_parenthesized_expression_range {}
+    Public Fn parse_string_annotation {}
+    Public Fn parse {}
+    Public Fn parse_unchecked {}
+    Public Fn parse_unchecked_source {}
+    Public Fn parse_cells_unchecked {}
+    Public Trait AsMode {
+        Public AssocFn as_mode {}
+    }
+    Public Struct Parsed {}
+    Public Enum Mode {
+        Public Variant Module {}
+        Public Ctor(Variant, Const) ??? {}
+        Public Variant Expression {}
+        Public Ctor(Variant, Const) ??? {}
+        Public Variant ParenthesizedExpression {}
+        Public Ctor(Variant, Const) ??? {}
+        Public Variant Ipython {}
+        Public Ctor(Variant, Const) ??? {}
+    }
+    Public Struct ModeParseError {}
+    Public Ctor(Struct, Const) ??? {}
+}
+
+=Target modifiers=
+Public hash: 1986bda46169ed942fcbff87680ee3e8
+
