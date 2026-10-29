@@ -116,7 +116,7 @@ impl ReadyTests {
     fn tick(&mut self, gctx: &GlobalContext, compilation: &Compilation<'_>) -> CargoResult<()> {
         self.signals.check();
         if let Some(active) = &mut self.active {
-            if let Some(status) = active.child.try_wait()? {
+            if let Some(status) = active.try_wait()? {
                 self.complete(status);
             }
         }
@@ -193,7 +193,7 @@ impl ReadyTests {
             // Keep servicing terminal suspend/resume after compilation ends.
             // A blocking wait would never resume a test stopped by Ctrl-Z.
             self.signals.check();
-            if let Some(status) = active.child.try_wait()? {
+            if let Some(status) = active.try_wait()? {
                 self.complete(status);
             } else {
                 std::thread::sleep(std::time::Duration::from_millis(10));
@@ -223,6 +223,15 @@ struct ActiveTest {
     unit: Unit,
     reaped: bool,
     group: ProcessGroup,
+}
+
+impl ActiveTest {
+    fn try_wait(&mut self) -> CargoResult<Option<ExitStatus>> {
+        let Some(status) = self.child.try_wait()? else {
+            return Ok(None);
+        };
+        Ok(self.group.finish()?.then_some(status))
+    }
 }
 
 impl Drop for ActiveTest {
