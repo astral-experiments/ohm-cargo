@@ -1,0 +1,40 @@
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/subprocess.py", line 1264, in wait
+    return self._wait(timeout=timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/subprocess.py", line 2047, in _wait
+    time.sleep(delay)
+KeyboardInterrupt
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<study>/inside.py", line 17, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "<study>/inside.py", line 15, in main
+    visit.run(arm,lane,phase,mode,Path(subject['cargo']),subject['digest']);audit.check(arm,phase)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<study>/cargo-visit.py", line 62, in run
+    res=subprocess.run(["strace","-ff","-qq","-s","262144","-e","trace=execve","-o",p/"exec",*args],cwd=ROOT,env=version,stdout=out,stderr=err,timeout=1100)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/subprocess.py", line 550, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/subprocess.py", line 1209, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/subprocess.py", line 2141, in _communicate
+    self.wait(timeout=self._remaining_time(endtime))
+  File "/usr/lib/python3.12/subprocess.py", line 1277, in wait
+    self._wait(timeout=sigint_timeout)
+  File "/usr/lib/python3.12/subprocess.py", line 2047, in _wait
+    time.sleep(delay)
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "<study>/run-qualification.py", line 10, in <module>
+    call(arm+'-'+lane,'qual',p,mode)
+  File "<study>/launch.py", line 20, in call
+    assert rc==0 and min(minimum)>=floor,(name,action,args,rc,minimum)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ('child-empty-good', 'qual', ('08-independent-empty-edited', 'historical'), -2, [48247595008])
