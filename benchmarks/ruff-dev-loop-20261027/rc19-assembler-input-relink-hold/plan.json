@@ -1,0 +1,80 @@
+{
+  "cases": [
+    {
+      "cargo": "99383612a7a0a2b58c60f8d94711e88e3f73f4fd584ff43ef8a6b04caa1fa8aa",
+      "defaults_off": false,
+      "incremental": 0,
+      "name": "unused-public-always-native-on-i0",
+      "relationship": "unused-public",
+      "role": "always-native"
+    },
+    {
+      "cargo": "99383612a7a0a2b58c60f8d94711e88e3f73f4fd584ff43ef8a6b04caa1fa8aa",
+      "defaults_off": true,
+      "incremental": 0,
+      "name": "unused-public-always-native-off-i0",
+      "relationship": "unused-public",
+      "role": "always-native"
+    },
+    {
+      "cargo": "bd4b4545142ebb259442f12af286911919b041207c26e5fd9d240cc5bc5f2ded",
+      "defaults_off": false,
+      "incremental": 0,
+      "name": "unused-public-native-guard-parent-on-i0",
+      "relationship": "unused-public",
+      "role": "native-guard-parent"
+    },
+    {
+      "cargo": "99383612a7a0a2b58c60f8d94711e88e3f73f4fd584ff43ef8a6b04caa1fa8aa",
+      "defaults_off": false,
+      "incremental": 0,
+      "name": "used-private-always-native-on-i0",
+      "relationship": "used-private",
+      "role": "always-native"
+    },
+    {
+      "cargo": "99383612a7a0a2b58c60f8d94711e88e3f73f4fd584ff43ef8a6b04caa1fa8aa",
+      "defaults_off": true,
+      "incremental": 0,
+      "name": "used-private-always-native-off-i0",
+      "relationship": "used-private",
+      "role": "always-native"
+    },
+    {
+      "cargo": "bd4b4545142ebb259442f12af286911919b041207c26e5fd9d240cc5bc5f2ded",
+      "defaults_off": false,
+      "incremental": 0,
+      "name": "used-private-native-guard-parent-on-i0",
+      "relationship": "used-private",
+      "role": "native-guard-parent"
+    },
+    {
+      "cargo": "99383612a7a0a2b58c60f8d94711e88e3f73f4fd584ff43ef8a6b04caa1fa8aa",
+      "defaults_off": false,
+      "incremental": 1,
+      "name": "unused-public-always-native-on-i1",
+      "relationship": "unused-public",
+      "role": "always-native"
+    },
+    {
+      "cargo": "99383612a7a0a2b58c60f8d94711e88e3f73f4fd584ff43ef8a6b04caa1fa8aa",
+      "defaults_off": true,
+      "incremental": 1,
+      "name": "unused-public-always-native-off-i1",
+      "relationship": "unused-public",
+      "role": "always-native"
+    }
+  ],
+  "cpu": [
+    24,
+    25,
+    26,
+    27
+  ],
+  "dirty_inputs": "real Rust library source change plus new/absent private .incbin operand",
+  "driver": "131c5342c20800923a418bfef2ca0cf194f64acec938e46ce283b31cb365a85d",
+  "prerequisite": "broader Ruff six physical cohort terminals must exist before first assembler command",
+  "rust": "5e3de497d41f4d4fa98fce3082ea43076779de5d",
+  "scope": "unclocked; compare default and disabled-default Cargo at matched actual incremental compiler settings",
+  "states": "new target and shared stores; same-state full including incremental eviction; independent empty"
+}

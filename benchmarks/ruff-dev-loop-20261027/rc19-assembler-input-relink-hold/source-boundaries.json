@@ -1,0 +1,102 @@
+{
+  "compiler/rustc_codegen_llvm/src/asm.rs": {
+    "commit": "5e3de497d41f4d4fa98fce3082ea43076779de5d",
+    "content_sha256": "1e6499de0667d0888b7787891ec38849572d8d2a006dfa22c7d441480621be37",
+    "git_blob": "d8874a56a61b2e4756c855c4e8d6f488c6065722",
+    "source_lines": {
+      "fn codegen_global_asm": [
+        411,
+        418
+      ],
+      "llvm::append_module_inline_asm": [
+        505,
+        509
+      ]
+    }
+  },
+  "compiler/rustc_codegen_llvm/src/back/lto.rs": {
+    "commit": "5e3de497d41f4d4fa98fce3082ea43076779de5d",
+    "content_sha256": "a5e361ab1e86dc8958bd677bd20270e3b4dfd2d54820bdd9d7d1293f00b165d6",
+    "git_blob": "ea37276fa7293fef401258e7f899c4fda82bba98",
+    "source_lines": {
+      "Assembly can read files with .include/.incbin": [
+        812,
+        815
+      ]
+    }
+  },
+  "compiler/rustc_interface/src/passes.rs": {
+    "commit": "5e3de497d41f4d4fa98fce3082ea43076779de5d",
+    "content_sha256": "23042a2fc269d6d1093b63674c3193133fb5b4aa2025111e8aa445fa0dad11d6",
+    "git_blob": "b72475e7e07929b1703c231f49870339d05d443b",
+    "source_lines": {
+      "let file_depinfo": [
+        627,
+        629
+      ]
+    }
+  },
+  "compiler/rustc_interface/src/queries.rs": {
+    "commit": "5e3de497d41f4d4fa98fce3082ea43076779de5d",
+    "content_sha256": "8018b4fe8bc4955239048dc9297f0dd3d21502c55f6dba9bf96450b37881dfe1",
+    "git_blob": "d5a8654a6bcc8381a52bdd880499fb9645a5ef91",
+    "source_lines": {
+      "if sess.opts.unstable_opts.no_link || sess.opts.unstable_opts.emit_rlink": [
+        160,
+        162
+      ]
+    }
+  },
+  "compiler/rustc_llvm/llvm-wrapper/PassWrapper.cpp": {
+    "commit": "5e3de497d41f4d4fa98fce3082ea43076779de5d",
+    "content_sha256": "2a86faded9c4965dc44d14da1ac689497c5f151172c68f98765b64eafafeb959",
+    "git_blob": "26bcb84d6a87dc4329a8d21685acef3fb990facc",
+    "source_lines": {
+      "extern \"C\" bool LLVMRustModuleHasInlineAsm": [
+        1569,
+        1576
+      ]
+    }
+  },
+  "src/compiler/fingerprint/mod.rs": {
+    "commit": "fd872c053bb1e9dcde722cf90a05a7cb8335dd32",
+    "content_sha256": "6b9020aa37f0f7d9224b6e1fd646232b92a48abd4d657eb4df9bdacdff6fb3b4",
+    "git_blob": "97efe9d31ff3fb7ec3205faf4250c3c481b9517c",
+    "source_lines": {
+      "pub fn can_relink_due_to_early_cutoff": [
+        835,
+        854
+      ],
+      "pub fn can_relink_unused_integration_dependency": [
+        800,
+        808
+      ]
+    }
+  },
+  "src/compiler/mod.rs": {
+    "commit": "fd872c053bb1e9dcde722cf90a05a7cb8335dd32",
+    "content_sha256": "983bdc0e280b0263c406a8b142873a581459618e253ea970930737fec15c1ef3",
+    "git_blob": "10d10fbbb20ded60eaccccf40baefa8880899506",
+    "source_lines": {
+      "let can_relink_dependencies": [
+        1468,
+        1474
+      ],
+      "let use_cached_relink": [
+        1480,
+        1482
+      ]
+    }
+  },
+  "tests/run-make/ohm-thinlto-cache/rmake.rs": {
+    "commit": "5e3de497d41f4d4fa98fce3082ea43076779de5d",
+    "content_sha256": "3ce293a21fc9bb2b7c39737e4776226e3b7c3997b63c584a25a6532c05d1d338",
+    "git_blob": "3d22123f1c29bda53593505ecd68e320f5b7d2de",
+    "source_lines": {
+      "Global assembly can consume files": [
+        87,
+        109
+      ]
+    }
+  }
+}
