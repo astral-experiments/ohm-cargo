@@ -94,6 +94,7 @@ Each new feature described below should explain how to use it.
     * [checksum-freshness](#checksum-freshness) --- When passed, the decision as to whether a crate needs to be rebuilt is made using file checksums instead of the file mtime.
     * [headstart](#headstart) --- Overlap dependency checks using early interface metadata in Ohm.
     * [ohm-clippy-seed-isolation](#ohm-clippy-seed-isolation) --- Keep bundled Clippy state out of worktree snapshots.
+    * [ohm-proc-macro-trust](#ohm-proc-macro-trust) --- Set procedural-macro trust for registry sharing and workspace artifact reuse.
     * [ohm-worktree-seeds](#ohm-worktree-seeds) --- Prepare build state for seeding new Git worktrees with Ohm.
     * [panic-abort-tests](#panic-abort-tests) --- Allows running tests with the "abort" panic strategy.
     * [host-config](#host-config) --- Allows setting `[target]`-like configuration settings for host build targets.
@@ -2119,6 +2120,35 @@ be present in the selected compiler's sysroot for automatic selection; older
 sysroots retain their existing linker. Explicitly requesting Wild when it is
 missing produces an error. This selects Wild's full linker and does not enable
 incremental linking.
+
+## ohm-proc-macro-trust
+
+Ohm defaults to `audited`, which permits registry-macro reuse only for audited
+macro and helper releases. Set `CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST=all` to trust
+all authenticated crates.io macro and helper releases, allow importing
+[worktree snapshots](#ohm-worktree-seeds) containing local-macro outputs, and
+allow build-to-check reuse through workspace procedural macros.
+
+When checking a package after a native build, Ohm can reuse compatible built
+dependencies. By default, this excludes workspace libraries whose compilation
+ran a workspace procedural macro. The `all` policy allows such libraries and
+the workspace-owned helper libraries used by their macros.
+The built-dependency reuse feature must also be active, as it is with Ohm
+defaults.
+
+The same policy is available as `-Zohm-proc-macro-trust=all` or
+`[unstable] ohm-proc-macro-trust = "all"`. Pass
+`-Zohm-proc-macro-trust=audited` to restore the default policy for a command,
+overriding environment and configuration values.
+
+The `all` policy trusts macros and their helpers not to read untracked external
+files or environment variables. If that assumption is wrong, reuse can retain
+stale generated code. For build-to-check reuse, Cargo still validates normal
+fingerprints, artifacts, and compiler provenance, and keeps local build scripts,
+nonmember path dependencies, and unsupported registry sources ineligible.
+The separate `CARGO_UNSTABLE_OHM_NATIVE_TOOL_TRUST` policy controls sharing of
+authenticated registry build scripts and native helpers; macro trust does not
+change that policy.
 
 ## ohm-worktree-seeds
 
