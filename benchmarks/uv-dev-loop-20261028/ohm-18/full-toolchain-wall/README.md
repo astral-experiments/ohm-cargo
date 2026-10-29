@@ -6,6 +6,8 @@ This archive contains the complete native timing study for Ohm 1.99.0-18 on one 
 
 ## Read or reproduce the numbers
 
+Starting dirty-page volume had little relationship with elapsed time within a command, checkout and toolchain. The rank correlations were 0.018 for check, 0.026 for build and −0.002 for test compilation. This exploratory calculation retained all 576 commands. [Host telemetry summary](starting-host-variance.json)
+
 `numeric-results.json` reports every contrast and the preregistered endpoint decisions. Its `median_saved_pct` is the median of paired per-edit percentages, with positive values indicating that the treatment finished sooner. The confidence interval uses order statistics for the population median. Every check, build and test contrast involves 24 paired timings in each checkout.
 
 Unzip the archive, then run the following command in its root with Python 3.11 or later. It checks every member digest, compares the historical and amended assignments, regenerates all 144 edit hashes, parses all 576 original Cargo logs, checks all 576 external-activity and process receipts, verifies the raw compiler/linker traces, and recalculates the exact sign and conditional randomization tests. It compares the complete result object with the sealed report before printing it.

@@ -29,6 +29,10 @@ An official Cargo regression exercises ordinary binaries and binary test harness
 
 The Ohm coordinator and all three component forks were checked for source and PR changes through the end of the full-toolchain timing run. The release was still -18. Wild #45 had closed and #46 had been rebased before these comparisons were frozen. [Release pins and draft status](ohm-source-status/at-full-stack-completion.json) · [Resolver source-overlap check](ohm-source-status/ordered-guard-source-overlap.json)
 
+### Compiler profiles
+
+During two edited builds, one rustc worker spent 341 ms and 265 ms decoding exported generic symbols from the same 489 dependencies. Both captures used the released compiler. [Raw profiles and decoder](compiler-profile/README.md)
+
 ### Earlier jobserver discovery
 
 On 32 physical cores, updating a user-facing help string in uv and running `cargo test --no-run` took a median 2.24 seconds less with the scoped Wild jobserver retry. The estimate came from 18 faster pairs out of 24. On eight cores a private predicate edit produced 16 faster pairs out of 24 and an interval that crossed zero. These measurements compare the candidate with Wild #46, using the distributed -18 Cargo, compiler and target standard library. [Release manifest](https://github.com/astral-sh/ohm/blob/ohm-1.99.0-18/toolchains/1.99.0/18.json) · [Previous Wild draft](https://github.com/astral-sh/ohm-wild/pull/46)

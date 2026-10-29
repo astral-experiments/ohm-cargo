@@ -1,0 +1,205 @@
+{
+  "check": {
+    "commands": 192,
+    "before_dirty_gt64mib": 190,
+    "before_dirty_gt1024mib": 0,
+    "zero_reads": 192,
+    "ranges": {
+      "before_dirty_mib": {
+        "median": 268.396484375,
+        "min": 2.36328125,
+        "max": 925.671875
+      },
+      "before_writeback_mib": {
+        "median": 0.0,
+        "min": 0.0,
+        "max": 0.4921875
+      },
+      "steal": {
+        "median": 0.0,
+        "min": 0.0,
+        "max": 0.0005380683346785041
+      },
+      "iowait": {
+        "median": 0.0,
+        "min": 0.0,
+        "max": 0.01849176538572667
+      },
+      "wall": {
+        "median": 2.768385256,
+        "min": 1.931173556,
+        "max": 3.631506384
+      },
+      "user": {
+        "median": 1.663373,
+        "min": 1.217898,
+        "max": 2.411937
+      },
+      "system": {
+        "median": 0.970263,
+        "min": 0.729089,
+        "max": 1.603101
+      },
+      "input_blocks": {
+        "median": 0.0,
+        "min": 0,
+        "max": 0
+      },
+      "out_blocks": {
+        "median": 145144.0,
+        "min": 142928,
+        "max": 147680
+      }
+    },
+    "rank_correlations_with_elapsed_within_cohort_and_arm": {
+      "before_dirty_mib": 0.0178,
+      "before_writeback_mib": 0.0012,
+      "before_load1": -0.0467,
+      "steal": -0.0368,
+      "iowait": -0.0018,
+      "user": 0.8603,
+      "system": 0.8265,
+      "out_blocks": -0.2254,
+      "involuntary_switches": 0.6398,
+      "minor_faults": 0.221,
+      "rank": 0.031,
+      "sequence": -0.0778
+    }
+  },
+  "build": {
+    "commands": 192,
+    "before_dirty_gt64mib": 190,
+    "before_dirty_gt1024mib": 186,
+    "zero_reads": 160,
+    "ranges": {
+      "before_dirty_mib": {
+        "median": 2795.78515625,
+        "min": 2.34375,
+        "max": 2806.875
+      },
+      "before_writeback_mib": {
+        "median": 0.0,
+        "min": 0.0,
+        "max": 259.80859375
+      },
+      "steal": {
+        "median": 0.0,
+        "min": 0.0,
+        "max": 0.0001834357516279923
+      },
+      "iowait": {
+        "median": 0.0019116458366975403,
+        "min": 8.840951286358412e-05,
+        "max": 0.037463976945244955
+      },
+      "wall": {
+        "median": 6.6182183705,
+        "min": 5.041317404,
+        "max": 13.699543439
+      },
+      "user": {
+        "median": 3.65844,
+        "min": 2.791537,
+        "max": 5.580939
+      },
+      "system": {
+        "median": 2.817711,
+        "min": 2.112179,
+        "max": 4.566043
+      },
+      "input_blocks": {
+        "median": 0.0,
+        "min": 0,
+        "max": 476496
+      },
+      "out_blocks": {
+        "median": 879176.0,
+        "min": 876728,
+        "max": 881720
+      }
+    },
+    "rank_correlations_with_elapsed_within_cohort_and_arm": {
+      "before_dirty_mib": 0.026,
+      "before_writeback_mib": 0.0436,
+      "before_load1": -0.0414,
+      "steal": -0.1256,
+      "iowait": 0.0066,
+      "user": 0.7762,
+      "system": 0.6877,
+      "input_blocks": 0.0901,
+      "out_blocks": -0.3989,
+      "involuntary_switches": 0.3971,
+      "minor_faults": 0.4393,
+      "rank": -0.0437,
+      "sequence": -0.0509
+    }
+  },
+  "test": {
+    "commands": 192,
+    "before_dirty_gt64mib": 190,
+    "before_dirty_gt1024mib": 190,
+    "zero_reads": 185,
+    "ranges": {
+      "before_dirty_mib": {
+        "median": 3842.697265625,
+        "min": 0.7734375,
+        "max": 4366.078125
+      },
+      "before_writeback_mib": {
+        "median": 0.0,
+        "min": 0.0,
+        "max": 306.28515625
+      },
+      "steal": {
+        "median": 0.0,
+        "min": 0.0,
+        "max": 0.00021285653469561516
+      },
+      "iowait": {
+        "median": 0.004971091218968998,
+        "min": 0.0,
+        "max": 0.04670613664129311
+      },
+      "wall": {
+        "median": 6.80585336,
+        "min": 5.400316392,
+        "max": 12.617076966
+      },
+      "user": {
+        "median": 6.5437975,
+        "min": 5.189979,
+        "max": 9.694469
+      },
+      "system": {
+        "median": 4.486420000000001,
+        "min": 3.617612,
+        "max": 6.644445
+      },
+      "input_blocks": {
+        "median": 0.0,
+        "min": 0,
+        "max": 200
+      },
+      "out_blocks": {
+        "median": 1299280.0,
+        "min": 1294800,
+        "max": 1303992
+      }
+    },
+    "rank_correlations_with_elapsed_within_cohort_and_arm": {
+      "before_dirty_mib": -0.0021,
+      "before_writeback_mib": -0.0605,
+      "before_load1": 0.0823,
+      "steal": -0.1133,
+      "iowait": 0.0239,
+      "user": 0.3593,
+      "system": 0.4061,
+      "input_blocks": -0.0587,
+      "out_blocks": -0.2279,
+      "involuntary_switches": 0.1341,
+      "minor_faults": 0.1751,
+      "rank": -0.0202,
+      "sequence": 0.011
+    }
+  }
+}
