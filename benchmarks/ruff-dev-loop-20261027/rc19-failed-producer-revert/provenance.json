@@ -1,0 +1,266 @@
+{
+  "portable_replays": {
+    "default": {
+      "cargo_sha256": "02a86ebd2d9e4f237b33f212102b81ed145eb77fae090d67e379cb6f1d70a573",
+      "first_success": "untouched-1",
+      "mode": "default",
+      "phases": {
+        "final-program": {
+          "errors": [],
+          "exit": 0,
+          "files": {
+            "exec.log": "e839b11ceee10b37daa9ada0730d1980e84e8d6b7a2aafb6a51c18caa21bf640",
+            "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+          },
+          "rustcs": []
+        },
+        "forced-failure": {
+          "errors": [],
+          "exit": 101,
+          "files": {
+            "exec.log": "329c2b5e0c68e0b8c37129122651d834d378bd9def0596efc28cae87e07d6ce4",
+            "stderr": "421d977a11a942d8731aa8d034851bbb39f7eb86b8ad3027d7ab7b39b801c86d",
+            "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "rustcs": [
+            [
+              "dep",
+              "lib"
+            ],
+            [
+              "app",
+              "lib"
+            ]
+          ]
+        },
+        "make-wrapper": {
+          "errors": [],
+          "exit": 0,
+          "files": {
+            "exec.log": "3b623484f185b745fc9a9e12048d2db1ea8184a42e8ccf9d9a0cfea50f11681f",
+            "stderr": "faad442d31ee5320c407cb2fc49a3b98a2e04adc7085a47351c8fa3b9c6dd85a",
+            "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "rustcs": []
+        },
+        "prime": {
+          "errors": [],
+          "exit": 0,
+          "files": {
+            "exec.log": "cd39b5129d500970e0ebc55568c8a93312600a4ee5f4d25c7e7b661b584666de",
+            "stderr": "8345e767db317dc942eaf9c49222db7a2299e3908ddd8699af3d3b9ab705f998",
+            "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "rustcs": [
+            [
+              "dep",
+              "lib"
+            ],
+            [
+              "app",
+              "lib"
+            ],
+            [
+              "app",
+              "bin"
+            ]
+          ]
+        },
+        "prime-program": {
+          "errors": [],
+          "exit": 0,
+          "files": {
+            "exec.log": "3c690d36935c3e4cb885e900430adddb07e3c00d0ca716dcdc0b3f54d1adf925",
+            "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+          },
+          "rustcs": []
+        },
+        "reverted": {
+          "errors": [
+            "E0460"
+          ],
+          "exit": 101,
+          "files": {
+            "exec.log": "21b743acaf59604c7dd92c93181798f801eeb488ee303ec46c42f74c6393ccfb",
+            "stderr": "8d8427b4b694ccc08882319357d13ed04e221416a8d15e21cd90cc121d05c4cd",
+            "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "rustcs": [
+            [
+              "dep",
+              "lib"
+            ],
+            [
+              "app",
+              "bin"
+            ]
+          ]
+        },
+        "untouched-1": {
+          "errors": [],
+          "exit": 0,
+          "files": {
+            "exec.log": "5a6d9dd8f591242035ba62a0c06dd04ec24896e15b22cbad48771d8bf401bdab",
+            "stderr": "298205d60e2b536f17426b722bba08fd561c4dc975099f095b6601515f0cbf66",
+            "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "rustcs": [
+            [
+              "app",
+              "lib"
+            ],
+            [
+              "app",
+              "bin"
+            ]
+          ]
+        }
+      },
+      "rustc_sha256": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+      "value": 1
+    },
+    "seeds-off": {
+      "cargo_sha256": "02a86ebd2d9e4f237b33f212102b81ed145eb77fae090d67e379cb6f1d70a573",
+      "first_success": "reverted",
+      "mode": "seeds-off",
+      "phases": {
+        "final-program": {
+          "errors": [],
+          "exit": 0,
+          "files": {
+            "exec.log": "918c1e381db505c25d64aa974318ad75ca09e1d36bbfd0e4b31e0b894dc0d2c4",
+            "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+          },
+          "rustcs": []
+        },
+        "forced-failure": {
+          "errors": [],
+          "exit": 101,
+          "files": {
+            "exec.log": "389f732c5728c11750fd5c347d07b2687f389534b630a666833232782b6fb1fa",
+            "stderr": "78f0596fb5a0079dbcc500fac61d007e79fa3d7b6194389cac8447e51aecdc8a",
+            "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "rustcs": [
+            [
+              "dep",
+              "lib"
+            ],
+            [
+              "app",
+              "lib"
+            ]
+          ]
+        },
+        "make-wrapper": {
+          "errors": [],
+          "exit": 0,
+          "files": {
+            "exec.log": "3ebeb3d7cdcd55dc337900ef94bd78584be0035f0eea0aabf0433ca2a55a5bf2",
+            "stderr": "559c435b7b309f45411c4a3ed4af63e0641167856af44064d69fa608d78f3283",
+            "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "rustcs": []
+        },
+        "prime": {
+          "errors": [],
+          "exit": 0,
+          "files": {
+            "exec.log": "9d5bcf55cfe71a9156a6410889c9f2c02ae2d4a44e52a5d893fb98ce283990dc",
+            "stderr": "fbf6045a2c550daad8fb6006b7e71583a016fc4778a347287354fccfeb5ff008",
+            "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "rustcs": [
+            [
+              "dep",
+              "lib"
+            ],
+            [
+              "app",
+              "lib"
+            ],
+            [
+              "app",
+              "bin"
+            ]
+          ]
+        },
+        "prime-program": {
+          "errors": [],
+          "exit": 0,
+          "files": {
+            "exec.log": "83b71c69459ada88d70815c729f588348037b4ff6763d85d2450babcf23411eb",
+            "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+          },
+          "rustcs": []
+        },
+        "reverted": {
+          "errors": [],
+          "exit": 0,
+          "files": {
+            "exec.log": "7e6e5d7b49324696624f4901b12d92c836810ce4ae5e8aefa304f19396c3caac",
+            "stderr": "0429d967dbeddd8c1cd7c95bf4b2cace1c52fb3ca2896bf037877563f32503f7",
+            "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "rustcs": [
+            [
+              "dep",
+              "lib"
+            ],
+            [
+              "app",
+              "lib"
+            ],
+            [
+              "app",
+              "bin"
+            ]
+          ]
+        }
+      },
+      "rustc_sha256": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+      "value": 1
+    }
+  },
+  "released": {
+    "archive_sha256": "629abab6a87c84bb4d910549ca96a31e437e3dc9de3039fedcbb7b50d198a5e8",
+    "images": {
+      "cargo": "02a86ebd2d9e4f237b33f212102b81ed145eb77fae090d67e379cb6f1d70a573",
+      "driver": "a7648053cbad025c1bb0bebb7009ce9e1515bdb02e8c30bef29b52a881e5b8de",
+      "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+      "rustdoc": "dc6501f27285e927df450d559108a1e5609fc11d266e628d4f1b27d416b84cef",
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+    },
+    "tag": "ohm-1.99.0-18"
+  },
+  "setup_attempts": {
+    "historic_checkout": {
+      "kind": "donor checkout lacked historical Git blobs",
+      "stderr_sha256": "2842570fc44d3c749eb56ddf017ecc6ada9f18d0e82a5bb924e9cd69b8bc91b3"
+    },
+    "recovery-B": {
+      "exec_sha256": "a95e820308c75a2ad344f67144284579938eb9774b369473526087be5b315cfa",
+      "kind": "missing device setup in the private namespace",
+      "result_sha256": "6d8fa67f3d970d686c8b9f4615763ec26b68f367151ecfc60f35f0f440232cf9"
+    },
+    "recovery-C": {
+      "exec_sha256": "246bf95daa3553f2198ecdd7d368424848c0e348c0736d28dda6cf8bc0707299",
+      "kind": "missing device setup in the private namespace",
+      "result_sha256": "ac8654ac7683fab11ee75ccd7dae15f41b70ae0d9fce8c063a195c0128c0cb55"
+    },
+    "recovery-released18": {
+      "exec_sha256": "ccb63ed492e9c30d35f6086d76329f5fc3b208c4b6de1eae361bde31e7a5b88a",
+      "kind": "missing device setup in the private namespace",
+      "result_sha256": "25d87500e2ce020ef0d489bbe20028320c4c20ff7df5f806fbcee28c4ec2750f"
+    },
+    "same_state_setup": {
+      "exec_sha256": "db445accb235dc0c3159632acbc6214a7663278a5e018639ae93fea6c705e003",
+      "kind": "nightly flag refused before compiling the test wrapper",
+      "result_sha256": "3decd8df2cee11c42875a2fef20729fe9c677dcbf1d992202058c2327b4a2ca8"
+    }
+  }
+}
