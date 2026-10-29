@@ -548,6 +548,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                 let mut immutable_units = HashMap::default();
                 if trusted_context {
                     let mut eligibility = HashMap::default();
+                    let mut custom_codegen_backends = HashMap::default();
                     for unit in metas.keys() {
                         immutable_units.insert(
                             unit.clone(),
@@ -558,6 +559,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                                 false,
                                 &untrusted_native_tool_packages,
                                 &mut eligibility,
+                                &mut custom_codegen_backends,
                             ),
                         );
                     }
@@ -715,13 +717,18 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
             .metas
             .keys()
             .any(|unit| unit.target.proc_macro() && unit.pkg.package_id().source_id().is_path());
+        let mut custom_codegen_backends = HashMap::default();
         let denied = !cache.trusted_context
             || build_runner.bcx.rustc().workspace_wrapper.is_some()
             || self.metas.keys().any(|unit| {
                 (unit.target.proc_macro()
                     && !unit.pkg.package_id().source_id().is_path()
                     && !self.is_shared_registry_unit(unit))
-                    || unit_uses_custom_codegen_backend(unit, build_runner)
+                    || unit_uses_custom_codegen_backend(
+                        unit,
+                        build_runner,
+                        &mut custom_codegen_backends,
+                    )
             });
         if !prepared && !denied && !local_proc_macro {
             return Ok(());
@@ -1575,6 +1582,7 @@ fn is_immutable_registry_unit(
     permissive_native_runtime: bool,
     untrusted_native_tool_packages: &HashSet<String>,
     eligibility: &mut HashMap<(Unit, bool, bool), bool>,
+    custom_codegen_backends: &mut HashMap<CompileKind, bool>,
 ) -> bool {
     let audited_macro_runtime = audited_macro_runtime || unit.pkg.proc_macro();
     let package_id = unit.pkg.package_id();
@@ -1621,7 +1629,7 @@ fn is_immutable_registry_unit(
                             .audited_proc_macro_packages
                             .contains(&package_id))
             })
-        && !unit_uses_custom_codegen_backend(unit, build_runner)
+        && !unit_uses_custom_codegen_backend(unit, build_runner, custom_codegen_backends)
         && build_runner.unit_deps(unit).iter().all(|dependency| {
             is_immutable_registry_unit(
                 &dependency.unit,
@@ -1630,6 +1638,7 @@ fn is_immutable_registry_unit(
                 permissive_native_runtime,
                 untrusted_native_tool_packages,
                 eligibility,
+                custom_codegen_backends,
             )
         });
     eligibility.insert(cache_key, eligible);
@@ -1639,14 +1648,22 @@ fn is_immutable_registry_unit(
 /// Rejects compiler options and target specifications that can execute opaque external code.
 ///
 /// Response files, dynamic LLVM extensions, custom targets, and linker overrides remain private.
-fn unit_uses_custom_codegen_backend(unit: &Unit, build_runner: &BuildRunner<'_, '_>) -> bool {
+fn unit_uses_custom_codegen_backend(
+    unit: &Unit,
+    build_runner: &BuildRunner<'_, '_>,
+    custom_codegen_backends: &mut HashMap<CompileKind, bool>,
+) -> bool {
     let host_sysroot = &build_runner.bcx.target_data.info(CompileKind::Host).sysroot;
     let target_sysroot = &build_runner.bcx.target_data.info(unit.kind).sysroot;
     let host = build_runner.bcx.host_triple();
     if unit.profile.codegen_backend.is_some()
-        || sysroot_has_custom_codegen_backends(host_sysroot, host.as_str())
+        || *custom_codegen_backends
+            .entry(CompileKind::Host)
+            .or_insert_with(|| sysroot_has_custom_codegen_backends(host_sysroot, host.as_str()))
         || (target_sysroot != host_sysroot
-            && sysroot_has_custom_codegen_backends(target_sysroot, host.as_str()))
+            && *custom_codegen_backends.entry(unit.kind).or_insert_with(|| {
+                sysroot_has_custom_codegen_backends(target_sysroot, host.as_str())
+            }))
     {
         return true;
     }
