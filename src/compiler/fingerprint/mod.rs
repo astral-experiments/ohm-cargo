@@ -668,7 +668,8 @@ fn previous_dependency_changes(fingerprint: &Fingerprint) -> PreviousDependencyC
 
 /// An unchanged crate-local API hash cannot hide changed metadata inherited
 /// from a dependency, such as a newly available foreign trait implementation.
-fn has_changed_metadata_dependency(fingerprint: &Fingerprint) -> bool {
+/// A pipelined check can finish before its dependency finalizes that metadata.
+fn metadata_dependency_may_have_changed(fingerprint: &Fingerprint) -> bool {
     fingerprint
         .previously_changed_metadata_dependency
         .load(Ordering::Acquire)
@@ -676,7 +677,7 @@ fn has_changed_metadata_dependency(fingerprint: &Fingerprint) -> bool {
             dependency.only_requires_rmeta
                 && matches!(
                     dependency.fingerprint.build_state(),
-                    BuildState::BuiltChanged
+                    BuildState::Pending | BuildState::BuiltChanged
                 )
         })
 }
@@ -1198,7 +1199,7 @@ pub fn prepare_target(
 
             let unchanged_public_api_hash =
                 old_public_api_hash.as_ref() == Some(&new_public_api_hash);
-            if unchanged_public_api_hash && !has_changed_metadata_dependency(fingerprint) {
+            if unchanged_public_api_hash && !metadata_dependency_may_have_changed(fingerprint) {
                 preserve_metadata_generation(fingerprint, previous_metadata.as_ref());
                 *fingerprint.fs_status.lock().unwrap() = FsStatus::OutputUnchanged {
                     unit: fingerprint.index,
@@ -1212,7 +1213,7 @@ pub fn prepare_target(
                 fingerprint.set_build_state(BuildState::BuiltChanged);
                 if unchanged_public_api_hash {
                     info!(
-                        "early_cutoff: unit {:?} built with unchanged public API hash {}, but metadata dependency changed; dependents must rebuild",
+                        "early_cutoff: unit {:?} built with unchanged public API hash {}, but metadata dependency may have changed; dependents must rebuild",
                         fingerprint.index, new_public_api_hash
                     );
                 } else {
@@ -4052,12 +4053,14 @@ mod early_cutoff_tests {
     }
 
     #[test]
-    fn changed_metadata_dependency_propagates_through_unchanged_public_api() {
-        let dependency = make_fingerprint(FsStatus::Stale, BuildState::BuiltChanged);
-        let mut fingerprint = make_stale_due_to_dep();
-        fingerprint.deps.push(make_dep_fingerprint(dependency));
+    fn changed_or_pending_metadata_dependency_propagates_through_unchanged_public_api() {
+        for state in [BuildState::BuiltChanged, BuildState::Pending] {
+            let dependency = make_fingerprint(FsStatus::Stale, state);
+            let mut fingerprint = make_stale_due_to_dep();
+            fingerprint.deps.push(make_dep_fingerprint(dependency));
 
-        assert!(has_changed_metadata_dependency(&fingerprint));
+            assert!(metadata_dependency_may_have_changed(&fingerprint));
+        }
     }
 
     #[test]
@@ -4075,7 +4078,7 @@ mod early_cutoff_tests {
             .previously_changed_metadata_dependency
             .store(true, Ordering::Release);
 
-        assert!(has_changed_metadata_dependency(&fingerprint));
+        assert!(metadata_dependency_may_have_changed(&fingerprint));
     }
 
     #[test]
@@ -4086,7 +4089,7 @@ mod early_cutoff_tests {
         let mut fingerprint = make_stale_due_to_dep();
         fingerprint.deps.push(dependency);
 
-        assert!(!has_changed_metadata_dependency(&fingerprint));
+        assert!(!metadata_dependency_may_have_changed(&fingerprint));
     }
 
     #[test]
@@ -4095,7 +4098,7 @@ mod early_cutoff_tests {
         let mut fingerprint = make_stale_due_to_dep();
         fingerprint.deps.push(make_dep_fingerprint(dependency));
 
-        assert!(!has_changed_metadata_dependency(&fingerprint));
+        assert!(!metadata_dependency_may_have_changed(&fingerprint));
     }
 
     #[test]
