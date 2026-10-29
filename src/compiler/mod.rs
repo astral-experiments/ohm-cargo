@@ -888,7 +888,12 @@ fn has_opaque_integration_linker_flags(build_runner: &BuildRunner<'_, '_>, unit:
                 .flatten()
                 .map(String::as_str),
         )
-        .chain(unit.rustflags.iter().map(String::as_str));
+        .chain(
+            build_runner
+                .rustflags_for_cache_admission(unit)
+                .iter()
+                .map(String::as_str),
+        );
     let mut arguments = arguments.peekable();
 
     while let Some(argument) = arguments.next() {

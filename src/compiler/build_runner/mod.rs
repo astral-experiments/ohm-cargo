@@ -1676,12 +1676,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             .extra_args_for(unit)
             .map(Vec::as_slice)
             .unwrap_or_default();
-        let target_info = self.bcx.target_data.info(unit.kind);
-        let rustflags = compilation_files::rustflags_for_cache_admission(
-            &unit.rustflags,
-            &target_info.rustflags,
-            target_info.ohm_linker_flags,
-        );
+        let rustflags = self.rustflags_for_cache_admission(unit);
         let arguments = unit
             .pkg
             .manifest()
@@ -1697,6 +1692,18 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             host_triple.as_str(),
             unit_sysroot,
             arguments,
+        )
+    }
+
+    /// Omits only the verified bundled-linker suffix when inspecting reuse eligibility.
+    ///
+    /// The complete flags still participate in fingerprints and compiler invocations.
+    pub(super) fn rustflags_for_cache_admission<'u>(&self, unit: &'u Unit) -> &'u [String] {
+        let target_info = self.bcx.target_data.info(unit.kind);
+        compilation_files::rustflags_for_cache_admission(
+            &unit.rustflags,
+            &target_info.rustflags,
+            target_info.ohm_linker_flags,
         )
     }
 

@@ -5214,6 +5214,11 @@ fn relink_only_wrapper() -> PathBuf {
                 fn strip_flags(args: &[OsString]) -> Vec<OsString> {
                     let mut stripped = Vec::new();
                     let mut index = 0;
+                    let mock_wild_search = env::var("UNUSED_INTEGRATION_MOCK_SYSROOT")
+                        .ok()
+                        .map(|sysroot| format!(
+                            "-Clink-arg=-B{sysroot}/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld"
+                        ));
                     while index < args.len() {
                         if matches!(
                             args[index].to_str(),
@@ -5233,6 +5238,15 @@ fn relink_only_wrapper() -> PathBuf {
                             )
                         {
                             index += 2;
+                        } else if mock_wild_search.is_some()
+                            && (args[index].to_str() == mock_wild_search.as_deref()
+                                || matches!(args[index].to_str(), Some(
+                                    "-Clinker-features=-lld"
+                                        | "-Clink-self-contained=-linker"
+                                        | "-Clink-arg=-fuse-ld=bfd"
+                                )))
+                        {
+                            index += 1;
                         } else if let Some(argument) = args[index].to_str()
                             && argument.starts_with("--json=")
                             && argument.contains("unused-externs-transparent")
@@ -5264,6 +5278,15 @@ fn relink_only_wrapper() -> PathBuf {
                     if crate_name == "___" {
                         return;
                     }
+                    if crate_name == "integration" && kind == "compile-link"
+                        && let Ok(sysroot) = env::var("UNUSED_INTEGRATION_MOCK_SYSROOT")
+                    {
+                        let search = format!(
+                            "-Clink-arg=-B{sysroot}/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld"
+                        );
+                        assert!(args.iter().any(|arg| arg == search.as_str()));
+                        assert!(args.iter().any(|arg| arg == "-Clink-arg=-fuse-ld=bfd"));
+                    }
                     let path = env::var_os("RELINK_WRAPPER_LOG")
                         .expect("RELINK_WRAPPER_LOG should be set");
                     let mut log = OpenOptions::new()
@@ -5283,7 +5306,21 @@ fn relink_only_wrapper() -> PathBuf {
                     {
                         command.arg("--force-warn=unused_crate_dependencies");
                     }
-                    command.output().expect("rustc should run")
+                    let mut output = command.output().expect("rustc should run");
+                    if args.iter().any(|arg| arg == "--print=sysroot")
+                        && let Ok(mock_sysroot) = env::var("UNUSED_INTEGRATION_MOCK_SYSROOT")
+                    {
+                        let real_sysroot = env::var("UNUSED_INTEGRATION_REAL_SYSROOT")
+                            .expect("real sysroot for bundled-linker fixture");
+                        output.stdout = (String::from_utf8(output.stdout)
+                            .expect("UTF-8 compiler query output")
+                            .lines()
+                            .map(|line| if line == real_sysroot { mock_sysroot.as_str() } else { line })
+                            .collect::<Vec<_>>()
+                            .join("\n") + "\n")
+                            .into_bytes();
+                    }
+                    output
                 }
 
                 fn emit(output: Output, args: &[OsString]) -> ! {
@@ -5769,14 +5806,36 @@ fn unused_package_library_does_not_relink_integration_test() {
         )
         .build();
     let log = p.root().join("relink-wrapper.log");
+    // Exercise automatic Wild admission even when the test compiler has no bundled linker.
+    // The wrapper reports this sysroot to Cargo, then invokes the stock compiler's linker.
+    let mock_sysroot = cfg!(all(
+        target_os = "linux",
+        target_arch = "x86_64",
+        target_env = "gnu"
+    ))
+    .then(|| p.root().join("mock-sysroot"));
+    if let Some(sysroot) = &mock_sysroot {
+        let linker = sysroot.join("lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld/ld.bfd");
+        fs::create_dir_all(linker.parent().unwrap()).unwrap();
+        fs::write(linker, "fixture").unwrap();
+    }
+    let run = |expected| {
+        let mut command = p.cargo("-Zohm-defaults test --test integration -j2");
+        command
+            .masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("RUSTC_WRAPPER", &wrapper)
+            .env("RELINK_WRAPPER_LOG", &log)
+            .env("UNUSED_INTEGRATION_DEPENDENCY_PROOF", "1")
+            .env("UNUSED_INTEGRATION_EXPECTED", expected);
+        if let Some(sysroot) = &mock_sysroot {
+            command
+                .env("UNUSED_INTEGRATION_MOCK_SYSROOT", sysroot)
+                .env("UNUSED_INTEGRATION_REAL_SYSROOT", paths::sysroot());
+        }
+        command.run();
+    };
 
-    p.cargo("-Zohm-defaults test --test integration -j2")
-        .masquerade_as_nightly_cargo(&["ohm-defaults"])
-        .env("RUSTC_WRAPPER", &wrapper)
-        .env("RELINK_WRAPPER_LOG", &log)
-        .env("UNUSED_INTEGRATION_DEPENDENCY_PROOF", "1")
-        .env("UNUSED_INTEGRATION_EXPECTED", "1")
-        .run();
+    run("1");
 
     let deps = p.root().join("target/debug/deps");
     let manifest = fs::read_dir(&deps)
@@ -5805,13 +5864,7 @@ fn unused_package_library_does_not_relink_integration_test() {
         sleep_ms(1000);
     }
     p.change_file("src/lib.rs", "#[inline(never)] pub fn value() -> i32 { 2 }");
-    p.cargo("-Zohm-defaults test --test integration -j2")
-        .masquerade_as_nightly_cargo(&["ohm-defaults"])
-        .env("RUSTC_WRAPPER", &wrapper)
-        .env("RELINK_WRAPPER_LOG", &log)
-        .env("UNUSED_INTEGRATION_DEPENDENCY_PROOF", "1")
-        .env("UNUSED_INTEGRATION_EXPECTED", "2")
-        .run();
+    run("2");
 
     let invocations = fs::read_to_string(&log).expect("wrapper log");
     assert!(invocations.lines().any(|line| line == "compile:app"));
@@ -5841,13 +5894,7 @@ fn unused_package_library_does_not_relink_integration_test() {
         sleep_ms(1000);
     }
     p.change_file("src/lib.rs", "#[inline(never)] pub fn value() -> i32 { 3 }");
-    p.cargo("-Zohm-defaults test --test integration -j2")
-        .masquerade_as_nightly_cargo(&["ohm-defaults"])
-        .env("RUSTC_WRAPPER", &wrapper)
-        .env("RELINK_WRAPPER_LOG", &log)
-        .env("UNUSED_INTEGRATION_DEPENDENCY_PROOF", "1")
-        .env("UNUSED_INTEGRATION_EXPECTED", "3")
-        .run();
+    run("3");
     let invocations = fs::read_to_string(&log).expect("wrapper log");
     assert!(
         invocations.lines().any(|line| line == "link:integration"),
@@ -5872,13 +5919,7 @@ fn unused_package_library_does_not_relink_integration_test() {
             }
         "#,
     );
-    p.cargo("-Zohm-defaults test --test integration -j2")
-        .masquerade_as_nightly_cargo(&["ohm-defaults"])
-        .env("RUSTC_WRAPPER", &wrapper)
-        .env("RELINK_WRAPPER_LOG", &log)
-        .env("UNUSED_INTEGRATION_DEPENDENCY_PROOF", "1")
-        .env("UNUSED_INTEGRATION_EXPECTED", "3")
-        .run();
+    run("3");
     let invocations = fs::read_to_string(&log).expect("wrapper log");
     assert!(
         invocations
@@ -5901,13 +5942,7 @@ fn unused_package_library_does_not_relink_integration_test() {
         sleep_ms(1000);
     }
     p.change_file("src/lib.rs", "#[inline(never)] pub fn value() -> i32 { 4 }");
-    p.cargo("-Zohm-defaults test --test integration -j2")
-        .masquerade_as_nightly_cargo(&["ohm-defaults"])
-        .env("RUSTC_WRAPPER", &wrapper)
-        .env("RELINK_WRAPPER_LOG", &log)
-        .env("UNUSED_INTEGRATION_DEPENDENCY_PROOF", "1")
-        .env("UNUSED_INTEGRATION_EXPECTED", "4")
-        .run();
+    run("4");
     let invocations = fs::read_to_string(&log).expect("wrapper log");
     assert!(
         invocations.lines().any(|line| line == "link:integration"),
