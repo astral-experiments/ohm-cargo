@@ -1,0 +1,25 @@
+
+thread 'workspaces::workspace_resolve_cache_ignores_execution_only_environment' (795848) panicked at tests/testsuite/workspaces.rs:3078:10:
+
+test failed running `<TEST_TARGET>/debug/cargo check --package selected`
+error: expected not to find:
+[..]reusing the cached workspace resolution[..]
+
+but found in output:
+   0.125605679s DEBUG resolve_with_registry:resolve_with_previous:register_patch_entries: cargo::ops::resolve: return=Ok({})
+   0.125947357s DEBUG resolve_with_registry:resolve_with_previous: cargo::ops::resolve: attempting to prefer external v0.1.0 (<TEST_TARGET>/tmp/a2425af48135d022/cit/testsuite/workspaces/workspace_resolve_cache_ignores_execution_only_environment/foo/external)
+   0.126087851s DEBUG resolve_with_registry:resolve_with_previous: cargo::ops::resolve: attempting to prefer other v0.1.0 (<TEST_TARGET>/tmp/a2425af48135d022/cit/testsuite/workspaces/workspace_resolve_cache_ignores_execution_only_environment/foo/other)
+   0.126189581s DEBUG resolve_with_registry:resolve_with_previous: cargo::ops::resolve: attempting to prefer selected v0.1.0 (<TEST_TARGET>/tmp/a2425af48135d022/cit/testsuite/workspaces/workspace_resolve_cache_ignores_execution_only_environment/foo/selected)
+   0.135955233s DEBUG resolve_with_previous: cargo::ops::resolve: attempting to prefer external v0.1.0 (<TEST_TARGET>/tmp/a2425af48135d022/cit/testsuite/workspaces/workspace_resolve_cache_ignores_execution_only_environment/foo/external)
+   0.136119770s DEBUG resolve_with_previous: cargo::ops::resolve: attempting to prefer other v0.1.0 (<TEST_TARGET>/tmp/a2425af48135d022/cit/testsuite/workspaces/workspace_resolve_cache_ignores_execution_only_environment/foo/other)
+   0.136223185s DEBUG resolve_with_previous: cargo::ops::resolve: attempting to prefer selected v0.1.0 (<TEST_TARGET>/tmp/a2425af48135d022/cit/testsuite/workspaces/workspace_resolve_cache_ignores_execution_only_environment/foo/selected)
+   0.149969170s DEBUG cargo::ops::resolve: reusing the cached workspace resolution
+   0.150475076s DEBUG resolve_with_previous:register_patch_entries: cargo::ops::resolve: return=Ok({})
+   0.150697713s DEBUG resolve_with_previous: cargo::ops::resolve: attempting to prefer external v0.1.0 (<TEST_TARGET>/tmp/a2425af48135d022/cit/testsuite/workspaces/workspace_resolve_cache_ignores_execution_only_environment/foo/external)
+   0.150805734s DEBUG resolve_with_previous: cargo::ops::resolve: attempting to prefer other v0.1.0 (<TEST_TARGET>/tmp/a2425af48135d022/cit/testsuite/workspaces/workspace_resolve_cache_ignores_execution_only_environment/foo/other)
+   0.150886194s DEBUG resolve_with_previous: cargo::ops::resolve: attempting to prefer selected v0.1.0 (<TEST_TARGET>/tmp/a2425af48135d022/cit/testsuite/workspaces/workspace_resolve_cache_ignores_execution_only_environment/foo/selected)
+    Checking external v0.1.0 (<TEST_TARGET>/tmp/a2425af48135d022/cit/testsuite/workspaces/workspace_resolve_cache_ignores_execution_only_environment/foo/external)
+    Checking selected v0.1.0 (<TEST_TARGET>/tmp/a2425af48135d022/cit/testsuite/workspaces/workspace_resolve_cache_ignores_execution_only_environment/foo/selected)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.52s
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

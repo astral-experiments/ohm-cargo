@@ -1,0 +1,63 @@
+diff --git a/src/compiler/fingerprint/mod.rs b/src/compiler/fingerprint/mod.rs
+index 3fb2defcb7..f562411470 100644
+--- a/src/compiler/fingerprint/mod.rs
++++ b/src/compiler/fingerprint/mod.rs
+@@ -4064,6 +4064,29 @@ mod early_cutoff_tests {
+         );
+     }
+ 
++    #[cfg(unix)]
++    #[test]
++    fn public_api_hash_replaces_a_symlink() {
++        let dir = tempfile::tempdir().unwrap();
++        let target = dir.path().join("target");
++        let sidecar = dir.path().join("unit.public-api-hash");
++        fs::write(&target, "keep").unwrap();
++        std::os::unix::fs::symlink(&target, &sidecar).unwrap();
++        let mut fingerprint = Fingerprint::new();
++        fingerprint.rustc = 1;
++        let hash = PublicApiHash::new(1, "11111111111111111111111111111111").unwrap();
++
++        write_fingerprint_and_public_api_hash(
++            &dir.path().join("unit"),
++            &fingerprint,
++            &sidecar,
++            PublicApiHashUpdate::Write(hash),
++        )
++        .unwrap();
++        assert_eq!(fs::read(target).unwrap(), b"keep");
++        assert!(read_public_api_hash(&sidecar).is_some());
++    }
++
+     #[test]
+     fn committed_short_hash_only_validates_one_current_comparison() {
+         let temp = tempfile::tempdir().unwrap();
+diff --git a/tests/testsuite/workspaces.rs b/tests/testsuite/workspaces.rs
+index d15cae4bd1..b956b50ef3 100644
+--- a/tests/testsuite/workspaces.rs
++++ b/tests/testsuite/workspaces.rs
+@@ -3036,6 +3036,24 @@ fn workspace_resolve_cache_reuses_unchanged_workspace() {
+         .run();
+ }
+ 
++#[cfg(unix)]
++#[cargo_test]
++fn workspace_resolve_cache_replaces_a_symlink() {
++    let project = workspace_resolve_cache_project();
++    let target = project.root().join("sentinel");
++    let cache = project.build_dir().join(".cargo-resolve-cache-v1");
++    fs::create_dir_all(project.build_dir()).unwrap();
++    fs::write(&target, "keep").unwrap();
++    std::os::unix::fs::symlink(&target, &cache).unwrap();
++
++    workspace_resolve_cache_command(&project, "check --package selected").run();
++    assert_eq!(fs::read(target).unwrap(), b"keep");
++    assert!(!cache.is_symlink());
++    workspace_resolve_cache_command(&project, "check --package selected")
++        .with_stderr_contains(WORKSPACE_RESOLVE_CACHE_HIT)
++        .run();
++}
++
+ #[cargo_test]
+ fn workspace_resolve_cache_ignores_execution_only_environment() {
+     let project = workspace_resolve_cache_project();

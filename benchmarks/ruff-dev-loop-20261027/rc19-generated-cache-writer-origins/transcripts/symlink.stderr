@@ -1,0 +1,6 @@
+
+thread 'workspaces::workspace_resolve_cache_replaces_a_symlink' (795847) panicked at tests/testsuite/workspaces.rs:3050:5:
+assertion `left == right` failed
+  left: [97, 51, 101, 53, 102, 52, 51, 100, 101, 101, 97, 97, 100, 100, 100, 101]
+ right: [107, 101, 101, 112]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

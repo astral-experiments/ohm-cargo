@@ -1,0 +1,147 @@
+{
+  "fixed_source": "8dc33c9cc641e2b641c5b8e7075652a3e9e1f70b",
+  "fixed_tree": "feecb81aec0dd64d4ecb8622729605f01177c3f8",
+  "initial_worktree_setup": {
+    "exit": 101,
+    "initial_raw_stderr_sha256": "a3053802f03592508d3e014f17133095371b813c551723ac4ed1d27a7b0ae722",
+    "reason": "worktree refused a destination target overlapping the source storage before creating it",
+    "separate_setup_target_exit": 0
+  },
+  "integrations": [
+    {
+      "actual_complete_trace_sha256": "cf862df2ecce094fbb7ff8302b5857b5d8dda6884fc6be3020b668ac87f81eef",
+      "bound_cli_readonly": true,
+      "cli_sha256": "5cc0517d944c86d10dd8595ee8941f33ad5b15183fd56493cb799e3222b44021",
+      "host_visible_cli_before_after_sha256": "2dacb287c33abbef1e46b9486221ba07e0885c5d05c7126481f2e8d0ed7eea2e",
+      "label": "symlink",
+      "name": "workspaces::workspace_resolve_cache_replaces_a_symlink",
+      "namespace_isolated": true,
+      "private_scratch": true,
+      "raw_case_sha256": "79d5229127c8f4e155956afebddb53bed4254feae308143dcaa4466c79e0403e",
+      "raw_stderr_sha256": "096c5495fe8d055dcc86ff8a0d117b2603a37733256a14cf7ed4b7e889ff89a8",
+      "raw_stdout_sha256": "571558270be92172ecc1de728b4e7d3c406c906fd335fffd2410fa970b3d338e",
+      "real_child_commands": [
+        {
+          "actual_exec_line_sha256": "7f65b8611bb8e775c49c35cccb201c8ce48b954684f56bb7676938c36c458073",
+          "actual_exit_line_sha256": "b0c031c7155b01d64a7d79858171b5adece10a6e7ff5600fa5e54f17a3600ca1",
+          "command": [
+            "cargo",
+            "check",
+            "--package",
+            "selected"
+          ],
+          "exit": 0
+        }
+      ],
+      "result": 101,
+      "rustc_sha256": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+      "test_data": {
+        "assertion_saw_exact_target_bytes": true,
+        "sentinel_after": "a3e5f43deeaaddde",
+        "sentinel_before": "keep",
+        "symlink_remained": true
+      },
+      "test_harness_sha256": "f94645354b07cb78bce083cd8ef1806e4fd0ae95c5368849fe6658d9c0687765"
+    },
+    {
+      "actual_complete_trace_sha256": "74c765849a2227cda15e19f7093695db23c46cd6e4b2e1555c6818126d5a22e2",
+      "bound_cli_readonly": true,
+      "cli_sha256": "5cc0517d944c86d10dd8595ee8941f33ad5b15183fd56493cb799e3222b44021",
+      "host_visible_cli_before_after_sha256": "2dacb287c33abbef1e46b9486221ba07e0885c5d05c7126481f2e8d0ed7eea2e",
+      "label": "neighbor",
+      "name": "workspaces::workspace_resolve_cache_ignores_execution_only_environment",
+      "namespace_isolated": true,
+      "private_scratch": true,
+      "raw_case_sha256": "e9426731d55a1520f2768cc1c66d345a4f3216c22ceb5f097d080e5022bb7f90",
+      "raw_stderr_sha256": "f3a68a812eebe824803a2c2099b829880ba8314b085ff9a9ad106037632b526b",
+      "raw_stdout_sha256": "3733fb89a6c88fce506b815f9261c8fc6bc970ffd7eb5c4d700c426eda92307f",
+      "real_child_commands": [
+        {
+          "actual_exec_line_sha256": "e226de196f35b0ca184c08fc067bdf29157d30a2948c9d6ae612f84e8f11890c",
+          "actual_exit_line_sha256": "89859452b50840bd40237bacf5c534c509204b6e46e5d41f30370e927d80b019",
+          "command": [
+            "cargo",
+            "check",
+            "--package",
+            "selected"
+          ],
+          "exit": 0
+        },
+        {
+          "actual_exec_line_sha256": "0efdac9b3c5e0ed9c144e11d642509fc0f7daa1e0d221494c4dce1fa37e17524",
+          "actual_exit_line_sha256": "979c75bc028d28452bc2da276a544e6dfc6409d4d2c1a841d28f7c23d9a7f218",
+          "command": [
+            "cargo",
+            "check",
+            "--package",
+            "selected"
+          ],
+          "exit": 0
+        },
+        {
+          "actual_exec_line_sha256": "d11f99a00fb6cdf6f8eaa4df557b8dddaf5ad88649a5fee71d32ffb175306d18",
+          "actual_exit_line_sha256": "5fd806fa91ad2fbdda0b2060e8dc24f5869f757b07be0f5cc678ad1118bb9f3a",
+          "command": [
+            "cargo",
+            "check",
+            "--package",
+            "selected"
+          ],
+          "exit": 0
+        }
+      ],
+      "result": 101,
+      "rustc_sha256": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+      "test_data": {
+        "executed_full_commands": 3,
+        "third_check_unexpected_resolver_hit": true,
+        "third_command_both_crates_checked": true
+      },
+      "test_harness_sha256": "f94645354b07cb78bce083cd8ef1806e4fd0ae95c5368849fe6658d9c0687765"
+    }
+  ],
+  "parent_build_record_sha256": "cfcce32f9ca4e446249eb22d0bcf5ab3d1af2b3b189c894a854a1b23ed5087a3",
+  "parent_cli": {
+    "active_features": [
+      "default",
+      "http-transport-curl",
+      "ohm-defaults"
+    ],
+    "bytes": 117269424,
+    "noninstrumented": true,
+    "sha256": "5cc0517d944c86d10dd8595ee8941f33ad5b15183fd56493cb799e3222b44021",
+    "version": "cargo 1.99.0 (5394ce881 2026-10-29)\nrelease: 1.99.0\ncommit-hash: 5394ce8817e224971230b80a9066cc28d504ff94\ncommit-date: 2026-10-29\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.0.13)\nos: Ubuntu 24.4.0 (noble) [64-bit]\n"
+  },
+  "parent_source": "5394ce8817e224971230b80a9066cc28d504ff94",
+  "parent_tree": "3157f963855bcd1cdc9c5512611aaf81bdf8b984",
+  "source_status_as_of": "2026-10-29 UTC",
+  "test_only_patch_sha256": "7cd0b9da09d7b6b2aafd029e8f9b9638931ba4bb050ae02dfb76f661db96b6c7",
+  "unit": {
+    "after": "{\"version\":1,\"value\":\"11111111111111111111111111111111\"}",
+    "argv": [
+      "cargo",
+      "+ohm",
+      "test",
+      "--locked",
+      "--offline",
+      "-j4",
+      "-p",
+      "cargo",
+      "--lib",
+      "--features",
+      "ohm-defaults",
+      "compiler::fingerprint::early_cutoff_tests::public_api_hash_replaces_a_symlink",
+      "--",
+      "--exact"
+    ],
+    "before": "keep",
+    "exit": 101,
+    "floor_bytes": 48318382080,
+    "minimum_observed_free_bytes": 53830217728,
+    "name": "compiler::fingerprint::early_cutoff_tests::public_api_hash_replaces_a_symlink",
+    "original_record_sha256": "9bdef98b2ad707cdc8b903400201401e085c9468681c1ea424812dc407ae7e4b",
+    "raw_stderr_sha256": "3a49227b55749b6166d6bc7257c76fad0177b0270c3502574b56f2e316b1b566",
+    "raw_stdout_sha256": "cb791b1ac95da6d89883d564db81c5ce451e5e197502383a42fc5affb6e14910",
+    "summary": "test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 405 filtered out; finished in 0.00s"
+  }
+}
