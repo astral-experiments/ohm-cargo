@@ -1,0 +1,148 @@
+{
+  "active_compilers": [],
+  "affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31
+  ],
+  "boot_id": "19971773-1777-4079-afe0-57cdd9c8aa5c",
+  "cgroup_limits": [
+    {
+      "memory.high": "max",
+      "memory.max": "max",
+      "memory.swap.max": "max"
+    },
+    {
+      "memory.high": "max",
+      "memory.max": "max",
+      "memory.swap.max": "max"
+    },
+    {
+      "memory.high": "max",
+      "memory.max": "max",
+      "memory.swap.max": "max"
+    },
+    {}
+  ],
+  "cpu": {
+    "count": 32,
+    "family": 25,
+    "model": "AMD EPYC-Milan Processor",
+    "model_id": 1,
+    "numa_nodes": 1,
+    "os_release": "7.0.0-38-generic",
+    "sockets": 1,
+    "stepping": 1,
+    "threads_per_core": 1
+  },
+  "gid": 1000,
+  "hardware_name": "Milan",
+  "load1": 0.41943359375,
+  "memory_bytes": {
+    "MemAvailable": 54551752704,
+    "MemTotal": 105464967168,
+    "Shmem": 46043557888,
+    "SwapFree": 0,
+    "SwapTotal": 0
+  },
+  "mounts": {
+    "home": {
+      "filesystem": "ext4",
+      "free": 3540508672,
+      "options": "rw,relatime,discard,errors=remount-ro,commit=30",
+      "size": 622945865728,
+      "source": "/dev/vda1"
+    },
+    "scratch": {
+      "filesystem": "ext4",
+      "free": 4194222080,
+      "options": "rw,noatime",
+      "size": 337059803136,
+      "source": "/dev/vdc"
+    },
+    "shm": {
+      "filesystem": "tmpfs",
+      "free": 6707109888,
+      "options": "rw,nosuid,nodev,inode64",
+      "size": 52732481536,
+      "source": "tmpfs"
+    }
+  },
+  "native_executables": {
+    "btrfs": "ce9e56b2273b31ec2fe8c4c0df96f144945599fcbba640b50a567f587675fe0f",
+    "bwrap": "e318903862396f96de3df57264e0158682b952fd3fb53ac23d876413e7b30f71",
+    "cc": "1b99826121ae6682a634e5efe09bd3e3df58ce58e0b28f849114ab5b89139c26",
+    "collect2": "4d1f341ae5b763b513258ee2812422a45e063c30a2f1924a0cf63d3699f3a158",
+    "g++": "1353e9bdd29a7295c7226bf6c63abccce056d8cac31f112e5cdbecc3f28c2769",
+    "llvm-ar-18": "eedd2efbdee80acf60e17e10adeddf31be0347226245f935be95efa3ae00ec79",
+    "proxy": "5be191e8c70a5007074254cb74d78dbfdd25cd5a61c27de7b8e5410122ec24f4"
+  },
+  "owners": {
+    "code": [
+      1000,
+      1000,
+      "0o755"
+    ],
+    "home-root": [
+      0,
+      0,
+      "0o755"
+    ],
+    "oss": [
+      1000,
+      1000,
+      "0o775"
+    ],
+    "owner": [
+      1000,
+      1000,
+      "0o755"
+    ],
+    "root": [
+      0,
+      0,
+      "0o755"
+    ],
+    "scratch": [
+      0,
+      0,
+      "0o755"
+    ],
+    "scratch-owner": [
+      1000,
+      1000,
+      "0o700"
+    ]
+  },
+  "role": "original",
+  "uid": 1000
+}

@@ -1,0 +1,126 @@
+{
+  "admission_order": [
+    [
+      "parent",
+      "B"
+    ],
+    [
+      "parent",
+      "A"
+    ],
+    [
+      "historical",
+      "B"
+    ],
+    [
+      "historical",
+      "A"
+    ]
+  ],
+  "authorization_for_clocks": false,
+  "cargo_runs_before_grant": 0,
+  "case_storage": {
+    "admission_retain_budget_bytes": 4294967296,
+    "remaining_eight_pair_claim_budget_bytes": 8589934592,
+    "separate_home_budget_bytes": 21474836480
+  },
+  "cpu_sets": {
+    "cargo": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "passive_watcher": [
+      8
+    ]
+  },
+  "current_input_plan_git": "a644772c28607282fc06bb7c72f08225ea04f0a6",
+  "current_input_plan_sha256": "327f73c1f3d1e372358ea209223ad992087c2d54e093a2440d75e4d7eb2336f1",
+  "external_floor_each": 26843545600,
+  "external_operations_before_new_gate": [
+    "read-only census",
+    "private image preparation",
+    "authenticated source/SDK and immutable donor transport"
+  ],
+  "image_bytes": 17179869184,
+  "in_image_floor": 2147483648,
+  "milan_old_resource_receipt": "043b24f8250d3f806aa813e86d0c9197cb5b2502800e84f1902b9bf72d84b27f",
+  "milan_old_verified_sha256": "45b122161aaa2ca02857ab4c208e823d16275a740cb13291b2cec2df11c6d323",
+  "native_per_arm_per_direction": {
+    "archive_members": 260,
+    "captured_files": 258,
+    "cargo_edit_and_repeat": 2,
+    "edit_full": 10,
+    "files": 452,
+    "linkers_in_package_commands": 0,
+    "observed_genuine_names": 256,
+    "repeat_full": 0,
+    "seven_byte_fields": 512,
+    "units": 248
+  },
+  "new_empty_references": [
+    "historical",
+    "parent"
+  ],
+  "observed_name_plan_git": "86fd410922315ae22b9d3de58f50b30ba1e8939a",
+  "observed_name_plan_sha256": "0184771b39300ce849a1eb46d5590031cbf9d80855a383b4dcdc1fbdeca184d0",
+  "old_image": {
+    "above_floor": 329265152,
+    "available": 866136064,
+    "available_before_trial": 2042871808,
+    "committed_delta_from_prior_initial": 1176735744,
+    "floor": 536870912,
+    "measured_two_P_transitions_before_final_commit": 637648896,
+    "size": 6442450944,
+    "thin_snapshot_available_delta": 0
+  },
+  "physical_subjects": {
+    "cargo_a": "6aaa263e68d2d77aeb8977166f9744f1fa8e0ea4df3216fe516355be68517bac",
+    "cargo_b": "f5523b530225724e91671630257c11b6ba58d18800736a70f6cbe91a31ccd409",
+    "held_expected": "3dc4253060abc0704b18356acd2bb134383b88538a3b0642a1ad97307ffaeaf0",
+    "images": {
+      "cargo-A": "6aaa263e68d2d77aeb8977166f9744f1fa8e0ea4df3216fe516355be68517bac",
+      "cargo-A-build.json": "3645753254441c29ea226d038dd65d98c32fb025880b2fa3bd414b8d1d926f8f",
+      "cargo-B": "f5523b530225724e91671630257c11b6ba58d18800736a70f6cbe91a31ccd409",
+      "cargo-B-build.json": "d755d98ea3db27bdb5657bf80c3c766b2e72e0b4dc3f8b8e6b439c7a8f7c9bcc",
+      "manifest.json": "6d7b99a91a8be59f829eea73a36be28c4b45a391fe2dcf44fb80ca081d8fffbf"
+    },
+    "per_path_sha256": "7ff449c4a89262923974428b60aac8509afc207b08c3b13f421b466eaac0e5e8",
+    "sdk_driver": "f5d26f74e970e2891a8cbf8a044244d1cd9c0ca50d3af3894842cfb9858f781c"
+  },
+  "plan_files": {
+    "README.md": "162102e8dbf5ee095fc4bcadb482c8ac9b18afbe14165cfa1e5d76521baca399",
+    "SHA256SUMS": "0184771b39300ce849a1eb46d5590031cbf9d80855a383b4dcdc1fbdeca184d0",
+    "controls.py": "55df3099ae809435f5f85e1be998533553a1bb976de720cf89e56a5f1116eb27",
+    "name_oracle.py": "2234b3a8261da35399a4f7e985993603d90e299454f0353540393920cba66df2",
+    "screen.py": "e69da34d4a24018bdb525fe37472162b24b323e79e69f013d8b759f1dfd96a91",
+    "window.py": "20ee3cce5e9042bef574f489342c305a45a6f718a8fce26ee71305cbeee2ef9a"
+  },
+  "scored_pairs_if_both_hosts_qualify_and_granted": 8,
+  "source_commits": {
+    "cargo_a": "235f9228651b74c591e6f62cae4c9b761448dd2d",
+    "cargo_b": "0299c77b2ca9707e82bc418976399fdbc75611d8",
+    "historical": "1e9287d7654f1dbe4943d67ed5ac5363c9ee2161",
+    "parent": "57d800be552a88751e7ecd06fc87b44714536033",
+    "rust": "ae76b292cb224008e8188a07143797f7a4ce0ec5"
+  },
+  "source_tree": {
+    "pristine": {
+      "entries": 1371,
+      "regular_inodes": 968,
+      "regular_unique_bytes": 90239437,
+      "sha256": "91a102896806c18ed3fc26e1f502ac24e957fd8708041900e4af364a13642c93"
+    },
+    "seed": {
+      "entries": 15981,
+      "regular_inodes": 13051,
+      "regular_unique_bytes": 1368528501,
+      "sha256": "2980879d07e1d61fe6fc1c10716298a69f2a03b917e3709d4a7443b1c9b012ee"
+    }
+  }
+}
