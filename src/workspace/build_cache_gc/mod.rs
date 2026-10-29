@@ -1297,6 +1297,13 @@ fn namespaces(
             }
         }
     }
+    // A deadline may leave only the dependency metadata of an untracked context.
+    // Keep discovering it after its last artifact directory has been retired.
+    for id in directory_names(root, &root.join(DIRECTORY).join("dependencies"), summary)? {
+        if legacy_context_name(&id) || scoped_context_name(&id) {
+            namespaces.insert(Namespace::Context(id));
+        }
+    }
     for profile in profiles {
         for id in directory_names(root, &profile.join("build/registries"), summary)? {
             if legacy_context_name(&id) || scoped_context_name(&id) {
@@ -2341,10 +2348,11 @@ mod tests {
             let mut age = GcAge::new(now + Duration::from_hours(2), Duration::from_hours(1));
             assert!(age.expired(now));
             let mut summary = Summary::default();
-            super::collect(
+            super::collect_with_lock_budget(
                 &cache.root,
                 dry_run,
                 &mut age,
+                Duration::from_secs(60),
                 None,
                 &mut CollectionState::default(),
                 &mut summary,
@@ -3015,6 +3023,47 @@ mod tests {
         )?;
         assert_eq!(second.retired, 1);
         assert!(cache.tracker()?.context("abcdef")?.is_none());
+        Ok(())
+    }
+
+    #[test]
+    fn partial_legacy_context_retirement_keeps_metadata_discoverable() -> CargoResult<()> {
+        let cache = Cache::new()?;
+        let context = "0123456789abcdef";
+        let payload = cache.artifact(&format!("build/registries/{context}"))?;
+        let metadata = cache
+            .root
+            .join(DIRECTORY)
+            .join("dependencies")
+            .join(context);
+        fs::create_dir_all(&metadata)?;
+        fs::write(metadata.join("usage"), b"gc bookkeeping")?;
+        let first = collect_with_lock_budget(
+            &cache.root,
+            false,
+            SystemTime::now(),
+            Duration::ZERO,
+            None,
+            &mut CollectionState::default(),
+        )?;
+        assert!(first.pending);
+        assert!(first.advanced);
+        assert_eq!(first.retired, 0);
+        assert!(!payload.exists());
+        assert!(metadata.exists());
+
+        // A fresh collection must also finish after the previous process exited.
+        let second = collect_with_lock_budget(
+            &cache.root,
+            false,
+            SystemTime::now(),
+            Duration::ZERO,
+            None,
+            &mut CollectionState::default(),
+        )?;
+        assert_eq!(second.retired, 1);
+        assert!(!metadata.exists());
+        assert!(!second.pending);
         Ok(())
     }
 
