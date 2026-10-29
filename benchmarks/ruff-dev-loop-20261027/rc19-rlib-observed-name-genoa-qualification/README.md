@@ -1,0 +1,18 @@
+# Genoa archive correctness qualification with independent object names
+
+All four ordinary Ruff builds passed the prospective filename check on Genoa. Each emitted a 101,719,820-byte rlib. A passive observer recorded exactly 256 kernel IN_CREATE events per build. Those 256 filenames matched the names of all 256 native objects opened by the selected rustc before it published the archive. The two other inputs were the Rust metadata and link metadata members. [Registered protocol](https://github.com/astral-sh/ohm-cargo/tree/86fd410922315ae22b9d3de58f50b30ba1e8939a/benchmarks/ruff-dev-loop-20261027/rc19-rlib-observed-name-screen-plan)
+
+| Transition | Cargo | Observed seven-byte name | SHA-256 of entire predicted, emitted and independently written rlib | Confirmed FICLONE |
+|---|---|---|---|---:|
+| Historical → parent | A | `1jduyfl` | `757f7dd63be195d3635b0c220d618bc904207f5d562f09513330a18e5c2aa1b9` | 0 |
+| Historical → parent | B | `0tudpsn` | `660ae34fad332f6b894ce20cf8711872dc2497fc35276d55752dc9896c244587` | 1 |
+| Parent → historical | A | `15ldrvq` | `4b26ed40c7f8ed07d4b0d1995d0221d87df0b7c560c974e9307820170d5de5b1` | 0 |
+| Parent → historical | B | `1v8pyvl` | `d2fd117f5e96f4aa59da26e42eefb05577e41cd638f626cae1b4d3b045e887b6` | 1 |
+
+Each build ran ten full rustcs, with 238 of 248 units fresh. The first B build additionally asked rustc whether it supported the optional archive origin. Each immediate unchanged repeat had all 248 units fresh and no rustc or native linker. Cargo used the same real stage1 compiler on both arms. Its bundled Wild stayed in the toolchain. The separately linked parser/linter callers returned SIM222 on lines 2, 3 and 4 for the parent and line 1 for the historical source. Both arms produced identical complete caller ELFs at each transition. An independent empty build at each source agreed on the diagnostics. The parent empty-build ELF had distinct bytes, as documented in the earlier current-input qualification.
+
+The reference for each direction was the complete archive that an ordinary LLVM 18 archiver generated from A's 258 current inputs. The verifier predicted the complete digest before opening the product for the literal comparison. It replaced only 512 seven-byte fields in the A reference, inside the GNU long-name and link-metadata members, using B's independently observed object names when validating B. A second independent LLVM write of each arm's own inputs checked the complete archive. Each real B clone succeeded from the still-held preceding published inode into the selected private temporary. Both old descriptors retained their original bytes and metadata until publication and across the immediate repeat.
+
+Every one of the four products rejected an invented nonce, a missing object event, the real opposite source reference, and an altered native object byte. An initial isolated mutation test could not open a protected 0400 copy for writing. The four numerical controls were then run unchanged against verified owner-writable disposable copies. Each original was rehashed after the controls. All four actual Cargo products had already passed the primary comparison against their retained originals. The first control's error, unmodified worker hashes and both terminal receipts are bound in the evidence.
+
+Run `python3 -IB verify.py` after `sha256sum -c SHA256SUMS`. The compressed files retain all observed names/masks, independent open events and native input/member digests, compiler argument hashes and all eight typed 248-unit Cargo rosters. Raw body digests and native evidence remain in the host custody ledger. The evidence covers one Linux x86_64 host with Btrfs and the stage1 compiler. This qualification collected no performance samples.
