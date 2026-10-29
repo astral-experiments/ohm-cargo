@@ -15,6 +15,10 @@ The table shows the seven-patch stack’s paired median saving in wall time. Pos
 
 The extra Wild jobserver retry passed one of four preregistered holdout comparisons. The two Cargo lockfile guards passed their warm Cargo instruction tests, but neither produced a repeatable elapsed-time saving across 96 edited-check pairs. [All 216 jobserver confirmation runs](confirmation32/README.md) · [Resolver timings and product verification](resolver-wall/README.md)
 
+### Historical stack with released rustc
+
+A separate 576-command comparison held released rustc and the target standard library fixed. The historical patches missed the registered wall-time threshold across both controls and both edits for all three commands. [Paired results, logs and scorer](released-rustc-wall/README.md)
+
 ### Standalone Cargo lockfile guard
 
 A nine-line guard on the released Cargo source reduced Cargo-process instructions after real uv edits in all 16 pairs. DynamoRIO measured 0.159% and Cachegrind measured 0.152%. The earlier full-command elapsed-time comparison was inconclusive. [Raw samples, controls and reproduction](standalone-lockfile-guard/README.md)
