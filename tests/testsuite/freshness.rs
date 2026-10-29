@@ -5718,6 +5718,37 @@ fn dependency_edit_reassembles_native_targets_by_default() {
 
 #[cargo_test]
 #[cfg(not(windows))]
+fn changing_relink_cache_collection_rebuilds_the_binary() {
+    let wrapper = relink_only_wrapper();
+    let p = project()
+        .file("Cargo.toml", &basic_manifest("app", "0.1.0"))
+        .file("src/main.rs", "fn main() {}")
+        .build();
+    let log = p.root().join("relink-wrapper.log");
+
+    for (collect, expected) in [
+        (true, "compile-link:app\n"),
+        (false, "compile:app\n"),
+        (false, ""),
+        (true, "compile-link:app\n"),
+        (true, ""),
+    ] {
+        fs::write(&log, "").unwrap();
+        let mut build = p.cargo("-Zohm-defaults build");
+        if !collect {
+            build.arg("-Zrelink-only=no");
+        }
+        build
+            .masquerade_as_nightly_cargo(&["ohm-defaults", "relink-only"])
+            .env("RUSTC_WRAPPER", &wrapper)
+            .env("RELINK_WRAPPER_LOG", &log)
+            .run();
+        assert_eq!(fs::read_to_string(&log).unwrap(), expected);
+    }
+}
+
+#[cargo_test]
+#[cfg(not(windows))]
 fn relink_only_reuses_root_codegen() {
     let wrapper = relink_only_wrapper();
     let p = project()
