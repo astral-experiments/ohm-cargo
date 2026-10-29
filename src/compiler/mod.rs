@@ -969,7 +969,7 @@ fn unused_integration_workspace_dependencies(
     build_runner: &BuildRunner<'_, '_>,
     unit: &Unit,
     unused_extern_names: &HashSet<InternedString>,
-) -> (HashSet<UnitIndex>, HashMap<UnitIndex, Vec<UnitHash>>) {
+) -> HashSet<UnitIndex> {
     let dependencies = build_runner.unit_deps(unit);
     let mut pending = dependencies
         .iter()
@@ -995,14 +995,7 @@ fn unused_integration_workspace_dependencies(
         }
     }
 
-    let reachable_build_scripts = reachable_units
-        .iter()
-        .filter_map(|dependency| build_runner.build_scripts.get(dependency))
-        .flat_map(|scripts| scripts.to_link.iter().map(|(_, metadata)| *metadata))
-        .collect::<HashSet<_>>();
     let mut unused_dependencies = HashSet::default();
-    let mut exclusive_build_scripts = HashMap::default();
-
     for dependency in dependencies.iter().filter(|dependency| {
         let package_id = dependency.unit.pkg.package_id();
 
@@ -1034,23 +1027,10 @@ fn unused_integration_workspace_dependencies(
                 .count()
                 == 1
     }) {
-        let index = build_runner.bcx.unit_to_index[&dependency.unit];
-        unused_dependencies.insert(index);
-
-        if let Some(scripts) = build_runner.build_scripts.get(&dependency.unit) {
-            let exclusive_scripts = scripts
-                .to_link
-                .iter()
-                .map(|(_, metadata)| *metadata)
-                .filter(|metadata| !reachable_build_scripts.contains(metadata))
-                .collect::<Vec<_>>();
-            if !exclusive_scripts.is_empty() {
-                exclusive_build_scripts.insert(index, exclusive_scripts);
-            }
-        }
+        unused_dependencies.insert(build_runner.bcx.unit_to_index[&dependency.unit]);
     }
 
-    (unused_dependencies, exclusive_build_scripts)
+    unused_dependencies
 }
 
 /// Whether user-controlled compiler arguments can add untracked linker inputs.
@@ -1205,19 +1185,6 @@ fn rustc(
             .clone();
         (completion, name)
     });
-    let (mut unused_workspace_dependencies, workspace_build_scripts) = workspace_integration_proof
-        .as_ref()
-        .map(|unused_extern_names| {
-            unused_integration_workspace_dependencies(build_runner, unit, unused_extern_names)
-        })
-        .unwrap_or_default();
-    if let Some((dependency, extern_name)) = unused_integration_dependency
-        && workspace_integration_proof
-            .as_ref()
-            .is_some_and(|unused_extern_names| unused_extern_names.contains(&extern_name))
-    {
-        unused_workspace_dependencies.insert(dependency);
-    }
     if let Some(cache) = &relink_cache {
         // Preserve the codegen objects referenced by the cached `.rlink`, and
         // keep them outside the dependency search directory while completing
@@ -1428,25 +1395,6 @@ fn rustc(
         } else {
             early_test
         };
-        if unused_integration_dependency.is_some() && !workspace_build_scripts.is_empty() {
-            let script_outputs = build_script_outputs.lock().unwrap();
-            unused_workspace_dependencies.retain(|dependency| {
-                workspace_build_scripts
-                    .get(dependency)
-                    .is_none_or(|scripts| {
-                        scripts.iter().all(|metadata| {
-                            script_outputs.get(*metadata).is_some_and(|output| {
-                                output.library_paths.is_empty()
-                                    && output.library_links.is_empty()
-                                    && !output.linker_args.iter().any(|(link_target, _)| {
-                                        link_target.applies_to(&target, mode)
-                                    })
-                            })
-                        })
-                    })
-            });
-        }
-
         let observes_foreign_span = fingerprint
             .as_ref()
             .is_some_and(|fp| fp.observes_foreign_span());
@@ -1463,28 +1411,10 @@ fn rustc(
                     .collect::<Vec<_>>()
             );
 
-            let skip_unused_integration_dependency =
-                unused_integration_dependency.is_some_and(|(dependency, extern_name)| {
-                    fingerprint::can_skip_unused_integration_dependency(fp, dependency)
-                        && relink_cache
-                            .as_ref()
-                            .is_some_and(|cache| cache.proves_unused_extern(extern_name))
-                });
-            let skip_unused_workspace_dependencies = unused_integration_dependency.is_some()
-                && fingerprint::can_skip_unused_workspace_integration_dependencies(
-                    fp,
-                    &unused_workspace_dependencies,
-                )
-                && relink_cache.as_ref().is_some_and(|cache| {
-                    cache.unused_extern_names() == workspace_integration_proof
-                });
-            let skip_unused_integration_dependency =
-                skip_unused_integration_dependency || skip_unused_workspace_dependencies;
-
             if early_test.is_none()
                 && deferred_dev_names.is_empty()
-                && ((can_skip_compilation && fingerprint::can_skip_due_to_early_cutoff(fp))
-                    || skip_unused_integration_dependency)
+                && can_skip_compilation
+                && fingerprint::can_skip_due_to_early_cutoff(fp)
             {
                 let essential_outputs = outputs
                     .iter()
@@ -1519,9 +1449,6 @@ fn rustc(
                             );
                         }
                     }
-                    if skip_unused_integration_dependency && let Some(cache) = &relink_cache {
-                        cache.refresh_executable()?;
-                    }
                     tracing::info!(
                         "early cutoff: skipping compilation of {} (all deps unchanged)",
                         unit_name
@@ -1539,7 +1466,15 @@ fn rustc(
         }
 
         let can_relink_dependencies = fingerprint.as_ref().is_some_and(|fingerprint| {
+            // An unused Rust library can leave this test's codegen valid even if its
+            // public API changed. Native inputs are resolved independently by the linker.
             fingerprint::can_relink_due_to_early_cutoff(fingerprint, &relinkable_dependencies)
+                || unused_integration_dependency.is_some_and(|(dependency, extern_name)| {
+                    fingerprint::can_relink_unused_integration_dependency(fingerprint, dependency)
+                        && relink_cache
+                            .as_ref()
+                            .is_some_and(|cache| cache.proves_unused_extern(extern_name))
+                })
         });
         let validation_started = Instant::now();
         let use_cached_relink = early_test.is_none()

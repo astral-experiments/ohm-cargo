@@ -278,7 +278,7 @@ pub(crate) fn plan(
     let Some(previous_unused) = previous_unused else {
         return Vec::new();
     };
-    let (candidates, _) =
+    let candidates =
         super::unused_integration_workspace_dependencies(runner, unit, previous_unused);
     let dependencies = runner.unit_deps(unit);
     let deferred = dependencies
