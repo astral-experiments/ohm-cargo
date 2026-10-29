@@ -12,6 +12,47 @@ use std::env;
 use std::path::{Path, PathBuf};
 
 #[cargo_test]
+fn opt_out_clean_preserves_other_workspaces_in_an_external_build_directory() {
+    let shared = cargo_test_support::paths::root().join("shared");
+    let [alpha, beta] = ["alpha", "beta"].map(|name| {
+        project_in(name)
+            .file("Cargo.toml", &basic_manifest(name, "0.1.0"))
+            .file("src/main.rs", "fn main() {}")
+            .build()
+    });
+    let run = |project: &cargo_test_support::Project, command: &str| {
+        project
+            .cargo(&format!("-Zohm-defaults=no {command}"))
+            .masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("CARGO_BUILD_BUILD_DIR", &shared)
+            .env("CARGO_TARGET_DIR", project.build_dir())
+            .run();
+    };
+    run(&alpha, "build");
+    run(&beta, "build");
+    let fingerprint = |name: &str| {
+        walkdir::WalkDir::new(&shared)
+            .into_iter()
+            .map(Result::unwrap)
+            .find(|entry| entry.file_name() == name)
+            .unwrap()
+            .into_path()
+    };
+    let alpha_fingerprint = fingerprint("bin-alpha");
+    let beta_fingerprint = fingerprint("bin-beta");
+    let keep = shared.join("keep");
+    std::fs::write(&keep, "unrelated").unwrap();
+    run(&alpha, "clean --dry-run");
+    assert!(alpha_fingerprint.is_file());
+    run(&alpha, "clean");
+    assert!(!alpha_fingerprint.exists());
+    assert!(!alpha.bin("alpha").exists());
+    assert!(beta_fingerprint.is_file());
+    assert!(beta.bin("beta").is_file());
+    assert_eq!(std::fs::read_to_string(keep).unwrap(), "unrelated");
+}
+
+#[cargo_test]
 fn cargo_clean_simple() {
     let p = project()
         .file("Cargo.toml", &basic_bin_manifest("foo"))
