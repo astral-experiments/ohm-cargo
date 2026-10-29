@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "cargo",
+    "+ohm",
+    "-Zrelink-only=no",
+    "test",
+    "--locked",
+    "--offline",
+    "--no-run",
+    "-j4",
+    "-p",
+    "ruff_python_parser",
+    "--test",
+    "generate_inline_tests",
+    "--test",
+    "fixtures"
+  ],
+  "elapsed": 2589206620,
+  "end": 1197316293417031,
+  "exit": 0,
+  "role": "F",
+  "start": 1197313704210411,
+  "trial": "04-edit"
+}
