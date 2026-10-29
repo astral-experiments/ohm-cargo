@@ -1,0 +1,284 @@
+{
+  "acquisition_program_sha256": "9e398b63dd256f0dd6474195f79ca4daacde1ede1684d8a40592ac41194eb9e8",
+  "comparisons": {
+    "H__P-A": {
+      "bytes": {
+        "different_physical": 101719820,
+        "equal_64k": 100933388,
+        "opaque_or_hole": 0,
+        "same_physical": 0,
+        "same_physical_both_sharedflag": 0,
+        "unequal_64k": 786432
+      },
+      "intervals": {
+        "different_physical": [
+          [
+            0,
+            101719820
+          ]
+        ],
+        "equal_64k": [
+          [
+            0,
+            9240576
+          ],
+          [
+            9306112,
+            14286848
+          ],
+          [
+            24182784,
+            196608
+          ],
+          [
+            24510464,
+            77209356
+          ]
+        ],
+        "opaque_or_hole": [],
+        "same_physical": [],
+        "same_physical_both_sharedflag": [],
+        "unequal_64k": [
+          [
+            9240576,
+            65536
+          ],
+          [
+            23592960,
+            589824
+          ],
+          [
+            24379392,
+            131072
+          ]
+        ]
+      }
+    },
+    "H__P-B": {
+      "bytes": {
+        "different_physical": 724992,
+        "equal_64k": 100933388,
+        "opaque_or_hole": 0,
+        "same_physical": 100994828,
+        "same_physical_both_sharedflag": 100994828,
+        "unequal_64k": 786432
+      },
+      "intervals": {
+        "different_physical": [
+          [
+            9252864,
+            53248
+          ],
+          [
+            23592960,
+            589824
+          ],
+          [
+            24379392,
+            81920
+          ]
+        ],
+        "equal_64k": [
+          [
+            0,
+            9240576
+          ],
+          [
+            9306112,
+            14286848
+          ],
+          [
+            24182784,
+            196608
+          ],
+          [
+            24510464,
+            77209356
+          ]
+        ],
+        "opaque_or_hole": [],
+        "same_physical": [
+          [
+            0,
+            9252864
+          ],
+          [
+            9306112,
+            14286848
+          ],
+          [
+            24182784,
+            196608
+          ],
+          [
+            24461312,
+            77258508
+          ]
+        ],
+        "same_physical_both_sharedflag": [
+          [
+            0,
+            9252864
+          ],
+          [
+            9306112,
+            14286848
+          ],
+          [
+            24182784,
+            196608
+          ],
+          [
+            24461312,
+            77258508
+          ]
+        ],
+        "unequal_64k": [
+          [
+            9240576,
+            65536
+          ],
+          [
+            23592960,
+            589824
+          ],
+          [
+            24379392,
+            131072
+          ]
+        ]
+      }
+    },
+    "P-A__P-B": {
+      "bytes": {
+        "different_physical": 101719820,
+        "equal_64k": 101523212,
+        "opaque_or_hole": 0,
+        "same_physical": 0,
+        "same_physical_both_sharedflag": 0,
+        "unequal_64k": 196608
+      },
+      "intervals": {
+        "different_physical": [
+          [
+            0,
+            101719820
+          ]
+        ],
+        "equal_64k": [
+          [
+            0,
+            9240576
+          ],
+          [
+            9306112,
+            15073280
+          ],
+          [
+            24510464,
+            77209356
+          ]
+        ],
+        "opaque_or_hole": [],
+        "same_physical": [],
+        "same_physical_both_sharedflag": [],
+        "unequal_64k": [
+          [
+            9240576,
+            65536
+          ],
+          [
+            24379392,
+            131072
+          ]
+        ]
+      }
+    }
+  },
+  "fiemap_flags": 0,
+  "inputs": {
+    "H": {
+      "original_extent_table_sha256": "80c93a79b239ef7263539d4f90c7d32d4f1070c4b88966e3670ac14853e27422",
+      "read_only_subvolume_id": 258,
+      "relative_extents": [
+        [
+          0,
+          856555520,
+          101720064,
+          8193
+        ]
+      ],
+      "sha256": "3dc4253060abc0704b18356acd2bb134383b88538a3b0642a1ad97307ffaeaf0",
+      "size": 101719820
+    },
+    "P-A": {
+      "original_extent_table_sha256": "2917699630fa5e144f1510816e10857a73c5da137521179adc050b598cb3c37d",
+      "read_only_subvolume_id": 262,
+      "relative_extents": [
+        [
+          0,
+          4860215296,
+          101720064,
+          8193
+        ]
+      ],
+      "sha256": "41a6e23b656b7fd8cbca59362b643f7f5044b422ed2d6c6158860b9d96ac716a",
+      "size": 101719820
+    },
+    "P-B": {
+      "original_extent_table_sha256": "d7984451d531b0851564bd7eaa2c3a839d1f2170831fa5040ce865fe8b27cbb5",
+      "read_only_subvolume_id": 263,
+      "relative_extents": [
+        [
+          0,
+          856555520,
+          9252864,
+          8192
+        ],
+        [
+          9252864,
+          0,
+          53248,
+          0
+        ],
+        [
+          9306112,
+          865861632,
+          14286848,
+          8192
+        ],
+        [
+          23592960,
+          2574938112,
+          589824,
+          0
+        ],
+        [
+          24182784,
+          880738304,
+          196608,
+          8192
+        ],
+        [
+          24379392,
+          53248,
+          81920,
+          0
+        ],
+        [
+          24461312,
+          881016832,
+          77258752,
+          8193
+        ]
+      ],
+      "sha256": "469059d02711c6f78ae0b88e6cf71004a0e0f495cdfd4e0f615c9d8194a28d3e",
+      "size": 101719820
+    }
+  },
+  "raw_receipt_sha256": "6b851a281be7eb5b62aeab892875e25d76893b7247cd0f9c4610164faf4598b3",
+  "read_only_block_device": true,
+  "single_data_profile": true,
+  "source": "a644772c28607282fc06bb7c72f08225ea04f0a6",
+  "sync_requests": 0
+}
