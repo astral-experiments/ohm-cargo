@@ -1,0 +1,383 @@
+{
+  "build": {
+    "first_success": "reverted",
+    "raw_sha256": "e1588376839e18b9a917636a7fdfd188c78d73027961444d69fae35bae0d0bf8",
+    "stdout_sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+    "value": 1
+  },
+  "check": [
+    {
+      "errors": [],
+      "phase": "original",
+      "stderr_sha": "b9280496cebc49e458bcb6b0b1b3ea1cfa4df533c15372b7204614fcd722e91b",
+      "stdout_sha": "088c7e94359da3949825c80550f77f17cf97b0d3d315c8dc6040f0bcb137b8dc",
+      "success": true
+    },
+    {
+      "errors": [],
+      "phase": "original-repeat",
+      "stderr_sha": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e",
+      "stdout_sha": "1a62757359d3d1af768e9c1171a7b098cab7cc15102c26fd787d257dec28329c",
+      "success": true
+    },
+    {
+      "errors": [],
+      "phase": "edited",
+      "stderr_sha": "f6641c0e0ee74c55d8542abab0715d3dd0551c654d6fa1a249a14a507595298c",
+      "stdout_sha": "3fcbd5f348f09731d77799529cedabb2fc7f469da17861d53ed9152e9a361056",
+      "success": true
+    },
+    {
+      "errors": [],
+      "phase": "edited-repeat",
+      "stderr_sha": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e",
+      "stdout_sha": "1a62757359d3d1af768e9c1171a7b098cab7cc15102c26fd787d257dec28329c",
+      "success": true
+    },
+    {
+      "errors": [
+        {
+          "code": "E0034",
+          "message": "multiple applicable items in scope",
+          "primary": [
+            [
+              "main.rs",
+              3,
+              30
+            ]
+          ],
+          "target": "client"
+        }
+      ],
+      "phase": "edited-clean",
+      "stderr_sha": "3de07c92b23121c433a8ed6bf42e85e2ecb267e0ce53b62e07ca49e5ffb63064",
+      "stdout_sha": "dec7d4212ef10d2d5ec0b8d5a58f2a204df644941136d39161054c53c54399af",
+      "success": false
+    },
+    {
+      "errors": [
+        {
+          "code": "E0034",
+          "message": "multiple applicable items in scope",
+          "primary": [
+            [
+              "main.rs",
+              3,
+              30
+            ]
+          ],
+          "target": "client"
+        }
+      ],
+      "phase": "first-after-upgrade",
+      "stderr_sha": "3de07c92b23121c433a8ed6bf42e85e2ecb267e0ce53b62e07ca49e5ffb63064",
+      "stdout_sha": "cab9b42dcfc0012553dcee30e1fcbd196043d7ece5e8c2d55b2e4858acd916f1",
+      "success": false
+    },
+    {
+      "errors": [
+        {
+          "code": "E0034",
+          "message": "multiple applicable items in scope",
+          "primary": [
+            [
+              "main.rs",
+              3,
+              30
+            ]
+          ],
+          "target": "client"
+        }
+      ],
+      "phase": "second-after-upgrade",
+      "stderr_sha": "50f46dd7ab61afff2727253a29558a7a81a50f014415eb7eedd03f2da5c32d7c",
+      "stdout_sha": "ca1a40fa775a07fe94ec3eb5040d825a0aa12b838d0f45dd60150c44bcc2fb64",
+      "success": false
+    },
+    {
+      "errors": [
+        {
+          "code": "E0034",
+          "message": "multiple applicable items in scope",
+          "primary": [
+            [
+              "main.rs",
+              3,
+              30
+            ]
+          ],
+          "target": "client"
+        }
+      ],
+      "phase": "independent-after-upgrade",
+      "stderr_sha": "3de07c92b23121c433a8ed6bf42e85e2ecb267e0ce53b62e07ca49e5ffb63064",
+      "stdout_sha": "832534cb88982603fdc1b1796e58351c90e845b8f925e5bc5fd367d36780b544",
+      "success": false
+    }
+  ],
+  "native": {
+    "malformed": {
+      "poison": "malformed",
+      "rows": [
+        {
+          "cargo": 0,
+          "fresh": false,
+          "hash": "f39f638d466926c0c8d4b4276b7c5b2e2f000a32679b20648c31b4cfd655cec4",
+          "native_exit": 0,
+          "phase": "initial",
+          "rustc": [
+            "___",
+            "build_script_build",
+            "provider",
+            "middle",
+            "app",
+            "probe"
+          ],
+          "value": 17,
+          "wild": 2
+        },
+        {
+          "cargo": 0,
+          "fresh": false,
+          "hash": "f39f638d466926c0c8d4b4276b7c5b2e2f000a32679b20648c31b4cfd655cec4",
+          "native_exit": 0,
+          "phase": "poison",
+          "rustc": [
+            "app"
+          ],
+          "value": 17,
+          "wild": 0
+        },
+        {
+          "cargo": 0,
+          "fresh": true,
+          "hash": "f39f638d466926c0c8d4b4276b7c5b2e2f000a32679b20648c31b4cfd655cec4",
+          "native_exit": 0,
+          "phase": "poison-confirm",
+          "rustc": [],
+          "value": 17,
+          "wild": 0
+        },
+        {
+          "cargo": 101,
+          "link_error": true,
+          "phase": "first-after-upgrade",
+          "rustc": [
+            "___",
+            "build_script_build",
+            "provider",
+            "middle",
+            "app",
+            "probe"
+          ],
+          "wild": 2
+        },
+        {
+          "cargo": 101,
+          "link_error": true,
+          "phase": "repeat-after-upgrade",
+          "rustc": [
+            "probe"
+          ],
+          "wild": 1
+        },
+        {
+          "cargo": 0,
+          "fresh": false,
+          "hash": "c34cb1581e7aa8fff21e443565e8456f1644d1754eb1875c596ca31e7a17df28",
+          "native_exit": 0,
+          "phase": "opposite-edit-after-upgrade",
+          "rustc": [
+            "app",
+            "probe"
+          ],
+          "value": 29,
+          "wild": 1
+        },
+        {
+          "cargo": 0,
+          "fresh": true,
+          "hash": "c34cb1581e7aa8fff21e443565e8456f1644d1754eb1875c596ca31e7a17df28",
+          "native_exit": 0,
+          "phase": "repeat-opposite",
+          "rustc": [],
+          "value": 29,
+          "wild": 0
+        },
+        {
+          "cargo": 0,
+          "fresh": false,
+          "hash": "198b71a01f49f14ad7022b9d0bb22278f69fc057ed37a80633a414e7bcbe8092",
+          "native_exit": 0,
+          "phase": "restored-after-upgrade",
+          "rustc": [
+            "app",
+            "probe"
+          ],
+          "value": 17,
+          "wild": 1
+        }
+      ],
+      "unchanged_target_and_source_snapshot": {
+        "bytes": 3553995,
+        "files": 242,
+        "sha256": "d73e9463244086b2bbbad3ef7bb4d54fb926b32219845f5bd0b8312990427484"
+      }
+    },
+    "valid": {
+      "poison": "valid",
+      "rows": [
+        {
+          "cargo": 0,
+          "fresh": false,
+          "hash": "f39f638d466926c0c8d4b4276b7c5b2e2f000a32679b20648c31b4cfd655cec4",
+          "native_exit": 0,
+          "phase": "initial",
+          "rustc": [
+            "___",
+            "build_script_build",
+            "provider",
+            "middle",
+            "app",
+            "probe"
+          ],
+          "value": 17,
+          "wild": 2
+        },
+        {
+          "cargo": 0,
+          "fresh": false,
+          "hash": "f39f638d466926c0c8d4b4276b7c5b2e2f000a32679b20648c31b4cfd655cec4",
+          "native_exit": 0,
+          "phase": "poison",
+          "rustc": [
+            "app"
+          ],
+          "value": 17,
+          "wild": 0
+        },
+        {
+          "cargo": 0,
+          "fresh": true,
+          "hash": "f39f638d466926c0c8d4b4276b7c5b2e2f000a32679b20648c31b4cfd655cec4",
+          "native_exit": 0,
+          "phase": "poison-confirm",
+          "rustc": [],
+          "value": 17,
+          "wild": 0
+        },
+        {
+          "cargo": 0,
+          "fresh": false,
+          "hash": "c34cb1581e7aa8fff21e443565e8456f1644d1754eb1875c596ca31e7a17df28",
+          "native_exit": 0,
+          "phase": "first-after-upgrade",
+          "rustc": [
+            "___",
+            "build_script_build",
+            "provider",
+            "middle",
+            "app",
+            "probe"
+          ],
+          "value": 29,
+          "wild": 2
+        },
+        {
+          "cargo": 0,
+          "fresh": true,
+          "hash": "c34cb1581e7aa8fff21e443565e8456f1644d1754eb1875c596ca31e7a17df28",
+          "native_exit": 0,
+          "phase": "repeat-after-upgrade",
+          "rustc": [],
+          "value": 29,
+          "wild": 0
+        },
+        {
+          "cargo": 101,
+          "link_error": true,
+          "phase": "opposite-edit-after-upgrade",
+          "rustc": [
+            "app",
+            "probe"
+          ],
+          "wild": 1
+        },
+        {
+          "cargo": 101,
+          "link_error": true,
+          "phase": "repeat-opposite",
+          "rustc": [
+            "probe"
+          ],
+          "wild": 1
+        },
+        {
+          "cargo": 0,
+          "fresh": false,
+          "hash": "198b71a01f49f14ad7022b9d0bb22278f69fc057ed37a80633a414e7bcbe8092",
+          "native_exit": 0,
+          "phase": "restored-after-upgrade",
+          "rustc": [
+            "app",
+            "probe"
+          ],
+          "value": 17,
+          "wild": 1
+        }
+      ],
+      "unchanged_target_and_source_snapshot": {
+        "bytes": 3556789,
+        "files": 244,
+        "sha256": "8cd67f279ee8b8fb8e2176db025f3f83b2687127aa2f5748acd575138c8a289d"
+      }
+    }
+  },
+  "verified": {
+    "candidate_commit": "a8f0c9aa0412aa259c686416a48aa8d2cf92da72",
+    "cargo_receipt_sha256": "cdd00d02803a9cc427acbdd2be1401c457f1dd87d84e25863939ff20c938bdda",
+    "check": "E0034 twice",
+    "first_reverted_program": 1,
+    "native": {
+      "malformed": {
+        "raw_sha256": "769515e925bf9cc31a13fddd855dea93d3109f523ef3aa635ce8bfadf143a850",
+        "snapshot": {
+          "bytes": 3553995,
+          "files": 242,
+          "sha256": "d73e9463244086b2bbbad3ef7bb4d54fb926b32219845f5bd0b8312990427484"
+        },
+        "verdicts": [
+          17,
+          17,
+          17,
+          101,
+          101,
+          29,
+          29,
+          17
+        ]
+      },
+      "valid": {
+        "raw_sha256": "c2ba378e06cf1ba96a2bc214d96de51e3aa136d8d3654ed97238a5dc744e149c",
+        "snapshot": {
+          "bytes": 3556789,
+          "files": 244,
+          "sha256": "8cd67f279ee8b8fb8e2176db025f3f83b2687127aa2f5748acd575138c8a289d"
+        },
+        "verdicts": [
+          17,
+          17,
+          17,
+          29,
+          29,
+          101,
+          101,
+          17
+        ]
+      }
+    },
+    "new_cargo": "ad893345f66ade1c886309b0fc2f98ec5b225d206c176e356531f0e3467eff81",
+    "old_cargo": "789c2f116732ed642565d0f92c500838f8cd53664fbe60f205a5621c43cbecf1",
+    "rustc": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512"
+  }
+}
