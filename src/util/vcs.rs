@@ -32,10 +32,12 @@ pub struct FossilRepo;
 
 impl GitRepo {
     pub fn init(path: &Path, _: &Path) -> CargoResult<GitRepo> {
+        crate::util::ensure_git_initialized();
         git2::Repository::init(path)?;
         Ok(GitRepo)
     }
     pub fn discover(path: &Path, _: &Path) -> Result<git2::Repository, git2::Error> {
+        crate::util::ensure_git_initialized();
         git2::Repository::discover(path)
     }
 }
