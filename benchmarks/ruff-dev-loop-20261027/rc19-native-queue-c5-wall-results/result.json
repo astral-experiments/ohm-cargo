@@ -1,0 +1,145 @@
+{
+  "additional": {
+    "edit": {
+      "median_a_seconds": 8.4244611505,
+      "median_b_seconds": 8.834178747500001,
+      "paired_reduction": -0.032101450054770345,
+      "pairs": 12
+    },
+    "edit_plus_repeat": {
+      "median_a_seconds": 16.0022503845,
+      "median_b_seconds": 14.832583145,
+      "paired_95pct_interval": [
+        0.033698864114297004,
+        0.08204597764010507
+      ],
+      "paired_reduction": 0.05597257898095899,
+      "pairs": 12
+    },
+    "passes_edit": true,
+    "passes_plain": true,
+    "plain": {
+      "median_a_seconds": 22.471227159,
+      "median_b_seconds": 19.4693579925,
+      "paired_reduction": 0.11559003625601197,
+      "pairs": 16
+    },
+    "repeat": {
+      "median_a_seconds": 7.365795963,
+      "median_b_seconds": 6.086950299,
+      "paired_reduction": 0.15801467945491163,
+      "pairs": 12
+    }
+  },
+  "command_counts": {
+    "plain": 32,
+    "typed": 240
+  },
+  "native_flanks": [
+    {
+      "different_native_arguments": 0,
+      "equal_except_qualified_fields": 50,
+      "flank": "trace-after",
+      "max_pss_mib": {
+        "A": 2382,
+        "B": 2720
+      },
+      "raw_equal": 50,
+      "section": "batch1"
+    },
+    {
+      "different_native_arguments": 0,
+      "equal_except_qualified_fields": 50,
+      "flank": "trace-before",
+      "max_pss_mib": {
+        "A": 2409,
+        "B": 2656
+      },
+      "raw_equal": 50,
+      "section": "batch1"
+    },
+    {
+      "different_native_arguments": 0,
+      "equal_except_qualified_fields": 50,
+      "flank": "trace-after",
+      "max_pss_mib": {
+        "A": 2331,
+        "B": 2751
+      },
+      "raw_equal": 50,
+      "section": "batch2"
+    },
+    {
+      "different_native_arguments": 0,
+      "equal_except_qualified_fields": 50,
+      "flank": "trace-before",
+      "max_pss_mib": {
+        "A": 2025,
+        "B": 3024
+      },
+      "raw_equal": 50,
+      "section": "batch2"
+    },
+    {
+      "different_native_arguments": 21,
+      "equal_except_qualified_fields": 50,
+      "flank": "trace-after",
+      "max_pss_mib": {
+        "A": 2167,
+        "B": 2646
+      },
+      "raw_equal": 48,
+      "section": "edit"
+    },
+    {
+      "different_native_arguments": 0,
+      "equal_except_qualified_fields": 50,
+      "flank": "trace-before",
+      "max_pss_mib": {
+        "A": 2290,
+        "B": 2732
+      },
+      "raw_equal": 49,
+      "section": "edit"
+    },
+    {
+      "different_native_arguments": 0,
+      "equal_except_qualified_fields": 50,
+      "flank": "trace-after",
+      "max_pss_mib": {
+        "A": 2355,
+        "B": 2852
+      },
+      "raw_equal": 50,
+      "section": "plain"
+    },
+    {
+      "different_native_arguments": 0,
+      "equal_except_qualified_fields": 50,
+      "flank": "trace-before",
+      "max_pss_mib": {
+        "A": 2331,
+        "B": 2762
+      },
+      "raw_equal": 50,
+      "section": "plain"
+    }
+  ],
+  "stationary": {
+    "batch_reductions": [
+      0.07672814356638624,
+      0.07489992312410076
+    ],
+    "faster": 69,
+    "median_a_seconds": 21.7249401185,
+    "median_b_seconds": 20.660901749,
+    "paired_95pct_interval": [
+      0.038526118116991026,
+      0.10799332405832429
+    ],
+    "paired_reduction": 0.07581448541751623,
+    "pairs": 96,
+    "passes_primary_clock": true,
+    "two_sided_sign_p": 2.148435253799241e-05
+  }
+}
