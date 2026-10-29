@@ -1104,12 +1104,18 @@ fn rustc(
     let exec = exec.clone();
 
     let root_output = build_runner.files().host_dest().map(|v| v.to_path_buf());
-    let build_dir = build_runner.bcx.ws.build_dir().into_path_unlocked();
+    let build_dir = build_runner.files().build_root(unit);
     let shared_registry_root = build_runner
         .bcx
         .ws
         .shared_registry_cache_enabled()
-        .then(|| build_dir.clone());
+        .then(|| {
+            build_runner
+                .bcx
+                .ws
+                .configured_build_dir()
+                .into_path_unlocked()
+        });
     let pkg_root = unit.pkg.root().to_path_buf();
     let cwd = rustc
         .get_cwd()
@@ -2358,7 +2364,7 @@ fn rustdoc(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<W
 
     let rustdoc_dep_info_loc = rustdoc_dep_info_loc(build_runner, unit);
     let dep_info_loc = fingerprint::dep_info_loc(build_runner, unit);
-    let build_dir = build_runner.bcx.ws.build_dir().into_path_unlocked();
+    let build_dir = build_runner.files().build_root(unit);
     let pkg_root = unit.pkg.root().to_path_buf();
     let cwd = rustdoc
         .get_cwd()

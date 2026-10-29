@@ -2473,7 +2473,7 @@ fn calculate(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
 
     // After we built the initial `Fingerprint` be sure to update the
     // `fs_status` field of it.
-    let build_root = build_root(build_runner);
+    let build_root = build_runner.files().build_root(unit);
     let cargo_exe = build_runner.bcx.gctx.cargo_exe()?;
     fingerprint.check_filesystem(
         &mut build_runner.mtime_cache,
@@ -2558,7 +2558,7 @@ fn calculate_normal(
     };
 
     // Afterwards calculate our own fingerprint information.
-    let build_root = build_root(build_runner);
+    let build_root = build_runner.files().build_root(unit);
     let is_any_doc_gen = unit.mode.is_doc() || unit.mode.is_doc_scrape();
     let rustdoc_depinfo_enabled = build_runner.bcx.gctx.cli_unstable().rustdoc_depinfo;
     let local = if is_any_doc_gen && !rustdoc_depinfo_enabled {
@@ -2851,7 +2851,7 @@ fn build_script_local_fingerprints(
     // longstanding bug, in Cargo. Recent refactorings just made it painfully
     // obvious.
     let pkg_root = unit.pkg.root().to_path_buf();
-    let build_dir = build_root(build_runner);
+    let build_dir = build_runner.files().build_root(unit);
     let env_config = Arc::clone(build_runner.bcx.gctx.env_config()?);
     let calculate =
         move |deps: &BuildDeps, pkg_fingerprint: Option<&dyn Fn() -> CargoResult<String>>| {
@@ -3015,12 +3015,6 @@ pub fn prepare_init(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> Carg
 /// for the [`Unit`] specified.
 pub fn dep_info_loc(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> PathBuf {
     build_runner.files().fingerprint_file_path(unit, "dep-")
-}
-
-/// Returns an absolute path that build directory.
-/// All paths are rewritten to be relative to this.
-fn build_root(build_runner: &BuildRunner<'_, '_>) -> PathBuf {
-    build_runner.bcx.ws.build_dir().into_path_unlocked()
 }
 
 /// Reads the value from the old fingerprint hash file and compare.

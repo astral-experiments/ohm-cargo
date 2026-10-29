@@ -73,7 +73,8 @@ impl LockManager {
                     .files()
                     .layout(unit.kind)
                     .build_dir()
-                    .build()
+                    .shared_build()
+                    .expect("shared registry units have a shared build directory")
                     .parent()
                     .unwrap();
                 let canonical_profile = canonical_profiles

@@ -331,7 +331,13 @@ pub fn create_bcx<'a, 'gctx>(
                 .build_dir()
                 .as_path_unlocked()
                 .join(OHM_BUILT_REGISTRY_READY_MARKER)
-                .is_file();
+                .is_file()
+            || (ws.shared_registry_cache_enabled()
+                && ws
+                    .configured_build_dir()
+                    .as_path_unlocked()
+                    .join(OHM_BUILT_REGISTRY_READY_MARKER)
+                    .is_file());
 
     create_bcx_with_registry_reuse(
         ws,

@@ -529,10 +529,16 @@ impl<'gctx> Workspace<'gctx> {
             .unwrap_or_else(|| self.default_target_dir())
     }
 
+    /// Returns the private build directory, colocated with targets when registry caching is shared.
     pub fn build_dir(&self) -> Filesystem {
-        if self.nested_shared_cache {
+        if self.nested_shared_cache || self.shared_registry_cache_enabled() {
             return self.target_dir();
         }
+        self.configured_build_dir()
+    }
+
+    /// Returns the configured root used for reusable artifacts across workspaces.
+    pub(crate) fn configured_build_dir(&self) -> Filesystem {
         self.build_dir
             .clone()
             .or_else(|| self.target_dir.clone())
@@ -574,7 +580,7 @@ impl<'gctx> Workspace<'gctx> {
         if ancestors.is_empty() {
             return Ok(());
         }
-        let build_root = self.canonical_build_path(self.build_dir().as_path_unlocked());
+        let build_root = self.canonical_build_path(self.configured_build_dir().as_path_unlocked());
         if !ancestors
             .iter()
             .any(|ancestor| ancestor.build_root == build_root || ancestor.target_root == build_root)
@@ -666,7 +672,7 @@ impl<'gctx> Workspace<'gctx> {
 
     fn default_target_dir(&self) -> Filesystem {
         if self.root_maybe().is_embedded() {
-            self.build_dir().join("target")
+            self.configured_build_dir().join("target")
         } else {
             Filesystem::new(self.root().join("target"))
         }

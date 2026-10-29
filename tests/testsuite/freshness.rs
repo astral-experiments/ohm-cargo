@@ -4286,7 +4286,7 @@ fn assert_early_cutoff_checks_dependents_with_build_directory(
 
     let initial_metadata = shared_build_directory.as_ref().map(|directory| {
         assert!(directory.join(".ohm-shared-registry-cache-v1").is_file());
-        let workspaces = directory.join("debug/build/workspaces");
+        let workspaces = p.root().join("target/debug/build/workspaces");
         assert!(
             walkdir::WalkDir::new(&workspaces)
                 .into_iter()

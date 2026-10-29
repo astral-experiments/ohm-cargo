@@ -2888,7 +2888,12 @@ fn ohm_workspace_build_script_reuse_requires_completed_script_execution() {
             .env("CARGO_BUILD_BUILD_DIR", &build_directory)
             .env("CARGO_TARGET_DIR", &target_directory)
             .run();
-        remove_ohm_run_success(&build_directory, "local");
+        let private_directory = if layout == "private" {
+            &build_directory
+        } else {
+            &target_directory
+        };
+        remove_ohm_run_success(private_directory, "local");
 
         // This input is deliberately unwatched: removing the successful-run
         // marker must force execution even when the recursive input hash matches.
