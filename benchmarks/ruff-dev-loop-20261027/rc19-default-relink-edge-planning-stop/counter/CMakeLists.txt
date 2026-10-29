@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.16)
+project(edge_probe C CXX)
+find_package(DynamoRIO CONFIG REQUIRED)
+add_library(edge_wrap SHARED edge-counter.c)
+configure_DynamoRIO_client(edge_wrap)
+use_DynamoRIO_extension(edge_wrap drmgr)
