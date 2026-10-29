@@ -1,0 +1,96 @@
+{
+  "bound_final_elf": {
+    "edited": {
+      "mode": 493,
+      "sha256": "2318398e53c068cbaf28ad472fdee531c967c8a106c6847863950156c8c8e359",
+      "size": 211482632
+    },
+    "original": {
+      "mode": 493,
+      "sha256": "f518967502cc261713db905e1e6295dd6454a8829379b79e57cb2928110c5092",
+      "size": 211482664
+    }
+  },
+  "clock_start_absent": true,
+  "exposure": {
+    "one_or_more_cargo_instructions_read": false,
+    "scored_primary_samples": 0,
+    "scored_wall_samples": 0
+  },
+  "first_native_gate": {
+    "exit": 1,
+    "location": "suite.py::aggregate, original cold-archive classifier",
+    "original_unclassified_archives": 33,
+    "raw": "f7b3a3a1479ac177ca0d3f3b2e777f7d72e80ebc38f680ae51fde1137b857d61",
+    "verified_exact_subsequently": 34
+  },
+  "independent_crateinfo_recovery": "dd2c201961c88a262b1ad9d22490fee7d84f047a80e96df4ea2ff6fc20cac671",
+  "opaque_recipe": {
+    "entire_reconstruction_terminal": "ad36d2b3b08d59f986f40081936738f8f775d3300406a5bd87792518e49347e4",
+    "first_length_comparison": [
+      193617,
+      169182
+    ],
+    "historical_saved_hashes_without_whole_body": [
+      {
+        "139_current_names_and_object_hashes_record": "554acf71fa9f28eaf5dd0279e4a9ab639b0aa1f46df148ec50ccf3023b084088",
+        "body_retained": false,
+        "bytes": 193617,
+        "phase": "edit",
+        "raw_hash": "7bce58b80e862347e2649c0ae689915cb2d0fe9720fc275c4c83accace3f7137",
+        "role": "parent"
+      },
+      {
+        "139_current_names_and_object_hashes_record": "6132a1f74e54b2cac80721e5abea767f29a720bbbc1f398719eccc7f320a06a2",
+        "body_retained": false,
+        "bytes": 194160,
+        "phase": "recovery",
+        "raw_hash": "bbcf7f103629ef9489c9fe9b3556f333932081d871a271294027dc691208bc1a",
+        "role": "parent"
+      },
+      {
+        "139_current_names_and_object_hashes_record": "277062290293db4d25811bd4f2f49717d16f2b56f3105fe6311dc747e2a86459",
+        "body_retained": false,
+        "bytes": 193617,
+        "phase": "edit",
+        "raw_hash": "06a4b61c3e4b2b9f3c15d0d0551c520f2aedfddb210f48003ea49e972bd91aef",
+        "role": "child"
+      },
+      {
+        "139_current_names_and_object_hashes_record": "ee5bfa398edacca9c483d45e1d2d9aca087a621d4cbbfb25aed37792cecd6ce1",
+        "body_retained": false,
+        "bytes": 194160,
+        "phase": "recovery",
+        "raw_hash": "5af9acf1a03cb4648fd7a7b1481a625e28953e52af493fc8f1904a300ad3d3bc",
+        "role": "child"
+      }
+    ],
+    "independent_schema": "5982c16b0a4bd0f6546e89dd6859d7ad6ad28d3050265ce1ac61d345f6ee05c3",
+    "native_name_reconstruction_terminal": "2354742114149c8b31001d32f93ca4bb4b091adabe57a82725737c1f15523043",
+    "second_registered_condition": "raw e2e .rlink after only the known 139 current-backing basenames",
+    "surviving_complete_bodies": 8
+  },
+  "original_mount_rejection": {
+    "cargo": 0,
+    "exit": 1,
+    "traceback_sha": "d43f5eae842e3acd25bc7cc58d74c3f8986966cdb93e85d54a7a122f0e464973"
+  },
+  "primary_pairs": 0,
+  "prior_parser_study_admitted_pairs": 0,
+  "product_and_tests": {
+    "cargo_unit_tests": "1339fe49be0d1bb2062a457769c381adc5958579",
+    "small_release": "b2afe8168a2c804402dd6b73ce2a96a656913466"
+  },
+  "qualification_withheld": true,
+  "references": {
+    "archive": "3333681adb9c682072e2ff34c95bea96b9b7f2e5",
+    "mount": "32b96732d4134d3c978b4441e34b060c51d36819",
+    "original_manifest": "75d53691c6597df4570761e785cae0ef7baa63616334dea1a61697823364ac84",
+    "source": "1d9c6ad6bf85bae5af3447063add7ac67f78140c"
+  },
+  "reported_visits": 22,
+  "separate_parent_profile_probe": "ee236bb158a4ec2b5fcbff8606fd293bf073da3897de67f3bdbc73198d0c8fd4",
+  "status": "withheld before profiling or clocks",
+  "successful_validated_visits": 20,
+  "wall_pairs": 0
+}

@@ -1,0 +1,57 @@
+{
+  "actual_argv_sha": "0d795d3cc1d49896c68a1c98412161865df7aab577046fe7e3150ba1c4875104",
+  "cargo_stdout_bytes": 0,
+  "cost_files": 1,
+  "count_exposed": false,
+  "diagnostic_only_cost_files_by_version_helper": {
+    "cargo": 1,
+    "cut": 2,
+    "getconf": 1,
+    "getopt": 1,
+    "lsb_release": 9,
+    "tr": 3
+  },
+  "exact_unchanged_product": "8c1717fa9786e16d3bec0c3181c02c1803484ed857d262580ce88d54056504c5",
+  "exit": -5,
+  "failed_version_setup": "missing rustup in namespace launcher PATH, fixed by reading actual enrolled environment before any version calls",
+  "first_zero_cargo_recipe": "surplus launcher word, fixed before one genuine profile call",
+  "observed_rustc": 0,
+  "observed_wild": 0,
+  "signal": [
+    "==977348== Process terminating with default action of signal 5 (SIGTRAP)",
+    "==977348==    at 0x4F89D31: setenv (setenv.c:226)"
+  ],
+  "supervisor_exit": 1,
+  "version_controls": {
+    "plain": {
+      "cost_files": 0,
+      "diagnostic": [],
+      "exit": 0,
+      "same_as_actual_positive_output": true,
+      "stdout_sha": "adef2c870da4ca11ad46224a0a3d16de358dc9e9f5a932b23e4ec0c62ca85368"
+    },
+    "profile-only": {
+      "cost_files": 17,
+      "diagnostic": [],
+      "exit": 0,
+      "same_as_actual_positive_output": true,
+      "stdout_sha": "adef2c870da4ca11ad46224a0a3d16de358dc9e9f5a932b23e4ec0c62ca85368"
+    },
+    "trace-only": {
+      "cost_files": 0,
+      "diagnostic": [],
+      "exit": 0,
+      "same_as_actual_positive_output": true,
+      "stdout_sha": "adef2c870da4ca11ad46224a0a3d16de358dc9e9f5a932b23e4ec0c62ca85368"
+    },
+    "trace-plus-profile": {
+      "cost_files": 17,
+      "diagnostic": [],
+      "exit": 0,
+      "same_as_actual_positive_output": true,
+      "stdout_sha": "adef2c870da4ca11ad46224a0a3d16de358dc9e9f5a932b23e4ec0c62ca85368"
+    }
+  },
+  "vg_log_sha256": "750b137e176262cdfc48a62d43c0d28aa3663e52481bf775d61f792516ceb10f",
+  "workload": "Separate parent-only native profile compatibility, outside the original 22 command corpus"
+}

@@ -1,0 +1,641 @@
+{
+  "pairs": [
+    {
+      "equal_actual": true,
+      "left": "warm-parent/edit",
+      "right": "warm-child/edit"
+    },
+    {
+      "equal_actual": true,
+      "left": "warm-parent/recovery",
+      "right": "warm-child/recovery"
+    },
+    {
+      "equal_actual": true,
+      "left": "warm-parent/restore",
+      "right": "warm-child/restore"
+    },
+    {
+      "equal_actual": true,
+      "left": "warm-parent/restore",
+      "right": "leaf-parent-original/root-empty"
+    },
+    {
+      "equal_actual": true,
+      "left": "warm-parent/edit",
+      "right": "leaf-parent-edited/root-empty"
+    },
+    {
+      "equal_actual": true,
+      "left": "warm-child/restore",
+      "right": "leaf-child-original/root-empty"
+    },
+    {
+      "equal_actual": true,
+      "left": "warm-child/edit",
+      "right": "leaf-child-edited/root-empty"
+    }
+  ],
+  "true_selected_jobs": {
+    "cold-child/edited-cold": {
+      "externs_full_byte_path_sha": "47c06bf4241d84d7ff8fceb6d7bae4d586b78af686cb85935e298997bb4a36d5",
+      "full_compiler_argv_sha": "9d1c612d6d2d4c7ce82a447f540511b5c2f491a0d1fb59e568021301397ac0ec",
+      "literal_externs": 73,
+      "native_complete_comparison": "f943b1cc8147dd9ad382e7c968f1b472513da124a8b0e3e40a31536d125b45d9",
+      "ordered_current_bytes_path_sha": "b96084c99887b22a857b35d0fed27be71d87c09287c001f0a1da78295528c2c8",
+      "ordered_wild_inputs": 366,
+      "root_current_object_files": 139,
+      "stable_roles": [
+        {
+          "argc": 416,
+          "roles": {
+            "object": 36,
+            "raw_dylibs": 24,
+            "resolution": 4
+          },
+          "stable_argv": "5377e2fa4c3527d14802a994c85c95ae559904db8713ca2bf4f789b76b820950",
+          "target": "e2e-8945421a8b988468",
+          "tool": "collect2"
+        },
+        {
+          "argc": 388,
+          "roles": {
+            "object": 2,
+            "raw_dylibs": 373
+          },
+          "stable_argv": "510a0d75f4744ce2fc148a635ca5d58c7b54362405348e89c3a361bccb0bc574",
+          "target": "e2e-8945421a8b988468",
+          "tool": "gcc"
+        },
+        {
+          "argc": 415,
+          "roles": {
+            "object": 35,
+            "raw_dylibs": 23,
+            "resolution": 4
+          },
+          "stable_argv": "cbbe938797e45f7f1a79e4e246b404379f3f1b7dae6545492ec8b6f4ca1e7228",
+          "target": "e2e-8945421a8b988468",
+          "temporary_contents": {
+            "object": "472261b047cf946e5ff96def1b231f577f316ffec5dff6893b6bb621b56ee70a",
+            "object_len": 38816,
+            "raw_dylibs": [],
+            "resolution": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "resolution_len": 0
+          },
+          "tool": "stock-wild"
+        }
+      ]
+    },
+    "cold-parent/edited-cold": {
+      "externs_full_byte_path_sha": "9c61a44c7f8e7b6ba936d185cd46782cedac15c96a3447139d9c9477f9b03899",
+      "full_compiler_argv_sha": "9d1c612d6d2d4c7ce82a447f540511b5c2f491a0d1fb59e568021301397ac0ec",
+      "literal_externs": 73,
+      "native_complete_comparison": "b0a4b589f5175e5f719ee95874e5048cd7b1dba45f2de3df141081980b9bc2ee",
+      "ordered_current_bytes_path_sha": "6e52d18b466c5ef13201ff8910dcaeae87983b16e5787ec444f7b0bd7ac1d40c",
+      "ordered_wild_inputs": 366,
+      "root_current_object_files": 139,
+      "stable_roles": [
+        {
+          "argc": 416,
+          "roles": {
+            "object": 36,
+            "raw_dylibs": 24,
+            "resolution": 4
+          },
+          "stable_argv": "5377e2fa4c3527d14802a994c85c95ae559904db8713ca2bf4f789b76b820950",
+          "target": "e2e-8945421a8b988468",
+          "tool": "collect2"
+        },
+        {
+          "argc": 388,
+          "roles": {
+            "object": 2,
+            "raw_dylibs": 373
+          },
+          "stable_argv": "510a0d75f4744ce2fc148a635ca5d58c7b54362405348e89c3a361bccb0bc574",
+          "target": "e2e-8945421a8b988468",
+          "tool": "gcc"
+        },
+        {
+          "argc": 415,
+          "roles": {
+            "object": 35,
+            "raw_dylibs": 23,
+            "resolution": 4
+          },
+          "stable_argv": "cbbe938797e45f7f1a79e4e246b404379f3f1b7dae6545492ec8b6f4ca1e7228",
+          "target": "e2e-8945421a8b988468",
+          "temporary_contents": {
+            "object": "472261b047cf946e5ff96def1b231f577f316ffec5dff6893b6bb621b56ee70a",
+            "object_len": 38816,
+            "raw_dylibs": [],
+            "resolution": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "resolution_len": 0
+          },
+          "tool": "stock-wild"
+        }
+      ]
+    },
+    "leaf-child-edited/root-empty": {
+      "externs_full_byte_path_sha": "5e5632e9ee5c1b49e6d05b180cb90562f318f61ccb535baefed969e8cada9200",
+      "full_compiler_argv_sha": "9d1c612d6d2d4c7ce82a447f540511b5c2f491a0d1fb59e568021301397ac0ec",
+      "literal_externs": 73,
+      "native_complete_comparison": "8bd4ff74df1d3f2b87145d8bcd8cff92f918938a394397d4764dfd5c7e328eb0",
+      "ordered_current_bytes_path_sha": "a4650c261080a3eca05d77e3ba1b1ff2e068ff5011579eb576367ead912db945",
+      "ordered_wild_inputs": 366,
+      "root_current_object_files": 139,
+      "stable_roles": [
+        {
+          "argc": 416,
+          "roles": {
+            "object": 36,
+            "raw_dylibs": 24,
+            "resolution": 4
+          },
+          "stable_argv": "5377e2fa4c3527d14802a994c85c95ae559904db8713ca2bf4f789b76b820950",
+          "target": "e2e-8945421a8b988468",
+          "tool": "collect2"
+        },
+        {
+          "argc": 388,
+          "roles": {
+            "object": 2,
+            "raw_dylibs": 373
+          },
+          "stable_argv": "510a0d75f4744ce2fc148a635ca5d58c7b54362405348e89c3a361bccb0bc574",
+          "target": "e2e-8945421a8b988468",
+          "tool": "gcc"
+        },
+        {
+          "argc": 415,
+          "roles": {
+            "object": 35,
+            "raw_dylibs": 23,
+            "resolution": 4
+          },
+          "stable_argv": "cbbe938797e45f7f1a79e4e246b404379f3f1b7dae6545492ec8b6f4ca1e7228",
+          "target": "e2e-8945421a8b988468",
+          "temporary_contents": {
+            "object": "472261b047cf946e5ff96def1b231f577f316ffec5dff6893b6bb621b56ee70a",
+            "object_len": 38816,
+            "raw_dylibs": [],
+            "resolution": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "resolution_len": 0
+          },
+          "tool": "stock-wild"
+        }
+      ]
+    },
+    "leaf-child-original/root-empty": {
+      "externs_full_byte_path_sha": "5e5632e9ee5c1b49e6d05b180cb90562f318f61ccb535baefed969e8cada9200",
+      "full_compiler_argv_sha": "9d1c612d6d2d4c7ce82a447f540511b5c2f491a0d1fb59e568021301397ac0ec",
+      "literal_externs": 73,
+      "native_complete_comparison": "254e7d16ee9803641ea486a84202184fe7a1fe4a515e98f787944351f3872061",
+      "ordered_current_bytes_path_sha": "20ad5142f686b5ce544274fa26b25af4d45291e2fad84013ed918881190b5028",
+      "ordered_wild_inputs": 366,
+      "root_current_object_files": 139,
+      "stable_roles": [
+        {
+          "argc": 416,
+          "roles": {
+            "object": 36,
+            "raw_dylibs": 24,
+            "resolution": 4
+          },
+          "stable_argv": "5377e2fa4c3527d14802a994c85c95ae559904db8713ca2bf4f789b76b820950",
+          "target": "e2e-8945421a8b988468",
+          "tool": "collect2"
+        },
+        {
+          "argc": 388,
+          "roles": {
+            "object": 2,
+            "raw_dylibs": 373
+          },
+          "stable_argv": "510a0d75f4744ce2fc148a635ca5d58c7b54362405348e89c3a361bccb0bc574",
+          "target": "e2e-8945421a8b988468",
+          "tool": "gcc"
+        },
+        {
+          "argc": 415,
+          "roles": {
+            "object": 35,
+            "raw_dylibs": 23,
+            "resolution": 4
+          },
+          "stable_argv": "cbbe938797e45f7f1a79e4e246b404379f3f1b7dae6545492ec8b6f4ca1e7228",
+          "target": "e2e-8945421a8b988468",
+          "temporary_contents": {
+            "object": "472261b047cf946e5ff96def1b231f577f316ffec5dff6893b6bb621b56ee70a",
+            "object_len": 38816,
+            "raw_dylibs": [],
+            "resolution": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "resolution_len": 0
+          },
+          "tool": "stock-wild"
+        }
+      ]
+    },
+    "leaf-parent-edited/root-empty": {
+      "externs_full_byte_path_sha": "5e5632e9ee5c1b49e6d05b180cb90562f318f61ccb535baefed969e8cada9200",
+      "full_compiler_argv_sha": "9d1c612d6d2d4c7ce82a447f540511b5c2f491a0d1fb59e568021301397ac0ec",
+      "literal_externs": 73,
+      "native_complete_comparison": "8bd4ff74df1d3f2b87145d8bcd8cff92f918938a394397d4764dfd5c7e328eb0",
+      "ordered_current_bytes_path_sha": "a4650c261080a3eca05d77e3ba1b1ff2e068ff5011579eb576367ead912db945",
+      "ordered_wild_inputs": 366,
+      "root_current_object_files": 139,
+      "stable_roles": [
+        {
+          "argc": 416,
+          "roles": {
+            "object": 36,
+            "raw_dylibs": 24,
+            "resolution": 4
+          },
+          "stable_argv": "5377e2fa4c3527d14802a994c85c95ae559904db8713ca2bf4f789b76b820950",
+          "target": "e2e-8945421a8b988468",
+          "tool": "collect2"
+        },
+        {
+          "argc": 388,
+          "roles": {
+            "object": 2,
+            "raw_dylibs": 373
+          },
+          "stable_argv": "510a0d75f4744ce2fc148a635ca5d58c7b54362405348e89c3a361bccb0bc574",
+          "target": "e2e-8945421a8b988468",
+          "tool": "gcc"
+        },
+        {
+          "argc": 415,
+          "roles": {
+            "object": 35,
+            "raw_dylibs": 23,
+            "resolution": 4
+          },
+          "stable_argv": "cbbe938797e45f7f1a79e4e246b404379f3f1b7dae6545492ec8b6f4ca1e7228",
+          "target": "e2e-8945421a8b988468",
+          "temporary_contents": {
+            "object": "472261b047cf946e5ff96def1b231f577f316ffec5dff6893b6bb621b56ee70a",
+            "object_len": 38816,
+            "raw_dylibs": [],
+            "resolution": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "resolution_len": 0
+          },
+          "tool": "stock-wild"
+        }
+      ]
+    },
+    "leaf-parent-original/root-empty": {
+      "externs_full_byte_path_sha": "5e5632e9ee5c1b49e6d05b180cb90562f318f61ccb535baefed969e8cada9200",
+      "full_compiler_argv_sha": "9d1c612d6d2d4c7ce82a447f540511b5c2f491a0d1fb59e568021301397ac0ec",
+      "literal_externs": 73,
+      "native_complete_comparison": "254e7d16ee9803641ea486a84202184fe7a1fe4a515e98f787944351f3872061",
+      "ordered_current_bytes_path_sha": "20ad5142f686b5ce544274fa26b25af4d45291e2fad84013ed918881190b5028",
+      "ordered_wild_inputs": 366,
+      "root_current_object_files": 139,
+      "stable_roles": [
+        {
+          "argc": 416,
+          "roles": {
+            "object": 36,
+            "raw_dylibs": 24,
+            "resolution": 4
+          },
+          "stable_argv": "5377e2fa4c3527d14802a994c85c95ae559904db8713ca2bf4f789b76b820950",
+          "target": "e2e-8945421a8b988468",
+          "tool": "collect2"
+        },
+        {
+          "argc": 388,
+          "roles": {
+            "object": 2,
+            "raw_dylibs": 373
+          },
+          "stable_argv": "510a0d75f4744ce2fc148a635ca5d58c7b54362405348e89c3a361bccb0bc574",
+          "target": "e2e-8945421a8b988468",
+          "tool": "gcc"
+        },
+        {
+          "argc": 415,
+          "roles": {
+            "object": 35,
+            "raw_dylibs": 23,
+            "resolution": 4
+          },
+          "stable_argv": "cbbe938797e45f7f1a79e4e246b404379f3f1b7dae6545492ec8b6f4ca1e7228",
+          "target": "e2e-8945421a8b988468",
+          "temporary_contents": {
+            "object": "472261b047cf946e5ff96def1b231f577f316ffec5dff6893b6bb621b56ee70a",
+            "object_len": 38816,
+            "raw_dylibs": [],
+            "resolution": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "resolution_len": 0
+          },
+          "tool": "stock-wild"
+        }
+      ]
+    },
+    "warm-child/edit": {
+      "externs_full_byte_path_sha": "5e5632e9ee5c1b49e6d05b180cb90562f318f61ccb535baefed969e8cada9200",
+      "full_compiler_argv_sha": "9d1c612d6d2d4c7ce82a447f540511b5c2f491a0d1fb59e568021301397ac0ec",
+      "literal_externs": 73,
+      "native_complete_comparison": "8bd4ff74df1d3f2b87145d8bcd8cff92f918938a394397d4764dfd5c7e328eb0",
+      "ordered_current_bytes_path_sha": "a4650c261080a3eca05d77e3ba1b1ff2e068ff5011579eb576367ead912db945",
+      "ordered_wild_inputs": 366,
+      "root_current_object_files": 139,
+      "stable_roles": [
+        {
+          "argc": 416,
+          "roles": {
+            "object": 36,
+            "raw_dylibs": 24,
+            "resolution": 4
+          },
+          "stable_argv": "5377e2fa4c3527d14802a994c85c95ae559904db8713ca2bf4f789b76b820950",
+          "target": "e2e-8945421a8b988468",
+          "tool": "collect2"
+        },
+        {
+          "argc": 388,
+          "roles": {
+            "object": 2,
+            "raw_dylibs": 373
+          },
+          "stable_argv": "510a0d75f4744ce2fc148a635ca5d58c7b54362405348e89c3a361bccb0bc574",
+          "target": "e2e-8945421a8b988468",
+          "tool": "gcc"
+        },
+        {
+          "argc": 415,
+          "roles": {
+            "object": 35,
+            "raw_dylibs": 23,
+            "resolution": 4
+          },
+          "stable_argv": "cbbe938797e45f7f1a79e4e246b404379f3f1b7dae6545492ec8b6f4ca1e7228",
+          "target": "e2e-8945421a8b988468",
+          "temporary_contents": {
+            "object": "472261b047cf946e5ff96def1b231f577f316ffec5dff6893b6bb621b56ee70a",
+            "object_len": 38816,
+            "raw_dylibs": [],
+            "resolution": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "resolution_len": 0
+          },
+          "tool": "stock-wild"
+        }
+      ]
+    },
+    "warm-child/recovery": {
+      "externs_full_byte_path_sha": "5e5632e9ee5c1b49e6d05b180cb90562f318f61ccb535baefed969e8cada9200",
+      "full_compiler_argv_sha": "9d1c612d6d2d4c7ce82a447f540511b5c2f491a0d1fb59e568021301397ac0ec",
+      "literal_externs": 73,
+      "native_complete_comparison": "8bd4ff74df1d3f2b87145d8bcd8cff92f918938a394397d4764dfd5c7e328eb0",
+      "ordered_current_bytes_path_sha": "a4650c261080a3eca05d77e3ba1b1ff2e068ff5011579eb576367ead912db945",
+      "ordered_wild_inputs": 366,
+      "root_current_object_files": 139,
+      "stable_roles": [
+        {
+          "argc": 416,
+          "roles": {
+            "object": 36,
+            "raw_dylibs": 24,
+            "resolution": 4
+          },
+          "stable_argv": "5377e2fa4c3527d14802a994c85c95ae559904db8713ca2bf4f789b76b820950",
+          "target": "e2e-8945421a8b988468",
+          "tool": "collect2"
+        },
+        {
+          "argc": 388,
+          "roles": {
+            "object": 2,
+            "raw_dylibs": 373
+          },
+          "stable_argv": "510a0d75f4744ce2fc148a635ca5d58c7b54362405348e89c3a361bccb0bc574",
+          "target": "e2e-8945421a8b988468",
+          "tool": "gcc"
+        },
+        {
+          "argc": 415,
+          "roles": {
+            "object": 35,
+            "raw_dylibs": 23,
+            "resolution": 4
+          },
+          "stable_argv": "cbbe938797e45f7f1a79e4e246b404379f3f1b7dae6545492ec8b6f4ca1e7228",
+          "target": "e2e-8945421a8b988468",
+          "temporary_contents": {
+            "object": "472261b047cf946e5ff96def1b231f577f316ffec5dff6893b6bb621b56ee70a",
+            "object_len": 38816,
+            "raw_dylibs": [],
+            "resolution": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "resolution_len": 0
+          },
+          "tool": "stock-wild"
+        }
+      ]
+    },
+    "warm-child/restore": {
+      "externs_full_byte_path_sha": "5e5632e9ee5c1b49e6d05b180cb90562f318f61ccb535baefed969e8cada9200",
+      "full_compiler_argv_sha": "9d1c612d6d2d4c7ce82a447f540511b5c2f491a0d1fb59e568021301397ac0ec",
+      "literal_externs": 73,
+      "native_complete_comparison": "254e7d16ee9803641ea486a84202184fe7a1fe4a515e98f787944351f3872061",
+      "ordered_current_bytes_path_sha": "20ad5142f686b5ce544274fa26b25af4d45291e2fad84013ed918881190b5028",
+      "ordered_wild_inputs": 366,
+      "root_current_object_files": 139,
+      "stable_roles": [
+        {
+          "argc": 416,
+          "roles": {
+            "object": 36,
+            "raw_dylibs": 24,
+            "resolution": 4
+          },
+          "stable_argv": "5377e2fa4c3527d14802a994c85c95ae559904db8713ca2bf4f789b76b820950",
+          "target": "e2e-8945421a8b988468",
+          "tool": "collect2"
+        },
+        {
+          "argc": 388,
+          "roles": {
+            "object": 2,
+            "raw_dylibs": 373
+          },
+          "stable_argv": "510a0d75f4744ce2fc148a635ca5d58c7b54362405348e89c3a361bccb0bc574",
+          "target": "e2e-8945421a8b988468",
+          "tool": "gcc"
+        },
+        {
+          "argc": 415,
+          "roles": {
+            "object": 35,
+            "raw_dylibs": 23,
+            "resolution": 4
+          },
+          "stable_argv": "cbbe938797e45f7f1a79e4e246b404379f3f1b7dae6545492ec8b6f4ca1e7228",
+          "target": "e2e-8945421a8b988468",
+          "temporary_contents": {
+            "object": "472261b047cf946e5ff96def1b231f577f316ffec5dff6893b6bb621b56ee70a",
+            "object_len": 38816,
+            "raw_dylibs": [],
+            "resolution": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "resolution_len": 0
+          },
+          "tool": "stock-wild"
+        }
+      ]
+    },
+    "warm-parent/edit": {
+      "externs_full_byte_path_sha": "5e5632e9ee5c1b49e6d05b180cb90562f318f61ccb535baefed969e8cada9200",
+      "full_compiler_argv_sha": "9d1c612d6d2d4c7ce82a447f540511b5c2f491a0d1fb59e568021301397ac0ec",
+      "literal_externs": 73,
+      "native_complete_comparison": "8bd4ff74df1d3f2b87145d8bcd8cff92f918938a394397d4764dfd5c7e328eb0",
+      "ordered_current_bytes_path_sha": "a4650c261080a3eca05d77e3ba1b1ff2e068ff5011579eb576367ead912db945",
+      "ordered_wild_inputs": 366,
+      "root_current_object_files": 139,
+      "stable_roles": [
+        {
+          "argc": 416,
+          "roles": {
+            "object": 36,
+            "raw_dylibs": 24,
+            "resolution": 4
+          },
+          "stable_argv": "5377e2fa4c3527d14802a994c85c95ae559904db8713ca2bf4f789b76b820950",
+          "target": "e2e-8945421a8b988468",
+          "tool": "collect2"
+        },
+        {
+          "argc": 388,
+          "roles": {
+            "object": 2,
+            "raw_dylibs": 373
+          },
+          "stable_argv": "510a0d75f4744ce2fc148a635ca5d58c7b54362405348e89c3a361bccb0bc574",
+          "target": "e2e-8945421a8b988468",
+          "tool": "gcc"
+        },
+        {
+          "argc": 415,
+          "roles": {
+            "object": 35,
+            "raw_dylibs": 23,
+            "resolution": 4
+          },
+          "stable_argv": "cbbe938797e45f7f1a79e4e246b404379f3f1b7dae6545492ec8b6f4ca1e7228",
+          "target": "e2e-8945421a8b988468",
+          "temporary_contents": {
+            "object": "472261b047cf946e5ff96def1b231f577f316ffec5dff6893b6bb621b56ee70a",
+            "object_len": 38816,
+            "raw_dylibs": [],
+            "resolution": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "resolution_len": 0
+          },
+          "tool": "stock-wild"
+        }
+      ]
+    },
+    "warm-parent/recovery": {
+      "externs_full_byte_path_sha": "5e5632e9ee5c1b49e6d05b180cb90562f318f61ccb535baefed969e8cada9200",
+      "full_compiler_argv_sha": "9d1c612d6d2d4c7ce82a447f540511b5c2f491a0d1fb59e568021301397ac0ec",
+      "literal_externs": 73,
+      "native_complete_comparison": "8bd4ff74df1d3f2b87145d8bcd8cff92f918938a394397d4764dfd5c7e328eb0",
+      "ordered_current_bytes_path_sha": "a4650c261080a3eca05d77e3ba1b1ff2e068ff5011579eb576367ead912db945",
+      "ordered_wild_inputs": 366,
+      "root_current_object_files": 139,
+      "stable_roles": [
+        {
+          "argc": 416,
+          "roles": {
+            "object": 36,
+            "raw_dylibs": 24,
+            "resolution": 4
+          },
+          "stable_argv": "5377e2fa4c3527d14802a994c85c95ae559904db8713ca2bf4f789b76b820950",
+          "target": "e2e-8945421a8b988468",
+          "tool": "collect2"
+        },
+        {
+          "argc": 388,
+          "roles": {
+            "object": 2,
+            "raw_dylibs": 373
+          },
+          "stable_argv": "510a0d75f4744ce2fc148a635ca5d58c7b54362405348e89c3a361bccb0bc574",
+          "target": "e2e-8945421a8b988468",
+          "tool": "gcc"
+        },
+        {
+          "argc": 415,
+          "roles": {
+            "object": 35,
+            "raw_dylibs": 23,
+            "resolution": 4
+          },
+          "stable_argv": "cbbe938797e45f7f1a79e4e246b404379f3f1b7dae6545492ec8b6f4ca1e7228",
+          "target": "e2e-8945421a8b988468",
+          "temporary_contents": {
+            "object": "472261b047cf946e5ff96def1b231f577f316ffec5dff6893b6bb621b56ee70a",
+            "object_len": 38816,
+            "raw_dylibs": [],
+            "resolution": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "resolution_len": 0
+          },
+          "tool": "stock-wild"
+        }
+      ]
+    },
+    "warm-parent/restore": {
+      "externs_full_byte_path_sha": "5e5632e9ee5c1b49e6d05b180cb90562f318f61ccb535baefed969e8cada9200",
+      "full_compiler_argv_sha": "9d1c612d6d2d4c7ce82a447f540511b5c2f491a0d1fb59e568021301397ac0ec",
+      "literal_externs": 73,
+      "native_complete_comparison": "254e7d16ee9803641ea486a84202184fe7a1fe4a515e98f787944351f3872061",
+      "ordered_current_bytes_path_sha": "20ad5142f686b5ce544274fa26b25af4d45291e2fad84013ed918881190b5028",
+      "ordered_wild_inputs": 366,
+      "root_current_object_files": 139,
+      "stable_roles": [
+        {
+          "argc": 416,
+          "roles": {
+            "object": 36,
+            "raw_dylibs": 24,
+            "resolution": 4
+          },
+          "stable_argv": "5377e2fa4c3527d14802a994c85c95ae559904db8713ca2bf4f789b76b820950",
+          "target": "e2e-8945421a8b988468",
+          "tool": "collect2"
+        },
+        {
+          "argc": 388,
+          "roles": {
+            "object": 2,
+            "raw_dylibs": 373
+          },
+          "stable_argv": "510a0d75f4744ce2fc148a635ca5d58c7b54362405348e89c3a361bccb0bc574",
+          "target": "e2e-8945421a8b988468",
+          "tool": "gcc"
+        },
+        {
+          "argc": 415,
+          "roles": {
+            "object": 35,
+            "raw_dylibs": 23,
+            "resolution": 4
+          },
+          "stable_argv": "cbbe938797e45f7f1a79e4e246b404379f3f1b7dae6545492ec8b6f4ca1e7228",
+          "target": "e2e-8945421a8b988468",
+          "temporary_contents": {
+            "object": "472261b047cf946e5ff96def1b231f577f316ffec5dff6893b6bb621b56ee70a",
+            "object_len": 38816,
+            "raw_dylibs": [],
+            "resolution": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "resolution_len": 0
+          },
+          "tool": "stock-wild"
+        }
+      ]
+    }
+  }
+}
