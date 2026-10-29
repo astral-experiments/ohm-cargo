@@ -1,0 +1,3960 @@
+{
+  "phase_data": {
+    "A": {
+      "child": {
+        "edit": {
+          "cargo_sha256": "6aaa263e68d2d77aeb8977166f9744f1fa8e0ea4df3216fe516355be68517bac",
+          "decisions": [
+            {
+              "blocker_changed": false,
+              "blocker_on_B": "ty_project",
+              "blocker_report_ns": 7280952341,
+              "decision": {
+                "message": "CAN skip - all deps allow early cutoff",
+                "t_ns": 9168927889
+              },
+              "id": 330,
+              "name": "ruff_benchmark",
+              "stem": "05cbcd96d2a0befa",
+              "typed_target_kind": [
+                "lib"
+              ]
+            },
+            {
+              "blocker_changed": false,
+              "blocker_on_B": "ruff_workspace",
+              "blocker_report_ns": 9226788573,
+              "decision": {
+                "message": "CAN skip - all deps allow early cutoff",
+                "t_ns": 9973983677
+              },
+              "id": 333,
+              "name": "ruff_dev",
+              "stem": "9820abbac11acab0",
+              "typed_target_kind": [
+                "bin"
+              ]
+            },
+            {
+              "blocker_changed": false,
+              "blocker_on_B": "ty_server",
+              "blocker_report_ns": 8030127804,
+              "decision": {
+                "message": "CAN skip - all deps allow early cutoff",
+                "t_ns": 8131421939
+              },
+              "id": 466,
+              "name": "ty",
+              "stem": "220cc7862f3e1306",
+              "typed_target_kind": [
+                "bin"
+              ]
+            },
+            {
+              "blocker_changed": false,
+              "blocker_on_B": "ty_ide",
+              "blocker_report_ns": 7511191495,
+              "decision": {
+                "message": "CAN skip - all deps allow early cutoff",
+                "t_ns": 7512798358
+              },
+              "id": 470,
+              "name": "ty_completion_bench",
+              "stem": "3a4e79a3902250ba",
+              "typed_target_kind": [
+                "bin"
+              ]
+            },
+            {
+              "blocker_changed": false,
+              "blocker_on_B": "ty_ide",
+              "blocker_report_ns": 7511191495,
+              "decision": {
+                "message": "CAN skip - all deps allow early cutoff",
+                "t_ns": 7512979866
+              },
+              "id": 471,
+              "name": "ty_completion_eval",
+              "stem": "e62e82fbd090fa46",
+              "typed_target_kind": [
+                "bin"
+              ]
+            }
+          ],
+          "five_candidate_early_edges": [
+            {
+              "consumer": "ruff_python_index",
+              "consumer_declared_changed": false,
+              "producer_declared_changed": false,
+              "provider": "ruff_python_ast",
+              "provider_finish_after_consumer_ns": 20186073
+            },
+            {
+              "consumer": "ruff_python_literal",
+              "consumer_declared_changed": false,
+              "producer_declared_changed": false,
+              "provider": "ruff_python_ast",
+              "provider_finish_after_consumer_ns": -9359131
+            },
+            {
+              "consumer": "ruff_graph",
+              "consumer_declared_changed": false,
+              "producer_declared_changed": false,
+              "provider": "ruff_linter",
+              "provider_finish_after_consumer_ns": 665702012
+            },
+            {
+              "consumer": "ty_test",
+              "consumer_declared_changed": false,
+              "producer_declared_changed": false,
+              "provider": "ty_python_semantic",
+              "provider_finish_after_consumer_ns": 139022276
+            },
+            {
+              "consumer": "ty_project",
+              "consumer_declared_changed": false,
+              "producer_declared_changed": false,
+              "provider": "ty_python_semantic",
+              "provider_finish_after_consumer_ns": -294475110
+            }
+          ],
+          "last_common_hash_log_ns": 9972412595,
+          "last_external_rustc": "ruff",
+          "logical_rmeta_edges": {
+            "325/ruff": [
+              "331/ruff_cache",
+              "332/ruff_db",
+              "334/ruff_diagnostics",
+              "336/ruff_graph",
+              "338/ruff_linter",
+              "341/ruff_markdown",
+              "343/ruff_notebook",
+              "344/ruff_options_metadata",
+              "345/ruff_python_ast",
+              "348/ruff_python_formatter",
+              "353/ruff_python_parser",
+              "360/ruff_server",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "368/ruff_workspace"
+            ],
+            "329/ruff_annotate_snippets": [],
+            "331/ruff_cache": [],
+            "332/ruff_db": [
+              "329/ruff_annotate_snippets",
+              "331/ruff_cache",
+              "334/ruff_diagnostics",
+              "342/ruff_memory_usage",
+              "343/ruff_notebook",
+              "345/ruff_python_ast",
+              "353/ruff_python_parser",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "478/ty_static"
+            ],
+            "334/ruff_diagnostics": [
+              "366/ruff_text_size"
+            ],
+            "335/ruff_formatter": [
+              "331/ruff_cache",
+              "366/ruff_text_size"
+            ],
+            "336/ruff_graph": [
+              "331/ruff_cache",
+              "332/ruff_db",
+              "338/ruff_linter",
+              "345/ruff_python_ast",
+              "353/ruff_python_parser",
+              "473/ty_module_resolver",
+              "477/ty_site_packages"
+            ],
+            "337/ruff_index": [],
+            "338/ruff_linter": [
+              "331/ruff_cache",
+              "332/ruff_db",
+              "334/ruff_diagnostics",
+              "343/ruff_notebook",
+              "345/ruff_python_ast",
+              "347/ruff_python_codegen",
+              "350/ruff_python_importer",
+              "351/ruff_python_index",
+              "352/ruff_python_literal",
+              "353/ruff_python_parser",
+              "354/ruff_python_semantic",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size"
+            ],
+            "341/ruff_markdown": [
+              "345/ruff_python_ast",
+              "348/ruff_python_formatter",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "368/ruff_workspace"
+            ],
+            "342/ruff_memory_usage": [],
+            "343/ruff_notebook": [
+              "334/ruff_diagnostics",
+              "363/ruff_source_file",
+              "366/ruff_text_size"
+            ],
+            "344/ruff_options_metadata": [],
+            "345/ruff_python_ast": [
+              "331/ruff_cache",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size"
+            ],
+            "346/ruff_python_ast_integration_tests": [],
+            "347/ruff_python_codegen": [
+              "345/ruff_python_ast",
+              "352/ruff_python_literal",
+              "353/ruff_python_parser",
+              "363/ruff_source_file",
+              "366/ruff_text_size"
+            ],
+            "348/ruff_python_formatter": [
+              "331/ruff_cache",
+              "332/ruff_db",
+              "335/ruff_formatter",
+              "345/ruff_python_ast",
+              "353/ruff_python_parser",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size"
+            ],
+            "350/ruff_python_importer": [
+              "334/ruff_diagnostics",
+              "345/ruff_python_ast",
+              "347/ruff_python_codegen",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size"
+            ],
+            "351/ruff_python_index": [
+              "345/ruff_python_ast",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size"
+            ],
+            "352/ruff_python_literal": [
+              "345/ruff_python_ast"
+            ],
+            "353/ruff_python_parser": [
+              "345/ruff_python_ast",
+              "357/ruff_python_trivia",
+              "366/ruff_text_size"
+            ],
+            "354/ruff_python_semantic": [
+              "331/ruff_cache",
+              "337/ruff_index",
+              "345/ruff_python_ast",
+              "353/ruff_python_parser",
+              "366/ruff_text_size"
+            ],
+            "356/ruff_python_trivia": [
+              "361/ruff_source_file",
+              "364/ruff_text_size"
+            ],
+            "357/ruff_python_trivia": [
+              "363/ruff_source_file",
+              "366/ruff_text_size"
+            ],
+            "358/ruff_python_trivia": [
+              "362/ruff_source_file",
+              "365/ruff_text_size"
+            ],
+            "359/ruff_python_trivia_integration_tests": [],
+            "360/ruff_server": [
+              "332/ruff_db",
+              "334/ruff_diagnostics",
+              "335/ruff_formatter",
+              "338/ruff_linter",
+              "341/ruff_markdown",
+              "343/ruff_notebook",
+              "345/ruff_python_ast",
+              "347/ruff_python_codegen",
+              "348/ruff_python_formatter",
+              "351/ruff_python_index",
+              "353/ruff_python_parser",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "368/ruff_workspace"
+            ],
+            "361/ruff_source_file": [
+              "364/ruff_text_size"
+            ],
+            "362/ruff_source_file": [
+              "365/ruff_text_size"
+            ],
+            "363/ruff_source_file": [
+              "366/ruff_text_size"
+            ],
+            "364/ruff_text_size": [],
+            "365/ruff_text_size": [],
+            "366/ruff_text_size": [],
+            "367/ruff_wasm": [
+              "335/ruff_formatter",
+              "338/ruff_linter",
+              "345/ruff_python_ast",
+              "347/ruff_python_codegen",
+              "348/ruff_python_formatter",
+              "351/ruff_python_index",
+              "353/ruff_python_parser",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "368/ruff_workspace"
+            ],
+            "368/ruff_workspace": [
+              "331/ruff_cache",
+              "335/ruff_formatter",
+              "336/ruff_graph",
+              "338/ruff_linter",
+              "344/ruff_options_metadata",
+              "345/ruff_python_ast",
+              "348/ruff_python_formatter",
+              "354/ruff_python_semantic",
+              "363/ruff_source_file"
+            ],
+            "465/ty": [
+              "332/ruff_db",
+              "345/ruff_python_ast",
+              "469/ty_combine",
+              "474/ty_project",
+              "475/ty_python_semantic",
+              "476/ty_server",
+              "478/ty_static"
+            ],
+            "469/ty_combine": [
+              "332/ruff_db",
+              "345/ruff_python_ast"
+            ],
+            "472/ty_ide": [
+              "332/ruff_db",
+              "334/ruff_diagnostics",
+              "337/ruff_index",
+              "342/ruff_memory_usage",
+              "345/ruff_python_ast",
+              "347/ruff_python_codegen",
+              "350/ruff_python_importer",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "473/ty_module_resolver",
+              "474/ty_project",
+              "475/ty_python_semantic",
+              "480/ty_vendored"
+            ],
+            "473/ty_module_resolver": [
+              "332/ruff_db",
+              "342/ruff_memory_usage",
+              "345/ruff_python_ast"
+            ],
+            "474/ty_project": [
+              "331/ruff_cache",
+              "332/ruff_db",
+              "334/ruff_diagnostics",
+              "342/ruff_memory_usage",
+              "344/ruff_options_metadata",
+              "345/ruff_python_ast",
+              "348/ruff_python_formatter",
+              "366/ruff_text_size",
+              "469/ty_combine",
+              "473/ty_module_resolver",
+              "475/ty_python_semantic",
+              "478/ty_static",
+              "480/ty_vendored"
+            ],
+            "475/ty_python_semantic": [
+              "332/ruff_db",
+              "334/ruff_diagnostics",
+              "337/ruff_index",
+              "342/ruff_memory_usage",
+              "345/ruff_python_ast",
+              "352/ruff_python_literal",
+              "353/ruff_python_parser",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "469/ty_combine",
+              "473/ty_module_resolver",
+              "477/ty_site_packages"
+            ],
+            "476/ty_server": [
+              "332/ruff_db",
+              "334/ruff_diagnostics",
+              "343/ruff_notebook",
+              "345/ruff_python_ast",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "469/ty_combine",
+              "472/ty_ide",
+              "473/ty_module_resolver",
+              "474/ty_project",
+              "475/ty_python_semantic"
+            ],
+            "477/ty_site_packages": [
+              "329/ruff_annotate_snippets",
+              "332/ruff_db",
+              "345/ruff_python_ast",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "478/ty_static"
+            ],
+            "478/ty_static": [],
+            "479/ty_test": [
+              "332/ruff_db",
+              "334/ruff_diagnostics",
+              "337/ruff_index",
+              "343/ruff_notebook",
+              "345/ruff_python_ast",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "473/ty_module_resolver",
+              "475/ty_python_semantic",
+              "478/ty_static",
+              "480/ty_vendored"
+            ],
+            "480/ty_vendored": [
+              "332/ruff_db"
+            ],
+            "483/ty_wasm": [
+              "332/ruff_db",
+              "334/ruff_diagnostics",
+              "343/ruff_notebook",
+              "348/ruff_python_formatter",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "472/ty_ide",
+              "474/ty_project",
+              "475/ty_python_semantic"
+            ]
+          },
+          "named_early_workers_prepared_dirty_reason": {
+            "ruff_graph": [
+              "TargetConfigurationChanged"
+            ],
+            "ruff_python_index": [
+              "UnitDependencyInfoChanged { unit: UnitIndex(345) }"
+            ],
+            "ruff_python_literal": [
+              "UnitDependencyInfoChanged { unit: UnitIndex(345) }"
+            ],
+            "ty_project": [
+              "TargetConfigurationChanged"
+            ],
+            "ty_test": [
+              "TargetConfigurationChanged"
+            ]
+          },
+          "parsed_rustc_roster": [
+            {
+              "name": "ruff_text_size",
+              "stem": "5a0faa714ffc56b6"
+            },
+            {
+              "name": "ruff_text_size",
+              "stem": "3a2b8e8812da07df"
+            },
+            {
+              "name": "ruff_cache",
+              "stem": "bb6dbb47094b16b0"
+            },
+            {
+              "name": "ruff_annotate_snippets",
+              "stem": "4ffd9d905fbc5e40"
+            },
+            {
+              "name": "ruff_memory_usage",
+              "stem": "59428431e8c3a814"
+            },
+            {
+              "name": "ruff_options_metadata",
+              "stem": "ccfced84fbed7793"
+            },
+            {
+              "name": "ruff_source_file",
+              "stem": "009fa15b93a2bd13"
+            },
+            {
+              "name": "ruff_diagnostics",
+              "stem": "c171f1c44bb503de"
+            },
+            {
+              "name": "ruff_source_file",
+              "stem": "2ec7db6f473eb1e5"
+            },
+            {
+              "name": "ruff_text_size",
+              "stem": "38f4162e93a4022a"
+            },
+            {
+              "name": "ruff_python_trivia_integration_tests",
+              "stem": "d2530f7ed49dd17c"
+            },
+            {
+              "name": "ruff_python_ast_integration_tests",
+              "stem": "57b34bf98a4d68f8"
+            },
+            {
+              "name": "ruff_python_trivia",
+              "stem": "43ce869d49d6ca11"
+            },
+            {
+              "name": "ruff_notebook",
+              "stem": "06e903c03934c2c5"
+            },
+            {
+              "name": "ruff_source_file",
+              "stem": "4f0152557fbb546f"
+            },
+            {
+              "name": "ruff_python_trivia",
+              "stem": "fa7efc1211acb864"
+            },
+            {
+              "name": "ruff_python_trivia",
+              "stem": "0849debc86d13e5e"
+            },
+            {
+              "name": "ruff_macros",
+              "stem": "e6a592fe82954088"
+            },
+            {
+              "name": "ruff_macros",
+              "stem": "6f3d8375705cdcdc"
+            },
+            {
+              "name": "ty_static",
+              "stem": "905426b0db099878"
+            },
+            {
+              "name": "ruff_python_ast",
+              "stem": "58057b12cc3f5bc9"
+            },
+            {
+              "name": "ruff_index",
+              "stem": "e9e92aa0851ae5af"
+            },
+            {
+              "name": "ruff_formatter",
+              "stem": "330ed4706c67ba6b"
+            },
+            {
+              "name": "ruff_python_parser",
+              "stem": "9af75aaa8568c1c9"
+            },
+            {
+              "name": "ruff_python_literal",
+              "stem": "cd1b4e186e4b0654"
+            },
+            {
+              "name": "ruff_python_index",
+              "stem": "dcdcb0c9486a5ac5"
+            },
+            {
+              "name": "ruff_db",
+              "stem": "771afd9ee607ec01"
+            },
+            {
+              "name": "ruff_python_semantic",
+              "stem": "2ab4b957056a24cc"
+            },
+            {
+              "name": "ruff_python_codegen",
+              "stem": "1f9a2a72215c4027"
+            },
+            {
+              "name": "ruff_python_importer",
+              "stem": "d71598d6636de3a1"
+            },
+            {
+              "name": "ty_site_packages",
+              "stem": "cedd118924b293df"
+            },
+            {
+              "name": "ty_vendored",
+              "stem": "60cd7e87385ff6b8"
+            },
+            {
+              "name": "ty_combine",
+              "stem": "65a4b5b2596927cd"
+            },
+            {
+              "name": "ruff_python_formatter",
+              "stem": "8b4c7c0cd6f4804b"
+            },
+            {
+              "name": "ty_module_resolver",
+              "stem": "2cbfb595e915a706"
+            },
+            {
+              "name": "ruff_linter",
+              "stem": "e631b61e385dd7db"
+            },
+            {
+              "name": "ty_python_semantic",
+              "stem": "6b9874c016d55a10"
+            },
+            {
+              "name": "ruff_python_formatter",
+              "stem": "61e193e273fa7ca8"
+            },
+            {
+              "name": "ty_test",
+              "stem": "34ee387d202521e9"
+            },
+            {
+              "name": "ty_project",
+              "stem": "d1e4938a2bf6b7d8"
+            },
+            {
+              "name": "ty_ide",
+              "stem": "25c08e34ed57ff67"
+            },
+            {
+              "name": "ty_server",
+              "stem": "f7c7cdd9e671ca39"
+            },
+            {
+              "name": "ty_wasm",
+              "stem": "92d45d511e08142d"
+            },
+            {
+              "name": "ty",
+              "stem": "600398c29ec5640d"
+            },
+            {
+              "name": "ruff_graph",
+              "stem": "51e7264247155615"
+            },
+            {
+              "name": "ruff_workspace",
+              "stem": "364078083ce1f883"
+            },
+            {
+              "name": "ruff_markdown",
+              "stem": "49e2c23ed7a5cec8"
+            },
+            {
+              "name": "ruff_wasm",
+              "stem": "e8169e09b2ca8c64"
+            },
+            {
+              "name": "ruff_server",
+              "stem": "3c01eb82e8672bc1"
+            },
+            {
+              "name": "ruff",
+              "stem": "0c81d7558dd31166"
+            },
+            {
+              "name": "ruff",
+              "stem": "0b69f0f4ad291c90"
+            }
+          ],
+          "raw": {
+            "cargo.jsonl": "a7d2ed59ed4b8d577a60df29ec7ce7bd58f54363036cc6505360a2a00431cffe",
+            "native.json": "b03b81f6dab20892e09378133a202e9a94e893297c98f8719b2e6ad27fb675c7",
+            "status.json": "90455700845c20b66fd4c12c5e7818ffb0de8f73c303e9085c1ad09c26a30704",
+            "stderr": "9ff2f280209871ded46f99bb27d050a98774e3bf966d9bc2956915e926c1330e",
+            "summary.json": "039aba34750c17abe68cc196569ae07e7d84d97fe4f5cbb4a455040596a5f068"
+          },
+          "reported_cargo_finish_ns": 10010000000,
+          "rustc": 51,
+          "rustc_sha256": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+          "stale_mtime": [],
+          "terminal_states": {
+            "325/ruff": {
+              "local_hash": "4ad43f7cb6775dd42a0b2cb732558bd8",
+              "may_have_changed": false,
+              "t_ns": 9972412595
+            },
+            "329/ruff_annotate_snippets": {
+              "local_hash": "ecc8e4ac0ec484c7cbc0dc72daea64aa",
+              "may_have_changed": false,
+              "t_ns": 938469168
+            },
+            "331/ruff_cache": {
+              "local_hash": "44bef0f21d374b4bdc9344fb41f0fcb2",
+              "may_have_changed": false,
+              "t_ns": 897006350
+            },
+            "332/ruff_db": {
+              "local_hash": "619749a936743c6621fab55adbca630d",
+              "may_have_changed": false,
+              "t_ns": 3037307588
+            },
+            "334/ruff_diagnostics": {
+              "local_hash": "cc99fc901fd57af7c47b9e96c4b57de4",
+              "may_have_changed": false,
+              "t_ns": 975026769
+            },
+            "335/ruff_formatter": {
+              "local_hash": "d652aa395f89605a2db454edc966a4d5",
+              "may_have_changed": false,
+              "t_ns": 1831494989
+            },
+            "336/ruff_graph": {
+              "local_hash": "c56a86549af22bb88d897c9a8258adb7",
+              "may_have_changed": false,
+              "t_ns": 8501394983
+            },
+            "337/ruff_index": {
+              "local_hash": "9345c5f7f1ca55410a9b945d2ed05eb2",
+              "may_have_changed": false,
+              "t_ns": 1637197052
+            },
+            "338/ruff_linter": {
+              "local_hash": "4c616e5734e6e608ebc5011b941fdb38",
+              "may_have_changed": false,
+              "t_ns": 9167096995
+            },
+            "341/ruff_markdown": {
+              "local_hash": "6c212784971ba3e57b10b4b00cde5727",
+              "may_have_changed": false,
+              "t_ns": 9235827234
+            },
+            "342/ruff_memory_usage": {
+              "local_hash": "9c62ebf0f38d01be9c7e50e4704d7e88",
+              "may_have_changed": false,
+              "t_ns": 899363416
+            },
+            "343/ruff_notebook": {
+              "local_hash": "d42428842df30cfdbafb6221d455d53c",
+              "may_have_changed": false,
+              "t_ns": 1136221422
+            },
+            "344/ruff_options_metadata": {
+              "local_hash": "3585131fd2955a9fbc121b033501139d",
+              "may_have_changed": false,
+              "t_ns": 933435338
+            },
+            "345/ruff_python_ast": {
+              "local_hash": "e8e7908fd7669fe8489161330f7959a5",
+              "may_have_changed": false,
+              "t_ns": 2550232020
+            },
+            "346/ruff_python_ast_integration_tests": {
+              "local_hash": "30400a05849d5e490a22cea83fde5f24",
+              "may_have_changed": false,
+              "t_ns": 996575185
+            },
+            "347/ruff_python_codegen": {
+              "local_hash": "0f68ad05b7f1cc9a35dff5b1be6d3ef5",
+              "may_have_changed": false,
+              "t_ns": 2769172162
+            },
+            "348/ruff_python_formatter": {
+              "local_hash": "047824a2f1f4fd2c974b7a2f246183a2",
+              "may_have_changed": false,
+              "t_ns": 3808849670
+            },
+            "350/ruff_python_importer": {
+              "local_hash": "3a913148bc086fec209873f8ebee2ecf",
+              "may_have_changed": false,
+              "t_ns": 2830255925
+            },
+            "351/ruff_python_index": {
+              "local_hash": "11898feaafe011f35b26593deb841b80",
+              "may_have_changed": false,
+              "t_ns": 2530045947
+            },
+            "352/ruff_python_literal": {
+              "local_hash": "3d6010de8e1d94d24b247e9acb1e66b7",
+              "may_have_changed": false,
+              "t_ns": 2559591151
+            },
+            "353/ruff_python_parser": {
+              "local_hash": "c567f7e520787283cb066a4cd572f493",
+              "may_have_changed": false,
+              "t_ns": 2701846316
+            },
+            "354/ruff_python_semantic": {
+              "local_hash": "fd5b6584a8bd646a2f219bb2f1ff0df3",
+              "may_have_changed": false,
+              "t_ns": 3065163935
+            },
+            "356/ruff_python_trivia": {
+              "local_hash": "1cc8d42d4ec7fc0f97b37ed497c9d462",
+              "may_have_changed": false,
+              "t_ns": 1141192520
+            },
+            "357/ruff_python_trivia": {
+              "local_hash": "e12f2236b5e978c7ce08271b7b9dec28",
+              "may_have_changed": false,
+              "t_ns": 1045373883
+            },
+            "358/ruff_python_trivia": {
+              "local_hash": "77f098d7d88a03ab548261020354bea8",
+              "may_have_changed": false,
+              "t_ns": 1152389232
+            },
+            "359/ruff_python_trivia_integration_tests": {
+              "local_hash": "257d6352f671874101ee83b41f41caeb",
+              "may_have_changed": false,
+              "t_ns": 990452822
+            },
+            "360/ruff_server": {
+              "local_hash": "6993bc817bf73dad0a7046ef0de71e92",
+              "may_have_changed": false,
+              "t_ns": 9690973279
+            },
+            "361/ruff_source_file": {
+              "local_hash": "12e89bc7151664ab3122da5b9fcb3e76",
+              "may_have_changed": false,
+              "t_ns": 1042312141
+            },
+            "362/ruff_source_file": {
+              "local_hash": "74c088c97e3271d348e22063367a112a",
+              "may_have_changed": false,
+              "t_ns": 1076841893
+            },
+            "363/ruff_source_file": {
+              "local_hash": "2ab3ad428ad7728194e4a328caf7c121",
+              "may_have_changed": false,
+              "t_ns": 973009870
+            },
+            "364/ruff_text_size": {
+              "local_hash": "d71409218a88f3646438df5851c60407",
+              "may_have_changed": false,
+              "t_ns": 914904691
+            },
+            "365/ruff_text_size": {
+              "local_hash": "60e7b5f0097dddbe5c3e8cba51f9812f",
+              "may_have_changed": false,
+              "t_ns": 996588098
+            },
+            "366/ruff_text_size": {
+              "local_hash": "e88c6ffe8a7cdddeb5898e693263752c",
+              "may_have_changed": false,
+              "t_ns": 888063874
+            },
+            "367/ruff_wasm": {
+              "local_hash": "679f395cda2ee90a124e712b92986d2c",
+              "may_have_changed": false,
+              "t_ns": 9304515719
+            },
+            "368/ruff_workspace": {
+              "local_hash": "189464d18c12c5c00ef56ed8794e7ceb",
+              "may_have_changed": false,
+              "t_ns": 9226788573
+            },
+            "465/ty": {
+              "local_hash": "b338b28fdfd1c79078a2ae8adbde5577",
+              "may_have_changed": false,
+              "t_ns": 8129832398
+            },
+            "469/ty_combine": {
+              "local_hash": "dea82ad6413e669e9eb49bbad8d0dc9a",
+              "may_have_changed": false,
+              "t_ns": 3080991208
+            },
+            "472/ty_ide": {
+              "local_hash": "fceef12695bb1e32729cfdfed07c6520",
+              "may_have_changed": false,
+              "t_ns": 7511191495
+            },
+            "473/ty_module_resolver": {
+              "local_hash": "c5c0b1113fca0343198450976915ff41",
+              "may_have_changed": false,
+              "t_ns": 3308759852
+            },
+            "474/ty_project": {
+              "local_hash": "38aaa02775c4b9d3205eb8857f79d726",
+              "may_have_changed": false,
+              "t_ns": 7280952341
+            },
+            "475/ty_python_semantic": {
+              "local_hash": "df9d96d009cd4b71864191a35c12f0cc",
+              "may_have_changed": false,
+              "t_ns": 6986477231
+            },
+            "476/ty_server": {
+              "local_hash": "7fc0369df6b5a762e462e8ba5c191338",
+              "may_have_changed": false,
+              "t_ns": 8030127804
+            },
+            "477/ty_site_packages": {
+              "local_hash": "d8faee97dcc026768d215ef52cf6d1fa",
+              "may_have_changed": false,
+              "t_ns": 3145371364
+            },
+            "478/ty_static": {
+              "local_hash": "ee3b21af8f1388a80e570f4fe2b171ab",
+              "may_have_changed": false,
+              "t_ns": 1611777750
+            },
+            "479/ty_test": {
+              "local_hash": "41a49efde0ad9ba9d5d5c43d45400514",
+              "may_have_changed": false,
+              "t_ns": 6847454955
+            },
+            "480/ty_vendored": {
+              "local_hash": "8707b99865efca8f7d62b2b18c5009e3",
+              "may_have_changed": false,
+              "t_ns": 3076410259
+            },
+            "483/ty_wasm": {
+              "local_hash": "fe6cbcf6c58cabffb9e2260909d7dd89",
+              "may_have_changed": false,
+              "t_ns": 7769733665
+            }
+          },
+          "typed": 510,
+          "typed_dirty": 56
+        },
+        "repeat-1": {
+          "cargo_sha256": "6aaa263e68d2d77aeb8977166f9744f1fa8e0ea4df3216fe516355be68517bac",
+          "raw": {
+            "cargo.jsonl": "cc4ee093b92d843b09efe0354b80568121d60d73c639385f1d2f2aed98bca50d",
+            "native.json": "5b244e720b3f5276dd1f1aa3d46dbc86ab957535b98fb53fac36dc6387d6e6bf",
+            "status.json": "29bad7fb833ab3e48fbffb85d5c47e76057a72e298e1c33e36ad48e4ff6bf328",
+            "stderr": "056273f8db8a4d8a2084698f1b4309f5446201d7232f194449c5fc61a3f3c32d",
+            "summary.json": "e5e7c2d00e98706c7971f02e69d04bcb5cdba49962ecf70074c9b45c556f1973"
+          },
+          "rustc": 12,
+          "rustc_sha256": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+          "stale_mtime": [
+            "ruff_python_ast -> ruff_python_index"
+          ],
+          "typed": 510,
+          "typed_dirty": 21
+        },
+        "repeat-2": {
+          "cargo_sha256": "6aaa263e68d2d77aeb8977166f9744f1fa8e0ea4df3216fe516355be68517bac",
+          "raw": {
+            "cargo.jsonl": "e3eb1fa35d1ddff9af66dd1b2f908ad0c16623123ef18f75191e33afe5b2ed06",
+            "native.json": "e0622015e18a767a0637ddf7103971cf4219d876f8695c25ef70391cc2578e36",
+            "status.json": "6cb76b4abce72814d95a8caf56c89000bd5e5a1a2429913b7171defd26391737",
+            "stderr": "e386aaac2d5d7a698fd67250d630a8067eaf569086e131df7f6f7b4a836b0e94",
+            "summary.json": "fc1daa3d466b43cc10f659a70eb04ad4aa7acafe790a57f2741242b6738203e8"
+          },
+          "rustc": 1,
+          "rustc_sha256": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+          "stale_mtime": [],
+          "typed": 510,
+          "typed_dirty": 12
+        }
+      },
+      "parent": {
+        "edit": {
+          "cargo_sha256": "6aaa263e68d2d77aeb8977166f9744f1fa8e0ea4df3216fe516355be68517bac",
+          "decisions": [
+            {
+              "blocker_changed": false,
+              "blocker_on_B": "ty_project",
+              "blocker_report_ns": 7279060310,
+              "decision": {
+                "message": "CAN skip - all deps allow early cutoff",
+                "t_ns": 8711660076
+              },
+              "id": 330,
+              "name": "ruff_benchmark",
+              "stem": "05cbcd96d2a0befa",
+              "typed_target_kind": [
+                "lib"
+              ]
+            },
+            {
+              "blocker_changed": false,
+              "blocker_on_B": "ruff_workspace",
+              "blocker_report_ns": 8950176315,
+              "decision": {
+                "message": "CAN skip - all deps allow early cutoff",
+                "t_ns": 9723096618
+              },
+              "id": 333,
+              "name": "ruff_dev",
+              "stem": "9820abbac11acab0",
+              "typed_target_kind": [
+                "bin"
+              ]
+            },
+            {
+              "blocker_changed": false,
+              "blocker_on_B": "ty_server",
+              "blocker_report_ns": 8041205510,
+              "decision": {
+                "message": "CAN skip - all deps allow early cutoff",
+                "t_ns": 8175890295
+              },
+              "id": 466,
+              "name": "ty",
+              "stem": "220cc7862f3e1306",
+              "typed_target_kind": [
+                "bin"
+              ]
+            },
+            {
+              "blocker_changed": false,
+              "blocker_on_B": "ty_ide",
+              "blocker_report_ns": 7532242463,
+              "decision": {
+                "message": "CAN skip - all deps allow early cutoff",
+                "t_ns": 7534019413
+              },
+              "id": 470,
+              "name": "ty_completion_bench",
+              "stem": "3a4e79a3902250ba",
+              "typed_target_kind": [
+                "bin"
+              ]
+            },
+            {
+              "blocker_changed": false,
+              "blocker_on_B": "ty_ide",
+              "blocker_report_ns": 7532242463,
+              "decision": {
+                "message": "CAN skip - all deps allow early cutoff",
+                "t_ns": 7534302419
+              },
+              "id": 471,
+              "name": "ty_completion_eval",
+              "stem": "e62e82fbd090fa46",
+              "typed_target_kind": [
+                "bin"
+              ]
+            }
+          ],
+          "five_candidate_early_edges": [
+            {
+              "consumer": "ruff_python_index",
+              "consumer_declared_changed": false,
+              "producer_declared_changed": false,
+              "provider": "ruff_python_ast",
+              "provider_finish_after_consumer_ns": 38133831
+            },
+            {
+              "consumer": "ruff_python_literal",
+              "consumer_declared_changed": false,
+              "producer_declared_changed": false,
+              "provider": "ruff_python_ast",
+              "provider_finish_after_consumer_ns": 4207625
+            },
+            {
+              "consumer": "ruff_graph",
+              "consumer_declared_changed": false,
+              "producer_declared_changed": false,
+              "provider": "ruff_linter",
+              "provider_finish_after_consumer_ns": 438471577
+            },
+            {
+              "consumer": "ty_test",
+              "consumer_declared_changed": false,
+              "producer_declared_changed": false,
+              "provider": "ty_python_semantic",
+              "provider_finish_after_consumer_ns": 125147324
+            },
+            {
+              "consumer": "ty_project",
+              "consumer_declared_changed": false,
+              "producer_declared_changed": false,
+              "provider": "ty_python_semantic",
+              "provider_finish_after_consumer_ns": -250000025
+            }
+          ],
+          "last_common_hash_log_ns": 9721547315,
+          "last_external_rustc": "ruff",
+          "logical_rmeta_edges": {
+            "325/ruff": [
+              "331/ruff_cache",
+              "332/ruff_db",
+              "334/ruff_diagnostics",
+              "336/ruff_graph",
+              "338/ruff_linter",
+              "341/ruff_markdown",
+              "343/ruff_notebook",
+              "344/ruff_options_metadata",
+              "345/ruff_python_ast",
+              "348/ruff_python_formatter",
+              "353/ruff_python_parser",
+              "360/ruff_server",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "368/ruff_workspace"
+            ],
+            "329/ruff_annotate_snippets": [],
+            "331/ruff_cache": [],
+            "332/ruff_db": [
+              "329/ruff_annotate_snippets",
+              "331/ruff_cache",
+              "334/ruff_diagnostics",
+              "342/ruff_memory_usage",
+              "343/ruff_notebook",
+              "345/ruff_python_ast",
+              "353/ruff_python_parser",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "478/ty_static"
+            ],
+            "334/ruff_diagnostics": [
+              "366/ruff_text_size"
+            ],
+            "335/ruff_formatter": [
+              "331/ruff_cache",
+              "366/ruff_text_size"
+            ],
+            "336/ruff_graph": [
+              "331/ruff_cache",
+              "332/ruff_db",
+              "338/ruff_linter",
+              "345/ruff_python_ast",
+              "353/ruff_python_parser",
+              "473/ty_module_resolver",
+              "477/ty_site_packages"
+            ],
+            "337/ruff_index": [],
+            "338/ruff_linter": [
+              "331/ruff_cache",
+              "332/ruff_db",
+              "334/ruff_diagnostics",
+              "343/ruff_notebook",
+              "345/ruff_python_ast",
+              "347/ruff_python_codegen",
+              "350/ruff_python_importer",
+              "351/ruff_python_index",
+              "352/ruff_python_literal",
+              "353/ruff_python_parser",
+              "354/ruff_python_semantic",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size"
+            ],
+            "341/ruff_markdown": [
+              "345/ruff_python_ast",
+              "348/ruff_python_formatter",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "368/ruff_workspace"
+            ],
+            "342/ruff_memory_usage": [],
+            "343/ruff_notebook": [
+              "334/ruff_diagnostics",
+              "363/ruff_source_file",
+              "366/ruff_text_size"
+            ],
+            "344/ruff_options_metadata": [],
+            "345/ruff_python_ast": [
+              "331/ruff_cache",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size"
+            ],
+            "346/ruff_python_ast_integration_tests": [],
+            "347/ruff_python_codegen": [
+              "345/ruff_python_ast",
+              "352/ruff_python_literal",
+              "353/ruff_python_parser",
+              "363/ruff_source_file",
+              "366/ruff_text_size"
+            ],
+            "348/ruff_python_formatter": [
+              "331/ruff_cache",
+              "332/ruff_db",
+              "335/ruff_formatter",
+              "345/ruff_python_ast",
+              "353/ruff_python_parser",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size"
+            ],
+            "350/ruff_python_importer": [
+              "334/ruff_diagnostics",
+              "345/ruff_python_ast",
+              "347/ruff_python_codegen",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size"
+            ],
+            "351/ruff_python_index": [
+              "345/ruff_python_ast",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size"
+            ],
+            "352/ruff_python_literal": [
+              "345/ruff_python_ast"
+            ],
+            "353/ruff_python_parser": [
+              "345/ruff_python_ast",
+              "357/ruff_python_trivia",
+              "366/ruff_text_size"
+            ],
+            "354/ruff_python_semantic": [
+              "331/ruff_cache",
+              "337/ruff_index",
+              "345/ruff_python_ast",
+              "353/ruff_python_parser",
+              "366/ruff_text_size"
+            ],
+            "356/ruff_python_trivia": [
+              "361/ruff_source_file",
+              "364/ruff_text_size"
+            ],
+            "357/ruff_python_trivia": [
+              "363/ruff_source_file",
+              "366/ruff_text_size"
+            ],
+            "358/ruff_python_trivia": [
+              "362/ruff_source_file",
+              "365/ruff_text_size"
+            ],
+            "359/ruff_python_trivia_integration_tests": [],
+            "360/ruff_server": [
+              "332/ruff_db",
+              "334/ruff_diagnostics",
+              "335/ruff_formatter",
+              "338/ruff_linter",
+              "341/ruff_markdown",
+              "343/ruff_notebook",
+              "345/ruff_python_ast",
+              "347/ruff_python_codegen",
+              "348/ruff_python_formatter",
+              "351/ruff_python_index",
+              "353/ruff_python_parser",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "368/ruff_workspace"
+            ],
+            "361/ruff_source_file": [
+              "364/ruff_text_size"
+            ],
+            "362/ruff_source_file": [
+              "365/ruff_text_size"
+            ],
+            "363/ruff_source_file": [
+              "366/ruff_text_size"
+            ],
+            "364/ruff_text_size": [],
+            "365/ruff_text_size": [],
+            "366/ruff_text_size": [],
+            "367/ruff_wasm": [
+              "335/ruff_formatter",
+              "338/ruff_linter",
+              "345/ruff_python_ast",
+              "347/ruff_python_codegen",
+              "348/ruff_python_formatter",
+              "351/ruff_python_index",
+              "353/ruff_python_parser",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "368/ruff_workspace"
+            ],
+            "368/ruff_workspace": [
+              "331/ruff_cache",
+              "335/ruff_formatter",
+              "336/ruff_graph",
+              "338/ruff_linter",
+              "344/ruff_options_metadata",
+              "345/ruff_python_ast",
+              "348/ruff_python_formatter",
+              "354/ruff_python_semantic",
+              "363/ruff_source_file"
+            ],
+            "465/ty": [
+              "332/ruff_db",
+              "345/ruff_python_ast",
+              "469/ty_combine",
+              "474/ty_project",
+              "475/ty_python_semantic",
+              "476/ty_server",
+              "478/ty_static"
+            ],
+            "469/ty_combine": [
+              "332/ruff_db",
+              "345/ruff_python_ast"
+            ],
+            "472/ty_ide": [
+              "332/ruff_db",
+              "334/ruff_diagnostics",
+              "337/ruff_index",
+              "342/ruff_memory_usage",
+              "345/ruff_python_ast",
+              "347/ruff_python_codegen",
+              "350/ruff_python_importer",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "473/ty_module_resolver",
+              "474/ty_project",
+              "475/ty_python_semantic",
+              "480/ty_vendored"
+            ],
+            "473/ty_module_resolver": [
+              "332/ruff_db",
+              "342/ruff_memory_usage",
+              "345/ruff_python_ast"
+            ],
+            "474/ty_project": [
+              "331/ruff_cache",
+              "332/ruff_db",
+              "334/ruff_diagnostics",
+              "342/ruff_memory_usage",
+              "344/ruff_options_metadata",
+              "345/ruff_python_ast",
+              "348/ruff_python_formatter",
+              "366/ruff_text_size",
+              "469/ty_combine",
+              "473/ty_module_resolver",
+              "475/ty_python_semantic",
+              "478/ty_static",
+              "480/ty_vendored"
+            ],
+            "475/ty_python_semantic": [
+              "332/ruff_db",
+              "334/ruff_diagnostics",
+              "337/ruff_index",
+              "342/ruff_memory_usage",
+              "345/ruff_python_ast",
+              "352/ruff_python_literal",
+              "353/ruff_python_parser",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "469/ty_combine",
+              "473/ty_module_resolver",
+              "477/ty_site_packages"
+            ],
+            "476/ty_server": [
+              "332/ruff_db",
+              "334/ruff_diagnostics",
+              "343/ruff_notebook",
+              "345/ruff_python_ast",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "469/ty_combine",
+              "472/ty_ide",
+              "473/ty_module_resolver",
+              "474/ty_project",
+              "475/ty_python_semantic"
+            ],
+            "477/ty_site_packages": [
+              "329/ruff_annotate_snippets",
+              "332/ruff_db",
+              "345/ruff_python_ast",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "478/ty_static"
+            ],
+            "478/ty_static": [],
+            "479/ty_test": [
+              "332/ruff_db",
+              "334/ruff_diagnostics",
+              "337/ruff_index",
+              "343/ruff_notebook",
+              "345/ruff_python_ast",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "473/ty_module_resolver",
+              "475/ty_python_semantic",
+              "478/ty_static",
+              "480/ty_vendored"
+            ],
+            "480/ty_vendored": [
+              "332/ruff_db"
+            ],
+            "483/ty_wasm": [
+              "332/ruff_db",
+              "334/ruff_diagnostics",
+              "343/ruff_notebook",
+              "348/ruff_python_formatter",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "472/ty_ide",
+              "474/ty_project",
+              "475/ty_python_semantic"
+            ]
+          },
+          "named_early_workers_prepared_dirty_reason": {
+            "ruff_graph": [
+              "TargetConfigurationChanged"
+            ],
+            "ruff_python_index": [
+              "UnitDependencyInfoChanged { unit: UnitIndex(345) }"
+            ],
+            "ruff_python_literal": [
+              "UnitDependencyInfoChanged { unit: UnitIndex(345) }"
+            ],
+            "ty_project": [
+              "TargetConfigurationChanged"
+            ],
+            "ty_test": [
+              "TargetConfigurationChanged"
+            ]
+          },
+          "parsed_rustc_roster": [
+            {
+              "name": "ruff_text_size",
+              "stem": "3a2b8e8812da07df"
+            },
+            {
+              "name": "ruff_text_size",
+              "stem": "5a0faa714ffc56b6"
+            },
+            {
+              "name": "ruff_cache",
+              "stem": "bb6dbb47094b16b0"
+            },
+            {
+              "name": "ruff_memory_usage",
+              "stem": "59428431e8c3a814"
+            },
+            {
+              "name": "ruff_annotate_snippets",
+              "stem": "4ffd9d905fbc5e40"
+            },
+            {
+              "name": "ruff_options_metadata",
+              "stem": "ccfced84fbed7793"
+            },
+            {
+              "name": "ruff_text_size",
+              "stem": "38f4162e93a4022a"
+            },
+            {
+              "name": "ruff_source_file",
+              "stem": "2ec7db6f473eb1e5"
+            },
+            {
+              "name": "ruff_source_file",
+              "stem": "009fa15b93a2bd13"
+            },
+            {
+              "name": "ruff_diagnostics",
+              "stem": "c171f1c44bb503de"
+            },
+            {
+              "name": "ruff_python_trivia_integration_tests",
+              "stem": "d2530f7ed49dd17c"
+            },
+            {
+              "name": "ruff_python_ast_integration_tests",
+              "stem": "57b34bf98a4d68f8"
+            },
+            {
+              "name": "ruff_source_file",
+              "stem": "4f0152557fbb546f"
+            },
+            {
+              "name": "ruff_python_trivia",
+              "stem": "43ce869d49d6ca11"
+            },
+            {
+              "name": "ruff_notebook",
+              "stem": "06e903c03934c2c5"
+            },
+            {
+              "name": "ruff_python_trivia",
+              "stem": "fa7efc1211acb864"
+            },
+            {
+              "name": "ruff_python_trivia",
+              "stem": "0849debc86d13e5e"
+            },
+            {
+              "name": "ruff_macros",
+              "stem": "e6a592fe82954088"
+            },
+            {
+              "name": "ruff_macros",
+              "stem": "6f3d8375705cdcdc"
+            },
+            {
+              "name": "ty_static",
+              "stem": "905426b0db099878"
+            },
+            {
+              "name": "ruff_python_ast",
+              "stem": "58057b12cc3f5bc9"
+            },
+            {
+              "name": "ruff_formatter",
+              "stem": "330ed4706c67ba6b"
+            },
+            {
+              "name": "ruff_index",
+              "stem": "e9e92aa0851ae5af"
+            },
+            {
+              "name": "ruff_python_parser",
+              "stem": "9af75aaa8568c1c9"
+            },
+            {
+              "name": "ruff_python_literal",
+              "stem": "cd1b4e186e4b0654"
+            },
+            {
+              "name": "ruff_python_index",
+              "stem": "dcdcb0c9486a5ac5"
+            },
+            {
+              "name": "ruff_db",
+              "stem": "771afd9ee607ec01"
+            },
+            {
+              "name": "ruff_python_semantic",
+              "stem": "2ab4b957056a24cc"
+            },
+            {
+              "name": "ruff_python_codegen",
+              "stem": "1f9a2a72215c4027"
+            },
+            {
+              "name": "ruff_python_importer",
+              "stem": "d71598d6636de3a1"
+            },
+            {
+              "name": "ty_module_resolver",
+              "stem": "2cbfb595e915a706"
+            },
+            {
+              "name": "ty_site_packages",
+              "stem": "cedd118924b293df"
+            },
+            {
+              "name": "ty_vendored",
+              "stem": "60cd7e87385ff6b8"
+            },
+            {
+              "name": "ty_combine",
+              "stem": "65a4b5b2596927cd"
+            },
+            {
+              "name": "ruff_python_formatter",
+              "stem": "8b4c7c0cd6f4804b"
+            },
+            {
+              "name": "ruff_linter",
+              "stem": "e631b61e385dd7db"
+            },
+            {
+              "name": "ty_python_semantic",
+              "stem": "6b9874c016d55a10"
+            },
+            {
+              "name": "ruff_python_formatter",
+              "stem": "61e193e273fa7ca8"
+            },
+            {
+              "name": "ty_project",
+              "stem": "d1e4938a2bf6b7d8"
+            },
+            {
+              "name": "ty_test",
+              "stem": "34ee387d202521e9"
+            },
+            {
+              "name": "ty_ide",
+              "stem": "25c08e34ed57ff67"
+            },
+            {
+              "name": "ty_server",
+              "stem": "f7c7cdd9e671ca39"
+            },
+            {
+              "name": "ty_wasm",
+              "stem": "92d45d511e08142d"
+            },
+            {
+              "name": "ty",
+              "stem": "600398c29ec5640d"
+            },
+            {
+              "name": "ruff_graph",
+              "stem": "51e7264247155615"
+            },
+            {
+              "name": "ruff_workspace",
+              "stem": "364078083ce1f883"
+            },
+            {
+              "name": "ruff_markdown",
+              "stem": "49e2c23ed7a5cec8"
+            },
+            {
+              "name": "ruff_wasm",
+              "stem": "e8169e09b2ca8c64"
+            },
+            {
+              "name": "ruff_server",
+              "stem": "3c01eb82e8672bc1"
+            },
+            {
+              "name": "ruff",
+              "stem": "0c81d7558dd31166"
+            },
+            {
+              "name": "ruff",
+              "stem": "0b69f0f4ad291c90"
+            }
+          ],
+          "raw": {
+            "cargo.jsonl": "5deed3e931374d13cae2d3f18fa99d6467828a94e4d11f38b40fc9121f87d0e6",
+            "native.json": "1fc2f8494c9963fad7112c6e405e9befe5f6ab260536eb81f87d439e7479da17",
+            "status.json": "b878a7407fc5842dfa0a73bb7858610ca31008651bf57af8628870c1f0634612",
+            "stderr": "b701afb37c08bdd477d00b0501cc9fca42a52646d9e17e8bc1db6ce3d3a4302f",
+            "summary.json": "dfc26f7360e994ca9b8cfb6e9bb2d7ff8b0ada07217e2a1afbab81e6a2e5efce"
+          },
+          "reported_cargo_finish_ns": 9770000000,
+          "rustc": 51,
+          "rustc_sha256": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+          "stale_mtime": [],
+          "terminal_states": {
+            "325/ruff": {
+              "local_hash": "4ad43f7cb6775dd42a0b2cb732558bd8",
+              "may_have_changed": false,
+              "t_ns": 9721547315
+            },
+            "329/ruff_annotate_snippets": {
+              "local_hash": "ecc8e4ac0ec484c7cbc0dc72daea64aa",
+              "may_have_changed": false,
+              "t_ns": 919606047
+            },
+            "331/ruff_cache": {
+              "local_hash": "44bef0f21d374b4bdc9344fb41f0fcb2",
+              "may_have_changed": false,
+              "t_ns": 887094951
+            },
+            "332/ruff_db": {
+              "local_hash": "619749a936743c6621fab55adbca630d",
+              "may_have_changed": false,
+              "t_ns": 3047948584
+            },
+            "334/ruff_diagnostics": {
+              "local_hash": "cc99fc901fd57af7c47b9e96c4b57de4",
+              "may_have_changed": false,
+              "t_ns": 979608972
+            },
+            "335/ruff_formatter": {
+              "local_hash": "d652aa395f89605a2db454edc966a4d5",
+              "may_have_changed": false,
+              "t_ns": 1826012837
+            },
+            "336/ruff_graph": {
+              "local_hash": "c56a86549af22bb88d897c9a8258adb7",
+              "may_have_changed": false,
+              "t_ns": 8271544028
+            },
+            "337/ruff_index": {
+              "local_hash": "9345c5f7f1ca55410a9b945d2ed05eb2",
+              "may_have_changed": false,
+              "t_ns": 1633214124
+            },
+            "338/ruff_linter": {
+              "local_hash": "4c616e5734e6e608ebc5011b941fdb38",
+              "may_have_changed": false,
+              "t_ns": 8710015605
+            },
+            "341/ruff_markdown": {
+              "local_hash": "6c212784971ba3e57b10b4b00cde5727",
+              "may_have_changed": false,
+              "t_ns": 8992106804
+            },
+            "342/ruff_memory_usage": {
+              "local_hash": "9c62ebf0f38d01be9c7e50e4704d7e88",
+              "may_have_changed": false,
+              "t_ns": 869647353
+            },
+            "343/ruff_notebook": {
+              "local_hash": "d42428842df30cfdbafb6221d455d53c",
+              "may_have_changed": false,
+              "t_ns": 1118687173
+            },
+            "344/ruff_options_metadata": {
+              "local_hash": "3585131fd2955a9fbc121b033501139d",
+              "may_have_changed": false,
+              "t_ns": 890333406
+            },
+            "345/ruff_python_ast": {
+              "local_hash": "e8e7908fd7669fe8489161330f7959a5",
+              "may_have_changed": false,
+              "t_ns": 2565027745
+            },
+            "346/ruff_python_ast_integration_tests": {
+              "local_hash": "30400a05849d5e490a22cea83fde5f24",
+              "may_have_changed": false,
+              "t_ns": 957065278
+            },
+            "347/ruff_python_codegen": {
+              "local_hash": "0f68ad05b7f1cc9a35dff5b1be6d3ef5",
+              "may_have_changed": false,
+              "t_ns": 2770118485
+            },
+            "348/ruff_python_formatter": {
+              "local_hash": "047824a2f1f4fd2c974b7a2f246183a2",
+              "may_have_changed": false,
+              "t_ns": 3918756495
+            },
+            "350/ruff_python_importer": {
+              "local_hash": "3a913148bc086fec209873f8ebee2ecf",
+              "may_have_changed": false,
+              "t_ns": 2830136448
+            },
+            "351/ruff_python_index": {
+              "local_hash": "11898feaafe011f35b26593deb841b80",
+              "may_have_changed": false,
+              "t_ns": 2526893914
+            },
+            "352/ruff_python_literal": {
+              "local_hash": "3d6010de8e1d94d24b247e9acb1e66b7",
+              "may_have_changed": false,
+              "t_ns": 2560820120
+            },
+            "353/ruff_python_parser": {
+              "local_hash": "c567f7e520787283cb066a4cd572f493",
+              "may_have_changed": false,
+              "t_ns": 2706771135
+            },
+            "354/ruff_python_semantic": {
+              "local_hash": "fd5b6584a8bd646a2f219bb2f1ff0df3",
+              "may_have_changed": false,
+              "t_ns": 3053387876
+            },
+            "356/ruff_python_trivia": {
+              "local_hash": "1cc8d42d4ec7fc0f97b37ed497c9d462",
+              "may_have_changed": false,
+              "t_ns": 1125872817
+            },
+            "357/ruff_python_trivia": {
+              "local_hash": "e12f2236b5e978c7ce08271b7b9dec28",
+              "may_have_changed": false,
+              "t_ns": 1045196005
+            },
+            "358/ruff_python_trivia": {
+              "local_hash": "77f098d7d88a03ab548261020354bea8",
+              "may_have_changed": false,
+              "t_ns": 1079572841
+            },
+            "359/ruff_python_trivia_integration_tests": {
+              "local_hash": "257d6352f671874101ee83b41f41caeb",
+              "may_have_changed": false,
+              "t_ns": 949592248
+            },
+            "360/ruff_server": {
+              "local_hash": "6993bc817bf73dad0a7046ef0de71e92",
+              "may_have_changed": false,
+              "t_ns": 9427309912
+            },
+            "361/ruff_source_file": {
+              "local_hash": "12e89bc7151664ab3122da5b9fcb3e76",
+              "may_have_changed": false,
+              "t_ns": 1018780535
+            },
+            "362/ruff_source_file": {
+              "local_hash": "74c088c97e3271d348e22063367a112a",
+              "may_have_changed": false,
+              "t_ns": 1001209920
+            },
+            "363/ruff_source_file": {
+              "local_hash": "2ab3ad428ad7728194e4a328caf7c121",
+              "may_have_changed": false,
+              "t_ns": 978427602
+            },
+            "364/ruff_text_size": {
+              "local_hash": "d71409218a88f3646438df5851c60407",
+              "may_have_changed": false,
+              "t_ns": 890418817
+            },
+            "365/ruff_text_size": {
+              "local_hash": "60e7b5f0097dddbe5c3e8cba51f9812f",
+              "may_have_changed": false,
+              "t_ns": 931398535
+            },
+            "366/ruff_text_size": {
+              "local_hash": "e88c6ffe8a7cdddeb5898e693263752c",
+              "may_have_changed": false,
+              "t_ns": 871683221
+            },
+            "367/ruff_wasm": {
+              "local_hash": "679f395cda2ee90a124e712b92986d2c",
+              "may_have_changed": false,
+              "t_ns": 9059179681
+            },
+            "368/ruff_workspace": {
+              "local_hash": "189464d18c12c5c00ef56ed8794e7ceb",
+              "may_have_changed": false,
+              "t_ns": 8950176315
+            },
+            "465/ty": {
+              "local_hash": "b338b28fdfd1c79078a2ae8adbde5577",
+              "may_have_changed": false,
+              "t_ns": 8173789452
+            },
+            "469/ty_combine": {
+              "local_hash": "dea82ad6413e669e9eb49bbad8d0dc9a",
+              "may_have_changed": false,
+              "t_ns": 3093612257
+            },
+            "472/ty_ide": {
+              "local_hash": "fceef12695bb1e32729cfdfed07c6520",
+              "may_have_changed": false,
+              "t_ns": 7532242463
+            },
+            "473/ty_module_resolver": {
+              "local_hash": "c5c0b1113fca0343198450976915ff41",
+              "may_have_changed": false,
+              "t_ns": 3315657654
+            },
+            "474/ty_project": {
+              "local_hash": "38aaa02775c4b9d3205eb8857f79d726",
+              "may_have_changed": false,
+              "t_ns": 7279060310
+            },
+            "475/ty_python_semantic": {
+              "local_hash": "df9d96d009cd4b71864191a35c12f0cc",
+              "may_have_changed": false,
+              "t_ns": 7029060285
+            },
+            "476/ty_server": {
+              "local_hash": "7fc0369df6b5a762e462e8ba5c191338",
+              "may_have_changed": false,
+              "t_ns": 8041205510
+            },
+            "477/ty_site_packages": {
+              "local_hash": "d8faee97dcc026768d215ef52cf6d1fa",
+              "may_have_changed": false,
+              "t_ns": 3147551382
+            },
+            "478/ty_static": {
+              "local_hash": "ee3b21af8f1388a80e570f4fe2b171ab",
+              "may_have_changed": false,
+              "t_ns": 1596151803
+            },
+            "479/ty_test": {
+              "local_hash": "41a49efde0ad9ba9d5d5c43d45400514",
+              "may_have_changed": false,
+              "t_ns": 6903912961
+            },
+            "480/ty_vendored": {
+              "local_hash": "8707b99865efca8f7d62b2b18c5009e3",
+              "may_have_changed": false,
+              "t_ns": 3092560483
+            },
+            "483/ty_wasm": {
+              "local_hash": "fe6cbcf6c58cabffb9e2260909d7dd89",
+              "may_have_changed": false,
+              "t_ns": 7785035830
+            }
+          },
+          "typed": 510,
+          "typed_dirty": 56
+        },
+        "repeat-1": {
+          "cargo_sha256": "6aaa263e68d2d77aeb8977166f9744f1fa8e0ea4df3216fe516355be68517bac",
+          "raw": {
+            "cargo.jsonl": "738deb3ffaa0ab616164e353bd404527714c1baf3e90a1a1c2460ab9dd051246",
+            "native.json": "39d7f2e27ed3cd20820ca0f916324d2f1122ebed1cf80f25da259230fc394354",
+            "status.json": "b82a997205d076374e2b55f6bececc4a78a998be75f78f3e06b4e001ed3908c0",
+            "stderr": "034fef3ae358274e56cebf7a7e2ceab1d5b1e77941c0a2ccfa2074a832a9f272",
+            "summary.json": "97ae3026b3ec6ce7730a7484cf8987b58fa188bec2475579327a57af74f848cb"
+          },
+          "rustc": 24,
+          "rustc_sha256": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+          "stale_mtime": [
+            "ruff_python_ast -> ruff_python_index",
+            "ruff_python_ast -> ruff_python_literal"
+          ],
+          "typed": 510,
+          "typed_dirty": 24
+        },
+        "repeat-2": {
+          "cargo_sha256": "6aaa263e68d2d77aeb8977166f9744f1fa8e0ea4df3216fe516355be68517bac",
+          "raw": {
+            "cargo.jsonl": "b86180027a085fdf6e243c048d84ea1519798ac2a08b120a2752c4e639082526",
+            "native.json": "47cacc47c1b85bdf5d61bba13206bde6e0e9d9dc238acf2a880727d2909e517f",
+            "status.json": "8144182b4dc18a504ba2f8ceb6326359ee14af6ce370d24a43bfb4f166ccc3e9",
+            "stderr": "5cc246a4fcdd0224c394bff56493aee844ba98a1f751fffebcdec5235c00b716",
+            "summary.json": "ae6833362163dd774490801fa70c1224ade236a93e55afb8779e64b3717a99e5"
+          },
+          "rustc": 1,
+          "rustc_sha256": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+          "stale_mtime": [],
+          "typed": 510,
+          "typed_dirty": 12
+        }
+      }
+    },
+    "B": {
+      "child": {
+        "edit": {
+          "cargo_sha256": "2eb7e548957363bfb5e4341ce1bfc312f5f5b875f881ae3d3a478531e0ddd76d",
+          "decisions": [
+            {
+              "argv_sha256": "4c2937300307d0c23b0a6665fd341cd62ab0446e8e3acc423747249628b4deab",
+              "blocker_changed": true,
+              "blocker_on_B": "ty_project",
+              "blocker_report_ns": 10829519181,
+              "decision": {
+                "message": "CANNOT skip - dep 'ty_project' has build_state=BuiltChanged",
+                "t_ns": 12084203886
+              },
+              "direct_input": [
+                "libty_project-d1e4938a2bf6b7d8.rmeta"
+              ],
+              "id": 330,
+              "job_final_hash_log_ns": 12212581465,
+              "name": "ruff_benchmark",
+              "stem": "05cbcd96d2a0befa",
+              "typed_target_kind": [
+                "lib"
+              ]
+            },
+            {
+              "argv_sha256": "56ba57409370b928b8fe1c96f24860da6a0bdc81848df452a99b90b387a28d75",
+              "blocker_changed": true,
+              "blocker_on_B": "ruff_workspace",
+              "blocker_report_ns": 12306599246,
+              "decision": {
+                "message": "CANNOT skip - dep 'ruff_workspace' has build_state=BuiltChanged",
+                "t_ns": 13107204191
+              },
+              "direct_input": [
+                "libruff_workspace-364078083ce1f883.rmeta"
+              ],
+              "id": 333,
+              "name": "ruff_dev",
+              "stem": "9820abbac11acab0",
+              "typed_target_kind": [
+                "bin"
+              ]
+            },
+            {
+              "argv_sha256": "95eaef51469f0fe421b0c3addec1e03043e558ad1c8bb0a688314973f75cd8ef",
+              "blocker_changed": true,
+              "blocker_on_B": "ty_server",
+              "blocker_report_ns": 11636944033,
+              "decision": {
+                "message": "CANNOT skip - dep 'ty_server' has build_state=BuiltChanged",
+                "t_ns": 11751033222
+              },
+              "direct_input": [
+                "libty_server-f7c7cdd9e671ca39.rmeta"
+              ],
+              "id": 466,
+              "name": "ty",
+              "stem": "220cc7862f3e1306",
+              "typed_target_kind": [
+                "bin"
+              ]
+            },
+            {
+              "argv_sha256": "8ce74e1ad77fe8c241e5732949bd440a9fea23b93d297f944b85de94fd445429",
+              "blocker_changed": true,
+              "blocker_on_B": "ty_ide",
+              "blocker_report_ns": 11082599711,
+              "decision": {
+                "message": "CANNOT skip - dep 'ty_ide' has build_state=BuiltChanged",
+                "t_ns": 11085394697
+              },
+              "direct_input": [
+                "libty_ide-25c08e34ed57ff67.rmeta"
+              ],
+              "id": 470,
+              "name": "ty_completion_bench",
+              "stem": "3a4e79a3902250ba",
+              "typed_target_kind": [
+                "bin"
+              ]
+            },
+            {
+              "argv_sha256": "a648f35bd3471a94192dc6b1687b3ddda545dfd96d8c18f237c3f5a9e4007792",
+              "blocker_changed": true,
+              "blocker_on_B": "ty_ide",
+              "blocker_report_ns": 11082599711,
+              "decision": {
+                "message": "CANNOT skip - dep 'ty_ide' has build_state=BuiltChanged",
+                "t_ns": 11085277903
+              },
+              "direct_input": [
+                "libty_ide-25c08e34ed57ff67.rmeta"
+              ],
+              "id": 471,
+              "name": "ty_completion_eval",
+              "stem": "e62e82fbd090fa46",
+              "typed_target_kind": [
+                "bin"
+              ]
+            }
+          ],
+          "five_candidate_early_edges": [
+            {
+              "consumer": "ruff_python_index",
+              "consumer_declared_changed": true,
+              "producer_declared_changed": false,
+              "provider": "ruff_python_ast",
+              "provider_finish_after_consumer_ns": 22571713
+            },
+            {
+              "consumer": "ruff_python_literal",
+              "consumer_declared_changed": false,
+              "producer_declared_changed": false,
+              "provider": "ruff_python_ast",
+              "provider_finish_after_consumer_ns": -21071674
+            },
+            {
+              "consumer": "ruff_graph",
+              "consumer_declared_changed": true,
+              "producer_declared_changed": true,
+              "provider": "ruff_linter",
+              "provider_finish_after_consumer_ns": 473644496
+            },
+            {
+              "consumer": "ty_test",
+              "consumer_declared_changed": true,
+              "producer_declared_changed": false,
+              "provider": "ty_python_semantic",
+              "provider_finish_after_consumer_ns": 600376105
+            },
+            {
+              "consumer": "ty_project",
+              "consumer_declared_changed": true,
+              "producer_declared_changed": false,
+              "provider": "ty_python_semantic",
+              "provider_finish_after_consumer_ns": 179488384
+            }
+          ],
+          "last_common_hash_log_ns": 13104974670,
+          "last_external_rustc": "ruff_dev",
+          "logical_rmeta_edges": {
+            "325/ruff": [
+              "331/ruff_cache",
+              "332/ruff_db",
+              "334/ruff_diagnostics",
+              "336/ruff_graph",
+              "338/ruff_linter",
+              "341/ruff_markdown",
+              "343/ruff_notebook",
+              "344/ruff_options_metadata",
+              "345/ruff_python_ast",
+              "348/ruff_python_formatter",
+              "353/ruff_python_parser",
+              "360/ruff_server",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "368/ruff_workspace"
+            ],
+            "329/ruff_annotate_snippets": [],
+            "330/ruff_benchmark": [
+              "332/ruff_db",
+              "338/ruff_linter",
+              "345/ruff_python_ast",
+              "348/ruff_python_formatter",
+              "353/ruff_python_parser",
+              "357/ruff_python_trivia",
+              "474/ty_project"
+            ],
+            "331/ruff_cache": [],
+            "332/ruff_db": [
+              "329/ruff_annotate_snippets",
+              "331/ruff_cache",
+              "334/ruff_diagnostics",
+              "342/ruff_memory_usage",
+              "343/ruff_notebook",
+              "345/ruff_python_ast",
+              "353/ruff_python_parser",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "478/ty_static"
+            ],
+            "333/ruff_dev": [
+              "325/ruff",
+              "335/ruff_formatter",
+              "338/ruff_linter",
+              "343/ruff_notebook",
+              "344/ruff_options_metadata",
+              "345/ruff_python_ast",
+              "347/ruff_python_codegen",
+              "348/ruff_python_formatter",
+              "353/ruff_python_parser",
+              "357/ruff_python_trivia",
+              "368/ruff_workspace",
+              "465/ty",
+              "474/ty_project",
+              "475/ty_python_semantic",
+              "478/ty_static"
+            ],
+            "334/ruff_diagnostics": [
+              "366/ruff_text_size"
+            ],
+            "335/ruff_formatter": [
+              "331/ruff_cache",
+              "366/ruff_text_size"
+            ],
+            "336/ruff_graph": [
+              "331/ruff_cache",
+              "332/ruff_db",
+              "338/ruff_linter",
+              "345/ruff_python_ast",
+              "353/ruff_python_parser",
+              "473/ty_module_resolver",
+              "477/ty_site_packages"
+            ],
+            "337/ruff_index": [],
+            "338/ruff_linter": [
+              "331/ruff_cache",
+              "332/ruff_db",
+              "334/ruff_diagnostics",
+              "343/ruff_notebook",
+              "345/ruff_python_ast",
+              "347/ruff_python_codegen",
+              "350/ruff_python_importer",
+              "351/ruff_python_index",
+              "352/ruff_python_literal",
+              "353/ruff_python_parser",
+              "354/ruff_python_semantic",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size"
+            ],
+            "341/ruff_markdown": [
+              "345/ruff_python_ast",
+              "348/ruff_python_formatter",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "368/ruff_workspace"
+            ],
+            "342/ruff_memory_usage": [],
+            "343/ruff_notebook": [
+              "334/ruff_diagnostics",
+              "363/ruff_source_file",
+              "366/ruff_text_size"
+            ],
+            "344/ruff_options_metadata": [],
+            "345/ruff_python_ast": [
+              "331/ruff_cache",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size"
+            ],
+            "346/ruff_python_ast_integration_tests": [],
+            "347/ruff_python_codegen": [
+              "345/ruff_python_ast",
+              "352/ruff_python_literal",
+              "353/ruff_python_parser",
+              "363/ruff_source_file",
+              "366/ruff_text_size"
+            ],
+            "348/ruff_python_formatter": [
+              "331/ruff_cache",
+              "332/ruff_db",
+              "335/ruff_formatter",
+              "345/ruff_python_ast",
+              "353/ruff_python_parser",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size"
+            ],
+            "350/ruff_python_importer": [
+              "334/ruff_diagnostics",
+              "345/ruff_python_ast",
+              "347/ruff_python_codegen",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size"
+            ],
+            "351/ruff_python_index": [
+              "345/ruff_python_ast",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size"
+            ],
+            "352/ruff_python_literal": [
+              "345/ruff_python_ast"
+            ],
+            "353/ruff_python_parser": [
+              "345/ruff_python_ast",
+              "357/ruff_python_trivia",
+              "366/ruff_text_size"
+            ],
+            "354/ruff_python_semantic": [
+              "331/ruff_cache",
+              "337/ruff_index",
+              "345/ruff_python_ast",
+              "353/ruff_python_parser",
+              "366/ruff_text_size"
+            ],
+            "356/ruff_python_trivia": [
+              "361/ruff_source_file",
+              "364/ruff_text_size"
+            ],
+            "357/ruff_python_trivia": [
+              "363/ruff_source_file",
+              "366/ruff_text_size"
+            ],
+            "358/ruff_python_trivia": [
+              "362/ruff_source_file",
+              "365/ruff_text_size"
+            ],
+            "359/ruff_python_trivia_integration_tests": [],
+            "360/ruff_server": [
+              "332/ruff_db",
+              "334/ruff_diagnostics",
+              "335/ruff_formatter",
+              "338/ruff_linter",
+              "341/ruff_markdown",
+              "343/ruff_notebook",
+              "345/ruff_python_ast",
+              "347/ruff_python_codegen",
+              "348/ruff_python_formatter",
+              "351/ruff_python_index",
+              "353/ruff_python_parser",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "368/ruff_workspace"
+            ],
+            "361/ruff_source_file": [
+              "364/ruff_text_size"
+            ],
+            "362/ruff_source_file": [
+              "365/ruff_text_size"
+            ],
+            "363/ruff_source_file": [
+              "366/ruff_text_size"
+            ],
+            "364/ruff_text_size": [],
+            "365/ruff_text_size": [],
+            "366/ruff_text_size": [],
+            "367/ruff_wasm": [
+              "335/ruff_formatter",
+              "338/ruff_linter",
+              "345/ruff_python_ast",
+              "347/ruff_python_codegen",
+              "348/ruff_python_formatter",
+              "351/ruff_python_index",
+              "353/ruff_python_parser",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "368/ruff_workspace"
+            ],
+            "368/ruff_workspace": [
+              "331/ruff_cache",
+              "335/ruff_formatter",
+              "336/ruff_graph",
+              "338/ruff_linter",
+              "344/ruff_options_metadata",
+              "345/ruff_python_ast",
+              "348/ruff_python_formatter",
+              "354/ruff_python_semantic",
+              "363/ruff_source_file"
+            ],
+            "465/ty": [
+              "332/ruff_db",
+              "345/ruff_python_ast",
+              "469/ty_combine",
+              "474/ty_project",
+              "475/ty_python_semantic",
+              "476/ty_server",
+              "478/ty_static"
+            ],
+            "466/ty": [
+              "332/ruff_db",
+              "345/ruff_python_ast",
+              "465/ty",
+              "469/ty_combine",
+              "474/ty_project",
+              "475/ty_python_semantic",
+              "476/ty_server",
+              "478/ty_static"
+            ],
+            "469/ty_combine": [
+              "332/ruff_db",
+              "345/ruff_python_ast"
+            ],
+            "470/ty_completion_bench": [
+              "332/ruff_db",
+              "366/ruff_text_size",
+              "472/ty_ide",
+              "474/ty_project"
+            ],
+            "471/ty_completion_eval": [
+              "332/ruff_db",
+              "366/ruff_text_size",
+              "472/ty_ide",
+              "473/ty_module_resolver",
+              "474/ty_project"
+            ],
+            "472/ty_ide": [
+              "332/ruff_db",
+              "334/ruff_diagnostics",
+              "337/ruff_index",
+              "342/ruff_memory_usage",
+              "345/ruff_python_ast",
+              "347/ruff_python_codegen",
+              "350/ruff_python_importer",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "473/ty_module_resolver",
+              "474/ty_project",
+              "475/ty_python_semantic",
+              "480/ty_vendored"
+            ],
+            "473/ty_module_resolver": [
+              "332/ruff_db",
+              "342/ruff_memory_usage",
+              "345/ruff_python_ast"
+            ],
+            "474/ty_project": [
+              "331/ruff_cache",
+              "332/ruff_db",
+              "334/ruff_diagnostics",
+              "342/ruff_memory_usage",
+              "344/ruff_options_metadata",
+              "345/ruff_python_ast",
+              "348/ruff_python_formatter",
+              "366/ruff_text_size",
+              "469/ty_combine",
+              "473/ty_module_resolver",
+              "475/ty_python_semantic",
+              "478/ty_static",
+              "480/ty_vendored"
+            ],
+            "475/ty_python_semantic": [
+              "332/ruff_db",
+              "334/ruff_diagnostics",
+              "337/ruff_index",
+              "342/ruff_memory_usage",
+              "345/ruff_python_ast",
+              "352/ruff_python_literal",
+              "353/ruff_python_parser",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "469/ty_combine",
+              "473/ty_module_resolver",
+              "477/ty_site_packages"
+            ],
+            "476/ty_server": [
+              "332/ruff_db",
+              "334/ruff_diagnostics",
+              "343/ruff_notebook",
+              "345/ruff_python_ast",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "469/ty_combine",
+              "472/ty_ide",
+              "473/ty_module_resolver",
+              "474/ty_project",
+              "475/ty_python_semantic"
+            ],
+            "477/ty_site_packages": [
+              "329/ruff_annotate_snippets",
+              "332/ruff_db",
+              "345/ruff_python_ast",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "478/ty_static"
+            ],
+            "478/ty_static": [],
+            "479/ty_test": [
+              "332/ruff_db",
+              "334/ruff_diagnostics",
+              "337/ruff_index",
+              "343/ruff_notebook",
+              "345/ruff_python_ast",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "473/ty_module_resolver",
+              "475/ty_python_semantic",
+              "478/ty_static",
+              "480/ty_vendored"
+            ],
+            "480/ty_vendored": [
+              "332/ruff_db"
+            ],
+            "483/ty_wasm": [
+              "332/ruff_db",
+              "334/ruff_diagnostics",
+              "343/ruff_notebook",
+              "348/ruff_python_formatter",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "472/ty_ide",
+              "474/ty_project",
+              "475/ty_python_semantic"
+            ]
+          },
+          "named_early_workers_prepared_dirty_reason": {
+            "ruff_graph": [
+              "TargetConfigurationChanged"
+            ],
+            "ruff_python_index": [
+              "UnitDependencyInfoChanged { unit: UnitIndex(345) }"
+            ],
+            "ruff_python_literal": [
+              "UnitDependencyInfoChanged { unit: UnitIndex(345) }"
+            ],
+            "ty_project": [
+              "TargetConfigurationChanged"
+            ],
+            "ty_test": [
+              "TargetConfigurationChanged"
+            ]
+          },
+          "parsed_rustc_roster": [
+            {
+              "name": "ruff_text_size",
+              "stem": "3a2b8e8812da07df"
+            },
+            {
+              "name": "ruff_text_size",
+              "stem": "5a0faa714ffc56b6"
+            },
+            {
+              "name": "ruff_cache",
+              "stem": "bb6dbb47094b16b0"
+            },
+            {
+              "name": "ruff_annotate_snippets",
+              "stem": "4ffd9d905fbc5e40"
+            },
+            {
+              "name": "ruff_memory_usage",
+              "stem": "59428431e8c3a814"
+            },
+            {
+              "name": "ruff_source_file",
+              "stem": "009fa15b93a2bd13"
+            },
+            {
+              "name": "ruff_diagnostics",
+              "stem": "c171f1c44bb503de"
+            },
+            {
+              "name": "ruff_options_metadata",
+              "stem": "ccfced84fbed7793"
+            },
+            {
+              "name": "ruff_source_file",
+              "stem": "2ec7db6f473eb1e5"
+            },
+            {
+              "name": "ruff_python_trivia",
+              "stem": "43ce869d49d6ca11"
+            },
+            {
+              "name": "ruff_notebook",
+              "stem": "06e903c03934c2c5"
+            },
+            {
+              "name": "ruff_text_size",
+              "stem": "38f4162e93a4022a"
+            },
+            {
+              "name": "ruff_python_trivia_integration_tests",
+              "stem": "d2530f7ed49dd17c"
+            },
+            {
+              "name": "ruff_python_ast_integration_tests",
+              "stem": "57b34bf98a4d68f8"
+            },
+            {
+              "name": "ruff_python_trivia",
+              "stem": "fa7efc1211acb864"
+            },
+            {
+              "name": "ruff_source_file",
+              "stem": "4f0152557fbb546f"
+            },
+            {
+              "name": "ruff_python_trivia",
+              "stem": "0849debc86d13e5e"
+            },
+            {
+              "name": "ruff_macros",
+              "stem": "6f3d8375705cdcdc"
+            },
+            {
+              "name": "ruff_macros",
+              "stem": "e6a592fe82954088"
+            },
+            {
+              "name": "ty_static",
+              "stem": "905426b0db099878"
+            },
+            {
+              "name": "ruff_formatter",
+              "stem": "330ed4706c67ba6b"
+            },
+            {
+              "name": "ruff_python_ast",
+              "stem": "58057b12cc3f5bc9"
+            },
+            {
+              "name": "ruff_index",
+              "stem": "e9e92aa0851ae5af"
+            },
+            {
+              "name": "ruff_python_parser",
+              "stem": "9af75aaa8568c1c9"
+            },
+            {
+              "name": "ruff_python_literal",
+              "stem": "cd1b4e186e4b0654"
+            },
+            {
+              "name": "ruff_python_index",
+              "stem": "dcdcb0c9486a5ac5"
+            },
+            {
+              "name": "ruff_python_codegen",
+              "stem": "1f9a2a72215c4027"
+            },
+            {
+              "name": "ruff_python_semantic",
+              "stem": "2ab4b957056a24cc"
+            },
+            {
+              "name": "ruff_db",
+              "stem": "771afd9ee607ec01"
+            },
+            {
+              "name": "ruff_python_importer",
+              "stem": "d71598d6636de3a1"
+            },
+            {
+              "name": "ty_module_resolver",
+              "stem": "2cbfb595e915a706"
+            },
+            {
+              "name": "ty_combine",
+              "stem": "65a4b5b2596927cd"
+            },
+            {
+              "name": "ruff_python_formatter",
+              "stem": "8b4c7c0cd6f4804b"
+            },
+            {
+              "name": "ty_vendored",
+              "stem": "60cd7e87385ff6b8"
+            },
+            {
+              "name": "ty_site_packages",
+              "stem": "cedd118924b293df"
+            },
+            {
+              "name": "ruff_linter",
+              "stem": "e631b61e385dd7db"
+            },
+            {
+              "name": "ty_python_semantic",
+              "stem": "6b9874c016d55a10"
+            },
+            {
+              "name": "ruff_python_formatter",
+              "stem": "61e193e273fa7ca8"
+            },
+            {
+              "name": "ty_project",
+              "stem": "d1e4938a2bf6b7d8"
+            },
+            {
+              "name": "ty_test",
+              "stem": "34ee387d202521e9"
+            },
+            {
+              "name": "ty_ide",
+              "stem": "25c08e34ed57ff67"
+            },
+            {
+              "name": "ty_server",
+              "stem": "f7c7cdd9e671ca39"
+            },
+            {
+              "name": "ty_wasm",
+              "stem": "92d45d511e08142d"
+            },
+            {
+              "name": "ty_completion_bench",
+              "stem": "3a4e79a3902250ba"
+            },
+            {
+              "name": "ty_completion_eval",
+              "stem": "e62e82fbd090fa46"
+            },
+            {
+              "name": "ruff_graph",
+              "stem": "51e7264247155615"
+            },
+            {
+              "name": "ty",
+              "stem": "600398c29ec5640d"
+            },
+            {
+              "name": "ruff_workspace",
+              "stem": "364078083ce1f883"
+            },
+            {
+              "name": "ty",
+              "stem": "220cc7862f3e1306"
+            },
+            {
+              "name": "ruff_benchmark",
+              "stem": "05cbcd96d2a0befa"
+            },
+            {
+              "name": "ruff_markdown",
+              "stem": "49e2c23ed7a5cec8"
+            },
+            {
+              "name": "ruff_wasm",
+              "stem": "e8169e09b2ca8c64"
+            },
+            {
+              "name": "ruff_server",
+              "stem": "3c01eb82e8672bc1"
+            },
+            {
+              "name": "ruff",
+              "stem": "0c81d7558dd31166"
+            },
+            {
+              "name": "ruff",
+              "stem": "0b69f0f4ad291c90"
+            },
+            {
+              "name": "ruff_dev",
+              "stem": "9820abbac11acab0"
+            }
+          ],
+          "raw": {
+            "cargo.jsonl": "0d62a92f1113e3dbfdf9d1deec14994604c046f3786dd58bd4b23a05e48b7196",
+            "native.json": "2a6c8498c28223d224244f48d38417ba4c8b7f746a1926ed6824ca29a3b60f7e",
+            "status.json": "2b94c276f8b23f1783fe81e2276f46a704f290b2a5bd424ca7fc751cf2c1d802",
+            "stderr": "b29d486110517a3d2152bcfc20cf3219a937cfdc96b5f5cb50aec1d0343cd718",
+            "summary.json": "42cf5d93ef69bb58203d06bad1f69f28ed24eb5894927e06aef6e9bdadc60072"
+          },
+          "reported_cargo_finish_ns": 13370000000,
+          "rustc": 56,
+          "rustc_sha256": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+          "stale_mtime": [],
+          "terminal_states": {
+            "325/ruff": {
+              "local_hash": "dac9be8443241dda4b7a384e739d96c6",
+              "may_have_changed": true,
+              "t_ns": 13104974670
+            },
+            "329/ruff_annotate_snippets": {
+              "local_hash": "ecc8e4ac0ec484c7cbc0dc72daea64aa",
+              "may_have_changed": false,
+              "t_ns": 4125340763
+            },
+            "330/ruff_benchmark": {
+              "local_hash": "42fcb51b554024a46b58c98ac8e32f5c",
+              "may_have_changed": true,
+              "t_ns": 12212581465
+            },
+            "331/ruff_cache": {
+              "local_hash": "44bef0f21d374b4bdc9344fb41f0fcb2",
+              "may_have_changed": false,
+              "t_ns": 4076182882
+            },
+            "332/ruff_db": {
+              "local_hash": "8fba9c6fad8d388f63694138e4ca023d",
+              "may_have_changed": false,
+              "t_ns": 6412681734
+            },
+            "334/ruff_diagnostics": {
+              "local_hash": "74d91796de0d28675f71c81ca36819c0",
+              "may_have_changed": false,
+              "t_ns": 4175505497
+            },
+            "335/ruff_formatter": {
+              "local_hash": "46732e1d8e0f47783cb72341b37aee44",
+              "may_have_changed": false,
+              "t_ns": 5162662955
+            },
+            "336/ruff_graph": {
+              "local_hash": "a24872719375a747cad9494d3b903706",
+              "may_have_changed": true,
+              "t_ns": 11607718409
+            },
+            "337/ruff_index": {
+              "local_hash": "780df5d9c1043f44b6f35f17f0036f53",
+              "may_have_changed": false,
+              "t_ns": 4945051116
+            },
+            "338/ruff_linter": {
+              "local_hash": "69299ccfb42df98be3c97fed88b906ab",
+              "may_have_changed": true,
+              "t_ns": 12081362905
+            },
+            "341/ruff_markdown": {
+              "local_hash": "7b888bc3d44cc8a51d0feb4a1b214a28",
+              "may_have_changed": true,
+              "t_ns": 12355330675
+            },
+            "342/ruff_memory_usage": {
+              "local_hash": "cec77057d34d15c4af498aac48377f97",
+              "may_have_changed": false,
+              "t_ns": 4100190959
+            },
+            "343/ruff_notebook": {
+              "local_hash": "3bae5de0ad165360738875217ce3ecac",
+              "may_have_changed": false,
+              "t_ns": 4338285042
+            },
+            "344/ruff_options_metadata": {
+              "local_hash": "3f7234d43f7ba247755f9c0587768c11",
+              "may_have_changed": false,
+              "t_ns": 4145128740
+            },
+            "345/ruff_python_ast": {
+              "local_hash": "731d900007fb269ea7da55c464671f5f",
+              "may_have_changed": false,
+              "t_ns": 5886030870
+            },
+            "346/ruff_python_ast_integration_tests": {
+              "local_hash": "30400a05849d5e490a22cea83fde5f24",
+              "may_have_changed": false,
+              "t_ns": 4264715642
+            },
+            "347/ruff_python_codegen": {
+              "local_hash": "19cb95e6dab3a0d0c5c947d02e3fe202",
+              "may_have_changed": false,
+              "t_ns": 6102971846
+            },
+            "348/ruff_python_formatter": {
+              "local_hash": "c6c9cf0bd5575527bc5d94dcb5f02766",
+              "may_have_changed": false,
+              "t_ns": 7296394641
+            },
+            "350/ruff_python_importer": {
+              "local_hash": "91bf3a527b0a5e9e4e3a6e9b4ecfc6b3",
+              "may_have_changed": false,
+              "t_ns": 6163803845
+            },
+            "351/ruff_python_index": {
+              "local_hash": "98249940e8c51c11e77e9eb5799e3771",
+              "may_have_changed": true,
+              "t_ns": 5863459157
+            },
+            "352/ruff_python_literal": {
+              "local_hash": "2211dcc9b2528ec8c33587a5594beed1",
+              "may_have_changed": false,
+              "t_ns": 5907102544
+            },
+            "353/ruff_python_parser": {
+              "local_hash": "c9da43cf474809aaf999db0769f0fa7c",
+              "may_have_changed": false,
+              "t_ns": 6041041961
+            },
+            "354/ruff_python_semantic": {
+              "local_hash": "51a1aacb8b993f4507d8c9f7dcd4b170",
+              "may_have_changed": false,
+              "t_ns": 6411120311
+            },
+            "356/ruff_python_trivia": {
+              "local_hash": "1cc8d42d4ec7fc0f97b37ed497c9d462",
+              "may_have_changed": false,
+              "t_ns": 4391689045
+            },
+            "357/ruff_python_trivia": {
+              "local_hash": "ec5f879d8f7422a33a798e6c4f5849ee",
+              "may_have_changed": false,
+              "t_ns": 4273905819
+            },
+            "358/ruff_python_trivia": {
+              "local_hash": "77f098d7d88a03ab548261020354bea8",
+              "may_have_changed": false,
+              "t_ns": 4414371662
+            },
+            "359/ruff_python_trivia_integration_tests": {
+              "local_hash": "257d6352f671874101ee83b41f41caeb",
+              "may_have_changed": false,
+              "t_ns": 4262210913
+            },
+            "360/ruff_server": {
+              "local_hash": "99bccf8c32e00e73ec4474786cff1b48",
+              "may_have_changed": true,
+              "t_ns": 12808237761
+            },
+            "361/ruff_source_file": {
+              "local_hash": "12e89bc7151664ab3122da5b9fcb3e76",
+              "may_have_changed": false,
+              "t_ns": 4281740151
+            },
+            "362/ruff_source_file": {
+              "local_hash": "74c088c97e3271d348e22063367a112a",
+              "may_have_changed": false,
+              "t_ns": 4347500764
+            },
+            "363/ruff_source_file": {
+              "local_hash": "9264413be69ccf04686755a9eeb4610b",
+              "may_have_changed": false,
+              "t_ns": 4175516755
+            },
+            "364/ruff_text_size": {
+              "local_hash": "d71409218a88f3646438df5851c60407",
+              "may_have_changed": false,
+              "t_ns": 4109435240
+            },
+            "365/ruff_text_size": {
+              "local_hash": "60e7b5f0097dddbe5c3e8cba51f9812f",
+              "may_have_changed": false,
+              "t_ns": 4251008113
+            },
+            "366/ruff_text_size": {
+              "local_hash": "7a1ca296dca51193eb42cab43a67f7eb",
+              "may_have_changed": false,
+              "t_ns": 4076179638
+            },
+            "367/ruff_wasm": {
+              "local_hash": "9c798aa222257e0e5269b74a344c1614",
+              "may_have_changed": true,
+              "t_ns": 12417894489
+            },
+            "368/ruff_workspace": {
+              "local_hash": "80834c201f638b7ccdb00d98f761336b",
+              "may_have_changed": true,
+              "t_ns": 12306599246
+            },
+            "465/ty": {
+              "local_hash": "0f91f7d37cb0d7e3f68d9910fdb4198a",
+              "may_have_changed": true,
+              "t_ns": 11748351885
+            },
+            "469/ty_combine": {
+              "local_hash": "3e7e0434394a303f89ae5f92ca59469b",
+              "may_have_changed": false,
+              "t_ns": 6447067495
+            },
+            "472/ty_ide": {
+              "local_hash": "8977ecc960003d58f096be003784370e",
+              "may_have_changed": true,
+              "t_ns": 11082599711
+            },
+            "473/ty_module_resolver": {
+              "local_hash": "29a57c50aa1e6d5ee7f0d06da7fce438",
+              "may_have_changed": false,
+              "t_ns": 6690956092
+            },
+            "474/ty_project": {
+              "local_hash": "1b7566590c41683e64040036845a9ae7",
+              "may_have_changed": true,
+              "t_ns": 10829519181
+            },
+            "475/ty_python_semantic": {
+              "local_hash": "6fb2d8f20588006fc62b51a7875bc249",
+              "may_have_changed": false,
+              "t_ns": 11009007565
+            },
+            "476/ty_server": {
+              "local_hash": "09314d1ab1e5177381c6dd57fe2134dc",
+              "may_have_changed": true,
+              "t_ns": 11636944033
+            },
+            "477/ty_site_packages": {
+              "local_hash": "14204402d5aa0ed8b1615c36550caa2e",
+              "may_have_changed": false,
+              "t_ns": 6532262079
+            },
+            "478/ty_static": {
+              "local_hash": "ee3b21af8f1388a80e570f4fe2b171ab",
+              "may_have_changed": false,
+              "t_ns": 4889165524
+            },
+            "479/ty_test": {
+              "local_hash": "c9e9ad778cb248476d29650467633332",
+              "may_have_changed": true,
+              "t_ns": 10408631460
+            },
+            "480/ty_vendored": {
+              "local_hash": "afa127c65b982dac50462483c049a5bd",
+              "may_have_changed": false,
+              "t_ns": 6467532181
+            },
+            "483/ty_wasm": {
+              "local_hash": "3d41236f166fe40bc6b5ecb2e5526bbe",
+              "may_have_changed": true,
+              "t_ns": 11338268075
+            }
+          },
+          "typed": 510,
+          "typed_dirty": 56
+        },
+        "repeat-1": {
+          "cargo_sha256": "2eb7e548957363bfb5e4341ce1bfc312f5f5b875f881ae3d3a478531e0ddd76d",
+          "raw": {
+            "cargo.jsonl": "b45a1e99d26ecbb2926ceec584e8649b571b92a708bebdca30b1339f210432b8",
+            "native.json": "055b954921190961a7228527184f2d1c670e7332989993a0f82f6ab26b7dd7b6",
+            "status.json": "45eea8549e58e747c15c857361643be1fb111eff594f1e0a3970dd6d27e61aef",
+            "stderr": "6a42e195047e00831b30bec6e0082c3e317d4848c2c3a9ad838edebb7d528f44",
+            "summary.json": "fc1daa3d466b43cc10f659a70eb04ad4aa7acafe790a57f2741242b6738203e8"
+          },
+          "rustc": 1,
+          "rustc_sha256": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+          "stale_mtime": [],
+          "typed": 510,
+          "typed_dirty": 12
+        },
+        "repeat-2": {
+          "cargo_sha256": "2eb7e548957363bfb5e4341ce1bfc312f5f5b875f881ae3d3a478531e0ddd76d",
+          "raw": {
+            "cargo.jsonl": "c15ca32ac8486883f59f07bee4654013057188f9ffee63ddcd334cad338b783d",
+            "native.json": "40cffbc0bde905694fb447df530250bb88c81775da5cfcccdbb40f24c1929f47",
+            "status.json": "3942a753ca6347b83afc33bb18c14a6b268e8efd62b95b4a00d692820fe10383",
+            "stderr": "2c6fb1c2b6ff803d2d6b682475021480c0032353cf74f0beb18c7aba388195e1",
+            "summary.json": "fc1daa3d466b43cc10f659a70eb04ad4aa7acafe790a57f2741242b6738203e8"
+          },
+          "rustc": 1,
+          "rustc_sha256": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+          "stale_mtime": [],
+          "typed": 510,
+          "typed_dirty": 12
+        }
+      },
+      "parent": {
+        "edit": {
+          "cargo_sha256": "2eb7e548957363bfb5e4341ce1bfc312f5f5b875f881ae3d3a478531e0ddd76d",
+          "decisions": [
+            {
+              "argv_sha256": "4c2937300307d0c23b0a6665fd341cd62ab0446e8e3acc423747249628b4deab",
+              "blocker_changed": true,
+              "blocker_on_B": "ty_project",
+              "blocker_report_ns": 10128676917,
+              "decision": {
+                "message": "CANNOT skip - dep 'ty_project' has build_state=BuiltChanged",
+                "t_ns": 11893710090
+              },
+              "direct_input": [
+                "libty_project-d1e4938a2bf6b7d8.rmeta"
+              ],
+              "id": 330,
+              "job_final_hash_log_ns": 12031721443,
+              "name": "ruff_benchmark",
+              "stem": "05cbcd96d2a0befa",
+              "typed_target_kind": [
+                "lib"
+              ]
+            },
+            {
+              "argv_sha256": "56ba57409370b928b8fe1c96f24860da6a0bdc81848df452a99b90b387a28d75",
+              "blocker_changed": true,
+              "blocker_on_B": "ruff_workspace",
+              "blocker_report_ns": 11947871162,
+              "decision": {
+                "message": "CANNOT skip - dep 'ruff_workspace' has build_state=BuiltChanged",
+                "t_ns": 13036529483
+              },
+              "direct_input": [
+                "libruff_workspace-364078083ce1f883.rmeta"
+              ],
+              "id": 333,
+              "name": "ruff_dev",
+              "stem": "9820abbac11acab0",
+              "typed_target_kind": [
+                "bin"
+              ]
+            },
+            {
+              "argv_sha256": "95eaef51469f0fe421b0c3addec1e03043e558ad1c8bb0a688314973f75cd8ef",
+              "blocker_changed": true,
+              "blocker_on_B": "ty_server",
+              "blocker_report_ns": 10898906044,
+              "decision": {
+                "message": "CANNOT skip - dep 'ty_server' has build_state=BuiltChanged",
+                "t_ns": 11029114672
+              },
+              "direct_input": [
+                "libty_server-f7c7cdd9e671ca39.rmeta"
+              ],
+              "id": 466,
+              "name": "ty",
+              "stem": "220cc7862f3e1306",
+              "typed_target_kind": [
+                "bin"
+              ]
+            },
+            {
+              "argv_sha256": "8ce74e1ad77fe8c241e5732949bd440a9fea23b93d297f944b85de94fd445429",
+              "blocker_changed": true,
+              "blocker_on_B": "ty_ide",
+              "blocker_report_ns": 10384637627,
+              "decision": {
+                "message": "CANNOT skip - dep 'ty_ide' has build_state=BuiltChanged",
+                "t_ns": 10387254929
+              },
+              "direct_input": [
+                "libty_ide-25c08e34ed57ff67.rmeta"
+              ],
+              "id": 470,
+              "name": "ty_completion_bench",
+              "stem": "3a4e79a3902250ba",
+              "typed_target_kind": [
+                "bin"
+              ]
+            },
+            {
+              "argv_sha256": "a648f35bd3471a94192dc6b1687b3ddda545dfd96d8c18f237c3f5a9e4007792",
+              "blocker_changed": true,
+              "blocker_on_B": "ty_ide",
+              "blocker_report_ns": 10384637627,
+              "decision": {
+                "message": "CANNOT skip - dep 'ty_ide' has build_state=BuiltChanged",
+                "t_ns": 10387130906
+              },
+              "direct_input": [
+                "libty_ide-25c08e34ed57ff67.rmeta"
+              ],
+              "id": 471,
+              "name": "ty_completion_eval",
+              "stem": "e62e82fbd090fa46",
+              "typed_target_kind": [
+                "bin"
+              ]
+            }
+          ],
+          "five_candidate_early_edges": [
+            {
+              "consumer": "ruff_python_index",
+              "consumer_declared_changed": true,
+              "producer_declared_changed": false,
+              "provider": "ruff_python_ast",
+              "provider_finish_after_consumer_ns": 29664916
+            },
+            {
+              "consumer": "ruff_python_literal",
+              "consumer_declared_changed": false,
+              "producer_declared_changed": false,
+              "provider": "ruff_python_ast",
+              "provider_finish_after_consumer_ns": -15789200
+            },
+            {
+              "consumer": "ruff_graph",
+              "consumer_declared_changed": true,
+              "producer_declared_changed": true,
+              "provider": "ruff_linter",
+              "provider_finish_after_consumer_ns": 691651696
+            },
+            {
+              "consumer": "ty_test",
+              "consumer_declared_changed": true,
+              "producer_declared_changed": false,
+              "provider": "ty_python_semantic",
+              "provider_finish_after_consumer_ns": 540367326
+            },
+            {
+              "consumer": "ty_project",
+              "consumer_declared_changed": true,
+              "producer_declared_changed": false,
+              "provider": "ty_python_semantic",
+              "provider_finish_after_consumer_ns": 133896744
+            }
+          ],
+          "last_common_hash_log_ns": 13033035649,
+          "last_external_rustc": "ruff_dev",
+          "logical_rmeta_edges": {
+            "325/ruff": [
+              "331/ruff_cache",
+              "332/ruff_db",
+              "334/ruff_diagnostics",
+              "336/ruff_graph",
+              "338/ruff_linter",
+              "341/ruff_markdown",
+              "343/ruff_notebook",
+              "344/ruff_options_metadata",
+              "345/ruff_python_ast",
+              "348/ruff_python_formatter",
+              "353/ruff_python_parser",
+              "360/ruff_server",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "368/ruff_workspace"
+            ],
+            "329/ruff_annotate_snippets": [],
+            "330/ruff_benchmark": [
+              "332/ruff_db",
+              "338/ruff_linter",
+              "345/ruff_python_ast",
+              "348/ruff_python_formatter",
+              "353/ruff_python_parser",
+              "357/ruff_python_trivia",
+              "474/ty_project"
+            ],
+            "331/ruff_cache": [],
+            "332/ruff_db": [
+              "329/ruff_annotate_snippets",
+              "331/ruff_cache",
+              "334/ruff_diagnostics",
+              "342/ruff_memory_usage",
+              "343/ruff_notebook",
+              "345/ruff_python_ast",
+              "353/ruff_python_parser",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "478/ty_static"
+            ],
+            "333/ruff_dev": [
+              "325/ruff",
+              "335/ruff_formatter",
+              "338/ruff_linter",
+              "343/ruff_notebook",
+              "344/ruff_options_metadata",
+              "345/ruff_python_ast",
+              "347/ruff_python_codegen",
+              "348/ruff_python_formatter",
+              "353/ruff_python_parser",
+              "357/ruff_python_trivia",
+              "368/ruff_workspace",
+              "465/ty",
+              "474/ty_project",
+              "475/ty_python_semantic",
+              "478/ty_static"
+            ],
+            "334/ruff_diagnostics": [
+              "366/ruff_text_size"
+            ],
+            "335/ruff_formatter": [
+              "331/ruff_cache",
+              "366/ruff_text_size"
+            ],
+            "336/ruff_graph": [
+              "331/ruff_cache",
+              "332/ruff_db",
+              "338/ruff_linter",
+              "345/ruff_python_ast",
+              "353/ruff_python_parser",
+              "473/ty_module_resolver",
+              "477/ty_site_packages"
+            ],
+            "337/ruff_index": [],
+            "338/ruff_linter": [
+              "331/ruff_cache",
+              "332/ruff_db",
+              "334/ruff_diagnostics",
+              "343/ruff_notebook",
+              "345/ruff_python_ast",
+              "347/ruff_python_codegen",
+              "350/ruff_python_importer",
+              "351/ruff_python_index",
+              "352/ruff_python_literal",
+              "353/ruff_python_parser",
+              "354/ruff_python_semantic",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size"
+            ],
+            "341/ruff_markdown": [
+              "345/ruff_python_ast",
+              "348/ruff_python_formatter",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "368/ruff_workspace"
+            ],
+            "342/ruff_memory_usage": [],
+            "343/ruff_notebook": [
+              "334/ruff_diagnostics",
+              "363/ruff_source_file",
+              "366/ruff_text_size"
+            ],
+            "344/ruff_options_metadata": [],
+            "345/ruff_python_ast": [
+              "331/ruff_cache",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size"
+            ],
+            "346/ruff_python_ast_integration_tests": [],
+            "347/ruff_python_codegen": [
+              "345/ruff_python_ast",
+              "352/ruff_python_literal",
+              "353/ruff_python_parser",
+              "363/ruff_source_file",
+              "366/ruff_text_size"
+            ],
+            "348/ruff_python_formatter": [
+              "331/ruff_cache",
+              "332/ruff_db",
+              "335/ruff_formatter",
+              "345/ruff_python_ast",
+              "353/ruff_python_parser",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size"
+            ],
+            "350/ruff_python_importer": [
+              "334/ruff_diagnostics",
+              "345/ruff_python_ast",
+              "347/ruff_python_codegen",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size"
+            ],
+            "351/ruff_python_index": [
+              "345/ruff_python_ast",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size"
+            ],
+            "352/ruff_python_literal": [
+              "345/ruff_python_ast"
+            ],
+            "353/ruff_python_parser": [
+              "345/ruff_python_ast",
+              "357/ruff_python_trivia",
+              "366/ruff_text_size"
+            ],
+            "354/ruff_python_semantic": [
+              "331/ruff_cache",
+              "337/ruff_index",
+              "345/ruff_python_ast",
+              "353/ruff_python_parser",
+              "366/ruff_text_size"
+            ],
+            "356/ruff_python_trivia": [
+              "361/ruff_source_file",
+              "364/ruff_text_size"
+            ],
+            "357/ruff_python_trivia": [
+              "363/ruff_source_file",
+              "366/ruff_text_size"
+            ],
+            "358/ruff_python_trivia": [
+              "362/ruff_source_file",
+              "365/ruff_text_size"
+            ],
+            "359/ruff_python_trivia_integration_tests": [],
+            "360/ruff_server": [
+              "332/ruff_db",
+              "334/ruff_diagnostics",
+              "335/ruff_formatter",
+              "338/ruff_linter",
+              "341/ruff_markdown",
+              "343/ruff_notebook",
+              "345/ruff_python_ast",
+              "347/ruff_python_codegen",
+              "348/ruff_python_formatter",
+              "351/ruff_python_index",
+              "353/ruff_python_parser",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "368/ruff_workspace"
+            ],
+            "361/ruff_source_file": [
+              "364/ruff_text_size"
+            ],
+            "362/ruff_source_file": [
+              "365/ruff_text_size"
+            ],
+            "363/ruff_source_file": [
+              "366/ruff_text_size"
+            ],
+            "364/ruff_text_size": [],
+            "365/ruff_text_size": [],
+            "366/ruff_text_size": [],
+            "367/ruff_wasm": [
+              "335/ruff_formatter",
+              "338/ruff_linter",
+              "345/ruff_python_ast",
+              "347/ruff_python_codegen",
+              "348/ruff_python_formatter",
+              "351/ruff_python_index",
+              "353/ruff_python_parser",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "368/ruff_workspace"
+            ],
+            "368/ruff_workspace": [
+              "331/ruff_cache",
+              "335/ruff_formatter",
+              "336/ruff_graph",
+              "338/ruff_linter",
+              "344/ruff_options_metadata",
+              "345/ruff_python_ast",
+              "348/ruff_python_formatter",
+              "354/ruff_python_semantic",
+              "363/ruff_source_file"
+            ],
+            "465/ty": [
+              "332/ruff_db",
+              "345/ruff_python_ast",
+              "469/ty_combine",
+              "474/ty_project",
+              "475/ty_python_semantic",
+              "476/ty_server",
+              "478/ty_static"
+            ],
+            "466/ty": [
+              "332/ruff_db",
+              "345/ruff_python_ast",
+              "465/ty",
+              "469/ty_combine",
+              "474/ty_project",
+              "475/ty_python_semantic",
+              "476/ty_server",
+              "478/ty_static"
+            ],
+            "469/ty_combine": [
+              "332/ruff_db",
+              "345/ruff_python_ast"
+            ],
+            "470/ty_completion_bench": [
+              "332/ruff_db",
+              "366/ruff_text_size",
+              "472/ty_ide",
+              "474/ty_project"
+            ],
+            "471/ty_completion_eval": [
+              "332/ruff_db",
+              "366/ruff_text_size",
+              "472/ty_ide",
+              "473/ty_module_resolver",
+              "474/ty_project"
+            ],
+            "472/ty_ide": [
+              "332/ruff_db",
+              "334/ruff_diagnostics",
+              "337/ruff_index",
+              "342/ruff_memory_usage",
+              "345/ruff_python_ast",
+              "347/ruff_python_codegen",
+              "350/ruff_python_importer",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "473/ty_module_resolver",
+              "474/ty_project",
+              "475/ty_python_semantic",
+              "480/ty_vendored"
+            ],
+            "473/ty_module_resolver": [
+              "332/ruff_db",
+              "342/ruff_memory_usage",
+              "345/ruff_python_ast"
+            ],
+            "474/ty_project": [
+              "331/ruff_cache",
+              "332/ruff_db",
+              "334/ruff_diagnostics",
+              "342/ruff_memory_usage",
+              "344/ruff_options_metadata",
+              "345/ruff_python_ast",
+              "348/ruff_python_formatter",
+              "366/ruff_text_size",
+              "469/ty_combine",
+              "473/ty_module_resolver",
+              "475/ty_python_semantic",
+              "478/ty_static",
+              "480/ty_vendored"
+            ],
+            "475/ty_python_semantic": [
+              "332/ruff_db",
+              "334/ruff_diagnostics",
+              "337/ruff_index",
+              "342/ruff_memory_usage",
+              "345/ruff_python_ast",
+              "352/ruff_python_literal",
+              "353/ruff_python_parser",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "469/ty_combine",
+              "473/ty_module_resolver",
+              "477/ty_site_packages"
+            ],
+            "476/ty_server": [
+              "332/ruff_db",
+              "334/ruff_diagnostics",
+              "343/ruff_notebook",
+              "345/ruff_python_ast",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "469/ty_combine",
+              "472/ty_ide",
+              "473/ty_module_resolver",
+              "474/ty_project",
+              "475/ty_python_semantic"
+            ],
+            "477/ty_site_packages": [
+              "329/ruff_annotate_snippets",
+              "332/ruff_db",
+              "345/ruff_python_ast",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "478/ty_static"
+            ],
+            "478/ty_static": [],
+            "479/ty_test": [
+              "332/ruff_db",
+              "334/ruff_diagnostics",
+              "337/ruff_index",
+              "343/ruff_notebook",
+              "345/ruff_python_ast",
+              "357/ruff_python_trivia",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "473/ty_module_resolver",
+              "475/ty_python_semantic",
+              "478/ty_static",
+              "480/ty_vendored"
+            ],
+            "480/ty_vendored": [
+              "332/ruff_db"
+            ],
+            "483/ty_wasm": [
+              "332/ruff_db",
+              "334/ruff_diagnostics",
+              "343/ruff_notebook",
+              "348/ruff_python_formatter",
+              "363/ruff_source_file",
+              "366/ruff_text_size",
+              "472/ty_ide",
+              "474/ty_project",
+              "475/ty_python_semantic"
+            ]
+          },
+          "named_early_workers_prepared_dirty_reason": {
+            "ruff_graph": [
+              "TargetConfigurationChanged"
+            ],
+            "ruff_python_index": [
+              "UnitDependencyInfoChanged { unit: UnitIndex(345) }"
+            ],
+            "ruff_python_literal": [
+              "UnitDependencyInfoChanged { unit: UnitIndex(345) }"
+            ],
+            "ty_project": [
+              "TargetConfigurationChanged"
+            ],
+            "ty_test": [
+              "TargetConfigurationChanged"
+            ]
+          },
+          "parsed_rustc_roster": [
+            {
+              "name": "ruff_text_size",
+              "stem": "3a2b8e8812da07df"
+            },
+            {
+              "name": "ruff_text_size",
+              "stem": "5a0faa714ffc56b6"
+            },
+            {
+              "name": "ruff_cache",
+              "stem": "bb6dbb47094b16b0"
+            },
+            {
+              "name": "ruff_annotate_snippets",
+              "stem": "4ffd9d905fbc5e40"
+            },
+            {
+              "name": "ruff_memory_usage",
+              "stem": "59428431e8c3a814"
+            },
+            {
+              "name": "ruff_source_file",
+              "stem": "2ec7db6f473eb1e5"
+            },
+            {
+              "name": "ruff_diagnostics",
+              "stem": "c171f1c44bb503de"
+            },
+            {
+              "name": "ruff_source_file",
+              "stem": "009fa15b93a2bd13"
+            },
+            {
+              "name": "ruff_options_metadata",
+              "stem": "ccfced84fbed7793"
+            },
+            {
+              "name": "ruff_python_trivia",
+              "stem": "43ce869d49d6ca11"
+            },
+            {
+              "name": "ruff_notebook",
+              "stem": "06e903c03934c2c5"
+            },
+            {
+              "name": "ruff_python_trivia",
+              "stem": "fa7efc1211acb864"
+            },
+            {
+              "name": "ruff_text_size",
+              "stem": "38f4162e93a4022a"
+            },
+            {
+              "name": "ruff_python_ast_integration_tests",
+              "stem": "57b34bf98a4d68f8"
+            },
+            {
+              "name": "ruff_python_trivia_integration_tests",
+              "stem": "d2530f7ed49dd17c"
+            },
+            {
+              "name": "ruff_source_file",
+              "stem": "4f0152557fbb546f"
+            },
+            {
+              "name": "ruff_python_trivia",
+              "stem": "0849debc86d13e5e"
+            },
+            {
+              "name": "ruff_macros",
+              "stem": "6f3d8375705cdcdc"
+            },
+            {
+              "name": "ruff_macros",
+              "stem": "e6a592fe82954088"
+            },
+            {
+              "name": "ty_static",
+              "stem": "905426b0db099878"
+            },
+            {
+              "name": "ruff_formatter",
+              "stem": "330ed4706c67ba6b"
+            },
+            {
+              "name": "ruff_python_ast",
+              "stem": "58057b12cc3f5bc9"
+            },
+            {
+              "name": "ruff_index",
+              "stem": "e9e92aa0851ae5af"
+            },
+            {
+              "name": "ruff_python_index",
+              "stem": "dcdcb0c9486a5ac5"
+            },
+            {
+              "name": "ruff_python_parser",
+              "stem": "9af75aaa8568c1c9"
+            },
+            {
+              "name": "ruff_python_literal",
+              "stem": "cd1b4e186e4b0654"
+            },
+            {
+              "name": "ruff_python_codegen",
+              "stem": "1f9a2a72215c4027"
+            },
+            {
+              "name": "ruff_python_semantic",
+              "stem": "2ab4b957056a24cc"
+            },
+            {
+              "name": "ruff_db",
+              "stem": "771afd9ee607ec01"
+            },
+            {
+              "name": "ruff_python_importer",
+              "stem": "d71598d6636de3a1"
+            },
+            {
+              "name": "ty_site_packages",
+              "stem": "cedd118924b293df"
+            },
+            {
+              "name": "ty_module_resolver",
+              "stem": "2cbfb595e915a706"
+            },
+            {
+              "name": "ty_vendored",
+              "stem": "60cd7e87385ff6b8"
+            },
+            {
+              "name": "ruff_python_formatter",
+              "stem": "8b4c7c0cd6f4804b"
+            },
+            {
+              "name": "ty_combine",
+              "stem": "65a4b5b2596927cd"
+            },
+            {
+              "name": "ruff_linter",
+              "stem": "e631b61e385dd7db"
+            },
+            {
+              "name": "ty_python_semantic",
+              "stem": "6b9874c016d55a10"
+            },
+            {
+              "name": "ruff_python_formatter",
+              "stem": "61e193e273fa7ca8"
+            },
+            {
+              "name": "ty_test",
+              "stem": "34ee387d202521e9"
+            },
+            {
+              "name": "ty_project",
+              "stem": "d1e4938a2bf6b7d8"
+            },
+            {
+              "name": "ty_ide",
+              "stem": "25c08e34ed57ff67"
+            },
+            {
+              "name": "ty_wasm",
+              "stem": "92d45d511e08142d"
+            },
+            {
+              "name": "ty_server",
+              "stem": "f7c7cdd9e671ca39"
+            },
+            {
+              "name": "ty_completion_bench",
+              "stem": "3a4e79a3902250ba"
+            },
+            {
+              "name": "ty_completion_eval",
+              "stem": "e62e82fbd090fa46"
+            },
+            {
+              "name": "ty",
+              "stem": "600398c29ec5640d"
+            },
+            {
+              "name": "ty",
+              "stem": "220cc7862f3e1306"
+            },
+            {
+              "name": "ruff_graph",
+              "stem": "51e7264247155615"
+            },
+            {
+              "name": "ruff_workspace",
+              "stem": "364078083ce1f883"
+            },
+            {
+              "name": "ruff_markdown",
+              "stem": "49e2c23ed7a5cec8"
+            },
+            {
+              "name": "ruff_wasm",
+              "stem": "e8169e09b2ca8c64"
+            },
+            {
+              "name": "ruff_benchmark",
+              "stem": "05cbcd96d2a0befa"
+            },
+            {
+              "name": "ruff_server",
+              "stem": "3c01eb82e8672bc1"
+            },
+            {
+              "name": "ruff",
+              "stem": "0c81d7558dd31166"
+            },
+            {
+              "name": "ruff",
+              "stem": "0b69f0f4ad291c90"
+            },
+            {
+              "name": "ruff_dev",
+              "stem": "9820abbac11acab0"
+            }
+          ],
+          "raw": {
+            "cargo.jsonl": "e68bb03665497312601a2cdaf3edb86f9856daedecd4535d4ad732b39728015b",
+            "native.json": "1a5c56ea76e344ff749f3c39aefed38b621bda05a74eaae9bd5be794c3577054",
+            "status.json": "a9576c122178d2dabb24342f1ef45b8abf4ebb5cec5c0d32ee781da27480e8f0",
+            "stderr": "6b55e9341f5dca89aabf942fcb93f653e1a38de804b120acfe51ff074f1b2aba",
+            "summary.json": "9fa9443b53228b2cf05482af48d10e5eb22c5a7dc3bcfe16c0dbe5fe3fd979e4"
+          },
+          "reported_cargo_finish_ns": 13330000000,
+          "rustc": 56,
+          "rustc_sha256": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+          "stale_mtime": [],
+          "terminal_states": {
+            "325/ruff": {
+              "local_hash": "dac9be8443241dda4b7a384e739d96c6",
+              "may_have_changed": true,
+              "t_ns": 13033035649
+            },
+            "329/ruff_annotate_snippets": {
+              "local_hash": "ecc8e4ac0ec484c7cbc0dc72daea64aa",
+              "may_have_changed": false,
+              "t_ns": 3538182551
+            },
+            "330/ruff_benchmark": {
+              "local_hash": "42fcb51b554024a46b58c98ac8e32f5c",
+              "may_have_changed": true,
+              "t_ns": 12031721443
+            },
+            "331/ruff_cache": {
+              "local_hash": "44bef0f21d374b4bdc9344fb41f0fcb2",
+              "may_have_changed": false,
+              "t_ns": 3499156507
+            },
+            "332/ruff_db": {
+              "local_hash": "8fba9c6fad8d388f63694138e4ca023d",
+              "may_have_changed": false,
+              "t_ns": 5744651345
+            },
+            "334/ruff_diagnostics": {
+              "local_hash": "74d91796de0d28675f71c81ca36819c0",
+              "may_have_changed": false,
+              "t_ns": 3586380630
+            },
+            "335/ruff_formatter": {
+              "local_hash": "46732e1d8e0f47783cb72341b37aee44",
+              "may_have_changed": false,
+              "t_ns": 4443136575
+            },
+            "336/ruff_graph": {
+              "local_hash": "a24872719375a747cad9494d3b903706",
+              "may_have_changed": true,
+              "t_ns": 11199058195
+            },
+            "337/ruff_index": {
+              "local_hash": "780df5d9c1043f44b6f35f17f0036f53",
+              "may_have_changed": false,
+              "t_ns": 4254350146
+            },
+            "338/ruff_linter": {
+              "local_hash": "69299ccfb42df98be3c97fed88b906ab",
+              "may_have_changed": true,
+              "t_ns": 11890709891
+            },
+            "341/ruff_markdown": {
+              "local_hash": "7b888bc3d44cc8a51d0feb4a1b214a28",
+              "may_have_changed": true,
+              "t_ns": 11952071708
+            },
+            "342/ruff_memory_usage": {
+              "local_hash": "cec77057d34d15c4af498aac48377f97",
+              "may_have_changed": false,
+              "t_ns": 3515021776
+            },
+            "343/ruff_notebook": {
+              "local_hash": "3bae5de0ad165360738875217ce3ecac",
+              "may_have_changed": false,
+              "t_ns": 3739514603
+            },
+            "344/ruff_options_metadata": {
+              "local_hash": "3f7234d43f7ba247755f9c0587768c11",
+              "may_have_changed": false,
+              "t_ns": 3597341344
+            },
+            "345/ruff_python_ast": {
+              "local_hash": "731d900007fb269ea7da55c464671f5f",
+              "may_have_changed": false,
+              "t_ns": 5199039930
+            },
+            "346/ruff_python_ast_integration_tests": {
+              "local_hash": "30400a05849d5e490a22cea83fde5f24",
+              "may_have_changed": false,
+              "t_ns": 3692420010
+            },
+            "347/ruff_python_codegen": {
+              "local_hash": "19cb95e6dab3a0d0c5c947d02e3fe202",
+              "may_have_changed": false,
+              "t_ns": 5444015808
+            },
+            "348/ruff_python_formatter": {
+              "local_hash": "c6c9cf0bd5575527bc5d94dcb5f02766",
+              "may_have_changed": false,
+              "t_ns": 6554385188
+            },
+            "350/ruff_python_importer": {
+              "local_hash": "91bf3a527b0a5e9e4e3a6e9b4ecfc6b3",
+              "may_have_changed": false,
+              "t_ns": 5513590027
+            },
+            "351/ruff_python_index": {
+              "local_hash": "98249940e8c51c11e77e9eb5799e3771",
+              "may_have_changed": true,
+              "t_ns": 5169375014
+            },
+            "352/ruff_python_literal": {
+              "local_hash": "2211dcc9b2528ec8c33587a5594beed1",
+              "may_have_changed": false,
+              "t_ns": 5214829130
+            },
+            "353/ruff_python_parser": {
+              "local_hash": "c9da43cf474809aaf999db0769f0fa7c",
+              "may_have_changed": false,
+              "t_ns": 5385410542
+            },
+            "354/ruff_python_semantic": {
+              "local_hash": "51a1aacb8b993f4507d8c9f7dcd4b170",
+              "may_have_changed": false,
+              "t_ns": 5773521642
+            },
+            "356/ruff_python_trivia": {
+              "local_hash": "1cc8d42d4ec7fc0f97b37ed497c9d462",
+              "may_have_changed": false,
+              "t_ns": 3744614287
+            },
+            "357/ruff_python_trivia": {
+              "local_hash": "77f098d7d88a03ab548261020354bea8",
+              "may_have_changed": false,
+              "t_ns": 3827117720
+            },
+            "358/ruff_python_trivia": {
+              "local_hash": "ec5f879d8f7422a33a798e6c4f5849ee",
+              "may_have_changed": false,
+              "t_ns": 3667530607
+            },
+            "359/ruff_python_trivia_integration_tests": {
+              "local_hash": "257d6352f671874101ee83b41f41caeb",
+              "may_have_changed": false,
+              "t_ns": 3699610324
+            },
+            "360/ruff_server": {
+              "local_hash": "99bccf8c32e00e73ec4474786cff1b48",
+              "may_have_changed": true,
+              "t_ns": 12646992964
+            },
+            "361/ruff_source_file": {
+              "local_hash": "12e89bc7151664ab3122da5b9fcb3e76",
+              "may_have_changed": false,
+              "t_ns": 3641002944
+            },
+            "362/ruff_source_file": {
+              "local_hash": "74c088c97e3271d348e22063367a112a",
+              "may_have_changed": false,
+              "t_ns": 3762404917
+            },
+            "363/ruff_source_file": {
+              "local_hash": "9264413be69ccf04686755a9eeb4610b",
+              "may_have_changed": false,
+              "t_ns": 3598862311
+            },
+            "364/ruff_text_size": {
+              "local_hash": "d71409218a88f3646438df5851c60407",
+              "may_have_changed": false,
+              "t_ns": 3499172719
+            },
+            "365/ruff_text_size": {
+              "local_hash": "60e7b5f0097dddbe5c3e8cba51f9812f",
+              "may_have_changed": false,
+              "t_ns": 3692187200
+            },
+            "366/ruff_text_size": {
+              "local_hash": "7a1ca296dca51193eb42cab43a67f7eb",
+              "may_have_changed": false,
+              "t_ns": 3478653135
+            },
+            "367/ruff_wasm": {
+              "local_hash": "9c798aa222257e0e5269b74a344c1614",
+              "may_have_changed": true,
+              "t_ns": 12025308218
+            },
+            "368/ruff_workspace": {
+              "local_hash": "80834c201f638b7ccdb00d98f761336b",
+              "may_have_changed": true,
+              "t_ns": 11947871162
+            },
+            "465/ty": {
+              "local_hash": "0f91f7d37cb0d7e3f68d9910fdb4198a",
+              "may_have_changed": true,
+              "t_ns": 11026027537
+            },
+            "469/ty_combine": {
+              "local_hash": "3e7e0434394a303f89ae5f92ca59469b",
+              "may_have_changed": false,
+              "t_ns": 5813705353
+            },
+            "472/ty_ide": {
+              "local_hash": "8977ecc960003d58f096be003784370e",
+              "may_have_changed": true,
+              "t_ns": 10384637627
+            },
+            "473/ty_module_resolver": {
+              "local_hash": "29a57c50aa1e6d5ee7f0d06da7fce438",
+              "may_have_changed": false,
+              "t_ns": 6016398678
+            },
+            "474/ty_project": {
+              "local_hash": "1b7566590c41683e64040036845a9ae7",
+              "may_have_changed": true,
+              "t_ns": 10128676917
+            },
+            "475/ty_python_semantic": {
+              "local_hash": "6fb2d8f20588006fc62b51a7875bc249",
+              "may_have_changed": false,
+              "t_ns": 10262573661
+            },
+            "476/ty_server": {
+              "local_hash": "09314d1ab1e5177381c6dd57fe2134dc",
+              "may_have_changed": true,
+              "t_ns": 10898906044
+            },
+            "477/ty_site_packages": {
+              "local_hash": "14204402d5aa0ed8b1615c36550caa2e",
+              "may_have_changed": false,
+              "t_ns": 5835444081
+            },
+            "478/ty_static": {
+              "local_hash": "ee3b21af8f1388a80e570f4fe2b171ab",
+              "may_have_changed": false,
+              "t_ns": 4217302188
+            },
+            "479/ty_test": {
+              "local_hash": "c9e9ad778cb248476d29650467633332",
+              "may_have_changed": true,
+              "t_ns": 9722206335
+            },
+            "480/ty_vendored": {
+              "local_hash": "afa127c65b982dac50462483c049a5bd",
+              "may_have_changed": false,
+              "t_ns": 5803445007
+            },
+            "483/ty_wasm": {
+              "local_hash": "3d41236f166fe40bc6b5ecb2e5526bbe",
+              "may_have_changed": true,
+              "t_ns": 10643373814
+            }
+          },
+          "typed": 510,
+          "typed_dirty": 56
+        },
+        "repeat-1": {
+          "cargo_sha256": "2eb7e548957363bfb5e4341ce1bfc312f5f5b875f881ae3d3a478531e0ddd76d",
+          "raw": {
+            "cargo.jsonl": "d44aacac7396ef4c741878b3a8d9410817d05605da0cd94bc935082cbf2f26c0",
+            "native.json": "c5e219e3e8701184b9f5a3d943b4c0d7a6a3242c583bc68e509979fa4c50a904",
+            "status.json": "fe11706b608f5a976b6b6588948a68eadf63f4db7f8505d1c2b1d685d43790a1",
+            "stderr": "e38db34debb45a01247ba01a42220dc16c854365895aba6f4b114ece3e8c36ea",
+            "summary.json": "ae6833362163dd774490801fa70c1224ade236a93e55afb8779e64b3717a99e5"
+          },
+          "rustc": 1,
+          "rustc_sha256": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+          "stale_mtime": [],
+          "typed": 510,
+          "typed_dirty": 12
+        },
+        "repeat-2": {
+          "cargo_sha256": "2eb7e548957363bfb5e4341ce1bfc312f5f5b875f881ae3d3a478531e0ddd76d",
+          "raw": {
+            "cargo.jsonl": "3179d154a356ee612fd21848870d2da67579c59fb564db552866f0cc90d2b744",
+            "native.json": "08b65d1e3df98383442b2f7f2556856c00ad8f55b78bc499dd75aca1eca6bd46",
+            "status.json": "cd9954a8122a7b5d379eab5671d5b57e890ded88fd1f640c16e5782e85bba816",
+            "stderr": "e05f419c309d4cd9e6a1d91687dabe2e65f1c3f530f4fa2bd71b459b1b0685a3",
+            "summary.json": "ae6833362163dd774490801fa70c1224ade236a93e55afb8779e64b3717a99e5"
+          },
+          "rustc": 1,
+          "rustc_sha256": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+          "stale_mtime": [],
+          "typed": 510,
+          "typed_dirty": 12
+        }
+      }
+    }
+  },
+  "previous_unit_binding_sha256": "27f76c50a93232071807463e1dd88ea523e4b0f8624a31f263e6a70cadebbd02"
+}
