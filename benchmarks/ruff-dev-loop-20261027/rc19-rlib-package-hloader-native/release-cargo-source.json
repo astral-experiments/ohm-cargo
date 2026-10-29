@@ -1,0 +1,76 @@
+{
+  "commit": "7caf39914da1e28a67744ecbc963a5f26361474d",
+  "files": {
+    "src/compiler/build_runner/compilation_files.rs": {
+      "git_blob": "785f34ea70d8e8e9c5256eac737ece36d97d7074",
+      "sections": [
+        {
+          "end": 394,
+          "lines": [
+            "                let injected_loader = super::OHM_COMPILER_LOADER_INJECTION_ENVIRONMENT",
+            "                    .iter()",
+            "                    .any(|name| effective_environment(name).is_some_and(|value| !value.is_empty()));",
+            "                let configured_compiler_logger = OHM_SHARED_RUSTC_LOG_ENVIRONMENT",
+            "                    .iter()",
+            "                    .any(|name| effective_environment(name).is_some());",
+            "                let mut linkers = build_runner"
+          ],
+          "start": 388
+        },
+        {
+          "end": 562,
+          "lines": [
+            "                    None",
+            "                };",
+            "                let verified_compiler = compiler.wrapper.is_none()",
+            "                    && compiler_has_verified_toolchain_identity(",
+            "                        build_runner,",
+            "                        effective_executable_path.as_deref(),",
+            "                    )",
+            "                    && !injected_loader",
+            "                    && compiler_file_identity.is_some()",
+            "                    && verified_compiler_driver;",
+            "                let trusted_context = verified_compiler",
+            "                    && verified_linkers",
+            "                    && verified_native_tools",
+            "                    && verified_rustdoc",
+            "                    && effective_host_runner.is_none()",
+            "                    && !configured_compiler_logger",
+            "                    && cargo.is_some()",
+            "                    && verified_environment_spelling",
+            "                    && target_applies_to_host.is_some();",
+            "                let mut immutable_units = HashMap::default();",
+            "                if trusted_context {",
+            "                    let mut eligibility = HashMap::default();"
+          ],
+          "start": 541
+        }
+      ],
+      "sha256": "dd90984eb9c1eabe53ad1333ecdfb1f392c6cbeac5ac5be7a63f1e5d7068e263"
+    },
+    "src/compiler/mod.rs": {
+      "git_blob": "7cc2b71c3480e4e3088a3a92fcb4e0c2f435b645",
+      "sections": [
+        {
+          "end": 185,
+          "lines": [
+            "/// Unlike ordinary library search paths, these overrides can insert arbitrary",
+            "/// executable code or replace the compiler's loaded images outright.",
+            "pub(crate) const OHM_COMPILER_LOADER_INJECTION_ENVIRONMENT: &[&str] = &[",
+            "    \"DYLD_INSERT_LIBRARIES\",",
+            "    \"DYLD_FORCE_FLAT_NAMESPACE\",",
+            "    \"DYLD_VERSIONED_LIBRARY_PATH\",",
+            "    \"DYLD_VERSIONED_FRAMEWORK_PATH\",",
+            "    \"DYLD_IMAGE_SUFFIX\",",
+            "    \"DYLD_ROOT_PATH\",",
+            "    \"LD_PRELOAD\",",
+            "    \"LD_AUDIT\",",
+            "];"
+          ],
+          "start": 174
+        }
+      ],
+      "sha256": "415cbc48618bbda34eace953b6efd03bb2a1db26b455b6f2073e992e4ba8ae5d"
+    }
+  }
+}
