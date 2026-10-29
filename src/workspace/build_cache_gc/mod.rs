@@ -1,7 +1,7 @@
 //! Conservative reclamation of retired shared-build namespaces.
 //!
-//! Builds enroll immutable provenance and refresh one timestamp per context.
-//! Explicit GC reclaims legacy layouts, obsolete compilers, and idle contexts.
+//! Builds batch context and dependency activity into SQLite without scanning artifacts.
+//! Explicit GC reclaims legacy layouts, obsolete compilers, and idle dependencies.
 
 use std::fs::{self, File, Metadata, OpenOptions, TryLockError};
 use std::io;
@@ -19,34 +19,53 @@ use crate::util::flock::try_lock_exclusive;
 pub(crate) const DIRECTORY: &str = ".ohm-gc-v1";
 pub(crate) const CONSUMERS_LOCK: &str = "consumers.lock";
 const TRASH: &str = ".ohm-gc-trash-v1";
+const METADATA_TRASH: &str = ".ohm-gc-metadata-trash-v1";
 const DELETE_BUDGET: usize = 256;
 const RENAME_BUDGET: usize = 8;
 const CONTEXT_MAX_IDLE: Duration = Duration::from_secs(60 * 60);
-const LAST_USED: &str = "last-used";
+const LAST_USED: &str = "last-used"; // Legacy file-based bookkeeping.
 
-/// Refreshes a context at build start and completion, including failures and cache hits.
-///
+mod tracker;
+use tracker::Tracker;
+
+/// Refreshes context and dependency activity at build start and completion.
 /// The caller must hold a consumer lease until this guard has been dropped.
-/// Only this empty file's mtime changes; ownership records and artifacts are untouched.
-pub(crate) struct ContextUse(File);
+pub(crate) struct ContextUse {
+    tracker: Tracker,
+    context: String,
+    entries: Option<Vec<PathBuf>>,
+    used_through: tracker::Timestamp,
+}
 
 impl ContextUse {
-    /// Opens one usage marker while the caller holds the root's consumer lease.
-    pub(crate) fn new(root: &Path, context: &str) -> CargoResult<Self> {
+    /// `None` protects every dependency when importing an unresolved snapshot.
+    pub(crate) fn new(
+        mut tracker: Tracker,
+        context: &str,
+        mut entries: Option<Vec<PathBuf>>,
+    ) -> CargoResult<Self> {
         ensure!(component(context), "invalid build context");
-        let directory = metadata_dir(root, false)?.join(LAST_USED);
-        create_plain(&directory)?;
-        let mut options = OpenOptions::new();
-        options.read(true).write(true).create(true).truncate(false);
-        #[cfg(unix)]
-        {
-            use std::os::unix::fs::OpenOptionsExt as _;
-            options.custom_flags(libc::O_NOFOLLOW);
+        if let Some(entries) = &mut entries {
+            entries.sort();
+            entries.dedup();
         }
-        let file = options.open(directory.join(context))?;
-        ensure!(file.metadata()?.is_file(), "invalid context usage record");
-        file.set_modified(SystemTime::now())?;
-        Ok(Self(file))
+        let used_through = tracker.touch(context, entries.as_deref(), SystemTime::now())?;
+        Ok(Self {
+            tracker,
+            context: context.to_owned(),
+            entries,
+            used_through,
+        })
+    }
+
+    /// Long builds renew activity at completion; short builds need no second query.
+    fn refresh(&mut self, now: SystemTime) -> CargoResult<()> {
+        if tracker::timestamp(now)? > self.used_through {
+            self.used_through = self
+                .tracker
+                .touch(&self.context, self.entries.as_deref(), now)?;
+        }
+        Ok(())
     }
 }
 
@@ -67,13 +86,23 @@ pub(crate) fn record_seed_contexts(root: &Path, source: &Path) -> CargoResult<Ve
             let Some(context) = name.to_str().filter(|name| component(name)) else {
                 continue;
             };
-            if entry.file_type()?.is_dir()
-                && plain_directory(&records)
-                && read_record::<ContextRecord>(&records.join(format!("{context}.json")))
-                    .is_some_and(|record| record.version == 1 && record.context == context)
-            {
-                usage.push(ContextUse::new(root, context)?);
+            if !entry.file_type()?.is_dir() {
+                continue;
             }
+            let tracker = Tracker::open(root)?;
+            if tracker.context(context)?.is_none() {
+                if !plain_directory(&records) {
+                    continue;
+                }
+                let Some(record) =
+                    read_record::<ContextRecord>(&records.join(format!("{context}.json")))
+                        .filter(|record| record.version == 1 && record.context == context)
+                else {
+                    continue;
+                };
+                tracker.insert_context(&record)?;
+            }
+            usage.push(ContextUse::new(tracker, context, None)?);
         }
     }
     Ok(usage)
@@ -81,8 +110,8 @@ pub(crate) fn record_seed_contexts(root: &Path, source: &Path) -> CargoResult<Ve
 
 impl Drop for ContextUse {
     fn drop(&mut self) {
-        if let Err(error) = self.0.set_modified(SystemTime::now()) {
-            tracing::debug!(?error, "could not refresh build-context usage");
+        if let Err(error) = self.refresh(SystemTime::now()) {
+            tracing::debug!(?error, "could not refresh build-cache usage");
         }
     }
 }
@@ -102,7 +131,7 @@ fn context_expired(directory: &Path, context: &str, now: SystemTime) -> bool {
 }
 
 /// The same concrete compiler-file identity used to partition shared artifacts.
-#[derive(Clone, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub(crate) struct FileIdentity {
     pub path: PathBuf,
@@ -305,30 +334,17 @@ pub(crate) fn metadata_dir(root: &Path, create: bool) -> CargoResult<PathBuf> {
     Ok(directory)
 }
 
-/// Records provenance supplied by the context hasher without touching fresh records.
+/// Records immutable compiler provenance and reuses the connection for activity updates.
 pub(crate) fn record_context(
     root: &Path,
     context: &str,
     compiler: FileIdentity,
     driver: FileIdentity,
-) -> CargoResult<()> {
+) -> CargoResult<Tracker> {
     ensure!(component(context), "invalid build context");
-    let directory = metadata_dir(root, true)?.join("contexts");
-    create_plain(&directory)?;
-    let destination = directory.join(format!("{context}.json"));
-    if fs::symlink_metadata(&destination).is_ok() {
-        return Ok(());
-    }
-    let record = ContextRecord {
-        version: 1,
-        context: context.to_owned(),
-        ohm_version: installed_ohm_version(&compiler, &driver),
-        compiler_anchor: Anchor::for_path(&compiler.path)?,
-        driver_anchor: Anchor::for_path(&driver.path)?,
-        compiler,
-        driver,
-    };
-    write_new(&destination, &record)
+    let tracker = Tracker::open(root)?;
+    tracker.record_context(context, compiler, driver)?;
+    Ok(tracker)
 }
 
 #[derive(Default, Debug)]
@@ -368,7 +384,7 @@ impl FileCounts {
     }
 }
 
-/// Retires legacy layouts, obsolete compilers, and contexts idle for at least an hour.
+/// Retires legacy layouts, obsolete compilers, and contexts or dependencies idle for an hour.
 pub(crate) fn collect(
     root: &Path,
     dry_run: bool,
@@ -429,6 +445,7 @@ fn collect_with_lock_budget(
         };
         drop(probe);
     }
+    let tracker = Tracker::existing(root, dry_run)?;
     let profiles = profiles(root)?;
     let mut ready = Vec::new();
     let mut trash_roots = profiles
@@ -445,12 +462,20 @@ fn collect_with_lock_budget(
         }
     }
     // Namespace discovery never holds consumer or build locks.
-    for namespace in namespaces(root, &profiles)? {
+    for namespace in namespaces(root, &profiles, tracker.as_ref())? {
         if namespace
-            .detail(root, &profiles, now, current_ohm)
+            .detail(root, &profiles, now, current_ohm, tracker.as_ref())
             .is_none()
         {
             summary.retained += 1;
+            if let Namespace::Context(context) = &namespace {
+                for dependency in idle_dependencies(root, &profiles, context, now, tracker.as_ref())
+                    .unwrap_or_default()
+                {
+                    let paths = dependency.paths(root, &profiles);
+                    ready.push((dependency, paths));
+                }
+            }
             continue;
         }
         let paths = namespace.paths(root, &profiles);
@@ -481,11 +506,16 @@ fn collect_with_lock_budget(
         // Preview every candidate without holding locks while counting artifacts.
         let mut sources = Vec::new();
         for (namespace, paths) in ready {
-            let Some(detail) = namespace.detail(root, &profiles, now, current_ohm) else {
+            let Some(detail) =
+                namespace.detail(root, &profiles, now, current_ohm, tracker.as_ref())
+            else {
                 continue;
             };
             let before = sources.len();
             for (source, trash) in paths {
+                if trash == root.join(METADATA_TRASH) {
+                    continue;
+                }
                 if retire(root, &source, &trash, true)? {
                     sources.push(source);
                 }
@@ -534,6 +564,14 @@ fn collect_with_lock_budget(
             };
             guards.push(guard);
         }
+        let tracker = match tracker {
+            Some(tracker) => Some(tracker),
+            None => Tracker::existing(root, false)?,
+        };
+        let transaction = tracker
+            .as_ref()
+            .map(|tracker| tracker.conn.unchecked_transaction())
+            .transpose()?;
         let mut remaining = RENAME_BUDGET;
         let mut records_remaining = RENAME_BUDGET;
         for (namespace, paths) in ready {
@@ -547,7 +585,9 @@ fn collect_with_lock_budget(
             records_remaining -= 1;
             // A build may have enrolled a legacy context since discovery. Recheck
             // while both new consumers and older Cargo builds are excluded.
-            let Some(detail) = namespace.detail(root, &profiles, now, current_ohm) else {
+            let Some(detail) =
+                namespace.detail(root, &profiles, now, current_ohm, tracker.as_ref())
+            else {
                 continue;
             };
             let mut retired = false;
@@ -570,11 +610,14 @@ fn collect_with_lock_budget(
                     .iter()
                     .all(|(source, _)| safely_absent(root, source));
             if completed {
-                namespace.finish(&directory)?;
+                namespace.finish(&directory, tracker.as_ref())?;
             } else if remaining == 0 {
                 summary.pending = true;
             }
             summary.retired += usize::from(completed);
+        }
+        if let Some(transaction) = transaction {
+            transaction.commit()?;
         }
         drop(guards);
         drop(consumers);
@@ -586,6 +629,15 @@ fn collect_with_lock_budget(
         for trash in trash_roots {
             drain_trash(&trash, &mut remaining, &mut summary, false)?;
         }
+        let mut metadata_summary = Summary::default();
+        drain_trash(
+            &root.join(METADATA_TRASH),
+            &mut remaining,
+            &mut metadata_summary,
+            false,
+        )?;
+        summary.deleted_entries += metadata_summary.deleted_entries;
+        summary.pending |= metadata_summary.pending;
     } else {
         summary.busy = true;
     }
@@ -596,6 +648,90 @@ fn collect_with_lock_budget(
 enum Namespace {
     Context(String),
     LegacyWorkspace(String),
+    Dependency { context: String, entry: PathBuf },
+}
+
+/// Selects expired rows outside build locks and validates their artifact paths.
+fn idle_dependencies(
+    root: &Path,
+    profiles: &[PathBuf],
+    context: &str,
+    now: SystemTime,
+    tracker: Option<&Tracker>,
+) -> Option<Vec<Namespace>> {
+    let tracker = tracker?;
+    let state = tracker.context(context).ok()??;
+    if state.record.version != 1 || state.record.context != context {
+        return None;
+    }
+    let cutoff = tracker::timestamp(now.checked_sub(CONTEXT_MAX_IDLE)?).ok()?;
+    if state.all_used.is_some_and(|used| used > cutoff) {
+        return None;
+    }
+    // Older Cargo binaries can still touch their file-based context marker.
+    // They do not record individual dependencies, so treat that as a snapshot.
+    if legacy_usage(root, context)?.is_some_and(|used| used > cutoff) {
+        return None;
+    }
+    let prefixes = profiles
+        .iter()
+        .map(|profile| {
+            profile
+                .strip_prefix(root)
+                .unwrap()
+                .join("build/registries")
+                .join(context)
+        })
+        .collect::<HashSet<_>>();
+    let mut idle = Vec::new();
+    for entry in tracker.idle_dependencies(context, cutoff).ok()? {
+        if !entry
+            .components()
+            .all(|part| matches!(part, Component::Normal(_)))
+            || !entry
+                .file_name()
+                .and_then(|name| name.to_str())
+                .is_some_and(namespace_hash)
+            || !entry
+                .parent()
+                .and_then(Path::file_name)
+                .and_then(|name| name.to_str())
+                .is_some_and(component)
+            || !entry
+                .ancestors()
+                .nth(2)
+                .is_some_and(|parent| prefixes.contains(parent))
+        {
+            return None;
+        }
+        if safely_absent(root, &root.join(&entry))
+            || (plain_ancestors(root, &root.join(&entry)).ok()?
+                && plain_directory(&root.join(&entry)))
+        {
+            idle.push(Namespace::Dependency {
+                context: context.to_owned(),
+                entry,
+            });
+        }
+    }
+    idle.sort();
+    Some(idle)
+}
+
+/// Old context markers remain readable until their legacy artifacts are retired.
+fn legacy_usage(root: &Path, context: &str) -> Option<Option<tracker::Timestamp>> {
+    let path = root.join(DIRECTORY).join(LAST_USED).join(context);
+    if safely_absent(root, &path) {
+        return Some(None);
+    }
+    if !plain_ancestors(root, &path).ok()? {
+        return None;
+    }
+    let metadata = fs::symlink_metadata(&path).ok()?;
+    if !metadata.is_file() {
+        return None;
+    }
+    Some(Some(tracker::timestamp(metadata.modified().ok()?).ok()?))
 }
 
 impl Namespace {
@@ -606,18 +742,57 @@ impl Namespace {
         profiles: &[PathBuf],
         now: SystemTime,
         current_ohm: Option<&str>,
+        tracker: Option<&Tracker>,
     ) -> Option<String> {
         let directory = root.join(DIRECTORY);
         match self {
+            Self::Dependency { context, entry } => {
+                let cutoff = tracker::timestamp(now.checked_sub(CONTEXT_MAX_IDLE)?).ok()?;
+                if legacy_usage(root, context)?.is_some_and(|used| used > cutoff) {
+                    return None;
+                }
+                tracker?
+                    .dependency_expired(context, entry, cutoff)
+                    .ok()?
+                    .then(|| {
+                        format!(
+                            "dependency {} (unused for at least 1 hour)",
+                            entry.display()
+                        )
+                    })
+            }
             Self::Context(id) => {
                 let path = directory.join("contexts").join(format!("{id}.json"));
-                if legacy_context_name(id)
-                    && safely_absent(root, &path)
-                    && safely_absent(root, &directory.join(LAST_USED).join(id))
-                {
-                    return Some(format!("legacy context {id} (no usage records)"));
-                }
-                let record = read_record::<ContextRecord>(&path)?;
+                let tracked = match tracker {
+                    Some(tracker) => tracker.context(id).ok()?,
+                    None => None,
+                };
+                let (record, expired) = if let Some(state) = tracked {
+                    let last_used = state
+                        .last_used
+                        .into_iter()
+                        .chain(legacy_usage(root, id)?)
+                        .max();
+                    let expired = now
+                        .checked_sub(CONTEXT_MAX_IDLE)
+                        .and_then(|cutoff| tracker::timestamp(cutoff).ok())
+                        .is_some_and(|cutoff| last_used.is_some_and(|used| used <= cutoff));
+                    (state.record, expired)
+                } else {
+                    if legacy_context_name(id)
+                        && safely_absent(root, &path)
+                        && safely_absent(root, &directory.join(LAST_USED).join(id))
+                    {
+                        return Some(format!("legacy context {id} (no usage records)"));
+                    }
+                    if !plain_ancestors(root, &path).ok()? {
+                        return None;
+                    }
+                    (
+                        read_record::<ContextRecord>(&path)?,
+                        context_expired(&directory, id, now),
+                    )
+                };
                 if record.version != 1 || record.context != *id {
                     return None;
                 }
@@ -638,7 +813,7 @@ impl Namespace {
                     Some(format!(
                         "context {id} (compiler or driver changed or removed)"
                     ))
-                } else if context_expired(&directory, id, now) {
+                } else if expired {
                     Some(format!("context {id} (unused for at least 1 hour)"))
                 } else {
                     None
@@ -650,6 +825,11 @@ impl Namespace {
     }
 
     fn paths(&self, root: &Path, profiles: &[PathBuf]) -> Vec<(PathBuf, PathBuf)> {
+        if let Self::Dependency { entry, .. } = self {
+            // Validated entries have profile/build/registries/context/package/hash.
+            let profile = root.join(entry.ancestors().nth(5).unwrap());
+            return vec![(root.join(entry), profile.join(TRASH))];
+        }
         let mut paths = Vec::new();
         for profile in profiles {
             let sources = match self {
@@ -660,12 +840,19 @@ impl Namespace {
                     profile.join("build/workspaces").join(id),
                     profile.join("incremental").join(id),
                 ],
+                Self::Dependency { .. } => unreachable!(),
             };
             paths.extend(
                 sources
                     .into_iter()
                     .map(|source| (source, profile.join(TRASH))),
             );
+        }
+        if let Self::Context(id) = self {
+            paths.push((
+                root.join(DIRECTORY).join("dependencies").join(id),
+                root.join(METADATA_TRASH),
+            ));
         }
         if let Self::LegacyWorkspace(id) = self {
             for base in std::iter::once(root).chain(profiles.iter().filter_map(|p| p.parent())) {
@@ -682,8 +869,16 @@ impl Namespace {
         paths
     }
 
-    fn finish(&self, directory: &Path) -> CargoResult<()> {
+    fn finish(&self, directory: &Path, tracker: Option<&Tracker>) -> CargoResult<()> {
+        if let Some(tracker) = tracker {
+            match self {
+                Self::Context(id) => tracker.forget_context(id)?,
+                Self::Dependency { context, entry } => tracker.forget_dependency(context, entry)?,
+                Self::LegacyWorkspace(_) => {}
+            }
+        }
         let paths = match self {
+            Self::Dependency { .. } => return Ok(()),
             Self::Context(id) => vec![
                 directory.join(LAST_USED).join(id),
                 directory.join("contexts").join(format!("{id}.json")),
@@ -710,8 +905,19 @@ fn legacy_private_state(root: &Path, profiles: &[PathBuf]) -> bool {
 }
 
 /// Discovers only known Ohm namespace shapes inside a marked shared cache.
-fn namespaces(root: &Path, profiles: &[PathBuf]) -> CargoResult<Vec<Namespace>> {
+fn namespaces(
+    root: &Path,
+    profiles: &[PathBuf],
+    tracker: Option<&Tracker>,
+) -> CargoResult<Vec<Namespace>> {
     let mut namespaces = HashSet::default();
+    if let Some(tracker) = tracker {
+        for id in tracker.contexts()? {
+            if component(&id) {
+                namespaces.insert(Namespace::Context(id));
+            }
+        }
+    }
     let records = root.join(DIRECTORY).join("contexts");
     if plain_ancestors(root, &records)? && plain_directory(&records) {
         for entry in fs::read_dir(records)? {
@@ -1086,21 +1292,25 @@ fn read_regular(path: &Path) -> Option<Vec<u8>> {
 fn read_record<T: for<'de> Deserialize<'de>>(path: &Path) -> Option<T> {
     serde_json::from_slice(&read_regular(path)?).ok()
 }
-fn write_new(path: &Path, value: &impl Serialize) -> CargoResult<()> {
-    use std::io::Write as _;
-    let mut temporary = tempfile::NamedTempFile::new_in(path.parent().unwrap())?;
-    temporary.write_all(&serde_json::to_vec(value)?)?;
-    match temporary.persist_noclobber(path) {
-        Ok(_) => Ok(()),
-        Err(e) if e.error.kind() == io::ErrorKind::AlreadyExists => Ok(()),
-        Err(e) => Err(e.into()),
-    }
-}
-
 #[cfg(all(test, any(target_os = "linux", target_os = "macos")))]
 mod tests {
     use super::*;
     use std::os::unix::fs::symlink;
+
+    /// Eligibility assertions should not depend on runner scheduling. Count limits
+    /// remain active; the deadline test supplies its own explicit time budget.
+    fn collect(root: &Path, dry_run: bool, current_ohm: Option<&str>) -> CargoResult<Summary> {
+        collect_at(root, dry_run, SystemTime::now(), current_ohm)
+    }
+
+    fn collect_at(
+        root: &Path,
+        dry_run: bool,
+        now: SystemTime,
+        current_ohm: Option<&str>,
+    ) -> CargoResult<Summary> {
+        collect_with_lock_budget(root, dry_run, now, Duration::from_secs(60), current_ohm)
+    }
 
     struct Cache {
         _temporary: tempfile::TempDir,
@@ -1141,6 +1351,43 @@ mod tests {
                 self.identity(&self.compiler)?,
                 self.identity(&self.driver)?,
             )
+            .map(|_| ())
+        }
+
+        fn tracker(&self) -> CargoResult<Tracker> {
+            Tracker::open(&self.root)
+        }
+
+        fn record(&self, context: &str) -> CargoResult<ContextRecord> {
+            Ok(self.tracker()?.context(context)?.unwrap().record)
+        }
+
+        fn set_record(&self, record: &ContextRecord) -> CargoResult<()> {
+            self.tracker()?.conn.execute(
+                "UPDATE contexts SET record = ?2 WHERE context = ?1",
+                rusqlite::params![record.context, serde_json::to_vec(record)?],
+            )?;
+            Ok(())
+        }
+
+        fn used(&self, context: &str) -> CargoResult<SystemTime> {
+            Ok(SystemTime::UNIX_EPOCH
+                + Duration::from_nanos(
+                    self.tracker()?
+                        .context(context)?
+                        .unwrap()
+                        .last_used
+                        .unwrap()
+                        .try_into()?,
+                ))
+        }
+
+        fn age_context(&self, context: &str, used: SystemTime) -> CargoResult<()> {
+            self.tracker()?.conn.execute(
+                "UPDATE contexts SET last_used = ?2 WHERE context = ?1",
+                rusqlite::params![context, tracker::timestamp(used)?],
+            )?;
+            Ok(())
         }
 
         fn identity(&self, path: &Path) -> CargoResult<FileIdentity> {
@@ -1163,14 +1410,13 @@ mod tests {
         let cache = Cache::new()?;
         cache.enroll()?;
         let path = cache.artifact("build/registries/abcdef")?;
-        let record = cache.root.join(DIRECTORY).join("contexts/abcdef.json");
-        let before = fs::metadata(&record)?.modified()?;
+        let before = serde_json::to_vec(&cache.record("abcdef")?)?;
         cache.enroll()?;
-        assert_eq!(before, fs::metadata(&record)?.modified()?);
-        let summary = collect(&cache.root, false, None)?;
-        assert_eq!(summary.retired, 0);
+        assert_eq!(before, serde_json::to_vec(&cache.record("abcdef")?)?);
+        assert_eq!(cache.tracker()?.contexts()?.len(), 1);
+        assert_eq!(collect(&cache.root, false, None)?.retired, 0);
         assert!(path.exists());
-        assert!(!cache.root.join(DIRECTORY).join("candidates.json").exists());
+        assert!(!cache.root.join(DIRECTORY).join("contexts").exists());
         Ok(())
     }
 
@@ -1181,14 +1427,21 @@ mod tests {
         let shared = cache.artifact("build/registries/abcdef")?;
         let private = cache.artifact("build/workspaces/owner/abcdef")?;
         let incremental = cache.artifact("incremental/owner")?;
-        drop(ContextUse::new(&cache.root, "abcdef")?);
-        let usage = cache.root.join(DIRECTORY).join(LAST_USED).join("abcdef");
-        let last_used = fs::metadata(&usage)?.modified()?;
+        drop(ContextUse::new(
+            cache.tracker()?,
+            "abcdef",
+            Some(Vec::new()),
+        )?);
+        let last_used = cache.used("abcdef")?;
         let expires = last_used + CONTEXT_MAX_IDLE;
         assert_eq!(
             collect_at(&cache.root, false, expires - Duration::from_nanos(1), None)?.retired,
             0
         );
+        let database = cache.root.join(DIRECTORY).join(tracker::DATABASE);
+        let before = fs::read(&database)?;
+        let wal = cache.root.join(DIRECTORY).join("cache.sqlite-wal");
+        let wal_before = fs::read(&wal)?;
         let dry_run = collect_at(&cache.root, true, expires, None)?;
         assert_eq!(dry_run.retired, 1);
         assert!(
@@ -1199,70 +1452,425 @@ mod tests {
         );
         assert_eq!(dry_run.counts.files, 1);
         assert_eq!(dry_run.counts.bytes, 6);
-        assert_eq!(fs::metadata(&usage)?.modified()?, last_used);
+        assert_eq!(
+            fs::read(database)?,
+            before,
+            "dry run leaves the database unchanged"
+        );
+        assert_eq!(
+            fs::read(wal)?,
+            wal_before,
+            "dry run does not checkpoint usage"
+        );
         assert!(shared.exists());
         let collected = collect_at(&cache.root, false, expires, None)?;
         assert_eq!(collected.retired, 1);
         assert_eq!(collected.counts, dry_run.counts);
         assert!(!shared.exists());
-        assert!(
-            private.exists(),
-            "unrecognized private namespace is preserved"
-        );
-        assert!(!usage.exists());
+        assert!(private.exists());
+        assert!(cache.tracker()?.context("abcdef")?.is_none());
         assert!(incremental.exists());
         assert!(cache.compiler.exists());
         assert!(cache.driver.exists());
         Ok(())
     }
 
+    /// Models prior use without sleeping or changing filesystem timestamps.
+    fn dependency_use(cache: &Cache, entries: &[&str], used: SystemTime) -> CargoResult<()> {
+        let entries = entries.iter().map(PathBuf::from).collect::<Vec<_>>();
+        drop(ContextUse::new(
+            cache.tracker()?,
+            "abcdef",
+            Some(entries.clone()),
+        )?);
+        let tracker = cache.tracker()?;
+        for entry in entries {
+            tracker.conn.execute(
+                "UPDATE dependencies SET last_used = ?2 WHERE entry = ?1",
+                rusqlite::params![
+                    cargo_util::paths::path2bytes(&entry)?,
+                    tracker::timestamp(used)?
+                ],
+            )?;
+        }
+        Ok(())
+    }
+
     #[test]
-    fn long_build_is_protected_and_refreshes_usage_on_completion() -> CargoResult<()> {
+    fn idle_dependency_variants_expire_while_overlapping_graphs_stay_warm() -> CargoResult<()> {
         let cache = Cache::new()?;
         cache.enroll()?;
-        cache.artifact("build/registries/abcdef")?;
+        let old = "debug/build/registries/abcdef/dep/1111111111111111";
+        let current = "debug/build/registries/abcdef/dep/2222222222222222";
+        let transitive = "debug/build/registries/abcdef/leaf/3333333333333333";
+        let unknown = cache.artifact("build/registries/abcdef/unknown/4444444444444444")?;
+        for entry in [old, current, transitive] {
+            cache.artifact(entry.strip_prefix("debug/").unwrap())?;
+        }
+        let now = SystemTime::now();
+        dependency_use(&cache, &[old, transitive], now - CONTEXT_MAX_IDLE)?;
+        dependency_use(&cache, &[current, transitive], now)?;
+        assert_eq!(
+            collect_at(&cache.root, true, now - Duration::from_nanos(1), None)?.retired,
+            0
+        );
+        let dry_run = collect_at(&cache.root, true, now, None)?;
+        assert_eq!(dry_run.retired, 1);
+        assert_eq!(dry_run.counts.files, 1);
+        assert_eq!(dry_run.counts.bytes, 6);
+        assert!(
+            dry_run.details[0]
+                .contains("dependency debug/build/registries/abcdef/dep/1111111111111111")
+        );
+        assert!(cache.root.join(old).is_dir());
+        let removed = collect_at(&cache.root, false, now, None)?;
+        assert_eq!(removed.counts, dry_run.counts);
+        assert!(!cache.root.join(old).exists());
+        assert!(cache.root.join(current).is_dir());
+        assert!(cache.root.join(transitive).is_dir());
+        assert!(
+            unknown.is_dir(),
+            "untracked entries have no proven last use"
+        );
+        assert_eq!(
+            cache
+                .tracker()?
+                .conn
+                .query_row("SELECT count(*) FROM dependencies", [], |row| row
+                    .get::<_, usize>(0))?,
+            2
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn dependency_usage_revalidates_activity_and_survives_long_builds() -> CargoResult<()> {
+        let cache = Cache::new()?;
+        cache.enroll()?;
+        let entry = "debug/build/registries/abcdef/dep/1111111111111111";
+        cache.artifact(entry.strip_prefix("debug/").unwrap())?;
+        let now = SystemTime::now();
+        dependency_use(&cache, &[entry], now - CONTEXT_MAX_IDLE)?;
+        let profiles = profiles(&cache.root)?;
+        let tracker = cache.tracker()?;
+        let candidates =
+            idle_dependencies(&cache.root, &profiles, "abcdef", now, Some(&tracker)).unwrap();
+        assert_eq!(candidates.len(), 1);
         let lease = crate::workspace::build_cache_gc_lease::ConsumerLease::acquire(&cache.root)?;
-        let usage = ContextUse::new(&cache.root, "abcdef")?;
-        usage
-            .0
-            .set_modified(SystemTime::now() - CONTEXT_MAX_IDLE * 2)?;
+        let mut usage = ContextUse::new(cache.tracker()?, "abcdef", Some(vec![entry.into()]))?;
+        assert!(
+            candidates[0]
+                .detail(&cache.root, &profiles, now, None, Some(&tracker))
+                .is_none()
+        );
+        dependency_use(&cache, &[entry], now - CONTEXT_MAX_IDLE * 2)?;
+        cache.age_context("abcdef", now - CONTEXT_MAX_IDLE * 2)?;
+        usage.used_through = tracker::timestamp(now - CONTEXT_MAX_IDLE * 2)?;
         assert!(collect(&cache.root, false, None)?.busy);
         let completed = SystemTime::now();
         drop(usage);
         drop(lease);
-        let timestamp = cache.root.join(DIRECTORY).join(LAST_USED).join("abcdef");
-        assert!(fs::metadata(&timestamp)?.modified()? >= completed);
+        assert!(cache.used("abcdef")? >= completed);
+        // Completion can share a clock tick with the preceding read. Expiry is
+        // inclusive, so use a cutoff strictly before that tick.
+        assert!(!tracker.dependency_expired(
+            "abcdef",
+            Path::new(entry),
+            tracker::timestamp(completed - Duration::from_nanos(1))?
+        )?);
         assert_eq!(collect(&cache.root, false, None)?.retired, 0);
         Ok(())
     }
 
     #[test]
-    fn future_and_symlinked_usage_markers_cannot_expire_contexts() -> CargoResult<()> {
+    fn snapshot_import_and_malformed_records_preserve_dependencies() -> CargoResult<()> {
         let cache = Cache::new()?;
         cache.enroll()?;
-        cache.artifact("build/registries/abcdef")?;
-        drop(ContextUse::new(&cache.root, "abcdef")?);
-        let usage = cache.root.join(DIRECTORY).join(LAST_USED).join("abcdef");
-        File::options()
-            .write(true)
-            .open(&usage)?
-            .set_modified(SystemTime::now() + CONTEXT_MAX_IDLE)?;
+        let entry = "debug/build/registries/abcdef/dep/1111111111111111";
+        let artifact = cache.artifact(entry.strip_prefix("debug/").unwrap())?;
+        let now = SystemTime::now();
+        dependency_use(&cache, &[entry], now - CONTEXT_MAX_IDLE * 2)?;
+        drop(ContextUse::new(cache.tracker()?, "abcdef", None)?);
         assert_eq!(collect(&cache.root, false, None)?.retired, 0);
-        fs::remove_file(&usage)?;
-        symlink(&cache.compiler, &usage)?;
-        let before = fs::metadata(&cache.compiler)?.modified()?;
-        assert!(ContextUse::new(&cache.root, "abcdef").is_err());
+        let tracker = cache.tracker()?;
+        tracker
+            .conn
+            .execute("UPDATE contexts SET all_used = NULL", [])?;
+        let original = cache.record("abcdef")?;
+        tracker
+            .conn
+            .execute("UPDATE contexts SET record = x'00'", [])?;
+        assert_eq!(collect(&cache.root, false, None)?.retired, 0);
+        cache.set_record(&original)?;
+        assert_eq!(collect(&cache.root, true, None)?.retired, 1);
+        dependency_use(&cache, &["../../outside"], now - CONTEXT_MAX_IDLE * 2)?;
+        assert_eq!(collect(&cache.root, false, None)?.retired, 0);
+        assert!(artifact.is_dir());
+        Ok(())
+    }
+
+    #[test]
+    fn future_usage_is_preserved_and_database_symlinks_are_rejected() -> CargoResult<()> {
+        let cache = Cache::new()?;
+        cache.enroll()?;
+        let artifact = cache.artifact("build/registries/abcdef")?;
+        cache.age_context("abcdef", SystemTime::now() + CONTEXT_MAX_IDLE)?;
+        drop(ContextUse::new(
+            cache.tracker()?,
+            "abcdef",
+            Some(Vec::new()),
+        )?);
+        assert_eq!(collect(&cache.root, false, None)?.retired, 0);
+        let database = cache.root.join(DIRECTORY).join(tracker::DATABASE);
+        let external = cache._temporary.path().join("database");
+        fs::rename(&database, &external)?;
+        symlink(&external, &database)?;
+        let before = fs::read(&external)?;
+        assert!(cache.tracker().is_err());
+        assert!(collect(&cache.root, false, None).is_err());
+        assert_eq!(fs::read(external)?, before);
+        assert!(artifact.is_dir());
+        Ok(())
+    }
+
+    #[test]
+    fn corrupt_and_newer_databases_never_become_untracked_legacy_caches() -> CargoResult<()> {
+        for state in ["corrupt", "newer", "missing"] {
+            let cache = Cache::new()?;
+            cache.enroll()?;
+            let artifact = cache.artifact("build/registries/0123456789abcdef")?;
+            if state == "corrupt" {
+                // Checkpoint first: an intact WAL can recover damaged main-file pages.
+                cache
+                    .tracker()?
+                    .conn
+                    .execute_batch("PRAGMA wal_checkpoint(TRUNCATE)")?;
+                fs::write(
+                    cache.root.join(DIRECTORY).join(tracker::DATABASE),
+                    b"invalid sqlite",
+                )?;
+            } else if state == "newer" {
+                cache
+                    .tracker()?
+                    .conn
+                    .pragma_update(None, "user_version", 999)?;
+            } else {
+                fs::remove_file(cache.root.join(DIRECTORY).join(tracker::DATABASE))?;
+            }
+            assert!(collect(&cache.root, true, None).is_err(), "{state}");
+            assert!(collect(&cache.root, false, None).is_err(), "{state}");
+            assert!(artifact.is_dir());
+        }
+        Ok(())
+    }
+
+    #[test]
+    fn concurrent_builds_batch_usage_without_losing_rows() -> CargoResult<()> {
+        let cache = Cache::new()?;
+        cache.enroll()?;
+        let root = &cache.root;
+        std::thread::scope(|scope| -> CargoResult<()> {
+            let handles = (0..4)
+                .map(|worker| {
+                    scope.spawn(move || -> CargoResult<()> {
+                        for index in 0..8 {
+                            drop(ContextUse::new(
+                                Tracker::open(root)?,
+                                "abcdef",
+                                Some(vec![PathBuf::from(format!(
+                                    "debug/build/registries/abcdef/dep/{worker:08x}{index:08x}"
+                                ))]),
+                            )?);
+                        }
+                        Ok(())
+                    })
+                })
+                .collect::<Vec<_>>();
+            for handle in handles {
+                handle.join().unwrap()?;
+            }
+            Ok(())
+        })?;
         assert_eq!(
-            collect_at(
-                &cache.root,
-                false,
-                SystemTime::now() + CONTEXT_MAX_IDLE * 2,
-                None
-            )?
-            .retired,
+            cache
+                .tracker()?
+                .conn
+                .query_row("SELECT count(*) FROM dependencies", [], |row| row
+                    .get::<_, usize>(0))?,
+            32
+        );
+        cache.tracker()?.forget_context("abcdef")?;
+        assert_eq!(
+            cache
+                .tracker()?
+                .conn
+                .query_row("SELECT count(*) FROM dependencies", [], |row| row
+                    .get::<_, usize>(0))?,
             0
         );
-        assert_eq!(fs::metadata(&cache.compiler)?.modified()?, before);
+        Ok(())
+    }
+
+    #[test]
+    fn throttled_usage_never_expires_early_or_blocks_on_a_writer() -> CargoResult<()> {
+        let cache = Cache::new()?;
+        cache.enroll()?;
+        let mut tracker = cache.tracker()?;
+        let entries = [
+            PathBuf::from("debug/build/registries/abcdef/dep/1111111111111111"),
+            PathBuf::from("debug/build/registries/abcdef/dep/2222222222222222"),
+        ];
+        let resolution =
+            Duration::from_secs(crate::workspace::global_cache_tracker::UPDATE_RESOLUTION);
+        let boundary = std::time::UNIX_EPOCH + resolution * 1_000;
+        let first = boundary + Duration::from_nanos(1);
+        let last = boundary + resolution - Duration::from_nanos(1);
+        let used_through = tracker.touch("abcdef", Some(&entries[..1]), first)?;
+        assert_eq!(used_through, tracker::timestamp(boundary + resolution)?);
+        let changes = tracker.conn.total_changes();
+        let wal = cache.root.join(DIRECTORY).join("cache.sqlite-wal");
+        let before = fs::read(&wal)?;
+
+        // A warm reader neither acquires the writer lock nor changes the WAL.
+        let mut writer = cache.tracker()?;
+        let transaction = writer
+            .conn
+            .transaction_with_behavior(rusqlite::TransactionBehavior::Immediate)?;
+        tracker.touch("abcdef", Some(&entries[..1]), last)?;
+        assert_eq!(tracker.conn.total_changes(), changes);
+        assert_eq!(fs::read(&wal)?, before);
+        drop(transaction);
+
+        // A newly selected variant is registered even inside the same interval.
+        tracker.touch("abcdef", Some(&entries), last)?;
+        assert_eq!(tracker.conn.total_changes(), changes + 1);
+        assert!(!tracker.dependency_expired("abcdef", &entries[0], tracker::timestamp(last)?)?);
+        assert!(tracker.dependency_expired("abcdef", &entries[0], used_through)?);
+        let expires = boundary + resolution + CONTEXT_MAX_IDLE;
+        assert!(expires >= last + CONTEXT_MAX_IDLE);
+        assert!(expires < first + CONTEXT_MAX_IDLE + resolution);
+
+        // Crossing a bucket renews only the selected variant, not its sibling.
+        tracker.touch(
+            "abcdef",
+            Some(&entries[..1]),
+            boundary + resolution + Duration::from_nanos(1),
+        )?;
+        assert_eq!(
+            tracker.idle_dependencies("abcdef", used_through)?,
+            vec![entries[1].clone()]
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn completion_refreshes_only_after_the_recorded_interval() -> CargoResult<()> {
+        let cache = Cache::new()?;
+        cache.enroll()?;
+        let mut tracker = cache.tracker()?;
+        let entries = Some(vec![PathBuf::from(
+            "debug/build/registries/abcdef/dep/1111111111111111",
+        )]);
+        let used_through = tracker.touch("abcdef", entries.as_deref(), SystemTime::now())?;
+        let mut usage = ContextUse {
+            tracker,
+            context: "abcdef".into(),
+            entries,
+            used_through,
+        };
+        let boundary = std::time::UNIX_EPOCH + Duration::from_nanos(used_through.try_into()?);
+        let changes = usage.tracker.conn.total_changes();
+        usage.refresh(boundary)?;
+        assert_eq!(usage.tracker.conn.total_changes(), changes);
+        usage.refresh(boundary + CONTEXT_MAX_IDLE)?;
+        assert_eq!(
+            usage.used_through,
+            tracker::timestamp(boundary + CONTEXT_MAX_IDLE)?
+        );
+        assert_eq!(usage.tracker.conn.total_changes(), changes + 2);
+        assert!(!usage.tracker.dependency_expired(
+            "abcdef",
+            &usage.entries.as_ref().unwrap()[0],
+            used_through,
+        )?);
+        Ok(())
+    }
+
+    #[test]
+    fn repeated_warm_usage_keeps_the_write_ahead_log_bounded() -> CargoResult<()> {
+        let cache = Cache::new()?;
+        cache.enroll()?;
+        let mut tracker = cache.tracker()?;
+        let entries = [PathBuf::from(
+            "debug/build/registries/abcdef/dep/0123456789abcdef",
+        )];
+        let resolution =
+            Duration::from_secs(crate::workspace::global_cache_tracker::UPDATE_RESOLUTION);
+        let now = std::time::UNIX_EPOCH + resolution * 1_000;
+        for index in 0..2_000 {
+            tracker.touch("abcdef", Some(&entries), now + resolution * index)?;
+        }
+        drop(tracker);
+        // Automatic checkpoints still recycle the WAL even though exiting a build
+        // no longer forces a checkpoint. Without them it grows with every update.
+        assert!(
+            fs::metadata(cache.root.join(DIRECTORY).join("cache.sqlite-wal"))?.len() < 1024 * 1024
+        );
+        assert_eq!(cache.used("abcdef")?, now + resolution * 1_999);
+        Ok(())
+    }
+
+    #[test]
+    fn file_based_contexts_remain_collectable_without_creating_a_database() -> CargoResult<()> {
+        let cache = Cache::new()?;
+        cache.enroll()?;
+        let record = cache.record("abcdef")?;
+        let directory = cache.root.join(DIRECTORY);
+        for suffix in ["", "-wal", "-shm"] {
+            fs::remove_file(directory.join(format!("{}{suffix}", tracker::DATABASE)))?;
+        }
+        fs::create_dir(directory.join("contexts"))?;
+        fs::write(
+            directory.join("contexts/abcdef.json"),
+            serde_json::to_vec(&record)?,
+        )?;
+        fs::create_dir(directory.join(LAST_USED))?;
+        let used = SystemTime::now() - CONTEXT_MAX_IDLE;
+        File::create(directory.join("last-used/abcdef"))?.set_modified(used)?;
+        let artifact = cache.artifact("build/registries/abcdef")?;
+        assert_eq!(collect(&cache.root, true, None)?.retired, 1);
+        assert!(artifact.is_dir());
+        assert_eq!(collect(&cache.root, false, None)?.retired, 1);
+        assert!(!artifact.exists());
+        assert!(!directory.join("contexts/abcdef.json").exists());
+        assert!(!directory.join(tracker::DATABASE).exists());
+        Ok(())
+    }
+
+    #[test]
+    fn older_cargo_activity_protects_tracked_dependencies_and_missing_payloads_lose_rows()
+    -> CargoResult<()> {
+        let cache = Cache::new()?;
+        cache.enroll()?;
+        let entry = "debug/build/registries/abcdef/dep/1111111111111111";
+        let artifact = cache.artifact(entry.strip_prefix("debug/").unwrap())?;
+        dependency_use(&cache, &[entry], SystemTime::now() - CONTEXT_MAX_IDLE * 2)?;
+        let directory = cache.root.join(DIRECTORY).join(LAST_USED);
+        fs::create_dir(&directory)?;
+        let marker = File::create(directory.join("abcdef"))?;
+        assert_eq!(collect(&cache.root, true, None)?.retired, 0);
+        marker.set_modified(SystemTime::now() - CONTEXT_MAX_IDLE * 2)?;
+        assert_eq!(collect(&cache.root, true, None)?.retired, 1);
+        fs::remove_dir_all(&artifact)?;
+        collect(&cache.root, false, None)?;
+        assert_eq!(
+            cache
+                .tracker()?
+                .conn
+                .query_row("SELECT count(*) FROM dependencies", [], |row| row
+                    .get::<_, usize>(0))?,
+            0
+        );
         Ok(())
     }
 
@@ -1298,9 +1906,7 @@ mod tests {
     fn driver_replacement_is_obsolete_but_alias_retarget_is_not() -> CargoResult<()> {
         let cache = Cache::new()?;
         cache.enroll()?;
-        let record =
-            read_record::<ContextRecord>(&cache.root.join(DIRECTORY).join("contexts/abcdef.json"))
-                .unwrap();
+        let record = cache.record("abcdef")?;
         let alias = cache._temporary.path().join("ohm");
         symlink(&cache.compiler, &alias)?;
         fs::remove_file(&alias)?;
@@ -1318,12 +1924,11 @@ mod tests {
     fn unavailable_filesystem_preserves_context() -> CargoResult<()> {
         let cache = Cache::new()?;
         cache.enroll()?;
-        let record_path = cache.root.join(DIRECTORY).join("contexts/abcdef.json");
-        let mut record = read_record::<ContextRecord>(&record_path).unwrap();
+        let mut record = cache.record("abcdef")?;
         fs::remove_file(&cache.compiler)?;
         record.compiler_anchor.device ^= 1;
         assert!(!record.retired());
-        fs::write(record_path, serde_json::to_vec(&record)?)?;
+        cache.set_record(&record)?;
         let path = cache.artifact("build/registries/abcdef")?;
         assert_eq!(collect(&cache.root, false, None)?.retired, 0);
         assert!(path.exists());
@@ -1393,7 +1998,7 @@ mod tests {
         assert!(first.retired <= RENAME_BUDGET);
         assert!(first.pending);
         assert_eq!(
-            fs::read_dir(cache.root.join(DIRECTORY).join("contexts"))?.count(),
+            cache.tracker()?.contexts()?.len(),
             RENAME_BUDGET + 2 - first.retired
         );
         let mut completed = first.retired;
@@ -1406,10 +2011,7 @@ mod tests {
             }
         }
         assert_eq!(completed, RENAME_BUDGET + 2);
-        assert_eq!(
-            fs::read_dir(cache.root.join(DIRECTORY).join("contexts"))?.count(),
-            0
-        );
+        assert_eq!(cache.tracker()?.contexts()?.len(), 0);
         assert!(!cache.root.join(DIRECTORY).join("candidates.json").exists());
         Ok(())
     }
@@ -1431,13 +2033,7 @@ mod tests {
         let second =
             collect_with_lock_budget(&cache.root, false, SystemTime::now(), Duration::ZERO, None)?;
         assert_eq!(second.retired, 1);
-        assert!(
-            !cache
-                .root
-                .join(DIRECTORY)
-                .join("contexts/abcdef.json")
-                .exists()
-        );
+        assert!(cache.tracker()?.context("abcdef")?.is_none());
         Ok(())
     }
 
@@ -1464,13 +2060,7 @@ mod tests {
             }
         }
         assert_eq!(completed, 1);
-        assert!(
-            !cache
-                .root
-                .join(DIRECTORY)
-                .join("contexts/abcdef.json")
-                .exists()
-        );
+        assert!(cache.tracker()?.context("abcdef")?.is_none());
         Ok(())
     }
 
@@ -1573,15 +2163,10 @@ mod tests {
                 cache.identity(&cache.compiler)?,
                 cache.identity(&cache.driver)?,
             )?;
-            let path = cache
-                .root
-                .join(DIRECTORY)
-                .join("contexts")
-                .join(format!("{id}.json"));
-            let mut record = read_record::<ContextRecord>(&path).unwrap();
+            let mut record = cache.record(id)?;
             record.ohm_version = version.map(str::to_owned);
-            fs::write(path, serde_json::to_vec(&record)?)?;
-            drop(ContextUse::new(&cache.root, id)?);
+            cache.set_record(&record)?;
+            drop(ContextUse::new(cache.tracker()?, id, Some(Vec::new()))?);
             cache.artifact(&format!("build/registries/{id}"))?;
         }
         assert_eq!(collect(&cache.root, true, None)?.retired, 0);
@@ -1627,12 +2212,15 @@ mod tests {
             cache.identity(&compiler)?,
             cache.identity(&driver)?,
         )?;
-        let path = cache.root.join(DIRECTORY).join("contexts/abcdef.json");
-        let mut record = read_record::<ContextRecord>(&path).unwrap();
+        let mut record = cache.record("abcdef")?;
         assert_eq!(record.ohm_version.as_deref(), Some("ohm-1.98.1-1"));
         record.ohm_version = None;
-        fs::write(path, serde_json::to_vec(&record)?)?;
-        drop(ContextUse::new(&cache.root, "abcdef")?);
+        cache.set_record(&record)?;
+        drop(ContextUse::new(
+            cache.tracker()?,
+            "abcdef",
+            Some(Vec::new()),
+        )?);
         cache.artifact("build/registries/abcdef")?;
         let verbose = "rustc 1.98.1-dev (abcdef 2026-09-08) (ohm-1.98.1-2)\nbinary: rustc\n";
         assert_eq!(
@@ -1683,7 +2271,7 @@ mod tests {
             inner.identity(&inner.compiler)?,
             inner.identity(&inner.driver)?,
         )?;
-        drop(ContextUse::new(&inner.root, id)?);
+        drop(ContextUse::new(inner.tracker()?, id, Some(Vec::new()))?);
         inner.artifact(&format!("build/registries/{id}"))?;
         let nested = outer.root.join("nested");
         fs::rename(&inner.root, &nested)?;
@@ -1714,13 +2302,7 @@ mod tests {
         fs::remove_file(&cache.driver)?;
         assert_eq!(collect(&cache.root, false, None)?.retired, 1);
         assert!(!shared.exists());
-        assert!(
-            !cache
-                .root
-                .join(DIRECTORY)
-                .join("contexts/abcdef.json")
-                .exists()
-        );
+        assert!(cache.tracker()?.context("abcdef")?.is_none());
         assert!(outside.exists());
         Ok(())
     }

@@ -2306,8 +2306,8 @@ independently. Seeding is a one-time operation and does not share later workspac
 compilations. Removing the recipient worktree also removes its default target,
 including an imported snapshot that has never been built. An explicit target
 outside the checkout needs separate cleanup. [Shared build
-cleanup](build-cache.md#ohm-shared-build-cleanup) reclaims global registry contexts
-and legacy private state left by earlier layouts.
+cleanup](build-cache.md#ohm-shared-build-cleanup) reclaims idle shared dependency
+builds, obsolete registry contexts, and legacy private state left by earlier layouts.
 
 ## compile-time-deps
 
