@@ -1,0 +1,11 @@
+# Real parser comparison for the dirty-native default
+
+The endpoint is the first ordinary test build after the historical Ruff parser edit. Every pair uses the same parser sources at the same absolute path, the same two integration targets and the same unmodified Cargo CLI. Role R identifies the #281 default. Role F identifies its direct child #282, which recompiles dirty native executables by default and continues to collect unused-extern information. Fresh writable state is independent by arm. This cohort is separate from the earlier experiment that disabled the global relink switch.
+
+The original schedule, randomization analysis, bootstrap and quiet-host gates were frozen before binding the release-style Cargo subjects. The compiler is a source-attested optimized stage1 Linux Rust ca780121 with its matching standard library, and native links use the published stock Wild. Four untouched starting states allow both warm and independently empty edited proofs. Each native phase checks genuine compiler and linker processes, complete runtime test inventories, native cases and the changed parsing behavior. A deliberately invalid Rust edit must fail with E0308. Cross-arm and independent-reference ELF checks retain raw SHA and allow only a previously verified width-dependent .rodata section-header entry size and its dependent GNU build ID. Every unqualified difference requires diagnosis before clocks.
+
+Each of 12 adjacent pairs runs the H-to-P change once per arm, with 6 of each assigned order. Only the ordinary Cargo command is clocked. Validation and source restoration run outside that interval. Each arm must immediately reach 147/147 fresh with no native work at admission. Every later slot checks its two products and inventory plus a fresh repeat. All starts and completed pairs are retained. The primary answer is the F/R paired ratio with its percentile interval and the exact two-sided balanced randomization result.
+
+The final binary, its measured parent and any help-snapshot-only source amendment must be sealed separately before the first Cargo admission. There are no recorded performance outcomes in this packet.
+
+Run the synthetic analysis checks with python3 -IB analyze.py --selftest. The 24 measured times from the earlier explicit-flag cohort are outside this design.

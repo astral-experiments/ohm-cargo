@@ -1,0 +1,67 @@
+{
+  "analysis": "median paired log F/R, per-arm median, 95% percentile paired bootstrap and exact two-sided six-of-twelve order randomization; characterization, no product-claim gate",
+  "base": "2447f7f4eacb4fdf499899929f08d0de19abb4d0",
+  "bootstrap_draws": 30000,
+  "bootstrap_seed": 202610290750,
+  "cargo": "independent released-profile binary certificate by role before execution",
+  "cargo_source": "direct #281/#282 source pair",
+  "clock": "inside verified full-uid mount namespace around ordinary cargo subprocess including wait/output close; no tracing, tests, artifact parsing or restoration between timestamps",
+  "clock_command": [
+    "cargo",
+    "+ohm",
+    "test",
+    "--locked",
+    "--offline",
+    "--no-run",
+    "-j4",
+    "-p",
+    "ruff_python_parser",
+    "--test",
+    "generate_inline_tests",
+    "--test",
+    "fixtures"
+  ],
+  "cpu": [
+    24,
+    25,
+    26,
+    27
+  ],
+  "driver": "d8adcc610bdae225344ed1310ff9708784634d1fecafa600f7758a5d48d2cc95",
+  "edit": "a50dc58628691ee00a21809e19bdea71958e4f3c",
+  "gates": [
+    "Two physically independent empty cold workspaces plus two independently empty edited reference states. All use identical logical SDK/source/Cargo-home/target/shared paths, UID, flags and no wrappers or RUSTFLAGS. Symbols, installed compiler, driver, SDK and disk floors independently attested before Cargo. Exact same per-arm Cargo binary for every phase and clock.",
+    "Identical compiler and installed Wild and actual separate #281 and #282 Cargo on the same PGO build recipe. Difference between product defaults only. All registered arms preserve the emit-rlink/unused-extern capture on the genuine development profile. Baseline edit requires parser full and two cached link rustcs. Treatment requires true full parser plus full fixtures and generator. Two actual Wilds per edit, zero package rustc and Wild on settled no-ops.",
+    "147 required typed enabled artifacts. Original inventory 558+1; edited 557+1 with actual native sampled tests and the old/new independent parser verdict. Invalid source E0308 with no native link. Separate independently empty F/R P reference checks, raw files, roots and genuine zero-job repeat. Source restoration then unforced native behavior. Preserve all first failures.",
+    "Raw cross-arm and independent-reference ELF SHA and sections for both binaries, including only known shipped-Wild .rodata.sh_entsize and derived GNU build ID differences when supported by the existing mechanism evidence. No section-normalized operational differences. All native output rosters, freshness, source hashes, inventories, independent caller verdicts, full/linked job identities and Wild digests required. No acquisition on unresolved alternative output classes. No reinterpretation of the prior cohort.",
+    "Same original registered 12 balanced adjacent orders, bootstrap/permutation/analysis, independent current states. Require at least 85% idle for each of CPUs 24 through 27 for 3 seconds before every ordinary edit and at least 16 GiB MemAvailable. Wait up to 2 minutes for an outside load; terminal protocol failure stops the run without replacing started slots. Require >65 GiB free home and >25 GiB free physical scratch. All commands fenced to CPUs 24\u201327; canonical UID map and owned directories required.",
+    "No tracing, JSON flag, artifact reads, test processes, or source changes inside the clocks. After each elapsed command independently check both ELF, exact lists & actual cases plus 147-fresh repeat. Restore real H once each arm after every pair and check same controls. Retain all clocks and per-host conditions. Report per-arm medians, median matched log ratio, bootstrap CI, balanced randomization p and signed pair counts. No package-wide or other-workload inference."
+  ],
+  "jobs": 4,
+  "order_seed": 202610290749,
+  "orders": [
+    "RF",
+    "RF",
+    "FR",
+    "RF",
+    "FR",
+    "RF",
+    "RF",
+    "FR",
+    "RF",
+    "FR",
+    "FR",
+    "FR"
+  ],
+  "primary": "Twelve adjacent pairs of the historical Ruff parser H-to-P edit, same ordinary cargo +ohm test --locked --offline --no-run -j4 -p ruff_python_parser --test generate_inline_tests --test fixtures command. Role R = PR 281 source, role F = PR 282 directly atop it. PGO Cargo subjects bound separately before an actual run.",
+  "prior_plan_sha256": "45db175429638ae0d85cbda0d03f04f6cffc95308c6088f6d22a77475990fc87",
+  "rust": "ca780121cea38bb9b0538d020d4bcce76ca30cbc",
+  "rustc": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+  "source": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "targets": [
+    "generate_inline_tests",
+    "fixtures"
+  ],
+  "treatment": "34f497bc7a9beb1b91990e737d86a2c520664d39",
+  "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+}
