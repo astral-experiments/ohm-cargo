@@ -1,0 +1,154 @@
+diff --git a/src/ops/lockfile.rs b/src/ops/lockfile.rs
+index cc161750a4874fefd1b505ff6f3c56b0e73bd87d..fc6c7eb3c36706eaada01bee2707035fff9de509 100644
+--- a/src/ops/lockfile.rs
++++ b/src/ops/lockfile.rs
+@@ -68,15 +68,23 @@ pub fn resolve_to_string(ws: &Workspace<'_>, resolve: &Resolve) -> CargoResult<S
+ /// Ensure the resolve result is written to fisk
+ ///
+ /// Returns `true` if the lockfile changed
+-#[tracing::instrument(skip_all)]
+ pub fn write_pkg_lockfile(ws: &Workspace<'_>, resolve: &mut Resolve) -> CargoResult<bool> {
++    Ok(write_pkg_lockfile_with_encoding(ws, resolve)?.0)
++}
++
++/// Returns whether the file changed and the encoding of the final resolution.
++#[tracing::instrument(name = "write_pkg_lockfile", skip_all)]
++pub(super) fn write_pkg_lockfile_with_encoding(
++    ws: &Workspace<'_>,
++    resolve: &mut Resolve,
++) -> CargoResult<(bool, String)> {
+     let (orig, mut out, lock_root) = resolve_to_string_orig(ws, resolve);
+ 
+     // If the lock file contents haven't changed so don't rewrite it. This is
+     // helpful on read-only filesystems.
+     if let Some(orig) = &orig {
+         if are_equal_lockfiles(orig, &out, ws) {
+-            return Ok(false);
++            return Ok((false, out));
+         }
+     }
+ 
+@@ -131,7 +139,7 @@ pub fn write_pkg_lockfile(ws: &Workspace<'_>, resolve: &mut Resolve) -> CargoRes
+                 lock_root.as_path_unlocked().join(LOCKFILE_NAME).display()
+             )
+         })?;
+-    Ok(true)
++    Ok((true, out))
+ }
+ 
+ fn resolve_to_string_orig(
+diff --git a/src/ops/resolve.rs b/src/ops/resolve.rs
+index c997d26fd447cfd7c0853ccec2943732a188a04a..ef05b9dd4fd2cc201204fe07025cb3308d9d7c56 100644
+--- a/src/ops/resolve.rs
++++ b/src/ops/resolve.rs
+@@ -136,7 +136,7 @@ version. This may also occur with an optional dependency that is not enabled.";
+ /// `package`, which don't specify any options or features.
+ pub fn resolve_ws<'a>(ws: &Workspace<'a>, dry_run: bool) -> CargoResult<(PackageSet<'a>, Resolve)> {
+     let mut registry = ws.package_registry()?;
+-    let resolve = resolve_with_registry(ws, &mut registry, dry_run)?;
++    let (resolve, _) = resolve_with_registry(ws, &mut registry, dry_run, false)?;
+     let packages = get_resolved_packages(&resolve, registry)?;
+     Ok((packages, resolve))
+ }
+@@ -248,11 +248,15 @@ pub fn resolve_ws_with_opts<'gctx>(
+             // packages with required target features take the ordinary path.
+             (resolve, true)
+         } else {
+-            let resolve = resolve_with_registry(ws, &mut registry, dry_run)?;
+-            if can_reuse_workspace_resolve {
+-                if let Err(error) =
+-                    resolve_cache::mark_workspace_resolve_fresh(ws, &resolve, &target_data.rustc)
+-                {
++            let (resolve, encoding) =
++                resolve_with_registry(ws, &mut registry, dry_run, can_reuse_workspace_resolve)?;
++            if let Some(encoding) = encoding {
++                if let Err(error) = resolve_cache::mark_workspace_resolve_fresh(
++                    ws,
++                    &resolve,
++                    &target_data.rustc,
++                    &encoding,
++                ) {
+                     debug!("unable to cache the workspace resolution: {error}");
+                 }
+             }
+@@ -436,7 +440,8 @@ fn resolve_with_registry<'gctx>(
+     ws: &Workspace<'gctx>,
+     registry: &mut PackageRegistry<'gctx>,
+     dry_run: bool,
+-) -> CargoResult<Resolve> {
++    retain_lockfile_encoding: bool,
++) -> CargoResult<(Resolve, Option<String>)> {
+     let prev = ops::load_pkg_lockfile(ws)?;
+     let mut resolve = resolve_with_previous(
+         registry,
+@@ -449,9 +454,13 @@ fn resolve_with_registry<'gctx>(
+         true,
+     )?;
+ 
++    let mut encoding = None;
+     let print = if !ws.is_ephemeral() && ws.require_optional_deps() {
+         if !dry_run {
+-            ops::write_pkg_lockfile(ws, &mut resolve)?
++            let (changed, contents) =
++                ops::lockfile::write_pkg_lockfile_with_encoding(ws, &mut resolve)?;
++            encoding = retain_lockfile_encoding.then_some(contents);
++            changed
+         } else {
+             true
+         }
+@@ -465,7 +474,7 @@ fn resolve_with_registry<'gctx>(
+     if print {
+         ops::print_lockfile_changes(ws, prev.as_ref(), &resolve, registry)?;
+     }
+-    Ok(resolve)
++    Ok((resolve, encoding))
+ }
+ 
+ /// Resolves all dependencies for a package using an optional previous instance
+diff --git a/src/ops/resolve_cache.rs b/src/ops/resolve_cache.rs
+index cc6e571ae89f7fdca885238c1602ad8f58252b26..62809719e01de1a8a5d23848e060c6ef891742bb 100644
+--- a/src/ops/resolve_cache.rs
++++ b/src/ops/resolve_cache.rs
+@@ -32,9 +32,13 @@ pub(super) fn mark_workspace_resolve_fresh(
+     workspace: &Workspace<'_>,
+     resolve: &Resolve,
+     rustc: &Rustc,
++    encoding: &str,
+ ) -> CargoResult<()> {
+     lockfile::with_pkg_lockfile(workspace, |lockfile_contents, _path| {
+-        if !lockfile::lockfile_matches_resolve(lockfile_contents, resolve) {
++        // A concurrent writer may have changed the lockfile, including its preserved comments.
++        if !lockfile_contents.lines().eq(encoding.lines())
++            && !lockfile::lockfile_matches_resolve(lockfile_contents, resolve)
++        {
+             return Ok(());
+         }
+ 
+diff --git a/tests/testsuite/workspaces.rs b/tests/testsuite/workspaces.rs
+index b956b50ef3af1ef1a9393ad90f515bfce690c63c..73a3e06e4f29bb0c7efa04a76571465f9d54556c 100644
+--- a/tests/testsuite/workspaces.rs
++++ b/tests/testsuite/workspaces.rs
+@@ -3036,6 +3036,23 @@ fn workspace_resolve_cache_reuses_unchanged_workspace() {
+         .run();
+ }
+ 
++#[cargo_test]
++fn workspace_resolve_cache_does_not_publish_a_noncanonical_locked_file() {
++    let project = workspace_resolve_cache_project();
++    workspace_resolve_cache_command(&project, "build -p selected").run();
++    let cache = project.build_dir().join(".cargo-resolve-cache-v1");
++    let fingerprint = fs::read(&cache).unwrap();
++
++    let original = project.read_lockfile();
++    let equivalent = original.replacen("[[package]]", "\n[[package]]", 1);
++    assert_ne!(equivalent, original);
++    project.change_file("Cargo.lock", &equivalent);
++    workspace_resolve_cache_command(&project, "build --locked -p selected").run();
++
++    assert_eq!(project.read_lockfile(), equivalent);
++    assert_eq!(fs::read(cache).unwrap(), fingerprint);
++}
++
+ #[cfg(unix)]
+ #[cargo_test]
+ fn workspace_resolve_cache_replaces_a_symlink() {
