@@ -1,0 +1,253 @@
+{
+  "argv": [
+    "cargo",
+    "+ohm",
+    "build",
+    "-p",
+    "ruff_text_size",
+    "--locked",
+    "--offline"
+  ],
+  "bounds": {
+    "bootstrap": 20000,
+    "native_common": 2,
+    "native_pre_and_post_per_arm": 5,
+    "pairs": 32,
+    "reps_per_direction_order": 8,
+    "timeout_s": 900
+  },
+  "clock": "clock_gettime_ns(CLOCK_MONOTONIC_RAW) immediately before ordinary Popen and immediately after waitpid(pid,0) returns; raw stdout+stderr each to its own already-open regular file. Each arm runs edit then immediate unchanged before advancing to the other arm. Read the small resolve marker in between, outside both clocks. External 900s GNU timeout over the complete controller, no polling or deadline path inside the two timestamps.",
+  "historical": {
+    "historical": "c890b04e575809cbff9b43975175b43dd82c3a1a",
+    "historical_other_paths": [
+      "Cargo.lock",
+      "Cargo.toml",
+      "crates/ruff_python_ast/src/name.rs",
+      "crates/ty_project/src/db.rs",
+      "crates/ty_server/src/server/api/requests/execute_command.rs",
+      "crates/ty_server/src/session.rs",
+      "fuzz/Cargo.lock",
+      "fuzz/Cargo.toml"
+    ],
+    "historical_parent": "a0e239f3cdaa777d5dbbda4cea099c06a4e08632",
+    "historical_subject": "[ty] Update Salsa to 0.28.5 (#28856)",
+    "manifest_patch": "9d9557b1757c88b9938f826b79f3eb4d8ed69367dfb9451dc028169bb3352711",
+    "original": "893b5ff55f23fde170f5079766ebbe20937419a24296394a6dd0f326b8ccba88",
+    "profile_only_cargo": "80356b8237d3089d3360b6de5abfc64a17e4b8d3f0ec1fb64e09254418b5c5e5",
+    "reversed": "c29454764b83cf86af4ca9e398b4c3213fbf66a1b44d9caafb0e5c18a314fda1",
+    "ruff": "93526150df078af7dd8fc4226cdcc469539d2001"
+  },
+  "interval_seed": 2396071,
+  "primary": "Primary endpoint is per-arm sum of the two real command durations. Positive paired reduction means faster: 100*(A-B)/A. Secondary individual edit and unchanged, with Holm secondary and primary all three for any superiority claim. Report each two-sided paired exact sign test, wins ties, absolute median A/B and median paired ms differences, median paired percent. 20,000-pair-bootstrap percentile intervals (linear 2.5/97.5 percentiles): resample eight pairs independently within four direction/order strata, Python random.Random fixed seed per endpoint, no dropping outliers. Report direction/order summaries and most adverse observed pair. A standalone demonstrated wall-time win requires primary interval strictly above zero and primary adjusted p<.05. Separable native instruction results do not supply a wall-time conclusion.",
+  "prior_instruction_results": "09c14e855770b98ba8031e2bcbb44753cc4e8b41bb9d3c2e32ec39a9e5299ceb",
+  "prior_native_plan": "cc618a20b1da602a8af0ac124055340ab5ff251d5dc2f63a097f5270044641c6",
+  "qualification": "69 exact source/manifest/file digests; both registered Cargos, producer rustc and Wild SHA-matched. Genuine cold source compiler once then settled. All A/B before and after native phases original, reverse, unchanged-reversed, restore, unchanged-original using typed Cargo JSON, process exec census and real consumer against the two byte-equal products. All sample exits success, zero ordinary stdout, Cargo Finished/no compilation or checking, per-arm marker changes on edit and remains at the exact registered hash in the repeat. All measured follow-ups continue continuously from the preceding command. Reopen products and consumer after last clock. Per-process credential checks ordinary uid1000/root-owned trusted root/no capabilities, CPU0-3; every durable filesystem retains >24GiB and tmpfs >16GiB. No other study while scoring. First failed admission or score retained; if scoring fails no estimates or replacements.",
+  "random_seed": "ee6ff4f4ebb47e2362ffcd53e90ab9e318ebf3c4021cc678dcde1bf24062f36a",
+  "schedule": [
+    {
+      "direction": "reverse",
+      "order": "AB",
+      "pair": 1,
+      "state": "reversed"
+    },
+    {
+      "direction": "restore",
+      "order": "BA",
+      "pair": 2,
+      "state": "original"
+    },
+    {
+      "direction": "reverse",
+      "order": "AB",
+      "pair": 3,
+      "state": "reversed"
+    },
+    {
+      "direction": "restore",
+      "order": "AB",
+      "pair": 4,
+      "state": "original"
+    },
+    {
+      "direction": "reverse",
+      "order": "BA",
+      "pair": 5,
+      "state": "reversed"
+    },
+    {
+      "direction": "restore",
+      "order": "BA",
+      "pair": 6,
+      "state": "original"
+    },
+    {
+      "direction": "reverse",
+      "order": "BA",
+      "pair": 7,
+      "state": "reversed"
+    },
+    {
+      "direction": "restore",
+      "order": "AB",
+      "pair": 8,
+      "state": "original"
+    },
+    {
+      "direction": "reverse",
+      "order": "BA",
+      "pair": 9,
+      "state": "reversed"
+    },
+    {
+      "direction": "restore",
+      "order": "AB",
+      "pair": 10,
+      "state": "original"
+    },
+    {
+      "direction": "reverse",
+      "order": "BA",
+      "pair": 11,
+      "state": "reversed"
+    },
+    {
+      "direction": "restore",
+      "order": "AB",
+      "pair": 12,
+      "state": "original"
+    },
+    {
+      "direction": "reverse",
+      "order": "BA",
+      "pair": 13,
+      "state": "reversed"
+    },
+    {
+      "direction": "restore",
+      "order": "BA",
+      "pair": 14,
+      "state": "original"
+    },
+    {
+      "direction": "reverse",
+      "order": "AB",
+      "pair": 15,
+      "state": "reversed"
+    },
+    {
+      "direction": "restore",
+      "order": "AB",
+      "pair": 16,
+      "state": "original"
+    },
+    {
+      "direction": "reverse",
+      "order": "AB",
+      "pair": 17,
+      "state": "reversed"
+    },
+    {
+      "direction": "restore",
+      "order": "AB",
+      "pair": 18,
+      "state": "original"
+    },
+    {
+      "direction": "reverse",
+      "order": "BA",
+      "pair": 19,
+      "state": "reversed"
+    },
+    {
+      "direction": "restore",
+      "order": "BA",
+      "pair": 20,
+      "state": "original"
+    },
+    {
+      "direction": "reverse",
+      "order": "BA",
+      "pair": 21,
+      "state": "reversed"
+    },
+    {
+      "direction": "restore",
+      "order": "BA",
+      "pair": 22,
+      "state": "original"
+    },
+    {
+      "direction": "reverse",
+      "order": "AB",
+      "pair": 23,
+      "state": "reversed"
+    },
+    {
+      "direction": "restore",
+      "order": "BA",
+      "pair": 24,
+      "state": "original"
+    },
+    {
+      "direction": "reverse",
+      "order": "BA",
+      "pair": 25,
+      "state": "reversed"
+    },
+    {
+      "direction": "restore",
+      "order": "AB",
+      "pair": 26,
+      "state": "original"
+    },
+    {
+      "direction": "reverse",
+      "order": "AB",
+      "pair": 27,
+      "state": "reversed"
+    },
+    {
+      "direction": "restore",
+      "order": "BA",
+      "pair": 28,
+      "state": "original"
+    },
+    {
+      "direction": "reverse",
+      "order": "AB",
+      "pair": 29,
+      "state": "reversed"
+    },
+    {
+      "direction": "restore",
+      "order": "BA",
+      "pair": 30,
+      "state": "original"
+    },
+    {
+      "direction": "reverse",
+      "order": "AB",
+      "pair": 31,
+      "state": "reversed"
+    },
+    {
+      "direction": "restore",
+      "order": "AB",
+      "pair": 32,
+      "state": "original"
+    }
+  ],
+  "schema": 1,
+  "scope": "32 adjacent pairs, each arm receives both the historical manifest change and its immediately unchanged build, 128 timed Rustup-to-Cargo executions. Single x86_64 host, same fixed arms/official rustc/Wild, no tracing or counts in timed intervals.",
+  "seed_kind": "New empty physical target and build-dir, genuine single-library cold preparation plus settled repeat under baseline, individually rehash and copy complete products/shared to separate A/B. The original source, SDK and read-only registry image may be shared with prior enrollment. Exclude hydration, native gate and calibration from timings. Initial root manifest original.",
+  "timer_gate": "Trace the timer Python parent on 7 interleaved true and 5/15/25ms POSIX sleep runs, require blocking wait4/waitpid with flags 0 and one success per child, ordinary UID, CLOCK_MONOTONIC_RAW resolution <=1000ns, median true <10ms, each delay median within [-0.2,+15] ms of requested real delay and adjacent medians separated by >4ms.",
+  "toolchain": {
+    "baseline": "967f5f1db2938847fac22d78dc222054cbb143a5fabcffcad0bd15f8929b47e9",
+    "candidate": "d2480173d7362899271f21aed543b24348bf5ba8ddf4696e5fed10dc58d68b9b",
+    "held_stamp": "2fe90823d8eadc95de56c2cde8d41e0082aac0eb",
+    "lockfile": "c9e345325bec5ff08dbbe3916edd39ad0c3d1c7797a8c241ae32f62754e764bf",
+    "rustc": "5694abe50767a22cebeccb767143f7404d5e81c4b1760cff4426466bf410e511",
+    "source": "24c98100d04843e60a830951f843ab40f6e60414",
+    "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+  }
+}
