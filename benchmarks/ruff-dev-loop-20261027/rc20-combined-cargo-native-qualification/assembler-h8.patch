@@ -1,0 +1,11 @@
+--- a/reproduce-integration.py
++++ b/reproduce-integration.py
+@@ -83,7 +83,7 @@
+     env={k:v for k,v in os.environ.items() if not k.startswith(('RUST','CARGO_')) and k not in ('LD_LIBRARY_PATH','LIBRARY_PATH','LD_PRELOAD','GCC_EXEC_PREFIX','COMPILER_PATH')};env.update(RUSTUP_HOME=str(root/'rustup'),CARGO_HOME=str(home),CARGO_NET_OFFLINE='true',CARGO_INCREMENTAL=str(incremental));args=['cargo','+ohm']+(['-Zohm-defaults=no'] if off else [])+['test','--offline','--no-run','-j2','--test','reader','--message-format=json'];results={};known_elf=None;known_inc=set()
+     def run(label,state='trained'):
+         nonlocal known_elf
+-        assert shutil.disk_usage(root).free>65*2**30
++        assert shutil.disk_usage(root).free>24*2**30+600*2**20
+         wr=root/state;fresh=not wr.exists();e=env|{'CARGO_TARGET_DIR':str(wr/'target'),'CARGO_BUILD_BUILD_DIR':str(wr/'shared')};p=root/label;p.mkdir();cmd=['strace','-ff','-qq','-s','131072','-e','trace=execve,open,openat,openat2,clone,clone3,vfork,fork','-o',str(p/'trace'),*args]
+         with (p/'stdout').open('wb') as out,(p/'stderr').open('wb') as err:q=subprocess.run(cmd,cwd=work,env=e,stdout=out,stderr=err)
+         records=[json.loads(v) for v in (p/'stdout').read_bytes().splitlines()];arts=[j for j in records if j['reason']=='compiler-artifact'];assert not [j for j in records if j['reason']=='build-script-executed'];process,readers,incrementals,names,depinfo=trace_info(p,asset);desc={n for n in names};proof={'status':q.returncode,'empty':fresh,'phase':label,'expected_incremental':incremental,'source':sha(lib),'asset':sha(asset) if asset.exists() else None,'target_source':sha(test),'processes':process,'asset_opens':readers,'depinfo':depinfo,'compiler_incremental_directories':incrementals,'typed':[(j['target']['name'],j['fresh']) for j in arts],'diagnostic_mentions_incbin':b'payload.bin' in (p/'stdout').read_bytes()+ (p/'stderr').read_bytes(),'raw':{f.name:sha(f) for f in p.iterdir() if f.is_file()}}

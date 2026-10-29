@@ -1,0 +1,11 @@
+--- a/assembler.py
++++ b/assembler.py
+@@ -80,7 +80,7 @@
+     root.mkdir();work=root/'fixture';(work/'src').mkdir(parents=True);(work/'tests').mkdir();(work/'Cargo.toml').write_text('[package]\nname = "assembler_reader"\nversion = "0.0.0"\nedition = "2024"\n');lib=work/'src/lib.rs';lib.write_bytes(ORIGINAL)
+     test=work/'tests/reader.rs';test.write_text(READER.replace('RUST_VALUE','assembler_reader::observed(std::hint::black_box(3))' if relationship=='used-private' else '0u8'))
+     asset=work/'payload.bin';asset.write_bytes(bytes([17]));home=root/'home';home.mkdir();alias=root/'rustup/toolchains';alias.mkdir(parents=True);(alias/'ohm').symlink_to(sdk,target_is_directory=True)
+-    env={k:v for k,v in os.environ.items() if not k.startswith(('RUST','CARGO_')) and k not in ('LD_LIBRARY_PATH','LIBRARY_PATH','LD_PRELOAD','GCC_EXEC_PREFIX','COMPILER_PATH')};env.update(RUSTUP_HOME=str(root/'rustup'),CARGO_HOME=str(home),CARGO_NET_OFFLINE='true',CARGO_INCREMENTAL=str(incremental));args=['cargo','+ohm']+(['-Zohm-defaults=no'] if off else [])+['test','--offline','--no-run','-j2','--test','reader','--message-format=json'];results={};known_elf=None;known_inc=set()
++    env={k:v for k,v in os.environ.items() if not k.startswith(('RUST','CARGO_')) and k not in ('LD_LIBRARY_PATH','LIBRARY_PATH','LD_PRELOAD','GCC_EXEC_PREFIX','COMPILER_PATH')};env.update(RUSTUP_HOME=str(root/'rustup'),CARGO_HOME=str(home),CARGO_NET_OFFLINE='true',CARGO_INCREMENTAL=str(incremental));args=['cargo','+ohm','-Zrelink-only=yes']+(['-Zohm-defaults=no'] if off else [])+['test','--offline','--no-run','-j2','--test','reader','--message-format=json'];results={};known_elf=None;known_inc=set()
+     def run(label,state='trained'):
+         nonlocal known_elf
+         assert shutil.disk_usage(root).free>24*2**30+600*2**20
