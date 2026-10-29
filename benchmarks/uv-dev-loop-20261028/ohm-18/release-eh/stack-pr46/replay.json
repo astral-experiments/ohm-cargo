@@ -1,0 +1,183 @@
+{
+  "archives": {
+    "compact-focused.zip": {
+      "sha256": "bfea34688b16039088d9244b3066191bea4f5dadf6fdd3eca30b5c0c37543711",
+      "bytes": 3428561,
+      "files": 170
+    },
+    "registration-and-rejection.zip": {
+      "sha256": "2c70dc43f858bf78dcd8c7b9678658eff0b79e3e47ca8329887373619c05cb1b",
+      "bytes": 2047302,
+      "files": 720
+    }
+  },
+  "focused_linker_replay": {
+    "0-base": {
+      "median_pct": 0.318123997399795,
+      "wins": 8,
+      "sign_p": 0.0078125,
+      "balanced_order_p": 0.02857142857142857,
+      "qualified": true
+    },
+    "1-base": {
+      "median_pct": 0.6739979594292813,
+      "wins": 8,
+      "sign_p": 0.0078125,
+      "balanced_order_p": 0.02857142857142857,
+      "qualified": true
+    }
+  },
+  "rejected_admission_replay": {
+    "focused_archive_files": 170,
+    "original_sealed_files": 34,
+    "recovery_sealed_files": 22,
+    "unchanged_planned_pairs": {
+      "initial-base": 8,
+      "replica-base": 8
+    },
+    "native_roster": {
+      "cargo": 1,
+      "rustc": 6,
+      "wild": 5
+    },
+    "test_executables": 72,
+    "scored_macro_rows": 0,
+    "native_only_role_receipts": 25,
+    "raw_identical": 72,
+    "canonical_match": 74,
+    "tuple_list_original_failure": true,
+    "serialized_match": true,
+    "corrupted_raw_sha_rejected": true,
+    "corrupted_allowed_position_rejected": true,
+    "supervisor_exit": 1,
+    "observer_exit": 0,
+    "physical_scope_closed": true,
+    "host_only_elf_bytes": 327155680,
+    "elf_receipts": {
+      "debug/build/uv/e0133cb6050b81d6/out/uv-e0133cb6050b81d6": {
+        "actual": "b5f86fd37bb9b99ad446c3dd3f8eb40aedecd4e6be69b75b24a8121e889eaa72",
+        "canonical": "a1ca41b55473e228608cf7a739109e7f43b5bd65be99e2855bb6c66e409de217",
+        "old_reconstructed": "9bebcd0ade6c7ea4c2705cb647b5a8a54b75cedc759ce6d730f0aab72dedbe90",
+        "size": 10398232,
+        "positions": {
+          "build_id": {
+            "range": [
+              896,
+              928
+            ],
+            "changed_offsets": [
+              896,
+              897,
+              898,
+              899,
+              900,
+              901,
+              902,
+              903,
+              904,
+              905,
+              906,
+              907,
+              908,
+              909,
+              910,
+              911,
+              912,
+              913,
+              914,
+              916,
+              917,
+              918,
+              919,
+              920,
+              921,
+              922,
+              923,
+              924,
+              925,
+              926,
+              927
+            ]
+          },
+          "rodata": {
+            "range": [
+              10396304,
+              10396305
+            ],
+            "changed_offsets": [
+              10396304
+            ]
+          }
+        }
+      },
+      "debug/build/uv/e6ac92541876a4a1/out/uv": {
+        "actual": "327d80c85fd7b674afa66224491799c24e9f6f2a46a617cee4398c08c8fac315",
+        "canonical": "20b57d1673bc379cbd703f4be27540e45b61365267f018ab2520beb77fe12306",
+        "old_reconstructed": "3b4d11037c4d78e0b28b38c0b5c9ca1d8e4f632575eac0d4b3c2c93135d1d248",
+        "size": 316757448,
+        "positions": {
+          "build_id": {
+            "range": [
+              896,
+              928
+            ],
+            "changed_offsets": [
+              896,
+              897,
+              898,
+              899,
+              900,
+              901,
+              902,
+              903,
+              904,
+              905,
+              906,
+              907,
+              908,
+              909,
+              910,
+              911,
+              912,
+              913,
+              914,
+              915,
+              916,
+              917,
+              918,
+              919,
+              920,
+              921,
+              922,
+              923,
+              924,
+              925,
+              926,
+              927
+            ]
+          },
+          "rodata": {
+            "range": [
+              316755520,
+              316755521
+            ],
+            "changed_offsets": [
+              316755520
+            ]
+          }
+        }
+      }
+    }
+  },
+  "fresh_private_temp_extraction": true,
+  "read_roots": [
+    "extraction",
+    "Python standard library"
+  ],
+  "external_processes_from_verifiers_permitted": false,
+  "subjects_launched": 0,
+  "python": "3.12.13",
+  "cpu_affinity": [
+    29
+  ]
+}
