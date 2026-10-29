@@ -1,0 +1,187 @@
+{
+  "cargo": "99383612a7a0a2b58c60f8d94711e88e3f73f4fd584ff43ef8a6b04caa1fa8aa",
+  "cmd": [
+    "cargo",
+    "+ohm",
+    "check",
+    "--test",
+    "reader",
+    "--locked",
+    "--offline",
+    "-j2",
+    "--message-format=json"
+  ],
+  "receipt_sha256": "b4becf360e0a58410844566b6a596bb16ee98a79779905e6c56eb4c0eb599109",
+  "results": {
+    "empty-public-api": {
+      "artifact_fresh": [
+        [
+          "current_api",
+          false
+        ]
+      ],
+      "compiler_units": [
+        [
+          "current_api",
+          "--emit=dep-info,metadata"
+        ],
+        [
+          "reader",
+          "--emit=dep-info,metadata"
+        ]
+      ],
+      "diagnostics": [
+        "E0061"
+      ],
+      "linkers": [],
+      "source": "8717d795f94cf1c4ff5a3d9f4ac43fba3cf57e142896ffa536cc3f23175c84c3",
+      "status": 101,
+      "stderr": "cb46287d700862f8322667cec0399e429eca11be8b2773f83a5314aaffea4b01",
+      "stdout": "769091b92c1d103b409d36d091891ce10a9cf9793d21f3799f4b4adb01bd64ee"
+    },
+    "initial": {
+      "artifact_fresh": [
+        [
+          "current_api",
+          false
+        ],
+        [
+          "reader",
+          false
+        ]
+      ],
+      "compiler_units": [
+        [
+          "current_api",
+          "--emit=dep-info,metadata"
+        ],
+        [
+          "reader",
+          "--emit=dep-info,metadata"
+        ]
+      ],
+      "diagnostics": [],
+      "linkers": [],
+      "source": "b518b1bdea951ef139ec99e43ab661980f4e4bda9838c22aeceb4b09892a6d5a",
+      "status": 0,
+      "stderr": "a603a5769f8d8e8fde709a8212ff49eb8aa2e6411407961b4301f37824b862b8",
+      "stdout": "fc2bf637a83622ad7c70c4ced6cbeff3774210c115128ef32409673a4756cd7b"
+    },
+    "initial-unchanged": {
+      "artifact_fresh": [
+        [
+          "current_api",
+          true
+        ],
+        [
+          "reader",
+          true
+        ]
+      ],
+      "compiler_units": [],
+      "diagnostics": [],
+      "linkers": [],
+      "source": "b518b1bdea951ef139ec99e43ab661980f4e4bda9838c22aeceb4b09892a6d5a",
+      "status": 0,
+      "stderr": "a5f4c585ee974ca44916ac30a98bbc189e067a7e0a6bc6d2e8d6bc525be724af",
+      "stdout": "a3a6fc2bccc4577d0583094bd0c9c87336904256afa48dbb706e3d1315095020"
+    },
+    "private-body": {
+      "artifact_fresh": [
+        [
+          "current_api",
+          false
+        ],
+        [
+          "reader",
+          false
+        ]
+      ],
+      "compiler_units": [
+        [
+          "current_api",
+          "--emit=dep-info,metadata"
+        ]
+      ],
+      "diagnostics": [],
+      "linkers": [],
+      "source": "029ecd7779aeb111730d4cc950a0df62f815cbb7bb13219f3e198794858c904a",
+      "status": 0,
+      "stderr": "2b53c00645388bec2c6c37204c42b865d6a73253dd9d0e99b697aa88fd75183d",
+      "stdout": "fc2bf637a83622ad7c70c4ced6cbeff3774210c115128ef32409673a4756cd7b"
+    },
+    "private-body-unchanged": {
+      "artifact_fresh": [
+        [
+          "current_api",
+          true
+        ],
+        [
+          "reader",
+          true
+        ]
+      ],
+      "compiler_units": [],
+      "diagnostics": [],
+      "linkers": [],
+      "source": "029ecd7779aeb111730d4cc950a0df62f815cbb7bb13219f3e198794858c904a",
+      "status": 0,
+      "stderr": "a5f4c585ee974ca44916ac30a98bbc189e067a7e0a6bc6d2e8d6bc525be724af",
+      "stdout": "a3a6fc2bccc4577d0583094bd0c9c87336904256afa48dbb706e3d1315095020"
+    },
+    "public-api": {
+      "artifact_fresh": [
+        [
+          "current_api",
+          false
+        ]
+      ],
+      "compiler_units": [
+        [
+          "current_api",
+          "--emit=dep-info,metadata"
+        ],
+        [
+          "reader",
+          "--emit=dep-info,metadata"
+        ]
+      ],
+      "diagnostics": [
+        "E0061"
+      ],
+      "linkers": [],
+      "source": "8717d795f94cf1c4ff5a3d9f4ac43fba3cf57e142896ffa536cc3f23175c84c3",
+      "status": 101,
+      "stderr": "cb46287d700862f8322667cec0399e429eca11be8b2773f83a5314aaffea4b01",
+      "stdout": "a0b0ff80fc757393afb31fe20d292d01be3f0f54429eddf62adc279112ce7eb4"
+    },
+    "restore": {
+      "artifact_fresh": [
+        [
+          "current_api",
+          false
+        ],
+        [
+          "reader",
+          false
+        ]
+      ],
+      "compiler_units": [
+        [
+          "current_api",
+          "--emit=dep-info,metadata"
+        ],
+        [
+          "reader",
+          "--emit=dep-info,metadata"
+        ]
+      ],
+      "diagnostics": [],
+      "linkers": [],
+      "source": "029ecd7779aeb111730d4cc950a0df62f815cbb7bb13219f3e198794858c904a",
+      "status": 0,
+      "stderr": "f489bf71cad81cae1d6451bdaaf26144f518cee2be27a3254ab535d1f0958beb",
+      "stdout": "fc2bf637a83622ad7c70c4ced6cbeff3774210c115128ef32409673a4756cd7b"
+    }
+  }
+}
