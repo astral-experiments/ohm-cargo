@@ -1,0 +1,188 @@
+{
+  "all_bitflags_invocations": 12,
+  "bitflags_updates": {
+    "DataclassTransformerFlags": {
+      "derive_line": 165,
+      "file_sha256": "609f0cc4375d6bd8965b1a7e0a4e92e98a6755c86b1ace84c76b4816a2c5852e",
+      "path": "crates/ty_python_semantic/src/types/function.rs"
+    },
+    "LiteralFlags": {
+      "derive_line": 32,
+      "file_sha256": "73fa0b190f77c5cc3470eb526278b7029243efffc5a07b90fd416d62f6c100af",
+      "path": "crates/ty_python_semantic/src/types/literal.rs"
+    },
+    "TypeQualifiers": {
+      "derive_line": 6525,
+      "file_sha256": "676fefe3bd887961c39bfc298746ee9136cbfe5ad38d2e0189a5adf4a5d2a979",
+      "path": "crates/ty_python_semantic/src/types.rs"
+    },
+    "TypedDictFieldFlags": {
+      "derive_line": 1205,
+      "file_sha256": "79adb6db03db75877bf6d829474c601113b2af149598e313231b68def3fdca5d",
+      "path": "crates/ty_python_semantic/src/types/typed_dict.rs"
+    }
+  },
+  "cargo": "235f9228651b74c591e6f62cae4c9b761448dd2d",
+  "lock_sha256": "34e5c62a1d7c45679fc0113e8a8814452e67d9969dd1079adb234bd7803ddc6d",
+  "registry": {
+    "bitflags": {
+      "archive_sha256": "843867be96c8daad0d758b57df9392b6d8d271134fce549de6ce169ff98a92af",
+      "version": "2.11.0"
+    },
+    "proc-macro2": {
+      "archive_sha256": "8fd00f0bb2e90d81d1044c2b32617f68fcb9fa3bb7640c23e9c748e53fb30934",
+      "version": "1.0.106"
+    },
+    "quote": {
+      "archive_sha256": "41f2619966050689382d2b44f664f4bc593e129785a36d6ee376ddf37259b924",
+      "version": "1.0.45"
+    },
+    "syn": {
+      "archive_sha256": "e665b8803e7b1d2a727f4023456bbbbe74da67099c585258af0ad9c5013b9b99",
+      "version": "2.0.117"
+    },
+    "synstructure": {
+      "archive_sha256": "728a70f3dbaf5bab7f0c4b1ac8d7ae5ea60a4b5549c8a5914361c99147a709d2",
+      "version": "0.13.2"
+    }
+  },
+  "ruff": "2d6ce561250a464e1fa231ef30e54d0f029f76a4",
+  "ruff_parent": "716260bf10d7ae1d965ed9b22653e57fbc960582",
+  "rust": "a4fa11bcd38280639cb94daacc125472657db6c3",
+  "salsa": "2f687a17ceea8ec7aaa605561ccbde938ccef086",
+  "sources": {
+    "bitflags-2.11.0/src/public.rs": {
+      "literal_source_lines": {
+        "struct $PublicBitFlags(<$PublicBitFlags as $crate::__private::PublicFlags>::Internal)": [
+          17
+        ]
+      },
+      "sha256": "2a695651626cf7442cc83e52c410e01ceeb50902345e2a85988ad27c951287ac"
+    },
+    "cargo/src/compiler/fingerprint/dep_info.rs": {
+      "literal_source_lines": {
+        "Even an intact record marked complete must keep the missing input": [
+          197
+        ],
+        "on_disk_info.observer = Some(on_disk_info.files.len())": [
+          509
+        ]
+      },
+      "sha256": "41ca4dd8927fa7479a43fdfe4ca9691756a82fb679875b024488d7b7689a7991"
+    },
+    "proc-macro2-1.0.106/src/probe/proc_macro_span.rs": {
+      "literal_source_lines": {
+        "this.join(other)": [
+          46
+        ]
+      },
+      "sha256": "53853f0c70170c9695294b8867821664d9b8f1c901957b003003a3c26987abbe"
+    },
+    "proc-macro2-1.0.106/src/wrapper.rs": {
+      "literal_source_lines": {
+        "Span::Compiler(proc_macro_span::join(a, b)?)": [
+          497
+        ]
+      },
+      "sha256": "21c083c855576524415c0f737c87641c60e83a74f3cc6221871f9a39e6d8506f"
+    },
+    "quote-1.0.45/src/spanned.rs": {
+      "literal_source_lines": {
+        "first.join(last)": [
+          36
+        ],
+        "join_spans(self.into_token_stream())": [
+          24
+        ]
+      },
+      "sha256": "713678bf5cb3b4bf2f119dcf64d188a63dc59455a724c3d2567ceab83b734d73"
+    },
+    "rust/compiler/rustc_expand/src/proc_macro_server.rs": {
+      "literal_source_lines": {
+        "fn observe_foreign_span(": [
+          463
+        ],
+        "fn span_byte_range(": [
+          771
+        ],
+        "fn span_debug(": [
+          712
+        ],
+        "fn span_join(": [
+          802
+        ],
+        "fn span_source_text(": [
+          860
+        ],
+        "fn span_subspan(": [
+          816
+        ],
+        "krate: expn_data.macro_def_id": [
+          452
+        ],
+        "self.observe_foreign_span()": [
+          811,
+          824,
+          865
+        ]
+      },
+      "sha256": "8266976342f9c5d59d2c9d57e1aab7d4f024f87d058f5040166c86fd5d85b591"
+    },
+    "rust/compiler/rustc_interface/src/passes.rs": {
+      "literal_source_lines": {
+        "path.join(\"ohm-foreign-span-bytes\")": [
+          703
+        ],
+        "path.join(\"ohm-untrackable-foreign-span\")": [
+          701
+        ],
+        "sess.proc_macro_observed_foreign_bytes.load": [
+          694
+        ]
+      },
+      "sha256": "23042a2fc269d6d1093b63674c3193133fb5b4aa2025111e8aa445fa0dad11d6"
+    },
+    "salsa/components/salsa-macros/src/update.rs": {
+      "git_blob": "e3a78ee1a19d1cfc9dfc057f8f141375b64b61cd",
+      "literal_source_lines": {
+        "quote!(#tokens #binding,)": [
+          55
+        ],
+        "synstructure::Structure::new(&input)": [
+          17
+        ]
+      },
+      "sha256": "4b99d86015b03528552bd3b53e3dbcfd25fcef5803666705794b39cc9a5ac54c"
+    },
+    "syn-2.0.117/src/data.rs": {
+      "literal_source_lines": {
+        "impl ToTokens for Field {": [
+          414
+        ],
+        "self.ty.to_tokens(tokens)": [
+          422
+        ]
+      },
+      "sha256": "7fa9741c5527b790d968430e69a5c0f34ab37360e0a8af2f273a70d8f702b29c"
+    },
+    "syn-2.0.117/src/spanned.rs": {
+      "literal_source_lines": {
+        "self.__span()": [
+          106
+        ]
+      },
+      "sha256": "b53ce23f10935cf202da0f5a430e9feca9f4858bbd6efbe896acf17d3cfce540"
+    },
+    "synstructure-0.13.2/src/lib.rs": {
+      "literal_source_lines": {
+        "Span::call_site().located_at(field.span())": [
+          495
+        ],
+        "binding: format_ident!": [
+          497
+        ]
+      },
+      "sha256": "3b5257f913626d42994c3d7e93a2a7c37aa7b918ac74c52a9bcd013fdfffd631"
+    }
+  }
+}
