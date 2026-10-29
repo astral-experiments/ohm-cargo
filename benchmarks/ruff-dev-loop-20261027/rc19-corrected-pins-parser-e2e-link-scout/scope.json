@@ -1,0 +1,60 @@
+{
+  "commands": {
+    "base": [
+      "cargo",
+      "+ohm",
+      "test",
+      "--locked",
+      "--offline",
+      "--no-run",
+      "-j4",
+      "-p",
+      "ruff_python_parser",
+      "--test",
+      "generate_inline_tests",
+      "--test",
+      "fixtures",
+      "--message-format=json"
+    ],
+    "e2e": [
+      "cargo",
+      "+ohm",
+      "test",
+      "--locked",
+      "--offline",
+      "--no-run",
+      "-j4",
+      "-p",
+      "ty_server",
+      "--test",
+      "e2e",
+      "--message-format=json"
+    ],
+    "ron_feature": [
+      "--features",
+      "insta/ron"
+    ]
+  },
+  "cores": [
+    24,
+    25,
+    26,
+    27
+  ],
+  "edit": "a50dc58628691ee00a21809e19bdea71958e4f3c",
+  "initial_observer_exception": "first e2e close capture omitted 4096 prefix bytes due to buffered read; all 212582016 retained suffix bytes independently matched in order, original 4096-byte prefix separately bound on actual sole natively linked product; original Cargo was not repeated",
+  "later_snapshot_change": "958efb1ff40d8a433bde48ce84b9e35e99332350",
+  "native_helper_hashes": {
+    "elfsections.py": "d359be7c952b9d40065f8c59eca0e22895d0b8df0bdf64873c860c58e74a6fe3",
+    "recover-first.py": "3c223cfa8a430cc37c69e09c36c8a02fba6f894254614c3c4e8dd553f82063d4",
+    "scope.py": "813a3291769b67e2c4151b3c27f5efdde979cb420947379505318b76e9b2a4ca",
+    "supplement.py": "30482dd85d2ad3e2fc5da8d3668098c83d4c090cfaac2094f37a43e7e98ea553"
+  },
+  "offline": true,
+  "registry_archives": 498,
+  "source": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "source_fixture": "from x import (*)\n",
+  "timing_claim": false,
+  "tree": "62d3f106c5e41f6022847f26ff8c7dc00139f7b1",
+  "wrappers": false
+}
