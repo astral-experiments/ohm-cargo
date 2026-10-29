@@ -309,7 +309,13 @@ pub fn open_regular(path: &Path) -> Result<File> {
         use std::os::unix::fs::OpenOptionsExt as _;
         options.custom_flags(libc::O_NOFOLLOW | libc::O_NONBLOCK);
     }
-    #[cfg(not(unix))]
+    #[cfg(windows)]
+    {
+        use std::os::windows::fs::OpenOptionsExt as _;
+        use windows_sys::Win32::Storage::FileSystem::FILE_FLAG_OPEN_REPARSE_POINT;
+        options.custom_flags(FILE_FLAG_OPEN_REPARSE_POINT);
+    }
+    #[cfg(not(any(unix, windows)))]
     anyhow::ensure!(
         fs::symlink_metadata(path)?.is_file(),
         "expected a regular file at `{}`",
@@ -324,6 +330,20 @@ pub fn open_regular(path: &Path) -> Result<File> {
         path.display()
     );
     Ok(file)
+}
+
+/// Reads a regular file without following a final symlink or accepting an oversized prefix.
+pub fn read_regular_bounded(path: &Path, max_bytes: u64) -> Result<Vec<u8>> {
+    let mut bytes = Vec::new();
+    open_regular(path)?
+        .take(max_bytes.saturating_add(1))
+        .read_to_end(&mut bytes)?;
+    anyhow::ensure!(
+        bytes.len() as u64 <= max_bytes,
+        "`{}` is too large",
+        path.display()
+    );
+    Ok(bytes)
 }
 
 /// Returns the last modification time of a file.
@@ -927,6 +947,39 @@ mod tests {
     use super::write;
     use super::write_atomic;
     use super::write_atomic_no_follow;
+
+    #[test]
+    fn bounded_regular_read_rejects_oversized_contents() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("marker");
+        std::fs::write(&path, b"valid").unwrap();
+        assert_eq!(super::read_regular_bounded(&path, 5).unwrap(), b"valid");
+        assert!(super::read_regular_bounded(&path, 4).is_err());
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn bounded_regular_read_rejects_a_fifo_without_a_writer() {
+        let dir = tempfile::tempdir().unwrap();
+        let fifo = dir.path().join("marker");
+        assert!(
+            std::process::Command::new("mkfifo")
+                .arg(&fifo)
+                .status()
+                .unwrap()
+                .success()
+        );
+        let (done, result) = std::sync::mpsc::channel();
+        std::thread::spawn(move || {
+            let _ = done.send(super::read_regular_bounded(&fifo, 16));
+        });
+        assert!(
+            result
+                .recv_timeout(std::time::Duration::from_secs(10))
+                .unwrap()
+                .is_err()
+        );
+    }
 
     #[test]
     fn test_normalize_path() {

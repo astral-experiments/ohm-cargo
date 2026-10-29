@@ -89,7 +89,8 @@ impl CheckHint {
     }
 
     fn vetoes_speculation(&self) -> bool {
-        fs::read(&self.path).is_ok_and(|contents| contents == b"uses-library\n")
+        const HINT: &[u8] = b"uses-library\n";
+        paths::read_regular_bounded(&self.path, HINT.len() as u64).is_ok_and(|bytes| bytes == HINT)
     }
 
     /// A failed or uninformative new check must not leave an older hint behind.
