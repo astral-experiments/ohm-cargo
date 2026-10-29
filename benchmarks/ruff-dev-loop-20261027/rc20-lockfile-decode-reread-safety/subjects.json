@@ -1,0 +1,49 @@
+{
+  "candidate": {
+    "build_receipt_sha256": "dfd1738dac1b104c89b0f44a4ad0c6e34b0a592cff0d9a474d68d98088ef8f9a",
+    "cargo_sha256": "190829f32ebd9111c628ef50b26a350851aa92446184292732b18d0626635fdf",
+    "git": "0e398aa5aa13fa8b88b59c965d229923e53ab8cd",
+    "git_parent": "9d675d9393b5ff1ecebe764d1a554f8fd64175ef",
+    "tree": "2b1a731a2d375efaa3db709b2e201131da1c420e"
+  },
+  "comparison": {
+    "cargo_version_output_sha256": "ec1bf6905b9b35989ec93a46d18c5e46a7239cc1eaeb3dd1ae3cb80e75e25846",
+    "independent_native_files": 335,
+    "literal_compiler_commands_equal": true,
+    "ordered_external_inputs": 239,
+    "pgo_profile_sha256": "481ada8a40c70dad11b3c7e8871e9a52207d78447ca5e8ace06fc4aec2d2b5a7",
+    "source_delta_from_git_parent_to_candidate": [
+      "src/ops/lockfile.rs",
+      "src/ops/resolve.rs",
+      "src/ops/resolve_cache.rs",
+      "src/resolver/encode.rs"
+    ],
+    "source_delta_from_measured_parent_to_git_parent": [
+      "tests/testsuite/freshness.rs"
+    ]
+  },
+  "fixture_only": true,
+  "operator_sha256": {
+    "actor.py": "67529d026405cea40e69b1014faa66ed92b9e63b0b5d1707d6780f08faa5b301",
+    "changed_lock.py": "2a8c5f2a1f3df09214bad283554faf5c575450abaf61712b919d018ef0bcfb54",
+    "runner.py": "15a8141fb0c9212e3e03b466f14cc8c60d95bc078bafebd30a370806609471fb",
+    "verify.py": "f8573eb9c0888c448eab9354ad975103fec92b194671117ab452e6cf8b5b8c76"
+  },
+  "parent": {
+    "build_receipt_sha256": "efba12e0bf0bd1390f1d7c24fb986946469220a52e98a289b8e340aca8a55045",
+    "cargo_sha256": "967f5f1db2938847fac22d78dc222054cbb143a5fabcffcad0bd15f8929b47e9",
+    "git": "2fe90823d8eadc95de56c2cde8d41e0082aac0eb",
+    "tree": "99f8de907ed0bfe7ccab4b22cbebd74b25bb010d"
+  },
+  "private_recording_reserves": {
+    "home_GiB": 45,
+    "secondary_GiB": 40
+  },
+  "profile": "private release PGO, one shared embedded Cargo source-version stamp",
+  "test_rustc": {
+    "driver_sha256": "d8adcc610bdae225344ed1310ff9708784634d1fecafa600f7758a5d48d2cc95",
+    "git": "ca780121cea38bb9b0538d020d4bcce76ca30cbc",
+    "rustc_version_output_sha256": "2d3d7d412095486d8eaf53641522e51c94a1a9ea61260da912a6ffc009c7d0f8",
+    "sha256": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512"
+  }
+}
