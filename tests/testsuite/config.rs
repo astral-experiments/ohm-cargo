@@ -1505,10 +1505,7 @@ fn ohm_defaults_can_be_disabled_for_one_invocation() {
         gctx.cli_unstable().ohm_defaults(),
         cfg!(feature = "ohm-defaults")
     );
-    assert_eq!(
-        gctx.cli_unstable().relink_only(),
-        cfg!(feature = "ohm-defaults")
-    );
+    assert!(!gctx.cli_unstable().relink_only());
     assert_eq!(
         gctx.cli_unstable().no_embed_metadata(),
         cfg!(feature = "ohm-defaults")
@@ -1539,7 +1536,7 @@ fn ohm_defaults_can_be_disabled_for_one_invocation() {
     assert!(gctx.cli_unstable().ohm_defer_dev_deps());
     assert!(!gctx.cli_unstable().ohm_ready_tests());
     assert!(gctx.cli_unstable().headstart());
-    assert!(gctx.cli_unstable().relink_only());
+    assert!(!gctx.cli_unstable().relink_only());
     assert!(gctx.cli_unstable().no_embed_metadata());
     assert!(gctx.cli_unstable().ohm_reuse_built_deps());
 
