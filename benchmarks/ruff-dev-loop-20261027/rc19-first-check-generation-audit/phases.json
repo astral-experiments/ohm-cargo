@@ -1,0 +1,2087 @@
+{
+  "cargo_sha256": "6aaa263e68d2d77aeb8977166f9744f1fa8e0ea4df3216fe516355be68517bac",
+  "cargo_source": "235f9228651b74c591e6f62cae4c9b761448dd2d",
+  "image_inventory_sha256": "e0236aa030d8f31632de260880ced32040ca0897df60b18055f0d5b3fac4699a",
+  "later_sidecar_projection_sha256": "d480531037f00965961e0b5dcea3d3e9be46ae851680427750cded9c3d82a1dd",
+  "phases": {
+    "child-edit": {
+      "all_observed_processes_succeeded": true,
+      "early_completion_edges": [
+        {
+          "consumer": "ruff_graph",
+          "consumer_unit": 336,
+          "extern": "libruff_linter-e631b61e385dd7db.rmeta",
+          "producer": "ruff_linter",
+          "producer_unit": 338,
+          "terminal_log_gap_ns": 1228842026
+        },
+        {
+          "consumer": "ruff_python_index",
+          "consumer_unit": 351,
+          "extern": "libruff_python_ast-58057b12cc3f5bc9.rmeta",
+          "producer": "ruff_python_ast",
+          "producer_unit": 345,
+          "terminal_log_gap_ns": 23043471
+        },
+        {
+          "consumer": "ruff_wasm",
+          "consumer_unit": 367,
+          "extern": "libruff_linter-e631b61e385dd7db.rmeta",
+          "producer": "ruff_linter",
+          "producer_unit": 338,
+          "terminal_log_gap_ns": 187459091
+        },
+        {
+          "consumer": "ruff_workspace",
+          "consumer_unit": 368,
+          "extern": "libruff_linter-e631b61e385dd7db.rmeta",
+          "producer": "ruff_linter",
+          "producer_unit": 338,
+          "terminal_log_gap_ns": 252323861
+        },
+        {
+          "consumer": "ty_test",
+          "consumer_unit": 479,
+          "extern": "libty_python_semantic-6b9874c016d55a10.rmeta",
+          "producer": "ty_python_semantic",
+          "producer_unit": 475,
+          "terminal_log_gap_ns": 146781946
+        }
+      ],
+      "missing_marker": [
+        "ty_python_semantic-6b9874c016d55a10.d/ohm-foreign-span-bytes"
+      ],
+      "native_roles": {
+        "cargo": 1,
+        "collect2": 1,
+        "gcc": 1,
+        "rustc-full": 51,
+        "stock-wild": 1
+      },
+      "raw_sha256": {
+        "cargo.jsonl": "741c9322fb178dd4a43d357d1098ca9a13b28d4add879b90bf12da760cf3c95e",
+        "native.json": "81fe5fef4c6adbbe54710f11f3887753cf24db88cc1b10987c947a02b0ebb8e5",
+        "status.json": "ea990572b5657c16e3a0ea964cec1239bf407f9cd300d5ebbaa2cdde471fcde0",
+        "stderr": "a1000c206405c4b2801bdad234e15ee9fa53213b8ada192d7cfda0e3e96735c7"
+      },
+      "rustcs": [
+        {
+          "argv_sha256": "cc1f4c7c8ce0ed169fbbe0899e2f0e43a519ecb0535070c5680447f2e7172391",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "d71409218a88f3646438df5851c60407",
+            "terminal_log_ns": 885627967,
+            "unit": 364
+          },
+          "crate": "ruff_text_size",
+          "emit": "dep-info,metadata,link",
+          "extra_filename": "3a2b8e8812da07df",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "4a8a628f3b16a21843c9f2e2ac8400db9998d9fa67788a9a925e2269bdb7b5e4",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "cc37aa14d738b7f2355ecd42cea9d6a2",
+            "terminal_log_ns": 870432271,
+            "unit": 366
+          },
+          "crate": "ruff_text_size",
+          "emit": "dep-info,metadata",
+          "extra_filename": "5a0faa714ffc56b6",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "e34a09a68ec6db79aaacf0dcbf1c4241e29de2a878625ad9d9c3b6e65271de56",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "44bef0f21d374b4bdc9344fb41f0fcb2",
+            "terminal_log_ns": 884490246,
+            "unit": 331
+          },
+          "crate": "ruff_cache",
+          "emit": "dep-info,metadata",
+          "extra_filename": "bb6dbb47094b16b0",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "7b2ecb3150d0d46406b08204300ae565d447fb3f8a0d6e643ddb6c6cabac556c",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "ecc8e4ac0ec484c7cbc0dc72daea64aa",
+            "terminal_log_ns": 921567882,
+            "unit": 329
+          },
+          "crate": "ruff_annotate_snippets",
+          "emit": "dep-info,metadata",
+          "extra_filename": "4ffd9d905fbc5e40",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "bc73dae545f0bab64e6517dc2fbae4006326357aab187be5ca3d1700d328cf08",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "9b0fd4c743f1060e178b4769e2e6f0c6",
+            "terminal_log_ns": 884342888,
+            "unit": 342
+          },
+          "crate": "ruff_memory_usage",
+          "emit": "dep-info,metadata",
+          "extra_filename": "59428431e8c3a814",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "fece3b2e9613de6e546847b572ee9d1b0a41362651d2d83bd9a815a43c8180c5",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "ac1912daebbd9518a41ed6160088cb94",
+            "terminal_log_ns": 898785394,
+            "unit": 344
+          },
+          "crate": "ruff_options_metadata",
+          "emit": "dep-info,metadata",
+          "extra_filename": "ccfced84fbed7793",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "3b384eea16300865e1e5ccf261cb2cda5fb4e6788ee20ad836249afa5e96ca65",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "0fb802a81e59c4dbd96c6057d78e43ad",
+            "terminal_log_ns": 978067377,
+            "unit": 363
+          },
+          "crate": "ruff_source_file",
+          "emit": "dep-info,metadata",
+          "extra_filename": "009fa15b93a2bd13",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "6cff2e69cc8fe1f1f94d03663516d2bb92906b90e040bac64a4e3fe14129c0f5",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "12e89bc7151664ab3122da5b9fcb3e76",
+            "terminal_log_ns": 1020175274,
+            "unit": 361
+          },
+          "crate": "ruff_source_file",
+          "emit": "dep-info,metadata,link",
+          "extra_filename": "2ec7db6f473eb1e5",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "cc0aeb7f05d89b1e9fe7575166c116fa4fffa27ad5675b4390b1da1c4e5e31ac",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "390b53b17f9072d4f68e54b0339bcf56",
+            "terminal_log_ns": 978212594,
+            "unit": 334
+          },
+          "crate": "ruff_diagnostics",
+          "emit": "dep-info,metadata",
+          "extra_filename": "c171f1c44bb503de",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "db9019528f05f999d0a0889270259a6e7626675fef6baba9a3e2be8bc2496d09",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "60e7b5f0097dddbe5c3e8cba51f9812f",
+            "terminal_log_ns": 966517246,
+            "unit": 365
+          },
+          "crate": "ruff_text_size",
+          "emit": "dep-info,metadata",
+          "extra_filename": "38f4162e93a4022a",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "4b492dd3123205b791dad338bd17a9f01e463845230e79d89d5cb5d0cefe2633",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "30400a05849d5e490a22cea83fde5f24",
+            "terminal_log_ns": 964345446,
+            "unit": 346
+          },
+          "crate": "ruff_python_ast_integration_tests",
+          "emit": "dep-info,metadata",
+          "extra_filename": "57b34bf98a4d68f8",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "2b2d9b69ae6807b91afc0291c33c183fd3c0bc15a3d2c7c17e53a641f6a6f0ad",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "257d6352f671874101ee83b41f41caeb",
+            "terminal_log_ns": 971743919,
+            "unit": 359
+          },
+          "crate": "ruff_python_trivia_integration_tests",
+          "emit": "dep-info,metadata",
+          "extra_filename": "d2530f7ed49dd17c",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "156bb3f3f9429c7f2c526adb5fc0280d2a8e5ed432bc99c31c7ebc1c7edba4eb",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "35bcb539e85c9760d66dd1851acd901c",
+            "terminal_log_ns": 1036663633,
+            "unit": 358
+          },
+          "crate": "ruff_python_trivia",
+          "emit": "dep-info,metadata",
+          "extra_filename": "43ce869d49d6ca11",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "ed92ba30ddeb9eb74639657b0d8c287a9d1de2e2d98d97bdfadad705ac0f9a99",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "cb4606251a56ebb8761d842bac6bbef9",
+            "terminal_log_ns": 1121017631,
+            "unit": 343
+          },
+          "crate": "ruff_notebook",
+          "emit": "dep-info,metadata",
+          "extra_filename": "06e903c03934c2c5",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "ff86ac1dac8bec968963c6b9a19c0c0d46f5dac8445c91a9f69336fe4c65fa79",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "1cc8d42d4ec7fc0f97b37ed497c9d462",
+            "terminal_log_ns": 1121007377,
+            "unit": 356
+          },
+          "crate": "ruff_python_trivia",
+          "emit": "dep-info,metadata,link",
+          "extra_filename": "fa7efc1211acb864",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "a1e3f260943349296736f81368345b945ff7d5e3d254b3798bc6294fe507b747",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "74c088c97e3271d348e22063367a112a",
+            "terminal_log_ns": 1061631136,
+            "unit": 362
+          },
+          "crate": "ruff_source_file",
+          "emit": "dep-info,metadata",
+          "extra_filename": "4f0152557fbb546f",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "7a43a8c97be368e2769e57efd0f4058f76853aca23e689d5c231f63890b1c2a9",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "77f098d7d88a03ab548261020354bea8",
+            "terminal_log_ns": 1128962295,
+            "unit": 357
+          },
+          "crate": "ruff_python_trivia",
+          "emit": "dep-info,metadata",
+          "extra_filename": "0849debc86d13e5e",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "82d9c276fc4a0764ed47e9750bb7cbfaa4698871bec5fae3cea265f2f2ed9679",
+          "crate": "ruff_macros",
+          "emit": "dep-info,metadata",
+          "extra_filename": "e6a592fe82954088",
+          "kind": [
+            "proc-macro"
+          ]
+        },
+        {
+          "argv_sha256": "5f99ec929b71da636a4870dae49722a689040359ce070aa44d3fae54d54dde0a",
+          "crate": "ruff_macros",
+          "emit": "dep-info,link",
+          "extra_filename": "6f3d8375705cdcdc",
+          "kind": [
+            "proc-macro"
+          ]
+        },
+        {
+          "argv_sha256": "cd7505ce359cd2a93b551b91b0c724885d3c448384d07bbb66f64b5cc892bd98",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "a84d6258c538c11ac1ded26d830fcc3d",
+            "terminal_log_ns": 2509865068,
+            "unit": 345
+          },
+          "crate": "ruff_python_ast",
+          "emit": "dep-info,metadata",
+          "extra_filename": "58057b12cc3f5bc9",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "193bdbfae90c81b5d4e8c7350b2a6d10153ae41d48ddde7f744af9130b5c9963",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "ee3b21af8f1388a80e570f4fe2b171ab",
+            "terminal_log_ns": 1560634063,
+            "unit": 478
+          },
+          "crate": "ty_static",
+          "emit": "dep-info,metadata",
+          "extra_filename": "905426b0db099878",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "6905d80e39191ff724a9bf864e251b41bd14ca3735d6c5fe8205cc556ee0824e",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "9de5e1dcaa68621c06c9cb64eb90764c",
+            "terminal_log_ns": 1777149613,
+            "unit": 335
+          },
+          "crate": "ruff_formatter",
+          "emit": "dep-info,metadata",
+          "extra_filename": "330ed4706c67ba6b",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "e9e7333743f80b5e5024ad67d238b42ed77e65d6f35251850901aed1ef135acd",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "e1c4dbac159a6caa8cbf32d37ad9130e",
+            "terminal_log_ns": 1598979275,
+            "unit": 337
+          },
+          "crate": "ruff_index",
+          "emit": "dep-info,metadata",
+          "extra_filename": "e9e92aa0851ae5af",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "069add350c6c31023399008a7399ad3e3793893517195ba4ba0b79adbe6b3dab",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "310228391106abd848321ac975d32de4",
+            "terminal_log_ns": 2519473618,
+            "unit": 352
+          },
+          "crate": "ruff_python_literal",
+          "emit": "dep-info,metadata",
+          "extra_filename": "cd1b4e186e4b0654",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "163b4945f19c4eda1fdf1e4b7ad6e39f57d7adb24994dce45dab5292e7a7f180",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "9f2c9eb61cc7b543fbb56cd5fb08baa5",
+            "terminal_log_ns": 2663319054,
+            "unit": 353
+          },
+          "crate": "ruff_python_parser",
+          "emit": "dep-info,metadata",
+          "extra_filename": "9af75aaa8568c1c9",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "83b32d4c3df9ffddb93c88144b6220f92db0c345f2e8c2bdf22359eda0546cd9",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "2f9c1818424b48cc58b5919f750ef821",
+            "terminal_log_ns": 2486821597,
+            "unit": 351
+          },
+          "crate": "ruff_python_index",
+          "early_metadata_requested": true,
+          "emit": "dep-info,metadata",
+          "extern_ast": "libruff_python_ast-58057b12cc3f5bc9.rmeta",
+          "extra_filename": "dcdcb0c9486a5ac5",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "5ab4684ad2d969618bd26a3ba33939af95a0d8d9ce6cfa10dd5658c885fed34a",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "2e682267fb1544169e9ee06b22e22d58",
+            "terminal_log_ns": 3018882800,
+            "unit": 332
+          },
+          "crate": "ruff_db",
+          "emit": "dep-info,metadata",
+          "extra_filename": "771afd9ee607ec01",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "9d436e77bddd3d05feea5c1dd63691c18e63126b869c17f9746d91fa2f65f65e",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "1650afd74a6344ce81666491b072c685",
+            "terminal_log_ns": 2719736884,
+            "unit": 347
+          },
+          "crate": "ruff_python_codegen",
+          "emit": "dep-info,metadata",
+          "extra_filename": "1f9a2a72215c4027",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "3ad61a423ebe21f41fbcd24c1a2637eacf8481ca5fae068b0afddab9e35439f8",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "972c61405844609a50beac6f80fd9517",
+            "terminal_log_ns": 3040486253,
+            "unit": 354
+          },
+          "crate": "ruff_python_semantic",
+          "emit": "dep-info,metadata",
+          "extra_filename": "2ab4b957056a24cc",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "49c1f5cbba6458fbf1b175ae3923c8de093332b0dfa10fc570310b923ce94fd0",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "811f421a2db30ab1d1edcf71547d02eb",
+            "terminal_log_ns": 2774750543,
+            "unit": 350
+          },
+          "crate": "ruff_python_importer",
+          "emit": "dep-info,metadata",
+          "extra_filename": "d71598d6636de3a1",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "a83dea39e41d9f361b3a60310d3b5d9e6777aaa8acf4f6ea2ec783031fff0fe6",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "908c26cdf55f4614aa4eb71cd25295c0",
+            "terminal_log_ns": 3265702845,
+            "unit": 473
+          },
+          "crate": "ty_module_resolver",
+          "emit": "dep-info,metadata",
+          "extra_filename": "2cbfb595e915a706",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "5d71fbeac40f09bf01a6e2720660c84c2db93c0113d5bdd3b30ef285cddc1009",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "dde22a4fbddf3b2cf72daeb9821c9a2b",
+            "terminal_log_ns": 3118758912,
+            "unit": 477
+          },
+          "crate": "ty_site_packages",
+          "emit": "dep-info,metadata",
+          "extra_filename": "cedd118924b293df",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "9f67d4ace7e7976cd2598d0f7fa14a61939b78acb1ba3e76db68a9183fd2f20f",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "a1be2bcb3436ea3b916aad2e37fd88c4",
+            "terminal_log_ns": 3051585920,
+            "unit": 469
+          },
+          "crate": "ty_combine",
+          "emit": "dep-info,metadata",
+          "extra_filename": "65a4b5b2596927cd",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "74e544d5810093e077533826d4cc0ab3c2060510387900ee709ca27868c814a2",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "93a21e907ba605111ad1864a4ec1226d",
+            "terminal_log_ns": 3986732123,
+            "unit": 348
+          },
+          "crate": "ruff_python_formatter",
+          "emit": "dep-info,metadata",
+          "extra_filename": "8b4c7c0cd6f4804b",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "88527ffc579951fd04f351e29cc84c4096232842149f21d3487e1a2318e0baff",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "e0ed5d157ba06e9d9a177c3c33ed22da",
+            "terminal_log_ns": 3069238394,
+            "unit": 480
+          },
+          "crate": "ty_vendored",
+          "emit": "dep-info,metadata",
+          "extra_filename": "60cd7e87385ff6b8",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "bc337c7eb1ae367c7dce088acb69cfe0fb50967e72f51389d623f39856f81c32",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "7bbc85440218d8851ed9c0d4424fc99d",
+            "terminal_log_ns": 9820646742,
+            "unit": 338
+          },
+          "crate": "ruff_linter",
+          "emit": "dep-info,metadata",
+          "extra_filename": "e631b61e385dd7db",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "65ba488117ac9e2f250067ae19e4523517f235630325250768f35425cae0c1d6",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "9e8de733a00d10183bad45e9560d6330",
+            "terminal_log_ns": 7053045337,
+            "unit": 475
+          },
+          "crate": "ty_python_semantic",
+          "emit": "dep-info,metadata",
+          "extra_filename": "6b9874c016d55a10",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "5df1a345f3e0391056a10cac01dd1f0f0a30a1a9e6cdbf1d3b8fc45eb3669d6e",
+          "crate": "ruff_python_formatter",
+          "emit": "dep-info,metadata",
+          "extra_filename": "61e193e273fa7ca8",
+          "kind": [
+            "bin"
+          ]
+        },
+        {
+          "argv_sha256": "d0eb7df1db56cf27b28536e58a1f6ddc2f22e7c74ad0957f9d64519eb0293a53",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "70584f70f069da0dca4fefa77ca9facf",
+            "terminal_log_ns": 6906263391,
+            "unit": 479
+          },
+          "crate": "ty_test",
+          "emit": "dep-info,metadata",
+          "extra_filename": "34ee387d202521e9",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "6a84747fdcb43128a8f3d11988b9961a8b621801335eb89c3973a52f3d52dab1",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "478906fbe425d62fbdb8329c0cc9dc03",
+            "terminal_log_ns": 7319850396,
+            "unit": 474
+          },
+          "crate": "ty_project",
+          "emit": "dep-info,metadata",
+          "extra_filename": "d1e4938a2bf6b7d8",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "eee72d2d09dc9e961d597eaca97a2b5f4e5605c6aa9d0012b25e1f38618589c9",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "e2e2edba5c19a2ea7d0cefd274ad4ce1",
+            "terminal_log_ns": 7568787341,
+            "unit": 472
+          },
+          "crate": "ty_ide",
+          "emit": "dep-info,metadata",
+          "extra_filename": "25c08e34ed57ff67",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "2b5944a45c62b739c891c1f1335f631ebb64a045e5992107fda832f0b5e32244",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "875a274983b6ba6d95591ad193d6dd9e",
+            "terminal_log_ns": 8065277956,
+            "unit": 476
+          },
+          "crate": "ty_server",
+          "emit": "dep-info,metadata",
+          "extra_filename": "f7c7cdd9e671ca39",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "d2bb44841cff5f3a3b4af85d6ac4b417c6cac0fbf25b2a36af56c7ab1e111f3c",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "8cfec24ea087ba8ba09743fe851ff0bf",
+            "terminal_log_ns": 7810216058,
+            "unit": 483
+          },
+          "crate": "ty_wasm",
+          "emit": "dep-info,metadata",
+          "extra_filename": "92d45d511e08142d",
+          "kind": [
+            "cdylib",
+            "rlib"
+          ]
+        },
+        {
+          "argv_sha256": "20bd433a98999e5c729823761115e06ccd23b0155b539835d3f05e4ff521f2db",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "97d4fe1b817e324548ede805e33c6309",
+            "terminal_log_ns": 8189599298,
+            "unit": 465
+          },
+          "crate": "ty",
+          "emit": "dep-info,metadata",
+          "extra_filename": "600398c29ec5640d",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "7799dc45bfa0394644683b4d3a00ac6216d9bacea1e1bd37cac82f1af3dcd323",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "e3669f6083c8a3b90b3352673de3285a",
+            "terminal_log_ns": 8591804716,
+            "unit": 336
+          },
+          "crate": "ruff_graph",
+          "emit": "dep-info,metadata",
+          "extra_filename": "51e7264247155615",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "24f43528ac1c84ac7da567a90170eb30ee3b1487d62c3135a095a8266e733f38",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "bf095533ab09c86a6bf4db2ea4007e47",
+            "terminal_log_ns": 9568322881,
+            "unit": 368
+          },
+          "crate": "ruff_workspace",
+          "emit": "dep-info,metadata",
+          "extra_filename": "364078083ce1f883",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "293512280110940a8c0122be4baf73cafdf471387df8831192a9af7269810717",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "3763f9cbe221e047cf560d105644e597",
+            "terminal_log_ns": 9633187651,
+            "unit": 367
+          },
+          "crate": "ruff_wasm",
+          "emit": "dep-info,metadata",
+          "extra_filename": "e8169e09b2ca8c64",
+          "kind": [
+            "cdylib",
+            "rlib"
+          ]
+        },
+        {
+          "argv_sha256": "1e338b59a1eed29656543b50a19849b7e40dbb661ecc8e810f978275cd0237d9",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "fbe09f3da92a0050b59174a9bcf24bab",
+            "terminal_log_ns": 9577558469,
+            "unit": 341
+          },
+          "crate": "ruff_markdown",
+          "emit": "dep-info,metadata",
+          "extra_filename": "49e2c23ed7a5cec8",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "7b4b269697e135f7473cbcacf850af0f658f4d4b6781392464f41952d84c2020",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "cc78a7c0374b1658ae3893ec14e7cc0f",
+            "terminal_log_ns": 10083425501,
+            "unit": 360
+          },
+          "crate": "ruff_server",
+          "emit": "dep-info,metadata",
+          "extra_filename": "3c01eb82e8672bc1",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "90fa886630bbe8bd4c4ddcc5c45e02304fe30c9b82d0b98b7f79a9694fdd4985",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "a787614ed1d695be9e4774d715edb1a2",
+            "terminal_log_ns": 10369088874,
+            "unit": 325
+          },
+          "crate": "ruff",
+          "emit": "dep-info,metadata",
+          "extra_filename": "0c81d7558dd31166",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "31e102cea4d00672ef27e943677e89ee34eb471833ab4c7d67b631d72f91df4d",
+          "crate": "ruff",
+          "emit": "dep-info,metadata",
+          "extra_filename": "0b69f0f4ad291c90",
+          "kind": [
+            "bin"
+          ]
+        }
+      ],
+      "stale_mtime_edges": [],
+      "typed_artifacts": 510,
+      "typed_fresh": 454,
+      "unique_sidecar_and_terminal_joins": 47
+    },
+    "child-unchanged-1": {
+      "all_observed_processes_succeeded": true,
+      "early_completion_edges": [],
+      "missing_marker": [
+        "ty_python_semantic-6b9874c016d55a10.d/ohm-foreign-span-bytes"
+      ],
+      "native_roles": {
+        "cargo": 1,
+        "rustc-full": 12
+      },
+      "raw_sha256": {
+        "cargo.jsonl": "15d669aa1988df09309acd31638e5f1442fbf65e683442d4a4bb46469a6fb1cf",
+        "native.json": "77223bc9eb0c8f7cb63e5301f61aec8334b6cf133cb449ae727d8d225c9ace02",
+        "status.json": "fa5ea9eeed4657aeb70e20ee996f3aa1b970da2abf291ce792ce89a4f71d6124",
+        "stderr": "49d854f77c10beefeb104cedccbf31a495acb5a6b07d2ac84d78255d391373d1"
+      },
+      "rustcs": [
+        {
+          "argv_sha256": "65ba488117ac9e2f250067ae19e4523517f235630325250768f35425cae0c1d6",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "9e8de733a00d10183bad45e9560d6330",
+            "terminal_log_ns": 5002427552,
+            "unit": 475
+          },
+          "crate": "ty_python_semantic",
+          "emit": "dep-info,metadata",
+          "extra_filename": "6b9874c016d55a10",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "83b32d4c3df9ffddb93c88144b6220f92db0c345f2e8c2bdf22359eda0546cd9",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": true,
+            "public_hash": "2f9c1818424b48cc58b5919f750ef821",
+            "terminal_log_ns": 920504928,
+            "unit": 351
+          },
+          "crate": "ruff_python_index",
+          "early_metadata_requested": true,
+          "emit": "dep-info,metadata",
+          "extern_ast": "libruff_python_ast-58057b12cc3f5bc9.rmeta",
+          "extra_filename": "dcdcb0c9486a5ac5",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "bc337c7eb1ae367c7dce088acb69cfe0fb50967e72f51389d623f39856f81c32",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": true,
+            "public_hash": "7bbc85440218d8851ed9c0d4424fc99d",
+            "terminal_log_ns": 6640421595,
+            "unit": 338
+          },
+          "crate": "ruff_linter",
+          "emit": "dep-info,metadata",
+          "extra_filename": "e631b61e385dd7db",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "97fed6f015a0564fb91c753cf9765d8f8033716e7d16542ce09f0483df44d3b4",
+          "crate": "ruff_benchmark",
+          "emit": "dep-info,metadata",
+          "extra_filename": "05cbcd96d2a0befa",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "7799dc45bfa0394644683b4d3a00ac6216d9bacea1e1bd37cac82f1af3dcd323",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": true,
+            "public_hash": "e3669f6083c8a3b90b3352673de3285a",
+            "terminal_log_ns": 6780444607,
+            "unit": 336
+          },
+          "crate": "ruff_graph",
+          "emit": "dep-info,metadata",
+          "extra_filename": "51e7264247155615",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "24f43528ac1c84ac7da567a90170eb30ee3b1487d62c3135a095a8266e733f38",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": true,
+            "public_hash": "bf095533ab09c86a6bf4db2ea4007e47",
+            "terminal_log_ns": 7484433109,
+            "unit": 368
+          },
+          "crate": "ruff_workspace",
+          "emit": "dep-info,metadata",
+          "extra_filename": "364078083ce1f883",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "1e338b59a1eed29656543b50a19849b7e40dbb661ecc8e810f978275cd0237d9",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": true,
+            "public_hash": "fbe09f3da92a0050b59174a9bcf24bab",
+            "terminal_log_ns": 7581014896,
+            "unit": 341
+          },
+          "crate": "ruff_markdown",
+          "emit": "dep-info,metadata",
+          "extra_filename": "49e2c23ed7a5cec8",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "293512280110940a8c0122be4baf73cafdf471387df8831192a9af7269810717",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": true,
+            "public_hash": "3763f9cbe221e047cf560d105644e597",
+            "terminal_log_ns": 7652368179,
+            "unit": 367
+          },
+          "crate": "ruff_wasm",
+          "emit": "dep-info,metadata",
+          "extra_filename": "e8169e09b2ca8c64",
+          "kind": [
+            "cdylib",
+            "rlib"
+          ]
+        },
+        {
+          "argv_sha256": "7b4b269697e135f7473cbcacf850af0f658f4d4b6781392464f41952d84c2020",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": true,
+            "public_hash": "cc78a7c0374b1658ae3893ec14e7cc0f",
+            "terminal_log_ns": 8020337612,
+            "unit": 360
+          },
+          "crate": "ruff_server",
+          "emit": "dep-info,metadata",
+          "extra_filename": "3c01eb82e8672bc1",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "90fa886630bbe8bd4c4ddcc5c45e02304fe30c9b82d0b98b7f79a9694fdd4985",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": true,
+            "public_hash": "a787614ed1d695be9e4774d715edb1a2",
+            "terminal_log_ns": 8368003745,
+            "unit": 325
+          },
+          "crate": "ruff",
+          "emit": "dep-info,metadata",
+          "extra_filename": "0c81d7558dd31166",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "79b6521262345986ef18a01a998aabde3ddd95faca28fe099b6d35faa34136c6",
+          "crate": "ruff_dev",
+          "emit": "dep-info,metadata",
+          "extra_filename": "9820abbac11acab0",
+          "kind": [
+            "bin"
+          ]
+        },
+        {
+          "argv_sha256": "31e102cea4d00672ef27e943677e89ee34eb471833ab4c7d67b631d72f91df4d",
+          "crate": "ruff",
+          "emit": "dep-info,metadata",
+          "extra_filename": "0b69f0f4ad291c90",
+          "kind": [
+            "bin"
+          ]
+        }
+      ],
+      "stale_mtime_edges": [
+        {
+          "consumer": "ruff_python_index",
+          "consumer_mtime": "1793240969.359079939",
+          "delta_ns": 14673109324,
+          "dependency": "ruff_python_ast",
+          "dependency_mtime": "1793240984.032189263"
+        }
+      ],
+      "typed_artifacts": 510,
+      "typed_fresh": 489,
+      "unique_sidecar_and_terminal_joins": 9
+    },
+    "child-unchanged-2": {
+      "all_observed_processes_succeeded": true,
+      "early_completion_edges": [],
+      "missing_marker": [
+        "ty_python_semantic-6b9874c016d55a10.d/ohm-foreign-span-bytes"
+      ],
+      "native_roles": {
+        "cargo": 1,
+        "rustc-full": 1
+      },
+      "raw_sha256": {
+        "cargo.jsonl": "be4e7a5b6247c396206d920639b6d0c5f33cc37f27e5fd2d31eacc84b0a82c5e",
+        "native.json": "1f97d7d80246898c8a7165c0100d11db5e23008a5e7b3b5a23a447d06cc6a9ab",
+        "status.json": "eee47624e232de8b001a32069acadb8896f18b83af3237e2adaf44b70592dfcc",
+        "stderr": "f7f58d2bfec37dff84f3f9234652dd574025b0391a1ade79d59469974e34776c"
+      },
+      "rustcs": [
+        {
+          "argv_sha256": "65ba488117ac9e2f250067ae19e4523517f235630325250768f35425cae0c1d6",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "9e8de733a00d10183bad45e9560d6330",
+            "terminal_log_ns": 4713998024,
+            "unit": 475
+          },
+          "crate": "ty_python_semantic",
+          "emit": "dep-info,metadata",
+          "extra_filename": "6b9874c016d55a10",
+          "kind": [
+            "lib"
+          ]
+        }
+      ],
+      "stale_mtime_edges": [],
+      "typed_artifacts": 510,
+      "typed_fresh": 498,
+      "unique_sidecar_and_terminal_joins": 1
+    },
+    "parent-edit": {
+      "all_observed_processes_succeeded": true,
+      "early_completion_edges": [
+        {
+          "consumer": "ruff_graph",
+          "consumer_unit": 336,
+          "extern": "libruff_linter-e631b61e385dd7db.rmeta",
+          "producer": "ruff_linter",
+          "producer_unit": 338,
+          "terminal_log_gap_ns": 486589403
+        },
+        {
+          "consumer": "ruff_python_index",
+          "consumer_unit": 351,
+          "extern": "libruff_python_ast-58057b12cc3f5bc9.rmeta",
+          "producer": "ruff_python_ast",
+          "producer_unit": 345,
+          "terminal_log_gap_ns": 23619464
+        },
+        {
+          "consumer": "ty_test",
+          "consumer_unit": 479,
+          "extern": "libty_python_semantic-6b9874c016d55a10.rmeta",
+          "producer": "ty_python_semantic",
+          "producer_unit": 475,
+          "terminal_log_gap_ns": 126828024
+        }
+      ],
+      "missing_marker": [
+        "ty_python_semantic-6b9874c016d55a10.d/ohm-foreign-span-bytes"
+      ],
+      "native_roles": {
+        "cargo": 1,
+        "collect2": 1,
+        "gcc": 1,
+        "rustc-full": 51,
+        "stock-wild": 1
+      },
+      "raw_sha256": {
+        "cargo.jsonl": "28c01c3007d456d53c52518711a2eead16670c0754e633435430a6363efc5e06",
+        "native.json": "403a2f0a2cd2c706f9cc773768a1f328aa27f6927bb71091beea91473af2491b",
+        "status.json": "0d3b0a57f86ad1b073346e8bdf5986246571c3f89e1794ba5ab1aaa2c06f5ee3",
+        "stderr": "322481936ceb0944f160ba3b8ad18da838d3368d2f3c656f8964bc83c152b6f3"
+      },
+      "rustcs": [
+        {
+          "argv_sha256": "4a8a628f3b16a21843c9f2e2ac8400db9998d9fa67788a9a925e2269bdb7b5e4",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "cc37aa14d738b7f2355ecd42cea9d6a2",
+            "terminal_log_ns": 868789165,
+            "unit": 366
+          },
+          "crate": "ruff_text_size",
+          "emit": "dep-info,metadata",
+          "extra_filename": "5a0faa714ffc56b6",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "cc1f4c7c8ce0ed169fbbe0899e2f0e43a519ecb0535070c5680447f2e7172391",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "d71409218a88f3646438df5851c60407",
+            "terminal_log_ns": 896932985,
+            "unit": 364
+          },
+          "crate": "ruff_text_size",
+          "emit": "dep-info,metadata,link",
+          "extra_filename": "3a2b8e8812da07df",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "e34a09a68ec6db79aaacf0dcbf1c4241e29de2a878625ad9d9c3b6e65271de56",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "44bef0f21d374b4bdc9344fb41f0fcb2",
+            "terminal_log_ns": 869963113,
+            "unit": 331
+          },
+          "crate": "ruff_cache",
+          "emit": "dep-info,metadata",
+          "extra_filename": "bb6dbb47094b16b0",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "7b2ecb3150d0d46406b08204300ae565d447fb3f8a0d6e643ddb6c6cabac556c",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "ecc8e4ac0ec484c7cbc0dc72daea64aa",
+            "terminal_log_ns": 909106820,
+            "unit": 329
+          },
+          "crate": "ruff_annotate_snippets",
+          "emit": "dep-info,metadata",
+          "extra_filename": "4ffd9d905fbc5e40",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "bc73dae545f0bab64e6517dc2fbae4006326357aab187be5ca3d1700d328cf08",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "9b0fd4c743f1060e178b4769e2e6f0c6",
+            "terminal_log_ns": 887707184,
+            "unit": 342
+          },
+          "crate": "ruff_memory_usage",
+          "emit": "dep-info,metadata",
+          "extra_filename": "59428431e8c3a814",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "fece3b2e9613de6e546847b572ee9d1b0a41362651d2d83bd9a815a43c8180c5",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "ac1912daebbd9518a41ed6160088cb94",
+            "terminal_log_ns": 909110427,
+            "unit": 344
+          },
+          "crate": "ruff_options_metadata",
+          "emit": "dep-info,metadata",
+          "extra_filename": "ccfced84fbed7793",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "3b384eea16300865e1e5ccf261cb2cda5fb4e6788ee20ad836249afa5e96ca65",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "0fb802a81e59c4dbd96c6057d78e43ad",
+            "terminal_log_ns": 948244796,
+            "unit": 363
+          },
+          "crate": "ruff_source_file",
+          "emit": "dep-info,metadata",
+          "extra_filename": "009fa15b93a2bd13",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "cc0aeb7f05d89b1e9fe7575166c116fa4fffa27ad5675b4390b1da1c4e5e31ac",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "390b53b17f9072d4f68e54b0339bcf56",
+            "terminal_log_ns": 974283593,
+            "unit": 334
+          },
+          "crate": "ruff_diagnostics",
+          "emit": "dep-info,metadata",
+          "extra_filename": "c171f1c44bb503de",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "6cff2e69cc8fe1f1f94d03663516d2bb92906b90e040bac64a4e3fe14129c0f5",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "12e89bc7151664ab3122da5b9fcb3e76",
+            "terminal_log_ns": 1027293561,
+            "unit": 361
+          },
+          "crate": "ruff_source_file",
+          "emit": "dep-info,metadata,link",
+          "extra_filename": "2ec7db6f473eb1e5",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "db9019528f05f999d0a0889270259a6e7626675fef6baba9a3e2be8bc2496d09",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "60e7b5f0097dddbe5c3e8cba51f9812f",
+            "terminal_log_ns": 961840487,
+            "unit": 365
+          },
+          "crate": "ruff_text_size",
+          "emit": "dep-info,metadata",
+          "extra_filename": "38f4162e93a4022a",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "2b2d9b69ae6807b91afc0291c33c183fd3c0bc15a3d2c7c17e53a641f6a6f0ad",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "257d6352f671874101ee83b41f41caeb",
+            "terminal_log_ns": 961883343,
+            "unit": 359
+          },
+          "crate": "ruff_python_trivia_integration_tests",
+          "emit": "dep-info,metadata",
+          "extra_filename": "d2530f7ed49dd17c",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "4b492dd3123205b791dad338bd17a9f01e463845230e79d89d5cb5d0cefe2633",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "30400a05849d5e490a22cea83fde5f24",
+            "terminal_log_ns": 974401692,
+            "unit": 346
+          },
+          "crate": "ruff_python_ast_integration_tests",
+          "emit": "dep-info,metadata",
+          "extra_filename": "57b34bf98a4d68f8",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "156bb3f3f9429c7f2c526adb5fc0280d2a8e5ed432bc99c31c7ebc1c7edba4eb",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "35bcb539e85c9760d66dd1851acd901c",
+            "terminal_log_ns": 1007482889,
+            "unit": 357
+          },
+          "crate": "ruff_python_trivia",
+          "emit": "dep-info,metadata",
+          "extra_filename": "43ce869d49d6ca11",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "a1e3f260943349296736f81368345b945ff7d5e3d254b3798bc6294fe507b747",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "74c088c97e3271d348e22063367a112a",
+            "terminal_log_ns": 1033717450,
+            "unit": 362
+          },
+          "crate": "ruff_source_file",
+          "emit": "dep-info,metadata",
+          "extra_filename": "4f0152557fbb546f",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "ed92ba30ddeb9eb74639657b0d8c287a9d1de2e2d98d97bdfadad705ac0f9a99",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "cb4606251a56ebb8761d842bac6bbef9",
+            "terminal_log_ns": 1109260783,
+            "unit": 343
+          },
+          "crate": "ruff_notebook",
+          "emit": "dep-info,metadata",
+          "extra_filename": "06e903c03934c2c5",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "ff86ac1dac8bec968963c6b9a19c0c0d46f5dac8445c91a9f69336fe4c65fa79",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "1cc8d42d4ec7fc0f97b37ed497c9d462",
+            "terminal_log_ns": 1119886885,
+            "unit": 356
+          },
+          "crate": "ruff_python_trivia",
+          "emit": "dep-info,metadata,link",
+          "extra_filename": "fa7efc1211acb864",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "7a43a8c97be368e2769e57efd0f4058f76853aca23e689d5c231f63890b1c2a9",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "77f098d7d88a03ab548261020354bea8",
+            "terminal_log_ns": 1093841028,
+            "unit": 358
+          },
+          "crate": "ruff_python_trivia",
+          "emit": "dep-info,metadata",
+          "extra_filename": "0849debc86d13e5e",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "82d9c276fc4a0764ed47e9750bb7cbfaa4698871bec5fae3cea265f2f2ed9679",
+          "crate": "ruff_macros",
+          "emit": "dep-info,metadata",
+          "extra_filename": "e6a592fe82954088",
+          "kind": [
+            "proc-macro"
+          ]
+        },
+        {
+          "argv_sha256": "5f99ec929b71da636a4870dae49722a689040359ce070aa44d3fae54d54dde0a",
+          "crate": "ruff_macros",
+          "emit": "dep-info,link",
+          "extra_filename": "6f3d8375705cdcdc",
+          "kind": [
+            "proc-macro"
+          ]
+        },
+        {
+          "argv_sha256": "cd7505ce359cd2a93b551b91b0c724885d3c448384d07bbb66f64b5cc892bd98",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "a84d6258c538c11ac1ded26d830fcc3d",
+            "terminal_log_ns": 2500828009,
+            "unit": 345
+          },
+          "crate": "ruff_python_ast",
+          "emit": "dep-info,metadata",
+          "extra_filename": "58057b12cc3f5bc9",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "193bdbfae90c81b5d4e8c7350b2a6d10153ae41d48ddde7f744af9130b5c9963",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "ee3b21af8f1388a80e570f4fe2b171ab",
+            "terminal_log_ns": 1585750694,
+            "unit": 478
+          },
+          "crate": "ty_static",
+          "emit": "dep-info,metadata",
+          "extra_filename": "905426b0db099878",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "6905d80e39191ff724a9bf864e251b41bd14ca3735d6c5fe8205cc556ee0824e",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "9de5e1dcaa68621c06c9cb64eb90764c",
+            "terminal_log_ns": 1816198424,
+            "unit": 335
+          },
+          "crate": "ruff_formatter",
+          "emit": "dep-info,metadata",
+          "extra_filename": "330ed4706c67ba6b",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "e9e7333743f80b5e5024ad67d238b42ed77e65d6f35251850901aed1ef135acd",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "e1c4dbac159a6caa8cbf32d37ad9130e",
+            "terminal_log_ns": 1615677740,
+            "unit": 337
+          },
+          "crate": "ruff_index",
+          "emit": "dep-info,metadata",
+          "extra_filename": "e9e92aa0851ae5af",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "163b4945f19c4eda1fdf1e4b7ad6e39f57d7adb24994dce45dab5292e7a7f180",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "9f2c9eb61cc7b543fbb56cd5fb08baa5",
+            "terminal_log_ns": 2670427146,
+            "unit": 353
+          },
+          "crate": "ruff_python_parser",
+          "emit": "dep-info,metadata",
+          "extra_filename": "9af75aaa8568c1c9",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "069add350c6c31023399008a7399ad3e3793893517195ba4ba0b79adbe6b3dab",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "310228391106abd848321ac975d32de4",
+            "terminal_log_ns": 2518829227,
+            "unit": 352
+          },
+          "crate": "ruff_python_literal",
+          "emit": "dep-info,metadata",
+          "extra_filename": "cd1b4e186e4b0654",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "83b32d4c3df9ffddb93c88144b6220f92db0c345f2e8c2bdf22359eda0546cd9",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "2f9c1818424b48cc58b5919f750ef821",
+            "terminal_log_ns": 2477208545,
+            "unit": 351
+          },
+          "crate": "ruff_python_index",
+          "early_metadata_requested": true,
+          "emit": "dep-info,metadata",
+          "extern_ast": "libruff_python_ast-58057b12cc3f5bc9.rmeta",
+          "extra_filename": "dcdcb0c9486a5ac5",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "5ab4684ad2d969618bd26a3ba33939af95a0d8d9ce6cfa10dd5658c885fed34a",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "2e682267fb1544169e9ee06b22e22d58",
+            "terminal_log_ns": 3000023004,
+            "unit": 332
+          },
+          "crate": "ruff_db",
+          "emit": "dep-info,metadata",
+          "extra_filename": "771afd9ee607ec01",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "9d436e77bddd3d05feea5c1dd63691c18e63126b869c17f9746d91fa2f65f65e",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "1650afd74a6344ce81666491b072c685",
+            "terminal_log_ns": 2732769963,
+            "unit": 347
+          },
+          "crate": "ruff_python_codegen",
+          "emit": "dep-info,metadata",
+          "extra_filename": "1f9a2a72215c4027",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "3ad61a423ebe21f41fbcd24c1a2637eacf8481ca5fae068b0afddab9e35439f8",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "972c61405844609a50beac6f80fd9517",
+            "terminal_log_ns": 3056277457,
+            "unit": 354
+          },
+          "crate": "ruff_python_semantic",
+          "emit": "dep-info,metadata",
+          "extra_filename": "2ab4b957056a24cc",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "49c1f5cbba6458fbf1b175ae3923c8de093332b0dfa10fc570310b923ce94fd0",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "811f421a2db30ab1d1edcf71547d02eb",
+            "terminal_log_ns": 2788052102,
+            "unit": 350
+          },
+          "crate": "ruff_python_importer",
+          "emit": "dep-info,metadata",
+          "extra_filename": "d71598d6636de3a1",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "a83dea39e41d9f361b3a60310d3b5d9e6777aaa8acf4f6ea2ec783031fff0fe6",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "908c26cdf55f4614aa4eb71cd25295c0",
+            "terminal_log_ns": 3254213531,
+            "unit": 473
+          },
+          "crate": "ty_module_resolver",
+          "emit": "dep-info,metadata",
+          "extra_filename": "2cbfb595e915a706",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "88527ffc579951fd04f351e29cc84c4096232842149f21d3487e1a2318e0baff",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "e0ed5d157ba06e9d9a177c3c33ed22da",
+            "terminal_log_ns": 3057900518,
+            "unit": 480
+          },
+          "crate": "ty_vendored",
+          "emit": "dep-info,metadata",
+          "extra_filename": "60cd7e87385ff6b8",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "74e544d5810093e077533826d4cc0ab3c2060510387900ee709ca27868c814a2",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "93a21e907ba605111ad1864a4ec1226d",
+            "terminal_log_ns": 3753117636,
+            "unit": 348
+          },
+          "crate": "ruff_python_formatter",
+          "emit": "dep-info,metadata",
+          "extra_filename": "8b4c7c0cd6f4804b",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "9f67d4ace7e7976cd2598d0f7fa14a61939b78acb1ba3e76db68a9183fd2f20f",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "a1be2bcb3436ea3b916aad2e37fd88c4",
+            "terminal_log_ns": 3055917193,
+            "unit": 469
+          },
+          "crate": "ty_combine",
+          "emit": "dep-info,metadata",
+          "extra_filename": "65a4b5b2596927cd",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "5d71fbeac40f09bf01a6e2720660c84c2db93c0113d5bdd3b30ef285cddc1009",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "dde22a4fbddf3b2cf72daeb9821c9a2b",
+            "terminal_log_ns": 3121122713,
+            "unit": 477
+          },
+          "crate": "ty_site_packages",
+          "emit": "dep-info,metadata",
+          "extra_filename": "cedd118924b293df",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "bc337c7eb1ae367c7dce088acb69cfe0fb50967e72f51389d623f39856f81c32",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "7bbc85440218d8851ed9c0d4424fc99d",
+            "terminal_log_ns": 8723595771,
+            "unit": 338
+          },
+          "crate": "ruff_linter",
+          "emit": "dep-info,metadata",
+          "extra_filename": "e631b61e385dd7db",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "65ba488117ac9e2f250067ae19e4523517f235630325250768f35425cae0c1d6",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "9e8de733a00d10183bad45e9560d6330",
+            "terminal_log_ns": 6999226738,
+            "unit": 475
+          },
+          "crate": "ty_python_semantic",
+          "emit": "dep-info,metadata",
+          "extra_filename": "6b9874c016d55a10",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "5df1a345f3e0391056a10cac01dd1f0f0a30a1a9e6cdbf1d3b8fc45eb3669d6e",
+          "crate": "ruff_python_formatter",
+          "emit": "dep-info,metadata",
+          "extra_filename": "61e193e273fa7ca8",
+          "kind": [
+            "bin"
+          ]
+        },
+        {
+          "argv_sha256": "6a84747fdcb43128a8f3d11988b9961a8b621801335eb89c3973a52f3d52dab1",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "478906fbe425d62fbdb8329c0cc9dc03",
+            "terminal_log_ns": 7244885258,
+            "unit": 474
+          },
+          "crate": "ty_project",
+          "emit": "dep-info,metadata",
+          "extra_filename": "d1e4938a2bf6b7d8",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "d0eb7df1db56cf27b28536e58a1f6ddc2f22e7c74ad0957f9d64519eb0293a53",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "70584f70f069da0dca4fefa77ca9facf",
+            "terminal_log_ns": 6872398714,
+            "unit": 479
+          },
+          "crate": "ty_test",
+          "emit": "dep-info,metadata",
+          "extra_filename": "34ee387d202521e9",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "eee72d2d09dc9e961d597eaca97a2b5f4e5605c6aa9d0012b25e1f38618589c9",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "e2e2edba5c19a2ea7d0cefd274ad4ce1",
+            "terminal_log_ns": 7496309942,
+            "unit": 472
+          },
+          "crate": "ty_ide",
+          "emit": "dep-info,metadata",
+          "extra_filename": "25c08e34ed57ff67",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "d2bb44841cff5f3a3b4af85d6ac4b417c6cac0fbf25b2a36af56c7ab1e111f3c",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "8cfec24ea087ba8ba09743fe851ff0bf",
+            "terminal_log_ns": 7731382822,
+            "unit": 483
+          },
+          "crate": "ty_wasm",
+          "emit": "dep-info,metadata",
+          "extra_filename": "92d45d511e08142d",
+          "kind": [
+            "cdylib",
+            "rlib"
+          ]
+        },
+        {
+          "argv_sha256": "2b5944a45c62b739c891c1f1335f631ebb64a045e5992107fda832f0b5e32244",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "875a274983b6ba6d95591ad193d6dd9e",
+            "terminal_log_ns": 8024965537,
+            "unit": 476
+          },
+          "crate": "ty_server",
+          "emit": "dep-info,metadata",
+          "extra_filename": "f7c7cdd9e671ca39",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "20bd433a98999e5c729823761115e06ccd23b0155b539835d3f05e4ff521f2db",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "97d4fe1b817e324548ede805e33c6309",
+            "terminal_log_ns": 8158746293,
+            "unit": 465
+          },
+          "crate": "ty",
+          "emit": "dep-info,metadata",
+          "extra_filename": "600398c29ec5640d",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "7799dc45bfa0394644683b4d3a00ac6216d9bacea1e1bd37cac82f1af3dcd323",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "e3669f6083c8a3b90b3352673de3285a",
+            "terminal_log_ns": 8237006368,
+            "unit": 336
+          },
+          "crate": "ruff_graph",
+          "emit": "dep-info,metadata",
+          "extra_filename": "51e7264247155615",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "24f43528ac1c84ac7da567a90170eb30ee3b1487d62c3135a095a8266e733f38",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "bf095533ab09c86a6bf4db2ea4007e47",
+            "terminal_log_ns": 8920603200,
+            "unit": 368
+          },
+          "crate": "ruff_workspace",
+          "emit": "dep-info,metadata",
+          "extra_filename": "364078083ce1f883",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "1e338b59a1eed29656543b50a19849b7e40dbb661ecc8e810f978275cd0237d9",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "fbe09f3da92a0050b59174a9bcf24bab",
+            "terminal_log_ns": 8958037468,
+            "unit": 341
+          },
+          "crate": "ruff_markdown",
+          "emit": "dep-info,metadata",
+          "extra_filename": "49e2c23ed7a5cec8",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "293512280110940a8c0122be4baf73cafdf471387df8831192a9af7269810717",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "3763f9cbe221e047cf560d105644e597",
+            "terminal_log_ns": 9025229139,
+            "unit": 367
+          },
+          "crate": "ruff_wasm",
+          "emit": "dep-info,metadata",
+          "extra_filename": "e8169e09b2ca8c64",
+          "kind": [
+            "cdylib",
+            "rlib"
+          ]
+        },
+        {
+          "argv_sha256": "7b4b269697e135f7473cbcacf850af0f658f4d4b6781392464f41952d84c2020",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "cc78a7c0374b1658ae3893ec14e7cc0f",
+            "terminal_log_ns": 9410876172,
+            "unit": 360
+          },
+          "crate": "ruff_server",
+          "emit": "dep-info,metadata",
+          "extra_filename": "3c01eb82e8672bc1",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "90fa886630bbe8bd4c4ddcc5c45e02304fe30c9b82d0b98b7f79a9694fdd4985",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "a787614ed1d695be9e4774d715edb1a2",
+            "terminal_log_ns": 9707126660,
+            "unit": 325
+          },
+          "crate": "ruff",
+          "emit": "dep-info,metadata",
+          "extra_filename": "0c81d7558dd31166",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "31e102cea4d00672ef27e943677e89ee34eb471833ab4c7d67b631d72f91df4d",
+          "crate": "ruff",
+          "emit": "dep-info,metadata",
+          "extra_filename": "0b69f0f4ad291c90",
+          "kind": [
+            "bin"
+          ]
+        }
+      ],
+      "stale_mtime_edges": [],
+      "typed_artifacts": 510,
+      "typed_fresh": 454,
+      "unique_sidecar_and_terminal_joins": 47
+    },
+    "parent-unchanged-1": {
+      "all_observed_processes_succeeded": true,
+      "early_completion_edges": [],
+      "missing_marker": [
+        "ty_python_semantic-6b9874c016d55a10.d/ohm-foreign-span-bytes"
+      ],
+      "native_roles": {
+        "cargo": 1,
+        "rustc-full": 12
+      },
+      "raw_sha256": {
+        "cargo.jsonl": "23c84e80b10f50acb99f5e87d090b262ed64a8356effac7c5727536671ac7f66",
+        "native.json": "9a1b3a6487d7fed0eac1f92d8f18be7fce6f006d18faf261cdde1c04203db750",
+        "status.json": "2598dd17b151278f62b9f4eb0aec622474668fe697180651b9053bb71ade6790",
+        "stderr": "169fa2ec662c4ca5143f6cfa781eca8fbdabe3afa6467d635c19d7b34bd77056"
+      },
+      "rustcs": [
+        {
+          "argv_sha256": "65ba488117ac9e2f250067ae19e4523517f235630325250768f35425cae0c1d6",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "9e8de733a00d10183bad45e9560d6330",
+            "terminal_log_ns": 4346515330,
+            "unit": 475
+          },
+          "crate": "ty_python_semantic",
+          "emit": "dep-info,metadata",
+          "extra_filename": "6b9874c016d55a10",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "83b32d4c3df9ffddb93c88144b6220f92db0c345f2e8c2bdf22359eda0546cd9",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": true,
+            "public_hash": "2f9c1818424b48cc58b5919f750ef821",
+            "terminal_log_ns": 905660601,
+            "unit": 351
+          },
+          "crate": "ruff_python_index",
+          "early_metadata_requested": true,
+          "emit": "dep-info,metadata",
+          "extern_ast": "libruff_python_ast-58057b12cc3f5bc9.rmeta",
+          "extra_filename": "dcdcb0c9486a5ac5",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "bc337c7eb1ae367c7dce088acb69cfe0fb50967e72f51389d623f39856f81c32",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": true,
+            "public_hash": "7bbc85440218d8851ed9c0d4424fc99d",
+            "terminal_log_ns": 6442841584,
+            "unit": 338
+          },
+          "crate": "ruff_linter",
+          "emit": "dep-info,metadata",
+          "extra_filename": "e631b61e385dd7db",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "7799dc45bfa0394644683b4d3a00ac6216d9bacea1e1bd37cac82f1af3dcd323",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": true,
+            "public_hash": "e3669f6083c8a3b90b3352673de3285a",
+            "terminal_log_ns": 6572717079,
+            "unit": 336
+          },
+          "crate": "ruff_graph",
+          "emit": "dep-info,metadata",
+          "extra_filename": "51e7264247155615",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "97fed6f015a0564fb91c753cf9765d8f8033716e7d16542ce09f0483df44d3b4",
+          "crate": "ruff_benchmark",
+          "emit": "dep-info,metadata",
+          "extra_filename": "05cbcd96d2a0befa",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "24f43528ac1c84ac7da567a90170eb30ee3b1487d62c3135a095a8266e733f38",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": true,
+            "public_hash": "bf095533ab09c86a6bf4db2ea4007e47",
+            "terminal_log_ns": 7265641465,
+            "unit": 368
+          },
+          "crate": "ruff_workspace",
+          "emit": "dep-info,metadata",
+          "extra_filename": "364078083ce1f883",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "1e338b59a1eed29656543b50a19849b7e40dbb661ecc8e810f978275cd0237d9",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": true,
+            "public_hash": "fbe09f3da92a0050b59174a9bcf24bab",
+            "terminal_log_ns": 7359739929,
+            "unit": 341
+          },
+          "crate": "ruff_markdown",
+          "emit": "dep-info,metadata",
+          "extra_filename": "49e2c23ed7a5cec8",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "293512280110940a8c0122be4baf73cafdf471387df8831192a9af7269810717",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": true,
+            "public_hash": "3763f9cbe221e047cf560d105644e597",
+            "terminal_log_ns": 7424193053,
+            "unit": 367
+          },
+          "crate": "ruff_wasm",
+          "emit": "dep-info,metadata",
+          "extra_filename": "e8169e09b2ca8c64",
+          "kind": [
+            "cdylib",
+            "rlib"
+          ]
+        },
+        {
+          "argv_sha256": "7b4b269697e135f7473cbcacf850af0f658f4d4b6781392464f41952d84c2020",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": true,
+            "public_hash": "cc78a7c0374b1658ae3893ec14e7cc0f",
+            "terminal_log_ns": 7824203493,
+            "unit": 360
+          },
+          "crate": "ruff_server",
+          "emit": "dep-info,metadata",
+          "extra_filename": "3c01eb82e8672bc1",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "90fa886630bbe8bd4c4ddcc5c45e02304fe30c9b82d0b98b7f79a9694fdd4985",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": true,
+            "public_hash": "a787614ed1d695be9e4774d715edb1a2",
+            "terminal_log_ns": 8164395232,
+            "unit": 325
+          },
+          "crate": "ruff",
+          "emit": "dep-info,metadata",
+          "extra_filename": "0c81d7558dd31166",
+          "kind": [
+            "lib"
+          ]
+        },
+        {
+          "argv_sha256": "31e102cea4d00672ef27e943677e89ee34eb471833ab4c7d67b631d72f91df4d",
+          "crate": "ruff",
+          "emit": "dep-info,metadata",
+          "extra_filename": "0b69f0f4ad291c90",
+          "kind": [
+            "bin"
+          ]
+        },
+        {
+          "argv_sha256": "79b6521262345986ef18a01a998aabde3ddd95faca28fe099b6d35faa34136c6",
+          "crate": "ruff_dev",
+          "emit": "dep-info,metadata",
+          "extra_filename": "9820abbac11acab0",
+          "kind": [
+            "bin"
+          ]
+        }
+      ],
+      "stale_mtime_edges": [
+        {
+          "consumer": "ruff_python_index",
+          "consumer_mtime": "1793240905.170601543",
+          "delta_ns": 54820408592,
+          "dependency": "ruff_python_ast",
+          "dependency_mtime": "1793240959.991010135"
+        }
+      ],
+      "typed_artifacts": 510,
+      "typed_fresh": 489,
+      "unique_sidecar_and_terminal_joins": 9
+    },
+    "parent-unchanged-2": {
+      "all_observed_processes_succeeded": true,
+      "early_completion_edges": [],
+      "missing_marker": [
+        "ty_python_semantic-6b9874c016d55a10.d/ohm-foreign-span-bytes"
+      ],
+      "native_roles": {
+        "cargo": 1,
+        "rustc-full": 1
+      },
+      "raw_sha256": {
+        "cargo.jsonl": "22f52ec0a2649c74e9565293ec684c5b92cd55325945150d7990fc10fe894887",
+        "native.json": "3f32f129a8cf67362f636b1bd4cb2dd47a66185043de7e6b4e0ced880222eaa7",
+        "status.json": "8cdddb7f8897ec9299562fb96664bacd6ec286f052701f1657c000ddf70771dc",
+        "stderr": "009cb5bdc2b7ee71e9e97e02904f1e0537dbd126219358b6dc534d1a1d599168"
+      },
+      "rustcs": [
+        {
+          "argv_sha256": "65ba488117ac9e2f250067ae19e4523517f235630325250768f35425cae0c1d6",
+          "completed_unchanged_local_hash": {
+            "changed_dependency": false,
+            "public_hash": "9e8de733a00d10183bad45e9560d6330",
+            "terminal_log_ns": 4640362607,
+            "unit": 475
+          },
+          "crate": "ty_python_semantic",
+          "emit": "dep-info,metadata",
+          "extra_filename": "6b9874c016d55a10",
+          "kind": [
+            "lib"
+          ]
+        }
+      ],
+      "stale_mtime_edges": [],
+      "typed_artifacts": 510,
+      "typed_fresh": 498,
+      "unique_sidecar_and_terminal_joins": 1
+    }
+  },
+  "rustc_sha256": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+  "stock_sdk": "ohm-1.99.0-18",
+  "tools_sha256": "dec7c48da95c262622062fd96d9f59652cfd45647cc2d3ddc5dbf8cc6941f0bc"
+}
