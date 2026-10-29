@@ -1,0 +1,44 @@
+{
+  "objective": "Measure the cost of hashing a relink recipe and codegen objects when a dirty native target cannot use cached codegen and rustc supplies no unused-extern report.",
+  "product_base": "a8f0c9aa0412aa259c686416a48aa8d2cf92da72",
+  "discovery_facts_excluded_from_performance": "The checked default e2e manifest referenced 139 object files with 19,418,312 bytes and a 198,288 byte recipe. A separate two-crate fixture read 43,279 bytes after the link. Neither counts as a performance sample.",
+  "workload": "Historical Ruff parser edit a50dc586 on the private pinned 93526150 checkout, cargo +ohm test --no-run for the ty_server e2e integration target; original to edited first dirty command. Same source/Rust/Wild and native compiler/link argv in both arms. Each starts from its own qualified private original state.",
+  "correctness_before_comparison": [
+    "Same complete original, warm-edited versus empty-edited executables or fully accounted nonsemantic ELF differences.",
+    "Same 200 test names and two executed notebook tests, actual historical parser verdict reverses, E0308 for invalid input and subsequent restored original.",
+    "Every successful exact repeat runs zero compiler and linker processes.",
+    "The dirty edit runs two full rustc invocations and one real native linker in both arms.",
+    "Cargo opens the original 139 regular objects and recipe and validates the promised final executable even in the treatment. Missing outputs, symlink or FIFO cache inputs and bitcode cleanup remain protected. Explicit-option and Some(empty) unused-dependency reports keep their existing coverage.",
+    "Same stock linker and ordered linker inputs; preserve the compiler output object locations."
+  ],
+  "primary": "Cargo userspace Ir in the whole parent Cargo invocation under Callgrind, excluding child compilers/linkers, measured on complete genuine on-disk builds. Trace the real Cargo image, enumerate the child modes, reject instrumentation that changes native results or job counts. Unsupported or incomplete measurements are an explicit stop. No component estimate is substituted.",
+  "secondary": "End-to-end wall time of the identical uninstrumented checkouts and edit-to-built-e2e command. Report paired median change and interval separately, and do not claim end-to-end speed without evidence.",
+  "caller_work": "Reset to original and confirm native output before each paired first dirty edit. Check the typed products, test verdict and failure controls outside the timed region. Keep every completed and interrupted attempt and report reasons.",
+  "primary_orders": [
+    "new-first",
+    "old-first",
+    "new-first",
+    "old-first",
+    "old-first",
+    "new-first",
+    "old-first",
+    "new-first"
+  ],
+  "secondary_orders": [
+    "old-first",
+    "old-first",
+    "old-first",
+    "new-first",
+    "old-first",
+    "old-first",
+    "new-first",
+    "old-first",
+    "new-first",
+    "new-first",
+    "new-first",
+    "new-first"
+  ],
+  "random_seed": 20261029,
+  "analysis": "2-sided balanced randomization test; paired bootstrap, 30,000 resamples. A new performance draft needs a reproducible reduction on its preregistered primary measure, a 95% interval wholly on the improvement side, and all behavioral controls. Statistical claims distinguish Cargo CPU work from real elapsed time.",
+  "status": "Hypothesis and design only. No modified Cargo build or timed command has run."
+}

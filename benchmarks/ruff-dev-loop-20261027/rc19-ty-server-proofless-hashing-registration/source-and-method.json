@@ -1,0 +1,102 @@
+{
+  "analysis": {
+    "baseline": "parent",
+    "bootstrap_draws": 30000,
+    "bootstrap_seed": 20261029,
+    "candidate": "child",
+    "display": "100*expm1(median log ratio), raw medians and paired raw change, both order strata",
+    "no_replacement": true,
+    "p": "two sided, all balanced chronological-role randomizations, abs(null) >= abs(observed) minus 1e-12",
+    "percentiles": [
+      2.5,
+      97.5
+    ],
+    "primary_accept": "all native and workload gates; two-sided p<0.05 and upper95<0",
+    "secondary_inference": "separate wall result; native instruction reductions alone cannot establish a wall improvement",
+    "statistic": "median log(child/parent)"
+  },
+  "base_plan": "417677ab71a7242e5561e1f76f352e2358f6410e2a8d3c39396046d015920593",
+  "files": {
+    "analyze.py": "51981d0b6e5b6d48bdd8306d1920f37bd4920b8cfe37836707c6bd2ad831c96b",
+    "audit-visit.py": "4a2e9269c90fce0509edea6eb8212308c8188bb06ba92efc52e22c89e1decc05",
+    "cargo-visit.py": "b8b0cefc3d0af8d4fcf6fd54f87eafceb212306f78ed0e19b7afaec8dbb0d630",
+    "clock.py": "3b6647db77679e24fb5bc3fcf441b904baa11b607ed4d54f264ddc02506a271e",
+    "cold_escrow.py": "6ef23161a631b532b2d03f0d32f1d4f17d4301130911703fc1418de4650d7cab",
+    "control-suite.py": "c5592e80f3ca83d30ae88582985e16009f938c02b7a14f28a2b6206c2a50c09f",
+    "inside.py": "49a1b505fa4cb254438c32bd8d8735a6fd6880b045352343e260ddf1f3898383",
+    "launch.py": "0fd5ef45ba95a9aecf2c5242254fe01ed91f871a7ad4368980c7e34e8700037f",
+    "mount-one.py": "305dda3da0abb4132d214105c35c3d93cae82282f3910468229f133b5361b0fe",
+    "operations.py": "232ad326c81125fd508be37ee14485591901a5408798221b7a920588f48c077a",
+    "ops/compare-live.py": "32cac39d590735ee88994084bbc407921a31bb9c63ad1c4ceeb8a2b225cb8df5",
+    "ops/io-proof.py": "f252873df3464e3909acca22dd0694803af3a4e890d9e4c110498bbc44663334",
+    "ops/native-order-args-v4.py": "c2c2dd09d24b0e6614d3d3d83bcf707bee144aec877cfd84d9c0b225e660a25d",
+    "ops/native-order-live-v4.py": "d8920ba98af6d14d59b30bf46fc63a1e6682829ac4bf65d235fb88a09d530261",
+    "ops/native-order-rss-v4.py": "d60e4802fb93ff9e89cf126076eaa166741538cb0246e93d4619a2cc0242e3c0",
+    "ops/reference-analysis.py": "80642724b98d22f0e660b742d576ba7e7199c893aba1f3d4f53794a509e44a3f",
+    "run-qualification.py": "888dec879e594972ec64e92d95d40266b70c6277596f9fb9242f417c4966f073",
+    "setup.py": "c73191e3d552a636e8d7970ec151c4ffcc31a916cd986248b20fd5f07958f646"
+  },
+  "floor_bytes": 48318382080,
+  "host_affinity": [
+    8,
+    9,
+    10,
+    11
+  ],
+  "physical_enrollment": "aec44768abb9c0da93bdf18d2be0748026c73675c9b2ce0e835f10ee1feb84b8",
+  "primary": {
+    "orders": [
+      "new-first",
+      "old-first",
+      "new-first",
+      "old-first",
+      "old-first",
+      "new-first",
+      "old-first",
+      "new-first"
+    ],
+    "paired_randomization_assignments": 70,
+    "pairs": 8,
+    "quantity": "totals Ir summed over all threads of just the post-rustup parent Cargo client, corroborated by tool Collected and I refs, one cost file and one final program/PID; target compilation and real linker are executed natively"
+  },
+  "qualified_debug_parent_and_candidate": "5c682965d881195b613f97080742bd2b7dde467285d87ee77672cb9962bce16f",
+  "qualified_previous_release_candidate": "63021c314a395a5872505d34ef6a8198393f92be0978505e1d6d60412a92503b",
+  "secondary": {
+    "orders": [
+      "old-first",
+      "old-first",
+      "old-first",
+      "new-first",
+      "old-first",
+      "old-first",
+      "new-first",
+      "old-first",
+      "new-first",
+      "new-first",
+      "new-first",
+      "new-first"
+    ],
+    "paired_randomization_assignments": 924,
+    "pairs": 12,
+    "quantity": "untraced monotonic wall nanoseconds of the ordinary command from subprocess launch to returned status"
+  },
+  "source_profile": "release PGO Cargo, identical optimized stage1 Rust ca780 and stock Wild",
+  "subjects": {
+    "child": {
+      "commit": "b29c83670833857c43cc01a0d530b4048db2187b",
+      "complete": "c68fbd3c9858d097b7c9da275ef65e045e24122d60f65612c2d880c4ae836499",
+      "digest": "5da7510ae4363877fc04504c2b4b054630b8290f2431be3b19701c90e62f6ac0",
+      "receipt": "1ae79e38fec1229ad008358ee60ce680f9ad797ae27a90d6dd88bb9182e1a3ee",
+      "terminal": "f3b02047d1901d07e75acdbb39515bd3bc2d1668c01be06384ad0cba3ccb16d2",
+      "tree": "b2a9f0679ac0a2cf5e6c251e0d076b690b0a1c41"
+    },
+    "parent": {
+      "commit": "5394ce8817e224971230b80a9066cc28d504ff94",
+      "complete": "22fe7439f48e507cd0516999c4a1a17011c5be26d6bd0be3bdf31269bd01e464",
+      "digest": "aa886cc519dd9f1cd97db76c52228dde1b25d08d3b367c067211aa42bc472add",
+      "receipt": "5e1684ee214b59cbd5ad0c5439d8ff0a7c9219c357330f95966abbf1a2e9df1f",
+      "terminal": "2cdb4f8d4a9947e82141e0c7339243ed007b5e5068208d88eb5141756a6f689b",
+      "tree": "3157f963855bcd1cdc9c5512611aaf81bdf8b984"
+    }
+  }
+}
