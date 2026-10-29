@@ -103,7 +103,12 @@ fn workspace_resolve_fingerprint(
                     manifest.display()
                 );
             };
-            contents.as_bytes().hash(&mut hasher);
+            let inputs = workspace
+                .root_maybe()
+                .document()
+                .and_then(|document| before_trailing_profiles(contents, document))
+                .unwrap_or(contents);
+            inputs.as_bytes().hash(&mut hasher);
         } else {
             let package = workspace.load(&manifest)?;
             let Some(contents) = package.manifest().contents() else {
@@ -135,6 +140,22 @@ fn workspace_resolve_fingerprint(
     }
 
     Ok(Hasher::finish(&hasher))
+}
+
+/// Profiles are applied to the resolved packages. Ignore a trailing profile section only
+/// when the parsed header belongs to the root table and the entire suffix contains profiles.
+fn before_trailing_profiles<'a>(
+    contents: &'a str,
+    document: &toml::Spanned<toml::de::DeTable<'_>>,
+) -> Option<&'a str> {
+    let (key, _) = document.get_ref().get_key_value("profile")?;
+    let start = key.span().start.checked_sub(1)?;
+    let (before, suffix) = contents.split_at_checked(start)?;
+    if !(before.is_empty() || before.ends_with('\n')) || !suffix.starts_with("[profile.") {
+        return None;
+    }
+    let parsed = toml::de::DeTable::parse(suffix).ok()?;
+    (parsed.get_ref().len() == 1 && parsed.get_ref().contains_key("profile")).then_some(before)
 }
 
 /// Excludes execution and presentation settings that cannot affect dependency resolution.
@@ -193,7 +214,25 @@ fn hash_config_value(value: &ConfigValue, hasher: &mut StableHasher) {
 
 #[cfg(test)]
 mod tests {
-    use super::environment_affects_workspace_resolution;
+    use super::{before_trailing_profiles, environment_affects_workspace_resolution};
+
+    #[test]
+    fn trailing_profile_tables_preserve_the_other_manifest_inputs() {
+        let prefix = "[package]\ndescription = '''\n[profile.example]\n'''\n";
+        let profile = "[profile.dev]\nopt-level = 1\n";
+        for (contents, expected) in [
+            (format!("{prefix}{profile}"), Some(prefix)),
+            (prefix.to_owned(), None),
+            (
+                format!("{prefix}{profile}[dependencies]\ndep = '1'\n"),
+                None,
+            ),
+            (format!("{prefix}['profile'.dev]\nopt-level = 1\n"), None),
+        ] {
+            let document = toml::de::DeTable::parse(&contents).unwrap();
+            assert_eq!(before_trailing_profiles(&contents, &document), expected);
+        }
+    }
 
     #[test]
     fn execution_only_environment_does_not_affect_workspace_resolution() {

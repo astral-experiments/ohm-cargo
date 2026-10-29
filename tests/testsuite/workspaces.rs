@@ -3036,6 +3036,30 @@ fn workspace_resolve_cache_reuses_unchanged_workspace() {
         .run();
 }
 
+#[cargo_test]
+fn workspace_resolve_cache_applies_edited_profiles() {
+    let manifest = format!(
+        "{}\n[profile.dev]\ndebug-assertions = true\n",
+        basic_manifest("selected", "0.1.0")
+    );
+    let project = project()
+        .file("Cargo.toml", &manifest)
+        .file(
+            "src/main.rs",
+            "fn main() { println!(\"{}\", cfg!(debug_assertions)); }",
+        )
+        .build();
+
+    workspace_resolve_cache_command(&project, "run --package selected")
+        .with_stdout_data(str!["true\n"])
+        .run();
+    project.change_file("Cargo.toml", &manifest.replace("= true", "= false"));
+    workspace_resolve_cache_command(&project, "run --package selected")
+        .with_stderr_contains(WORKSPACE_RESOLVE_CACHE_HIT)
+        .with_stdout_data(str!["false\n"])
+        .run();
+}
+
 #[cfg(unix)]
 #[cargo_test]
 fn workspace_resolve_cache_replaces_a_symlink() {
