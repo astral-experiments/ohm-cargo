@@ -1,0 +1,104 @@
+{
+  "all_future_controls": {
+    "current_names": 256,
+    "edit_fresh": 238,
+    "expected_clones": {
+      "A": 0,
+      "B": 1
+    },
+    "full_compiles": 10,
+    "immediate_repeat_fresh": 248,
+    "input_files": 258,
+    "matched_fields": 512,
+    "negative_cases": 4,
+    "repeat_native_processes": 0,
+    "root_bytes": 101719820
+  },
+  "floor_bytes": {
+    "home": 26843545600,
+    "image": 2147483648,
+    "scratch": 26843545600
+  },
+  "free_bytes_at_stop": {
+    "home": 65784356864,
+    "image": 9100591104,
+    "scratch": 33434357760
+  },
+  "immutable_gold_role": "read-only Btrfs snapshot of replacement host independent original cold then fresh state",
+  "independent_opposite_source": {
+    "archive_sha256": "62e3465c98795e1f975a2b564758b61fc09c18120bebf3ce69669c0385955fec",
+    "bytes": 101719820,
+    "caller_exit": 0,
+    "caller_sha256": "c5f4e949b9620badff33a1d54c39e1ab95d89978085143e9d444de8737d60fd3",
+    "caller_stdout": "2 SIM222\n3 SIM222\n4 SIM222\n",
+    "cold_fresh": 0,
+    "cold_typed_sha256": "e1be804ef4ca6f05ef67d4478e425659bb927c325b90306e415f01f9282ea3b4",
+    "repeat_fresh": 248,
+    "repeat_typed_sha256": "8225104875634b13e51345ac36233622a267005a052565c5c83cb2f4d2e57b95",
+    "rows": 248
+  },
+  "namespaces": {
+    "local": "c125fcc98b3dd8b4",
+    "transplanted": "320e0d0c58273350"
+  },
+  "native_source_pins": {
+    "cargo_candidate": "0299c77b2ca9707e82bc418976399fdbc75611d8",
+    "cargo_parent": "235f9228651b74c591e6f62cae4c9b761448dd2d",
+    "compiler": "ae76b292cb224008e8188a07143797f7a4ce0ec5",
+    "historical": "1e9287d7654f1dbe4943d67ed5ac5363c9ee2161",
+    "new_host": "82caf305a49bdcd62e366f9e9a16d58a7b486e28",
+    "ordinary_plan": "86fd410922315ae22b9d3de58f50b30ba1e8939a",
+    "parent": "57d800be552a88751e7ecd06fc87b44714536033",
+    "witness_plan": "a644772c28607282fc06bb7c72f08225ea04f0a6"
+  },
+  "new_native_order": [
+    "A unchanged",
+    "B unchanged",
+    "B H-to-P",
+    "A H-to-P",
+    "B P-to-H",
+    "A P-to-H"
+  ],
+  "new_unchanged_each": {
+    "cargo": 1,
+    "fresh": 248,
+    "linkers": 0,
+    "old_fd_and_all_bytes": true,
+    "paths": 452,
+    "rustc_full": 0,
+    "rustc_query": 0,
+    "units": 248
+  },
+  "previous_accepted_cargo_exit": 0,
+  "previous_guard_exit": 1,
+  "previous_observed_fresh": 0,
+  "previous_slots_reused": false,
+  "prior_raw_report_sha256": "2382ed9c5b9fd5307432814d12b280f596c25641090ece5ec4f52564c2719603",
+  "private_workers": {
+    "environment_v2.py": "362934dcb8a649d87938609d407c8a0fa96da480f70d1f6d58e96bf204d7edea",
+    "native_seed_v3.py": "7aa2c9072ff140d398e3799122b200c7a7a5f9b68b78760d1361f31e290f0707",
+    "seed_guard_v3.py": "4ee71f2ba0836f94eff3c0a1cc753b0c72c7419f4ef6e8a6e65707024eaa5710",
+    "watch_child.py": "16dfa2eb3d2a68e94909b5b034a5de5383dc06457e99b32695b0160244a55343"
+  },
+  "qualified_existing_source": {
+    "archive_sha256": "39268dec6160e5b3812330e903e7e3ccb6408f7eb0954af6041e3d274af856df",
+    "bytes": 101719820,
+    "caller_exit": 0,
+    "caller_sha256": "87b42ad7f54e25e289c7d003640f558d12d4c03aee9c2b406f6dfab4c066c272",
+    "caller_stdout": "1 SIM222\n",
+    "cold_fresh": 0,
+    "cold_typed_sha256": "3016e28fea283d03041e7ba3e19d295510b85baf5b05088906b1a41007dd7137",
+    "repeat_fresh": 248,
+    "repeat_typed_sha256": "e92a62e9600797b77c05a518f263069b64d5cbc67eb0f5929dd2201c09035661",
+    "rows": 248
+  },
+  "raw_filemap": {
+    "H": "64619248a515a474eb68e13b778d3d2ac5cdea6c7e96b4e5b7af53fa5e0023d0",
+    "P": "bb7bc674e996caf08bbfb3e03d89dc83df4ab2dbcff23251dd02407316e1ffa5",
+    "imported": "c6aac5e105e4f87c8a3719650702358a10b409e7e4c1e5c24766e5dfafcdfc6a",
+    "rejected": "4eb3a40ad64c9101f8a3a7154c4c2c33c1c064e6b398b4e83452eba012aa8364"
+  },
+  "registered_direction_order_and_thresholds_changed": false,
+  "score_authorized": false,
+  "selected_seed": "H"
+}
