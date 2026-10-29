@@ -1,0 +1,71 @@
+[
+  {
+    "workload": "check",
+    "declared_files": 1,
+    "artifacts": 1,
+    "units_in_plan": 1,
+    "oracle": [
+      "8754fa52d61cadd35e2ac62ed52d8904158e47eb79de0dffff7f8f243559a79d",
+      [
+        [
+          "E0432",
+          "unresolved import `ruff_text_size::OhmNonexistentProfileInput`"
+        ]
+      ]
+    ],
+    "data_sha256": "c239adcf16b92c37f0f0e2184091790aab52f9d8fd592d4ea6c6f5b1dadcd000",
+    "metrics": {
+      "edit": {
+        "n": 32,
+        "parent_median_ms": 202.937185,
+        "candidate_median_ms": 66.622691,
+        "paired_median_ms": 136.307593,
+        "paired_reduction_pct": 67.22716542028522,
+        "bootstrap95_pct": [
+          65.20929469849852,
+          69.59075943499953
+        ],
+        "sign_test_p_two_sided": 4.656612873077393e-10,
+        "faster_pairs": 32,
+        "direction_medians_pct": {
+          "orig": 69.13635813910217,
+          "edit": 65.20929469849852
+        }
+      },
+      "repeat": {
+        "n": 32,
+        "parent_median_ms": 63.25805,
+        "candidate_median_ms": 62.6752745,
+        "paired_median_ms": -0.26562050000000004,
+        "paired_reduction_pct": -0.42463134596259905,
+        "bootstrap95_pct": [
+          -4.040858004444879,
+          1.2894256321435174
+        ],
+        "sign_test_p_two_sided": 0.860050065908581,
+        "faster_pairs": 15,
+        "direction_medians_pct": {
+          "orig": 1.6993678110837385,
+          "edit": -1.7820367656445473
+        }
+      },
+      "edit_plus_repeat": {
+        "n": 32,
+        "parent_median_ms": 276.122537,
+        "candidate_median_ms": 128.9734775,
+        "paired_median_ms": 132.6331615,
+        "paired_reduction_pct": 49.61198236003993,
+        "bootstrap95_pct": [
+          48.617327407125124,
+          53.41553837682389
+        ],
+        "sign_test_p_two_sided": 4.656612873077393e-10,
+        "faster_pairs": 32,
+        "direction_medians_pct": {
+          "orig": 53.660420931384344,
+          "edit": 47.54577174076715
+        }
+      }
+    }
+  }
+]
