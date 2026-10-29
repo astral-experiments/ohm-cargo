@@ -1,8 +1,14 @@
+use std::collections::BTreeSet;
+use std::fs;
+use std::path::PathBuf;
 use std::sync::{Arc, Condvar, Mutex};
 
+use cargo_util::paths;
+
 use super::{BuildRunner, CompileMode, FileFlavor, Unit, unused_integration_self_dependency};
-use crate::util::CargoResult;
+use crate::util::data_structures::HashSet;
 use crate::util::interning::InternedString;
+use crate::util::{self, CargoResult};
 
 /// A producer's final scheduler result, including denied warnings and dependencies.
 #[derive(Default)]
@@ -46,29 +52,98 @@ impl Drop for CompletionGuard {
     }
 }
 
-/// Restrict speculation to first native integration-test builds. The normal
-/// command, all other dependencies, and final producer-success barrier remain.
+/// A check can veto speculation, but can never authorize native output reuse.
+/// A successful native compilation supersedes this hint; stale hints can only
+/// defer one compilation until its library finishes.
+pub(crate) struct CheckHint {
+    path: PathBuf,
+    library: InternedString,
+}
+
+impl CheckHint {
+    pub(crate) fn new(runner: &BuildRunner<'_, '_>, unit: &Unit, library: InternedString) -> Self {
+        let key = util::short_hash(&(
+            unit.pkg.package_id().stable_hash(runner.bcx.ws.root()),
+            &unit.target,
+            unit.kind.fingerprint_hash(),
+            &unit.features,
+            &unit.profile,
+            &unit.rustflags,
+            runner.bcx.extra_args_for(unit),
+            &runner.bcx.rustc().verbose_version,
+            library,
+        ));
+        Self {
+            path: runner
+                .files()
+                .incremental_dir(unit)
+                .join("ohm-early-test-check-v1")
+                .join(key),
+            library,
+        }
+    }
+
+    fn vetoes_speculation(&self) -> bool {
+        fs::read(&self.path).is_ok_and(|contents| contents == b"uses-library\n")
+    }
+
+    /// A failed or uninformative new check must not leave an older hint behind.
+    pub(crate) fn clear(&self) {
+        if let Err(error) = fs::remove_file(&self.path)
+            && error.kind() != std::io::ErrorKind::NotFound
+        {
+            tracing::debug!(?error, "could not clear early-test check hint");
+        }
+    }
+
+    pub(crate) fn record(&self, unused: Option<&BTreeSet<InternedString>>) {
+        if !unused.is_some_and(|unused| !unused.contains(&self.library)) {
+            return;
+        }
+        let result = paths::create_dir_all(self.path.parent().unwrap())
+            .and_then(|()| paths::write_atomic(&self.path, b"uses-library\n"));
+        if let Err(error) = result {
+            tracing::debug!(?error, "could not record early-test check hint");
+        }
+    }
+}
+
+/// Preserve dependency-only skip/relink paths while overlapping compilations
+/// that need rustc anyway. Warm builds require prior unused-library evidence
+/// tied to their executable; current compiler proof still decides acceptance.
 pub(crate) fn dependency(
     runner: &BuildRunner<'_, '_>,
     unit: &Unit,
+    previous_unused_externs: Option<&HashSet<InternedString>>,
+    check_hint: Option<&CheckHint>,
 ) -> Option<(Unit, InternedString)> {
     if !runner.bcx.gctx.cli_unstable().ohm_early_tests()
         || runner.bcx.build_config.jobs < 2
         || !runner.headstart_enabled()
         || unit.mode != CompileMode::Test
         || !unit.target.is_test()
-    {
-        return None;
-    }
-    if runner
-        .outputs(unit)
-        .ok()?
-        .iter()
-        .any(|output| output.flavor == FileFlavor::Normal && output.path.exists())
+        || check_hint.is_some_and(CheckHint::vetoes_speculation)
     {
         return None;
     }
     let (index, name) = unused_integration_self_dependency(runner, unit)?;
+    let has_executable = runner
+        .outputs(unit)
+        .ok()?
+        .iter()
+        .any(|output| output.flavor == FileFlavor::Normal && output.path.exists());
+    if has_executable
+        && (previous_unused_externs.is_none_or(|unused| !unused.contains(&name))
+            || runner.fingerprints.get(unit).is_none_or(|fingerprint| {
+                fingerprint.is_early_cutoff_candidate()
+                    || !matches!(
+                        fingerprint.fs_status(),
+                        super::fingerprint::FsStatus::StaleItem(_)
+                    )
+            }))
+    {
+        return None;
+    }
     let dependency = runner
         .unit_deps(unit)
         .iter()

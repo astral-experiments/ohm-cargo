@@ -738,8 +738,10 @@ fn unused_integration_self_dependency(
     build_runner: &BuildRunner<'_, '_>,
     unit: &Unit,
 ) -> Option<(UnitIndex, InternedString)> {
+    let check = unit.mode == CompileMode::Check { test: true }
+        && build_runner.bcx.gctx.cli_unstable().ohm_early_tests();
     if !build_runner.bcx.gctx.cli_unstable().ohm_defaults()
-        || unit.mode != CompileMode::Test
+        || (unit.mode != CompileMode::Test && !check)
         || !unit.target.is_test()
         || build_runner.bcx.build_config.primary_unit_rustc.is_some()
         || matches!(unit.kind, CompileKind::Target(CompileTarget::Json { .. }))
@@ -756,7 +758,8 @@ fn unused_integration_self_dependency(
     let dependencies = build_runner.unit_deps(unit);
     let mut self_dependencies = dependencies.iter().enumerate().filter(|(_, dependency)| {
         dependency.unit.pkg.package_id() == unit.pkg.package_id()
-            && dependency.unit.mode == CompileMode::Build
+            && (dependency.unit.mode == CompileMode::Build
+                || (check && dependency.unit.mode == CompileMode::Check { test: false }))
             && dependency.unit.target.is_lib()
             && !dependency.unit.artifact.is_true()
             && dependency.manifest_deps.0.is_none()
@@ -1011,7 +1014,19 @@ fn rustc(
         .map(|dep| build_runner.bcx.unit_to_index[&dep.unit])
         .collect::<HashSet<_>>();
     let unused_integration_dependency = unused_integration_self_dependency(build_runner, unit);
-    let early_test = ohm_early_tests::dependency(build_runner, unit).map(|(dependency, name)| {
+    let workspace_integration_proof = unused_integration_dependency
+        .and_then(|_| relink_cache.as_ref())
+        .and_then(RelinkCachePaths::unused_extern_names);
+    let check_hint = unused_integration_dependency
+        .filter(|_| build_runner.bcx.gctx.cli_unstable().ohm_early_tests())
+        .map(|(_, name)| ohm_early_tests::CheckHint::new(build_runner, unit, name));
+    let early_test = ohm_early_tests::dependency(
+        build_runner,
+        unit,
+        workspace_integration_proof.as_ref(),
+        check_hint.as_ref(),
+    )
+    .map(|(dependency, name)| {
         build_runner
             .early_test_dependencies
             .insert(unit.clone(), dependency.clone());
@@ -1022,9 +1037,6 @@ fn rustc(
             .clone();
         (completion, name)
     });
-    let workspace_integration_proof = unused_integration_dependency
-        .and_then(|_| relink_cache.as_ref())
-        .and_then(RelinkCachePaths::unused_extern_names);
     let (mut unused_workspace_dependencies, workspace_build_scripts) = workspace_integration_proof
         .as_ref()
         .map(|unused_extern_names| {
@@ -1495,6 +1507,11 @@ fn rustc(
             }
         }
 
+        if mode.is_check()
+            && let Some(hint) = &check_hint
+        {
+            hint.clear();
+        }
         state.running(&rustc);
         let timestamp = paths::set_invocation_time(&fingerprint_dir)?;
         for file in sbom_files {
@@ -1634,6 +1651,14 @@ fn rustc(
 
         // Exec should never return with success *and* generate an error.
         debug_assert_eq!(output_options.errors_seen, 0);
+
+        if let Some(hint) = &check_hint {
+            if mode.is_check() {
+                hint.record(state.recorded_unused_externs().as_ref());
+            } else {
+                hint.clear();
+            }
+        }
 
         if let Some((path, provenance)) = &message_provenance {
             let mut provenance = provenance.clone();
