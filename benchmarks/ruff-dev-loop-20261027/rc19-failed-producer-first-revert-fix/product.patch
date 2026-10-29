@@ -1,0 +1,228 @@
+diff --git a/src/compiler/fingerprint/mod.rs b/src/compiler/fingerprint/mod.rs
+index 2630958e52..3d7ac7d3cf 100644
+--- a/src/compiler/fingerprint/mod.rs
++++ b/src/compiler/fingerprint/mod.rs
+@@ -389,7 +389,7 @@ use std::ffi::{OsStr, OsString};
+ use std::fs;
+ use std::fs::File;
+ use std::hash::{self, Hash, Hasher};
+-use std::io::{self};
++use std::io::{self, Read as _};
+ use std::ops::Not;
+ use std::path::{Path, PathBuf};
+ #[cfg(unix)]
+@@ -1387,7 +1387,7 @@ pub struct Fingerprint {
+     /// Cached hash of the [`Fingerprint`] struct. Used to improve performance
+     /// for hashing.
+     #[serde(skip)]
+-    memoized_hash: Mutex<Option<u64>>,
++    memoized_hash: Mutex<Option<MemoizedHash>>,
+     /// A script's result is used by dependents, while its action hash still
+     /// determines whether the script itself must run.
+     #[serde(skip)]
+@@ -1438,6 +1438,22 @@ pub struct Fingerprint {
+     outputs: Vec<PathBuf>,
+ }
+ 
++struct MemoizedHash {
++    value: u64,
++    /// The short file matched this value under exclusive metadata access.
++    /// The first comparison consumes it, and clearing the hash discards it.
++    matched_on_disk: bool,
++}
++
++impl MemoizedHash {
++    fn new(value: u64) -> Self {
++        Self {
++            value,
++            matched_on_disk: false,
++        }
++    }
++}
++
+ /// Indication of the status on the filesystem for a particular unit.
+ #[derive(Clone, Default, Debug, Serialize, Deserialize)]
+ #[serde(tag = "fs_status", rename_all = "kebab-case")]
+@@ -1586,7 +1602,7 @@ impl<'de> Deserialize<'de> for DepFingerprint {
+             name: name.into(),
+             public,
+             fingerprint: Arc::new(Fingerprint {
+-                memoized_hash: Mutex::new(Some(hash)),
++                memoized_hash: Mutex::new(Some(MemoizedHash::new(hash))),
+                 ..Fingerprint::new()
+             }),
+             // This field is never read since it's only used in
+@@ -1948,11 +1964,11 @@ impl Fingerprint {
+     }
+ 
+     fn hash_u64(&self) -> u64 {
+-        if let Some(s) = *self.memoized_hash.lock().unwrap() {
+-            return s;
++        if let Some(cached) = self.memoized_hash.lock().unwrap().as_ref() {
++            return cached.value;
+         }
+         let ret = util::hash_u64(self);
+-        *self.memoized_hash.lock().unwrap() = Some(ret);
++        *self.memoized_hash.lock().unwrap() = Some(MemoizedHash::new(ret));
+         ret
+     }
+ 
+@@ -2539,6 +2555,27 @@ fn calculate(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
+         },
+     )?;
+ 
++    // A downstream library may have finished using provisional metadata before
++    // this producer failed. Reverting the source can satisfy the old dep-info
++    // checksums, but an uncommitted producer must still dirty its dependents.
++    if fingerprint.fs_status.get_mut().unwrap().up_to_date()
++        && fingerprint
++            .outputs
++            .iter()
++            .any(|output| output.extension().is_some_and(|ext| ext == "rmeta"))
++    {
++        let loc = build_runner.files().fingerprint_file_path(unit, "");
++        let hash = fingerprint.hash_u64();
++        if !short_fingerprint_matches(&loc, hash) {
++            *fingerprint.fs_status.get_mut().unwrap() = FsStatus::Stale;
++        } else if unit_has_exclusive_metadata_access(build_runner, unit) {
++            *fingerprint.memoized_hash.get_mut().unwrap() = Some(MemoizedHash {
++                value: hash,
++                matched_on_disk: true,
++            });
++        }
++    }
++
+     if unit.mode.is_run_custom_build()
+         && !fingerprint.outputs.is_empty()
+         && super::unit_worktree_seed_namespace(build_runner, unit).is_some()
+@@ -3122,12 +3159,31 @@ fn compare_old_fingerprint(
+     }
+ }
+ 
++/// Speculatively compares a short file without waiting on a FIFO or reading unbounded data.
++fn short_fingerprint_matches(path: &Path, hash: u64) -> bool {
++    let mut contents = [0; 16];
++    let Some(mut file) = open_regular_file_of_size(path, contents.len() as u64) else {
++        return false;
++    };
++    file.read_exact(&mut contents).is_ok()
++        && contents.as_slice() == util::to_hex(hash).as_bytes()
++        && matches!(file.read(&mut [0]), Ok(0))
++}
++
+ fn _compare_old_fingerprint(
+     old_hash_path: &Path,
+     new_fingerprint: &Fingerprint,
+ ) -> CargoResult<FingerprintComparison> {
++    let matched_on_disk = new_fingerprint
++        .memoized_hash
++        .lock()
++        .unwrap()
++        .as_mut()
++        .is_some_and(|cached| std::mem::take(&mut cached.matched_on_disk));
++    if matched_on_disk && new_fingerprint.fs_status.lock().unwrap().up_to_date() {
++        return Ok(FingerprintComparison::Fresh);
++    }
+     let old_fingerprint_short = paths::read(old_hash_path)?;
+-
+     let new_hash = new_fingerprint.hash_u64();
+ 
+     if util::to_hex(new_hash) == old_fingerprint_short
+@@ -3378,7 +3434,7 @@ fn read_checksum(
+ }
+ 
+ /// Rechecks the opened file because a regular input can be replaced after the path lookup.
+-fn open_regular_checksum_file(path: &Path, expected: u64) -> Option<File> {
++fn open_regular_file_of_size(path: &Path, expected: u64) -> Option<File> {
+     let mut options = File::options();
+     options.read(true);
+     #[cfg(unix)]
+@@ -3406,7 +3462,7 @@ fn prefetch_checksum(
+     if !metadata.is_file() {
+         return None;
+     }
+-    let file = open_regular_checksum_file(path, expected)?;
++    let file = open_regular_file_of_size(path, expected)?;
+     // A speculative nonblocking read may fail where an ordinary read succeeds.
+     // Retry all read errors in the original ordered consumer.
+     read_checksum(path, prior, file, buffer).ok().map(Ok)
+@@ -3540,8 +3596,15 @@ mod parallel_checksum_tests {
+         let link = directory.path().join("link");
+         fs::write(&target, b"").unwrap();
+         std::os::unix::fs::symlink(&target, &link).unwrap();
+-        assert!(open_regular_checksum_file(&link, 0).is_some());
+-        assert!(open_regular_checksum_file(&link, 1).is_none());
++        assert!(open_regular_file_of_size(&link, 0).is_some());
++        assert!(open_regular_file_of_size(&link, 1).is_none());
++
++        let hash = 123;
++        fs::write(&target, util::to_hex(hash)).unwrap();
++        assert!(short_fingerprint_matches(&link, hash));
++        assert!(!short_fingerprint_matches(&link, hash + 1));
++        fs::write(&target, format!("{}0", util::to_hex(hash))).unwrap();
++        assert!(!short_fingerprint_matches(&link, hash));
+ 
+         let fifo = directory.path().join("fifo");
+         let name = std::ffi::CString::new(fifo.as_os_str().as_bytes()).unwrap();
+@@ -3549,7 +3612,8 @@ mod parallel_checksum_tests {
+         fs::rename(fifo, target).unwrap();
+         let (tx, rx) = std::sync::mpsc::channel();
+         std::thread::spawn(move || {
+-            let rejected = open_regular_checksum_file(&link, 0).is_none();
++            let rejected = open_regular_file_of_size(&link, 0).is_none()
++                && !short_fingerprint_matches(&link, hash);
+             tx.send(rejected).unwrap();
+         });
+         assert!(rx.recv_timeout(std::time::Duration::from_secs(5)).unwrap());
+@@ -4021,6 +4085,51 @@ mod early_cutoff_tests {
+         );
+     }
+ 
++    #[test]
++    fn committed_short_hash_only_validates_one_current_comparison() {
++        let temp = tempfile::tempdir().unwrap();
++        let path = temp.path().join("lib-example");
++        let fresh = || FsStatus::UpToDate {
++            mtimes: HashMap::default(),
++            link_mtime: None,
++        };
++        let mut fingerprint = Fingerprint::new();
++        fingerprint.rustc = 1;
++        *fingerprint.fs_status.get_mut().unwrap() = fresh();
++        write_fingerprint(&path, &fingerprint).unwrap();
++        let hash = fingerprint.hash_u64();
++        let record_match = || {
++            *fingerprint.memoized_hash.lock().unwrap() = Some(MemoizedHash {
++                value: hash,
++                matched_on_disk: true,
++            });
++        };
++        let is_fresh = || {
++            matches!(
++                _compare_old_fingerprint(&path, &fingerprint).unwrap(),
++                FingerprintComparison::Fresh
++            )
++        };
++
++        record_match();
++        assert!(is_fresh());
++        let mut different = Fingerprint::new();
++        different.rustc = 2;
++        write_fingerprint(&path, &different).unwrap();
++        assert!(!is_fresh());
++
++        write_fingerprint(&path, &fingerprint).unwrap();
++        record_match();
++        *fingerprint.fs_status.lock().unwrap() = FsStatus::Stale;
++        assert!(!is_fresh());
++
++        *fingerprint.fs_status.lock().unwrap() = fresh();
++        record_match();
++        fingerprint.clear_memoized();
++        paths::write(&path, b"").unwrap();
++        assert!(!is_fresh());
++    }
++
+     #[test]
+     fn up_to_date_unit_should_not_cutoff() {
+         // Unit is already up-to-date, no early cutoff needed

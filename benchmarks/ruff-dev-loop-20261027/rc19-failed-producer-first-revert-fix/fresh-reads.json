@@ -1,0 +1,1630 @@
+{
+  "memo_layout": {
+    "align": 8,
+    "memo_align": 8,
+    "memo_mutex_bytes": 24,
+    "memo_value_bytes": 16,
+    "mutex_bytes": 24,
+    "value_bytes": 16
+  },
+  "open-audit-v4/B/default": {
+    "flags": [],
+    "physical": {
+      "bin-client": 2,
+      "lib-api": 2,
+      "lib-provider": 2,
+      "lib-reader": 2
+    },
+    "raw": "879e09eb955744fa075295bcfe91faf23961ee93f2a36891040d17e516388e26",
+    "runs": [
+      {
+        "name": "first",
+        "stderr": "f666493067e76bf70757f2adcc7b9255a8f37bae77c563c3b4b2ca4104b51d45",
+        "stdout": "74c89bedb3e5822ac3b4187b68578e8ce8c91081134337f3d94b80de07db8f30",
+        "units": [
+          [
+            "api",
+            false
+          ],
+          [
+            "client",
+            false
+          ],
+          [
+            "provider",
+            false
+          ],
+          [
+            "reader",
+            false
+          ]
+        ]
+      },
+      {
+        "name": "repeat",
+        "stderr": "a5f4c585ee974ca44916ac30a98bbc189e067a7e0a6bc6d2e8d6bc525be724af",
+        "stdout": "7db9261434093070c0c3a7365cb8786be19874f02864437b6f6b21fa83f08c3b",
+        "units": [
+          [
+            "api",
+            true
+          ],
+          [
+            "client",
+            true
+          ],
+          [
+            "provider",
+            true
+          ],
+          [
+            "reader",
+            true
+          ]
+        ]
+      }
+    ],
+    "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+    "subject": "51eb6c59a38151fbf1a252d7bc39cb45dfa67482a95b526e1301046bbf593ce9",
+    "trace": "92d9f7358cacfe69b3fa4d46a40165b5dfb79fc5beed77349923184d3dc497a5"
+  },
+  "open-audit-v4/B/mtime": {
+    "flags": [
+      "-Zohm-defaults=no"
+    ],
+    "physical": {
+      "bin-client": 1,
+      "lib-api": 1,
+      "lib-provider": 1,
+      "lib-reader": 1
+    },
+    "raw": "1f23a93b4d75ca0ced04f0e1bceb2ffcca501b07acf02f0cdfd6489078814ab9",
+    "runs": [
+      {
+        "name": "first",
+        "stderr": "db2d68f4864a4f019a68f485abd9d089c80a0c522369deee2a14e7c83e3c3d8f",
+        "stdout": "0c82ed8cfe0d004cebdb001e39b5650b778b75261a0b64958c00c4824c140c36",
+        "units": [
+          [
+            "api",
+            false
+          ],
+          [
+            "client",
+            false
+          ],
+          [
+            "provider",
+            false
+          ],
+          [
+            "reader",
+            false
+          ]
+        ]
+      },
+      {
+        "name": "repeat",
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "d51ea190977b30d64f3ec65b59db401a78aa152bf14db2665e921d63a28d5ab1",
+        "units": [
+          [
+            "api",
+            true
+          ],
+          [
+            "client",
+            true
+          ],
+          [
+            "provider",
+            true
+          ],
+          [
+            "reader",
+            true
+          ]
+        ]
+      }
+    ],
+    "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+    "subject": "51eb6c59a38151fbf1a252d7bc39cb45dfa67482a95b526e1301046bbf593ce9",
+    "trace": "b2711e341b046dce6086a708303f0c912ba0a2db92452e802e1669c6e28b305e"
+  },
+  "open-audit-v4/B/nonexclusive": {
+    "flags": [
+      "-Zohm-defaults=no",
+      "-Zfine-grain-locking",
+      "-Zchecksum-freshness"
+    ],
+    "physical": {
+      "bin-client": 1,
+      "lib-api": 1,
+      "lib-provider": 1,
+      "lib-reader": 1
+    },
+    "raw": "eecf477be488bcea10d75f1c35efa5e7c368db11302e01e8d0dd53274e7deb27",
+    "runs": [
+      {
+        "name": "first",
+        "stderr": "609d641fede9609c75adde5ebf68cfd881efa3f4335979e0cdf77ecfbba7266f",
+        "stdout": "9ef802f7a0fdd7d900e08b162f1d3cb0956aa8ff7910e6cd57fdbd86cb4bb539",
+        "units": [
+          [
+            "api",
+            false
+          ],
+          [
+            "client",
+            false
+          ],
+          [
+            "provider",
+            false
+          ],
+          [
+            "reader",
+            false
+          ]
+        ]
+      },
+      {
+        "name": "repeat",
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "0534ad4f7098a833142fd29213f096798c8c651678a8e9acf213f16475e07c45",
+        "units": [
+          [
+            "api",
+            true
+          ],
+          [
+            "client",
+            true
+          ],
+          [
+            "provider",
+            true
+          ],
+          [
+            "reader",
+            true
+          ]
+        ]
+      }
+    ],
+    "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+    "subject": "51eb6c59a38151fbf1a252d7bc39cb45dfa67482a95b526e1301046bbf593ce9",
+    "trace": "6566e097d7c1873f5ce65795fed1be586eb509c783167fde3e3ae75cbc69676f"
+  },
+  "open-audit-v4/E/default": {
+    "flags": [],
+    "physical": {
+      "bin-client": 2,
+      "lib-api": 2,
+      "lib-provider": 2,
+      "lib-reader": 2
+    },
+    "raw": "1c705c89cb6eab315d541e83d2df12e371b02b12d9b35fb3b878408ee2063312",
+    "runs": [
+      {
+        "name": "first",
+        "stderr": "31a351a0ddd2ae2b683a5616b4c9a4fe009ca9910caa682dc67a67e1e023c818",
+        "stdout": "0099c39c4b9000cc3e534c6ad46c6a10972ad7d96bf64aaa500b02a81f2f6d01",
+        "units": [
+          [
+            "api",
+            false
+          ],
+          [
+            "client",
+            false
+          ],
+          [
+            "provider",
+            false
+          ],
+          [
+            "reader",
+            false
+          ]
+        ]
+      },
+      {
+        "name": "repeat",
+        "stderr": "fecede7c2157efe2f16c8c8b9dce94b0fb4dd384dca8207046c8bf7636eb0ffe",
+        "stdout": "926a83ca89bcc3548eb22414de55dc777d6fe3d7c2df7a4f983c6dc941d328ad",
+        "units": [
+          [
+            "api",
+            true
+          ],
+          [
+            "client",
+            true
+          ],
+          [
+            "provider",
+            true
+          ],
+          [
+            "reader",
+            true
+          ]
+        ]
+      }
+    ],
+    "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+    "subject": "b67aa69a76643f0d6149f046bf19d6933df4662a583ad1de968e98efeda08518",
+    "trace": "6ede27ad21a002be056102fa4832677d43e0f4aa6e3ebb1f3913410aca544676"
+  },
+  "open-audit-v4/E/mtime": {
+    "flags": [
+      "-Zohm-defaults=no"
+    ],
+    "physical": {
+      "bin-client": 1,
+      "lib-api": 1,
+      "lib-provider": 1,
+      "lib-reader": 1
+    },
+    "raw": "8a250e8a06577e64cc74a96503ab51994b20d9f60236408d6690f9ef36145750",
+    "runs": [
+      {
+        "name": "first",
+        "stderr": "653f09453cd21c8ce176147bdad091536308c9ddac8de143d5342f88986ad4ae",
+        "stdout": "08c0166b697024b238f1773e943bb124f257c6545b82298f1771b993426bc0f8",
+        "units": [
+          [
+            "api",
+            false
+          ],
+          [
+            "client",
+            false
+          ],
+          [
+            "provider",
+            false
+          ],
+          [
+            "reader",
+            false
+          ]
+        ]
+      },
+      {
+        "name": "repeat",
+        "stderr": "99f71393b9903dca098310bb446022a4bdee195ea9996f351a787195555210a6",
+        "stdout": "454847ebea3af082f59881e7fa1e5b8bc4fde759a5e9c6eb1103030a10bcd719",
+        "units": [
+          [
+            "api",
+            true
+          ],
+          [
+            "client",
+            true
+          ],
+          [
+            "provider",
+            true
+          ],
+          [
+            "reader",
+            true
+          ]
+        ]
+      }
+    ],
+    "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+    "subject": "b67aa69a76643f0d6149f046bf19d6933df4662a583ad1de968e98efeda08518",
+    "trace": "a3f0411290f3ace2da4a07341bdfbddf23a8b06af629f8b2ec029b9304f5d770"
+  },
+  "open-audit-v4/E/nonexclusive": {
+    "flags": [
+      "-Zohm-defaults=no",
+      "-Zfine-grain-locking",
+      "-Zchecksum-freshness"
+    ],
+    "physical": {
+      "bin-client": 2,
+      "lib-api": 2,
+      "lib-provider": 2,
+      "lib-reader": 2
+    },
+    "raw": "bc50ef541895e46bc9e598a751aeebc6b4f61c00ca94c0102c8074bac22e4a25",
+    "runs": [
+      {
+        "name": "first",
+        "stderr": "df428d5d7282e7cd115e8eff7715934e163915e19377b316bdb0c7975a420678",
+        "stdout": "2d80e0b5eaa46ed0ca4184a90a91582e8801a4ec29c4389716af4e3f98c966ea",
+        "units": [
+          [
+            "api",
+            false
+          ],
+          [
+            "client",
+            false
+          ],
+          [
+            "provider",
+            false
+          ],
+          [
+            "reader",
+            false
+          ]
+        ]
+      },
+      {
+        "name": "repeat",
+        "stderr": "59639588a6f1826f129cbcd121edc07279dab94786f5fa5bde6b3439b2e845cc",
+        "stdout": "c6eec5c3456a43dcdbe85b16cc160a3d2bea4319e6f2c340a69850f60e6e48a7",
+        "units": [
+          [
+            "api",
+            true
+          ],
+          [
+            "client",
+            true
+          ],
+          [
+            "provider",
+            true
+          ],
+          [
+            "reader",
+            true
+          ]
+        ]
+      }
+    ],
+    "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+    "subject": "b67aa69a76643f0d6149f046bf19d6933df4662a583ad1de968e98efeda08518",
+    "trace": "6044eb861022e96f75f7c6dc504a3f2dd9be35b1748b3bd51651255d513b7098"
+  },
+  "open-audit-v4/V1/default": {
+    "flags": [],
+    "physical": {
+      "bin-client": 3,
+      "lib-api": 3,
+      "lib-provider": 3,
+      "lib-reader": 3
+    },
+    "raw": "e4c1166bdd2533b7f827657dd55d5c157a70b780a48bfbfbc78852500a4b5683",
+    "runs": [
+      {
+        "name": "first",
+        "stderr": "6c145830617f462dab262425424dbe7ca09c071572229df5ee5aeef55d321f6a",
+        "stdout": "d13a41feaa837348eaee35fa2ab0fab76aadf2a5710c2e8e74b4b250bb17ab9a",
+        "units": [
+          [
+            "api",
+            false
+          ],
+          [
+            "client",
+            false
+          ],
+          [
+            "provider",
+            false
+          ],
+          [
+            "reader",
+            false
+          ]
+        ]
+      },
+      {
+        "name": "repeat",
+        "stderr": "22e0df986057b9ba5be07526ac5fb348862a3dedef42108383cc3e088acbb889",
+        "stdout": "b6598e07e1b98d299f0c1877abd7cfde030568d6eab266f93d5152282a763b88",
+        "units": [
+          [
+            "api",
+            true
+          ],
+          [
+            "client",
+            true
+          ],
+          [
+            "provider",
+            true
+          ],
+          [
+            "reader",
+            true
+          ]
+        ]
+      }
+    ],
+    "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+    "subject": "2120cf38eab14d95a48eced6824567cf8d2de80ceec94d21762d9f20d87974be",
+    "trace": "a84c9197a8196f855d0bef1a3ce552eb04761b74aee213d1342d559126d71768"
+  },
+  "open-audit-v4/V1/mtime": {
+    "flags": [
+      "-Zohm-defaults=no"
+    ],
+    "physical": {
+      "bin-client": 2,
+      "lib-api": 2,
+      "lib-provider": 2,
+      "lib-reader": 2
+    },
+    "raw": "af3a3ed14f3e3b3e5678c0b28f43f6713f954f3adb490cbeadcb874d177d2042",
+    "runs": [
+      {
+        "name": "first",
+        "stderr": "3d4bf0430c19d8910cc151e7b67f0e68f4f80ab551efbb40aa1b689cf1adf767",
+        "stdout": "f16d8364fdd834e4020cabbe1424b73e159cc9b84437d193b5f89f82d3e4db9e",
+        "units": [
+          [
+            "api",
+            false
+          ],
+          [
+            "client",
+            false
+          ],
+          [
+            "provider",
+            false
+          ],
+          [
+            "reader",
+            false
+          ]
+        ]
+      },
+      {
+        "name": "repeat",
+        "stderr": "99f71393b9903dca098310bb446022a4bdee195ea9996f351a787195555210a6",
+        "stdout": "dfd1a2c026c921553d4826c197374e4e3f0be150f8608ae9b8a51c2efecb2e7b",
+        "units": [
+          [
+            "api",
+            true
+          ],
+          [
+            "client",
+            true
+          ],
+          [
+            "provider",
+            true
+          ],
+          [
+            "reader",
+            true
+          ]
+        ]
+      }
+    ],
+    "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+    "subject": "2120cf38eab14d95a48eced6824567cf8d2de80ceec94d21762d9f20d87974be",
+    "trace": "3f05c2cbaa5c019f9b7323d4fc157d346525ac72148130cb5444c41605b03d12"
+  },
+  "open-audit-v4/V1/nonexclusive": {
+    "flags": [
+      "-Zohm-defaults=no",
+      "-Zfine-grain-locking",
+      "-Zchecksum-freshness"
+    ],
+    "physical": {
+      "bin-client": 2,
+      "lib-api": 2,
+      "lib-provider": 2,
+      "lib-reader": 2
+    },
+    "raw": "5d6b5ec16cd59b0aa933dc23de16a0cecf55c11e7f307cdf2a3217f3597a2b15",
+    "runs": [
+      {
+        "name": "first",
+        "stderr": "b93d8fa1b572a8c1fdb0feb6cb5caef83aeba9cf3d4ae8388269600681f53328",
+        "stdout": "33c46e93492d6eb3387fb879d9240b5333a6ed718dfe9ac7335e5caeb9086903",
+        "units": [
+          [
+            "api",
+            false
+          ],
+          [
+            "client",
+            false
+          ],
+          [
+            "provider",
+            false
+          ],
+          [
+            "reader",
+            false
+          ]
+        ]
+      },
+      {
+        "name": "repeat",
+        "stderr": "8c233a54790c4800d3dd585436af679aa838da259bfdb129412e2d51cdb75cdc",
+        "stdout": "8ee602ade73d01cfa3d35f140dc1e65b6aecf4c31433132cde9f7137a870e089",
+        "units": [
+          [
+            "api",
+            true
+          ],
+          [
+            "client",
+            true
+          ],
+          [
+            "provider",
+            true
+          ],
+          [
+            "reader",
+            true
+          ]
+        ]
+      }
+    ],
+    "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+    "subject": "2120cf38eab14d95a48eced6824567cf8d2de80ceec94d21762d9f20d87974be",
+    "trace": "c63fbc99688348e144de2d1aa029e897694d248e63eceaa79817bae137e0f4f3"
+  },
+  "open-audit-v4/V2/default": {
+    "flags": [],
+    "physical": {
+      "bin-client": 2,
+      "lib-api": 2,
+      "lib-provider": 2,
+      "lib-reader": 2
+    },
+    "raw": "0a3e01764b534c927868e711eaf56a8e33f5b207e13a95bd613b33a64958d9ec",
+    "runs": [
+      {
+        "name": "first",
+        "stderr": "ab3da8e50f9cd82c586605f33618cc92131e86df7cbb83d454ba6eccbf64e7ec",
+        "stdout": "6fe1a35df5a747431cad7807aa79b97c070b6c4eeea668e65b31bdd609a08f0d",
+        "units": [
+          [
+            "api",
+            false
+          ],
+          [
+            "client",
+            false
+          ],
+          [
+            "provider",
+            false
+          ],
+          [
+            "reader",
+            false
+          ]
+        ]
+      },
+      {
+        "name": "repeat",
+        "stderr": "4cf86278c1e6d659943a46a3d7e3da429ac15be90f0f17742e24ef85228e7d3e",
+        "stdout": "3ec343a1bc45e27709acd609abb685a57d951d6327b7bc33a8560ce30b0311f9",
+        "units": [
+          [
+            "api",
+            true
+          ],
+          [
+            "client",
+            true
+          ],
+          [
+            "provider",
+            true
+          ],
+          [
+            "reader",
+            true
+          ]
+        ]
+      }
+    ],
+    "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+    "subject": "fcb9aaf7e99570a0427f2b1716cfe2f74246e32a4f975f87989d7b4784591fe3",
+    "trace": "504098d60240c122d2d765d3ab5f454d5a1decbd43d226976cef09d6002b0bb4"
+  },
+  "open-audit-v4/V2/mtime": {
+    "flags": [
+      "-Zohm-defaults=no"
+    ],
+    "physical": {
+      "bin-client": 1,
+      "lib-api": 1,
+      "lib-provider": 1,
+      "lib-reader": 1
+    },
+    "raw": "edf48bbb773d8a8bdae264d8b1319ce651a2dec92e992762e4f55efeb1d4627d",
+    "runs": [
+      {
+        "name": "first",
+        "stderr": "11be68f7bf3b81d118b09cb4ff90ee710367afd3ccb567df6c230f70114023c9",
+        "stdout": "60c5ce8c44d4e7e372efa9c01620f4b993ab8ae8cbcac6eaa95140de5ba41916",
+        "units": [
+          [
+            "api",
+            false
+          ],
+          [
+            "client",
+            false
+          ],
+          [
+            "provider",
+            false
+          ],
+          [
+            "reader",
+            false
+          ]
+        ]
+      },
+      {
+        "name": "repeat",
+        "stderr": "99f71393b9903dca098310bb446022a4bdee195ea9996f351a787195555210a6",
+        "stdout": "ddc0aaed59f711cffa7e4a1ea9f864df09040205fb28670ee1dde09c9eb0ed7e",
+        "units": [
+          [
+            "api",
+            true
+          ],
+          [
+            "client",
+            true
+          ],
+          [
+            "provider",
+            true
+          ],
+          [
+            "reader",
+            true
+          ]
+        ]
+      }
+    ],
+    "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+    "subject": "fcb9aaf7e99570a0427f2b1716cfe2f74246e32a4f975f87989d7b4784591fe3",
+    "trace": "facfacc5f6c72473ef0444f6788a73ac23e66f475e33ba9e2263f62a5b974599"
+  },
+  "open-audit-v4/V2/nonexclusive": {
+    "flags": [
+      "-Zohm-defaults=no",
+      "-Zfine-grain-locking",
+      "-Zchecksum-freshness"
+    ],
+    "physical": {
+      "bin-client": 2,
+      "lib-api": 2,
+      "lib-provider": 2,
+      "lib-reader": 2
+    },
+    "raw": "527c84367279b0aad6dca6774b8ea925c03ed2ab1754f0c9da3a8c082ba4e9f4",
+    "runs": [
+      {
+        "name": "first",
+        "stderr": "6747911979095140be7d9d650a283e48187f443506116f05c0846a754888f8dd",
+        "stdout": "37520730c634cf617bc718ee7eea24e4803a184df3bab0403c7ec18a90a63d43",
+        "units": [
+          [
+            "api",
+            false
+          ],
+          [
+            "client",
+            false
+          ],
+          [
+            "provider",
+            false
+          ],
+          [
+            "reader",
+            false
+          ]
+        ]
+      },
+      {
+        "name": "repeat",
+        "stderr": "8c233a54790c4800d3dd585436af679aa838da259bfdb129412e2d51cdb75cdc",
+        "stdout": "e3b8eadd0b8ef7ba13125e68e7cdfe8f41ef7e1595f8b86f968a62cd6d82f56a",
+        "units": [
+          [
+            "api",
+            true
+          ],
+          [
+            "client",
+            true
+          ],
+          [
+            "provider",
+            true
+          ],
+          [
+            "reader",
+            true
+          ]
+        ]
+      }
+    ],
+    "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+    "subject": "fcb9aaf7e99570a0427f2b1716cfe2f74246e32a4f975f87989d7b4784591fe3",
+    "trace": "9405fb4859c6394f74d5db76cc04dc1c1d085abef70f4d82f10cef97cf8a0f36"
+  },
+  "open-audit-v4/V3/default": {
+    "flags": [],
+    "physical": {
+      "bin-client": 2,
+      "lib-api": 2,
+      "lib-provider": 2,
+      "lib-reader": 2
+    },
+    "raw": "1529020fcad06beddc3eee0150c961d37db86119e576178e5cd1ee393fa0cdf0",
+    "runs": [
+      {
+        "name": "first",
+        "stderr": "30f6d86a4371305ff6888e7e6c4514f372b0d750af6060695ff51e4b382ba2e3",
+        "stdout": "4decdaf61380f1e4c533fc1fc02b973a4899ca48b688389e612a4730c5955191",
+        "units": [
+          [
+            "api",
+            false
+          ],
+          [
+            "client",
+            false
+          ],
+          [
+            "provider",
+            false
+          ],
+          [
+            "reader",
+            false
+          ]
+        ]
+      },
+      {
+        "name": "repeat",
+        "stderr": "c92508a29848820f033cd2ea015c85dde0953c88b07cc967ce34b7c08f610549",
+        "stdout": "fe49719d1778749f257e0eda491da16f3b3c518fc1d213e83f976b4f6a8367ff",
+        "units": [
+          [
+            "api",
+            true
+          ],
+          [
+            "client",
+            true
+          ],
+          [
+            "provider",
+            true
+          ],
+          [
+            "reader",
+            true
+          ]
+        ]
+      }
+    ],
+    "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+    "subject": "f9ce180a9cfb24da8b02624035b9fc628cc0262668cd6dadd02a714b5981c6e4",
+    "trace": "ce1dbd74b99050aa1e3da30f81120c750d86601ca47faee8d61f1325f73b8822"
+  },
+  "open-audit-v4/V3/mtime": {
+    "flags": [
+      "-Zohm-defaults=no"
+    ],
+    "physical": {
+      "bin-client": 1,
+      "lib-api": 1,
+      "lib-provider": 1,
+      "lib-reader": 1
+    },
+    "raw": "8afff40b7d591bf3b8e17b6069b24b1633121dde283545639bfd7074e3955c43",
+    "runs": [
+      {
+        "name": "first",
+        "stderr": "71d5c50731d65ac010e147052f80ca14e48b645414adf982bb20a4e9444c9240",
+        "stdout": "635d987f7ad65b74c5cc1c4fb081cde295cb370184c33776166d1b0452309c24",
+        "units": [
+          [
+            "api",
+            false
+          ],
+          [
+            "client",
+            false
+          ],
+          [
+            "provider",
+            false
+          ],
+          [
+            "reader",
+            false
+          ]
+        ]
+      },
+      {
+        "name": "repeat",
+        "stderr": "99f71393b9903dca098310bb446022a4bdee195ea9996f351a787195555210a6",
+        "stdout": "acbb01bcf8344aeca74a40f5557d89bc6acb2f3b35fad4af6763500bad349cd4",
+        "units": [
+          [
+            "api",
+            true
+          ],
+          [
+            "client",
+            true
+          ],
+          [
+            "provider",
+            true
+          ],
+          [
+            "reader",
+            true
+          ]
+        ]
+      }
+    ],
+    "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+    "subject": "f9ce180a9cfb24da8b02624035b9fc628cc0262668cd6dadd02a714b5981c6e4",
+    "trace": "930a108ee72abb02d62ad5de5f837673a6931e53a6f80dad9bd08189649b0204"
+  },
+  "open-audit-v4/V3/nonexclusive": {
+    "flags": [
+      "-Zohm-defaults=no",
+      "-Zfine-grain-locking",
+      "-Zchecksum-freshness"
+    ],
+    "physical": {
+      "bin-client": 2,
+      "lib-api": 2,
+      "lib-provider": 2,
+      "lib-reader": 2
+    },
+    "raw": "ba1226e2a26642189dd0b99171855a2d788ca9960225b6093b1205237ce0b961",
+    "runs": [
+      {
+        "name": "first",
+        "stderr": "7007404c92593375b6fec234647e31f80929e49284bbe536856651fc3bfe6525",
+        "stdout": "f656678730cf8e50871344382397e1aa539a756c18022c370f9303abdf7fe74e",
+        "units": [
+          [
+            "api",
+            false
+          ],
+          [
+            "client",
+            false
+          ],
+          [
+            "provider",
+            false
+          ],
+          [
+            "reader",
+            false
+          ]
+        ]
+      },
+      {
+        "name": "repeat",
+        "stderr": "99f71393b9903dca098310bb446022a4bdee195ea9996f351a787195555210a6",
+        "stdout": "f81d9d1e3a2cfa7924e088458302451c0d9fadfae9804ab1ec85f38b5f8c2bd9",
+        "units": [
+          [
+            "api",
+            true
+          ],
+          [
+            "client",
+            true
+          ],
+          [
+            "provider",
+            true
+          ],
+          [
+            "reader",
+            true
+          ]
+        ]
+      }
+    ],
+    "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+    "subject": "f9ce180a9cfb24da8b02624035b9fc628cc0262668cd6dadd02a714b5981c6e4",
+    "trace": "6300774c1d8e05ad034a40edd83eb91d8317ee34106ca521d3192c37f8639bc0"
+  },
+  "registry-opens-v1/B/non-ohm": {
+    "flags": [
+      "-Zohm-defaults=no"
+    ],
+    "physical": {
+      "lib-itoa": {
+        "reads": 1,
+        "short_file": "shared/debug/.fingerprint/.ohm-split-c57ded5d63781938/itoa-29e3b9d85a6901a3/lib-itoa"
+      },
+      "lib-workspace_local": {
+        "reads": 1,
+        "short_file": "shared/debug/.fingerprint/.ohm-split-c57ded5d63781938/workspace_local-f3311ca391d864e7/lib-workspace_local"
+      }
+    },
+    "raw": "c5efa323e0b44e759198ed3ec177864bbced3a12fb2921a576492dc446fc6f23",
+    "runs": [
+      {
+        "artifacts": [
+          [
+            "itoa",
+            false,
+            true,
+            [
+              "shared/debug/deps/.ohm-split-c57ded5d63781938/libitoa-29e3b9d85a6901a3.rmeta"
+            ]
+          ],
+          [
+            "workspace_local",
+            false,
+            false,
+            [
+              "shared/debug/deps/.ohm-split-c57ded5d63781938/libworkspace_local-f3311ca391d864e7.rmeta"
+            ]
+          ]
+        ],
+        "name": "first",
+        "stderr": "82bc5d790ae6dc2030a8e479ec2d489fd66e4b09a2dadd376c72d5baf1613049",
+        "stdout": "20e19004a6e6e9d6103ba2497e83bdb2138fc5fc744008b1a6f6603a5f473bdc"
+      },
+      {
+        "artifacts": [
+          [
+            "itoa",
+            true,
+            true,
+            [
+              "shared/debug/deps/.ohm-split-c57ded5d63781938/libitoa-29e3b9d85a6901a3.rmeta"
+            ]
+          ],
+          [
+            "workspace_local",
+            true,
+            false,
+            [
+              "shared/debug/deps/.ohm-split-c57ded5d63781938/libworkspace_local-f3311ca391d864e7.rmeta"
+            ]
+          ]
+        ],
+        "name": "repeat",
+        "stderr": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+        "stdout": "8d7be9d69fb49e73fad07d0e41dd791e834841256008e664a65e7f91efd84f5f"
+      }
+    ],
+    "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+    "subject": "51eb6c59a38151fbf1a252d7bc39cb45dfa67482a95b526e1301046bbf593ce9",
+    "trace": "d971e340c0f04d1b55ed12cfe4a4d314cd8d0350981e32b820925975b708dd0b"
+  },
+  "registry-opens-v1/B/shared-fine": {
+    "flags": [
+      "-Zfine-grain-locking",
+      "-Zohm-shared-registry-cache"
+    ],
+    "physical": {
+      "lib-itoa": {
+        "reads": 2,
+        "short_file": "shared/debug/build/registries/v2-6aa99b6109599389/itoa/828b76d75c14652a/fingerprint/lib-itoa"
+      },
+      "lib-workspace_local": {
+        "reads": 2,
+        "short_file": "target/debug/build/workspaces/9adbbd01dc6f60fc/v2-6aa99b6109599389/workspace_local/25971e62846500f3/fingerprint/lib-workspace_local"
+      }
+    },
+    "raw": "6f1454049035b9dc1314451a95859e332d64649bda5b517f1a06568da6c9f591",
+    "runs": [
+      {
+        "artifacts": [
+          [
+            "itoa",
+            false,
+            true,
+            [
+              "shared/debug/build/registries/v2-6aa99b6109599389/itoa/828b76d75c14652a/out/libitoa-828b76d75c14652a.rmeta"
+            ]
+          ],
+          [
+            "workspace_local",
+            false,
+            false,
+            [
+              "target/debug/build/workspaces/9adbbd01dc6f60fc/v2-6aa99b6109599389/workspace_local/25971e62846500f3/out/libworkspace_local-25971e62846500f3.rmeta"
+            ]
+          ]
+        ],
+        "name": "first",
+        "stderr": "838377469fae5fd926491e7d1edffc50a562452eafe5e0e7dac72c63e3fef452",
+        "stdout": "24e91ce2208047872810d008c088aaf47759c4be5aa8f4be5a939bccb42ed0ed"
+      },
+      {
+        "artifacts": [
+          [
+            "itoa",
+            true,
+            true,
+            [
+              "shared/debug/build/registries/v2-6aa99b6109599389/itoa/828b76d75c14652a/out/libitoa-828b76d75c14652a.rmeta"
+            ]
+          ],
+          [
+            "workspace_local",
+            true,
+            false,
+            [
+              "target/debug/build/workspaces/9adbbd01dc6f60fc/v2-6aa99b6109599389/workspace_local/25971e62846500f3/out/libworkspace_local-25971e62846500f3.rmeta"
+            ]
+          ]
+        ],
+        "name": "repeat",
+        "stderr": "a5f4c585ee974ca44916ac30a98bbc189e067a7e0a6bc6d2e8d6bc525be724af",
+        "stdout": "164a9f3deb43a7c17a3efe86ade9d9e8fc4e5d0b2f68c9ed2c9c184d5c4aec04"
+      }
+    ],
+    "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+    "subject": "51eb6c59a38151fbf1a252d7bc39cb45dfa67482a95b526e1301046bbf593ce9",
+    "trace": "4f93529036eb456fa8d532841c6ac0d58f80f3365dd1b82444751d92a3ea0394"
+  },
+  "registry-opens-v1/Bdev/non-ohm": {
+    "flags": [
+      "-Zohm-defaults=no"
+    ],
+    "physical": {
+      "lib-itoa": {
+        "reads": 1,
+        "short_file": "shared/debug/.fingerprint/.ohm-split-8b7cb7921121d349/itoa-29e3b9d85a6901a3/lib-itoa"
+      },
+      "lib-workspace_local": {
+        "reads": 1,
+        "short_file": "shared/debug/.fingerprint/.ohm-split-8b7cb7921121d349/workspace_local-f3311ca391d864e7/lib-workspace_local"
+      }
+    },
+    "raw": "a67024834ead84edad60299de13785798e7af3678d7ae6ff137be984c077cc89",
+    "runs": [
+      {
+        "artifacts": [
+          [
+            "itoa",
+            false,
+            true,
+            [
+              "shared/debug/deps/.ohm-split-8b7cb7921121d349/libitoa-29e3b9d85a6901a3.rmeta"
+            ]
+          ],
+          [
+            "workspace_local",
+            false,
+            false,
+            [
+              "shared/debug/deps/.ohm-split-8b7cb7921121d349/libworkspace_local-f3311ca391d864e7.rmeta"
+            ]
+          ]
+        ],
+        "name": "first",
+        "stderr": "70d3894b04b365c35005a9f608ccd4b55a9f02b63f3a10918f191871f6a93b1e",
+        "stdout": "f39ef5965e6cd4aafde174d0600074f704c25c696dd20762700abc8715419a9c"
+      },
+      {
+        "artifacts": [
+          [
+            "itoa",
+            true,
+            true,
+            [
+              "shared/debug/deps/.ohm-split-8b7cb7921121d349/libitoa-29e3b9d85a6901a3.rmeta"
+            ]
+          ],
+          [
+            "workspace_local",
+            true,
+            false,
+            [
+              "shared/debug/deps/.ohm-split-8b7cb7921121d349/libworkspace_local-f3311ca391d864e7.rmeta"
+            ]
+          ]
+        ],
+        "name": "repeat",
+        "stderr": "ee1d3fffa2022e962e63e0dbe4d35c9c198450a20c29fc09030f635dbb38bfcd",
+        "stdout": "54f116408f52b706f65d1c42a45d485a38b4a3cc09f429ab67b01d7f04dd31ba"
+      }
+    ],
+    "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+    "subject": "2eb7e548957363bfb5e4341ce1bfc312f5f5b875f881ae3d3a478531e0ddd76d",
+    "trace": "897d2297d21dacfbb867c0fac8c49bb544daacaab735863fcb8fb4627f060e4d"
+  },
+  "registry-opens-v1/Bdev/shared-fine": {
+    "flags": [
+      "-Zfine-grain-locking",
+      "-Zohm-shared-registry-cache"
+    ],
+    "physical": {
+      "lib-itoa": {
+        "reads": 2,
+        "short_file": "shared/debug/build/registries/v2-5b6b947573e8614b/itoa/5f7ef2912122d73e/fingerprint/lib-itoa"
+      },
+      "lib-workspace_local": {
+        "reads": 2,
+        "short_file": "target/debug/build/workspaces/8e63348384d376ec/v2-5b6b947573e8614b/workspace_local/e5159732ef732f93/fingerprint/lib-workspace_local"
+      }
+    },
+    "raw": "e839a45c60156f2b2456198007aa9013429e6a9730c069a60c8c81a0895de26c",
+    "runs": [
+      {
+        "artifacts": [
+          [
+            "itoa",
+            false,
+            true,
+            [
+              "shared/debug/build/registries/v2-5b6b947573e8614b/itoa/5f7ef2912122d73e/out/libitoa-5f7ef2912122d73e.rmeta"
+            ]
+          ],
+          [
+            "workspace_local",
+            false,
+            false,
+            [
+              "target/debug/build/workspaces/8e63348384d376ec/v2-5b6b947573e8614b/workspace_local/e5159732ef732f93/out/libworkspace_local-e5159732ef732f93.rmeta"
+            ]
+          ]
+        ],
+        "name": "first",
+        "stderr": "f2fe6197c7cfb9b42c3a191a0bec80806a4785be6ed810b4a61f464e441e8698",
+        "stdout": "6c8e0efb4b8bcf7d2b166778f36fedec44486666a994f0be711b702faf08650f"
+      },
+      {
+        "artifacts": [
+          [
+            "itoa",
+            true,
+            true,
+            [
+              "shared/debug/build/registries/v2-5b6b947573e8614b/itoa/5f7ef2912122d73e/out/libitoa-5f7ef2912122d73e.rmeta"
+            ]
+          ],
+          [
+            "workspace_local",
+            true,
+            false,
+            [
+              "target/debug/build/workspaces/8e63348384d376ec/v2-5b6b947573e8614b/workspace_local/e5159732ef732f93/out/libworkspace_local-e5159732ef732f93.rmeta"
+            ]
+          ]
+        ],
+        "name": "repeat",
+        "stderr": "4cf86278c1e6d659943a46a3d7e3da429ac15be90f0f17742e24ef85228e7d3e",
+        "stdout": "16e453e5678e30f3e352439be801afccdc43e793519c02bf1e3662d6353f4b81"
+      }
+    ],
+    "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+    "subject": "2eb7e548957363bfb5e4341ce1bfc312f5f5b875f881ae3d3a478531e0ddd76d",
+    "trace": "fc923964a9ea094b221f6b19a4b0910d04b1eea669e599a12b011544369db5d6"
+  },
+  "registry-opens-v1/E/non-ohm": {
+    "flags": [
+      "-Zohm-defaults=no"
+    ],
+    "physical": {
+      "lib-itoa": {
+        "reads": 1,
+        "short_file": "shared/debug/.fingerprint/.ohm-split-47716e01eea62638/itoa-29e3b9d85a6901a3/lib-itoa"
+      },
+      "lib-workspace_local": {
+        "reads": 1,
+        "short_file": "shared/debug/.fingerprint/.ohm-split-47716e01eea62638/workspace_local-f3311ca391d864e7/lib-workspace_local"
+      }
+    },
+    "raw": "1e705402711edb2ebd3e8269ba81bbd0156f7d0f720f8545cae0c26571f4ab86",
+    "runs": [
+      {
+        "artifacts": [
+          [
+            "itoa",
+            false,
+            true,
+            [
+              "shared/debug/deps/.ohm-split-47716e01eea62638/libitoa-29e3b9d85a6901a3.rmeta"
+            ]
+          ],
+          [
+            "workspace_local",
+            false,
+            false,
+            [
+              "shared/debug/deps/.ohm-split-47716e01eea62638/libworkspace_local-f3311ca391d864e7.rmeta"
+            ]
+          ]
+        ],
+        "name": "first",
+        "stderr": "15c91892174d3e855cc5280cdf5e8083b73fcf3b2b28750a0eb3cd2c9eb1579f",
+        "stdout": "1e87f26e5fffe215a63824441a77469b9b523a1db07d0d439209031287bdc94a"
+      },
+      {
+        "artifacts": [
+          [
+            "itoa",
+            true,
+            true,
+            [
+              "shared/debug/deps/.ohm-split-47716e01eea62638/libitoa-29e3b9d85a6901a3.rmeta"
+            ]
+          ],
+          [
+            "workspace_local",
+            true,
+            false,
+            [
+              "shared/debug/deps/.ohm-split-47716e01eea62638/libworkspace_local-f3311ca391d864e7.rmeta"
+            ]
+          ]
+        ],
+        "name": "repeat",
+        "stderr": "8c233a54790c4800d3dd585436af679aa838da259bfdb129412e2d51cdb75cdc",
+        "stdout": "597b91d5a4ed197262eb319dabd7a29a33a27520dcd5984f3e9bc61ebcec291a"
+      }
+    ],
+    "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+    "subject": "b67aa69a76643f0d6149f046bf19d6933df4662a583ad1de968e98efeda08518",
+    "trace": "cd04741a5bc3778188262c0093453d2a4c35e1cd1cbcb9d507309a348748e97d"
+  },
+  "registry-opens-v1/E/shared-fine": {
+    "flags": [
+      "-Zfine-grain-locking",
+      "-Zohm-shared-registry-cache"
+    ],
+    "physical": {
+      "lib-itoa": {
+        "reads": 3,
+        "short_file": "shared/debug/build/registries/v2-1231ce6faa1bc3ce/itoa/5f7ef2912122d73e/fingerprint/lib-itoa"
+      },
+      "lib-workspace_local": {
+        "reads": 2,
+        "short_file": "target/debug/build/workspaces/a5b381b11adc9506/v2-1231ce6faa1bc3ce/workspace_local/e5159732ef732f93/fingerprint/lib-workspace_local"
+      }
+    },
+    "raw": "5c542800b9fed2e6363473c1564069b51d0ca6cefa40530094f11d75adda4ee6",
+    "runs": [
+      {
+        "artifacts": [
+          [
+            "itoa",
+            false,
+            true,
+            [
+              "shared/debug/build/registries/v2-1231ce6faa1bc3ce/itoa/5f7ef2912122d73e/out/libitoa-5f7ef2912122d73e.rmeta"
+            ]
+          ],
+          [
+            "workspace_local",
+            false,
+            false,
+            [
+              "target/debug/build/workspaces/a5b381b11adc9506/v2-1231ce6faa1bc3ce/workspace_local/e5159732ef732f93/out/libworkspace_local-e5159732ef732f93.rmeta"
+            ]
+          ]
+        ],
+        "name": "first",
+        "stderr": "417ccd155df696350e4c72fda426fb43fdf7a248291106db08202114ba4f89cd",
+        "stdout": "357eb96aafa505e3d3723d1ff92bd75882ffb4cbea3d05919bb89cf826151d5f"
+      },
+      {
+        "artifacts": [
+          [
+            "itoa",
+            true,
+            true,
+            [
+              "shared/debug/build/registries/v2-1231ce6faa1bc3ce/itoa/5f7ef2912122d73e/out/libitoa-5f7ef2912122d73e.rmeta"
+            ]
+          ],
+          [
+            "workspace_local",
+            true,
+            false,
+            [
+              "target/debug/build/workspaces/a5b381b11adc9506/v2-1231ce6faa1bc3ce/workspace_local/e5159732ef732f93/out/libworkspace_local-e5159732ef732f93.rmeta"
+            ]
+          ]
+        ],
+        "name": "repeat",
+        "stderr": "a5f4c585ee974ca44916ac30a98bbc189e067a7e0a6bc6d2e8d6bc525be724af",
+        "stdout": "89d5b016b26a6a23ab32ae663b98629c1d75c1a007a6c604b875c1da2baf9e81"
+      }
+    ],
+    "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+    "subject": "b67aa69a76643f0d6149f046bf19d6933df4662a583ad1de968e98efeda08518",
+    "trace": "f530ab30e85366f8473316e22aba5b1bb4f0e7dc1ec67a0e650a73fff7d697e3"
+  },
+  "registry-opens-v1/V2/non-ohm": {
+    "flags": [
+      "-Zohm-defaults=no"
+    ],
+    "physical": {
+      "lib-itoa": {
+        "reads": 1,
+        "short_file": "shared/debug/.fingerprint/.ohm-split-db8036b5ca530862/itoa-29e3b9d85a6901a3/lib-itoa"
+      },
+      "lib-workspace_local": {
+        "reads": 1,
+        "short_file": "shared/debug/.fingerprint/.ohm-split-db8036b5ca530862/workspace_local-f3311ca391d864e7/lib-workspace_local"
+      }
+    },
+    "raw": "197dab983296258146a50ac690c59b616cc0ae630f6df2b9ff3fab6deba52f17",
+    "runs": [
+      {
+        "artifacts": [
+          [
+            "itoa",
+            false,
+            true,
+            [
+              "shared/debug/deps/.ohm-split-db8036b5ca530862/libitoa-29e3b9d85a6901a3.rmeta"
+            ]
+          ],
+          [
+            "workspace_local",
+            false,
+            false,
+            [
+              "shared/debug/deps/.ohm-split-db8036b5ca530862/libworkspace_local-f3311ca391d864e7.rmeta"
+            ]
+          ]
+        ],
+        "name": "first",
+        "stderr": "6cc4e0360efa00ba86b5dbac9f822fffe47a8e820c216df1e81daf9a21c34a8c",
+        "stdout": "8fc49a33609ceeacba45d1842d53840f0a0654db2e2be6038f76a8d5927c7d47"
+      },
+      {
+        "artifacts": [
+          [
+            "itoa",
+            true,
+            true,
+            [
+              "shared/debug/deps/.ohm-split-db8036b5ca530862/libitoa-29e3b9d85a6901a3.rmeta"
+            ]
+          ],
+          [
+            "workspace_local",
+            true,
+            false,
+            [
+              "shared/debug/deps/.ohm-split-db8036b5ca530862/libworkspace_local-f3311ca391d864e7.rmeta"
+            ]
+          ]
+        ],
+        "name": "repeat",
+        "stderr": "ee1d3fffa2022e962e63e0dbe4d35c9c198450a20c29fc09030f635dbb38bfcd",
+        "stdout": "3af0c2f5ab5f28a333e3ec8857742fdc6fa320a7032f98ea90502fa33fb8b886"
+      }
+    ],
+    "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+    "subject": "fcb9aaf7e99570a0427f2b1716cfe2f74246e32a4f975f87989d7b4784591fe3",
+    "trace": "91955108e29ed1e99786648158f458731f6ac7275570676b7511cb76289187b0"
+  },
+  "registry-opens-v1/V2/shared-fine": {
+    "flags": [
+      "-Zfine-grain-locking",
+      "-Zohm-shared-registry-cache"
+    ],
+    "physical": {
+      "lib-itoa": {
+        "reads": 3,
+        "short_file": "shared/debug/build/registries/v2-1bf38f53d0a12188/itoa/5f7ef2912122d73e/fingerprint/lib-itoa"
+      },
+      "lib-workspace_local": {
+        "reads": 2,
+        "short_file": "target/debug/build/workspaces/2fa91fae61b52428/v2-1bf38f53d0a12188/workspace_local/e5159732ef732f93/fingerprint/lib-workspace_local"
+      }
+    },
+    "raw": "4c9da12f6448a2c3b960b737816c252ddf1266c44f6357c3fedf6c6b197d7650",
+    "runs": [
+      {
+        "artifacts": [
+          [
+            "itoa",
+            false,
+            true,
+            [
+              "shared/debug/build/registries/v2-1bf38f53d0a12188/itoa/5f7ef2912122d73e/out/libitoa-5f7ef2912122d73e.rmeta"
+            ]
+          ],
+          [
+            "workspace_local",
+            false,
+            false,
+            [
+              "target/debug/build/workspaces/2fa91fae61b52428/v2-1bf38f53d0a12188/workspace_local/e5159732ef732f93/out/libworkspace_local-e5159732ef732f93.rmeta"
+            ]
+          ]
+        ],
+        "name": "first",
+        "stderr": "d80883dcca0d174743ca634a6f806c6ea434a42ef5f73fe67b4d0cb9bc8da5f1",
+        "stdout": "bb0dfdfdce82356f73df364ced2bb7a2c3819ab0cba627b46a995651785a5347"
+      },
+      {
+        "artifacts": [
+          [
+            "itoa",
+            true,
+            true,
+            [
+              "shared/debug/build/registries/v2-1bf38f53d0a12188/itoa/5f7ef2912122d73e/out/libitoa-5f7ef2912122d73e.rmeta"
+            ]
+          ],
+          [
+            "workspace_local",
+            true,
+            false,
+            [
+              "target/debug/build/workspaces/2fa91fae61b52428/v2-1bf38f53d0a12188/workspace_local/e5159732ef732f93/out/libworkspace_local-e5159732ef732f93.rmeta"
+            ]
+          ]
+        ],
+        "name": "repeat",
+        "stderr": "4cf86278c1e6d659943a46a3d7e3da429ac15be90f0f17742e24ef85228e7d3e",
+        "stdout": "447a7a3333acc4e40722a40467a5fe15eafa3a314aae43b25c3052be9c1f61d5"
+      }
+    ],
+    "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+    "subject": "fcb9aaf7e99570a0427f2b1716cfe2f74246e32a4f975f87989d7b4784591fe3",
+    "trace": "0c11c9876594c5366670acda6bb255460ec50514f5f8fcf83bd64d5b2fa5d1f0"
+  },
+  "registry-opens-v1/V3/non-ohm": {
+    "flags": [
+      "-Zohm-defaults=no"
+    ],
+    "physical": {
+      "lib-itoa": {
+        "reads": 1,
+        "short_file": "shared/debug/.fingerprint/.ohm-split-d2ab02ce2b881079/itoa-29e3b9d85a6901a3/lib-itoa"
+      },
+      "lib-workspace_local": {
+        "reads": 1,
+        "short_file": "shared/debug/.fingerprint/.ohm-split-d2ab02ce2b881079/workspace_local-f3311ca391d864e7/lib-workspace_local"
+      }
+    },
+    "raw": "7fa8f7f0ed2e56fb0e0da7c6f180e5c3f3be81035e6554ec1e9eea1ad2a575bb",
+    "runs": [
+      {
+        "artifacts": [
+          [
+            "itoa",
+            false,
+            true,
+            [
+              "shared/debug/deps/.ohm-split-d2ab02ce2b881079/libitoa-29e3b9d85a6901a3.rmeta"
+            ]
+          ],
+          [
+            "workspace_local",
+            false,
+            false,
+            [
+              "shared/debug/deps/.ohm-split-d2ab02ce2b881079/libworkspace_local-f3311ca391d864e7.rmeta"
+            ]
+          ]
+        ],
+        "name": "first",
+        "stderr": "20884d5d4a69ad418360fbaba7eaf3e2158c0ae0d9fa73c214a95c4c23ac404c",
+        "stdout": "07d672540b3cb45cd8266b355e0ee530ad01581799458e11050cf89984774c61"
+      },
+      {
+        "artifacts": [
+          [
+            "itoa",
+            true,
+            true,
+            [
+              "shared/debug/deps/.ohm-split-d2ab02ce2b881079/libitoa-29e3b9d85a6901a3.rmeta"
+            ]
+          ],
+          [
+            "workspace_local",
+            true,
+            false,
+            [
+              "shared/debug/deps/.ohm-split-d2ab02ce2b881079/libworkspace_local-f3311ca391d864e7.rmeta"
+            ]
+          ]
+        ],
+        "name": "repeat",
+        "stderr": "99f71393b9903dca098310bb446022a4bdee195ea9996f351a787195555210a6",
+        "stdout": "bf416f2fc47e08cb9ea4412615e48cd5e4dd5b7c3d9ddf72e4c35c5e7263f950"
+      }
+    ],
+    "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+    "subject": "f9ce180a9cfb24da8b02624035b9fc628cc0262668cd6dadd02a714b5981c6e4",
+    "trace": "b61fd9f3fe543f4b22a9a7af8fa4cbee43ca08189be11f3ac689aea6a3203354"
+  },
+  "registry-opens-v1/V3/shared-fine": {
+    "flags": [
+      "-Zfine-grain-locking",
+      "-Zohm-shared-registry-cache"
+    ],
+    "physical": {
+      "lib-itoa": {
+        "reads": 3,
+        "short_file": "shared/debug/build/registries/v2-0db35847105e1df3/itoa/5f7ef2912122d73e/fingerprint/lib-itoa"
+      },
+      "lib-workspace_local": {
+        "reads": 2,
+        "short_file": "target/debug/build/workspaces/82cc9bc4b0ad426b/v2-0db35847105e1df3/workspace_local/e5159732ef732f93/fingerprint/lib-workspace_local"
+      }
+    },
+    "raw": "7850daf65b4a7720934f8b661b74fb65b281e4ee0ebdbfacd62489ae4af77cdb",
+    "runs": [
+      {
+        "artifacts": [
+          [
+            "itoa",
+            false,
+            true,
+            [
+              "shared/debug/build/registries/v2-0db35847105e1df3/itoa/5f7ef2912122d73e/out/libitoa-5f7ef2912122d73e.rmeta"
+            ]
+          ],
+          [
+            "workspace_local",
+            false,
+            false,
+            [
+              "target/debug/build/workspaces/82cc9bc4b0ad426b/v2-0db35847105e1df3/workspace_local/e5159732ef732f93/out/libworkspace_local-e5159732ef732f93.rmeta"
+            ]
+          ]
+        ],
+        "name": "first",
+        "stderr": "2cf11b91184020f62f29d70cb0c41b245afae4491b03f03d52c102fc2689ef18",
+        "stdout": "4bf51c479d40959556ec6364ffda85000d0ca15727e43722b750f90a4fb7abd0"
+      },
+      {
+        "artifacts": [
+          [
+            "itoa",
+            true,
+            true,
+            [
+              "shared/debug/build/registries/v2-0db35847105e1df3/itoa/5f7ef2912122d73e/out/libitoa-5f7ef2912122d73e.rmeta"
+            ]
+          ],
+          [
+            "workspace_local",
+            true,
+            false,
+            [
+              "target/debug/build/workspaces/82cc9bc4b0ad426b/v2-0db35847105e1df3/workspace_local/e5159732ef732f93/out/libworkspace_local-e5159732ef732f93.rmeta"
+            ]
+          ]
+        ],
+        "name": "repeat",
+        "stderr": "4cf86278c1e6d659943a46a3d7e3da429ac15be90f0f17742e24ef85228e7d3e",
+        "stdout": "86de7ac8450c0e5f9c1089c117351f92dc197a864009d1ff420afd10086cb08b"
+      }
+    ],
+    "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+    "subject": "f9ce180a9cfb24da8b02624035b9fc628cc0262668cd6dadd02a714b5981c6e4",
+    "trace": "b1c5a5c0516cccb11a584b229652ce9e367197443ecb0d742ef147907e79ac34"
+  }
+}

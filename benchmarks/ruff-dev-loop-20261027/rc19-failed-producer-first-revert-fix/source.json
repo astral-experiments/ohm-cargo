@@ -1,0 +1,94 @@
+{
+  "base_commit": "b3360c5eda186845b9a2ba6e5330a97c07d4acf2",
+  "compiler": {
+    "cargo": "02a86ebd2d9e4f237b33f212102b81ed145eb77fae090d67e379cb6f1d70a573",
+    "driver": "a7648053cbad025c1bb0bebb7009ce9e1515bdb02e8c30bef29b52a881e5b8de",
+    "official_linux_release": "1.99.0-18",
+    "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60"
+  },
+  "final": {
+    "argv": [
+      "cargo",
+      "+ohm",
+      "build",
+      "--offline",
+      "--locked",
+      "-j8",
+      "-p",
+      "cargo",
+      "--features",
+      "ohm-defaults",
+      "--bin",
+      "cargo",
+      "--message-format=json"
+    ],
+    "build_cargo": "02a86ebd2d9e4f237b33f212102b81ed145eb77fae090d67e379cb6f1d70a573",
+    "cargo": "b67aa69a76643f0d6149f046bf19d6933df4662a583ad1de968e98efeda08518",
+    "driver": "a7648053cbad025c1bb0bebb7009ce9e1515bdb02e8c30bef29b52a881e5b8de",
+    "features": [
+      "default",
+      "http-transport-curl",
+      "ohm-defaults"
+    ],
+    "parent": "c3d09a7d05d3c6a6e9e060dacf488afe8c0acb1d",
+    "profile": "dev; debug=0; incremental=false",
+    "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+    "size": 117316064,
+    "source": "34dad66fd2ac823bfb02c2c4a4bab02fb5ac4d31",
+    "source_file": "3d7ac7d3cf259147670d2e09f2fa39d0bdde7b51",
+    "source_patch": "8ad8998d84de77c4c0daf4e79671f10e7bb601d9bf6c4e2a45109076244ee71e",
+    "stderr": "a525e834a8b0fb5362fa030c491b81847f1340b0b6a95d8d5b272b9ea7655c8d",
+    "stdout": "538588fa5e179e94c409f0ee291ac8f3d871792edaa3359d75b4b4e7ce0439e7",
+    "tree": "bda3469e08fbde973f4d4df6ac6b6d29851ef82b",
+    "version": [
+      "cargo 1.99.0 (34dad66fd 2026-10-29)",
+      "release: 1.99.0",
+      "commit-hash: 34dad66fd2ac823bfb02c2c4a4bab02fb5ac4d31"
+    ]
+  },
+  "older_correct": {
+    "head": {
+      "binary": "dfd65c69739797d928252a6fa676de640e9fffc40109da07ddd5b774989508f0",
+      "build_receipt": "582393cabee3290e247b9b2ab6a6abd901bccbf1c5f07577e32b45ad5da8488a",
+      "errors": [],
+      "original_fixture_exit": 0,
+      "source": "242e7bdc885910beff6872f71300968933293410",
+      "test_receipt": "4d4167664456e3c47b4c428dc81cacf79c466ae6720c9da058b9a32fdda838e3",
+      "tree": "c67ca595519d665ca3baf5f79a8d8990c67c2aa4"
+    },
+    "parent": {
+      "binary": "9de95412b2dfd29c8c03f341d347dddbfb9405e4e80b70872e7d327137f6cdcb",
+      "build_receipt": "2e11132fd6dbd72f336887d48ac46a7e6df3a6ef9fe749f9922a1da68b5648d4",
+      "errors": [],
+      "original_fixture_exit": 101,
+      "source": "f3e7a43f7063b081e8caa83bcd11ac51ba094bca",
+      "test_receipt": "e04d6dcd506f2965467b354911ae5b99615833dc94417eb7bd80db7a5e960b0a",
+      "tree": "4ff4eac77116de377f5bbf93513d9a0e2369613f"
+    },
+    "seeddefault": {
+      "binary": "3d083a9b5487ea565eceb5cd8f0d500f162143640827c4839116ff24ddd1d4d2",
+      "build_receipt": "1e663350a4e2546f2babb28239526eed10379c4209ba9bf274be756b513c853b",
+      "errors": [
+        "E0460"
+      ],
+      "original_fixture_exit": 101,
+      "source": "af091eb21f940445b6447a3f33dc610a8c291f24",
+      "test_receipt": "5d72628a48ff5eb0fb05eabe8678d28cd8e573308d66ca9b2ed72c26bffcd301",
+      "tree": "fc5033117ec16b9d746c77ad78099ee584465b91"
+    },
+    "seedparent": {
+      "binary": "deb5ae3ac7a5df2c16991a019d06132612c9228b9b44fccd9bfacb1b8587ff75",
+      "build_receipt": "0b218cbe5b403006ab312ab48256cc01eb250c458fa49fc2241acec96d2e120b",
+      "errors": [],
+      "original_fixture_exit": 0,
+      "source": "88bd5ae13cb69b1eaddc17cb8612761fc9ef8102",
+      "test_receipt": "f046cecd1306bfd9d06280e92b51c6c003637337dd84788f585895c27981c806",
+      "tree": "e1d3c6fe957439b87fba9f7a0d9c6bff66dde766"
+    }
+  },
+  "speculative_blocking_head": "c3d09a7d05d3c6a6e9e060dacf488afe8c0acb1d",
+  "unit_source": {
+    "freshness.rs": "eabdbe14bc243f83c2584125c7a738c18b68362eaecacd29ef8666ef2f749f1d",
+    "headstart.rs": "297e0ee25e6532373defdfa3a0ebe37ede28f31aeeb0a05e7ad6851a7b6d1e54"
+  }
+}
