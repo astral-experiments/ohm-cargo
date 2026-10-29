@@ -1063,6 +1063,15 @@ fn check_cycles(resolve: &Resolve) -> CargoResult<()> {
 /// particular, we don't store paths of path dependencies. That means that
 /// *different* packages may collide in the lock file, hence this check.
 fn check_duplicate_pkgs_in_lockfile(resolve: &Resolve) -> CargoResult<()> {
+    // Strictly increasing name-version pairs cannot collide when encoded.
+    if resolve
+        .iter()
+        .map(|id| (id.name(), id.version()))
+        .is_sorted_by(|a, b| a < b)
+    {
+        return Ok(());
+    }
+
     let mut unique_pkg_ids = HashMap::default();
     let state = encode::EncodeState::new(resolve);
     for pkg_id in resolve.iter() {
