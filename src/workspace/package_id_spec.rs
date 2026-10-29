@@ -67,73 +67,82 @@ impl PackageIdSpecQuery for PackageIdSpec {
     where
         I: IntoIterator<Item = PackageId>,
     {
-        let all_ids: Vec<_> = i.into_iter().collect();
-        let mut ids = all_ids.iter().copied().filter(|&id| self.matches(id));
-        let Some(ret) = ids.next() else {
-            let mut suggestion = String::new();
-            let try_spec = |spec: PackageIdSpec, suggestion: &mut String| {
-                let try_matches: Vec<_> = all_ids
-                    .iter()
-                    .copied()
-                    .filter(|&id| spec.matches(id))
-                    .collect();
-                if !try_matches.is_empty() {
-                    suggestion.push_str("\nhelp: there are similar package ID specifications:\n");
-                    minimize(suggestion, &try_matches, self);
-                }
+        query_package_id_spec(self, &i.into_iter().collect::<Vec<_>>())
+    }
+}
+
+pub(crate) fn query_package_id_spec(
+    requested: &PackageIdSpec,
+    all_ids: &[PackageId],
+) -> CargoResult<PackageId> {
+    let mut ids = all_ids.iter().copied().filter(|&id| requested.matches(id));
+    let Some(ret) = ids.next() else {
+        let mut suggestion = String::new();
+        let try_spec = |spec: PackageIdSpec, suggestion: &mut String| {
+            let try_matches: Vec<_> = all_ids
+                .iter()
+                .copied()
+                .filter(|&id| spec.matches(id))
+                .collect();
+            if !try_matches.is_empty() {
+                suggestion.push_str("\nhelp: there are similar package ID specifications:\n");
+                minimize(suggestion, &try_matches, requested);
+            }
+        };
+        if requested.url().is_some() {
+            let spec = PackageIdSpec::new(requested.name().to_owned());
+            let spec = if let Some(version) = requested.partial_version().cloned() {
+                spec.with_version(version)
+            } else {
+                spec
             };
-            if self.url().is_some() {
-                let spec = PackageIdSpec::new(self.name().to_owned());
-                let spec = if let Some(version) = self.partial_version().cloned() {
-                    spec.with_version(version)
-                } else {
-                    spec
-                };
-                try_spec(spec, &mut suggestion);
-            }
-            if suggestion.is_empty() && self.version().is_some() {
-                try_spec(PackageIdSpec::new(self.name().to_owned()), &mut suggestion);
-            }
-            if suggestion.is_empty() {
-                suggestion.push_str(&edit_distance::closest_msg(
-                    self.name(),
-                    all_ids.iter(),
-                    |id| id.name().as_str(),
-                    "package",
-                ));
-            }
-
-            bail!(
-                "package ID specification `{}` did not match any packages{}",
-                self,
-                suggestion
+            try_spec(spec, &mut suggestion);
+        }
+        if suggestion.is_empty() && requested.version().is_some() {
+            try_spec(
+                PackageIdSpec::new(requested.name().to_owned()),
+                &mut suggestion,
             );
-        };
-        return match ids.next() {
-            Some(other) => {
-                let mut msg = format!(
-                    "specification `{self}` is ambiguous
-help: re-run this command with one of the following specifications",
-                );
-                let mut vec = vec![ret, other];
-                vec.extend(ids);
-                minimize(&mut msg, &vec, self);
-                Err(anyhow::format_err!("{}", msg))
-            }
-            None => Ok(ret),
-        };
+        }
+        if suggestion.is_empty() {
+            suggestion.push_str(&edit_distance::closest_msg(
+                requested.name(),
+                all_ids.iter(),
+                |id| id.name().as_str(),
+                "package",
+            ));
+        }
 
-        fn minimize(msg: &mut String, ids: &[PackageId], spec: &PackageIdSpec) {
-            let mut version_cnt = HashMap::default();
-            for id in ids {
-                *version_cnt.entry(id.version()).or_insert(0) += 1;
-            }
-            for id in ids {
-                if version_cnt[id.version()] == 1 {
-                    msg.push_str(&format!("\n  {}@{}", spec.name(), id.version()));
-                } else {
-                    msg.push_str(&format!("\n  {}", id.to_spec()));
-                }
+        bail!(
+            "package ID specification `{}` did not match any packages{}",
+            requested,
+            suggestion
+        );
+    };
+    return match ids.next() {
+        Some(other) => {
+            let mut msg = format!(
+                "specification `{requested}` is ambiguous
+help: re-run this command with one of the following specifications",
+            );
+            let mut vec = vec![ret, other];
+            vec.extend(ids);
+            minimize(&mut msg, &vec, requested);
+            Err(anyhow::format_err!("{}", msg))
+        }
+        None => Ok(ret),
+    };
+
+    fn minimize(msg: &mut String, ids: &[PackageId], spec: &PackageIdSpec) {
+        let mut version_cnt = HashMap::default();
+        for id in ids {
+            *version_cnt.entry(id.version()).or_insert(0) += 1;
+        }
+        for id in ids {
+            if version_cnt[id.version()] == 1 {
+                msg.push_str(&format!("\n  {}@{}", spec.name(), id.version()));
+            } else {
+                msg.push_str(&format!("\n  {}", id.to_spec()));
             }
         }
     }
