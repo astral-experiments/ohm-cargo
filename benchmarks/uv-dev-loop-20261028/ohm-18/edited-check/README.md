@@ -1,5 +1,7 @@
 # Release-18 edited uv check
 
+Both arms set `RUSTC_WRAPPER`. On these marker-bearing targets, that disables two check-mode reuse paths in release Cargo. The numbers below apply to the observed configuration. [Source conditions, launch evidence and fixture fingerprints](../observer-audit/README.md)
+
 Both cohorts ran full-workspace `cargo check --locked --offline -j8` after changing the private Homebrew path predicate in `crates/uv/src/install_source.rs`. The structural edit accepted an additional `uv-preview-A00` or `uv-preview-J00` directory name. Each subsequent edit changed only the two decimal digits. Each pair used the same edit bytes, mtime, visible paths and predecessor history. The initial and replica fixtures used independent roots, schedules and literals. The original and every exact edit are in `inputs/`.
 
 The control used matched, separately trained release-18 PGO Cargo. The treatment used the five Cargo changes and the guarded standard-library path comparison linked into Cargo. Each compile used the same distributed release-18 rustc. Both stacks selected their corresponding Wild executable. Every admitted and held-out check ran exactly one Cargo process and one rustc process, rebuilt only the uv library and emitted byte-identical metadata across arms for each edit. No Wild or tests ran.

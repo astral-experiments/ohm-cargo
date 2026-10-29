@@ -1,5 +1,7 @@
 # Literal Ohm 1.99.0-18 comparison after Wild #46 rebased
 
+The two full-toolchain cohorts have finished. [Results, all 576 observations and the corrected metadata admission](../full-toolchain-wall/README.md)
+
 Ohm Wild closed #45 without merging it. #46 now applies directly to Wild 0.11 at `db821991bd2931dd83e59f236149340ddfc2b427`, with base `e856d81f6683cad80b9fe0ebf1a0c3c403c6fe11`. At registration, Ohm 1.99.0-18 was still the latest published release. The five Cargo PRs, Rust #247 and Wild #46 were open. `release-status.json` records the published release, its component pins and each PR head. `upstream.json` includes the two historical Wild heads. [Wild #45](https://github.com/astral-sh/ohm-wild/pull/45), [Wild #46](https://github.com/astral-sh/ohm-wild/pull/46), [Ohm 1.99.0-18](https://github.com/astral-sh/ohm/releases/tag/ohm-1.99.0-18).
 
 The original study registered three arms before the compiler builds. Its target root and evidence directories were still absent when this amendment froze. The new plan keeps every source tag, source path, command, CPU assignment, cohort order and relative order of the three historical arms. The current arm adds 144 timed commands, for a total of 576. The original registration and runner are preserved byte for byte. This study has its own evidence directory and retains the original fixed sysroot, target and Cargo-home invocation paths.

@@ -1,0 +1,5 @@
+# Lockfile collision guards after a uv source edit
+
+Neither variant met its edited-check wall-time threshold. Each variant ran 24 paired edits in each of two independent checkouts. The hash-set variant won 7/24 and 15/24 comparisons. The allocation-free ordered scan won 11/24 and 13/24. The four 97.73% median intervals all crossed zero. The baseline includes the five Cargo changes and the std change linked into the driver. Both arms used ordinary released rustc. [All 192 commands](samples.csv) · [Counts, medians, intervals and tests](verified-manifests.json)
+
+Extract the archive and run `python3 -I -B resolver-native-repair/verify.py` in its root. It recomputes the paired tests and checks the actual compiler arguments, uv logs and 696 product hashes per command. The compact archive includes 200 admission and measured command manifests and the full schedules. The complete local replay also retains each distinct original metadata file by SHA-256. [Raw timings and metadata manifests](raw-timings-and-metadata.zip) · [Full replay archive identity](raw-product-archive.json)

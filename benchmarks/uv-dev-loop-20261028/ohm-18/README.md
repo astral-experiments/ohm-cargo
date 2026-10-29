@@ -1,5 +1,36 @@
 # Ohm -18 after an edit to uv
 
+Neither the seven open patches nor the original eight produced a repeatable elapsed-time improvement in this full-toolchain experiment. On two separate uv checkouts we timed 576 ordinary Cargo commands after real source edits, with 24 randomized blocks per command per checkout and all 72 test executables built. The seven-patch stack had to beat both shipped Ohm 1.99.0-18 and a source-matched rebuild. The rebuilds omit the release compiler’s PGO and BOLT stages. [Raw logs, processing and both stack comparisons](full-toolchain-wall/README.md) · [Toolchain identities and execution receipts](literal-current-and-historical/stage2.md)
+
+The table shows the seven-patch stack’s paired median saving in wall time. Positive numbers mean faster. Brackets show the 97.73% distribution-free interval on each independent edit.
+
+| Command | Control | Predicate edit | Help-text edit |
+|---|---|---:|---:|
+| `cargo check` | Shipped -18 | -3.01% [-23.51, +15.97] | -15.71% [-39.81, -4.52] |
+| `cargo check` | Source-matched rebuild | +2.76% [-5.63, +20.43] | -4.16% [-19.18, -0.14] |
+| `cargo build` | Shipped -18 | -4.07% [-8.85, +3.73] | +2.49% [-3.41, +11.73] |
+| `cargo build` | Source-matched rebuild | -2.26% [-6.50, +3.47] | -0.10% [-10.60, +4.83] |
+| `cargo test --no-run` | Shipped -18 | -16.06% [-36.87, -1.40] | +5.53% [-4.49, +22.29] |
+| `cargo test --no-run` | Source-matched rebuild | +5.03% [-8.89, +11.24] | +4.68% [-10.52, +16.56] |
+
+The extra Wild jobserver retry passed one of four preregistered holdout comparisons. The two Cargo lockfile guards passed their warm Cargo instruction tests, but neither produced a repeatable elapsed-time saving across 96 edited-check pairs. [All 216 jobserver confirmation runs](confirmation32/README.md) · [Resolver timings and product verification](resolver-wall/README.md)
+
+### Instruction counts
+
+On fully warm uv commands, the five Cargo changes and the std change in the Cargo executable reduced driver instructions by about 2.3% for check, 5.6% and 7.8% for build, and 2.5% for test preparation across two counters. Cargo launched no compiler in these commands. The historical counter logs establish the unwrapped compiler identity but do not record every profiler-injected loader variable. [Per-command intervals and raw counts](warm-cargo/README.md) · [Observer audit](observer-audit/README.md)
+
+After an edit, the historical stack saved 0.4722% and 0.4728% in the measured Cargo and rustc processes in two independent eight-pair runs. This instrumented configuration set `RUSTC_WRAPPER`, which excludes two release Cargo check-mode artifact reuse paths on marker-bearing targets. The elapsed-time observations above used ordinary compiler launches. [Instrumented counts and scorer](edited-check/README.md) · [Exact source conditions and fixture receipts](observer-audit/README.md)
+
+The allocation-free lockfile guard saved 0.157% and 0.166% of warm Cargo instructions. The hash-set guard saved 0.145% and 0.150%. Each variant used its own comparison against the same control. On real uv links, a separate exception-frame relocation change saved 0.23–0.63% of linker instructions on two executables against released and rebuilt Wild. [Lockfile evidence](lockfile-collision/README.md) · [Linker evidence](release-eh/focused-results.json)
+
+### Executable reuse
+
+An official Cargo regression exercises ordinary binaries and binary test harnesses whose own package library is unused. Released Cargo relinked both after the library changed. The proposed patch reused both while the binary that reads the library produced the updated result. Its warm-workspace control ran 144 commands. The edited timing assignment is independent of those checks. [Regression, warm counts and raw logs](proof-controls/README.md) · [Edited assignment](registered-proof.json)
+
+The Ohm coordinator and all three component forks were checked for source and PR changes through the end of the full-toolchain timing run. The release was still -18. Wild #45 had closed and #46 had been rebased before these comparisons were frozen. [Release pins and draft status](ohm-source-status/at-full-stack-completion.json) · [Resolver source-overlap check](ohm-source-status/ordered-guard-source-overlap.json)
+
+### Earlier jobserver discovery
+
 On 32 physical cores, updating a user-facing help string in uv and running `cargo test --no-run` took a median 2.24 seconds less with the scoped Wild jobserver retry. The estimate came from 18 faster pairs out of 24. On eight cores a private predicate edit produced 16 faster pairs out of 24 and an interval that crossed zero. These measurements compare the candidate with Wild #46, using the distributed -18 Cargo, compiler and target standard library. [Release manifest](https://github.com/astral-sh/ohm/blob/ohm-1.99.0-18/toolchains/1.99.0/18.json) · [Previous Wild draft](https://github.com/astral-sh/ohm-wild/pull/46)
 
 | Available cores and edit | Control median | Candidate median | Median paired saving | 97.7% interval | Faster pairs | Exact sign p | Order-conditioned p |
@@ -11,22 +42,4 @@ Every pair applied identical source bytes to both arms and used private, indepen
 
 The eight-core result missed the preregistered cross-size criterion. The 32-core estimate selected a narrower question for confirmation on two new checkouts of uv. Each new checkout uses 36 randomized blocks, with all six orders equally represented. It compares the candidate with both the previous linker draft and the actual distributed -18 linker. Each of those four comparisons must have a positive lower median bound and two-sided sign and assignment-conditioned p below .0125. Fresh target and registry copies are prepared separately for each checkout. The earlier 48 pairs contribute no observations to this confirmation. [Frozen 32-core assignment](registered-32-heldout.json) · [Original two-cohort assignment](default-v3.json)
 
-The separate comparison of the existing eight patches uses both the shipped distribution and a source-matched, independently profile-trained Cargo control. The additional linker change has its own contrast against that existing stack. The stage-2 holdout measures the std patch in Rust’s host compiler and the customer-facing target sysroot as well. The other registered workloads cover an edit to the small `uvx` binary and whether Cargo can skip rebuilding that binary after a change to its unused package library. All schedules in this commit were fixed before the corresponding timing data. [Four-way assignment](registered-four-v3.json) · [Stage-2 assignment](literal-stage2.json) · [Small-binary edit](registered-uvx.json) · [Unused library proof](registered-proof.json)
-
-The first four-way admission stopped before scoring. The same shipped -18 linker independently produced both observed one-megabyte `uvx` harness variants. A change from one worker to eight changed one `.rodata` section-header byte and the 32-byte GNU build ID. Four of five captured uv link targets exhibited that variation. Shipped and unchanged #46 emitted byte-identical files at each fixed worker count. The comparison retains the raw hashes, verifies all other bytes and leaves every statistical assignment intact. [Twenty release-control replays](stock-elf-replays.zip) · [Exact product checks](stock-elf-forms.json)
-
-The two fresh 32-core confirmations finished on October 28. The candidate passed one of the four registered comparisons, so there is no jobserver draft. The literal full-toolchain plan now includes both the seven open changes and the historical eight after Wild #45 closed. [All 216 timings and results](confirmation32/README.md) · [Amended literal assignment](literal-current-and-historical/README.md) · [Direct release EH study](release-eh/PROTOCOL.md)
-
-On a fully warm uv workspace, the five Cargo changes plus Rust #247 in the Cargo executable reduced Cargo instructions on two independently trained PGO builds. The reductions were about 2.3% for check, 5.6% and 7.8% for build, and 2.5% for test preparation. Cargo launched no compiler or linker in this measurement. [Per-command intervals, all raw counts and scorer](warm-cargo/README.md)
-
-The separate normal-binary reuse candidate also has a warm-workspace control. Its assignment fixes two counters, 12 pairs per command per checkout, and a 0.5% material regression bound. [Warm control assignment](registered-proof-warm-control.json)
-
-After changing the Homebrew path predicate in uv, the historical stack reduced full-command Cargo-plus-rustc instructions by 0.4722% and 0.4728% in two independent eight-pair checkouts. Both arms rechecked just the edited library with the released compiler. Each pair produced identical metadata. [Exact edits, raw counters and recomputation](edited-check/README.md)
-
-Both matched stage-2 compilers and their target standard libraries are built. The release control and guarded rebuild contain their intended path-comparison implementations in the compiler, a loaded proc macro, and the target program. [Compiler build and runtime receipts](literal-current-and-historical/stage2.md)
-
-Two lockfile-collision shortcuts passed independent Cargo instruction checks on warm uv. The hash-set implementation saved 0.145% and 0.150%. The allocation-free implementation saved 0.157% and 0.166% against the same control. Each variant has a separate edited-check elapsed-time assignment. [Both counter studies and source-overlap check](lockfile-collision/README.md)
-
-An official Cargo regression now exercises the normal-binary reuse candidate. Released Cargo relinked both the unused binary and its test harness. The patched build reused both and picked up changes in the binary that used the library. Its warm-control experiment ran 144 commands. [Paired counts, raw logs and release-only regression](proof-controls/README.md)
-
-A one-file Wild change reduced instructions for both a 181 MB uv test harness and a 316 MB uv executable against release-source and shipped Wild. The change passed all four eight-pair focused comparisons, with byte-identical outputs. The whole-command study fixes the exact product paths and stock ELF forms in each new checkout. [Focused result](release-eh/focused-results.json) · [Focused raw counts](release-eh/focused.zip) · [Whole-command stock calibration](release-eh/stock-path-registration.zip)
+The other fixed assignments cover the historical Cargo/Wild stack with shipped rustc, a small `uvx` source edit, and reuse of binaries that do not read their package library. The first four-way admission ended before any observation. Unchanged Wild reproduced the same one-byte `.rodata` section-header difference and 32-byte GNU build ID observed among the release-generated ELF files. [Four-arm assignment](registered-four-v3.json) · [Small-binary edit](registered-uvx.json) · [Release-control replays](stock-elf-replays.zip)

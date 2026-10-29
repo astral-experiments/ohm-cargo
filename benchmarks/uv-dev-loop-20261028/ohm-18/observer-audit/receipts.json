@@ -1,0 +1,385 @@
+{
+  "edited-roles-initial": {
+    "cache": {
+      "target": "/tmp/ohm-uv-bench.0H03f2TH/role-studies-18/initial/common",
+      "ready_marker": true,
+      "compiler_fingerprint": 6738164145214812736,
+      "previous_fingerprint": null,
+      "cache_mtime_ns": 1793224028091283421,
+      "cache_sha256": "9af8a53938752dbea88c649051d89ddadedc379d98f3ae5f21fa98f2c8d85068"
+    },
+    "native_admissions": [
+      {
+        "path": "round18-cargo/edited-roles/results/initial/check/admit-0-native-base/native-execs.json",
+        "sha256": "13db4c03a138cf137a9ddc5146c36c7bd3093f2854bbf8daa6e8e675623baab7",
+        "compiler_wrapper_processes": 1,
+        "actual_distributed_rustc": 1
+      },
+      {
+        "path": "round18-cargo/edited-roles/results/initial/check/admit-3-native-candidate/native-execs.json",
+        "sha256": "5290655930480130e1f0139b813ebb506543fb36be8241e74457f759d9c87898",
+        "compiler_wrapper_processes": 1,
+        "actual_distributed_rustc": 1
+      }
+    ],
+    "harness_sha256": "dc3de9a0c5dd5b26f4450cb019b4eef1f9a7b4eebf178192df35acb11ce7f079"
+  },
+  "edited-roles-replica": {
+    "cache": {
+      "target": "/tmp/ohm-uv-bench.0H03f2TH/role-studies-18/replica/common",
+      "ready_marker": true,
+      "compiler_fingerprint": 8821598153175443181,
+      "previous_fingerprint": null,
+      "cache_mtime_ns": 1793226044436050393,
+      "cache_sha256": "9ce2704eaff2b6ea8d80e42d8a73e7008e4d5b2f2a51fb83b62c71423bb5ad03"
+    },
+    "native_admissions": [
+      {
+        "path": "round18-cargo/edited-roles/results/replica/check/admit-0-native-candidate/native-execs.json",
+        "sha256": "4f4ba32e3b28b11070907a28789e7f4e9a7c0e49c1466b993c2b0b35360a7903",
+        "compiler_wrapper_processes": 1,
+        "actual_distributed_rustc": 1
+      },
+      {
+        "path": "round18-cargo/edited-roles/results/replica/check/admit-1-native-base/native-execs.json",
+        "sha256": "4f4ba32e3b28b11070907a28789e7f4e9a7c0e49c1466b993c2b0b35360a7903",
+        "compiler_wrapper_processes": 1,
+        "actual_distributed_rustc": 1
+      }
+    ],
+    "harness_sha256": "dc3de9a0c5dd5b26f4450cb019b4eef1f9a7b4eebf178192df35acb11ce7f079"
+  },
+  "warm-driver-initial": {
+    "cache": {
+      "target": "/tmp/ohm-uv-bench.0H03f2TH/target-release18-render-initial",
+      "ready_marker": true,
+      "compiler_fingerprint": 6438448433861015610,
+      "previous_fingerprint": 17158927424691077099,
+      "cache_mtime_ns": 1793225743569970437,
+      "cache_sha256": "ee9f13c92971041bd14da667a1c436ffbedfc79221e45945a14dc3b7eaed1484"
+    },
+    "mode": "dynamorio",
+    "argv": {
+      "check": [
+        "check"
+      ],
+      "build": [
+        "build"
+      ],
+      "test": [
+        "test",
+        "--no-run"
+      ]
+    },
+    "first_scored_check_log_mtime_ns": 1793225801264765751,
+    "protocol_sha256": "a28a9659f1bfb37b60ec1fee86c5fbe798b185b96e488edec9a8cff036b28cc5",
+    "harness_sha256": "244aa420678b9692467fd7e609cf46161217602ae383771c1c409a347aa033e2",
+    "launcher_sha256": "91fa11e2c8916e4929ba35d619a9528c242fa425b3d4a9d5a7f140a77dca7573",
+    "warm_sha256": "c77062e44f491c7d304f36f7d995201dfda4367fc3453b05e3918d0d0e4def61"
+  },
+  "warm-driver-replica": {
+    "cache": {
+      "target": "/tmp/ohm-uv-bench.0H03f2TH/target-release18-render-replica",
+      "ready_marker": true,
+      "compiler_fingerprint": 6438448433861015610,
+      "previous_fingerprint": null,
+      "cache_mtime_ns": 1793223156666859242,
+      "cache_sha256": "7c25c64975dd2d4b7b3add02bc9245d73267790c33a828b63dc0e2a8955ef600"
+    },
+    "mode": "instructions",
+    "argv": {
+      "check": [
+        "check"
+      ],
+      "build": [
+        "build"
+      ],
+      "test": [
+        "test",
+        "--no-run"
+      ]
+    },
+    "first_scored_check_log_mtime_ns": 1793226813228419671,
+    "protocol_sha256": "c8aa2c56f4d05cb190ddcaefdbc6fdde5a5195fb72f24f1a3f6382a32d292667",
+    "harness_sha256": "7ab0b1b5d5bec6b2caaba6900c7daae0a43647ea73c0676995edf9cde8084321",
+    "launcher_sha256": "91fa11e2c8916e4929ba35d619a9528c242fa425b3d4a9d5a7f140a77dca7573",
+    "warm_sha256": "e2923d49cc451e12bac00bf3640f2435ecafcec111e4e37f65bd7dbf0f513ebd"
+  },
+  "warm-driver-fast": {
+    "cache": {
+      "target": "/tmp/ohm-uv-bench.0H03f2TH/target-release18-render-replica",
+      "ready_marker": true,
+      "compiler_fingerprint": 6438448433861015610,
+      "previous_fingerprint": null,
+      "cache_mtime_ns": 1793223156666859242,
+      "cache_sha256": "7c25c64975dd2d4b7b3add02bc9245d73267790c33a828b63dc0e2a8955ef600"
+    },
+    "mode": "dynamorio",
+    "argv": {
+      "check": [
+        "check"
+      ],
+      "build": [
+        "build"
+      ],
+      "test": [
+        "test",
+        "--no-run"
+      ]
+    },
+    "first_scored_check_log_mtime_ns": 1793223320096085234,
+    "protocol_sha256": "328fe9bb3379a08e687672bf0d7f028b67a7886c86abcc7b488ef9bb76a7fd8b",
+    "harness_sha256": "244aa420678b9692467fd7e609cf46161217602ae383771c1c409a347aa033e2",
+    "launcher_sha256": "91fa11e2c8916e4929ba35d619a9528c242fa425b3d4a9d5a7f140a77dca7573",
+    "warm_sha256": "e2923d49cc451e12bac00bf3640f2435ecafcec111e4e37f65bd7dbf0f513ebd"
+  },
+  "hash-instructions-initial": {
+    "cache": {
+      "target": "/tmp/ohm-uv-bench.0H03f2TH/collision-proof-18/instructions-initial/predecessor",
+      "ready_marker": false,
+      "compiler_fingerprint": 6438448433861015610,
+      "previous_fingerprint": null,
+      "cache_mtime_ns": 1793229575303364873,
+      "cache_sha256": "b46ebcbd0d216ed09614405cbca4bd1fac7bf35901129e5ac9ae61bbf1053730"
+    },
+    "actual_argv": [
+      "check",
+      "--locked",
+      "--offline",
+      "-j8"
+    ],
+    "native_exec_environment": [
+      {
+        "path": "round18-cargo/lockfile-collision/recovery/results/instructions-initial/settled.log.exec.1248295",
+        "sha256": "14e09692ac25b56d6023b9d4737b1f240106d83e515998efaeeaf9af5db88da6",
+        "rustc_wrapper": false,
+        "workspace_wrapper": false
+      }
+    ],
+    "harness_sha256": "9caf8b944530c1d51783c5fdd7acd7c9115d62ef2e86f73ef76bd2116899da7a"
+  },
+  "hash-instructions-repeat": {
+    "cache": {
+      "target": "/tmp/ohm-uv-bench.0H03f2TH/collision-proof-18/instructions-repeat/predecessor",
+      "ready_marker": false,
+      "compiler_fingerprint": 6438448433861015610,
+      "previous_fingerprint": null,
+      "cache_mtime_ns": 1793230037053200087,
+      "cache_sha256": "e0f81c6d7be088893ceef89e15f6b2700430d72c96c73746d8ddde473786b56d"
+    },
+    "actual_argv": [
+      "check",
+      "--locked",
+      "--offline",
+      "-j8"
+    ],
+    "native_exec_environment": [
+      {
+        "path": "round18-cargo/lockfile-collision/recovery/results/instructions-repeat/settled.log.exec.1277934",
+        "sha256": "546b4042c60a91d0ad201013e41f5d43b675eaac26dd18892f849c6bc442d42c",
+        "rustc_wrapper": false,
+        "workspace_wrapper": false
+      }
+    ],
+    "harness_sha256": "9caf8b944530c1d51783c5fdd7acd7c9115d62ef2e86f73ef76bd2116899da7a"
+  },
+  "hash-wall-initial": {
+    "cache": {
+      "target": "/tmp/ohm-uv-bench.0H03f2TH/collision-proof-18/wall-initial/predecessor",
+      "ready_marker": false,
+      "compiler_fingerprint": 6438448433861015610,
+      "previous_fingerprint": null,
+      "cache_mtime_ns": 1793231830806471281,
+      "cache_sha256": "e0c936f033a04117a87a8269858730f99e3d541906b388354f48ba21315e0dcc"
+    },
+    "actual_argv": [
+      "check",
+      "--locked",
+      "--offline",
+      "-j8"
+    ],
+    "native_exec_environment": [
+      {
+        "path": "round18-cargo/lockfile-collision/recovery/results/wall-initial/settled.log.exec.1613705",
+        "sha256": "6db7641bf34c6297c57a2430777b36fa20ee90ef16206dab4b77128cc2e8f86f",
+        "rustc_wrapper": false,
+        "workspace_wrapper": false
+      },
+      {
+        "path": "round18-cargo/resolver-native-repair/hash/results/wall-initial/admit-base.log.exec.1873817",
+        "sha256": "6db7641bf34c6297c57a2430777b36fa20ee90ef16206dab4b77128cc2e8f86f",
+        "rustc_wrapper": false,
+        "workspace_wrapper": false
+      },
+      {
+        "path": "round18-cargo/resolver-native-repair/hash/results/wall-initial/admit-candidate.log.exec.1873840",
+        "sha256": "6db7641bf34c6297c57a2430777b36fa20ee90ef16206dab4b77128cc2e8f86f",
+        "rustc_wrapper": false,
+        "workspace_wrapper": false
+      }
+    ],
+    "harness_sha256": "9caf8b944530c1d51783c5fdd7acd7c9115d62ef2e86f73ef76bd2116899da7a"
+  },
+  "hash-wall-repeat": {
+    "cache": {
+      "target": "/tmp/ohm-uv-bench.0H03f2TH/collision-proof-18/wall-repeat/predecessor",
+      "ready_marker": false,
+      "compiler_fingerprint": 6438448433861015610,
+      "previous_fingerprint": null,
+      "cache_mtime_ns": 1793232056507044849,
+      "cache_sha256": "c2a00d3ada7f025abec93a046b83262efd0069d2731d6ee57b2afa76fdf8e2bd"
+    },
+    "actual_argv": [
+      "check",
+      "--locked",
+      "--offline",
+      "-j8"
+    ],
+    "native_exec_environment": [
+      {
+        "path": "round18-cargo/lockfile-collision/recovery/results/wall-repeat/settled.log.exec.1668649",
+        "sha256": "45e3a33285982fa14115ef85b5ded687bdeab939f91ee9aba7d02d02ed44dbd7",
+        "rustc_wrapper": false,
+        "workspace_wrapper": false
+      },
+      {
+        "path": "round18-cargo/resolver-native-repair/hash/results/wall-repeat/admit-base.log.exec.1876622",
+        "sha256": "82818a0208e94a80d1353b55ec33c695c851ad05da3d68c9b7da500ab37b8e5f",
+        "rustc_wrapper": false,
+        "workspace_wrapper": false
+      },
+      {
+        "path": "round18-cargo/resolver-native-repair/hash/results/wall-repeat/admit-candidate.log.exec.1876644",
+        "sha256": "b280f5c7af952d14714aecc05a642f9a791b96894e631d4fe53cc8976417590a",
+        "rustc_wrapper": false,
+        "workspace_wrapper": false
+      }
+    ],
+    "harness_sha256": "9caf8b944530c1d51783c5fdd7acd7c9115d62ef2e86f73ef76bd2116899da7a"
+  },
+  "ordered-instructions-initial": {
+    "cache": {
+      "target": "/tmp/ohm-uv-bench.0H03f2TH/collision-ordered-18/instructions-initial/predecessor",
+      "ready_marker": false,
+      "compiler_fingerprint": 6438448433861015610,
+      "previous_fingerprint": null,
+      "cache_mtime_ns": 1793230889501376127,
+      "cache_sha256": "919f8b43a1d7dd84fed183b3fa5140cc03b88ac4fce712732dd1fb156f3957e6"
+    },
+    "actual_argv": [
+      "check",
+      "--locked",
+      "--offline",
+      "-j8"
+    ],
+    "native_exec_environment": [
+      {
+        "path": "round18-cargo/lockfile-collision-ordered/results/instructions-initial/settled.log.exec.1391114",
+        "sha256": "a273e809bc94e52dbbabecbed1c5d2c61858516bf2697646aa0584022586651e",
+        "rustc_wrapper": false,
+        "workspace_wrapper": false
+      }
+    ],
+    "harness_sha256": "29f46b0e46b65f0c9390973df742ea9edc20ea3bc6ad949ed5af36cfe75625dc"
+  },
+  "ordered-instructions-repeat": {
+    "cache": {
+      "target": "/tmp/ohm-uv-bench.0H03f2TH/collision-ordered-18/instructions-repeat/predecessor",
+      "ready_marker": false,
+      "compiler_fingerprint": 6438448433861015610,
+      "previous_fingerprint": null,
+      "cache_mtime_ns": 1793231372498650303,
+      "cache_sha256": "7126cd36203bffb0bf19a6d7e22c5ded4b1c48123d67bb3053ec9b402a51883a"
+    },
+    "actual_argv": [
+      "check",
+      "--locked",
+      "--offline",
+      "-j8"
+    ],
+    "native_exec_environment": [
+      {
+        "path": "round18-cargo/lockfile-collision-ordered/results/instructions-repeat/settled.log.exec.1478844",
+        "sha256": "ba6e836272a0fb50df1eefe6b20ccb7dbef881b5cf34031197ea29664ac7d0f0",
+        "rustc_wrapper": false,
+        "workspace_wrapper": false
+      }
+    ],
+    "harness_sha256": "29f46b0e46b65f0c9390973df742ea9edc20ea3bc6ad949ed5af36cfe75625dc"
+  },
+  "ordered-wall-initial": {
+    "cache": {
+      "target": "/tmp/ohm-uv-bench.0H03f2TH/collision-ordered-18/wall-initial/predecessor",
+      "ready_marker": false,
+      "compiler_fingerprint": 6438448433861015610,
+      "previous_fingerprint": null,
+      "cache_mtime_ns": 1793231827453400555,
+      "cache_sha256": "e88b9694532283dafbb105f2d493c89f46810b9a1d9e93a97922cd74765c442e"
+    },
+    "actual_argv": [
+      "check",
+      "--locked",
+      "--offline",
+      "-j8"
+    ],
+    "native_exec_environment": [
+      {
+        "path": "round18-cargo/lockfile-collision-ordered/results/wall-initial/settled.log.exec.1613406",
+        "sha256": "a27ad47f72c831a5c3221ee6b8dacecf5f274c9715bf49a38fbe3da1fa53ac12",
+        "rustc_wrapper": false,
+        "workspace_wrapper": false
+      },
+      {
+        "path": "round18-cargo/resolver-native-repair/ordered/results/wall-initial/admit-base.log.exec.1878004",
+        "sha256": "13e6901e0a8f1c213018ee1c930831a758115b23127746a890b2162a8244df42",
+        "rustc_wrapper": false,
+        "workspace_wrapper": false
+      },
+      {
+        "path": "round18-cargo/resolver-native-repair/ordered/results/wall-initial/admit-candidate.log.exec.1878049",
+        "sha256": "91070fb909d24f726c29cfe16d9ab7c59ab136ca2bdbb181a505aa6987b96d2e",
+        "rustc_wrapper": false,
+        "workspace_wrapper": false
+      }
+    ],
+    "harness_sha256": "29f46b0e46b65f0c9390973df742ea9edc20ea3bc6ad949ed5af36cfe75625dc"
+  },
+  "ordered-wall-repeat": {
+    "cache": {
+      "target": "/tmp/ohm-uv-bench.0H03f2TH/collision-ordered-18/wall-repeat/predecessor",
+      "ready_marker": false,
+      "compiler_fingerprint": 6438448433861015610,
+      "previous_fingerprint": null,
+      "cache_mtime_ns": 1793232056469543155,
+      "cache_sha256": "b40b3603b590203d8cd1fe86dce2363219dc4accd9c894cdae0746e0b8e11a64"
+    },
+    "actual_argv": [
+      "check",
+      "--locked",
+      "--offline",
+      "-j8"
+    ],
+    "native_exec_environment": [
+      {
+        "path": "round18-cargo/lockfile-collision-ordered/results/wall-repeat/settled.log.exec.1668829",
+        "sha256": "67b909395d5ef34b8a071de50844e1922291f472c516192a97542e42af021d3c",
+        "rustc_wrapper": false,
+        "workspace_wrapper": false
+      },
+      {
+        "path": "round18-cargo/resolver-native-repair/ordered/results/wall-repeat/admit-base.log.exec.1880490",
+        "sha256": "67b909395d5ef34b8a071de50844e1922291f472c516192a97542e42af021d3c",
+        "rustc_wrapper": false,
+        "workspace_wrapper": false
+      },
+      {
+        "path": "round18-cargo/resolver-native-repair/ordered/results/wall-repeat/admit-candidate.log.exec.1880521",
+        "sha256": "4e169d67d2b91778031be73e2d0a8ae234edde5ce45471ded1861855be0eddfa",
+        "rustc_wrapper": false,
+        "workspace_wrapper": false
+      }
+    ],
+    "harness_sha256": "29f46b0e46b65f0c9390973df742ea9edc20ea3bc6ad949ed5af36cfe75625dc"
+  },
+  "as_of": "2026-10-29T01:42:15.173487+00:00"
+}

@@ -1,5 +1,7 @@
 # Two lockfile collision guards on Ohm Cargo 1.99.0-18
 
+Both edited native confirmations for each guard have finished. Neither met its elapsed-time criterion. [Held-out results and standalone checks](../resolver-wall/README.md)
+
 Both guards bypass the `EncodeResolve` collision check when package name/version pairs prove that serialised package IDs are distinct. The hash-set guard accepts unique pairs in any order. The ordered guard accepts strictly increasing pairs without allocation. Either declines ambiguous input and calls the same existing diagnostic. uv has 728 locked packages, 27 names with multiple versions and zero exact name/version collisions.
 
 Each row compares one guard with the same unmodified version of the earlier stack, using matched non-PGO release-style drivers. The baseline includes the five Cargo changes and Rust standard-library path guard linked into Cargo. These observations count the Cargo process on an ordinary, warmed `cargo check --locked --offline -j8`. Initial observations used DynamoRIO and independent repeats used Cachegrind. No compiler or linker work is included. Fractions are medians of paired reductions. The rank intervals have 96.14% coverage at 12 pairs and 99.22% at 8 pairs.

@@ -1,0 +1,90 @@
+{
+  "checked_utc": "2026-10-29T01:14:39.745676+00:00",
+  "release": "7caf39914da1e28a67744ecbc963a5f26361474d",
+  "pull_requests": [
+    {
+      "base": "e439d116ab16ffc2b4dd8c8721e6d189c43edea9",
+      "base_ref": "charlie/ohm-literal-workspace-member-directories",
+      "draft": true,
+      "head": "36ee3dac9bf62b94c76ea1313581c287839e5abf",
+      "html_url": "https://github.com/astral-sh/ohm-cargo/pull/271",
+      "number": 271,
+      "state": "open",
+      "title": "Reuse decoded paths from interned local source IDs",
+      "updated_at": "2026-10-29T01:07:24Z"
+    },
+    {
+      "base": "7caf39914da1e28a67744ecbc963a5f26361474d",
+      "base_ref": "charlie/ohm-short-circuit-workspace-exclusions",
+      "draft": true,
+      "head": "693599325e47a8c5f59ecd1118893e86eded5c12",
+      "html_url": "https://github.com/astral-sh/ohm-cargo/pull/276",
+      "number": 276,
+      "state": "open",
+      "title": "Reuse resolved package IDs across package spec queries",
+      "updated_at": "2026-10-29T01:12:49Z"
+    }
+  ],
+  "findings": {
+    "36ee3dac9bf62b94c76ea1313581c287839e5abf": {
+      "source_path": "src/resolver/mod.rs",
+      "blob": "ce1ca941efcf37da58638dce0e6d48f16d84fe12",
+      "body": "fn check_duplicate_pkgs_in_lockfile(resolve: &Resolve) -> CargoResult<()> {\n    let mut unique_pkg_ids = HashMap::default();\n    let state = encode::EncodeState::new(resolve);\n    for pkg_id in resolve.iter() {\n        let encodable_pkd_id = encode::encodable_package_id(pkg_id, &state, resolve.version());\n        if let Some(prev_pkg_id) = unique_pkg_ids.insert(encodable_pkd_id, pkg_id) {\n            anyhow::bail!(\n                \"package collision in the lockfile: packages {} and {} are different, \\\n                 but only one can be written to lockfile unambiguously\",\n                prev_pkg_id,\n                pkg_id\n            )\n        }\n    }\n    Ok(())\n}",
+      "caller": [
+        "        Vec::new(),",
+        "        resolve_version,",
+        "        summaries,",
+        "    );",
+        "",
+        "    check_cycles(&resolve)?;",
+        "    check_duplicate_pkgs_in_lockfile(&resolve)?;",
+        "    trace!(\"resolved: {:?}\", resolve);",
+        "",
+        "    Ok(resolve)",
+        "}"
+      ],
+      "line": 1065,
+      "same_release_body_and_caller": true
+    },
+    "693599325e47a8c5f59ecd1118893e86eded5c12": {
+      "source_path": "src/resolver/mod.rs",
+      "blob": "ce1ca941efcf37da58638dce0e6d48f16d84fe12",
+      "body": "fn check_duplicate_pkgs_in_lockfile(resolve: &Resolve) -> CargoResult<()> {\n    let mut unique_pkg_ids = HashMap::default();\n    let state = encode::EncodeState::new(resolve);\n    for pkg_id in resolve.iter() {\n        let encodable_pkd_id = encode::encodable_package_id(pkg_id, &state, resolve.version());\n        if let Some(prev_pkg_id) = unique_pkg_ids.insert(encodable_pkd_id, pkg_id) {\n            anyhow::bail!(\n                \"package collision in the lockfile: packages {} and {} are different, \\\n                 but only one can be written to lockfile unambiguously\",\n                prev_pkg_id,\n                pkg_id\n            )\n        }\n    }\n    Ok(())\n}",
+      "caller": [
+        "        Vec::new(),",
+        "        resolve_version,",
+        "        summaries,",
+        "    );",
+        "",
+        "    check_cycles(&resolve)?;",
+        "    check_duplicate_pkgs_in_lockfile(&resolve)?;",
+        "    trace!(\"resolved: {:?}\", resolve);",
+        "",
+        "    Ok(resolve)",
+        "}"
+      ],
+      "line": 1065,
+      "same_release_body_and_caller": true
+    },
+    "7caf39914da1e28a67744ecbc963a5f26361474d": {
+      "source_path": "src/resolver/mod.rs",
+      "blob": "ce1ca941efcf37da58638dce0e6d48f16d84fe12",
+      "body": "fn check_duplicate_pkgs_in_lockfile(resolve: &Resolve) -> CargoResult<()> {\n    let mut unique_pkg_ids = HashMap::default();\n    let state = encode::EncodeState::new(resolve);\n    for pkg_id in resolve.iter() {\n        let encodable_pkd_id = encode::encodable_package_id(pkg_id, &state, resolve.version());\n        if let Some(prev_pkg_id) = unique_pkg_ids.insert(encodable_pkd_id, pkg_id) {\n            anyhow::bail!(\n                \"package collision in the lockfile: packages {} and {} are different, \\\n                 but only one can be written to lockfile unambiguously\",\n                prev_pkg_id,\n                pkg_id\n            )\n        }\n    }\n    Ok(())\n}",
+      "caller": [
+        "        Vec::new(),",
+        "        resolve_version,",
+        "        summaries,",
+        "    );",
+        "",
+        "    check_cycles(&resolve)?;",
+        "    check_duplicate_pkgs_in_lockfile(&resolve)?;",
+        "    trace!(\"resolved: {:?}\", resolve);",
+        "",
+        "    Ok(resolve)",
+        "}"
+      ],
+      "line": 1065,
+      "same_release_body_and_caller": true
+    }
+  }
+}

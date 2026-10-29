@@ -1,5 +1,7 @@
 # Warm Cargo driver instructions on Ohm 1.99.0-18
 
+These commands had no compiler wrapper and launched no compiler. The release compiler identity is recorded. The original runs do not retain every loader variable visible inside the profiled Cargo process. [Observer audit](../observer-audit/README.md)
+
 Two independently prepared, profile-guided Cargo builds ran each warm workspace command in 12 randomized pairs. The first checkout used DynamoRIO and the second used Cachegrind. Cargo rebuilt zero packages. For the test-build command it reported the same 72 test executables. The distributed compiler and linker had no build work in this comparison.
 
 | Command | PGO + DynamoRIO | PGO + Cachegrind | ThinLTO without PGO + DynamoRIO |

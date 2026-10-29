@@ -1,0 +1,146 @@
+{
+  "observers": {
+    "perf": {
+      "returncode": 1,
+      "changed": {
+        "CARGO_HOME": [
+          "/tmp/ohm-uv-bench.0H03f2TH/wrapper-free-stock-admission/cargo-home",
+          null
+        ],
+        "CARGO_NET_OFFLINE": [
+          "true",
+          null
+        ],
+        "CARGO_TARGET_DIR": [
+          "/tmp/ohm-uv-bench.0H03f2TH/wrapper-free-stock-admission/target",
+          null
+        ],
+        "CARGO_TERM_COLOR": [
+          "never",
+          null
+        ],
+        "HOME": [
+          "/tmp/ohm-uv-bench.0H03f2TH/wrapper-free-stock-admission/env-home",
+          null
+        ],
+        "LC_ALL": [
+          "C.UTF-8",
+          null
+        ],
+        "PATH": [
+          "/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/upstream-monitor/toolchain18/bin:/usr/bin:/bin",
+          null
+        ],
+        "PWD": [
+          "/tmp/ohm-uv-bench.0H03f2TH/wrapper-free-stock-admission/source",
+          null
+        ],
+        "RUSTC": [
+          "/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/upstream-monitor/toolchain18/bin/rustc",
+          null
+        ],
+        "RUSTDOC": [
+          "/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/upstream-monitor/toolchain18/bin/rustdoc",
+          null
+        ],
+        "SSL_CERT_FILE": [
+          "/etc/ssl/certs/ca-certificates.crt",
+          null
+        ],
+        "TZ": [
+          "UTC",
+          null
+        ],
+        "VALGRIND_LIB": [
+          "/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/profiler/usr/libexec/valgrind",
+          null
+        ]
+      },
+      "eligible": false,
+      "command": [
+        "/usr/bin/perf",
+        "stat",
+        "--no-big-num",
+        "-x",
+        ";",
+        "-e",
+        "instructions:u",
+        "-o",
+        "/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/round18-cargo/wrapper-free-check/stock-results/env-perf/perf.stat",
+        "--",
+        "/usr/bin/env",
+        "-0"
+      ]
+    },
+    "dynamorio": {
+      "returncode": 0,
+      "changed": {
+        "DYNAMORIO_CONFIGDIR": [
+          null,
+          "/tmp/ohm-uv-bench.0H03f2TH/wrapper-free-stock-admission/env-home"
+        ],
+        "DYNAMORIO_EXE_PATH": [
+          null,
+          "/usr/bin/env"
+        ],
+        "DYNAMORIO_TAKEOVER_IN_INIT": [
+          null,
+          "1"
+        ]
+      },
+      "eligible": false,
+      "command": [
+        "/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/dynamorio/DynamoRIO-Linux-11.3.0-1/bin64/drrun",
+        "-follow_children",
+        "-t",
+        "drcachesim",
+        "-offline",
+        "-raw_compress",
+        "none",
+        "-outdir",
+        "/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/round18-cargo/wrapper-free-check/stock-results/env-dynamorio",
+        "-L0I_filter",
+        "-L0I_size",
+        "0",
+        "-L0D_filter",
+        "-L0D_size",
+        "0",
+        "--",
+        "/usr/bin/env",
+        "-0"
+      ]
+    },
+    "cachegrind": {
+      "returncode": 0,
+      "changed": {
+        "GLIBCPP_FORCE_NEW": [
+          null,
+          "1"
+        ],
+        "GLIBCXX_FORCE_NEW": [
+          null,
+          "1"
+        ],
+        "LD_LIBRARY_PATH": [
+          null,
+          "/usr/lib/debug"
+        ],
+        "LD_PRELOAD": [
+          null,
+          "/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/profiler/usr/libexec/valgrind/vgpreload_core-amd64-linux.so"
+        ]
+      },
+      "eligible": false,
+      "command": [
+        "/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/profiler/usr/bin/valgrind",
+        "--tool=cachegrind",
+        "--trace-children=yes",
+        "--cachegrind-out-file=/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/round18-cargo/wrapper-free-check/stock-results/env-cachegrind/cachegrind.%p",
+        "/usr/bin/env",
+        "-0"
+      ]
+    }
+  },
+  "eligible_for_lifecycle_calibration": [],
+  "treated_observations": 0
+}
