@@ -210,6 +210,21 @@ fn unit_uses_ohm_worktree_seeds(build_runner: &BuildRunner<'_, '_>, unit: &Unit)
         && unit.pkg.package_id().source_id().is_path()
 }
 
+/// A library can assemble external inputs before any executable is linked.
+/// Ask the driver that actually emits this unit's objects whether it can track them.
+fn unit_checks_relink_inputs(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
+    let bcx = build_runner.bcx;
+    let unstable = bcx.gctx.cli_unstable();
+    (unstable.ohm_defaults() || unstable.relink_only())
+        // Shared check/build stages need the same tracked compiler options.
+        && (matches!(unit.mode, CompileMode::Build | CompileMode::Test)
+            || unit_uses_ohm_shared_stages(build_runner, unit))
+        && !(bcx.build_config.primary_unit_rustc.is_some() && build_runner.is_primary_package(unit))
+        && bcx
+            .rustc()
+            .supports_relink_input_checks(bcx.gctx, bcx.ws.is_member(&unit.pkg))
+}
+
 /// A new checkout has new source mtimes, so seeded mutable units must validate
 /// source contents. Explicit checksum freshness still applies to every unit.
 fn unit_uses_checksum_freshness(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
@@ -1130,12 +1145,11 @@ fn rustc(
             .map(|output| RelinkCachePaths::new(output.path.clone()))
     })
     .flatten();
-    let reuse_codegen = relink_cache.is_some()
-        && unstable.relink_only()
-        && build_runner
-            .bcx
-            .rustc()
-            .supports_relink_input_checks(build_runner.bcx.gctx);
+    let check_relink_inputs = unit_checks_relink_inputs(build_runner, unit);
+    if check_relink_inputs {
+        rustc.arg("-Zohm-check-relink-inputs");
+    }
+    let reuse_codegen = relink_cache.is_some() && unstable.relink_only() && check_relink_inputs;
     let source_arg = path_args(build_runner.bcx.ws, unit).0;
     let relinkable_dependencies = build_runner
         .unit_deps(unit)
@@ -1196,9 +1210,6 @@ fn rustc(
         // keep them outside the dependency search directory while completing
         // the initial link.
         rustc.arg("-Z").arg("emit-rlink");
-        if reuse_codegen {
-            rustc.arg("-Zohm-check-relink-inputs");
-        }
         let mut temps_dir = OsString::from("temps-dir=");
         temps_dir.push(&cache.objects);
         rustc.arg("-Z").arg(temps_dir);
