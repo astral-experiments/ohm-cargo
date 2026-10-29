@@ -1,0 +1,112 @@
+{
+  "candidate": {
+    "abi": {
+      "bin/cargo": "99383612a7a0a2b58c60f8d94711e88e3f73f4fd584ff43ef8a6b04caa1fa8aa",
+      "bin/rustc": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+      "lib/librustc_driver-15d35e5526bb94f8.so": "887bf8fc3c90090c1dd5be4af51e8c4a0f319a93db99b454dae35e96c7afde8b",
+      "lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld/ld.bfd": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+    },
+    "aliased_stdlib": true,
+    "baseline_lib_same_inode": true,
+    "versions": {
+      "cargo": "cargo 1.99.0 (34dad66fd 2026-10-29)\nrelease: 1.99.0\ncommit-hash: 34dad66fd2ac823bfb02c2c4a4bab02fb5ac4d31\ncommit-date: 2026-10-29\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.0.13)\nos: Ubuntu 24.4.0 (noble) [64-bit]\n",
+      "rustc": "rustc 1.99.0-dev (5e3de497d 2026-10-29) (ohm-ruff-lint-scout)\nbinary: rustc\ncommit-hash: 5e3de497d41f4d4fa98fce3082ea43076779de5d\ncommit-date: 2026-10-29\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-dev\nLLVM version: 23.1.1\n"
+    }
+  },
+  "candidate_patch": "86bcacc39a16e6498ee6f2620f932222f08a190677e6b34124711401a6d2e760",
+  "candidate_source": "fd872c053bb1e9dcde722cf90a05a7cb8335dd32",
+  "candidate_tree": "a7108818f490bf4b48d01e28c313eef33c5b4e2b",
+  "cargo_reported_stamp": "34dad66fd2ac823bfb02c2c4a4bab02fb5ac4d31",
+  "edit": "a50dc58628691ee00a21809e19bdea71958e4f3c",
+  "empties": {
+    "invalid": {
+      "initial_shared_files": 0,
+      "initial_target_files": 0,
+      "physical_link_sha": "cac9e6221e1dad9f0e79e7469f7b646266a4e9d5733c25ced40fc4c6eed2b807",
+      "provider_sha": "e904c729a9c7f44f0c8b71cc44eb34072ee87a1b9ce4305388b1d68f97111d2f",
+      "published_before_actual_link": true,
+      "real_search_exact": true,
+      "result": {
+        "diagnostic": true,
+        "exit": 101,
+        "listed": {},
+        "wild": 28
+      },
+      "which": "invalid"
+    },
+    "valid": {
+      "initial_shared_files": 0,
+      "initial_target_files": 0,
+      "physical_link_sha": "6ad5955e77ab7265b5960421c1757fcaa669546597907aa712a5be8405427d29",
+      "provider_sha": "9852b8ae0f80e10d85ed766396185ce4ad12d50920ac8116ad1dcfd728b2498a",
+      "published_before_actual_link": true,
+      "real_search_exact": true,
+      "result": {
+        "diagnostic": false,
+        "exit": 0,
+        "listed": {
+          "generate_inline_tests": [
+            83,
+            0,
+            "279198e631eee19006823b6933348482ee4b2f348a7cae07aa924bc221099f8f"
+          ]
+        },
+        "wild": 28
+      },
+      "which": "valid"
+    }
+  },
+  "matched_parent": {
+    "cargo": "bd4b4545142ebb259442f12af286911919b041207c26e5fd9d240cc5bc5f2ded",
+    "cargo_commit": "34dad66fd2ac823bfb02c2c4a4bab02fb5ac4d31",
+    "rustc": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+    "shared_lib_inode": true
+  },
+  "parent": "34dad66fd2ac823bfb02c2c4a4bab02fb5ac4d31",
+  "ruff": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "rust": "5e3de497d41f4d4fa98fce3082ea43076779de5d",
+  "scope": {
+    "cpus": [
+      24,
+      25,
+      26,
+      27
+    ],
+    "e2e": "ty_server:e2e",
+    "feature_unification": "insta/ron",
+    "jobs": 4,
+    "plain_targeted": [
+      "ruff_python_parser:generate_inline_tests",
+      "ruff_python_parser:fixtures"
+    ],
+    "wall_time": false,
+    "wrappers": false
+  },
+  "sibling_manifests": {
+    "corrected-pins-parser-e2e-link-scout": "40c9ac61b804c1d397e269517b7b4871d6bbea49c179b0fac7fcd26bfcc4c083",
+    "corrected-pins-unused-self-native-shadow": "249dc2bf56c8916f8d7f6de19e38d565cbe45ee2ca2ae25d7e9d558bf1956751",
+    "dirty-real-link-cargo-native-arguments": "de8f47aac09e83bacb894e258864a14b2a83794ab99a75429b914af9aeaffa5c",
+    "propagated-native-path-ruff-candidate": "2d373a898d3c2a74884293ff2268b4c6b94e7054fe27abbc4a2015357330c2b4",
+    "unused-self-driver-library-path-control": "7a9eefa67b7d64bce025c7d4c2df1c86b547fa7850d6a8c831e9a40b4fea7544",
+    "unused-self-zero-env-native-argument": "e9d2f7d8e801e768d38b173a1f41eb23eebd592a334826bb7a07e041d7497d42"
+  },
+  "source_parent": "29e8dbd291cd79fd8c1ba46f86b3dc333d23cde7",
+  "sources": {
+    "before-run.py": "f64e82fb080c63fc88471519193ff7650668d51dd80b81d98ac8b62a5b61ec68",
+    "broader.py": "cc9ad9a633ee1e6ca68695cb54d6614354670d03b5451eb96995f000c3121f0e",
+    "empty-announced.py": "a56f3dc355404b94d311323b7aea1f62182eca531c13b159b1f5fa2f37c7b7ce",
+    "extra-broader.py": "37a2e01d51d57f51ec878bdc39b1e4facbf2a7503cf54a4155883d68fe4cee36",
+    "fix-run.py": "5aae115efe0c5e54195e33cf3cbd8c378daa21cb9c76d6a4925b5ad3e1cece40",
+    "scope.py": "813a3291769b67e2c4151b3c27f5efdde979cb420947379505318b76e9b2a4ca",
+    "supplement.py": "30482dd85d2ad3e2fc5da8d3668098c83d4c090cfaac2094f37a43e7e98ea553"
+  },
+  "terminal": {
+    "candidate": "9a78af57e61b9e13c911e4c6e8aeb6ca8d59886bbfe011df70cdc71df584a824",
+    "candidate_defaults_off": "074e8f2b1ebe9980494729ac77ae0562a210b8f2cba7fae023bd9a33fc0a9281",
+    "candidate_e2e": "aa3feeb6292c0749da49add51ac5601bbe546d9e41cb6f083c454145b380eb06",
+    "candidate_empty_invalid": "cda1d88f891568f6fa7f2080239a904aacdc8df2b925c94e7d46d5f0d8baeb46",
+    "candidate_empty_valid": "341550d0e9040eb7275b2d8c73f0a680f55038d1da1d0e7a185ee337140b204d",
+    "candidate_ron": "4001b69b58f52b5bca9ef38b58c80857d3516fb23fe8736b3f6f5bf1cea3b140",
+    "matched_parent": "d4e1d349b665990bceae3e04a22bffc453a4e71e9405ae043abc7ef5703fcd89"
+  }
+}
