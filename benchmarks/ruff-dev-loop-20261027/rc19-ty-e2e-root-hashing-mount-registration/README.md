@@ -1,0 +1,7 @@
+# Actual mount and Rustup visibility in the inlay-test study
+
+The first native rehearsal halted in a filesystem precondition before Rustup, Cargo or any compiler was invoked. The original raw error, namespace stdout and process exit remain archived. Python's ismount classifies the two true overlay directories, but reports false for this verified read-only single-file bind of Cargo on the same filesystem.
+
+The amendment parses the kernel's exact mount record for each of the three distinct mount IDs, verifies the Cargo mount is read-only, and verifies the input and visible Cargo have the same device, inode, POSIX mode, length and SHA-256. All effective, inheritable, permitted and ambient capabilities are clear after dropping privileges. These facts are repeated before each ordinary invocation. The path-only rehearsal made no Cargo or compiler calls and re-read the already retained original input closure and 139 existing root link objects.
+
+A distinct private physical experiment directory preserves the first startup and its overlay. Only the new mount checks and their recording change in the worker. The full original code and source registration, 8/12 pair order, reference statistic, endpoints, every behavioral and byte gate, the whole empty build, and both capacity floors are bound by their original SHA-256. Source and metadata generations stay separate. No scored observations exist.
