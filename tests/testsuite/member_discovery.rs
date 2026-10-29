@@ -43,3 +43,31 @@ fn bad_file_member_exclusion() {
     assert_eq!(ws.members().count(), 1);
     assert_eq!(ws.members().next().unwrap().name(), "bar");
 }
+
+#[cargo_test]
+#[cfg(unix)]
+fn literal_member_under_a_globbed_workspace_root() {
+    let p = project()
+        .file(
+            "ws[1]/Cargo.toml",
+            r#"
+                [workspace]
+                resolver = "2"
+                members = ["member"]
+            "#,
+        )
+        .file("ws[1]/member/.keep", "")
+        .file(
+            "ws1/member/Cargo.toml",
+            r#"
+                [package]
+                name = "expanded"
+                version = "0.1.0"
+                edition = "2024"
+                workspace = "../../ws[1]"
+            "#,
+        )
+        .file("ws1/member/src/lib.rs", "")
+        .build();
+    p.cargo("check -p expanded").cwd("ws[1]").run();
+}
