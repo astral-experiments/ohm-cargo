@@ -1661,9 +1661,9 @@ enum LocalFingerprint {
 enum BuildEnvValue {
     Bytes(Vec<u8>),
     Text(String),
-    // The old Option::None hash also covered every non-Unicode value.
-    // Use a distinct discriminant so those fingerprints are checked again.
-    Unset,
+    // The old JSON null and Option::None hash also covered every non-Unicode value.
+    // Use a new representation and discriminant so Cargo can discard those records.
+    Unset {},
 }
 
 impl BuildEnvValue {
@@ -1671,9 +1671,22 @@ impl BuildEnvValue {
         match self {
             Self::Text(text) => Some(text.clone()),
             Self::Bytes(bytes) => Some(format!("0x{}", hex::encode(bytes))),
-            Self::Unset => None,
+            Self::Unset {} => None,
         }
     }
+}
+
+#[test]
+fn build_env_value_invalidates_legacy_null() {
+    let unset = BuildEnvValue::Unset {};
+    assert_ne!(util::hash_u64(&unset), util::hash_u64(None::<String>));
+    assert!(serde_json::from_str::<BuildEnvValue>("null").is_err());
+
+    let encoded = serde_json::to_string(&unset).unwrap();
+    assert_eq!(
+        serde_json::from_str::<BuildEnvValue>(&encoded).unwrap(),
+        unset
+    );
 }
 
 /// See [`FsStatus::StaleItem`].
@@ -1736,7 +1749,7 @@ impl LocalFingerprint {
         let val = match val.map(OsString::into_string) {
             Some(Ok(text)) => BuildEnvValue::Text(text),
             Some(Err(value)) => BuildEnvValue::Bytes(value.into_encoded_bytes()),
-            None => BuildEnvValue::Unset,
+            None => BuildEnvValue::Unset {},
         };
         LocalFingerprint::RerunIfEnvChanged { var, val }
     }
