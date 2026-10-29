@@ -1,0 +1,196 @@
+diff --git a/src/compiler/mod.rs b/src/compiler/mod.rs
+index 7cc2b71c3480e4e3088a3a92fcb4e0c2f435b645..42520241427f1c37de89243a333a2eed1b274a70 100644
+--- a/src/compiler/mod.rs
++++ b/src/compiler/mod.rs
+@@ -201,6 +201,44 @@ fn unit_rustflags_without_ohm_defaults<'a>(
+     }
+ }
+ 
++/// Uses the previous dep-info to identify incremental work where coordinating
++/// frontend threads can cost more than compiling the crate.
++fn unit_has_small_frontend_input(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
++    let small_file = |path: &Path| {
++        path.metadata()
++            .is_ok_and(|info| info.is_file() && info.len() <= 16 * 1024)
++    };
++    match unit.mode {
++        CompileMode::Check { test: false } => {
++            return small_file(&fingerprint::dep_info_loc(build_runner, unit));
++        }
++        CompileMode::Build => {}
++        CompileMode::Test if unit.target.harness() => {}
++        _ => return false,
++    }
++    if !unit.target.is_bin()
++        || unit.artifact.is_true()
++        || !matches!(unit.profile.name.as_str(), "dev" | "test")
++        || unit.profile.opt_level.as_str() != "0"
++    {
++        return false;
++    }
++    let Some(source) = unit.target.src_path().path() else {
++        return false;
++    };
++    let dep_info = fingerprint::dep_info_loc(build_runner, unit);
++    if !small_file(&dep_info) {
++        return false;
++    }
++    let build_root = build_runner.files().build_root(unit);
++    let Some(mut paths) = fingerprint::dep_info_paths(unit.pkg.root(), &build_root, &dep_info)
++    else {
++        return false;
++    };
++    // A small bin entry point can pull in large modules or generated inputs.
++    paths.next().as_deref() == Some(source) && paths.next().is_none() && small_file(source)
++}
++
+ /// Keeps mutable-package source identities stable when a completed build is
+ /// copied into a new worktree. Immutable dependencies retain their existing
+ /// compiler flags and shared-cache fingerprints.
+@@ -2404,17 +2442,12 @@ fn prepare_rustc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
+     }
+     if gctx.cli_unstable().ohm_defaults() {
+         base.args(&OHM_DEFAULT_RUSTFLAGS);
+-        // A small incremental check spends more time coordinating frontend workers
+-        // than checking in parallel. The last successful dep-info is a cheap size hint.
+         if cfg!(all(target_os = "linux", target_arch = "x86_64"))
+             && is_workspace
+             && unit.kind == CompileKind::Host
+             && unit.profile.root == ProfileRoot::Debug
+             && unit.profile.incremental
+-            && matches!(unit.mode, CompileMode::Check { test: false })
+-            && fingerprint::dep_info_loc(build_runner, unit)
+-                .metadata()
+-                .is_ok_and(|info| info.is_file() && info.len() <= 16 * 1024)
++            && unit_has_small_frontend_input(build_runner, unit)
+         {
+             base.arg("-Zthreads=1");
+         }
+diff --git a/tests/testsuite/rustflags.rs b/tests/testsuite/rustflags.rs
+index fb03099dda2398a768edf37325b0015dd11cd534..78478c8e296a70c600528af62fc8eedd94e8d4c2 100644
+--- a/tests/testsuite/rustflags.rs
++++ b/tests/testsuite/rustflags.rs
+@@ -961,6 +961,102 @@ fn ohm_small_incremental_checks_use_one_frontend_thread() {
+     }
+ }
+ 
++#[cfg(all(target_os = "linux", target_arch = "x86_64"))]
++#[cargo_test]
++fn ohm_small_incremental_bins_use_one_frontend_thread() {
++    let wrapper = ohm_defaults_wrapper();
++    let manifest = format!(
++        "{}\n[profile.custom]\ninherits = \"dev\"\n",
++        basic_manifest("foo", "0.1.0")
++    );
++    let main = "fn main() {}";
++    let p = project()
++        .file("Cargo.toml", &manifest)
++        .file("src/main.rs", main)
++        .file("src/bin/other.rs", main)
++        .file(
++            "build.rs",
++            r#"fn main() {
++                let out = std::path::PathBuf::from(std::env::var_os("OUT_DIR").unwrap());
++                std::fs::write(out.join("message"), "generated").unwrap();
++            }"#,
++        )
++        .build();
++    let log = p.root().join("ohm-defaults.log");
++    let bin = &["--crate-type", "bin"][..];
++    let harness = &["--test"][..];
++    let custom_harness = &["--cfg", "test"][..];
++    let check = |name: &str, role: &[&str], expected: &[&str]| {
++        let log = fs::read_to_string(&log).unwrap();
++        let invocations: Vec<_> = rustc_invocations(&log, name).collect();
++        let [args] = invocations.as_slice() else {
++            panic!("expected one rustc invocation for {name}, got {invocations:?}");
++        };
++        let roles: Vec<_> = [bin, harness, custom_harness]
++            .into_iter()
++            .filter(|flags| args.windows(flags.len()).any(|pair| pair == *flags))
++            .collect();
++        assert_eq!(roles, [role], "{name}: {args:?}");
++        assert_eq!(frontend_threads(args), expected, "{name}: {args:?}");
++    };
++    let mut edit = 0;
++    let mut run = |command: &str, source: &str, role: &[&str], expected: &[&str]| {
++        edit += 1;
++        p.change_file("src/main.rs", &format!("// Edit {edit}\n{source}"));
++        fs::write(&log, "").unwrap();
++        p.cargo(&format!("-Zohm-defaults {command}"))
++            .masquerade_as_nightly_cargo(&["ohm-defaults"])
++            .env("CARGO_INCREMENTAL", "1")
++            .env("RUSTC_WRAPPER", &wrapper)
++            .env("OHM_DEFAULTS_LOG", &log)
++            .run();
++        check("foo", role, expected);
++    };
++
++    run("build", main, bin, &["8"]);
++    let dep_info = |name: &str| {
++        WalkDir::new(p.build_dir())
++            .into_iter()
++            .map(|entry| entry.unwrap())
++            .find(|entry| entry.file_name() == name)
++            .expect("previous bin dep-info")
++            .into_path()
++    };
++    let foo_hint = dep_info("dep-bin-foo");
++    fs::write(&foo_hint, b"invalid dep-info").unwrap();
++    p.change_file("src/bin/other.rs", "fn main() { println!(\"first\"); }");
++    run("build", main, bin, &["8"]);
++    check("other", bin, &["8", "1"]);
++
++    // Force foo to compile with the other bin's genuine single-source hint.
++    fs::copy(dep_info("dep-bin-other"), &foo_hint).unwrap();
++    fs::remove_file(foo_hint.with_file_name("bin-foo")).unwrap();
++    run("build --bin foo", main, bin, &["8"]);
++    run("build", main, bin, &["8", "1"]);
++    run("test --bin foo --no-run", main, harness, &["8"]);
++    run("test --bin foo --no-run", main, harness, &["8", "1"]);
++
++    let generated =
++        r#"fn main() { print!("{}", include_str!(concat!(env!("OUT_DIR"), "/message"))); }"#;
++    run("build", generated, bin, &["8", "1"]);
++    run("build", generated, bin, &["8"]);
++    p.process(p.bin("foo")).with_stdout_data("generated").run();
++
++    for command in [
++        "build --profile custom",
++        "build --config profile.dev.opt-level=1",
++    ] {
++        run(command, main, bin, &["8"]);
++        run(command, main, bin, &["8"]);
++    }
++    p.change_file(
++        "Cargo.toml",
++        &format!("{manifest}\n[[bin]]\nname = \"foo\"\npath = \"src/main.rs\"\nharness = false\n"),
++    );
++    run("test --bin foo --no-run", main, custom_harness, &["8"]);
++    run("test --bin foo --no-run", main, custom_harness, &["8"]);
++}
++
+ #[cargo_test]
+ fn ohm_incremental_mono_partitions_follow_compiler_capability() {
+     let wrapper = ohm_defaults_wrapper();
+@@ -1194,13 +1290,18 @@ fn ohm_incremental_mono_partitions_invalidate_unhashed_artifacts() {
+     );
+ }
+ 
+-fn rustc_invocation<'a>(log: &'a str, crate_name: &str) -> Vec<&'a str> {
++fn rustc_invocations<'a>(log: &'a str, crate_name: &str) -> impl Iterator<Item = Vec<&'a str>> {
+     log.lines()
+         .map(|line| line.split('\t').collect::<Vec<_>>())
+-        .find(|args| {
++        .filter(move |args| {
+             args.windows(2)
+                 .any(|args| args == ["--crate-name", crate_name])
+         })
++}
++
++fn rustc_invocation<'a>(log: &'a str, crate_name: &str) -> Vec<&'a str> {
++    rustc_invocations(log, crate_name)
++        .next()
+         .unwrap_or_else(|| panic!("missing rustc invocation for {crate_name}"))
+ }
+ 

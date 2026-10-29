@@ -15,6 +15,10 @@ The table shows the seven-patch stack’s paired median saving in wall time. Pos
 
 The extra Wild jobserver retry passed one of four preregistered holdout comparisons. The two Cargo lockfile guards passed their warm Cargo instruction tests, but neither produced a repeatable elapsed-time saving across 96 edited-check pairs. [All 216 jobserver confirmation runs](confirmation32/README.md) · [Resolver timings and product verification](resolver-wall/README.md)
 
+### Recompiling the edited uvx binary
+
+Using one rustc frontend thread saved 38–44 ms per compiler invocation on two edited uvx checkouts. The released toolchain produced identical binaries and dep-info. End-to-end Cargo measurements for this candidate are pending. [Raw data, Cargo patch and reproduction](uvx-frontend/README.md)
+
 ### Historical stack with released rustc
 
 A separate 576-command comparison held released rustc and the target standard library fixed. The historical patches missed the registered wall-time threshold across both controls and both edits for all three commands. [Paired results, logs and scorer](released-rustc-wall/README.md)
