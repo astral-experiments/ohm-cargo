@@ -1,0 +1,81 @@
+{
+  "bytes": [
+    75800480,
+    75800496
+  ],
+  "differing_sections": {
+    ".note.gnu.build-id": {
+      "header_changes": {},
+      "payload": {
+        "lengths": [
+          36,
+          36
+        ],
+        "matched": false,
+        "sha256": [
+          "b76274473780ee36e5bd70c498c8d83033bc88d1f42d7475c5c147f53ff1c10f",
+          "29dc60a223097d3ad33c27b130afc988a73d7478bd5cf3d33bf689fb36d7f529"
+        ]
+      }
+    },
+    ".shstrtab": {
+      "header_changes": {
+        "4": [
+          75797519,
+          75797537
+        ]
+      },
+      "payload": {
+        "lengths": [
+          395,
+          395
+        ],
+        "matched": true,
+        "sha256": [
+          "a415ca1d4baa115fb745bf25dce3d304cd1edac41876f7be38c8323be3f5f0ff",
+          "a415ca1d4baa115fb745bf25dce3d304cd1edac41876f7be38c8323be3f5f0ff"
+        ]
+      }
+    },
+    ".strtab": {
+      "header_changes": {
+        "5": [
+          13454511,
+          13454529
+        ]
+      },
+      "payload": {
+        "lengths": [
+          13454511,
+          13454529
+        ],
+        "matched": false,
+        "sha256": [
+          "cb6daeeaee3462f25695386276d629674a847b7212607894f12ad00bc1461e6f",
+          "84f8809e61f22b680d6c6ec001d1c9f021e1498505ccc55434ea1f30bc5f55bd"
+        ]
+      }
+    },
+    ".symtab": {
+      "header_changes": {},
+      "payload": {
+        "lengths": [
+          2048112,
+          2048112
+        ],
+        "matched": false,
+        "sha256": [
+          "e3d3f229d3ba928294cf90696e4e45ad875d2abd25906fa5b5afc91aaef9b14b",
+          "38c94d8a3fdf08175e93ffde9c6eb5ec576b768fafe36b75d0d4bd038850bf40"
+        ]
+      }
+    }
+  },
+  "elf_headers_match": false,
+  "equal_file_width": false,
+  "full_sha256": [
+    "c5f4e949b9620badff33a1d54c39e1ab95d89978085143e9d444de8737d60fd3",
+    "e554de92ade6fb52438edd6c90a2accafb8c3cbc43ec17a3692b09b11646de7c"
+  ],
+  "section_count": 40
+}
