@@ -1,0 +1,19 @@
+# Pipelined check metadata publication on released Ohm
+
+A real two-library workspace reproduced the extra unchanged check using Cargo source `235f9228651b74c591e6f62cae4c9b761448dd2d` and the official -18 Rust compiler at `a4fa11bcd38280639cb94daacc125472657db6c3`. One local package consumes the other's metadata. The edit changes an effective, unused build-script environment directive on the provider and appends a source comment to the reader. All commands use ordinary `cargo +ohm check --workspace --locked --offline -j4`. Each comparison starts from a fresh, hardlink-preserving copy of the same final seed at the same absolute logical paths.
+
+| When Cargo finalizes the provider | Rust compilers on the edit | First unchanged check | Second unchanged check |
+| --- | --- | --- | --- |
+| Ordinary run | provider, reader | none | none |
+| Before the reader commits its fingerprint | provider, reader | none | none |
+| After the reader commits its fingerprint | provider, reader | reader | none |
+
+The last row finished with provider metadata 242,854,325,448 nanoseconds newer than reader metadata. Both edited outputs have identical SHA-256s across the two schedules, as do the complete original compiler argument lists per unit. The extra invocation produced exactly the already-present reader bytes. The provider remained byte-identical across the source edit. The edited reader metadata differs from its original metadata because the fixture changes the reader source. The gap is inherited from the saved seed's timestamp, not a command duration.
+
+The scheduling observer interposes the released Cargo's existing `futimens` calls on those two real file descriptors. It forwards the same descriptor and requested timestamps. Its barrier reads the other unit's newly committed, nonempty 16-hex fingerprint, written by Cargo after its metadata-generation decision. Every controlled release in the final nine-command series saw that fingerprint. A preceding independent ordering observer used the actual successful peer mtime restore instead and reproduced a 65,678,738,433 ns gap. The first pathname-only observer saw zero calls. The raw traces showed why: the filetime library called `utimensat(fd, NULL, ...)` through `futimens`. Those six preliminary observations remain in the `pilot` series.
+
+The published rustc green metadata path hard-links or copies the prior incremental work product, renames that file into the output, and reports a metadata artifact. In Cargo, `src/compiler/mod.rs` at the check-success stage sets the file timestamp to the unit invocation time. Then `src/compiler/fingerprint/mod.rs::preserve_metadata_generation` may restore the prior timestamp, bounded by currently visible dependency outputs. A locally dirty downstream check can run from the earlier metadata notification while the upstream fingerprint is still pending. The unchanged command diagnoses the newer real dependency and runs the reader. The two real Ruff traces had the same path and invocation signatures, but the slower tracing changed their schedule, so this synthetic reproduction does not identify the exact ordering on those untraced Ruff invocations.
+
+A real incompatible upstream return type generated the same E0308 warm and from an empty target. Removing an upstream trait implementation through an unchanged public reexport produced the same E0277 warm and empty. Restoring the implementation succeeded in both contexts. Deleting only the reader's output in a separate fixture copy ran its real compiler.
+
+Run `python3 -IB verify.py`. `native.json.gz` retains every compile argv in reversible local-root aliases, source/output hashes, physical process IDs, check outcomes, both ordering transcripts and original per-file raw SHA-256s. The private source owner retains the original non-aliased traces. All 39 checks are diagnostic or behavioral controls. No elapsed timings were scored. The Rust and Cargo products used in these runs are unchanged.
