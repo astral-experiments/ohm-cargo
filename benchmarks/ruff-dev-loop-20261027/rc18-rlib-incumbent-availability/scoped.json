@@ -1,0 +1,1186 @@
+{
+  "command": [
+    "cargo",
+    "+ohm",
+    "build",
+    "--locked",
+    "--offline",
+    "-p",
+    "ty_vendored",
+    "--message-format=json"
+  ],
+  "previous_fresh_root": "pinned published -18 historical ty_vendored study",
+  "rows": [
+    {
+      "all_archive_count": 148,
+      "case": "baseline",
+      "local_libraries": [
+        {
+          "fresh": false,
+          "local": true,
+          "name": "annotate_snippets",
+          "output": "libannotate_snippets-5292726353996504.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": false,
+          "local": true,
+          "name": "ruff_db",
+          "output": "libruff_db-652903063d695419.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": false,
+          "local": true,
+          "name": "ruff_diagnostics",
+          "output": "libruff_diagnostics-1dfa2b70683a2bc5.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": false,
+          "local": true,
+          "name": "ruff_memory_usage",
+          "output": "libruff_memory_usage-f6ac809f4f71d4c6.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": false,
+          "local": true,
+          "name": "ruff_notebook",
+          "output": "libruff_notebook-42d0f25c9ac725e8.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": false,
+          "local": true,
+          "name": "ruff_python_ast",
+          "output": "libruff_python_ast-1b582c83722583a9.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": false,
+          "local": true,
+          "name": "ruff_python_parser",
+          "output": "libruff_python_parser-0a4d635004d9eaf2.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": false,
+          "local": true,
+          "name": "ruff_python_trivia",
+          "output": "libruff_python_trivia-6fa2caec83d5db12.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": false,
+          "local": true,
+          "name": "ruff_python_trivia",
+          "output": "libruff_python_trivia-4a6d7d5cf511d111.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": false,
+          "local": true,
+          "name": "ruff_source_file",
+          "output": "libruff_source_file-7b980b9b4d1df5e6.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": false,
+          "local": true,
+          "name": "ruff_source_file",
+          "output": "libruff_source_file-2c48503bc1414a65.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_text_size",
+          "output": "libruff_text_size-2ff4111f2b9453ad.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": false,
+          "local": true,
+          "name": "ruff_text_size",
+          "output": "libruff_text_size-dcc6a5e7157335a9.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": false,
+          "local": true,
+          "name": "ty_static",
+          "output": "libty_static-0adea34ce6907a55.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": false,
+          "local": true,
+          "name": "ty_vendored",
+          "output": "libty_vendored.rlib",
+          "output_parent_role": "debug"
+        },
+        {
+          "fresh": false,
+          "local": true,
+          "name": "unicode_names2",
+          "output": "libunicode_names2-69de1e59099ccf70.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": false,
+          "local": true,
+          "name": "unicode_names2_generator",
+          "output": "libunicode_names2_generator-68d3b741537ad4eb.rlib",
+          "output_parent_role": "out"
+        }
+      ],
+      "rooted": [
+        "ty_vendored"
+      ],
+      "rows_sha256": "c64a4c44a88de5cfab8c0ec77ac619e98b93693dbde3589b9c7704c7841e6b11",
+      "unit_output_roster_sha256": "916dc8089c01510266fdf0e49cb9c9cb7b95765c5497f3d4643194b2a4cf4409"
+    },
+    {
+      "all_archive_count": 148,
+      "case": "import-edit",
+      "local_libraries": [
+        {
+          "fresh": true,
+          "local": true,
+          "name": "annotate_snippets",
+          "output": "libannotate_snippets-5292726353996504.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_db",
+          "output": "libruff_db-652903063d695419.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_diagnostics",
+          "output": "libruff_diagnostics-1dfa2b70683a2bc5.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_memory_usage",
+          "output": "libruff_memory_usage-f6ac809f4f71d4c6.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_notebook",
+          "output": "libruff_notebook-42d0f25c9ac725e8.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_python_ast",
+          "output": "libruff_python_ast-1b582c83722583a9.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_python_parser",
+          "output": "libruff_python_parser-0a4d635004d9eaf2.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_python_trivia",
+          "output": "libruff_python_trivia-4a6d7d5cf511d111.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_python_trivia",
+          "output": "libruff_python_trivia-6fa2caec83d5db12.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_source_file",
+          "output": "libruff_source_file-2c48503bc1414a65.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_source_file",
+          "output": "libruff_source_file-7b980b9b4d1df5e6.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_text_size",
+          "output": "libruff_text_size-dcc6a5e7157335a9.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_text_size",
+          "output": "libruff_text_size-2ff4111f2b9453ad.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ty_static",
+          "output": "libty_static-0adea34ce6907a55.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": false,
+          "local": true,
+          "name": "ty_vendored",
+          "output": "libty_vendored.rlib",
+          "output_parent_role": "debug"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "unicode_names2",
+          "output": "libunicode_names2-69de1e59099ccf70.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "unicode_names2_generator",
+          "output": "libunicode_names2_generator-68d3b741537ad4eb.rlib",
+          "output_parent_role": "out"
+        }
+      ],
+      "rooted": [
+        "ty_vendored"
+      ],
+      "rows_sha256": "010052655a27c6384d54a3bc8fc54b7965e09c670061716f115431f70d7aca05",
+      "unit_output_roster_sha256": "dc3af6c8f2c58f87eeaa3367531f8a796a0fe8a8f6e78f2404c9fde1370d2805"
+    },
+    {
+      "all_archive_count": 148,
+      "case": "import-repeat",
+      "local_libraries": [
+        {
+          "fresh": true,
+          "local": true,
+          "name": "annotate_snippets",
+          "output": "libannotate_snippets-5292726353996504.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_db",
+          "output": "libruff_db-652903063d695419.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_diagnostics",
+          "output": "libruff_diagnostics-1dfa2b70683a2bc5.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_memory_usage",
+          "output": "libruff_memory_usage-f6ac809f4f71d4c6.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_notebook",
+          "output": "libruff_notebook-42d0f25c9ac725e8.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_python_ast",
+          "output": "libruff_python_ast-1b582c83722583a9.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_python_parser",
+          "output": "libruff_python_parser-0a4d635004d9eaf2.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_python_trivia",
+          "output": "libruff_python_trivia-6fa2caec83d5db12.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_python_trivia",
+          "output": "libruff_python_trivia-4a6d7d5cf511d111.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_source_file",
+          "output": "libruff_source_file-2c48503bc1414a65.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_source_file",
+          "output": "libruff_source_file-7b980b9b4d1df5e6.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_text_size",
+          "output": "libruff_text_size-dcc6a5e7157335a9.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_text_size",
+          "output": "libruff_text_size-2ff4111f2b9453ad.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ty_static",
+          "output": "libty_static-0adea34ce6907a55.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ty_vendored",
+          "output": "libty_vendored.rlib",
+          "output_parent_role": "debug"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "unicode_names2",
+          "output": "libunicode_names2-69de1e59099ccf70.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "unicode_names2_generator",
+          "output": "libunicode_names2_generator-68d3b741537ad4eb.rlib",
+          "output_parent_role": "out"
+        }
+      ],
+      "rooted": [
+        "ty_vendored"
+      ],
+      "rows_sha256": "edff5aea17da040eebe3c6ca09de0b4520c98e18cb6da76c4034f496e18c6516",
+      "unit_output_roster_sha256": "0137cd00e0dc56ecf9b163262c1f5cb93c8f6337eb680bec7511d098015b58b2"
+    },
+    {
+      "all_archive_count": 148,
+      "case": "import-restore",
+      "local_libraries": [
+        {
+          "fresh": true,
+          "local": true,
+          "name": "annotate_snippets",
+          "output": "libannotate_snippets-5292726353996504.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_db",
+          "output": "libruff_db-652903063d695419.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_diagnostics",
+          "output": "libruff_diagnostics-1dfa2b70683a2bc5.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_memory_usage",
+          "output": "libruff_memory_usage-f6ac809f4f71d4c6.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_notebook",
+          "output": "libruff_notebook-42d0f25c9ac725e8.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_python_ast",
+          "output": "libruff_python_ast-1b582c83722583a9.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_python_parser",
+          "output": "libruff_python_parser-0a4d635004d9eaf2.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_python_trivia",
+          "output": "libruff_python_trivia-6fa2caec83d5db12.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_python_trivia",
+          "output": "libruff_python_trivia-4a6d7d5cf511d111.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_source_file",
+          "output": "libruff_source_file-2c48503bc1414a65.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_source_file",
+          "output": "libruff_source_file-7b980b9b4d1df5e6.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_text_size",
+          "output": "libruff_text_size-dcc6a5e7157335a9.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_text_size",
+          "output": "libruff_text_size-2ff4111f2b9453ad.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ty_static",
+          "output": "libty_static-0adea34ce6907a55.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": false,
+          "local": true,
+          "name": "ty_vendored",
+          "output": "libty_vendored.rlib",
+          "output_parent_role": "debug"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "unicode_names2",
+          "output": "libunicode_names2-69de1e59099ccf70.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "unicode_names2_generator",
+          "output": "libunicode_names2_generator-68d3b741537ad4eb.rlib",
+          "output_parent_role": "out"
+        }
+      ],
+      "rooted": [
+        "ty_vendored"
+      ],
+      "rows_sha256": "cdfb24bfe9e6603f4528a44fafc3d58b87db9cb5479d3c880b62accaae591890",
+      "unit_output_roster_sha256": "ec378e710ab66e2e09b304bbd4f66be4426ee0698eb4f8b8b6f0259730b393d4"
+    },
+    {
+      "all_archive_count": 148,
+      "case": "independent-imports",
+      "local_libraries": [
+        {
+          "fresh": false,
+          "local": true,
+          "name": "annotate_snippets",
+          "output": "libannotate_snippets-5292726353996504.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": false,
+          "local": true,
+          "name": "ruff_db",
+          "output": "libruff_db-652903063d695419.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": false,
+          "local": true,
+          "name": "ruff_diagnostics",
+          "output": "libruff_diagnostics-1dfa2b70683a2bc5.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": false,
+          "local": true,
+          "name": "ruff_memory_usage",
+          "output": "libruff_memory_usage-f6ac809f4f71d4c6.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": false,
+          "local": true,
+          "name": "ruff_notebook",
+          "output": "libruff_notebook-42d0f25c9ac725e8.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": false,
+          "local": true,
+          "name": "ruff_python_ast",
+          "output": "libruff_python_ast-1b582c83722583a9.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": false,
+          "local": true,
+          "name": "ruff_python_parser",
+          "output": "libruff_python_parser-0a4d635004d9eaf2.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": false,
+          "local": true,
+          "name": "ruff_python_trivia",
+          "output": "libruff_python_trivia-6fa2caec83d5db12.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": false,
+          "local": true,
+          "name": "ruff_python_trivia",
+          "output": "libruff_python_trivia-4a6d7d5cf511d111.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": false,
+          "local": true,
+          "name": "ruff_source_file",
+          "output": "libruff_source_file-7b980b9b4d1df5e6.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": false,
+          "local": true,
+          "name": "ruff_source_file",
+          "output": "libruff_source_file-2c48503bc1414a65.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": false,
+          "local": true,
+          "name": "ruff_text_size",
+          "output": "libruff_text_size-2ff4111f2b9453ad.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": false,
+          "local": true,
+          "name": "ruff_text_size",
+          "output": "libruff_text_size-dcc6a5e7157335a9.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": false,
+          "local": true,
+          "name": "ty_static",
+          "output": "libty_static-0adea34ce6907a55.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": false,
+          "local": true,
+          "name": "ty_vendored",
+          "output": "libty_vendored.rlib",
+          "output_parent_role": "debug"
+        },
+        {
+          "fresh": false,
+          "local": true,
+          "name": "unicode_names2",
+          "output": "libunicode_names2-69de1e59099ccf70.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": false,
+          "local": true,
+          "name": "unicode_names2_generator",
+          "output": "libunicode_names2_generator-68d3b741537ad4eb.rlib",
+          "output_parent_role": "out"
+        }
+      ],
+      "rooted": [
+        "ty_vendored"
+      ],
+      "rows_sha256": "9e9f451586e1333bc1f3dd814525c9429c3d78088e2009c85548a274a3d3dff2",
+      "unit_output_roster_sha256": "fee866a09fc04f5889660f60d2c6710d349491e0a1ea4295813fefeddac4f4b2"
+    },
+    {
+      "all_archive_count": 148,
+      "case": "pydantic-edit",
+      "local_libraries": [
+        {
+          "fresh": true,
+          "local": true,
+          "name": "annotate_snippets",
+          "output": "libannotate_snippets-5292726353996504.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_db",
+          "output": "libruff_db-652903063d695419.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_diagnostics",
+          "output": "libruff_diagnostics-1dfa2b70683a2bc5.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_memory_usage",
+          "output": "libruff_memory_usage-f6ac809f4f71d4c6.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_notebook",
+          "output": "libruff_notebook-42d0f25c9ac725e8.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_python_ast",
+          "output": "libruff_python_ast-1b582c83722583a9.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_python_parser",
+          "output": "libruff_python_parser-0a4d635004d9eaf2.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_python_trivia",
+          "output": "libruff_python_trivia-6fa2caec83d5db12.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_python_trivia",
+          "output": "libruff_python_trivia-4a6d7d5cf511d111.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_source_file",
+          "output": "libruff_source_file-2c48503bc1414a65.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_source_file",
+          "output": "libruff_source_file-7b980b9b4d1df5e6.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_text_size",
+          "output": "libruff_text_size-dcc6a5e7157335a9.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_text_size",
+          "output": "libruff_text_size-2ff4111f2b9453ad.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ty_static",
+          "output": "libty_static-0adea34ce6907a55.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": false,
+          "local": true,
+          "name": "ty_vendored",
+          "output": "libty_vendored.rlib",
+          "output_parent_role": "debug"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "unicode_names2",
+          "output": "libunicode_names2-69de1e59099ccf70.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "unicode_names2_generator",
+          "output": "libunicode_names2_generator-68d3b741537ad4eb.rlib",
+          "output_parent_role": "out"
+        }
+      ],
+      "rooted": [
+        "ty_vendored"
+      ],
+      "rows_sha256": "dce88551711bc6a8981fa072f01e779c72c8c982ce89914772862648ceea2fc1",
+      "unit_output_roster_sha256": "9287e64571977b0b0e356fc6b3c78ce3390ead47962d9e0bf8eb907dcde891b2"
+    },
+    {
+      "all_archive_count": 148,
+      "case": "pydantic-repeat",
+      "local_libraries": [
+        {
+          "fresh": true,
+          "local": true,
+          "name": "annotate_snippets",
+          "output": "libannotate_snippets-5292726353996504.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_db",
+          "output": "libruff_db-652903063d695419.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_diagnostics",
+          "output": "libruff_diagnostics-1dfa2b70683a2bc5.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_memory_usage",
+          "output": "libruff_memory_usage-f6ac809f4f71d4c6.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_notebook",
+          "output": "libruff_notebook-42d0f25c9ac725e8.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_python_ast",
+          "output": "libruff_python_ast-1b582c83722583a9.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_python_parser",
+          "output": "libruff_python_parser-0a4d635004d9eaf2.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_python_trivia",
+          "output": "libruff_python_trivia-4a6d7d5cf511d111.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_python_trivia",
+          "output": "libruff_python_trivia-6fa2caec83d5db12.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_source_file",
+          "output": "libruff_source_file-2c48503bc1414a65.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_source_file",
+          "output": "libruff_source_file-7b980b9b4d1df5e6.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_text_size",
+          "output": "libruff_text_size-dcc6a5e7157335a9.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_text_size",
+          "output": "libruff_text_size-2ff4111f2b9453ad.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ty_static",
+          "output": "libty_static-0adea34ce6907a55.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ty_vendored",
+          "output": "libty_vendored.rlib",
+          "output_parent_role": "debug"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "unicode_names2",
+          "output": "libunicode_names2-69de1e59099ccf70.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "unicode_names2_generator",
+          "output": "libunicode_names2_generator-68d3b741537ad4eb.rlib",
+          "output_parent_role": "out"
+        }
+      ],
+      "rooted": [
+        "ty_vendored"
+      ],
+      "rows_sha256": "e5a5717d4f15f5a4aa9ae3dea6a7ad1baa8ab162c6d740cffeddb9a620418758",
+      "unit_output_roster_sha256": "ee690020ab5e83022b65e91b79090014c4841241b47905e3f1d939e482320bb3"
+    },
+    {
+      "all_archive_count": 148,
+      "case": "pydantic-restore",
+      "local_libraries": [
+        {
+          "fresh": true,
+          "local": true,
+          "name": "annotate_snippets",
+          "output": "libannotate_snippets-5292726353996504.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_db",
+          "output": "libruff_db-652903063d695419.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_diagnostics",
+          "output": "libruff_diagnostics-1dfa2b70683a2bc5.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_memory_usage",
+          "output": "libruff_memory_usage-f6ac809f4f71d4c6.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_notebook",
+          "output": "libruff_notebook-42d0f25c9ac725e8.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_python_ast",
+          "output": "libruff_python_ast-1b582c83722583a9.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_python_parser",
+          "output": "libruff_python_parser-0a4d635004d9eaf2.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_python_trivia",
+          "output": "libruff_python_trivia-6fa2caec83d5db12.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_python_trivia",
+          "output": "libruff_python_trivia-4a6d7d5cf511d111.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_source_file",
+          "output": "libruff_source_file-2c48503bc1414a65.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_source_file",
+          "output": "libruff_source_file-7b980b9b4d1df5e6.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_text_size",
+          "output": "libruff_text_size-dcc6a5e7157335a9.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_text_size",
+          "output": "libruff_text_size-2ff4111f2b9453ad.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ty_static",
+          "output": "libty_static-0adea34ce6907a55.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": false,
+          "local": true,
+          "name": "ty_vendored",
+          "output": "libty_vendored.rlib",
+          "output_parent_role": "debug"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "unicode_names2",
+          "output": "libunicode_names2-69de1e59099ccf70.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "unicode_names2_generator",
+          "output": "libunicode_names2_generator-68d3b741537ad4eb.rlib",
+          "output_parent_role": "out"
+        }
+      ],
+      "rooted": [
+        "ty_vendored"
+      ],
+      "rows_sha256": "a5cff947a5fecdc29f2e71b3fc89433cfc28c2d8088e57563f3e0438d77c67d4",
+      "unit_output_roster_sha256": "c2b4ddaec3319cf88d90e06636c58f3ec95acd35511df7b72c2d643f9b214d6a"
+    },
+    {
+      "all_archive_count": 148,
+      "case": "restored-repeat",
+      "local_libraries": [
+        {
+          "fresh": true,
+          "local": true,
+          "name": "annotate_snippets",
+          "output": "libannotate_snippets-5292726353996504.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_db",
+          "output": "libruff_db-652903063d695419.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_diagnostics",
+          "output": "libruff_diagnostics-1dfa2b70683a2bc5.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_memory_usage",
+          "output": "libruff_memory_usage-f6ac809f4f71d4c6.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_notebook",
+          "output": "libruff_notebook-42d0f25c9ac725e8.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_python_ast",
+          "output": "libruff_python_ast-1b582c83722583a9.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_python_parser",
+          "output": "libruff_python_parser-0a4d635004d9eaf2.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_python_trivia",
+          "output": "libruff_python_trivia-6fa2caec83d5db12.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_python_trivia",
+          "output": "libruff_python_trivia-4a6d7d5cf511d111.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_source_file",
+          "output": "libruff_source_file-2c48503bc1414a65.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_source_file",
+          "output": "libruff_source_file-7b980b9b4d1df5e6.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_text_size",
+          "output": "libruff_text_size-dcc6a5e7157335a9.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ruff_text_size",
+          "output": "libruff_text_size-2ff4111f2b9453ad.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ty_static",
+          "output": "libty_static-0adea34ce6907a55.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "ty_vendored",
+          "output": "libty_vendored.rlib",
+          "output_parent_role": "debug"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "unicode_names2",
+          "output": "libunicode_names2-69de1e59099ccf70.rlib",
+          "output_parent_role": "out"
+        },
+        {
+          "fresh": true,
+          "local": true,
+          "name": "unicode_names2_generator",
+          "output": "libunicode_names2_generator-68d3b741537ad4eb.rlib",
+          "output_parent_role": "out"
+        }
+      ],
+      "rooted": [
+        "ty_vendored"
+      ],
+      "rows_sha256": "54f8c927d13a4e2439ae7ae8d5ce2c1016ca5751a996c1961c303eedd503979d",
+      "unit_output_roster_sha256": "fc7139ad55a914f7dd0d3f3eecb3180d2b943c114f859300b4ff48c035d1787d"
+    }
+  ],
+  "systype": "existing exec/open/clone trace did not trace unlink or rename"
+}

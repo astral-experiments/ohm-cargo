@@ -1,0 +1,2343 @@
+{
+  "dataset": "real full historical restoration",
+  "rows": [
+    {
+      "cargo_link_new_uplift": {
+        "errno": null,
+        "file_line_sha256": "bfc835505c6be6a3e217195fe673c42b3451dbcaab7d18dd5c468519bdc6af8f",
+        "line": 19,
+        "names": [
+          "libmdtest-aff8f11b5cb069ca.rlib",
+          "libmdtest.rlib"
+        ],
+        "success": true,
+        "syscall": "linkat",
+        "tid": 1886362
+      },
+      "cargo_root": 1885337,
+      "cargo_unlink": {
+        "errno": null,
+        "file_line_sha256": "40ec68da571de239b66f5d723f1c3367f385fe01ce9899380d117df926872eb1",
+        "line": 2,
+        "names": [
+          "libmdtest-aff8f11b5cb069ca.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1886362
+      },
+      "cargo_unlink_old_uplift": {
+        "errno": null,
+        "file_line_sha256": "3abfda738ccc02b5bce03d396442478b69a0acbcd6abd049c083190bc9a02ac1",
+        "line": 18,
+        "names": [
+          "libmdtest.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1886362
+      },
+      "crate": "mdtest",
+      "current_reported_rlib": [
+        "libmdtest.rlib"
+      ],
+      "prior_reported_rlib": [
+        "libmdtest.rlib"
+      ],
+      "reads_of_hashed_path": 2,
+      "reads_of_prior_uplift": 1,
+      "rustc_publish": {
+        "errno": null,
+        "file_line_sha256": "9f3db8fa6ecd31de4bfbc49a2d028f5b5afcb3f4b18835be86ecec0df8f4f3e7",
+        "line": 877,
+        "names": [
+          "tmp.a",
+          "libmdtest-aff8f11b5cb069ca.rlib"
+        ],
+        "success": true,
+        "syscall": "rename",
+        "tid": 1886401
+      },
+      "rustc_root": 1886367,
+      "spawn_branch": [
+        [
+          1886367,
+          1886362,
+          6,
+          false
+        ]
+      ],
+      "spawn_raw_line_sha256": "f1c37a5f23ac33eb24b631b6ce77d552f96d13e0e9e367e188d755ae5eb0b475",
+      "types": [
+        "lib"
+      ],
+      "unit_rlib": "libmdtest-aff8f11b5cb069ca.rlib",
+      "writes_other_than_unlinks_rename_reuplift": false
+    },
+    {
+      "cargo_link_new_uplift": {
+        "errno": null,
+        "file_line_sha256": "57ceb98c77fa204dd54c60be0dadd8343f5f2f26dfaa7f36ac22fc1bb3118529",
+        "line": 17,
+        "names": [
+          "libruff-1ff6ed98b9a377fe.rlib",
+          "libruff.rlib"
+        ],
+        "success": true,
+        "syscall": "linkat",
+        "tid": 1889515
+      },
+      "cargo_root": 1885337,
+      "cargo_unlink": {
+        "errno": null,
+        "file_line_sha256": "8f0cafec77a05a89a2882a839350f24f9c98c60b75cc77f8e8916a334e60de33",
+        "line": 2,
+        "names": [
+          "libruff-1ff6ed98b9a377fe.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1889515
+      },
+      "cargo_unlink_old_uplift": {
+        "errno": null,
+        "file_line_sha256": "d3e0326bdca24644a01dfaee94088fd576de2aaa5223deec113d3c41a4066ffc",
+        "line": 16,
+        "names": [
+          "libruff.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1889515
+      },
+      "crate": "ruff",
+      "current_reported_rlib": [
+        "libruff.rlib"
+      ],
+      "prior_reported_rlib": [
+        "libruff.rlib"
+      ],
+      "reads_of_hashed_path": 8,
+      "reads_of_prior_uplift": 1,
+      "rustc_publish": {
+        "errno": null,
+        "file_line_sha256": "bb643bcaa256529981a3ef9ff5043d87596d6817e06d4b3452dc4279173cc80c",
+        "line": 1468,
+        "names": [
+          "tmp.a",
+          "libruff-1ff6ed98b9a377fe.rlib"
+        ],
+        "success": true,
+        "syscall": "rename",
+        "tid": 1889774
+      },
+      "rustc_root": 1889523,
+      "spawn_branch": [
+        [
+          1889523,
+          1889515,
+          6,
+          false
+        ]
+      ],
+      "spawn_raw_line_sha256": "57d8237de7f91efa3a1fd5254ad3e6884229561b65325245a03d167cf444a65d",
+      "types": [
+        "lib"
+      ],
+      "unit_rlib": "libruff-1ff6ed98b9a377fe.rlib",
+      "writes_other_than_unlinks_rename_reuplift": false
+    },
+    {
+      "cargo_link_new_uplift": {
+        "errno": null,
+        "file_line_sha256": "ae79b448c88c21c293f6699a56c989f1ff8ee3eece237c3da9ee28c03d65b192",
+        "line": 18,
+        "names": [
+          "libruff_benchmark-55de8f043e13f6ad.rlib",
+          "libruff_benchmark.rlib"
+        ],
+        "success": true,
+        "syscall": "linkat",
+        "tid": 1888534
+      },
+      "cargo_root": 1885337,
+      "cargo_unlink": {
+        "errno": null,
+        "file_line_sha256": "6d9beff9d2cd0f40361462acc0968bd0fa8d8a445691c9fac8785da51acaef2b",
+        "line": 2,
+        "names": [
+          "libruff_benchmark-55de8f043e13f6ad.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1888534
+      },
+      "cargo_unlink_old_uplift": {
+        "errno": null,
+        "file_line_sha256": "15e93669b8ad7c0f0c16fa7232178ccdf798c1ea8ac431764a6273f06dc671a5",
+        "line": 17,
+        "names": [
+          "libruff_benchmark.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1888534
+      },
+      "crate": "ruff_benchmark",
+      "current_reported_rlib": [
+        "libruff_benchmark.rlib"
+      ],
+      "prior_reported_rlib": [
+        "libruff_benchmark.rlib"
+      ],
+      "reads_of_hashed_path": 2,
+      "reads_of_prior_uplift": 1,
+      "rustc_publish": {
+        "errno": null,
+        "file_line_sha256": "6c7a1c25a99df50264388c66e7d7bd8a17274ef7eddddbdc741fcd1a11124ffc",
+        "line": 846,
+        "names": [
+          "tmp.a",
+          "libruff_benchmark-55de8f043e13f6ad.rlib"
+        ],
+        "success": true,
+        "syscall": "rename",
+        "tid": 1888668
+      },
+      "rustc_root": 1888536,
+      "spawn_branch": [
+        [
+          1888536,
+          1888534,
+          6,
+          false
+        ]
+      ],
+      "spawn_raw_line_sha256": "52b370861a85b1740c2a8de2d2dc3a3d5c8ed624583915efa8f739500d0bf04c",
+      "types": [
+        "lib"
+      ],
+      "unit_rlib": "libruff_benchmark-55de8f043e13f6ad.rlib",
+      "writes_other_than_unlinks_rename_reuplift": false
+    },
+    {
+      "cargo_link_new_uplift": {
+        "errno": null,
+        "file_line_sha256": "9c68509896616584e4531959aaf73e87930344849f68f721e3f5e974eed2fa4f",
+        "line": 19,
+        "names": [
+          "libruff_db-17989293708a80a7.rlib",
+          "libruff_db.rlib"
+        ],
+        "success": true,
+        "syscall": "linkat",
+        "tid": 1885740
+      },
+      "cargo_root": 1885337,
+      "cargo_unlink": {
+        "errno": null,
+        "file_line_sha256": "187acf4032433805b92da5e7185a465b742a1f0248cbcb0823593ef658725a68",
+        "line": 2,
+        "names": [
+          "libruff_db-17989293708a80a7.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1885740
+      },
+      "cargo_unlink_old_uplift": {
+        "errno": null,
+        "file_line_sha256": "120b529ed13ed0f2f0dfc5a811d4924cb6c315480cf6f712739c3f0b441a8987",
+        "line": 18,
+        "names": [
+          "libruff_db.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1885740
+      },
+      "crate": "ruff_db",
+      "current_reported_rlib": [
+        "libruff_db.rlib"
+      ],
+      "prior_reported_rlib": [
+        "libruff_db.rlib"
+      ],
+      "reads_of_hashed_path": 22,
+      "reads_of_prior_uplift": 1,
+      "rustc_publish": {
+        "errno": null,
+        "file_line_sha256": "03f67c89f8bb9bfb85e5695066cc04bd3054a3274418a7bf23433d83f9b08317",
+        "line": 1174,
+        "names": [
+          "tmp.a",
+          "libruff_db-17989293708a80a7.rlib"
+        ],
+        "success": true,
+        "syscall": "rename",
+        "tid": 1885853
+      },
+      "rustc_root": 1885745,
+      "spawn_branch": [
+        [
+          1885745,
+          1885740,
+          6,
+          false
+        ]
+      ],
+      "spawn_raw_line_sha256": "a1edc8ff856d8f1a603c81484c5e2bc5d4bbf2b5c5c00720629bf1ded8b3a850",
+      "types": [
+        "lib"
+      ],
+      "unit_rlib": "libruff_db-17989293708a80a7.rlib",
+      "writes_other_than_unlinks_rename_reuplift": false
+    },
+    {
+      "cargo_link_new_uplift": {
+        "errno": null,
+        "file_line_sha256": "2ab866a44d9d56381bc2bcbd11d16890b87b8ba6361f1a61ea893bfe7ef50906",
+        "line": 18,
+        "names": [
+          "libruff_graph-9c4925a1e6864f82.rlib",
+          "libruff_graph.rlib"
+        ],
+        "success": true,
+        "syscall": "linkat",
+        "tid": 1887457
+      },
+      "cargo_root": 1885337,
+      "cargo_unlink": {
+        "errno": null,
+        "file_line_sha256": "53db5d52f389e8ee7566c707037cfc7bff85355cf8a9e5151190a02c7eaac46a",
+        "line": 2,
+        "names": [
+          "libruff_graph-9c4925a1e6864f82.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1887457
+      },
+      "cargo_unlink_old_uplift": {
+        "errno": null,
+        "file_line_sha256": "2c25a600acaee83f97a1c0bd5c27f7e3fe0ce6c22229a85a996bd420aace0713",
+        "line": 17,
+        "names": [
+          "libruff_graph.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1887457
+      },
+      "crate": "ruff_graph",
+      "current_reported_rlib": [
+        "libruff_graph.rlib"
+      ],
+      "prior_reported_rlib": [
+        "libruff_graph.rlib"
+      ],
+      "reads_of_hashed_path": 8,
+      "reads_of_prior_uplift": 1,
+      "rustc_publish": {
+        "errno": null,
+        "file_line_sha256": "cd88b13f2c86e91c96ebabd1ca8484f72a9d60459633b19757f4a2dbeabb62f0",
+        "line": 1089,
+        "names": [
+          "tmp.a",
+          "libruff_graph-9c4925a1e6864f82.rlib"
+        ],
+        "success": true,
+        "syscall": "rename",
+        "tid": 1887547
+      },
+      "rustc_root": 1887458,
+      "spawn_branch": [
+        [
+          1887458,
+          1887457,
+          6,
+          false
+        ]
+      ],
+      "spawn_raw_line_sha256": "0d20f8dd8cf2c6a518bc33e01c9d79cf44c8cca01d2a4f715954e94e920feef7",
+      "types": [
+        "lib"
+      ],
+      "unit_rlib": "libruff_graph-9c4925a1e6864f82.rlib",
+      "writes_other_than_unlinks_rename_reuplift": false
+    },
+    {
+      "cargo_link_new_uplift": {
+        "errno": null,
+        "file_line_sha256": "81791df1b8ff0423c425fe87e680fe0ebf13a41577e30d1b0c48bef3e4cc15dc",
+        "line": 19,
+        "names": [
+          "libruff_linter-63377ba9acafcdfa.rlib",
+          "libruff_linter.rlib"
+        ],
+        "success": true,
+        "syscall": "linkat",
+        "tid": 1886458
+      },
+      "cargo_root": 1885337,
+      "cargo_unlink": {
+        "errno": null,
+        "file_line_sha256": "95dac1812e7bd0147dc90411a19325b6a663171330796e5e6fd7b01e96a3814e",
+        "line": 2,
+        "names": [
+          "libruff_linter-63377ba9acafcdfa.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1886458
+      },
+      "cargo_unlink_old_uplift": {
+        "errno": null,
+        "file_line_sha256": "4d2f352d4cdb8e664573188607de6f0c87990262793032479582387302fb96db",
+        "line": 18,
+        "names": [
+          "libruff_linter.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1886458
+      },
+      "crate": "ruff_linter",
+      "current_reported_rlib": [
+        "libruff_linter.rlib"
+      ],
+      "prior_reported_rlib": [
+        "libruff_linter.rlib"
+      ],
+      "reads_of_hashed_path": 11,
+      "reads_of_prior_uplift": 1,
+      "rustc_publish": {
+        "errno": null,
+        "file_line_sha256": "96af79766d2b73f88811b356538d8614013f6027de03430be2adbf1966740e0d",
+        "line": 2474,
+        "names": [
+          "tmp.a",
+          "libruff_linter-63377ba9acafcdfa.rlib"
+        ],
+        "success": true,
+        "syscall": "rename",
+        "tid": 1886555
+      },
+      "rustc_root": 1886464,
+      "spawn_branch": [
+        [
+          1886464,
+          1886458,
+          6,
+          false
+        ]
+      ],
+      "spawn_raw_line_sha256": "c78a68c1d56218b94ac0ae766d1593e4380fce745ea2561e3e34b7dc27481ae3",
+      "types": [
+        "lib"
+      ],
+      "unit_rlib": "libruff_linter-63377ba9acafcdfa.rlib",
+      "writes_other_than_unlinks_rename_reuplift": false
+    },
+    {
+      "cargo_link_new_uplift": {
+        "errno": null,
+        "file_line_sha256": "5a34dda9a6ee8e835507474380ba1bb1e1841e90330ad768749aff1df4efdf92",
+        "line": 19,
+        "names": [
+          "libruff_markdown-dfaf9b9696d2865d.rlib",
+          "libruff_markdown.rlib"
+        ],
+        "success": true,
+        "syscall": "linkat",
+        "tid": 1888322
+      },
+      "cargo_root": 1885337,
+      "cargo_unlink": {
+        "errno": null,
+        "file_line_sha256": "ced71cb9b1a74c73eba302322ed4b26bb7141b95171166ed70f7e3b51c74a952",
+        "line": 2,
+        "names": [
+          "libruff_markdown-dfaf9b9696d2865d.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1888322
+      },
+      "cargo_unlink_old_uplift": {
+        "errno": null,
+        "file_line_sha256": "11d90080707bcec17832af03c30e96533ef6f3a38e043cbedd1292448c9b3f87",
+        "line": 18,
+        "names": [
+          "libruff_markdown.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1888322
+      },
+      "crate": "ruff_markdown",
+      "current_reported_rlib": [
+        "libruff_markdown.rlib"
+      ],
+      "prior_reported_rlib": [
+        "libruff_markdown.rlib"
+      ],
+      "reads_of_hashed_path": 6,
+      "reads_of_prior_uplift": 1,
+      "rustc_publish": {
+        "errno": null,
+        "file_line_sha256": "7795a7057d2b04ed13b1e51cfedf9f197a79b938b9e34f7f87a7579e9fed30a1",
+        "line": 739,
+        "names": [
+          "tmp.a",
+          "libruff_markdown-dfaf9b9696d2865d.rlib"
+        ],
+        "success": true,
+        "syscall": "rename",
+        "tid": 1888441
+      },
+      "rustc_root": 1888335,
+      "spawn_branch": [
+        [
+          1888335,
+          1888322,
+          6,
+          false
+        ]
+      ],
+      "spawn_raw_line_sha256": "9ab3ef7ed6e0c0379fa2c3fe3148bdf625672b0210edb5b29b9b2aa6f4c001f7",
+      "types": [
+        "lib"
+      ],
+      "unit_rlib": "libruff_markdown-dfaf9b9696d2865d.rlib",
+      "writes_other_than_unlinks_rename_reuplift": false
+    },
+    {
+      "cargo_link_new_uplift": {
+        "errno": null,
+        "file_line_sha256": "37d0298f2584dcd571c7c7b0981471672b805bb8d3107cd038c2d109a60d7d3f",
+        "line": 17,
+        "names": [
+          "libruff_mdtest-bab469d71bc676f0.rlib",
+          "libruff_mdtest.rlib"
+        ],
+        "success": true,
+        "syscall": "linkat",
+        "tid": 1888326
+      },
+      "cargo_root": 1885337,
+      "cargo_unlink": {
+        "errno": null,
+        "file_line_sha256": "10be5adedfae54a97b2e9a6648d254c3f71160177a1f8e86d1a81f98dec89035",
+        "line": 2,
+        "names": [
+          "libruff_mdtest-bab469d71bc676f0.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1888326
+      },
+      "cargo_unlink_old_uplift": {
+        "errno": null,
+        "file_line_sha256": "b9c3c13cae396bae9bd25ab73809f289fdacc451e574d7b0f5748cb08d731aba",
+        "line": 16,
+        "names": [
+          "libruff_mdtest.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1888326
+      },
+      "crate": "ruff_mdtest",
+      "current_reported_rlib": [
+        "libruff_mdtest.rlib"
+      ],
+      "prior_reported_rlib": [
+        "libruff_mdtest.rlib"
+      ],
+      "reads_of_hashed_path": 2,
+      "reads_of_prior_uplift": 1,
+      "rustc_publish": {
+        "errno": null,
+        "file_line_sha256": "f1c4b60877fb9d746a595ddfd018b7f4a9004d0b608b0dc35d96f8c86053dc0b",
+        "line": 1226,
+        "names": [
+          "tmp.a",
+          "libruff_mdtest-bab469d71bc676f0.rlib"
+        ],
+        "success": true,
+        "syscall": "rename",
+        "tid": 1888447
+      },
+      "rustc_root": 1888343,
+      "spawn_branch": [
+        [
+          1888343,
+          1888326,
+          6,
+          false
+        ]
+      ],
+      "spawn_raw_line_sha256": "e2f3931f4faf789fb933b6c8be62a4a361162f1602f68196ef9e84f5392b31d9",
+      "types": [
+        "lib"
+      ],
+      "unit_rlib": "libruff_mdtest-bab469d71bc676f0.rlib",
+      "writes_other_than_unlinks_rename_reuplift": false
+    },
+    {
+      "cargo_link_new_uplift": {
+        "errno": null,
+        "file_line_sha256": "4c2ad39281c3c3e9f3729568b30ebdcb9bc0ea6c1640cf042e38fe8624c41882",
+        "line": 19,
+        "names": [
+          "libruff_python_ast-80795807e7065da9.rlib",
+          "libruff_python_ast.rlib"
+        ],
+        "success": true,
+        "syscall": "linkat",
+        "tid": 1885356
+      },
+      "cargo_root": 1885337,
+      "cargo_unlink": {
+        "errno": null,
+        "file_line_sha256": "5d582324d436b38b7f35b2db32da3c1b103bc864cb4a03bc6387f7a4631dac14",
+        "line": 2,
+        "names": [
+          "libruff_python_ast-80795807e7065da9.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1885356
+      },
+      "cargo_unlink_old_uplift": {
+        "errno": null,
+        "file_line_sha256": "01c127cf9030a8135571fe1e66a2a7bd94136f765a4ee23d37759f9c733aa83e",
+        "line": 18,
+        "names": [
+          "libruff_python_ast.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1885356
+      },
+      "crate": "ruff_python_ast",
+      "current_reported_rlib": [
+        "libruff_python_ast.rlib"
+      ],
+      "prior_reported_rlib": [
+        "libruff_python_ast.rlib"
+      ],
+      "reads_of_hashed_path": 22,
+      "reads_of_prior_uplift": 1,
+      "rustc_publish": {
+        "errno": null,
+        "file_line_sha256": "9983cc3147168d4d815ce163fd7f00624b5c57d2233831610c0978a6d7e3ae1b",
+        "line": 985,
+        "names": [
+          "tmp.a",
+          "libruff_python_ast-80795807e7065da9.rlib"
+        ],
+        "success": true,
+        "syscall": "rename",
+        "tid": 1885360
+      },
+      "rustc_root": 1885357,
+      "spawn_branch": [
+        [
+          1885357,
+          1885356,
+          6,
+          false
+        ]
+      ],
+      "spawn_raw_line_sha256": "21ea8f338b47a74d3dc548c4ab65a702466760fca7e277a0f7b2092408d8f657",
+      "types": [
+        "lib"
+      ],
+      "unit_rlib": "libruff_python_ast-80795807e7065da9.rlib",
+      "writes_other_than_unlinks_rename_reuplift": false
+    },
+    {
+      "cargo_link_new_uplift": {
+        "errno": null,
+        "file_line_sha256": "e04047da122feeafdf173b8421afee8ad4c20ec748ae50cff6699a6e68c4a22a",
+        "line": 19,
+        "names": [
+          "libruff_python_codegen-a8ff0a4e8e90fa83.rlib",
+          "libruff_python_codegen.rlib"
+        ],
+        "success": true,
+        "syscall": "linkat",
+        "tid": 1885742
+      },
+      "cargo_root": 1885337,
+      "cargo_unlink": {
+        "errno": null,
+        "file_line_sha256": "0de755271e2f4036a4bcfb0fa54e9ba722a86d967f5eba3ef1bd2febcad2ed6a",
+        "line": 2,
+        "names": [
+          "libruff_python_codegen-a8ff0a4e8e90fa83.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1885742
+      },
+      "cargo_unlink_old_uplift": {
+        "errno": null,
+        "file_line_sha256": "a4174c62ddd37f19fbbf34b065402df5a410961f1fa40c75fd571f8fdb6c768a",
+        "line": 18,
+        "names": [
+          "libruff_python_codegen.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1885742
+      },
+      "crate": "ruff_python_codegen",
+      "current_reported_rlib": [
+        "libruff_python_codegen.rlib"
+      ],
+      "prior_reported_rlib": [
+        "libruff_python_codegen.rlib"
+      ],
+      "reads_of_hashed_path": 20,
+      "reads_of_prior_uplift": 1,
+      "rustc_publish": {
+        "errno": null,
+        "file_line_sha256": "d372bd6a7909808ed5d81cf03929ef949940fd437a896755883e90ab4e475e10",
+        "line": 496,
+        "names": [
+          "tmp.a",
+          "libruff_python_codegen-a8ff0a4e8e90fa83.rlib"
+        ],
+        "success": true,
+        "syscall": "rename",
+        "tid": 1885830
+      },
+      "rustc_root": 1885746,
+      "spawn_branch": [
+        [
+          1885746,
+          1885742,
+          6,
+          false
+        ]
+      ],
+      "spawn_raw_line_sha256": "b5f0c244b62d913b81e3bbf8cd81b20d30b4a20a37fc3b81a5bffc8310c2bcd7",
+      "types": [
+        "lib"
+      ],
+      "unit_rlib": "libruff_python_codegen-a8ff0a4e8e90fa83.rlib",
+      "writes_other_than_unlinks_rename_reuplift": false
+    },
+    {
+      "cargo_link_new_uplift": {
+        "errno": null,
+        "file_line_sha256": "f5a9adc994b8e932cd2d813a73301d89eb87b31b1b9b9c7f96006b016ff4b3f1",
+        "line": 20,
+        "names": [
+          "libruff_python_formatter-3814b81e7e0b111c.rlib",
+          "libruff_python_formatter.rlib"
+        ],
+        "success": true,
+        "syscall": "linkat",
+        "tid": 1886087
+      },
+      "cargo_root": 1885337,
+      "cargo_unlink": {
+        "errno": null,
+        "file_line_sha256": "389579fa7525595a7d0eda8bc848df4afb09579b7875708376504f37cca32879",
+        "line": 3,
+        "names": [
+          "libruff_python_formatter-3814b81e7e0b111c.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1886087
+      },
+      "cargo_unlink_old_uplift": {
+        "errno": null,
+        "file_line_sha256": "271a6879c4b6b20ba44b1c6aa41aa6ac9278b30229996884d339179c4fb2c2ca",
+        "line": 19,
+        "names": [
+          "libruff_python_formatter.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1886087
+      },
+      "crate": "ruff_python_formatter",
+      "current_reported_rlib": [
+        "libruff_python_formatter.rlib"
+      ],
+      "prior_reported_rlib": [
+        "libruff_python_formatter.rlib"
+      ],
+      "reads_of_hashed_path": 23,
+      "reads_of_prior_uplift": 1,
+      "rustc_publish": {
+        "errno": null,
+        "file_line_sha256": "4138a7c13130510b13f6124e8ba686862dc66cb7220fc4499fc9111b7fd7bdee",
+        "line": 1260,
+        "names": [
+          "tmp.a",
+          "libruff_python_formatter-3814b81e7e0b111c.rlib"
+        ],
+        "success": true,
+        "syscall": "rename",
+        "tid": 1886224
+      },
+      "rustc_root": 1886094,
+      "spawn_branch": [
+        [
+          1886094,
+          1886087,
+          7,
+          false
+        ]
+      ],
+      "spawn_raw_line_sha256": "22a1d813f24614519b7689ed587a6f09776713662e7364086098286ea19087b8",
+      "types": [
+        "lib"
+      ],
+      "unit_rlib": "libruff_python_formatter-3814b81e7e0b111c.rlib",
+      "writes_other_than_unlinks_rename_reuplift": false
+    },
+    {
+      "cargo_link_new_uplift": {
+        "errno": null,
+        "file_line_sha256": "85b9321ae471970dbdc5828522f13128b9b0666c50344420282b60a459615fca",
+        "line": 19,
+        "names": [
+          "libruff_python_importer-637366726d7c56c7.rlib",
+          "libruff_python_importer.rlib"
+        ],
+        "success": true,
+        "syscall": "linkat",
+        "tid": 1885862
+      },
+      "cargo_root": 1885337,
+      "cargo_unlink": {
+        "errno": null,
+        "file_line_sha256": "748e6e1481d505846052ba9f725ffc3225df3c5617fed1c5df847fdbaaa97ba8",
+        "line": 2,
+        "names": [
+          "libruff_python_importer-637366726d7c56c7.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1885862
+      },
+      "cargo_unlink_old_uplift": {
+        "errno": null,
+        "file_line_sha256": "e3d5c3d3f0aa055cf10ac633e61aeaa898e63382cecb68918fc140fc61aa5690",
+        "line": 18,
+        "names": [
+          "libruff_python_importer.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1885862
+      },
+      "crate": "ruff_python_importer",
+      "current_reported_rlib": [
+        "libruff_python_importer.rlib"
+      ],
+      "prior_reported_rlib": [
+        "libruff_python_importer.rlib"
+      ],
+      "reads_of_hashed_path": 16,
+      "reads_of_prior_uplift": 1,
+      "rustc_publish": {
+        "errno": null,
+        "file_line_sha256": "62044b2bb3b756e3a1db95913d2c1127096e26e5ebbe46ae0a3f11652b0fa685",
+        "line": 438,
+        "names": [
+          "tmp.a",
+          "libruff_python_importer-637366726d7c56c7.rlib"
+        ],
+        "success": true,
+        "syscall": "rename",
+        "tid": 1885917
+      },
+      "rustc_root": 1885870,
+      "spawn_branch": [
+        [
+          1885870,
+          1885862,
+          6,
+          false
+        ]
+      ],
+      "spawn_raw_line_sha256": "c6bc20bcf0715d66cbb9e1597d2db46e3cacbb7d31df89134c71555c4feb88fa",
+      "types": [
+        "lib"
+      ],
+      "unit_rlib": "libruff_python_importer-637366726d7c56c7.rlib",
+      "writes_other_than_unlinks_rename_reuplift": false
+    },
+    {
+      "cargo_link_new_uplift": {
+        "errno": null,
+        "file_line_sha256": "118bc1327509910904b496718960184a1b3b46fecc02583f781429ea0702815e",
+        "line": 19,
+        "names": [
+          "libruff_python_index-5aa2192fa101996a.rlib",
+          "libruff_python_index.rlib"
+        ],
+        "success": true,
+        "syscall": "linkat",
+        "tid": 1885384
+      },
+      "cargo_root": 1885337,
+      "cargo_unlink": {
+        "errno": null,
+        "file_line_sha256": "b52e95544aebce48b6a32286e1d731e520d2a651ba79e571635647caeb2e749f",
+        "line": 2,
+        "names": [
+          "libruff_python_index-5aa2192fa101996a.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1885384
+      },
+      "cargo_unlink_old_uplift": {
+        "errno": null,
+        "file_line_sha256": "cdbaa5fd3fe0fe4dcbbc3d0d7b0f625b7d5221d24350b1ce3e8ee474207b2f44",
+        "line": 18,
+        "names": [
+          "libruff_python_index.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1885384
+      },
+      "crate": "ruff_python_index",
+      "current_reported_rlib": [
+        "libruff_python_index.rlib"
+      ],
+      "prior_reported_rlib": [
+        "libruff_python_index.rlib"
+      ],
+      "reads_of_hashed_path": 10,
+      "reads_of_prior_uplift": 1,
+      "rustc_publish": {
+        "errno": null,
+        "file_line_sha256": "0217c171f164c2e956bcd0387d7d07ab6bcc14c692524d5dc5517f90e02896a2",
+        "line": 428,
+        "names": [
+          "tmp.a",
+          "libruff_python_index-5aa2192fa101996a.rlib"
+        ],
+        "success": true,
+        "syscall": "rename",
+        "tid": 1885501
+      },
+      "rustc_root": 1885386,
+      "spawn_branch": [
+        [
+          1885386,
+          1885384,
+          6,
+          false
+        ]
+      ],
+      "spawn_raw_line_sha256": "c0d665f641a4b825345b98e0cdd03acec9045f9494e06afb89f9ab911f5c34c1",
+      "types": [
+        "lib"
+      ],
+      "unit_rlib": "libruff_python_index-5aa2192fa101996a.rlib",
+      "writes_other_than_unlinks_rename_reuplift": false
+    },
+    {
+      "cargo_link_new_uplift": {
+        "errno": null,
+        "file_line_sha256": "f25b7ddb20a431cec2dcb2ca2eae76ff908f30121b796193571440cd4f19c40c",
+        "line": 18,
+        "names": [
+          "libruff_python_literal-b1978c3653dc3060.rlib",
+          "libruff_python_literal.rlib"
+        ],
+        "success": true,
+        "syscall": "linkat",
+        "tid": 1885383
+      },
+      "cargo_root": 1885337,
+      "cargo_unlink": {
+        "errno": null,
+        "file_line_sha256": "045d7c47fdb2835e5d7a2124fac8d92003f17f3ef88b09cbf80ca5fa3ba5bd5c",
+        "line": 2,
+        "names": [
+          "libruff_python_literal-b1978c3653dc3060.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1885383
+      },
+      "cargo_unlink_old_uplift": {
+        "errno": null,
+        "file_line_sha256": "2163f4d9c6ac440a93d17f0f39334dce22507b068792c2d77a15175454d7496f",
+        "line": 17,
+        "names": [
+          "libruff_python_literal.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1885383
+      },
+      "crate": "ruff_python_literal",
+      "current_reported_rlib": [
+        "libruff_python_literal.rlib"
+      ],
+      "prior_reported_rlib": [
+        "libruff_python_literal.rlib"
+      ],
+      "reads_of_hashed_path": 16,
+      "reads_of_prior_uplift": 1,
+      "rustc_publish": {
+        "errno": null,
+        "file_line_sha256": "19727e6d7a5f384bac5a906e9bb522cfd05eb66a38faaa726416f57301279498",
+        "line": 527,
+        "names": [
+          "tmp.a",
+          "libruff_python_literal-b1978c3653dc3060.rlib"
+        ],
+        "success": true,
+        "syscall": "rename",
+        "tid": 1885478
+      },
+      "rustc_root": 1885387,
+      "spawn_branch": [
+        [
+          1885387,
+          1885383,
+          6,
+          false
+        ]
+      ],
+      "spawn_raw_line_sha256": "94da10f25c5bd5eb1e473264025eddc4a76e23d7a0e500a6d05ee43fe6f484b8",
+      "types": [
+        "lib"
+      ],
+      "unit_rlib": "libruff_python_literal-b1978c3653dc3060.rlib",
+      "writes_other_than_unlinks_rename_reuplift": false
+    },
+    {
+      "cargo_link_new_uplift": {
+        "errno": null,
+        "file_line_sha256": "7f305cbd540223958dfb7c48b8eda5aa8472db07ecb23aeb55c0e38b25cb5da7",
+        "line": 18,
+        "names": [
+          "libruff_python_parser-cc99de38d11b4708.rlib",
+          "libruff_python_parser.rlib"
+        ],
+        "success": true,
+        "syscall": "linkat",
+        "tid": 1885382
+      },
+      "cargo_root": 1885337,
+      "cargo_unlink": {
+        "errno": null,
+        "file_line_sha256": "2e5d10f0feaf465ecaac54eecbfde8c099b9b84edc4b856a36e6f6d5bd5c1f87",
+        "line": 2,
+        "names": [
+          "libruff_python_parser-cc99de38d11b4708.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1885382
+      },
+      "cargo_unlink_old_uplift": {
+        "errno": null,
+        "file_line_sha256": "ce2c834ffb39c57cf3e06cb7eaaf66c7af96ce5466c20c2342453d0c3513054d",
+        "line": 17,
+        "names": [
+          "libruff_python_parser.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1885382
+      },
+      "crate": "ruff_python_parser",
+      "current_reported_rlib": [
+        "libruff_python_parser.rlib"
+      ],
+      "prior_reported_rlib": [
+        "libruff_python_parser.rlib"
+      ],
+      "reads_of_hashed_path": 22,
+      "reads_of_prior_uplift": 1,
+      "rustc_publish": {
+        "errno": null,
+        "file_line_sha256": "ab6371fc599026045327b95334e87a3bb34bd3c6f37d38728194135c288a7eae",
+        "line": 733,
+        "names": [
+          "tmp.a",
+          "libruff_python_parser-cc99de38d11b4708.rlib"
+        ],
+        "success": true,
+        "syscall": "rename",
+        "tid": 1885520
+      },
+      "rustc_root": 1885385,
+      "spawn_branch": [
+        [
+          1885385,
+          1885382,
+          6,
+          false
+        ]
+      ],
+      "spawn_raw_line_sha256": "ec1bad3d43f9f3799989c504dedfec4a122adea329c5ac8c91e2a6252197eb27",
+      "types": [
+        "lib"
+      ],
+      "unit_rlib": "libruff_python_parser-cc99de38d11b4708.rlib",
+      "writes_other_than_unlinks_rename_reuplift": false
+    },
+    {
+      "cargo_link_new_uplift": {
+        "errno": null,
+        "file_line_sha256": "ceaed7b07ad2440dfd8738bc08b89a4efa56cff3c23a809c97eabae920f028c2",
+        "line": 19,
+        "names": [
+          "libruff_python_semantic-4aec19c5ff71296c.rlib",
+          "libruff_python_semantic.rlib"
+        ],
+        "success": true,
+        "syscall": "linkat",
+        "tid": 1885744
+      },
+      "cargo_root": 1885337,
+      "cargo_unlink": {
+        "errno": null,
+        "file_line_sha256": "ab581694d369ce6d64f5a12698749f6066c98d1b7b050b9ebfca9d76958805d1",
+        "line": 2,
+        "names": [
+          "libruff_python_semantic-4aec19c5ff71296c.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1885744
+      },
+      "cargo_unlink_old_uplift": {
+        "errno": null,
+        "file_line_sha256": "50ecd6fa89489e3f01c8765bcb444cdabaa63d3b261fb50a85ef8c5aed7a710e",
+        "line": 18,
+        "names": [
+          "libruff_python_semantic.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1885744
+      },
+      "crate": "ruff_python_semantic",
+      "current_reported_rlib": [
+        "libruff_python_semantic.rlib"
+      ],
+      "prior_reported_rlib": [
+        "libruff_python_semantic.rlib"
+      ],
+      "reads_of_hashed_path": 8,
+      "reads_of_prior_uplift": 1,
+      "rustc_publish": {
+        "errno": null,
+        "file_line_sha256": "c3f515143b3fe54f23393db42f6ad5c37c5e92e86de3568103ce04750770c759",
+        "line": 825,
+        "names": [
+          "tmp.a",
+          "libruff_python_semantic-4aec19c5ff71296c.rlib"
+        ],
+        "success": true,
+        "syscall": "rename",
+        "tid": 1885843
+      },
+      "rustc_root": 1885747,
+      "spawn_branch": [
+        [
+          1885747,
+          1885744,
+          6,
+          false
+        ]
+      ],
+      "spawn_raw_line_sha256": "22f6cf590439aaca670082da18ad36e9e5ea3aed40a12600137ebb3a9726a6f4",
+      "types": [
+        "lib"
+      ],
+      "unit_rlib": "libruff_python_semantic-4aec19c5ff71296c.rlib",
+      "writes_other_than_unlinks_rename_reuplift": false
+    },
+    {
+      "cargo_link_new_uplift": {
+        "errno": null,
+        "file_line_sha256": "eb373827a8295e28303ab4c3dde138c847bc77b4b4be53187363ff71424e0de7",
+        "line": 19,
+        "names": [
+          "libruff_ranged_value-bf4500f66ed87cd0.rlib",
+          "libruff_ranged_value.rlib"
+        ],
+        "success": true,
+        "syscall": "linkat",
+        "tid": 1886077
+      },
+      "cargo_root": 1885337,
+      "cargo_unlink": {
+        "errno": null,
+        "file_line_sha256": "c105f8af990ec6a2fa787ff2cd65ee2028d4a5e0a3f350db07dd0b25000951c9",
+        "line": 2,
+        "names": [
+          "libruff_ranged_value-bf4500f66ed87cd0.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1886077
+      },
+      "cargo_unlink_old_uplift": {
+        "errno": null,
+        "file_line_sha256": "3fb233437362c9fb6c36d11b0912dd55c4552a81477a5d9989f030c941739430",
+        "line": 18,
+        "names": [
+          "libruff_ranged_value.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1886077
+      },
+      "crate": "ruff_ranged_value",
+      "current_reported_rlib": [
+        "libruff_ranged_value.rlib"
+      ],
+      "prior_reported_rlib": [
+        "libruff_ranged_value.rlib"
+      ],
+      "reads_of_hashed_path": 19,
+      "reads_of_prior_uplift": 1,
+      "rustc_publish": {
+        "errno": null,
+        "file_line_sha256": "e3a2de599b8728fc627a18596e550f725847faf753aad9f92ec994f89389fda0",
+        "line": 483,
+        "names": [
+          "tmp.a",
+          "libruff_ranged_value-bf4500f66ed87cd0.rlib"
+        ],
+        "success": true,
+        "syscall": "rename",
+        "tid": 1886176
+      },
+      "rustc_root": 1886085,
+      "spawn_branch": [
+        [
+          1886085,
+          1886077,
+          6,
+          false
+        ]
+      ],
+      "spawn_raw_line_sha256": "885c26a1838aa5ef490eaee9075c46840f9dfd0c1c09e8bdcd658187901770b4",
+      "types": [
+        "lib"
+      ],
+      "unit_rlib": "libruff_ranged_value-bf4500f66ed87cd0.rlib",
+      "writes_other_than_unlinks_rename_reuplift": false
+    },
+    {
+      "cargo_link_new_uplift": {
+        "errno": null,
+        "file_line_sha256": "a83794c7e4f11efd5eaab8a89c5290e2c119c8411b3e8254619ea43dc8e15d6a",
+        "line": 19,
+        "names": [
+          "libruff_server-7fd93eba813f1dcb.rlib",
+          "libruff_server.rlib"
+        ],
+        "success": true,
+        "syscall": "linkat",
+        "tid": 1888833
+      },
+      "cargo_root": 1885337,
+      "cargo_unlink": {
+        "errno": null,
+        "file_line_sha256": "cdc9474e7b22b182abd2034ed332c71eaf3bbf83a03e2cd0bb8c8ab623d1405c",
+        "line": 2,
+        "names": [
+          "libruff_server-7fd93eba813f1dcb.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1888833
+      },
+      "cargo_unlink_old_uplift": {
+        "errno": null,
+        "file_line_sha256": "fe212b8ee0983d4bca1ba8a5deea57041a1985c61a4f82301e498a76b8db8500",
+        "line": 18,
+        "names": [
+          "libruff_server.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1888833
+      },
+      "crate": "ruff_server",
+      "current_reported_rlib": [
+        "libruff_server.rlib"
+      ],
+      "prior_reported_rlib": [
+        "libruff_server.rlib"
+      ],
+      "reads_of_hashed_path": 6,
+      "reads_of_prior_uplift": 1,
+      "rustc_publish": {
+        "errno": null,
+        "file_line_sha256": "7851db1f799c371981ad13bb6113d3ca5a30b24fcb720b0d5c5ea111249d2e6d",
+        "line": 1361,
+        "names": [
+          "tmp.a",
+          "libruff_server-7fd93eba813f1dcb.rlib"
+        ],
+        "success": true,
+        "syscall": "rename",
+        "tid": 1889030
+      },
+      "rustc_root": 1888845,
+      "spawn_branch": [
+        [
+          1888845,
+          1888833,
+          6,
+          false
+        ]
+      ],
+      "spawn_raw_line_sha256": "5d71bcb4805873a5b813b0425057d35a82639cdd285cc7c5a7a2c5111a50bc1c",
+      "types": [
+        "lib"
+      ],
+      "unit_rlib": "libruff_server-7fd93eba813f1dcb.rlib",
+      "writes_other_than_unlinks_rename_reuplift": false
+    },
+    {
+      "cargo_link_new_uplift": {
+        "errno": null,
+        "file_line_sha256": "af2893cbf8f21387a276b5018d55dec0a9298b616feb17efbe33da8b01cc42a4",
+        "line": 23,
+        "names": [
+          "libruff_wasm.rlib",
+          "libruff_wasm.rlib"
+        ],
+        "success": true,
+        "syscall": "linkat",
+        "tid": 1888764
+      },
+      "cargo_root": 1885337,
+      "cargo_unlink": {
+        "errno": null,
+        "file_line_sha256": "76d7af7f251663a8f388d6c8ad81983c3562525604820d61f1ce2d6d549ec47a",
+        "line": 3,
+        "names": [
+          "libruff_wasm.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1888764
+      },
+      "cargo_unlink_old_uplift": {
+        "errno": null,
+        "file_line_sha256": "240be447332ae629ca5dad0616e40844584c7f9a3bad32f8be7030819b18c5e3",
+        "line": 22,
+        "names": [
+          "libruff_wasm.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1888764
+      },
+      "crate": "ruff_wasm",
+      "current_reported_rlib": [
+        "libruff_wasm.rlib"
+      ],
+      "prior_reported_rlib": [
+        "libruff_wasm.rlib"
+      ],
+      "reads_of_hashed_path": 2,
+      "reads_of_prior_uplift": 1,
+      "rustc_publish": {
+        "errno": null,
+        "file_line_sha256": "d432679f0011c508933f6c9b483e097f64a0cc5174d228473e857fe039c8d422",
+        "line": 1370,
+        "names": [
+          "tmp.a",
+          "libruff_wasm.rlib"
+        ],
+        "success": true,
+        "syscall": "rename",
+        "tid": 1888809
+      },
+      "rustc_root": 1888765,
+      "spawn_branch": [
+        [
+          1888765,
+          1888764,
+          7,
+          false
+        ]
+      ],
+      "spawn_raw_line_sha256": "e56c32addbc879b9e94a76f198292f7e53711aad5703ec036b5686e6d18de995",
+      "types": [
+        "cdylib",
+        "rlib"
+      ],
+      "unit_rlib": "libruff_wasm.rlib",
+      "writes_other_than_unlinks_rename_reuplift": false
+    },
+    {
+      "cargo_link_new_uplift": {
+        "errno": null,
+        "file_line_sha256": "4ffe48dc241e4412a1f349b52c1d24f50c43b048cc92037e2901a805447c9fbd",
+        "line": 19,
+        "names": [
+          "libruff_workspace-cd11f01a0e084989.rlib",
+          "libruff_workspace.rlib"
+        ],
+        "success": true,
+        "syscall": "linkat",
+        "tid": 1887727
+      },
+      "cargo_root": 1885337,
+      "cargo_unlink": {
+        "errno": null,
+        "file_line_sha256": "e475bc41e7fa9ef8fef73f1cccba9ac1d157fcd0673a6f2bc526460af8aa5846",
+        "line": 2,
+        "names": [
+          "libruff_workspace-cd11f01a0e084989.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1887727
+      },
+      "cargo_unlink_old_uplift": {
+        "errno": null,
+        "file_line_sha256": "96c229085c988bb574d13eb2fbcde56f504e3b78320fa260c9d04bbc02cef3f3",
+        "line": 18,
+        "names": [
+          "libruff_workspace.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1887727
+      },
+      "crate": "ruff_workspace",
+      "current_reported_rlib": [
+        "libruff_workspace.rlib"
+      ],
+      "prior_reported_rlib": [
+        "libruff_workspace.rlib"
+      ],
+      "reads_of_hashed_path": 11,
+      "reads_of_prior_uplift": 1,
+      "rustc_publish": {
+        "errno": null,
+        "file_line_sha256": "8a136b03d5a70fdc22fd40b392c052535eb2099003d3d626c8b3d4afd4234f29",
+        "line": 1204,
+        "names": [
+          "tmp.a",
+          "libruff_workspace-cd11f01a0e084989.rlib"
+        ],
+        "success": true,
+        "syscall": "rename",
+        "tid": 1887885
+      },
+      "rustc_root": 1887733,
+      "spawn_branch": [
+        [
+          1887733,
+          1887727,
+          6,
+          false
+        ]
+      ],
+      "spawn_raw_line_sha256": "091e188574b3f337e22d92ce809b3abdbb93c3a5d4c6513b618bf35036df0606",
+      "types": [
+        "lib"
+      ],
+      "unit_rlib": "libruff_workspace-cd11f01a0e084989.rlib",
+      "writes_other_than_unlinks_rename_reuplift": false
+    },
+    {
+      "cargo_link_new_uplift": {
+        "errno": null,
+        "file_line_sha256": "da8d0bfae5840c04289deb97160e3f45a5f49625b9f800c45f5383e938b72c5f",
+        "line": 18,
+        "names": [
+          "libty-8170baf1ea3ee38e.rlib",
+          "libty.rlib"
+        ],
+        "success": true,
+        "syscall": "linkat",
+        "tid": 1890152
+      },
+      "cargo_root": 1885337,
+      "cargo_unlink": {
+        "errno": null,
+        "file_line_sha256": "99eb5777a56061f8ccdf496262dc0872529de6b28c42854fe124721241be41e0",
+        "line": 2,
+        "names": [
+          "libty-8170baf1ea3ee38e.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1890152
+      },
+      "cargo_unlink_old_uplift": {
+        "errno": null,
+        "file_line_sha256": "58611edda0754822dedba8e24619775075eb901757fa22a7f7c124883b48fc35",
+        "line": 17,
+        "names": [
+          "libty.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1890152
+      },
+      "crate": "ty",
+      "current_reported_rlib": [
+        "libty.rlib"
+      ],
+      "prior_reported_rlib": [
+        "libty.rlib"
+      ],
+      "reads_of_hashed_path": 8,
+      "reads_of_prior_uplift": 1,
+      "rustc_publish": {
+        "errno": null,
+        "file_line_sha256": "c23acb4947b923883920bc1e1200a79152a4c7ee12f9c0eb8aa163d864a850e3",
+        "line": 1148,
+        "names": [
+          "tmp.a",
+          "libty-8170baf1ea3ee38e.rlib"
+        ],
+        "success": true,
+        "syscall": "rename",
+        "tid": 1890312
+      },
+      "rustc_root": 1890158,
+      "spawn_branch": [
+        [
+          1890158,
+          1890152,
+          6,
+          false
+        ]
+      ],
+      "spawn_raw_line_sha256": "00770dcca340581e6d0df9f92d350cfa7b4a760733efea86e01b9166fdd49248",
+      "types": [
+        "lib"
+      ],
+      "unit_rlib": "libty-8170baf1ea3ee38e.rlib",
+      "writes_other_than_unlinks_rename_reuplift": false
+    },
+    {
+      "cargo_link_new_uplift": {
+        "errno": null,
+        "file_line_sha256": "8c2b78f9f8056c4c3f0881c54a9ed6a11d9555e0a3a86fc03c44e4510242f892",
+        "line": 19,
+        "names": [
+          "libty_combine-fd344da3dc9cd3c2.rlib",
+          "libty_combine.rlib"
+        ],
+        "success": true,
+        "syscall": "linkat",
+        "tid": 1886440
+      },
+      "cargo_root": 1885337,
+      "cargo_unlink": {
+        "errno": null,
+        "file_line_sha256": "19c85b60290d16a749f2441bb1dd9516f7f27b94b3af3ceaf7a745d53edca8b0",
+        "line": 2,
+        "names": [
+          "libty_combine-fd344da3dc9cd3c2.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1886440
+      },
+      "cargo_unlink_old_uplift": {
+        "errno": null,
+        "file_line_sha256": "1848d815a662b54181d68556a1f60a811a5e15d4cd7e5052ff4dcb1e842ba951",
+        "line": 18,
+        "names": [
+          "libty_combine.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1886440
+      },
+      "crate": "ty_combine",
+      "current_reported_rlib": [
+        "libty_combine.rlib"
+      ],
+      "prior_reported_rlib": [
+        "libty_combine.rlib"
+      ],
+      "reads_of_hashed_path": 12,
+      "reads_of_prior_uplift": 1,
+      "rustc_publish": {
+        "errno": null,
+        "file_line_sha256": "fbb7d91934e031a470e16c8919763aca426e0d1212a77b99d450b71984e6d1be",
+        "line": 423,
+        "names": [
+          "tmp.a",
+          "libty_combine-fd344da3dc9cd3c2.rlib"
+        ],
+        "success": true,
+        "syscall": "rename",
+        "tid": 1886532
+      },
+      "rustc_root": 1886441,
+      "spawn_branch": [
+        [
+          1886441,
+          1886440,
+          6,
+          false
+        ]
+      ],
+      "spawn_raw_line_sha256": "b111ba8e3383c0be1babb861f6366743b7c5a4fecf63a69f3a1b3fcc5fd3ad67",
+      "types": [
+        "lib"
+      ],
+      "unit_rlib": "libty_combine-fd344da3dc9cd3c2.rlib",
+      "writes_other_than_unlinks_rename_reuplift": false
+    },
+    {
+      "cargo_link_new_uplift": {
+        "errno": null,
+        "file_line_sha256": "f70b3bccbdd37c03302935bfd4a7dd01dd97d0986a50bf161a5a71f541f446a1",
+        "line": 19,
+        "names": [
+          "libty_ide-1620f54c967fdca6.rlib",
+          "libty_ide.rlib"
+        ],
+        "success": true,
+        "syscall": "linkat",
+        "tid": 1888533
+      },
+      "cargo_root": 1885337,
+      "cargo_unlink": {
+        "errno": null,
+        "file_line_sha256": "e80a20bcb0633b1a3507cfb9918396c76dfd58517f4f5b2b285f7bd92628d020",
+        "line": 2,
+        "names": [
+          "libty_ide-1620f54c967fdca6.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1888533
+      },
+      "cargo_unlink_old_uplift": {
+        "errno": null,
+        "file_line_sha256": "6cb398ddad64b139dffd18ec6211f0d2649ad32013f8b3391bef176b50bcc01c",
+        "line": 18,
+        "names": [
+          "libty_ide.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1888533
+      },
+      "crate": "ty_ide",
+      "current_reported_rlib": [
+        "libty_ide.rlib"
+      ],
+      "prior_reported_rlib": [
+        "libty_ide.rlib"
+      ],
+      "reads_of_hashed_path": 15,
+      "reads_of_prior_uplift": 1,
+      "rustc_publish": {
+        "errno": null,
+        "file_line_sha256": "015d51fca7443ffee0208762ceb29eca84e2b7a165288453343492fc39f42e28",
+        "line": 1236,
+        "names": [
+          "tmp.a",
+          "libty_ide-1620f54c967fdca6.rlib"
+        ],
+        "success": true,
+        "syscall": "rename",
+        "tid": 1888699
+      },
+      "rustc_root": 1888535,
+      "spawn_branch": [
+        [
+          1888535,
+          1888533,
+          6,
+          false
+        ]
+      ],
+      "spawn_raw_line_sha256": "af845ad22786dfab8a0df8c9fda61c20a603f1698de80ef6c3adc0c6e56b0072",
+      "types": [
+        "lib"
+      ],
+      "unit_rlib": "libty_ide-1620f54c967fdca6.rlib",
+      "writes_other_than_unlinks_rename_reuplift": false
+    },
+    {
+      "cargo_link_new_uplift": {
+        "errno": null,
+        "file_line_sha256": "5a6d52841024e903386799aedb70b09a4fb93e5f9db45ca9bda8a9f568322ddb",
+        "line": 19,
+        "names": [
+          "libty_module_resolver-6e4a4fa2ed941110.rlib",
+          "libty_module_resolver.rlib"
+        ],
+        "success": true,
+        "syscall": "linkat",
+        "tid": 1886082
+      },
+      "cargo_root": 1885337,
+      "cargo_unlink": {
+        "errno": null,
+        "file_line_sha256": "9ddc12879b2d85318903d9de39950e23964a7e2ea116439fe3d73ba923c05f3e",
+        "line": 2,
+        "names": [
+          "libty_module_resolver-6e4a4fa2ed941110.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1886082
+      },
+      "cargo_unlink_old_uplift": {
+        "errno": null,
+        "file_line_sha256": "d7c12ccb5f24ee22a91fbe70b3441fa20ab05878debbb0d5602bc1740cb9ed1b",
+        "line": 18,
+        "names": [
+          "libty_module_resolver.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1886082
+      },
+      "crate": "ty_module_resolver",
+      "current_reported_rlib": [
+        "libty_module_resolver.rlib"
+      ],
+      "prior_reported_rlib": [
+        "libty_module_resolver.rlib"
+      ],
+      "reads_of_hashed_path": 18,
+      "reads_of_prior_uplift": 1,
+      "rustc_publish": {
+        "errno": null,
+        "file_line_sha256": "a65cb434801d0864dd1d6c48fa9ff941549f9c22ee9e5ac416fa6b6ed05d142e",
+        "line": 1233,
+        "names": [
+          "tmp.a",
+          "libty_module_resolver-6e4a4fa2ed941110.rlib"
+        ],
+        "success": true,
+        "syscall": "rename",
+        "tid": 1886198
+      },
+      "rustc_root": 1886090,
+      "spawn_branch": [
+        [
+          1886090,
+          1886082,
+          6,
+          false
+        ]
+      ],
+      "spawn_raw_line_sha256": "87ddb9946ebca6de43257914083bcb8cef82c39895713b115e86834f31bf3fb3",
+      "types": [
+        "lib"
+      ],
+      "unit_rlib": "libty_module_resolver-6e4a4fa2ed941110.rlib",
+      "writes_other_than_unlinks_rename_reuplift": false
+    },
+    {
+      "cargo_link_new_uplift": {
+        "errno": null,
+        "file_line_sha256": "f9ad477472f060fb943a6ef1b4586244a6a7fe270e37da440dfb04ec43433c2c",
+        "line": 19,
+        "names": [
+          "libty_project-a59575c8a44bfc73.rlib",
+          "libty_project.rlib"
+        ],
+        "success": true,
+        "syscall": "linkat",
+        "tid": 1887890
+      },
+      "cargo_root": 1885337,
+      "cargo_unlink": {
+        "errno": null,
+        "file_line_sha256": "02d2c16918856dbc24cd0e6aa2931ad18055ddc3cd054f4510ad3c4926af26b2",
+        "line": 2,
+        "names": [
+          "libty_project-a59575c8a44bfc73.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1887890
+      },
+      "cargo_unlink_old_uplift": {
+        "errno": null,
+        "file_line_sha256": "fcd2b42980f417ff4a69c4f30256aa6a7b75f322a3644f73b4901b644c21b70e",
+        "line": 18,
+        "names": [
+          "libty_project.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1887890
+      },
+      "crate": "ty_project",
+      "current_reported_rlib": [
+        "libty_project.rlib"
+      ],
+      "prior_reported_rlib": [
+        "libty_project.rlib"
+      ],
+      "reads_of_hashed_path": 20,
+      "reads_of_prior_uplift": 1,
+      "rustc_publish": {
+        "errno": null,
+        "file_line_sha256": "9bf6d90e158e80801e7b22b6de14183f69f95b2456e4cfce99d25558be33a8a8",
+        "line": 1306,
+        "names": [
+          "tmp.a",
+          "libty_project-a59575c8a44bfc73.rlib"
+        ],
+        "success": true,
+        "syscall": "rename",
+        "tid": 1887908
+      },
+      "rustc_root": 1887893,
+      "spawn_branch": [
+        [
+          1887893,
+          1887890,
+          6,
+          false
+        ]
+      ],
+      "spawn_raw_line_sha256": "fd34ac257157620967d123bd2740cb5cd491f97961d5e1b4e0db34cffa2bf381",
+      "types": [
+        "lib"
+      ],
+      "unit_rlib": "libty_project-a59575c8a44bfc73.rlib",
+      "writes_other_than_unlinks_rename_reuplift": false
+    },
+    {
+      "cargo_link_new_uplift": {
+        "errno": null,
+        "file_line_sha256": "c498e73e24f4beec53c26d45b1d583164e7b5cf6f4f69c97fe06120139654dfe",
+        "line": 19,
+        "names": [
+          "libty_python_core-21a22d0a7ed64b6f.rlib",
+          "libty_python_core.rlib"
+        ],
+        "success": true,
+        "syscall": "linkat",
+        "tid": 1887163
+      },
+      "cargo_root": 1885337,
+      "cargo_unlink": {
+        "errno": null,
+        "file_line_sha256": "7a5e1c93c21c5ad8948f3078481411737d93b7de100eb941705cda912062e224",
+        "line": 2,
+        "names": [
+          "libty_python_core-21a22d0a7ed64b6f.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1887163
+      },
+      "cargo_unlink_old_uplift": {
+        "errno": null,
+        "file_line_sha256": "57ffc9f4cb65ef3a53e70badb05ff0c74aba2c6f657dff335a4d6ab1d2954a4b",
+        "line": 18,
+        "names": [
+          "libty_python_core.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1887163
+      },
+      "crate": "ty_python_core",
+      "current_reported_rlib": [
+        "libty_python_core.rlib"
+      ],
+      "prior_reported_rlib": [
+        "libty_python_core.rlib"
+      ],
+      "reads_of_hashed_path": 14,
+      "reads_of_prior_uplift": 1,
+      "rustc_publish": {
+        "errno": null,
+        "file_line_sha256": "48f38589b4ba0770a6a34004b3f10a82b627917945fb1e644be13534ec8e5545",
+        "line": 1113,
+        "names": [
+          "tmp.a",
+          "libty_python_core-21a22d0a7ed64b6f.rlib"
+        ],
+        "success": true,
+        "syscall": "rename",
+        "tid": 1887172
+      },
+      "rustc_root": 1887165,
+      "spawn_branch": [
+        [
+          1887165,
+          1887163,
+          6,
+          false
+        ]
+      ],
+      "spawn_raw_line_sha256": "0c629d145dc5d3aad0213648555e5f250d967647710644c7faf40620bfbead1e",
+      "types": [
+        "lib"
+      ],
+      "unit_rlib": "libty_python_core-21a22d0a7ed64b6f.rlib",
+      "writes_other_than_unlinks_rename_reuplift": false
+    },
+    {
+      "cargo_link_new_uplift": {
+        "errno": null,
+        "file_line_sha256": "d3966de91826d63238464eb7a29a6e9dea18034741eff69356902ebe6367c58b",
+        "line": 19,
+        "names": [
+          "libty_python_semantic-4d3cb9836123d3d8.rlib",
+          "libty_python_semantic.rlib"
+        ],
+        "success": true,
+        "syscall": "linkat",
+        "tid": 1887237
+      },
+      "cargo_root": 1885337,
+      "cargo_unlink": {
+        "errno": null,
+        "file_line_sha256": "cd52813c11b1f58189643b50375e393d9a59ef623a30e3bc02e7427f269b3bb6",
+        "line": 2,
+        "names": [
+          "libty_python_semantic-4d3cb9836123d3d8.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1887237
+      },
+      "cargo_unlink_old_uplift": {
+        "errno": null,
+        "file_line_sha256": "b5e14b3dac9e42dd44b900ad984a1588483f5c4cb1d2b356fa3bb3bf459b6af1",
+        "line": 18,
+        "names": [
+          "libty_python_semantic.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1887237
+      },
+      "crate": "ty_python_semantic",
+      "current_reported_rlib": [
+        "libty_python_semantic.rlib"
+      ],
+      "prior_reported_rlib": [
+        "libty_python_semantic.rlib"
+      ],
+      "reads_of_hashed_path": 13,
+      "reads_of_prior_uplift": 1,
+      "rustc_publish": {
+        "errno": null,
+        "file_line_sha256": "5c34b59ea986a57498af77aedba273c7c6a670063b1ad4550eeccac5690861be",
+        "line": 1838,
+        "names": [
+          "tmp.a",
+          "libty_python_semantic-4d3cb9836123d3d8.rlib"
+        ],
+        "success": true,
+        "syscall": "rename",
+        "tid": 1887345
+      },
+      "rustc_root": 1887238,
+      "spawn_branch": [
+        [
+          1887238,
+          1887237,
+          6,
+          false
+        ]
+      ],
+      "spawn_raw_line_sha256": "fd97d74782fd0374c402742270e59abc71dca3938a24396ac0c71975bbaf2187",
+      "types": [
+        "lib"
+      ],
+      "unit_rlib": "libty_python_semantic-4d3cb9836123d3d8.rlib",
+      "writes_other_than_unlinks_rename_reuplift": false
+    },
+    {
+      "cargo_link_new_uplift": {
+        "errno": null,
+        "file_line_sha256": "3aea33a95a01ce5eb48cdb71fa5aa26cdf9e10d89ddaba5fae7a39008507cbf4",
+        "line": 19,
+        "names": [
+          "libty_server-620f8389bcaf4097.rlib",
+          "libty_server.rlib"
+        ],
+        "success": true,
+        "syscall": "linkat",
+        "tid": 1889132
+      },
+      "cargo_root": 1885337,
+      "cargo_unlink": {
+        "errno": null,
+        "file_line_sha256": "67edbcd65edc74802b9660ae6a6040643f523e88a46ba23850a138570b27818b",
+        "line": 2,
+        "names": [
+          "libty_server-620f8389bcaf4097.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1889132
+      },
+      "cargo_unlink_old_uplift": {
+        "errno": null,
+        "file_line_sha256": "3a3118a12c80264e7d4aecc18bf2f8aa5b9a4de7ae8ba847996a7ea1d51a3474",
+        "line": 18,
+        "names": [
+          "libty_server.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1889132
+      },
+      "crate": "ty_server",
+      "current_reported_rlib": [
+        "libty_server.rlib"
+      ],
+      "prior_reported_rlib": [
+        "libty_server.rlib"
+      ],
+      "reads_of_hashed_path": 6,
+      "reads_of_prior_uplift": 1,
+      "rustc_publish": {
+        "errno": null,
+        "file_line_sha256": "5359db44e9cfee07d3a00f67d224699be095d6c1b8713db235ab9baea9c3e577",
+        "line": 1388,
+        "names": [
+          "tmp.a",
+          "libty_server-620f8389bcaf4097.rlib"
+        ],
+        "success": true,
+        "syscall": "rename",
+        "tid": 1889321
+      },
+      "rustc_root": 1889133,
+      "spawn_branch": [
+        [
+          1889133,
+          1889132,
+          6,
+          false
+        ]
+      ],
+      "spawn_raw_line_sha256": "ff73b4e8eeb535f65b7379ef2aea8db2f67b4a019f7a620705d143a6da65354f",
+      "types": [
+        "lib"
+      ],
+      "unit_rlib": "libty_server-620f8389bcaf4097.rlib",
+      "writes_other_than_unlinks_rename_reuplift": false
+    },
+    {
+      "cargo_link_new_uplift": {
+        "errno": null,
+        "file_line_sha256": "4746fb207b03513eb474e5cce513569b9c4ed144d76c2b10a84e7c96e7cff1e5",
+        "line": 18,
+        "names": [
+          "libty_site_packages-57e3e3de944a04a0.rlib",
+          "libty_site_packages.rlib"
+        ],
+        "success": true,
+        "syscall": "linkat",
+        "tid": 1886079
+      },
+      "cargo_root": 1885337,
+      "cargo_unlink": {
+        "errno": null,
+        "file_line_sha256": "b53187e8de35d670b55c9e715d71f79f641ab901bcee7b009ad533e9640be8d0",
+        "line": 2,
+        "names": [
+          "libty_site_packages-57e3e3de944a04a0.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1886079
+      },
+      "cargo_unlink_old_uplift": {
+        "errno": null,
+        "file_line_sha256": "71fc83473fc03f2b20125128a3d15def3bffc4d1add46f9e68afd53f0ba7c490",
+        "line": 17,
+        "names": [
+          "libty_site_packages.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1886079
+      },
+      "crate": "ty_site_packages",
+      "current_reported_rlib": [
+        "libty_site_packages.rlib"
+      ],
+      "prior_reported_rlib": [
+        "libty_site_packages.rlib"
+      ],
+      "reads_of_hashed_path": 16,
+      "reads_of_prior_uplift": 1,
+      "rustc_publish": {
+        "errno": null,
+        "file_line_sha256": "17e95793d999f6e2af74b288421515b75c334cc8516b0172a0eacc0c01e6a126",
+        "line": 732,
+        "names": [
+          "tmp.a",
+          "libty_site_packages-57e3e3de944a04a0.rlib"
+        ],
+        "success": true,
+        "syscall": "rename",
+        "tid": 1886190
+      },
+      "rustc_root": 1886089,
+      "spawn_branch": [
+        [
+          1886089,
+          1886079,
+          6,
+          false
+        ]
+      ],
+      "spawn_raw_line_sha256": "278e10d0569f0aa0fb32e1cb509705bff1445678f0d6d68ecf1a065f76e370cd",
+      "types": [
+        "lib"
+      ],
+      "unit_rlib": "libty_site_packages-57e3e3de944a04a0.rlib",
+      "writes_other_than_unlinks_rename_reuplift": false
+    },
+    {
+      "cargo_link_new_uplift": {
+        "errno": null,
+        "file_line_sha256": "2de4d9aa805b3e692827df598bb4e481b21890feece2907378474f44c2f55165",
+        "line": 18,
+        "names": [
+          "libty_test-a41d66d964874319.rlib",
+          "libty_test.rlib"
+        ],
+        "success": true,
+        "syscall": "linkat",
+        "tid": 1887891
+      },
+      "cargo_root": 1885337,
+      "cargo_unlink": {
+        "errno": null,
+        "file_line_sha256": "da85fce7011982ed2d083dc849e43e9dfd6ffc99643dc5a27d6cf507c4dd6f38",
+        "line": 2,
+        "names": [
+          "libty_test-a41d66d964874319.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1887891
+      },
+      "cargo_unlink_old_uplift": {
+        "errno": null,
+        "file_line_sha256": "18decbbac04d27c2b3946f05a1b10122b0f15f5f22b51961bfed1a46d1aa32e8",
+        "line": 17,
+        "names": [
+          "libty_test.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1887891
+      },
+      "crate": "ty_test",
+      "current_reported_rlib": [
+        "libty_test.rlib"
+      ],
+      "prior_reported_rlib": [
+        "libty_test.rlib"
+      ],
+      "reads_of_hashed_path": 2,
+      "reads_of_prior_uplift": 1,
+      "rustc_publish": {
+        "errno": null,
+        "file_line_sha256": "6ff75408b0c59016634735e4826b120abf19eaec8572715bac1f4041804335b2",
+        "line": 1062,
+        "names": [
+          "tmp.a",
+          "libty_test-a41d66d964874319.rlib"
+        ],
+        "success": true,
+        "syscall": "rename",
+        "tid": 1887901
+      },
+      "rustc_root": 1887892,
+      "spawn_branch": [
+        [
+          1887892,
+          1887891,
+          6,
+          false
+        ]
+      ],
+      "spawn_raw_line_sha256": "cd9b6ed196bd66571eb4c9f60b1bd9fc54acf5a8b29058a63fdbe8a9ecb96d1a",
+      "types": [
+        "lib"
+      ],
+      "unit_rlib": "libty_test-a41d66d964874319.rlib",
+      "writes_other_than_unlinks_rename_reuplift": false
+    },
+    {
+      "cargo_link_new_uplift": {
+        "errno": null,
+        "file_line_sha256": "43682541d7a8a8c313bb912019f992f8dd0397e351e638d5a184471bb9960213",
+        "line": 19,
+        "names": [
+          "libty_vendored-e49e114e2cf0fbda.rlib",
+          "libty_vendored.rlib"
+        ],
+        "success": true,
+        "syscall": "linkat",
+        "tid": 1886088
+      },
+      "cargo_root": 1885337,
+      "cargo_unlink": {
+        "errno": null,
+        "file_line_sha256": "204add25355a66099e6f0696d2b451f89364aa84a0a8ca091bc1b8af03c95b19",
+        "line": 2,
+        "names": [
+          "libty_vendored-e49e114e2cf0fbda.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1886088
+      },
+      "cargo_unlink_old_uplift": {
+        "errno": null,
+        "file_line_sha256": "9f3b873419664fc1bd4d17a05e204eff69ca608376286a7cab2029ee0e93cad3",
+        "line": 18,
+        "names": [
+          "libty_vendored.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1886088
+      },
+      "crate": "ty_vendored",
+      "current_reported_rlib": [
+        "libty_vendored.rlib"
+      ],
+      "prior_reported_rlib": [
+        "libty_vendored.rlib"
+      ],
+      "reads_of_hashed_path": 12,
+      "reads_of_prior_uplift": 1,
+      "rustc_publish": {
+        "errno": null,
+        "file_line_sha256": "58c2a59cec2f2a24b0c7c5284b978614680430762553b3e9bbe0abf1cc802666",
+        "line": 436,
+        "names": [
+          "tmp.a",
+          "libty_vendored-e49e114e2cf0fbda.rlib"
+        ],
+        "success": true,
+        "syscall": "rename",
+        "tid": 1886162
+      },
+      "rustc_root": 1886097,
+      "spawn_branch": [
+        [
+          1886097,
+          1886088,
+          6,
+          false
+        ]
+      ],
+      "spawn_raw_line_sha256": "eb9a1b1ea08e4332ab5c75c570704d450d215280ec4890597615b9fa7633010c",
+      "types": [
+        "lib"
+      ],
+      "unit_rlib": "libty_vendored-e49e114e2cf0fbda.rlib",
+      "writes_other_than_unlinks_rename_reuplift": false
+    },
+    {
+      "cargo_link_new_uplift": {
+        "errno": null,
+        "file_line_sha256": "007a109426e3c9cb22dff4b5f4ef2904cc0a217540a31067863187a59a9ccb12",
+        "line": 22,
+        "names": [
+          "libty_wasm.rlib",
+          "libty_wasm.rlib"
+        ],
+        "success": true,
+        "syscall": "linkat",
+        "tid": 1889465
+      },
+      "cargo_root": 1885337,
+      "cargo_unlink": {
+        "errno": null,
+        "file_line_sha256": "91ad51e37d165abcad064e50fc552c4b02bb66cb052db39782f856dbad3116c4",
+        "line": 3,
+        "names": [
+          "libty_wasm.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1889465
+      },
+      "cargo_unlink_old_uplift": {
+        "errno": null,
+        "file_line_sha256": "2c2ea793eef447320c747b8a11a07d0ab7426bcd1e6b3d12f3885f7764284836",
+        "line": 21,
+        "names": [
+          "libty_wasm.rlib"
+        ],
+        "success": true,
+        "syscall": "unlink",
+        "tid": 1889465
+      },
+      "crate": "ty_wasm",
+      "current_reported_rlib": [
+        "libty_wasm.rlib"
+      ],
+      "prior_reported_rlib": [
+        "libty_wasm.rlib"
+      ],
+      "reads_of_hashed_path": 2,
+      "reads_of_prior_uplift": 1,
+      "rustc_publish": {
+        "errno": null,
+        "file_line_sha256": "6092dab30aa96c174cf69862f50733c22bb1bc00458795ee70de75f49c277e7c",
+        "line": 1390,
+        "names": [
+          "tmp.a",
+          "libty_wasm.rlib"
+        ],
+        "success": true,
+        "syscall": "rename",
+        "tid": 1889474
+      },
+      "rustc_root": 1889467,
+      "spawn_branch": [
+        [
+          1889467,
+          1889465,
+          7,
+          false
+        ]
+      ],
+      "spawn_raw_line_sha256": "fd7649d59bceb8e173064076dd6ab74b0d9dbeb1e7661e5fd9d49abb52c3d1e5",
+      "types": [
+        "cdylib",
+        "rlib"
+      ],
+      "unit_rlib": "libty_wasm.rlib",
+      "writes_other_than_unlinks_rename_reuplift": false
+    }
+  ]
+}
