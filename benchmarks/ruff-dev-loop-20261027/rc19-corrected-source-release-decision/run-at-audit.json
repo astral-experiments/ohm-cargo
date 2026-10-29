@@ -1,0 +1,59 @@
+{
+  "defaultBranchRef": {
+    "target": {
+      "checkSuites": {
+        "nodes": [
+          {
+            "checkRuns": {
+              "nodes": [
+                {
+                  "conclusion": "SUCCESS",
+                  "name": "plan",
+                  "status": "COMPLETED"
+                },
+                {
+                  "conclusion": "SUCCESS",
+                  "name": "build (aarch64-apple-darwin, depot-macos-15)",
+                  "status": "COMPLETED"
+                },
+                {
+                  "conclusion": "SUCCESS",
+                  "name": "build (x86_64-unknown-linux-gnu, github-ubuntu-24.04-x86_64-8)",
+                  "status": "COMPLETED"
+                },
+                {
+                  "conclusion": "SUCCESS",
+                  "name": "assemble",
+                  "status": "COMPLETED"
+                },
+                {
+                  "conclusion": null,
+                  "name": "smoke-test (aarch64-apple-darwin, namespace-profile-macos-15)",
+                  "status": "IN_PROGRESS"
+                },
+                {
+                  "conclusion": "SUCCESS",
+                  "name": "smoke-test (x86_64-unknown-linux-gnu, depot-ubuntu-24.04-4)",
+                  "status": "COMPLETED"
+                }
+              ]
+            },
+            "conclusion": null,
+            "status": "IN_PROGRESS",
+            "workflowRun": {
+              "databaseId": 40821545374,
+              "workflow": {
+                "name": "Build release candidate"
+              }
+            }
+          }
+        ]
+      },
+      "oid": "6d094beb0c256ca5ee9e2038cebeb023203f3b0a"
+    }
+  },
+  "latestRelease": {
+    "tagName": "ohm-1.99.0-18"
+  },
+  "ref": null
+}
