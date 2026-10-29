@@ -1,0 +1,120 @@
+{
+  "plan_sha256": "a1428428f46dd140c7a93d71ebe4207cfb5a9e013e6fd576ac852342a35d48ed",
+  "recovery_sha256": "8d33ecbb8c695859e848f30d20ee70ef8d3812796bfcfeaea0d743bd0e204158",
+  "phases": [
+    "initial-base",
+    "replica-base"
+  ],
+  "results": {
+    "initial-base": {
+      "cell": "initial-base",
+      "control": "base",
+      "plan_sha256": "a1428428f46dd140c7a93d71ebe4207cfb5a9e013e6fd576ac852342a35d48ed",
+      "stock_path_plan_sha256": "23fb2f3ede0fcd10e8fcd27ab5de4bb00e4d42b6c5cbec9eb7fdc9a44b3b401c",
+      "samples_sha256": "0a274c63c966f725aa153050820f8a0a3e3ce72ccf03fe4fe3cd447f0bf0764e",
+      "role_counts": {
+        "cargo": 1,
+        "rustc": 6,
+        "wild": 5
+      },
+      "unique_test_executables": 72,
+      "signed_improvements_pct": [
+        0.31966549539905903,
+        0.18628444528463392,
+        0.21838558969976127,
+        0.19640028591762376,
+        0.3051843655843115,
+        0.20860287069187686,
+        0.3239818726614043,
+        0.0859556544018482
+      ],
+      "median_improvement_pct": 0.21349423019581906,
+      "wins": 8,
+      "losses": 0,
+      "ties": 0,
+      "two_sided_paired_sign_p": 0.0078125,
+      "two_sided_balanced_order_p": 0.02857142857142857,
+      "role_median_improvement_pct": {
+        "cargo": -0.013128955055523885,
+        "rustc": 0.0012881076764800522,
+        "wild": 0.5103229545317767
+      },
+      "qualified": true
+    },
+    "replica-base": {
+      "cell": "replica-base",
+      "control": "base",
+      "plan_sha256": "a1428428f46dd140c7a93d71ebe4207cfb5a9e013e6fd576ac852342a35d48ed",
+      "stock_path_plan_sha256": "23fb2f3ede0fcd10e8fcd27ab5de4bb00e4d42b6c5cbec9eb7fdc9a44b3b401c",
+      "samples_sha256": "b6c9cdfa1b0a248f1e87558456f3d8c2d01f8cc46eac75d8e69887a5c88ee995",
+      "role_counts": {
+        "cargo": 1,
+        "rustc": 6,
+        "wild": 5
+      },
+      "unique_test_executables": 72,
+      "signed_improvements_pct": [
+        0.3113700644580893,
+        0.3031275852413553,
+        0.21806555512013293,
+        0.21060008428007582,
+        0.1872090266646591,
+        0.29939893197525536,
+        0.21050134968393885,
+        0.19719159794054889
+      ],
+      "median_improvement_pct": 0.21433281970010437,
+      "wins": 8,
+      "losses": 0,
+      "ties": 0,
+      "two_sided_paired_sign_p": 0.0078125,
+      "two_sided_balanced_order_p": 0.02857142857142857,
+      "role_median_improvement_pct": {
+        "cargo": -0.000978897811025776,
+        "rustc": 0.0017229160298012011,
+        "wild": 0.5259529276677595
+      },
+      "qualified": true
+    }
+  },
+  "all_required_cells_qualified": true,
+  "product_counts": {
+    "initial-base": {
+      "within_scored_pairs_raw_equal": 586,
+      "within_scored_pairs_canonical_equal": 592,
+      "raw_differences_by_stock_reproduced_path": {
+        "debug/build/uv/8f1aa1dc2727ceb6/out/uv-8f1aa1dc2727ceb6": 4,
+        "debug/build/uv/3a5715ef5d3087bd/out/uvx-3a5715ef5d3087bd": 2
+      },
+      "actual_commands": 20,
+      "raw_file_equal": 1457,
+      "canonical_file_equal": 1480,
+      "old_oracle_sha256": "2c5358a0bd1ff15d23d5745ada83c379922ef010095c78850a5e30f82a398af4",
+      "registered_stock_paths": [
+        "debug/build/uv/3a5715ef5d3087bd/out/uvx-3a5715ef5d3087bd",
+        "debug/build/uv/8f1aa1dc2727ceb6/out/uv-8f1aa1dc2727ceb6",
+        "debug/build/uv/e0133cb6050b81d6/out/uv-e0133cb6050b81d6",
+        "debug/build/uv/e6ac92541876a4a1/out/uv"
+      ]
+    },
+    "replica-base": {
+      "within_scored_pairs_raw_equal": 587,
+      "within_scored_pairs_canonical_equal": 592,
+      "raw_differences_by_stock_reproduced_path": {
+        "debug/build/uv/8f1aa1dc2727ceb6/out/uv-8f1aa1dc2727ceb6": 3,
+        "debug/build/uv/3a5715ef5d3087bd/out/uvx-3a5715ef5d3087bd": 2
+      },
+      "actual_commands": 20,
+      "raw_file_equal": 1463,
+      "canonical_file_equal": 1480,
+      "old_oracle_sha256": "7e5f4a3629d069402c7ff66c367175518932b893f5939b1f51010b41de1cfa55",
+      "registered_stock_paths": [
+        "debug/build/uv/3a5715ef5d3087bd/out/uvx-3a5715ef5d3087bd",
+        "debug/build/uv/8f1aa1dc2727ceb6/out/uv-8f1aa1dc2727ceb6",
+        "debug/build/uv/e0133cb6050b81d6/out/uv-e0133cb6050b81d6",
+        "debug/build/uv/e6ac92541876a4a1/out/uv"
+      ]
+    }
+  },
+  "endpoint": "instructions in the actual distributed -18 Cargo plus all six rustc and five Wild processes in an edited cargo test --no-run -j8. No elapsed-time inference."
+}
