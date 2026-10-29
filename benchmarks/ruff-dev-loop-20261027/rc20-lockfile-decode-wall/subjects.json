@@ -1,0 +1,58 @@
+{
+  "build": {
+    "baseline": "2fe90823d8eadc95de56c2cde8d41e0082aac0eb",
+    "baseline_binary": "967f5f1db2938847fac22d78dc222054cbb143a5fabcffcad0bd15f8929b47e9",
+    "baseline_to_git_parent_delta": [
+      "tests/testsuite/freshness.rs"
+    ],
+    "cargo_sha256": "190829f32ebd9111c628ef50b26a350851aa92446184292732b18d0626635fdf",
+    "git_parent": "9d675d9393b5ff1ecebe764d1a554f8fd64175ef",
+    "independent_native_files": 335,
+    "independent_rlibs": 326,
+    "literal_compiler_commands_equal": true,
+    "ordered_external_inputs": 239,
+    "pgo_profile": "481ada8a40c70dad11b3c7e8871e9a52207d78447ca5e8ace06fc4aec2d2b5a7",
+    "product_diff": [
+      "src/ops/lockfile.rs",
+      "src/ops/resolve.rs",
+      "src/ops/resolve_cache.rs",
+      "src/resolver/encode.rs"
+    ],
+    "source": "0e398aa5aa13fa8b88b59c965d229923e53ab8cd",
+    "tree": "2b1a731a2d375efaa3db709b2e201131da1c420e"
+  },
+  "hardware": {
+    "OS": "Linux x86-64",
+    "account": "unprivileged",
+    "effective_capabilities": 0,
+    "four_pair_order": [
+      "AB",
+      "BA",
+      "BA",
+      "AB"
+    ],
+    "home_and_durable_free_GiB_each": 24,
+    "logical_cpus": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tmpfs_free_GiB": 16
+  },
+  "historical": "6dc1031889aa24a0461457409d39861e279242a9",
+  "lock_bytes": 138994,
+  "lock_sha256": "c9e345325bec5ff08dbbe3916edd39ad0c3d1c7797a8c241ae32f62754e764bf",
+  "locked_packages": 553,
+  "original_analysis_sha256": "d1aeb0cf314d8670e0b7ad4642697213c1ffda8621192cd5523ecd8ba9f6bc4a",
+  "original_analytical_result_sha256": "37df0c6357f824dee20d0c059fe1a98c0f6fe7dfe8c8e934a81d685eee603b72",
+  "original_compat_driver_sha256": "c12c67670dde5bfb2708b038a4689d5eed06351205445f05092b7d85f0bc00b6",
+  "original_design_sha256": "99052c006ed5ba60209fbdd2de3454dc9b0d88c880aaff1a53cf5ac419b90d35",
+  "original_driver_sha256": "97aae91c4d98bdb50eed1452ded9c6b2aa616b0918a8e8087ced2a9ee659961b",
+  "original_manifest_sha256": "893b5ff55f23fde170f5079766ebbe20937419a24296394a6dd0f326b8ccba88",
+  "patch_sha256": "f91d0b26cd34058d4eb0c85eabe6df5cf0c20d7b05b840ef68eea0875798f037",
+  "raw_version": "dfd1738dac1b104c89b0f44a4ad0c6e34b0a592cff0d9a474d68d98088ef8f9a",
+  "ruff": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "ruff_license_blob": "655a0c76fc5539b2f8e63b673741a5fd0e0c5799",
+  "ruff_license_sha256": "2597d854122b77ddc71971564ca2350a37608575ce324adc5650a2b2051c8f18"
+}

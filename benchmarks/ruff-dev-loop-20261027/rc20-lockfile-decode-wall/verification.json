@@ -1,0 +1,65 @@
+{
+  "canonical_rows": {
+    "compatibility_calls": 66,
+    "compatibility_expected_failures": 32,
+    "compatibility_success": 34,
+    "kernel_successful_execs": 96,
+    "native_visits": 24,
+    "ordinary_cargo_processes": 256,
+    "pairs_per_workload": 32,
+    "workloads": 2
+  },
+  "independent_analysis": {
+    "exact_match_all_six_original_results": true,
+    "original_calculator_bytes_match": true,
+    "public_mutation_cases_rejected": 7,
+    "terminal_datasets_fresh_projection_equal": true
+  },
+  "original_stopped_attempts": {
+    "v1": 0,
+    "v2": 0
+  },
+  "portable_projection": {
+    "analyze.py": "d1aeb0cf314d8670e0b7ad4642697213c1ffda8621192cd5523ecd8ba9f6bc4a",
+    "legacy.json.gz": "e86dd25449bee2e097617abfe92eb9b9c6a8ade2d291b4af95f6d687ded44db7",
+    "native_execs.py": "6a2137f2fd5524af8ef9f2b771881a27571e707ae11d10bbaec1eb36b4367a68",
+    "replay.py": "f0b041c74ab4556784a73e9edb6d2d39452f64a66c88174538e0a5d253823435",
+    "reported-statistics.json": "37df0c6357f824dee20d0c059fe1a98c0f6fe7dfe8c8e934a81d685eee603b72",
+    "verify.py": "5d834cfc8c38490abfe8825688de76bbdbbe31e63c66b88b859ad265141c6cdd",
+    "wall-native.json.gz": "d6a6fbcdb79f2b9ef31df2de852d12aa2308591d92928dcacac1add5f188ef1f",
+    "workload.py": "aa59d585c134369b4c7703e6ed4e160ab05d389331945f3d0f849b3b39c77e0d"
+  },
+  "protocol": "exact fixed v3 ordinary Cargo wall timing",
+  "replay_qualification": {
+    "exact_pinned_source_and_schedule_checked": true,
+    "original_and_portable_timed_worker_ast_sha256": "48907ed144d2dce668fa45521c2122428dbe3833c89c7249ef6eb2af2266ee9c",
+    "portable_256_process_timing_reenacted": false,
+    "shell_and_python_parsed": true,
+    "synthetic_preclock_file_disagreement_refused": true,
+    "synthetic_worker_protocol_reached_128_slots": true
+  },
+  "result": "neither workload established a whole-command wall-time reduction",
+  "source_archives": {
+    "v1": {
+      "bytes": 8611,
+      "members": 8,
+      "sha256": "11f2c6ed807d582f5e9a13376ee893cd19056211407066812c1a12b98feb056c"
+    },
+    "v2": {
+      "bytes": 15003,
+      "members": 42,
+      "sha256": "9e1e6c92de7a509367a2720f2f2d126b6cfe9f6463a93c87fba16c7c31728db6"
+    },
+    "v3": {
+      "bytes": 104080,
+      "members": 884,
+      "sha256": "a22cc8c58229f5c5e61ba296e189e346682f9c9a3a510893e64ba29ff7579681"
+    }
+  },
+  "terminals": {
+    "build": "f27fcd838d23a492bcdcabdf8edec50164a6430c6c7e5fa1090d32941fa7764e",
+    "test": "b9cfb21038d25494875d7c33e15214bc7ad42d23f5c972436410b3478c0ae00d"
+  },
+  "three_archives_compared_member_by_member_count": 934,
+  "timer": "time.perf_counter_ns around subprocess.run via the rustup Cargo proxy"
+}

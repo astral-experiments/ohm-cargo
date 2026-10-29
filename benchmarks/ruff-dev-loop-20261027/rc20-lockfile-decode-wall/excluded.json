@@ -1,0 +1,56 @@
+{
+  "v1": {
+    "archive": {
+      "bytes": 8611,
+      "members": 8,
+      "sha256": "11f2c6ed807d582f5e9a13376ee893cd19056211407066812c1a12b98feb056c"
+    },
+    "controller": {
+      "contents": "Traceback (most recent call last):\n  File \"bench.py\", line 218, in <module>\n    controller(md,Path(f),sha,Path(op))\n  File \"bench.py\", line 185, in controller\n    assert child.stdout.readline().strip()==\"READY\",arm\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: A\n",
+      "raw_sha256": "1e400b95e7e32086bad027dd687ab96293f38f638b6682db95e709b6b88e00b6"
+    },
+    "driver_sha256": "7c288f2e9484c4f168bf365e71ad12500bb2d63928dbbc53ed81a972bcea4dd8",
+    "exit": 1,
+    "scored_visits": 0,
+    "worker": {
+      "contents": "Traceback (most recent call last):\n  File \"bench.py\", line 215, in <module>\n    worker(md,a,Path(f),sha,Path(op))\n  File \"bench.py\", line 68, in worker\n    assert hb(orig)==MANIFEST and orig.count(HUNK)==1 and hf(lock)==LOCK\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+      "raw_sha256": "3ecea6881c9ca534db1a2060d9a633396ae7dc4a460ae056dc245447560a154a"
+    }
+  },
+  "v2": {
+    "A": {
+      "files": {
+        "products/debug/build/workspaces/90fabf96b51f8fb4/v2-403b6758c0cdc0a5/ruff_text_size/48f333158b244f36/out/libruff_text_size-48f333158b244f36.rmeta": "af8f228d9e5e76c736b54649f65b2d4089f01edc16ee615df49142e8f373f9a9",
+        "products/debug/libruff_text_size.rlib": "c9be42c56d7322bb90cd4a6f5ac59c20ed1a2669b1ffeb91e44a2f32f638d6ea"
+      },
+      "oracle": [
+        "17 29 12",
+        "9fd6acb5896e86a2c59526eb0b1c63aa1b5cdd02f8fd0f50e9f7012540a2e53d"
+      ],
+      "raw_sha256": "c2223eb6d721c1cf7f1b5c5671d98882bacd0c85f02afde0c913fe87131f4a44"
+    },
+    "B": {
+      "files": {
+        "products/debug/build/workspaces/90fabf96b51f8fb4/v2-403b6758c0cdc0a5/ruff_text_size/48f333158b244f36/out/libruff_text_size-48f333158b244f36.rmeta": "af8f228d9e5e76c736b54649f65b2d4089f01edc16ee615df49142e8f373f9a9",
+        "products/debug/libruff_text_size.rlib": "34abd62a0796af3eea28dd7086a026fbeccf097d31f07ddd5f548374998c60f0"
+      },
+      "oracle": [
+        "17 29 12",
+        "9fd6acb5896e86a2c59526eb0b1c63aa1b5cdd02f8fd0f50e9f7012540a2e53d"
+      ],
+      "raw_sha256": "58996162d82c8ba9aaaedb711b24b278789feb173dd3bb477d507f5f41af5083"
+    },
+    "archive": {
+      "bytes": 15003,
+      "members": 42,
+      "sha256": "9e1e6c92de7a509367a2720f2f2d126b6cfe9f6463a93c87fba16c7c31728db6"
+    },
+    "controller": {
+      "contents": "Traceback (most recent call last):\n  File \"bench.py\", line 219, in <module>\n    controller(md,Path(f),sha,Path(op))\n  File \"bench.py\", line 192, in controller\n    assert actuals[0][key]==actuals[1][key],key\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: files\n",
+      "raw_sha256": "5103d2d59b835abe419a8440ce196c477ced4ce6d2160f67970c4303d054dd17"
+    },
+    "driver_sha256": "3f166643523636b1563ce44c090942401f60ab59887220871501d9fa9e5992a1",
+    "exit": 1,
+    "scored_visits": 0
+  }
+}
