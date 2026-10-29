@@ -45,7 +45,7 @@ pub(super) fn mark_workspace_resolve_fresh(
             paths::create_dir_all_excluded_from_backups_atomic(parent)?;
         }
 
-        paths::write_atomic(cache_path, format!("{fingerprint:016x}"))?;
+        paths::write_atomic_no_follow(cache_path, format!("{fingerprint:016x}"))?;
         Ok(())
     })?;
     Ok(())
