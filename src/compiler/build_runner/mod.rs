@@ -373,6 +373,11 @@ pub struct BuildRunner<'a, 'gctx> {
     pub build_scripts: HashMap<Unit, Arc<BuildScripts>>,
     /// Job server client to manage concurrency with other processes.
     pub jobserver: Client,
+    /// Local job slots reused by sequential fingerprint preparation scopes.
+    /// Released before ready tests or queued compiler/build-script work starts.
+    pub(super) checksum_tokens: Vec<jobserver::Acquired>,
+    // Explicit permission from the known-default executor path, preserved on retries.
+    reserve_checksum_slots: bool,
     /// "Primary" packages are the ones the user selected on the command-line
     /// with `-p` flags. If no flags are specified, then it is the defaults
     /// based on the current directory and the default workspace members.
@@ -427,8 +432,44 @@ pub struct BuildRunner<'a, 'gctx> {
     exclusive_shared_cache_units: HashSet<UnitIndex>,
 }
 
+/// Reserves checksum slots while a newly created jobserver is still private.
+///
+/// After consuming the main process's token, the remaining tokens have no other
+/// readers. Reservation cannot wait for another job; inherited clients must not
+/// use this path. Drop the returned guards before starting queued work.
+pub(super) fn create_local_jobserver(
+    jobs: u32,
+    checksum_freshness: bool,
+) -> CargoResult<(Client, Vec<jobserver::Acquired>)> {
+    let client = Client::new(jobs as usize).context("failed to create jobserver")?;
+    client.acquire_raw()?;
+    let mut tokens = Vec::new();
+    if cfg!(unix) && checksum_freshness {
+        for _ in 0..jobs.saturating_sub(1).min(3) {
+            match client.acquire() {
+                Ok(token) => tokens.push(token),
+                Err(_) => {
+                    // Reservation is optional; preserve the serial path on failure.
+                    tokens.clear();
+                    break;
+                }
+            }
+        }
+    }
+    Ok((client, tokens))
+}
+
 impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
     pub fn new(bcx: &'a BuildContext<'a, 'gctx>) -> CargoResult<Self> {
+        Self::new_with_checksum_reservations(bcx, false)
+    }
+
+    /// Reserves preparation slots only for Cargo's internally created default executor.
+    /// Public callers may use the jobserver from `Executor::init`, so stay unreserved.
+    pub(crate) fn new_with_checksum_reservations(
+        bcx: &'a BuildContext<'a, 'gctx>,
+        reserve_checksum_slots: bool,
+    ) -> CargoResult<Self> {
         // Load up the jobserver that we'll use to manage our parallelism. This
         // is the same as the GNU make implementation of a jobserver, and
         // intentionally so! It's hoped that we can interact with GNU make and
@@ -437,14 +478,14 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         // Note that if we don't have a jobserver in our environment then we
         // create our own, and we create it with `n` tokens, but immediately
         // acquire one, because one token is ourself, a running process.
-        let jobserver = match bcx.gctx.jobserver_from_env() {
-            Some(c) => c.clone(),
-            None => {
-                let client =
-                    Client::new(bcx.jobs() as usize).context("failed to create jobserver")?;
-                client.acquire_raw()?;
-                client
-            }
+        let (jobserver, checksum_tokens) = match bcx.gctx.jobserver_from_env() {
+            Some(c) => (c.clone(), Vec::new()),
+            None => create_local_jobserver(
+                bcx.jobs(),
+                reserve_checksum_slots
+                    && (bcx.gctx.cli_unstable().checksum_freshness
+                        || bcx.gctx.cli_unstable().ohm_worktree_seeds()),
+            )?,
         };
 
         let execution_units = (!bcx.test_check_candidates.is_empty()).then(|| {
@@ -525,6 +566,8 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             build_scripts: HashMap::default(),
             build_explicit_deps: HashMap::default(),
             jobserver,
+            checksum_tokens,
+            reserve_checksum_slots,
             primary_packages: HashSet::default(),
             terminal_check_units,
             execution_units,
@@ -767,13 +810,14 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         preserve_existing_check_graph: bool,
     ) -> CargoResult<Compilation<'gctx>> {
         let bcx = self.bcx;
+        let reserve_checksum_slots = self.reserve_checksum_slots;
         let retry = self.deferred_dev_deps.retry.clone();
         let result = self.retry_with_shared_cache_write_locks(|runner| {
             runner.compile_inner(exec, preserve_existing_check_graph)
         });
         if result.is_err() && retry.load(std::sync::atomic::Ordering::Relaxed) {
             tracing::info!(target: "cargo::compiler::ohm_deferred_dev_deps", "retrying complete graph");
-            let mut runner = Self::new(bcx)?;
+            let mut runner = Self::new_with_checksum_reservations(bcx, reserve_checksum_slots)?;
             runner.deferred_dev_deps.disabled = true;
             return runner.retry_with_shared_cache_write_locks(|runner| {
                 runner.compile_inner(exec, preserve_existing_check_graph)
@@ -788,6 +832,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         compile: impl Fn(Self) -> CargoResult<T>,
     ) -> CargoResult<T> {
         let bcx = self.bcx;
+        let reserve_checksum_slots = self.reserve_checksum_slots;
         let deferred_disabled = self.deferred_dev_deps.disabled;
         let deferred_retry = self.deferred_dev_deps.retry.clone();
         let mut exclusive = self.exclusive_shared_cache_units.clone();
@@ -801,7 +846,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
                     if exclusive.len() == previous {
                         bail!("shared registry writer reservation did not make progress");
                     }
-                    runner = Self::new(bcx)?;
+                    runner = Self::new_with_checksum_reservations(bcx, reserve_checksum_slots)?;
                     runner.deferred_dev_deps.disabled = deferred_disabled;
                     runner.deferred_dev_deps.retry = deferred_retry.clone();
                     runner.exclusive_shared_cache_units = exclusive.clone();
@@ -875,6 +920,8 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             let force_rebuild = self.bcx.build_config.force_rebuild;
             super::compile(&mut self, &mut queue, unit, exec, force_rebuild)?;
         }
+        // All checksum scopes have joined. Return their slots before any execution.
+        self.checksum_tokens.clear();
 
         // Now that we've got the full job queue and we've done all our
         // fingerprint analysis to determine what to run, bust all the memoized

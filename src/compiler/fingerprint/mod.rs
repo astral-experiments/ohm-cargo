@@ -392,6 +392,8 @@ use std::hash::{self, Hash, Hasher};
 use std::io::{self};
 use std::ops::Not;
 use std::path::{Path, PathBuf};
+#[cfg(unix)]
+use std::sync::atomic::AtomicUsize;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 use std::time::SystemTime;
@@ -1741,6 +1743,7 @@ impl LocalFingerprint {
         cargo_exe: &Path,
         gctx: &GlobalContext,
         worktree_seed: bool,
+        checksum_parallelism: ChecksumParallelism<'_>,
     ) -> CargoResult<Option<StaleItem>> {
         let pkg_root = pkg.root();
         match self {
@@ -1790,12 +1793,13 @@ impl LocalFingerprint {
                     }));
                 }
                 if *checksum {
-                    Ok(find_stale_file(
+                    Ok(find_stale_file_with_parallelism(
                         mtime_cache,
                         checksum_cache,
                         &dep_info,
                         info.files.iter().map(|(file, checksum)| (file, *checksum)),
-                        *checksum,
+                        true,
+                        Some(checksum_parallelism),
                     ))
                 } else {
                     Ok(find_stale_file(
@@ -2118,6 +2122,7 @@ impl Fingerprint {
         build_root: &Path,
         cargo_exe: &Path,
         gctx: &GlobalContext,
+        checksum_parallelism: ChecksumParallelism<'_>,
     ) -> CargoResult<()> {
         assert!(!self.fs_status.get_mut().unwrap().up_to_date());
 
@@ -2170,6 +2175,7 @@ impl Fingerprint {
                 cargo_exe,
                 gctx,
                 worktree_seed,
+                checksum_parallelism,
             )? {
                 item.log();
                 *self.fs_status.get_mut().unwrap() = FsStatus::StaleItem(item);
@@ -2482,6 +2488,17 @@ fn calculate(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
         &build_root,
         cargo_exe,
         build_runner.bcx.gctx,
+        ChecksumParallelism {
+            #[cfg(unix)]
+            jobserver: &build_runner.jobserver,
+            #[cfg(unix)]
+            reserved_tokens: &build_runner.checksum_tokens,
+            #[cfg(not(unix))]
+            _lifetime: std::marker::PhantomData,
+            jobs: build_runner.bcx.jobs(),
+            #[cfg(all(test, unix))]
+            workers_started: None,
+        },
     )?;
 
     if unit.mode.is_run_custom_build()
@@ -3106,7 +3123,27 @@ fn pkg_fingerprint(bcx: &BuildContext<'_, '_>, pkg: &Package) -> CargoResult<Str
     source.fingerprint(pkg)
 }
 
-/// The `reference` file is considered as "stale" if any file from `paths` has a newer mtime.
+/// Borrows locally reserved slots for one sequential, scoped checksum batch.
+///
+/// The mutable BuildRunner and its checksum cache serialize production callers;
+/// every worker finishes before another batch can reuse these reservations.
+#[derive(Clone, Copy)]
+struct ChecksumParallelism<'a> {
+    #[cfg(unix)]
+    jobserver: &'a jobserver::Client,
+    #[cfg(unix)]
+    reserved_tokens: &'a [jobserver::Acquired],
+    #[cfg(not(unix))]
+    _lifetime: std::marker::PhantomData<&'a ()>,
+    jobs: u32,
+    #[cfg(all(test, unix))]
+    workers_started: Option<&'a AtomicUsize>,
+}
+
+const MIN_PARALLEL_CHECKSUM_FILES: usize = 128;
+type PrefetchedChecksums = std::vec::IntoIter<Option<Result<Checksum, StaleItem>>>;
+
+/// Retains serial observations for mtime checks and post-script revalidation.
 fn find_stale_file<I, P>(
     mtime_cache: &mut HashMap<PathBuf, FileTime>,
     checksum_cache: &mut HashMap<PathBuf, Checksum>,
@@ -3116,7 +3153,30 @@ fn find_stale_file<I, P>(
 ) -> Option<StaleItem>
 where
     I: IntoIterator<Item = (P, Option<(u64, Checksum)>)>,
-    P: AsRef<Path>,
+    P: AsRef<Path> + Sync,
+{
+    find_stale_file_with_parallelism(
+        mtime_cache,
+        checksum_cache,
+        reference,
+        paths,
+        use_checksums,
+        None,
+    )
+}
+
+/// The ordered consumer selects dirty reasons and commits the checksum-cache prefix.
+fn find_stale_file_with_parallelism<I, P>(
+    mtime_cache: &mut HashMap<PathBuf, FileTime>,
+    checksum_cache: &mut HashMap<PathBuf, Checksum>,
+    reference: &Path,
+    paths: I,
+    use_checksums: bool,
+    parallelism: Option<ChecksumParallelism<'_>>,
+) -> Option<StaleItem>
+where
+    I: IntoIterator<Item = (P, Option<(u64, Checksum)>)>,
+    P: AsRef<Path> + Sync,
 {
     let reference_mtime = match paths::mtime(reference) {
         Ok(mtime) => mtime,
@@ -3136,8 +3196,26 @@ where
     } else {
         None
     };
+    let paths = paths.into_iter();
+    let (paths, mut prefetched) = if cfg!(unix)
+        && use_checksums
+        && paths.size_hint().0 >= MIN_PARALLEL_CHECKSUM_FILES
+        && parallelism.is_some_and(|parallelism| parallelism.jobs > 1)
+    {
+        let paths = paths.collect::<Vec<_>>();
+        let prefetched = prefetch_checksums(
+            &paths,
+            checksum_cache,
+            skippable_dirs.as_deref(),
+            parallelism.unwrap(),
+        );
+        (itertools::Either::Left(paths.into_iter()), prefetched)
+    } else {
+        (itertools::Either::Right(paths), None)
+    };
     let mut checksum_buffer = Vec::new();
     for (path, prior_checksum) in paths {
+        let prefetched = prefetched.as_mut().and_then(Iterator::next).flatten();
         let path = path.as_ref();
 
         // Assuming anything in cargo_home/{git, registry} is immutable
@@ -3160,33 +3238,17 @@ where
             let path_checksum = match checksum_cache.entry(path_buf) {
                 Entry::Occupied(o) => *o.get(),
                 Entry::Vacant(v) => {
-                    let Ok(current_file_len) = fs::metadata(&path).map(|m| m.len()) else {
-                        return Some(StaleItem::FailedToReadMetadata {
+                    let checksum = prefetched.unwrap_or_else(|| {
+                        checksum_metadata(path, file_len)?;
+                        let file = File::open(path).map_err(|_| StaleItem::MissingFile {
                             path: path.to_path_buf(),
-                        });
-                    };
-                    if current_file_len != file_len {
-                        return Some(StaleItem::FileSizeChanged {
-                            path: path.to_path_buf(),
-                            new_size: current_file_len,
-                            old_size: file_len,
-                        });
+                        })?;
+                        read_checksum(path, prior_checksum, file, &mut checksum_buffer)
+                    });
+                    match checksum {
+                        Ok(checksum) => *v.insert(checksum),
+                        Err(item) => return Some(item),
                     }
-                    let Ok(file) = File::open(path) else {
-                        return Some(StaleItem::MissingFile {
-                            path: path.to_path_buf(),
-                        });
-                    };
-                    // Allocate lazily and reuse the buffer across source files.
-                    checksum_buffer.resize(64 * 1024, 0);
-                    let Ok(checksum) =
-                        Checksum::compute(prior_checksum.algo(), file, &mut checksum_buffer)
-                    else {
-                        return Some(StaleItem::UnableToReadFile {
-                            path: path.to_path_buf(),
-                        });
-                    };
-                    *v.insert(checksum)
                 }
             };
             if path_checksum == prior_checksum {
@@ -3246,6 +3308,360 @@ where
         reference, reference_mtime
     );
     None
+}
+
+/// Checks size before opening a cache miss, preserving the serial dirty reasons.
+fn checksum_metadata(path: &Path, expected: u64) -> Result<fs::Metadata, StaleItem> {
+    let metadata = fs::metadata(path).map_err(|_| StaleItem::FailedToReadMetadata {
+        path: path.to_path_buf(),
+    })?;
+    if metadata.len() != expected {
+        return Err(StaleItem::FileSizeChanged {
+            path: path.to_path_buf(),
+            new_size: metadata.len(),
+            old_size: expected,
+        });
+    }
+    Ok(metadata)
+}
+
+/// Reads through EOF with a buffer reused by this serial consumer or worker.
+fn read_checksum(
+    path: &Path,
+    prior: Checksum,
+    file: File,
+    buffer: &mut Vec<u8>,
+) -> Result<Checksum, StaleItem> {
+    buffer.resize(64 * 1024, 0);
+    Checksum::compute(prior.algo(), file, buffer).map_err(|_| StaleItem::UnableToReadFile {
+        path: path.to_path_buf(),
+    })
+}
+
+/// Opens only regular files speculatively; uncertain reads stay in the serial path.
+#[cfg(unix)]
+fn prefetch_checksum(
+    path: &Path,
+    expected: u64,
+    prior: Checksum,
+    buffer: &mut Vec<u8>,
+) -> Option<Result<Checksum, StaleItem>> {
+    use std::os::unix::fs::OpenOptionsExt;
+
+    let metadata = match checksum_metadata(path, expected) {
+        Ok(metadata) => metadata,
+        Err(item) => return Some(Err(item)),
+    };
+    if !metadata.is_file() {
+        return None;
+    }
+    // A regular path can be replaced with a FIFO between metadata and open.
+    // Never block on that replacement or acquire a controlling terminal.
+    let file = fs::OpenOptions::new()
+        .read(true)
+        .custom_flags(libc::O_NONBLOCK | libc::O_NOCTTY)
+        .open(path)
+        .ok()?;
+    let opened = file.metadata().ok()?;
+    if !opened.is_file() || opened.len() != expected {
+        return None;
+    }
+    // A speculative nonblocking read may fail where an ordinary read succeeds.
+    // Retry all read errors in the original ordered consumer.
+    read_checksum(path, prior, file, buffer).ok().map(Ok)
+}
+
+/// Computes isolated results without changing the shared cache or error order.
+#[cfg(unix)]
+fn prefetch_checksums<P: AsRef<Path> + Sync>(
+    paths: &[(P, Option<(u64, Checksum)>)],
+    cache: &HashMap<PathBuf, Checksum>,
+    skippable_dirs: Option<&[PathBuf]>,
+    parallelism: ChecksumParallelism<'_>,
+) -> Option<PrefetchedChecksums> {
+    let skipped = |path: &Path| {
+        skippable_dirs.is_some_and(|dirs| dirs.iter().any(|dir| path.starts_with(dir)))
+    };
+    let misses = paths
+        .iter()
+        .filter(|(path, prior)| {
+            prior.is_some() && !skipped(path.as_ref()) && !cache.contains_key(path.as_ref())
+        })
+        .count();
+    if misses < MIN_PARALLEL_CHECKSUM_FILES {
+        return None;
+    }
+    let workers = (parallelism.jobs as usize).min(4).min(misses.div_ceil(64));
+    let mut tokens = Vec::new();
+    if parallelism.reserved_tokens.is_empty() {
+        // Inherited clients keep their existing opportunistic acquisition path.
+        for _ in 1..workers {
+            match parallelism.jobserver.try_acquire() {
+                Ok(Some(token)) => tokens.push(itertools::Either::Right(token)),
+                Ok(None) | Err(_) => break,
+            }
+        }
+    } else {
+        tokens.extend(
+            parallelism
+                .reserved_tokens
+                .iter()
+                .take(workers - 1)
+                .map(itertools::Either::Left),
+        );
+    }
+    if tokens.is_empty() {
+        return None;
+    }
+
+    let first_unconfirmed = AtomicUsize::new(paths.len());
+    let mut results = vec![None; paths.len()];
+    let chunk_size = paths.len().div_ceil(tokens.len() + 1);
+    let read_chunk = |offset: usize,
+                      paths: &[(P, Option<(u64, Checksum)>)],
+                      results: &mut [Option<Result<Checksum, StaleItem>>]| {
+        let mut buffer = Vec::new();
+        for (relative, ((path, prior), result)) in paths.iter().zip(results).enumerate() {
+            let index = offset + relative;
+            if index > first_unconfirmed.load(Ordering::Relaxed) {
+                break;
+            }
+            let path = path.as_ref();
+            if skipped(path) {
+                continue;
+            }
+            let Some((expected, prior)) = *prior else {
+                first_unconfirmed.fetch_min(index, Ordering::Relaxed);
+                continue;
+            };
+            if let Some(actual) = cache.get(path) {
+                if *actual != prior {
+                    first_unconfirmed.fetch_min(index, Ordering::Relaxed);
+                }
+                continue;
+            }
+            *result = prefetch_checksum(path, expected, prior, &mut buffer);
+            if !matches!(result.as_ref(), Some(Ok(actual)) if *actual == prior) {
+                first_unconfirmed.fetch_min(index, Ordering::Relaxed);
+            }
+        }
+    };
+    std::thread::scope(|scope| {
+        let mut chunks = paths.chunks(chunk_size).zip(results.chunks_mut(chunk_size));
+        let (main_paths, main_results) = chunks.next().unwrap();
+        for (index, ((paths, results), token)) in chunks.zip(tokens).enumerate() {
+            let read_chunk = &read_chunk;
+            // Failed creation leaves this chunk empty for the serial consumer.
+            let _ = std::thread::Builder::new()
+                .name("cargo-checksum".into())
+                .spawn_scoped(scope, move || {
+                    let _token = token;
+                    #[cfg(test)]
+                    if let Some(started) = parallelism.workers_started {
+                        started.fetch_add(1, Ordering::Relaxed);
+                    }
+                    read_chunk((index + 1) * chunk_size, paths, results);
+                });
+        }
+        read_chunk(0, main_paths, main_results);
+    });
+    Some(results.into_iter())
+}
+
+#[cfg(not(unix))]
+fn prefetch_checksums<P: AsRef<Path> + Sync>(
+    _paths: &[(P, Option<(u64, Checksum)>)],
+    _cache: &HashMap<PathBuf, Checksum>,
+    _skippable_dirs: Option<&[PathBuf]>,
+    _parallelism: ChecksumParallelism<'_>,
+) -> Option<PrefetchedChecksums> {
+    None
+}
+
+#[cfg(all(test, target_os = "linux"))]
+mod parallel_checksum_tests {
+    use super::dep_info::ChecksumAlgo;
+    use super::*;
+    use std::os::unix::ffi::OsStrExt;
+
+    fn checksum(bytes: &[u8]) -> Checksum {
+        Checksum::compute(ChecksumAlgo::Blake3, bytes, &mut [0; 64]).unwrap()
+    }
+
+    fn fixture() -> (
+        tempfile::TempDir,
+        PathBuf,
+        Vec<(PathBuf, Option<(u64, Checksum)>)>,
+    ) {
+        let directory = tempfile::tempdir().unwrap();
+        let reference = directory.path().join("dep-info");
+        fs::write(&reference, b"").unwrap();
+        let prior = checksum(b"data");
+        let paths = (0..256)
+            .map(|index| {
+                let path = directory.path().join(format!("{index}.rs"));
+                fs::write(&path, b"data").unwrap();
+                (path, Some((4, prior)))
+            })
+            .collect();
+        (directory, reference, paths)
+    }
+
+    fn compare(
+        reference: &Path,
+        paths: &[(PathBuf, Option<(u64, Checksum)>)],
+        initial: &HashMap<PathBuf, Checksum>,
+    ) -> (Option<StaleItem>, HashMap<PathBuf, Checksum>) {
+        let mut serial = initial.clone();
+        let expected = find_stale_file(
+            &mut HashMap::default(),
+            &mut serial,
+            reference,
+            paths.iter().map(|(path, prior)| (path, *prior)),
+            true,
+        );
+        let (jobserver, mut reserved_tokens) =
+            crate::compiler::build_runner::create_local_jobserver(4, true).unwrap();
+        assert_eq!(reserved_tokens.len(), 3);
+        assert_eq!(jobserver.available().unwrap(), 0);
+        let workers_started = AtomicUsize::new(0);
+        let mut parallel = initial.clone();
+        let actual = find_stale_file_with_parallelism(
+            &mut HashMap::default(),
+            &mut parallel,
+            reference,
+            paths.iter().map(|(path, prior)| (path, *prior)),
+            true,
+            Some(ChecksumParallelism {
+                jobserver: &jobserver,
+                reserved_tokens: &reserved_tokens,
+                jobs: 4,
+                workers_started: Some(&workers_started),
+            }),
+        );
+        assert_eq!(
+            serde_json::to_value(&actual).unwrap(),
+            serde_json::to_value(&expected).unwrap()
+        );
+        assert_eq!(parallel, serial);
+        assert!(workers_started.load(Ordering::Relaxed) > 0);
+        assert_eq!(jobserver.available().unwrap(), 0);
+        reserved_tokens.clear();
+        assert_eq!(jobserver.available().unwrap(), 3);
+        (actual, parallel)
+    }
+
+    #[test]
+    fn parallel_checksums_prefetch_repeated_batches_and_restore_tokens() {
+        let (_directory, _reference, paths) = fixture();
+        let (jobserver, mut reserved_tokens) =
+            crate::compiler::build_runner::create_local_jobserver(4, true).unwrap();
+        assert_eq!(jobserver.available().unwrap(), 0);
+        for _ in 0..2 {
+            let workers_started = AtomicUsize::new(0);
+            let results: Vec<_> = prefetch_checksums(
+                &paths,
+                &HashMap::default(),
+                None,
+                ChecksumParallelism {
+                    jobserver: &jobserver,
+                    reserved_tokens: &reserved_tokens,
+                    jobs: 4,
+                    workers_started: Some(&workers_started),
+                },
+            )
+            .expect("eligible inputs must actually enter prefetch")
+            .collect();
+            assert!(workers_started.load(Ordering::Relaxed) > 0);
+            // With at least one extra worker, index 128 is outside the main chunk.
+            assert!(matches!(results[128], Some(Ok(_))));
+            assert!(
+                results.iter().all(
+                    |result| matches!(result, Some(Ok(actual)) if *actual == checksum(b"data"))
+                )
+            );
+            assert_eq!(jobserver.available().unwrap(), 0);
+        }
+        reserved_tokens.clear();
+        assert_eq!(jobserver.available().unwrap(), 3);
+        let queued_tokens: Vec<_> = (0..3).map(|_| jobserver.acquire().unwrap()).collect();
+        assert_eq!(jobserver.available().unwrap(), 0);
+        drop(queued_tokens);
+        assert_eq!(jobserver.available().unwrap(), 3);
+    }
+
+    #[test]
+    fn checksum_reservations_respect_jobs_and_checksum_policy() {
+        for (jobs, checksums, expected) in [(1, true, 0), (4, false, 0), (4, true, 3), (8, true, 3)]
+        {
+            let (jobserver, mut reserved_tokens) =
+                crate::compiler::build_runner::create_local_jobserver(jobs, checksums).unwrap();
+            assert_eq!(reserved_tokens.len(), expected);
+            assert_eq!(jobserver.available().unwrap(), jobs as usize - 1 - expected);
+            reserved_tokens.clear();
+            assert_eq!(jobserver.available().unwrap(), jobs as usize - 1);
+        }
+    }
+
+    #[test]
+    fn parallel_checksums_preserve_fresh_results_and_cache() {
+        let (_directory, reference, paths) = fixture();
+        let (reason, cache) = compare(&reference, &paths, &HashMap::default());
+        assert!(reason.is_none());
+        assert_eq!(cache.len(), paths.len());
+    }
+
+    #[test]
+    fn parallel_checksums_preserve_first_dirty_before_a_fifo() {
+        for failure in ["checksum", "size", "missing_checksum", "metadata"] {
+            let (_directory, reference, mut paths) = fixture();
+            let mut cache = HashMap::default();
+            cache.insert(paths[0].0.clone(), checksum(b"data"));
+            fs::remove_file(&paths[0].0).unwrap();
+            paths[1] = (
+                home::cargo_home()
+                    .unwrap()
+                    .join("registry/__ohm_checksum_test_missing__"),
+                None,
+            );
+            match failure {
+                "checksum" => fs::write(&paths[5].0, b"edit").unwrap(),
+                "size" => File::options()
+                    .write(true)
+                    .open(&paths[5].0)
+                    .unwrap()
+                    .set_len(16 * 1024 * 1024)
+                    .unwrap(),
+                "missing_checksum" => paths[5].1 = None,
+                "metadata" => fs::remove_file(&paths[5].0).unwrap(),
+                _ => unreachable!(),
+            }
+            let fifo = &mut paths[192];
+            fs::remove_file(&fifo.0).unwrap();
+            let name = std::ffi::CString::new(fifo.0.as_os_str().as_bytes()).unwrap();
+            // SAFETY: `name` is a live, NUL-terminated path and the mode is valid.
+            assert_eq!(unsafe { libc::mkfifo(name.as_ptr(), 0o600) }, 0);
+            fifo.1 = Some((0, checksum(b"")));
+
+            let (reason, _) = compare(&reference, &paths, &cache);
+            assert!(matches!(
+                (failure, reason),
+                ("checksum", Some(StaleItem::ChangedChecksum { .. }))
+                    | ("size", Some(StaleItem::FileSizeChanged { .. }))
+                    | ("missing_checksum", Some(StaleItem::MissingChecksum { .. }))
+                    | ("metadata", Some(StaleItem::FailedToReadMetadata { .. }))
+            ));
+        }
+    }
+    #[test]
+    fn parallel_checksums_preserve_duplicate_path_cache_semantics() {
+        let (_directory, reference, mut paths) = fixture();
+        let sha256 = Checksum::compute(ChecksumAlgo::Sha256, &b"data"[..], &mut [0; 64]).unwrap();
+        paths[192] = (paths[5].0.clone(), Some((999, sha256)));
+        let (reason, cache) = compare(&reference, &paths, &HashMap::default());
+        assert!(matches!(reason, Some(StaleItem::ChangedChecksum { .. })));
+        assert_eq!(cache.len(), 192);
+    }
 }
 
 #[cfg(test)]

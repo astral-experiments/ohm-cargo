@@ -663,6 +663,78 @@ fn cargo_compile_with_bin_and_crate_type() {
         .run();
 }
 
+#[cfg(unix)]
+#[cargo_test]
+fn cargo_compile_with_exec_keeps_preparation_tokens_available() {
+    use cargo::compiler::{BuildRunner, CompileMode, Executor, Unit};
+    use cargo::workspace::{PackageId, Target};
+    use std::sync::Arc;
+    use std::sync::atomic::{AtomicUsize, Ordering};
+
+    struct TokenConsumer {
+        init_calls: AtomicUsize,
+        exec_calls: AtomicUsize,
+    }
+    impl Executor for TokenConsumer {
+        fn init(&self, runner: &BuildRunner<'_, '_>, _unit: &Unit) {
+            // Check before acquiring, so a reservation regression fails without hanging.
+            assert_eq!(runner.jobserver.available().unwrap(), 3);
+            let tokens: Vec<_> = (0..3)
+                .map(|_| runner.jobserver.acquire().unwrap())
+                .collect();
+            assert_eq!(runner.jobserver.available().unwrap(), 0);
+            drop(tokens);
+            self.init_calls.fetch_add(1, Ordering::Relaxed);
+        }
+
+        fn exec(
+            &self,
+            _cmd: &cargo_util::ProcessBuilder,
+            _id: PackageId,
+            _target: &Target,
+            _mode: CompileMode,
+            _on_stdout_line: &mut dyn FnMut(&str) -> cargo::CargoResult<()>,
+            _on_stderr_line: &mut dyn FnMut(&str) -> cargo::CargoResult<()>,
+        ) -> cargo::CargoResult<()> {
+            self.exec_calls.fetch_add(1, Ordering::Relaxed);
+            anyhow::bail!("custom executor reached after token acquisition")
+        }
+    }
+
+    let p = project()
+        .file("Cargo.toml", &basic_lib_manifest("foo"))
+        .file("src/lib.rs", "pub fn foo() {}")
+        .build();
+    let gctx = crate::config::GlobalContextBuilder::new()
+        .cwd(p.root())
+        .unstable_flag("checksum-freshness")
+        .build();
+    if gctx.jobserver_from_env().is_some() {
+        eprintln!("custom executor owned-jobserver check skipped: inherited jobserver");
+        return;
+    }
+    let ws = Workspace::new(&p.root().join("Cargo.toml"), &gctx).unwrap();
+    let mut options = CompileOptions::new(&gctx, UserIntent::Build).unwrap();
+    options.build_config.jobs = 4;
+    let observer = Arc::new(TokenConsumer {
+        init_calls: AtomicUsize::new(0),
+        exec_calls: AtomicUsize::new(0),
+    });
+    let exec: Arc<dyn Executor> = observer.clone();
+    let error = cargo::ops::compile_with_exec(&ws, &options, &exec)
+        .err()
+        .expect("the custom executor must return an error");
+    assert!(
+        observer.init_calls.load(Ordering::Relaxed) > 0,
+        "custom executor init was not called; compilation returned: {error:#}"
+    );
+    assert!(
+        observer.exec_calls.load(Ordering::Relaxed) > 0,
+        "custom executor exec was not called; compilation returned: {error:#}"
+    );
+    eprintln!("custom executor used an owned jobserver and acquired all three tokens");
+}
+
 #[cargo_test]
 fn cargo_compile_api_exposes_artifact_paths() {
     let p = project()
