@@ -1,0 +1,69 @@
+{
+  "checked": {
+    "actual_matched_binary_and_build_receipt_hashes": true,
+    "adverse_pair_retained": {
+      "A_ns": 177755623,
+      "B_ns": 587817481,
+      "order": "AB",
+      "pair": 20,
+      "reduction_pct": -230.68854367549318
+    },
+    "fresh_native_projection_equal": true,
+    "original_analyzer_result_bytes_equal": true,
+    "portable_timer_AST_sha256": "48907ed144d2dce668fa45521c2122428dbe3833c89c7249ef6eb2af2266ee9c",
+    "portable_timing_reenactment": false,
+    "portable_zero_cargo_controller_and_refusal_checked": true,
+    "public_adversarial_cases_rejected": 8,
+    "reported_six_estimates_exactly_recomputed": true,
+    "source_and_three_line_patch": true,
+    "synchronized_writer_packet_independently_verified": true
+  },
+  "controller_archive": {
+    "bytes": 104319,
+    "members": 885,
+    "sha256": "2d1914c8912758345e18a201b0b215875888b26b748266d94532c6d2eef5c7da"
+  },
+  "controller_attempts": 1,
+  "matched_archive_members": 885,
+  "native": {
+    "compatibility_calls": 66,
+    "expected_errors": 32,
+    "independent_exec_ledger_sha256": "dc7fbb9cd3c7812446c86c54f645ca736bbe11d855d6310ea8c728fe1b40e9b6",
+    "offclock_cargo_captures": 24,
+    "raw_completed_execs": 96,
+    "successes": 34,
+    "timed_cargo": 256
+  },
+  "portable_inputs": {
+    "analyze.py": "d1aeb0cf314d8670e0b7ad4642697213c1ffda8621192cd5523ecd8ba9f6bc4a",
+    "directions.json": "04a9f090c8c7633bc420e06a3214567fa35c93cd58281873d975749a06bc380f",
+    "directions.py": "4d077a871cc1a777db70bc86e24f27d0e1feac60bf051184a0848ebc2ced5732",
+    "legacy.json.gz": "ff54f0186087ee3ec2d6069cba1553077e14098e15616227c71beccb6d4a729c",
+    "native_execs.py": "6a2137f2fd5524af8ef9f2b771881a27571e707ae11d10bbaec1eb36b4367a68",
+    "replay.py": "f0b041c74ab4556784a73e9edb6d2d39452f64a66c88174538e0a5d253823435",
+    "reported-statistics.json": "7ccc3ada6ec81a58da9ea7bf511a1d885329995307a59f148e55719c5284c5bc",
+    "verify.py": "c1c742a6c9d07c1d85ef469dddd8be0f92de3c39e55d3f78e22b6a0d1ff0e0ac",
+    "wall-native.json.gz": "d090fef59ed1a75b5837f33cbd870b6132ff74b0bca3c477e74d896ca64a2fc4",
+    "workload.py": "aa59d585c134369b4c7703e6ed4e160ab05d389331945f3d0f849b3b39c77e0d",
+    "writer-controls.json": "832f4e40f143f547c9f6f21b3d653fa721ea2296a078b49d37c8a39e985f5452"
+  },
+  "protocol": "serialization v1; all 32 adjacent pairs per workload; zero replaced slots",
+  "result": "neither workload established a whole-command wall-time reduction",
+  "separate_writer_qualification": {
+    "candidate": "24c98100d04843e60a830951f843ab40f6e60414",
+    "cargo_sha256": "d2480173d7362899271f21aed543b24348bf5ba8ddf4696e5fed10dc58d68b9b",
+    "commands": 33,
+    "expected_errors": 6,
+    "manifest_sha256": "1cbd8d137fa1f2467ea55273e989651936b8988cad21527d551d4dfadae114e2",
+    "mutation_cases_rejected": 4,
+    "native_capture_sha256": "70b5ea4041a99055b1371cada9bb07df53790a47330920aae0345595a1f373dd",
+    "publication": "722ba625259aa8589954b77ae3fdffce29dc6f7d",
+    "slug": "rc20-workspace-lockfile-serialization-candidate",
+    "successful_caller_checks": 27,
+    "synchronized_writers": 5
+  },
+  "terminal_sha256": {
+    "build": "2657aecce68289e3b78f200c7b7eec3455ca37300cef604753cd3343795bdae6",
+    "test": "ebcb2c8cabc1e55caf894933c831e119db71785740fa44cfbf7e1f0df0ef7962"
+  }
+}
