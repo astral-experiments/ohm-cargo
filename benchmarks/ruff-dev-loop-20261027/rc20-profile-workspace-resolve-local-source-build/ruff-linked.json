@@ -1,0 +1,106 @@
+{
+  "expected_rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+  "expected_wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+  "warmup": [
+    {
+      "all_native_argv": {
+        "1dc4c15d2cc124fedd466a2d143efa7bfbd090d8721feb7c5c126712a787a522": "rustc"
+      },
+      "lane": "mechanism",
+      "mode": "build",
+      "observed_basenames": {
+        "rustc": 1
+      },
+      "roles": {
+        "selected-rustc": 1
+      },
+      "trace_hash": "c7ff59b33b7632727be510385ef36295674d60108a1db528f07c6016c605d952"
+    },
+    {
+      "all_native_argv": {
+        "15786c5f8f1cf5cbd0c5007cda3490458899b073b0db00c2fa3e1fea8ff2864f": "rustc",
+        "1f7842c24909e2843c3f4311ee58d53a5be3025f00ebfaa7a7cf15935b1c8480": "rustc",
+        "239515fe9bbff7fe1ef609ea9197c98f044c993fab185841556cdf41a3b19683": "ld.bfd",
+        "49008885448133bdbc7aa9e1184fb8147f12c7749e3183e5bcc4d09731a4f214": "ld.bfd",
+        "58e67f45270284b98ff15a399707f9cf9b018e757e537a2f5b9e084876c17f50": "rustc",
+        "6e255f0206e83f586dffc64195b8b7fedf0d11ded17400f4f45bcaa9d00a9d9e": "rustc",
+        "7af2e43389a316fea96632f1340b7b84cb2f4592ba914e2671a11fae650c3e43": "rustc",
+        "842e40950cf05ac2aa016c6d92c7452aabf4b38e5a831a8d22034abe27435818": "rustc",
+        "88b6961975d185381c15119a5b4bf47c4c3143fb512aedc8c1f652bfeb65513f": "ld.bfd",
+        "8a9ef5ddd641a5870f8765b7c3b4a9813cde854fbca98ce51fe6d3e6c4958c5f": "rustc",
+        "908f5c0094cbc2be4ed221ab488405b996cc299e4a3eb52626d9d12c8d6f2b11": "rustc",
+        "9808acc44780bff62e030febc29ec3abb7eebd52f67d8c8bdac83a838f1ae9a8": "rustc",
+        "a8890b43b853a143b95c2c17dc37396649b584cb432500257ea8fdf115b6b8c0": "rustc",
+        "af72fd676006866d4516264cdf8f34fd870733c2135f4f6264f19a58c7bb406f": "ld.bfd",
+        "b17af061999202bfbecaef80b7c959a416cbeda0b24f911cdadc3d165d89e688": "rustc",
+        "b3288c34bf04e18dc2052e0cd1dd6a964514e34b7835314272de8956e4a0560d": "ld.bfd",
+        "cbd89f6314fabd9ff47cb530f908fa46005f59a6eadbe7846891d54268acad5d": "rustc",
+        "d5dbe650591b510575bab6e83d5850cc5f3e4a5bf80856f0af74c224c0ad722f": "rustc",
+        "e8dc5da182b8d389b6ab980d4f0a8957e501126d68c09856729c5b52e2d2262d": "ld.bfd",
+        "ec70b7c8e83ee6415538f7ae30c173348b20b8adb88e434716be5f4397f7cab1": "rustc",
+        "ff7b0f885d782685e7f80de8f30c195a8c73b75a92f32e6f74de166f3b5bb9f1": "rustc"
+      },
+      "lane": "mechanism",
+      "mode": "test",
+      "observed_basenames": {
+        "ld.bfd": 6,
+        "rustc": 15
+      },
+      "roles": {
+        "selected-rustc": 15,
+        "selected-stock-Wild": 6
+      },
+      "trace_hash": "6f523fdfbabf55fb56321482159c90284da19d9464fdacc8a38e8dd8056e8bc6"
+    },
+    {
+      "all_native_argv": {
+        "a75901a825177f9c6a29366c8c2fbad78d1f6d674668104d749423aa95d1221b": "rustc"
+      },
+      "lane": "wall",
+      "mode": "build",
+      "observed_basenames": {
+        "rustc": 1
+      },
+      "roles": {
+        "selected-rustc": 1
+      },
+      "trace_hash": "f67e03d736b3f7da02525b5b75aa090d5fcd5b65bc5a582a8dada67cd37c0c08"
+    },
+    {
+      "all_native_argv": {
+        "1440e01163fb8a248a9f545682977b282c484cae43e3522389fa9fb4d18aa262": "rustc",
+        "2d8ac20aa1fc520a8dbd0b2dab443494918f15555bc684aad8ba48a0cbfb721a": "ld.bfd",
+        "2ea16f8c82191d2bbe0bc55406e76fd1bb68bb319a4b0eb19a45d07691d25de8": "rustc",
+        "54fe88da9e48fd51d7e5e4af69ba39f82fdfa5952d442d352c6a6335c32fd1b6": "rustc",
+        "6c6c62e6546e177e9ca97c7874780b04ffd05ce6afc824562d60392e077e5e45": "rustc",
+        "6edf0a4159dc0762bd85633a170a8723e83ebc254e6a60a85fc5b8b992838496": "rustc",
+        "710f53a24c07c1834f1a0a6916eab552b4749a3e948ad52258541c266eb76281": "ld.bfd",
+        "856c96ac53bdcce0c12d022dc75fadde4d5abe41304645e953c91ac88f6b9eae": "rustc",
+        "87e56c235e06c7a255717bfddcc98fc28123458aeb026d4789aa7a8510ded877": "rustc",
+        "88dde9bb62d0ec21c252342fec1e5ef52b37796e2034a47cfcefafd68a60de80": "rustc",
+        "9f9474851fa14df288b07362cd82c3c22c958c322f557de8df9d7743d72857f5": "ld.bfd",
+        "ad42efc2014be8ad20d6ebfe695d42d1186bc2e51ed0e7397e87cf3945bcea58": "rustc",
+        "b0598f3929154506d08d4cbdbb23577a9589741271de1e40e7f61eb272d9ef66": "ld.bfd",
+        "b258257fea632698baa81e5ea7d756ca2ea544a6d8ccb4c9f30a981180e015b1": "ld.bfd",
+        "ba345a982ae31a62deea663f5b9c8b26561a781bdaa2887e3f5679b50fa20179": "rustc",
+        "c58f12243543bbb33631e6169281a67facfc8b88fd890e0ad00a060e1198927f": "rustc",
+        "c672d6f5fe0d4b1be9750269668895a902f5ab3533bd365486cd7081b7c29f83": "ld.bfd",
+        "cc8154842318eec913b92e65aa0b7f4ebc46ee101847ac4a086e0a53ff143724": "rustc",
+        "d34d6e923907af489bf7596e331f02d6331e5c724c2fe2638ad1dcba6243e173": "rustc",
+        "e5f0e5aefe7fee04e5a882953d75bef7b1d8e70f0b27b734f171fe7d21ee25bb": "rustc",
+        "f364f3d3a306d4e7ca315d862a5bec1c656e02725aa4d5feba8b12638dfa9f7f": "rustc"
+      },
+      "lane": "wall",
+      "mode": "test",
+      "observed_basenames": {
+        "ld.bfd": 6,
+        "rustc": 15
+      },
+      "roles": {
+        "selected-rustc": 15,
+        "selected-stock-Wild": 6
+      },
+      "trace_hash": "6bc8c5800ba37686ffb571496662d73e5f7531e73091b70ceeb1f0751f5b9cec"
+    }
+  ]
+}
