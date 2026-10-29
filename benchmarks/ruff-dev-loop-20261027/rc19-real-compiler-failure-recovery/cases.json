@@ -1,0 +1,2111 @@
+{
+  "assembler": {
+    "A": {
+      "actual-assembler-failure": {
+        "artifacts": [],
+        "errors": [
+          [
+            "dep",
+            null,
+            "deliberate_ohm_codegen_failure"
+          ]
+        ],
+        "raw_json_bytes": 1307,
+        "raw_stderr_bytes": 291,
+        "rc": 101,
+        "source": "594178f4f95cdb7a1d7df255346c78b1118f1067d52a970e05725ea17a04d678",
+        "stderr": "566ed480d0026d76b8f58f50a2f34e8949e01f40cb63a954448b0e940488b737",
+        "stdout": "3d42d3de6f0924d0190f84b98b66469c23a3491d35f88e096ed5ebcc64ae16ee"
+      },
+      "clean-revert": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            false
+          ]
+        ],
+        "elf": "e9a3ba9318001033349472ef1853842d2ae602741e0a510ce265a0e7811e17d3",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3013,
+        "raw_stderr_bytes": 302,
+        "rc": 0,
+        "source": "5418493eb6a84b27361787b371e8e110c1d9da0ae579081a65168144743db72b",
+        "stderr": "20c3c9c4441b3fb3d69754133fbeaaa682f688f978a11ea6dcfd4c272987d52e",
+        "stdout": "da8d585e05a62dfd44d0d707e140895721df84a218d386e7bc6fb62322326949"
+      },
+      "independent-valid-change": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            false
+          ]
+        ],
+        "elf": "b7c1d145b1f22e9a857509cfe63d3a4f12d3322405bbe6e667df386a00f7803e",
+        "errors": [],
+        "program_stdout": "29\n",
+        "raw_json_bytes": 3013,
+        "raw_stderr_bytes": 302,
+        "rc": 0,
+        "source": "68826f29f5b33bc619e83b603b9df94b7da527e22d8e00347f78182d10c52f12",
+        "stderr": "924ca30b3b468ba2ed5eff049bf817f5f742c1d6299fb98d228cbd1e792d8343",
+        "stdout": "da8d585e05a62dfd44d0d707e140895721df84a218d386e7bc6fb62322326949"
+      },
+      "revert": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            false
+          ]
+        ],
+        "elf": "e9a3ba9318001033349472ef1853842d2ae602741e0a510ce265a0e7811e17d3",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3013,
+        "raw_stderr_bytes": 302,
+        "rc": 0,
+        "source": "5418493eb6a84b27361787b371e8e110c1d9da0ae579081a65168144743db72b",
+        "stderr": "6b85796e402029e3ac3ed9ee7e2db1b04b9dc74c481c71cd920c7635024ff4d9",
+        "stdout": "da8d585e05a62dfd44d0d707e140895721df84a218d386e7bc6fb62322326949"
+      },
+      "revert-again": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            true
+          ]
+        ],
+        "elf": "e9a3ba9318001033349472ef1853842d2ae602741e0a510ce265a0e7811e17d3",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3010,
+        "raw_stderr_bytes": 72,
+        "rc": 0,
+        "source": "5418493eb6a84b27361787b371e8e110c1d9da0ae579081a65168144743db72b",
+        "stderr": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e",
+        "stdout": "63018ac6ec572eb47186be83248817f01719ed78dfe2fe24d7f916c4775d506e"
+      },
+      "seed": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            false
+          ]
+        ],
+        "elf": "e9a3ba9318001033349472ef1853842d2ae602741e0a510ce265a0e7811e17d3",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3013,
+        "raw_stderr_bytes": 371,
+        "rc": 0,
+        "source": "5418493eb6a84b27361787b371e8e110c1d9da0ae579081a65168144743db72b",
+        "stderr": "c658c353858ba6545abb49ad63ab5d3491a6589e3e7400f2d4344e180f4d6015",
+        "stdout": "da8d585e05a62dfd44d0d707e140895721df84a218d386e7bc6fb62322326949"
+      },
+      "unchanged": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            true
+          ]
+        ],
+        "elf": "e9a3ba9318001033349472ef1853842d2ae602741e0a510ce265a0e7811e17d3",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3010,
+        "raw_stderr_bytes": 72,
+        "rc": 0,
+        "source": "5418493eb6a84b27361787b371e8e110c1d9da0ae579081a65168144743db72b",
+        "stderr": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e",
+        "stdout": "63018ac6ec572eb47186be83248817f01719ed78dfe2fe24d7f916c4775d506e"
+      }
+    },
+    "B": {
+      "actual-assembler-failure": {
+        "artifacts": [],
+        "errors": [
+          [
+            "dep",
+            null,
+            "deliberate_ohm_codegen_failure"
+          ]
+        ],
+        "raw_json_bytes": 1307,
+        "raw_stderr_bytes": 291,
+        "rc": 101,
+        "source": "594178f4f95cdb7a1d7df255346c78b1118f1067d52a970e05725ea17a04d678",
+        "stderr": "748935fc433864de5ea9b21d698a7717a38038068a80ba25df93dda92a6440dc",
+        "stdout": "82566b48d37583e5f1b7b2eb580e29d8be933aad693f3600c10521696361297e"
+      },
+      "clean-revert": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            false
+          ]
+        ],
+        "elf": "dbb526c69dc748a2d2466281b5260daf9eb15197e8946aed3e4aae7a272dcb25",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3013,
+        "raw_stderr_bytes": 302,
+        "rc": 0,
+        "source": "5418493eb6a84b27361787b371e8e110c1d9da0ae579081a65168144743db72b",
+        "stderr": "4c8f9c8bfa38b744899db10f8b1cf895b1b5a85558a5b87e7365123d0ed5688a",
+        "stdout": "08539001e810137d1eaa7d9478283d44a927da9ecf57d45f00439b3313405d09"
+      },
+      "independent-valid-change": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            false
+          ]
+        ],
+        "elf": "dd7ff72648acf6081dc53711f5cb84b71c029af66ce380dd26e90811e54b5083",
+        "errors": [],
+        "program_stdout": "29\n",
+        "raw_json_bytes": 3013,
+        "raw_stderr_bytes": 302,
+        "rc": 0,
+        "source": "68826f29f5b33bc619e83b603b9df94b7da527e22d8e00347f78182d10c52f12",
+        "stderr": "1e9cc1c087a9da37e4b650a96be16d5688b045ed835a1912b54b233e87710c73",
+        "stdout": "08539001e810137d1eaa7d9478283d44a927da9ecf57d45f00439b3313405d09"
+      },
+      "revert": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            false
+          ]
+        ],
+        "elf": "dbb526c69dc748a2d2466281b5260daf9eb15197e8946aed3e4aae7a272dcb25",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3013,
+        "raw_stderr_bytes": 302,
+        "rc": 0,
+        "source": "5418493eb6a84b27361787b371e8e110c1d9da0ae579081a65168144743db72b",
+        "stderr": "d481d5e52597e3e35f0b1322d4e1220ea2892569c1f5d5830d31c03100394173",
+        "stdout": "08539001e810137d1eaa7d9478283d44a927da9ecf57d45f00439b3313405d09"
+      },
+      "revert-again": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            true
+          ]
+        ],
+        "elf": "dbb526c69dc748a2d2466281b5260daf9eb15197e8946aed3e4aae7a272dcb25",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3010,
+        "raw_stderr_bytes": 72,
+        "rc": 0,
+        "source": "5418493eb6a84b27361787b371e8e110c1d9da0ae579081a65168144743db72b",
+        "stderr": "23b9a21bbaf189889e08dc27ed8eba521021280c5852db22205f721db08b2c7c",
+        "stdout": "6f3d5796be79e93672fdf51998f8aa7f2a0f48fd83fc50c4ff76a67334f2c451"
+      },
+      "seed": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            false
+          ]
+        ],
+        "elf": "dbb526c69dc748a2d2466281b5260daf9eb15197e8946aed3e4aae7a272dcb25",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3013,
+        "raw_stderr_bytes": 371,
+        "rc": 0,
+        "source": "5418493eb6a84b27361787b371e8e110c1d9da0ae579081a65168144743db72b",
+        "stderr": "7aa26fcf04fbd3050001fd0ad19b45b8dabb71d240b6146f86533ee282531cec",
+        "stdout": "08539001e810137d1eaa7d9478283d44a927da9ecf57d45f00439b3313405d09"
+      },
+      "unchanged": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            true
+          ]
+        ],
+        "elf": "dbb526c69dc748a2d2466281b5260daf9eb15197e8946aed3e4aae7a272dcb25",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3010,
+        "raw_stderr_bytes": 72,
+        "rc": 0,
+        "source": "5418493eb6a84b27361787b371e8e110c1d9da0ae579081a65168144743db72b",
+        "stderr": "23b9a21bbaf189889e08dc27ed8eba521021280c5852db22205f721db08b2c7c",
+        "stdout": "6f3d5796be79e93672fdf51998f8aa7f2a0f48fd83fc50c4ff76a67334f2c451"
+      }
+    },
+    "release": {
+      "actual-assembler-failure": {
+        "artifacts": [],
+        "errors": [
+          [
+            "dep",
+            null,
+            "deliberate_ohm_codegen_failure"
+          ]
+        ],
+        "raw_json_bytes": 1325,
+        "raw_stderr_bytes": 303,
+        "rc": 101,
+        "source": "594178f4f95cdb7a1d7df255346c78b1118f1067d52a970e05725ea17a04d678",
+        "stderr": "e19581ba711eaf3ca489d37892ebee40647a43fc67b8a031fd82f64af2b8e2a9",
+        "stdout": "13d0680b5d140eb10706dca813f70a9ce4ccb0a99506f5756e95bb72c65a0a5c"
+      },
+      "clean-revert": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            false
+          ]
+        ],
+        "elf": "764c8e0f2324b98c5f56db77f6fae4822bca27c1a36e33327b01707faf0affd5",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3103,
+        "raw_stderr_bytes": 314,
+        "rc": 0,
+        "source": "5418493eb6a84b27361787b371e8e110c1d9da0ae579081a65168144743db72b",
+        "stderr": "779ed2dcada2b5de8da80d71973c8f40442fcb68e07902232e4bd6d2c9768aea",
+        "stdout": "1f0a0a73f9cb27e0fa99b8f662996bde664eb54222ddc34b1d3c385c7652f20f"
+      },
+      "independent-valid-change": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            false
+          ]
+        ],
+        "elf": "b4f3996c7ccdd1c79ac6e3b48c5c86e8cf2430aacdbdc7e2471197fb7c85dcdb",
+        "errors": [],
+        "program_stdout": "29\n",
+        "raw_json_bytes": 3103,
+        "raw_stderr_bytes": 314,
+        "rc": 0,
+        "source": "68826f29f5b33bc619e83b603b9df94b7da527e22d8e00347f78182d10c52f12",
+        "stderr": "0f43d68b01b1bb01419c69707e5ee3f3247fec7d7d87aeecb9b6282aa5eff1cd",
+        "stdout": "1f0a0a73f9cb27e0fa99b8f662996bde664eb54222ddc34b1d3c385c7652f20f"
+      },
+      "revert": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            false
+          ]
+        ],
+        "elf": "764c8e0f2324b98c5f56db77f6fae4822bca27c1a36e33327b01707faf0affd5",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3103,
+        "raw_stderr_bytes": 314,
+        "rc": 0,
+        "source": "5418493eb6a84b27361787b371e8e110c1d9da0ae579081a65168144743db72b",
+        "stderr": "0f43d68b01b1bb01419c69707e5ee3f3247fec7d7d87aeecb9b6282aa5eff1cd",
+        "stdout": "1f0a0a73f9cb27e0fa99b8f662996bde664eb54222ddc34b1d3c385c7652f20f"
+      },
+      "revert-again": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            true
+          ]
+        ],
+        "elf": "764c8e0f2324b98c5f56db77f6fae4822bca27c1a36e33327b01707faf0affd5",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3100,
+        "raw_stderr_bytes": 72,
+        "rc": 0,
+        "source": "5418493eb6a84b27361787b371e8e110c1d9da0ae579081a65168144743db72b",
+        "stderr": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e",
+        "stdout": "ffe7f8107175def2439f358134656d424670fdbbdf40bef7cb547f529baacbd0"
+      },
+      "seed": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            false
+          ]
+        ],
+        "elf": "764c8e0f2324b98c5f56db77f6fae4822bca27c1a36e33327b01707faf0affd5",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3103,
+        "raw_stderr_bytes": 383,
+        "rc": 0,
+        "source": "5418493eb6a84b27361787b371e8e110c1d9da0ae579081a65168144743db72b",
+        "stderr": "277c958b96279813f426c3f8b961aaee35cdfaf146265275bac45cab7f4cfd3c",
+        "stdout": "1f0a0a73f9cb27e0fa99b8f662996bde664eb54222ddc34b1d3c385c7652f20f"
+      },
+      "unchanged": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            true
+          ]
+        ],
+        "elf": "764c8e0f2324b98c5f56db77f6fae4822bca27c1a36e33327b01707faf0affd5",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3100,
+        "raw_stderr_bytes": 72,
+        "rc": 0,
+        "source": "5418493eb6a84b27361787b371e8e110c1d9da0ae579081a65168144743db72b",
+        "stderr": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e",
+        "stdout": "ffe7f8107175def2439f358134656d424670fdbbdf40bef7cb547f529baacbd0"
+      }
+    }
+  },
+  "held-assembler": {
+    "A": {
+      "actual-assembler-failure": {
+        "artifacts": [],
+        "dependent_commit": {
+          "before": [
+            1793251729882958783,
+            "b770a7dcf5f12d77"
+          ],
+          "committed_before_assembler_error": true,
+          "states": [
+            [
+              1793251730142960179,
+              ""
+            ],
+            [
+              1793251730280960920,
+              "b770a7dcf5f12d77"
+            ]
+          ]
+        },
+        "errors": [
+          [
+            "dep",
+            null,
+            "deliberate_ohm_codegen_failure"
+          ]
+        ],
+        "raw_json_bytes": 1320,
+        "raw_stderr_bytes": 331,
+        "rc": 101,
+        "source": "c04e939908de9c9ce231768d4c722d2dbefbdac59149226fbfa946687b0c5129",
+        "stderr": "d0947e8eb07432aa6de2a27eda596622e21bed2623142ff0004bf19e5129f7c6",
+        "stdout": "5eff174fc4e7a04628d2d68b22bdc94e751a685e910313c693b6805d3ba75cc4"
+      },
+      "clean-revert": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            false
+          ]
+        ],
+        "elf": "e9a3ba9318001033349472ef1853842d2ae602741e0a510ce265a0e7811e17d3",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3088,
+        "raw_stderr_bytes": 312,
+        "rc": 0,
+        "source": "5418493eb6a84b27361787b371e8e110c1d9da0ae579081a65168144743db72b",
+        "stderr": "6ee0c10bc9b8ed9a4bc09f04e2db010aaf630b3f6517b4a9b4d4a5f66a660446",
+        "stdout": "d18dc1559fccda19af5ab391158003422b8c9f5ef06e7a8945ef7a0627adb04a"
+      },
+      "independent-valid-change": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            false
+          ]
+        ],
+        "elf": "b7c1d145b1f22e9a857509cfe63d3a4f12d3322405bbe6e667df386a00f7803e",
+        "errors": [],
+        "program_stdout": "29\n",
+        "raw_json_bytes": 3088,
+        "raw_stderr_bytes": 312,
+        "rc": 0,
+        "source": "68826f29f5b33bc619e83b603b9df94b7da527e22d8e00347f78182d10c52f12",
+        "stderr": "3644f36abb9f1b2857215dbfb377d2e310b5bf5d9b2017b41a66f2d463438128",
+        "stdout": "d18dc1559fccda19af5ab391158003422b8c9f5ef06e7a8945ef7a0627adb04a"
+      },
+      "revert": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            false
+          ]
+        ],
+        "elf": "e9a3ba9318001033349472ef1853842d2ae602741e0a510ce265a0e7811e17d3",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3088,
+        "raw_stderr_bytes": 312,
+        "rc": 0,
+        "source": "5418493eb6a84b27361787b371e8e110c1d9da0ae579081a65168144743db72b",
+        "stderr": "fb5a3fd945f00de6d6f89f03d3163eede6f21b0202ff42166797b402017a2b32",
+        "stdout": "d18dc1559fccda19af5ab391158003422b8c9f5ef06e7a8945ef7a0627adb04a"
+      },
+      "revert-again": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            true
+          ]
+        ],
+        "elf": "e9a3ba9318001033349472ef1853842d2ae602741e0a510ce265a0e7811e17d3",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3085,
+        "raw_stderr_bytes": 72,
+        "rc": 0,
+        "source": "5418493eb6a84b27361787b371e8e110c1d9da0ae579081a65168144743db72b",
+        "stderr": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e",
+        "stdout": "e4cefb05419ed219633c706bc3e45091346ec3bbf205729af7b6ff71d98e3bc4"
+      },
+      "seed": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            false
+          ]
+        ],
+        "elf": "e9a3ba9318001033349472ef1853842d2ae602741e0a510ce265a0e7811e17d3",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3088,
+        "raw_stderr_bytes": 381,
+        "rc": 0,
+        "source": "5418493eb6a84b27361787b371e8e110c1d9da0ae579081a65168144743db72b",
+        "stderr": "518974417ec81c3a4c340b5abf66fe946961d539a6e787b9071e10cf0bccccac",
+        "stdout": "d18dc1559fccda19af5ab391158003422b8c9f5ef06e7a8945ef7a0627adb04a"
+      },
+      "unchanged": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            true
+          ]
+        ],
+        "elf": "e9a3ba9318001033349472ef1853842d2ae602741e0a510ce265a0e7811e17d3",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3085,
+        "raw_stderr_bytes": 72,
+        "rc": 0,
+        "source": "5418493eb6a84b27361787b371e8e110c1d9da0ae579081a65168144743db72b",
+        "stderr": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e",
+        "stdout": "e4cefb05419ed219633c706bc3e45091346ec3bbf205729af7b6ff71d98e3bc4"
+      }
+    },
+    "B": {
+      "actual-assembler-failure": {
+        "artifacts": [],
+        "dependent_commit": {
+          "before": [
+            1793251732025970286,
+            "72fa28dfa1401b53"
+          ],
+          "committed_before_assembler_error": true,
+          "states": [
+            [
+              1793251732266971579,
+              ""
+            ],
+            [
+              1793251732406972330,
+              "72fa28dfa1401b53"
+            ]
+          ]
+        },
+        "errors": [
+          [
+            "dep",
+            null,
+            "deliberate_ohm_codegen_failure"
+          ]
+        ],
+        "raw_json_bytes": 1320,
+        "raw_stderr_bytes": 331,
+        "rc": 101,
+        "source": "169e1224ec4ed87c63f6dd42e188ac91bed7152f977fdf6ef88624db01012c17",
+        "stderr": "df94f79d8478f329f5d11ac00d1edbf0901d7a3dd644bce14a52078b886f2921",
+        "stdout": "34034e4774887907162a68ef5ec275c36c80b4e1c6af030698526e2c6ea7affc"
+      },
+      "clean-revert": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            false
+          ]
+        ],
+        "elf": "dbb526c69dc748a2d2466281b5260daf9eb15197e8946aed3e4aae7a272dcb25",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3088,
+        "raw_stderr_bytes": 312,
+        "rc": 0,
+        "source": "5418493eb6a84b27361787b371e8e110c1d9da0ae579081a65168144743db72b",
+        "stderr": "04bf32e3c365db1ba702deed148c2084e67a52761f344d2400676707df3c349d",
+        "stdout": "0cfc76f9571859d49d25eeaf0bc154f1bd357f0bf167246a637114dd16d1d970"
+      },
+      "independent-valid-change": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            false
+          ]
+        ],
+        "elf": "dd7ff72648acf6081dc53711f5cb84b71c029af66ce380dd26e90811e54b5083",
+        "errors": [],
+        "program_stdout": "29\n",
+        "raw_json_bytes": 3088,
+        "raw_stderr_bytes": 312,
+        "rc": 0,
+        "source": "68826f29f5b33bc619e83b603b9df94b7da527e22d8e00347f78182d10c52f12",
+        "stderr": "4a2366f5caa36cf3b283fd7a003be39b12c5a4a52966564b5a46a86e1f0bc04c",
+        "stdout": "0cfc76f9571859d49d25eeaf0bc154f1bd357f0bf167246a637114dd16d1d970"
+      },
+      "revert": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            false
+          ]
+        ],
+        "elf": "dbb526c69dc748a2d2466281b5260daf9eb15197e8946aed3e4aae7a272dcb25",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3088,
+        "raw_stderr_bytes": 312,
+        "rc": 0,
+        "source": "5418493eb6a84b27361787b371e8e110c1d9da0ae579081a65168144743db72b",
+        "stderr": "4a2366f5caa36cf3b283fd7a003be39b12c5a4a52966564b5a46a86e1f0bc04c",
+        "stdout": "0cfc76f9571859d49d25eeaf0bc154f1bd357f0bf167246a637114dd16d1d970"
+      },
+      "revert-again": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            true
+          ]
+        ],
+        "elf": "dbb526c69dc748a2d2466281b5260daf9eb15197e8946aed3e4aae7a272dcb25",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3085,
+        "raw_stderr_bytes": 72,
+        "rc": 0,
+        "source": "5418493eb6a84b27361787b371e8e110c1d9da0ae579081a65168144743db72b",
+        "stderr": "23b9a21bbaf189889e08dc27ed8eba521021280c5852db22205f721db08b2c7c",
+        "stdout": "18d89687b0a0c5f7e7269bcf6797054cf7be3dbcb7b00a7f4f92e0e3c583fc83"
+      },
+      "seed": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            false
+          ]
+        ],
+        "elf": "dbb526c69dc748a2d2466281b5260daf9eb15197e8946aed3e4aae7a272dcb25",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3088,
+        "raw_stderr_bytes": 381,
+        "rc": 0,
+        "source": "5418493eb6a84b27361787b371e8e110c1d9da0ae579081a65168144743db72b",
+        "stderr": "935c68cca6fe37c99c70bafd5ef29c5d492c51da079e56679603bacbe8fc8d59",
+        "stdout": "0cfc76f9571859d49d25eeaf0bc154f1bd357f0bf167246a637114dd16d1d970"
+      },
+      "unchanged": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            true
+          ]
+        ],
+        "elf": "dbb526c69dc748a2d2466281b5260daf9eb15197e8946aed3e4aae7a272dcb25",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3085,
+        "raw_stderr_bytes": 72,
+        "rc": 0,
+        "source": "5418493eb6a84b27361787b371e8e110c1d9da0ae579081a65168144743db72b",
+        "stderr": "23b9a21bbaf189889e08dc27ed8eba521021280c5852db22205f721db08b2c7c",
+        "stdout": "18d89687b0a0c5f7e7269bcf6797054cf7be3dbcb7b00a7f4f92e0e3c583fc83"
+      }
+    },
+    "release": {
+      "actual-assembler-failure": {
+        "artifacts": [],
+        "dependent_commit": {
+          "before": [
+            1793251727775947468,
+            "5fbd985202e7581b"
+          ],
+          "committed_before_assembler_error": true,
+          "states": [
+            [
+              1793251728010948730,
+              ""
+            ],
+            [
+              1793251728146949461,
+              "5fbd985202e7581b"
+            ]
+          ]
+        },
+        "errors": [
+          [
+            "dep",
+            null,
+            "deliberate_ohm_codegen_failure"
+          ]
+        ],
+        "raw_json_bytes": 1338,
+        "raw_stderr_bytes": 343,
+        "rc": 101,
+        "source": "096261b025917566636fb622ff0b9e1ba66038bd9c5a0aebb9ddc421c2fc83a5",
+        "stderr": "694d0de79bc832d3a9452479be6b9f46007fd7f322ebf88848697dbd1d18c65d",
+        "stdout": "1b760ca7448e5ab93649dd1b9a8f1571eebe4ae17dcbee7394ca13a24f6ae211"
+      },
+      "clean-revert": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            false
+          ]
+        ],
+        "elf": "764c8e0f2324b98c5f56db77f6fae4822bca27c1a36e33327b01707faf0affd5",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3178,
+        "raw_stderr_bytes": 324,
+        "rc": 0,
+        "source": "5418493eb6a84b27361787b371e8e110c1d9da0ae579081a65168144743db72b",
+        "stderr": "d0e9ac489ed322563678411415800151d567575ce078bcced105aa77ef4f2ff9",
+        "stdout": "9619e9ef5976198b7bc0a9bbba9fedf697ec5f1ac74d95ab944a6cf50d1770c0"
+      },
+      "independent-valid-change": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            false
+          ]
+        ],
+        "elf": "b4f3996c7ccdd1c79ac6e3b48c5c86e8cf2430aacdbdc7e2471197fb7c85dcdb",
+        "errors": [],
+        "program_stdout": "29\n",
+        "raw_json_bytes": 3178,
+        "raw_stderr_bytes": 324,
+        "rc": 0,
+        "source": "68826f29f5b33bc619e83b603b9df94b7da527e22d8e00347f78182d10c52f12",
+        "stderr": "58c816420e10aa2fedea489f0bad799de17a72f4425bf5a45891bf921acc0108",
+        "stdout": "9619e9ef5976198b7bc0a9bbba9fedf697ec5f1ac74d95ab944a6cf50d1770c0"
+      },
+      "revert": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            false
+          ]
+        ],
+        "elf": "764c8e0f2324b98c5f56db77f6fae4822bca27c1a36e33327b01707faf0affd5",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3178,
+        "raw_stderr_bytes": 324,
+        "rc": 0,
+        "source": "5418493eb6a84b27361787b371e8e110c1d9da0ae579081a65168144743db72b",
+        "stderr": "e4963fae5c7e83e24b1d1c45997fb55018adde9ec3fe99ded315a81692847ef0",
+        "stdout": "9619e9ef5976198b7bc0a9bbba9fedf697ec5f1ac74d95ab944a6cf50d1770c0"
+      },
+      "revert-again": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            true
+          ]
+        ],
+        "elf": "764c8e0f2324b98c5f56db77f6fae4822bca27c1a36e33327b01707faf0affd5",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3175,
+        "raw_stderr_bytes": 72,
+        "rc": 0,
+        "source": "5418493eb6a84b27361787b371e8e110c1d9da0ae579081a65168144743db72b",
+        "stderr": "23b9a21bbaf189889e08dc27ed8eba521021280c5852db22205f721db08b2c7c",
+        "stdout": "378fa47a459fdce613157d2163eae0ef255a19cdbfadc73c4d6a6e9cfaa0ba76"
+      },
+      "seed": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            false
+          ]
+        ],
+        "elf": "764c8e0f2324b98c5f56db77f6fae4822bca27c1a36e33327b01707faf0affd5",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3178,
+        "raw_stderr_bytes": 393,
+        "rc": 0,
+        "source": "5418493eb6a84b27361787b371e8e110c1d9da0ae579081a65168144743db72b",
+        "stderr": "2d6c6b6e828e4288b0534670c71717abf43a6f84d42ddb97d6821601d3993910",
+        "stdout": "9619e9ef5976198b7bc0a9bbba9fedf697ec5f1ac74d95ab944a6cf50d1770c0"
+      },
+      "unchanged": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            true
+          ]
+        ],
+        "elf": "764c8e0f2324b98c5f56db77f6fae4822bca27c1a36e33327b01707faf0affd5",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3175,
+        "raw_stderr_bytes": 72,
+        "rc": 0,
+        "source": "5418493eb6a84b27361787b371e8e110c1d9da0ae579081a65168144743db72b",
+        "stderr": "23b9a21bbaf189889e08dc27ed8eba521021280c5852db22205f721db08b2c7c",
+        "stdout": "378fa47a459fdce613157d2163eae0ef255a19cdbfadc73c4d6a6e9cfaa0ba76"
+      }
+    }
+  },
+  "held-compiler-signal": {
+    "A": {
+      "clean-revert": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            false
+          ]
+        ],
+        "elf": "e9a3ba9318001033349472ef1853842d2ae602741e0a510ce265a0e7811e17d3",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3073,
+        "raw_stderr_bytes": 310,
+        "rc": 0,
+        "source": "39b189383027f25004f91aad9b99af56017f8d4c463e9e97eee3fb932a521978",
+        "stderr": "1391c5580f1740f20793ab781c697c5ca02f5c9b87c16dd6f142bf36d7c73f25",
+        "stdout": "e8e8eb614696ea60ac3b3fd723b2ed044993c9c1e878436be0d8d96dffa28a08"
+      },
+      "independent-valid-change": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            false
+          ]
+        ],
+        "elf": "b7c1d145b1f22e9a857509cfe63d3a4f12d3322405bbe6e667df386a00f7803e",
+        "errors": [],
+        "program_stdout": "29\n",
+        "raw_json_bytes": 3073,
+        "raw_stderr_bytes": 310,
+        "rc": 0,
+        "source": "6b901d64395406422a6ce19122b4962af7b06e776dc914f764c7aff1c0bed724",
+        "stderr": "7bf0cc69bc5f9bc34ac73ccc8e5cae45a6740987c39a7b7d56e2d8f53c0d7102",
+        "stdout": "e8e8eb614696ea60ac3b3fd723b2ed044993c9c1e878436be0d8d96dffa28a08"
+      },
+      "interrupted-provider": {
+        "artifacts": [],
+        "dependent_commit": {
+          "before": [
+            1793252090826818182,
+            "f8c9be4cc160a605"
+          ],
+          "committed_before_assembler_error": true,
+          "states": [
+            [
+              1793252091050819297,
+              ""
+            ],
+            [
+              1793252091179819940,
+              "f8c9be4cc160a605"
+            ]
+          ]
+        },
+        "errors": [],
+        "raw_json_bytes": 44,
+        "raw_stderr_bytes": 1534,
+        "rc": 101,
+        "signal": {
+          "actual_rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+          "cargo_pid": 3672915,
+          "committed_before_signal": true,
+          "pid": 3672927,
+          "signal": "SIGKILL"
+        },
+        "source": "6b901d64395406422a6ce19122b4962af7b06e776dc914f764c7aff1c0bed724",
+        "stderr": "275fc78a54b51a23d105652d72fa7af66ffe52a11de3f7f7f978056223f1cf2f",
+        "stdout": "7c4af99fd1ea2a26d5425d34c5279d692c40dff9303bccfa457c8b1058299ee8"
+      },
+      "revert": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            false
+          ]
+        ],
+        "elf": "e9a3ba9318001033349472ef1853842d2ae602741e0a510ce265a0e7811e17d3",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3073,
+        "raw_stderr_bytes": 310,
+        "rc": 0,
+        "source": "39b189383027f25004f91aad9b99af56017f8d4c463e9e97eee3fb932a521978",
+        "stderr": "91f27d230a0b4cfc8166f78c63b4c9c39d3aaf8d9ab37514d74fc29ae889a9b2",
+        "stdout": "e8e8eb614696ea60ac3b3fd723b2ed044993c9c1e878436be0d8d96dffa28a08"
+      },
+      "revert-again": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            true
+          ]
+        ],
+        "elf": "e9a3ba9318001033349472ef1853842d2ae602741e0a510ce265a0e7811e17d3",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3070,
+        "raw_stderr_bytes": 72,
+        "rc": 0,
+        "source": "39b189383027f25004f91aad9b99af56017f8d4c463e9e97eee3fb932a521978",
+        "stderr": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e",
+        "stdout": "67190692678f74e34f99e7f68c96c007784f9563b7d45926d633cfad09713e42"
+      },
+      "seed": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            false
+          ]
+        ],
+        "elf": "e9a3ba9318001033349472ef1853842d2ae602741e0a510ce265a0e7811e17d3",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3073,
+        "raw_stderr_bytes": 379,
+        "rc": 0,
+        "source": "39b189383027f25004f91aad9b99af56017f8d4c463e9e97eee3fb932a521978",
+        "stderr": "c2caa8e69e52a708bfb8f28d927587cb3a2f4d3ecafcaa434864e946a51798be",
+        "stdout": "e8e8eb614696ea60ac3b3fd723b2ed044993c9c1e878436be0d8d96dffa28a08"
+      },
+      "unchanged": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            true
+          ]
+        ],
+        "elf": "e9a3ba9318001033349472ef1853842d2ae602741e0a510ce265a0e7811e17d3",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3070,
+        "raw_stderr_bytes": 72,
+        "rc": 0,
+        "source": "39b189383027f25004f91aad9b99af56017f8d4c463e9e97eee3fb932a521978",
+        "stderr": "23b9a21bbaf189889e08dc27ed8eba521021280c5852db22205f721db08b2c7c",
+        "stdout": "67190692678f74e34f99e7f68c96c007784f9563b7d45926d633cfad09713e42"
+      }
+    },
+    "B": {
+      "clean-revert": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            false
+          ]
+        ],
+        "elf": "dbb526c69dc748a2d2466281b5260daf9eb15197e8946aed3e4aae7a272dcb25",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3073,
+        "raw_stderr_bytes": 310,
+        "rc": 0,
+        "source": "571c1fd3636cdda0884ff78f06ac01e48f3d70867a7b81ae84c0b538626bf4d3",
+        "stderr": "c8df80c658e12cb6a0a5d77dd46a81894f7df2105a13df3e4b5d88fca0dc2a25",
+        "stdout": "ff5b6263da7a84bba2b1974297661f4b09bafcd0b004b145c103684777ef8ac3"
+      },
+      "independent-valid-change": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            false
+          ]
+        ],
+        "elf": "dd7ff72648acf6081dc53711f5cb84b71c029af66ce380dd26e90811e54b5083",
+        "errors": [],
+        "program_stdout": "29\n",
+        "raw_json_bytes": 3073,
+        "raw_stderr_bytes": 310,
+        "rc": 0,
+        "source": "07ddf394c57e362f3d6d020e1189e48842f720b3c6b373f0beec44f7b551e317",
+        "stderr": "a971df14a65124564dc97bee5fdd70f8f5c09df99307a8e14b364480f6d9aeaa",
+        "stdout": "ff5b6263da7a84bba2b1974297661f4b09bafcd0b004b145c103684777ef8ac3"
+      },
+      "interrupted-provider": {
+        "artifacts": [],
+        "dependent_commit": {
+          "before": [
+            1793252092958828797,
+            "cc2a955e9761b19c"
+          ],
+          "committed_before_assembler_error": true,
+          "states": [
+            [
+              1793252093186829932,
+              ""
+            ],
+            [
+              1793252093315830574,
+              "cc2a955e9761b19c"
+            ]
+          ]
+        },
+        "errors": [],
+        "raw_json_bytes": 44,
+        "raw_stderr_bytes": 1534,
+        "rc": 101,
+        "signal": {
+          "actual_rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+          "cargo_pid": 3673552,
+          "committed_before_signal": true,
+          "pid": 3673569,
+          "signal": "SIGKILL"
+        },
+        "source": "07ddf394c57e362f3d6d020e1189e48842f720b3c6b373f0beec44f7b551e317",
+        "stderr": "6a02214f55332052a231620a1e17edf2bee54c82e10b4400f42894f3dc6b0df8",
+        "stdout": "7c4af99fd1ea2a26d5425d34c5279d692c40dff9303bccfa457c8b1058299ee8"
+      },
+      "revert": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            false
+          ]
+        ],
+        "elf": "dbb526c69dc748a2d2466281b5260daf9eb15197e8946aed3e4aae7a272dcb25",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3073,
+        "raw_stderr_bytes": 310,
+        "rc": 0,
+        "source": "571c1fd3636cdda0884ff78f06ac01e48f3d70867a7b81ae84c0b538626bf4d3",
+        "stderr": "835e9c81f822700d78a9eef53991dacf72fe285900d2c08b766eb1268ec77def",
+        "stdout": "ff5b6263da7a84bba2b1974297661f4b09bafcd0b004b145c103684777ef8ac3"
+      },
+      "revert-again": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            true
+          ]
+        ],
+        "elf": "dbb526c69dc748a2d2466281b5260daf9eb15197e8946aed3e4aae7a272dcb25",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3070,
+        "raw_stderr_bytes": 72,
+        "rc": 0,
+        "source": "571c1fd3636cdda0884ff78f06ac01e48f3d70867a7b81ae84c0b538626bf4d3",
+        "stderr": "23b9a21bbaf189889e08dc27ed8eba521021280c5852db22205f721db08b2c7c",
+        "stdout": "658404b1996f1a6be8a1f0d5144e911dc12ee6c89ac4e7c84bda61be22e2dcf4"
+      },
+      "seed": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            false
+          ]
+        ],
+        "elf": "dbb526c69dc748a2d2466281b5260daf9eb15197e8946aed3e4aae7a272dcb25",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3073,
+        "raw_stderr_bytes": 379,
+        "rc": 0,
+        "source": "571c1fd3636cdda0884ff78f06ac01e48f3d70867a7b81ae84c0b538626bf4d3",
+        "stderr": "c1264b36f774e1064502937ab9714cb45cbe745986c4cd2eb34728df9aff8bdb",
+        "stdout": "ff5b6263da7a84bba2b1974297661f4b09bafcd0b004b145c103684777ef8ac3"
+      },
+      "unchanged": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            true
+          ]
+        ],
+        "elf": "dbb526c69dc748a2d2466281b5260daf9eb15197e8946aed3e4aae7a272dcb25",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3070,
+        "raw_stderr_bytes": 72,
+        "rc": 0,
+        "source": "571c1fd3636cdda0884ff78f06ac01e48f3d70867a7b81ae84c0b538626bf4d3",
+        "stderr": "23b9a21bbaf189889e08dc27ed8eba521021280c5852db22205f721db08b2c7c",
+        "stdout": "658404b1996f1a6be8a1f0d5144e911dc12ee6c89ac4e7c84bda61be22e2dcf4"
+      }
+    },
+    "release": {
+      "clean-revert": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            false
+          ]
+        ],
+        "elf": "764c8e0f2324b98c5f56db77f6fae4822bca27c1a36e33327b01707faf0affd5",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3163,
+        "raw_stderr_bytes": 322,
+        "rc": 0,
+        "source": "adf45af3f14d026cd15c64fbe7858d258979bd011fb0a2f392d0cd9c7e937b83",
+        "stderr": "c03b5aa5e39d496f6cf78909e379c5d42cc9906059253549317fcc85489132dc",
+        "stdout": "4645b9ebae3bed2dcfb143e2ec477dafe3e46876ca9e58700ece7c033488cb08"
+      },
+      "independent-valid-change": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            false
+          ]
+        ],
+        "elf": "b4f3996c7ccdd1c79ac6e3b48c5c86e8cf2430aacdbdc7e2471197fb7c85dcdb",
+        "errors": [],
+        "program_stdout": "29\n",
+        "raw_json_bytes": 3163,
+        "raw_stderr_bytes": 322,
+        "rc": 0,
+        "source": "ccfea7bf1c0ae2269c14e075e3f5df543424111ab9b3ad413459cc4902dd7df9",
+        "stderr": "e2deb3ed1243e4b4b019f5d03c76ecfe47a19f26e326006e56e5ea6c15b73aa6",
+        "stdout": "4645b9ebae3bed2dcfb143e2ec477dafe3e46876ca9e58700ece7c033488cb08"
+      },
+      "interrupted-provider": {
+        "artifacts": [],
+        "dependent_commit": {
+          "before": [
+            1793252088674807464,
+            "dedb36da48544279"
+          ],
+          "committed_before_assembler_error": true,
+          "states": [
+            [
+              1793252088906808620,
+              ""
+            ],
+            [
+              1793252089036809268,
+              "dedb36da48544279"
+            ]
+          ]
+        },
+        "errors": [],
+        "raw_json_bytes": 44,
+        "raw_stderr_bytes": 1534,
+        "rc": 101,
+        "signal": {
+          "actual_rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+          "cargo_pid": 3672227,
+          "committed_before_signal": true,
+          "pid": 3672239,
+          "signal": "SIGKILL"
+        },
+        "source": "ccfea7bf1c0ae2269c14e075e3f5df543424111ab9b3ad413459cc4902dd7df9",
+        "stderr": "3462da905b65e79a27c52d0607523c8a9f1ba1766df7505c42f5a618de863995",
+        "stdout": "7c4af99fd1ea2a26d5425d34c5279d692c40dff9303bccfa457c8b1058299ee8"
+      },
+      "revert": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            false
+          ]
+        ],
+        "elf": "764c8e0f2324b98c5f56db77f6fae4822bca27c1a36e33327b01707faf0affd5",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3163,
+        "raw_stderr_bytes": 322,
+        "rc": 0,
+        "source": "adf45af3f14d026cd15c64fbe7858d258979bd011fb0a2f392d0cd9c7e937b83",
+        "stderr": "f45d66d1d19553e1f081ca6d1f1f91c2413cb5e45230b1d0590fdc2b8b428c01",
+        "stdout": "4645b9ebae3bed2dcfb143e2ec477dafe3e46876ca9e58700ece7c033488cb08"
+      },
+      "revert-again": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            true
+          ]
+        ],
+        "elf": "764c8e0f2324b98c5f56db77f6fae4822bca27c1a36e33327b01707faf0affd5",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3160,
+        "raw_stderr_bytes": 72,
+        "rc": 0,
+        "source": "adf45af3f14d026cd15c64fbe7858d258979bd011fb0a2f392d0cd9c7e937b83",
+        "stderr": "23b9a21bbaf189889e08dc27ed8eba521021280c5852db22205f721db08b2c7c",
+        "stdout": "686d52f003d078027f3820b01805b480b6803f4bd75a7522d2d0fa99bbc754ed"
+      },
+      "seed": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            false
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            false
+          ]
+        ],
+        "elf": "764c8e0f2324b98c5f56db77f6fae4822bca27c1a36e33327b01707faf0affd5",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3163,
+        "raw_stderr_bytes": 391,
+        "rc": 0,
+        "source": "adf45af3f14d026cd15c64fbe7858d258979bd011fb0a2f392d0cd9c7e937b83",
+        "stderr": "0a9c06ca0193f780e3467e3ab7f1cbe3c673959e601b6f8d66b466d2d561f682",
+        "stdout": "4645b9ebae3bed2dcfb143e2ec477dafe3e46876ca9e58700ece7c033488cb08"
+      },
+      "unchanged": {
+        "artifacts": [
+          [
+            "dep",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "app",
+            [
+              "lib"
+            ],
+            true
+          ],
+          [
+            "app",
+            [
+              "bin"
+            ],
+            true
+          ]
+        ],
+        "elf": "764c8e0f2324b98c5f56db77f6fae4822bca27c1a36e33327b01707faf0affd5",
+        "errors": [],
+        "program_stdout": "17\n",
+        "raw_json_bytes": 3160,
+        "raw_stderr_bytes": 72,
+        "rc": 0,
+        "source": "adf45af3f14d026cd15c64fbe7858d258979bd011fb0a2f392d0cd9c7e937b83",
+        "stderr": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e",
+        "stdout": "686d52f003d078027f3820b01805b480b6803f4bd75a7522d2d0fa99bbc754ed"
+      }
+    }
+  }
+}
