@@ -1536,6 +1536,7 @@ fn ohm_defaults_can_be_disabled_for_one_invocation() {
     assert!(gctx.cli_unstable().ohm_defaults());
     assert!(gctx.cli_unstable().ohm_shared_stages());
     assert!(gctx.cli_unstable().ohm_early_tests());
+    assert!(gctx.cli_unstable().ohm_defer_dev_deps());
     assert!(!gctx.cli_unstable().ohm_ready_tests());
     assert!(gctx.cli_unstable().headstart());
     assert!(gctx.cli_unstable().relink_only());
@@ -1613,6 +1614,21 @@ fn early_tests_override_defaults_and_inherit_opt_out() {
         .unstable_flag("ohm-early-tests")
         .build();
     assert!(gctx.cli_unstable().ohm_early_tests());
+}
+
+#[cargo_test]
+fn deferred_dev_deps_overrides_survive_external_subcommands() {
+    let gctx = GlobalContextBuilder::new()
+        .env("__CARGO_OHM_DEFER_DEV_DEPS", "no")
+        .unstable_flag("ohm-defaults")
+        .build();
+    assert!(!gctx.cli_unstable().ohm_defer_dev_deps());
+    let gctx = GlobalContextBuilder::new()
+        .env("__CARGO_OHM_DEFER_DEV_DEPS", "no")
+        .unstable_flag("ohm-defaults")
+        .unstable_flag("ohm-defer-dev-deps")
+        .build();
+    assert!(gctx.cli_unstable().ohm_defer_dev_deps());
 }
 
 #[cargo_test]

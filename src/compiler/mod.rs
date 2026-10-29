@@ -43,6 +43,7 @@ pub(crate) mod layout;
 mod links;
 mod locking;
 mod lto;
+mod ohm_deferred_dev_deps;
 mod ohm_early_tests;
 mod ohm_linker;
 mod ohm_thinlto_cache;
@@ -494,6 +495,14 @@ fn compile<'gctx>(
     // Be sure to compile all dependencies of this target as well.
     let deps = Vec::from(build_runner.unit_deps(unit)); // Create vec due to mutable borrow.
     for dep in deps {
+        if build_runner
+            .deferred_dev_deps
+            .dependencies
+            .contains(&dep.unit)
+            && build_runner.bcx.roots.contains(unit)
+        {
+            continue;
+        }
         compile(build_runner, jobs, &dep.unit, exec, false)?;
     }
 
@@ -1030,6 +1039,20 @@ fn rustc(
         .map(|dep| build_runner.bcx.unit_to_index[&dep.unit])
         .collect::<HashSet<_>>();
     let unused_integration_dependency = unused_integration_self_dependency(build_runner, unit);
+    let record_dev_unused = ohm_deferred_dev_deps::supported(build_runner, unit);
+    let dev_native_output_dirs = record_dev_unused
+        .then(|| ohm_deferred_dev_deps::native_output_dirs(build_runner))
+        .unwrap_or_default();
+    let previous_dev_unused = record_dev_unused
+        .then(|| {
+            relink_cache
+                .as_ref()
+                .and_then(RelinkCachePaths::unused_extern_names)
+        })
+        .flatten();
+    let deferred_dev_names =
+        ohm_deferred_dev_deps::plan(build_runner, unit, previous_dev_unused.as_ref());
+    let deferred_dev_retry = build_runner.deferred_dev_deps.retry.clone();
     let workspace_integration_proof = unused_integration_dependency
         .and_then(|_| relink_cache.as_ref())
         .and_then(RelinkCachePaths::unused_extern_names);
@@ -1200,6 +1223,41 @@ fn rustc(
             .is_some_and(|fingerprint| fingerprint.is_early_cutoff_candidate());
 
     return Ok(Work::new(move |state| {
+        // Build-script outputs are only authoritative after their jobs finish.
+        // An unused Rust extern can still be consumed through native linking.
+        let record_dev_unused = record_dev_unused
+            && build_scripts.as_ref().is_none_or(|scripts| {
+                let script_outputs = build_script_outputs.lock().unwrap();
+                scripts.to_link.iter().all(|(package, metadata)| {
+                    script_outputs.get(*metadata).is_some_and(|output| {
+                        let has_linker_args = output.linker_args.iter().any(|(link_target, _)| {
+                            // Match add_native_deps: a dependency's ordinary
+                            // link arguments do not reach this test compiler.
+                            link_target.applies_to(&target, mode)
+                                && (*package == current_id || *link_target == LinkArgTarget::Cdylib)
+                        });
+                        if has_linker_args {
+                            return false;
+                        }
+                        if output.library_paths.is_empty() && output.library_links.is_empty() {
+                            return true;
+                        }
+                        // Dependency -l flags belong to their retained Rust
+                        // libraries; only their -L paths reach this compiler.
+                        *package != current_id
+                            && dev_native_output_dirs.get(metadata).is_some_and(|out_dir| {
+                                ohm_deferred_dev_deps::native_search_paths_supported(
+                                    output, out_dir,
+                                )
+                            })
+                    })
+                })
+            });
+        if !deferred_dev_names.is_empty() && !record_dev_unused {
+            tracing::info!(target: "cargo::compiler::ohm_deferred_dev_deps", "native linker inputs require complete graph");
+            deferred_dev_retry.store(true, std::sync::atomic::Ordering::Relaxed);
+            return Err(ohm_deferred_dev_deps::Retry.into());
+        }
         let unused_integration_dependency = unused_integration_dependency.filter(|_| {
             let Some(build_scripts) = build_scripts.as_ref() else {
                 return true;
@@ -1277,6 +1335,7 @@ fn rustc(
                 skip_unused_integration_dependency || skip_unused_workspace_dependencies;
 
             if early_test.is_none()
+                && deferred_dev_names.is_empty()
                 && ((can_skip_compilation && fingerprint::can_skip_due_to_early_cutoff(fp))
                     || skip_unused_integration_dependency)
             {
@@ -1337,6 +1396,7 @@ fn rustc(
         });
         let validation_started = Instant::now();
         let use_cached_relink = early_test.is_none()
+            && deferred_dev_names.is_empty()
             && can_relink_dependencies
             && relink_cache
                 .as_ref()
@@ -1410,6 +1470,7 @@ fn rustc(
         if let (Some(fingerprint), Some(namespace)) =
             (fingerprint.as_ref(), worktree_seed_namespace.as_deref())
             && early_test.is_none()
+            && deferred_dev_names.is_empty()
             && fingerprint::can_reuse_after_scripts(
                 fingerprint,
                 &pkg_root,
@@ -1553,7 +1614,7 @@ fn rustc(
         }
 
         let mut accepted_early_test = false;
-        if let Some((completion, extern_name)) = &early_test {
+        if !deferred_dev_names.is_empty() || early_test.is_some() {
             let output = std::cell::RefCell::new(ohm_early_tests::Output::default());
             let result = exec.exec(
                 &rustc,
@@ -1565,7 +1626,9 @@ fn rustc(
                     Ok(())
                 },
                 &mut |line| {
-                    if let Ok(timing) = serde_json::from_str::<SectionTiming>(line) {
+                    if early_test.is_some()
+                        && let Ok(timing) = serde_json::from_str::<SectionTiming>(line)
+                    {
                         state.on_section_timing_emitted(timing);
                     } else {
                         output.borrow_mut().push(line, true);
@@ -1573,24 +1636,82 @@ fn rustc(
                     Ok(())
                 },
             );
-            // No diagnostics, relink manifest, or Cargo fingerprint from the
-            // provisional invocation is published before its producer succeeds.
-            let producer_result = completion.wait();
             let output = output.into_inner();
-            accepted_early_test =
-                producer_result.is_ok() && result.is_ok() && output.proves_unused(*extern_name);
-            if accepted_early_test {
-                // The executable may have been linked before its producer. Mark
-                // the acceptance time so the next build does not mistake that
-                // ordering for a dependency changed after a successful build.
-                let accepted_at = filetime::FileTime::now();
-                for artifact in outputs
-                    .iter()
-                    .filter(|output| output.flavor == FileFlavor::Normal)
-                {
-                    filetime::set_file_mtime(&artifact.path, accepted_at)?;
+            if let Some((completion, extern_name)) = &early_test {
+                // Wait for the producer before publishing provisional output.
+                let producer_result = completion.wait();
+                accepted_early_test =
+                    producer_result.is_ok() && result.is_ok() && output.proves_unused(*extern_name);
+                if accepted_early_test {
+                    // Linking may have finished before the producer. Record the
+                    // acceptance time so the next build sees a fresh executable.
+                    let accepted_at = filetime::FileTime::now();
+                    for artifact in outputs
+                        .iter()
+                        .filter(|output| output.flavor == FileFlavor::Normal)
+                    {
+                        filetime::set_file_mtime(&artifact.path, accepted_at)?;
+                    }
+                    tracing::info!(target: "cargo::compiler::ohm_early_tests", "accepted early {}", target.name());
+                } else {
+                    if let Some(cache) = &relink_cache {
+                        cache.clear_codegen_temps()?;
+                    }
+                    for output in outputs.iter() {
+                        if output.path.exists() {
+                            paths::remove_file(&output.path)?;
+                        }
+                    }
+                    producer_result?;
+                    tracing::info!(target: "cargo::compiler::ohm_early_tests", "retrying {} after dependency completion", target.name());
                 }
-                tracing::info!(target: "cargo::compiler::ohm_early_tests", "accepted early {}", target.name());
+            } else {
+                if result.is_err()
+                    || !deferred_dev_names
+                        .iter()
+                        .all(|name| output.proves_unused(*name))
+                {
+                    if let Some(cache) = &relink_cache {
+                        cache.clear_codegen_temps()?;
+                        if cache.rlink.exists() {
+                            paths::remove_file(&cache.rlink)?;
+                        }
+                    }
+                    for output in outputs.iter() {
+                        if output.path.is_dir() {
+                            // macOS debug bundles are directories.
+                            paths::remove_dir_all(&output.path)?;
+                        } else if output.path.exists() {
+                            paths::remove_file(&output.path)?;
+                        }
+                    }
+                    // Only ordinary diagnostics can be repaired by building
+                    // deferred dependencies. Preserve crashes and interruptions.
+                    if let Err(error) = result
+                        && error
+                            .downcast_ref::<ProcessError>()
+                            .and_then(|error| error.code)
+                            != Some(1)
+                    {
+                        for line in output.stderr {
+                            on_stderr_line(
+                                state,
+                                &line,
+                                package_id,
+                                &manifest,
+                                &target,
+                                &mut output_options,
+                            )?;
+                        }
+                        return Err(error);
+                    }
+                    deferred_dev_retry.store(true, std::sync::atomic::Ordering::Relaxed);
+                    return Err(ohm_deferred_dev_deps::Retry.into());
+                }
+                tracing::info!(target: "cargo::compiler::ohm_deferred_dev_deps", "accepted current unused-dependency proof");
+                accepted_early_test = true;
+            }
+            if accepted_early_test {
                 for line in output.stdout {
                     on_stdout_line(state, &line, package_id, &target)?;
                 }
@@ -1604,17 +1725,6 @@ fn rustc(
                         &mut output_options,
                     )?;
                 }
-            } else {
-                if let Some(cache) = &relink_cache {
-                    cache.clear_codegen_temps()?;
-                }
-                for output in outputs.iter() {
-                    if output.path.exists() {
-                        paths::remove_file(&output.path)?;
-                    }
-                }
-                producer_result?;
-                tracing::info!(target: "cargo::compiler::ohm_early_tests", "retrying {} after dependency completion", target.name());
             }
         }
 
@@ -1706,8 +1816,9 @@ fn rustc(
         }
 
         if let Some(cache) = &relink_cache {
-            let unused_externs =
-                unused_integration_dependency.and_then(|_| state.recorded_unused_externs());
+            let unused_externs = (unused_integration_dependency.is_some() || record_dev_unused)
+                .then(|| state.recorded_unused_externs())
+                .flatten();
             cache.initialize(unused_externs.as_ref())?;
         }
 
@@ -2591,7 +2702,9 @@ fn add_error_format_and_color(
     let mut json = String::from("--json=diagnostic-rendered-ansi,artifacts,future-incompat");
     if build_runner.bcx.gctx.cli_unstable().cargo_lints {
         json.push_str(",unused-externs-silent");
-    } else if unused_integration_self_dependency(build_runner, unit).is_some() {
+    } else if unused_integration_self_dependency(build_runner, unit).is_some()
+        || ohm_deferred_dev_deps::supported(build_runner, unit)
+    {
         json.push_str(",unused-externs-transparent");
     }
     if let MessageFormat::Short | MessageFormat::Json { short: true, .. } =

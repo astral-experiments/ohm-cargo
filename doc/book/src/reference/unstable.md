@@ -2099,6 +2099,55 @@ that existing ordinary namespace from seeding. Re-enabling isolation does not
 remove that history. `cargo clean` clears owned current and legacy namespaces;
 subsequent normal builds prepare fresh state.
 
+## ohm-defer-dev-deps
+
+Ohm defaults allow rebuilds of a single native library test target to
+skip workspace dev dependencies the executable does not use. For example,
+`cargo +ohm test -p app --lib selected` can avoid rebuilding an unused helper and
+the ordinary package library needed only by that helper. Cargo retains the full
+resolved graph and feature contributions; compiler arguments and optimization
+settings do not change.
+
+This gives targeted test rebuilds narrower validation behavior: errors and
+warnings in skipped dependencies are omitted. A successful targeted test does
+not establish that every declared dev dependency compiles. Disable this
+optimization when validating the complete declared dependency graph.
+
+Prior unused-dependency evidence is bound to the previous executable. It permits
+only a provisional compilation: a fresh, successful compiler invocation must
+prove all deferred externs unused before Cargo publishes its results or runs
+tests. Missing, malformed, conflicting, or excessive output, compiler diagnostics,
+and newly used dependencies discard provisional outputs and retry once with the
+complete graph. Interruption, crashes, and compiler launch failures stop the
+command instead. Fallback can therefore cost an additional test compilation.
+
+Only rebuilds requiring a fresh test compilation with prior native evidence are
+eligible. Initial, up-to-date, and dependency-only builds, multiple roots,
+explicit targets, custom linker inputs, unsupported compilers, and LTO retain
+ordinary scheduling. Every exclusively skipped unit must be a pure Rust library;
+build scripts, proc macros, artifact dependencies, and native links prevent
+deferral. Dependencies also needed by a retained edge continue to build. Explicit
+Cargo linting, SBOM generation, and future-incompatibility reporting retain the
+complete build path.
+
+Cargo checks current retained build-script outputs before invoking a deferred
+test compiler. On Linux, dependency scripts may contribute ordinary static
+archives and ELF objects through native search directories inside their own
+`OUT_DIR`; their producing dependencies still build normally. Bounded trees of
+auxiliary C sources, headers, and templates, plus extensionless ELF object probes,
+are also supported. Auxiliary files must not be aliases, renamed archives, or
+text that can load files through linker-script directives. Root-package
+native inputs, applicable linker arguments, external search directories, Rust
+or thin archive paths, file aliases, and unsupported files retry the complete graph
+before compilation and prevent recording unused-extern evidence for subsequent
+rebuilds. Configuration and environment outputs alone remain supported.
+
+Use `-Zohm-defer-dev-deps=no`, `[unstable] ohm-defer-dev-deps = false`, or
+`CARGO_UNSTABLE_OHM_DEFER_DEV_DEPS=false` to opt out. Explicit overrides propagate
+through external Cargo subcommands and can be overridden by a nested command's
+own flag. This requires Ohm defaults and cached relinking; `-Zohm-defaults=no`
+also disables it.
+
 ## ohm-ready-tests
 
 Ohm's `cargo test` can run a completed test binary while other targets compile.

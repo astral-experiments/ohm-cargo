@@ -5177,7 +5177,7 @@ fn unchanged_check_metadata_does_not_fall_behind_rerun_build_script() {
 }
 
 #[cfg(not(windows))]
-fn relink_only_wrapper() -> PathBuf {
+pub(super) fn relink_only_wrapper() -> PathBuf {
     // The testsuite compiler does not implement the public API hash or
     // separate-link flags used by this prototype. This wrapper attaches a
     // deterministic public hash and emulates rustc's `.rlink` protocol while
@@ -5325,7 +5325,9 @@ fn relink_only_wrapper() -> PathBuf {
                     let mut command = Command::new(rustc);
                     command.args(args).env("RUSTC_BOOTSTRAP", "1");
                     if env::var_os("UNUSED_INTEGRATION_DEPENDENCY_PROOF").is_some()
-                        && crate_name(args) == Some("integration")
+                        && (crate_name(args) == Some("integration")
+                            || (args.iter().any(|arg| arg == "--test")
+                                && env::var("UNUSED_TEST_CRATE").ok().as_deref() == crate_name(args)))
                     {
                         command.arg("--force-warn=unused_crate_dependencies");
                     }
@@ -5359,7 +5361,9 @@ fn relink_only_wrapper() -> PathBuf {
                     let public_api_hash = env::var("UNUSED_INTEGRATION_PUBLIC_HASH")
                         .unwrap_or_else(|_| "00000000000000000000000000000000".to_owned());
                     for line in stderr.lines() {
-                        if crate_name(args) == Some("integration")
+                        if (crate_name(args) == Some("integration")
+                            || (args.iter().any(|arg| arg == "--test")
+                                && env::var("UNUSED_TEST_CRATE").ok().as_deref() == crate_name(args)))
                             && line.contains("\"$message_type\":\"unused_extern\"")
                             && env::var_os("EARLY_TEST_MISSING_PROOF").is_some()
                         {
@@ -5403,7 +5407,18 @@ fn relink_only_wrapper() -> PathBuf {
                             }
                         }
                     }
-                    exit(output.status.code().unwrap_or(1));
+                    let mut code = output.status.code().unwrap_or(1);
+                    if args.iter().any(|arg| arg == "--test")
+                        && env::var("UNUSED_TEST_CRATE").ok().as_deref() == crate_name(args)
+                    {
+                        if let Ok(value) = env::var("UNUSED_TEST_EXIT") {
+                            code = value.parse().unwrap();
+                        }
+                        if let Some(path) = env::var_os("UNUSED_TEST_RESULTS") {
+                            writeln!(OpenOptions::new().create(true).append(true).open(path).unwrap(), "{code}").unwrap();
+                        }
+                    }
+                    exit(code);
                 }
 
                 fn artifact_path(stderr: &[u8]) -> PathBuf {

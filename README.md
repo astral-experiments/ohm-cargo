@@ -92,6 +92,23 @@ Use `cargo +ohm -Zohm-early-tests=no test` to opt out, or set
 `[unstable] ohm-early-tests = false` in Cargo configuration. The explicit override
 is inherited by external Cargo subcommands. `-Zohm-defaults=no` also disables it.
 
+## Unused development dependencies in targeted tests
+
+When rebuilding a single library test target, Ohm can skip unused workspace dev
+dependencies. For example, `cargo +ohm test -p app --lib selected` can avoid
+rebuilding a helper and the ordinary library used only by that helper. Features,
+compiler arguments, and optimization settings stay the same.
+
+The current compilation must confirm that the skipped dependencies are unused.
+Otherwise, Cargo discards its output and retries once with the complete graph.
+Initial builds and unsupported inputs use ordinary scheduling.
+
+Skipped dependencies' errors and warnings are not reported. Use
+`cargo +ohm -Zohm-defer-dev-deps=no test -p app --lib` to validate the complete
+declared graph. This optimization is enabled by Ohm defaults; see the
+[reference](doc/book/src/reference/unstable.md#ohm-defer-dev-deps) for supported
+builds, native-input checks, and configuration options.
+
 ## License
 
 Cargo is primarily distributed under the terms of both the MIT license
