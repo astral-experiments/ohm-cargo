@@ -1,0 +1,1268 @@
+{
+ "check": {
+  "provider-first": {
+   "control": {
+    "bytes": 1829,
+    "sha256": "c4b6f381e1432bd42c5820d33c403bc30a6ffbd5e86938584f565cfb5d86e6bc"
+   },
+   "events": [
+    {
+     "crate": "provider",
+     "event": "before-fd",
+     "observed_ns": 1793256494848563443,
+     "requested_ns": 1793256494811563279,
+     "restore": 0
+    },
+    {
+     "crate": "provider",
+     "event": "after-fd",
+     "observed_ns": 1793256494811563279,
+     "requested_ns": 1793256494811563279,
+     "restore": 0
+    },
+    {
+     "crate": "reader",
+     "event": "before-fd",
+     "observed_ns": 1793256494883563597,
+     "requested_ns": 1793256494849563447,
+     "restore": 0
+    },
+    {
+     "crate": "reader",
+     "event": "hold-fd",
+     "observed_ns": 1793256494883563597,
+     "requested_ns": 1793256494849563447,
+     "restore": 0
+    },
+    {
+     "crate": "reader",
+     "event": "release-fd",
+     "observed_ns": 1793256494883563597,
+     "requested_ns": 1793256494849563447,
+     "restore": 0
+    },
+    {
+     "crate": "reader",
+     "event": "after-fd",
+     "observed_ns": 1793256494849563447,
+     "requested_ns": 1793256494849563447,
+     "restore": 0
+    }
+   ],
+   "interposer": {
+    "bytes": 16872,
+    "sha256": "a2ea0700d7389255e1b9270ec844f034d48742b29551d0e284d4dc70835480c1"
+   },
+   "phases": {
+    "edited": {
+     "artifacts": {
+      "api": true,
+      "provider": false,
+      "reader": false
+     },
+     "errors": [
+      {
+       "code": "E0034",
+       "notes": [
+        "candidate #1 is defined in an impl of the trait `First` for the type `Token`",
+        "candidate #2 is defined in an impl of the trait `Second` for the type `Token`"
+       ],
+       "primary": [
+        [
+         "client/src/main.rs",
+         3,
+         30
+        ]
+       ],
+       "rendered_sha256": "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56",
+       "summary": "multiple applicable items in scope",
+       "target": "client"
+      }
+     ],
+     "exit": 101,
+     "streams": {
+      "stderr": {
+       "bytes": 515,
+       "local_root_replacements": 3,
+       "portable_sha256": "381d8452dc824872b5a7bd6b3060fbafdc5d4512b0a713ee518fd2a529f848c7",
+       "sha256": "df6ebc2a9140820aa7b8056783ce696633e5dbd448582a8c02f7caee0296ab76"
+      },
+      "stdout": {
+       "bytes": 8411,
+       "local_root_replacements": 18,
+       "portable_sha256": "5e6e77f5f8ad0e7a9c5cc0cfe716535b85fda678509d7894a999943009788cd1",
+       "sha256": "dfa0bba986c59ea4bd7325b4cc91c4abc52d98e1366bf4e146fb9797df1c5fb4"
+      }
+     }
+    },
+    "edited-clean": {
+     "artifacts": {
+      "api": false,
+      "provider": false,
+      "reader": false
+     },
+     "errors": [
+      {
+       "code": "E0034",
+       "notes": [
+        "candidate #1 is defined in an impl of the trait `First` for the type `Token`",
+        "candidate #2 is defined in an impl of the trait `Second` for the type `Token`"
+       ],
+       "primary": [
+        [
+         "client/src/main.rs",
+         3,
+         30
+        ]
+       ],
+       "rendered_sha256": "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56",
+       "summary": "multiple applicable items in scope",
+       "target": "client"
+      }
+     ],
+     "exit": 101,
+     "streams": {
+      "stderr": {
+       "bytes": 655,
+       "local_root_replacements": 4,
+       "portable_sha256": "4c3313335f54d6490a7ac9e8de7f80844bd58fd0ef5cdf4ef39805f85e956d70",
+       "sha256": "c9d3611a6ff3b31aa66caac6edbd9243b4e4c84f0482305343d2130dbc3b9868"
+      },
+      "stdout": {
+       "bytes": 8427,
+       "local_root_replacements": 18,
+       "portable_sha256": "8656d832549760543c7f98c4dfe475a605e815e4a0d3fe93f0d478eab76c5357",
+       "sha256": "2f753dbe706af4a08337ef39dca9f30d9e10889946e22845e03843e6213fe457"
+      }
+     }
+    },
+    "edited-repeat": {
+     "artifacts": {
+      "api": true,
+      "provider": true,
+      "reader": true
+     },
+     "errors": [
+      {
+       "code": "E0034",
+       "notes": [
+        "candidate #1 is defined in an impl of the trait `First` for the type `Token`",
+        "candidate #2 is defined in an impl of the trait `Second` for the type `Token`"
+       ],
+       "primary": [
+        [
+         "client/src/main.rs",
+         3,
+         30
+        ]
+       ],
+       "rendered_sha256": "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56",
+       "summary": "multiple applicable items in scope",
+       "target": "client"
+      }
+     ],
+     "exit": 101,
+     "streams": {
+      "stderr": {
+       "bytes": 219,
+       "local_root_replacements": 1,
+       "portable_sha256": "ee15b954b1da38b02429c04ef67cbd4323832a35c74b75264f9e2e273458696a",
+       "sha256": "b7d589ed01ee6da640438ff51b477d17bf9e38f95a53a4b899c3cebd42d4d9d2"
+      },
+      "stdout": {
+       "bytes": 8409,
+       "local_root_replacements": 18,
+       "portable_sha256": "0165b5252ea4d3beb015df6871817af76c4ecc18dd870e314cc67ed7936a165d",
+       "sha256": "c61a5aabbff697ff19a05db2790edcfaa654dd544d222f7972d15d1bdea69d55"
+      }
+     }
+    },
+    "original": {
+     "artifacts": {
+      "api": false,
+      "client": false,
+      "provider": false,
+      "reader": false
+     },
+     "errors": [],
+     "exit": 0,
+     "streams": {
+      "stderr": {
+       "bytes": 654,
+       "local_root_replacements": 4,
+       "portable_sha256": "3700323b0ec2ef8de6a478a6439ace32c391fde31494ba1c560eb044a24cc070",
+       "sha256": "95a2e803beaf7199b4c7ab4eae324850849ffe9e7490799ec0684cc0441ec293"
+      },
+      "stdout": {
+       "bytes": 4047,
+       "local_root_replacements": 16,
+       "portable_sha256": "c72db12299ee871224756cd53dbaee57e31bdc129b42ad79dfddba1f65dcbf8d",
+       "sha256": "b476f69e8fab4f46cf0d331cd2b68fdc8f43f06f7423c42fb1bc2fbc9d427503"
+      }
+     }
+    },
+    "original-repeat": {
+     "artifacts": {
+      "api": true,
+      "client": true,
+      "provider": true,
+      "reader": true
+     },
+     "errors": [],
+     "exit": 0,
+     "streams": {
+      "stderr": {
+       "bytes": 72,
+       "local_root_replacements": 0,
+       "portable_sha256": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e",
+       "sha256": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e"
+      },
+      "stdout": {
+       "bytes": 4043,
+       "local_root_replacements": 16,
+       "portable_sha256": "754a316d9dc243078c6203ddf138acd5f1e6e205e3dbf824449c75057ac7236c",
+       "sha256": "8b06d149de63a15e3da4919e33042b540898571d39b379e138044453325d03d4"
+      }
+     }
+    },
+    "restore": {
+     "artifacts": {
+      "api": true,
+      "client": false,
+      "provider": false,
+      "reader": false
+     },
+     "errors": [],
+     "exit": 0,
+     "streams": {
+      "stderr": {
+       "bytes": 514,
+       "local_root_replacements": 3,
+       "portable_sha256": "dc20a7bb7620dbcfec2704ff0142bfa0f888917c8f3d038e7c8977b022f9aa2b",
+       "sha256": "45c01ed1665d9a63a07596f09c7b025cbc75d5bf7f362d919caeeda236d51f77"
+      },
+      "stdout": {
+       "bytes": 4046,
+       "local_root_replacements": 16,
+       "portable_sha256": "a77425fac684ca82ca08490a92ffe74b7e691f445716725e720a055ca8a25ba2",
+       "sha256": "99ebd7e188e5bda9466091ffc16eb30e4ad9fe8db7bc32c7f32e47dfb73aa96a"
+      }
+     }
+    },
+    "restore-repeat": {
+     "artifacts": {
+      "api": true,
+      "client": true,
+      "provider": true,
+      "reader": true
+     },
+     "errors": [],
+     "exit": 0,
+     "streams": {
+      "stderr": {
+       "bytes": 72,
+       "local_root_replacements": 0,
+       "portable_sha256": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e",
+       "sha256": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e"
+      },
+      "stdout": {
+       "bytes": 4043,
+       "local_root_replacements": 16,
+       "portable_sha256": "754a316d9dc243078c6203ddf138acd5f1e6e205e3dbf824449c75057ac7236c",
+       "sha256": "8b06d149de63a15e3da4919e33042b540898571d39b379e138044453325d03d4"
+      }
+     }
+    }
+   },
+   "sources": {
+    "Cargo.lock": {
+     "bytes": 387,
+     "sha256": "f5850b0cb47a76a48e34e3780038a1bec4219e3a500fdbf8f58bfdeb2e533fd0"
+    },
+    "Cargo.toml": {
+     "bytes": 70,
+     "sha256": "874c9acd074385477449a632e56e7c6b8c574086dfc3b490f434d478ba7e6937"
+    },
+    "api/Cargo.toml": {
+     "bytes": 67,
+     "sha256": "cafcb06287d9fafd5e4586a286f4cbbcbe493fcf6b16194327c3f7a9aead7fc3"
+    },
+    "api/src/lib.rs": {
+     "bytes": 93,
+     "sha256": "bdba7849cf695542561068f18dbae83ba511ca3e0124f8d5c1417d673b8bf4bc"
+    },
+    "client/Cargo.toml": {
+     "bytes": 96,
+     "sha256": "b14c6db062dde5ff7b7c71647b5a1f432822d75ccdbadcd0d94bd11e679cb305"
+    },
+    "client/src/main.rs": {
+     "bytes": 110,
+     "sha256": "30fbf7e77b90290d8e10bb869ca7eef64f9c4c92e7f7d48621f8dbae3da539e8"
+    },
+    "provider/Cargo.toml": {
+     "bytes": 92,
+     "sha256": "e9ae3b2f836628bf4603aab7e7ddd41c48b1efaf773ace9faf9bedf60178f0c1"
+    },
+    "provider/src/lib.rs": {
+     "bytes": 80,
+     "sha256": "c18e24a58daddd26b5fd4b341b835c5462e9d1d09b447e17c8e2303125ef9bcf"
+    },
+    "reader/Cargo.toml": {
+     "bytes": 120,
+     "sha256": "9fdad71798dd17968e18cff297e82be4a832f24688020dba8bbc5c9061fa9979"
+    },
+    "reader/src/lib.rs": {
+     "bytes": 106,
+     "sha256": "d4bffa1295ed1e9b9826c253870fc47b44c8786cde725ed8c789f9cbc09e263a"
+    }
+   },
+   "state": {
+    "edited-clean": {
+     "provider": {
+      "public_api": {
+       "bytes": 56,
+       "sha256": "8e931506694d4686e4eebe2bdc66fbf9250d30db886fb6479eca1ed7a6298b04",
+       "value": "ed795c345cb3b9d89e8c268083dfb72d"
+      },
+      "rmeta": {
+       "bytes": 3349,
+       "sha256": "7c26c840fccd7e8fd43d9f0b8b7c650392b7b3a7fee7c5549ed1b29c40c1d842"
+      },
+      "short": {
+       "bytes": 16,
+       "sha256": "995a1594f1b45d2a8f620036e9115734bf6ab9c27fec5adf0592e13fd0febbe0",
+       "value": "845645b982317e92"
+      }
+     },
+     "reader": {
+      "public_api": {
+       "bytes": 56,
+       "sha256": "23b880f752b3c50d40d3ba1bb81e6ff399d3f63ad25982b86b544460059ecc7a",
+       "value": "be7b8ad875a3a4d7211629c714cc42b6"
+      },
+      "rmeta": {
+       "bytes": 2849,
+       "sha256": "9f7296e36c4931b96906f2a9cc57f4ae70a5a4e1436524ac4ada343dc85de2de"
+      },
+      "short": {
+       "bytes": 16,
+       "sha256": "c6c9edc78404ff42676f07338b5c60e7c0ce3197ced839fdac3029e2fcdb6f5f",
+       "value": "81bd0f94d430f0bb"
+      }
+     }
+    },
+    "restored": {
+     "provider": {
+      "public_api": {
+       "bytes": 56,
+       "sha256": "6d138d0eb6c273215576d2b9a4ed3fe856a62b8fc02039595c787065cc80a690",
+       "value": "b7167ab3d2e6ca6b0c3a19ce4d498647"
+      },
+      "rmeta": {
+       "bytes": 2970,
+       "sha256": "c02de538d8bfdeaf11953daf3d6b488a8cc42b17e90579c5ee1dce082a3cfe01"
+      },
+      "short": {
+       "bytes": 16,
+       "sha256": "995a1594f1b45d2a8f620036e9115734bf6ab9c27fec5adf0592e13fd0febbe0",
+       "value": "845645b982317e92"
+      }
+     },
+     "reader": {
+      "public_api": {
+       "bytes": 56,
+       "sha256": "23b880f752b3c50d40d3ba1bb81e6ff399d3f63ad25982b86b544460059ecc7a",
+       "value": "be7b8ad875a3a4d7211629c714cc42b6"
+      },
+      "rmeta": {
+       "bytes": 2849,
+       "sha256": "a5e7fb3b3c259440d7c7573e9d50b3c9b1f9acb835584655b61c65bda82b7f4f"
+      },
+      "short": {
+       "bytes": 16,
+       "sha256": "c6c9edc78404ff42676f07338b5c60e7c0ce3197ced839fdac3029e2fcdb6f5f",
+       "value": "81bd0f94d430f0bb"
+      }
+     }
+    }
+   },
+   "worker_stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   },
+   "worker_stdout": "original 0 [] fresh []\noriginal-repeat 0 [] fresh ['api', 'client', 'provider', 'reader']\nedited 101 [('client', 'E0034')] fresh ['api']\nedited-repeat 101 [('client', 'E0034')] fresh ['api', 'provider', 'reader']\nedited-clean 101 [('client', 'E0034')] fresh []\nrestore 0 [] fresh ['api']\nrestore-repeat 0 [] fresh ['api', 'client', 'provider', 'reader']\nWarm result: correct\n",
+   "worker_stdout_sha256": "7b4eb361b082249fd8745569a5a125fedb09e2b8af3099ccfdb3b8f116c555ce"
+  },
+  "provider-late": {
+   "control": {
+    "bytes": 2436,
+    "sha256": "7ea9882fba8609882541fa0213573eb3b92c91ba80a8276dac6c0f5b4b68ae0a"
+   },
+   "events": [
+    {
+     "crate": "provider",
+     "event": "before-fd",
+     "observed_ns": 1793256493166556023,
+     "requested_ns": 1793256493130555864,
+     "restore": 0
+    },
+    {
+     "crate": "provider",
+     "event": "hold-fd",
+     "observed_ns": 1793256493166556023,
+     "requested_ns": 1793256493130555864,
+     "restore": 0
+    },
+    {
+     "crate": "reader",
+     "event": "before-fd",
+     "observed_ns": 1793256493207556204,
+     "requested_ns": 1793256493168556032,
+     "restore": 0
+    },
+    {
+     "crate": "reader",
+     "event": "after-fd",
+     "observed_ns": 1793256493168556032,
+     "requested_ns": 1793256493168556032,
+     "restore": 0
+    },
+    {
+     "crate": "reader",
+     "event": "before-fd",
+     "observed_ns": 1793256493168556032,
+     "requested_ns": 1793256493166556023,
+     "restore": 1
+    },
+    {
+     "crate": "reader",
+     "event": "after-fd",
+     "observed_ns": 1793256493166556023,
+     "requested_ns": 1793256493166556023,
+     "restore": 1
+    },
+    {
+     "crate": "provider",
+     "event": "release-fd",
+     "observed_ns": 1793256493166556023,
+     "requested_ns": 1793256493130555864,
+     "restore": 0
+    },
+    {
+     "crate": "provider",
+     "event": "after-fd",
+     "observed_ns": 1793256493130555864,
+     "requested_ns": 1793256493130555864,
+     "restore": 0
+    }
+   ],
+   "interposer": {
+    "bytes": 16872,
+    "sha256": "a2ea0700d7389255e1b9270ec844f034d48742b29551d0e284d4dc70835480c1"
+   },
+   "phases": {
+    "edited": {
+     "artifacts": {
+      "api": true,
+      "client": false,
+      "provider": false,
+      "reader": false
+     },
+     "errors": [],
+     "exit": 0,
+     "streams": {
+      "stderr": {
+       "bytes": 511,
+       "local_root_replacements": 3,
+       "portable_sha256": "c3bb0b41924fd6f6072267db203d04f65d8ea5c092026c72d84df3e68b878223",
+       "sha256": "0610aea227d19aafe99544f23667d141d35c4e5cfcae03ca3c874f9928543363"
+      },
+      "stdout": {
+       "bytes": 4030,
+       "local_root_replacements": 16,
+       "portable_sha256": "ad8e31b83f1d9f043957300c8d25daa5c46a51368ce70418575de92f03577a87",
+       "sha256": "daded388a9b81d21699fc2cf487c03f5d028e3c727ad84ef0bfec1d40b2cf12c"
+      }
+     }
+    },
+    "edited-clean": {
+     "artifacts": {
+      "api": false,
+      "provider": false,
+      "reader": false
+     },
+     "errors": [
+      {
+       "code": "E0034",
+       "notes": [
+        "candidate #1 is defined in an impl of the trait `First` for the type `Token`",
+        "candidate #2 is defined in an impl of the trait `Second` for the type `Token`"
+       ],
+       "primary": [
+        [
+         "client/src/main.rs",
+         3,
+         30
+        ]
+       ],
+       "rendered_sha256": "f56ad66c2eeaeee09d18d874b7c52f8929edc44bdef3c993ce34c380741dde56",
+       "summary": "multiple applicable items in scope",
+       "target": "client"
+      }
+     ],
+     "exit": 101,
+     "streams": {
+      "stderr": {
+       "bytes": 651,
+       "local_root_replacements": 4,
+       "portable_sha256": "e0a1a80ec8e4572d5d4b2af54c726fad016f20ed58ce502562d6b04fd06dfe8c",
+       "sha256": "f5aef448bd9d28e9b30a2a6a7654e1c899b5aae5bd43ed73a3422e991b4c057c"
+      },
+      "stdout": {
+       "bytes": 8409,
+       "local_root_replacements": 18,
+       "portable_sha256": "573a5c0988aaa1d00c30ce425b857770c9093bb514b0b7a45467ec424dd7bf28",
+       "sha256": "647121263b1c0aebfb2dca49521e2909c44de4613d9c13a2c5020c60eb2a5194"
+      }
+     }
+    },
+    "edited-repeat": {
+     "artifacts": {
+      "api": true,
+      "client": true,
+      "provider": true,
+      "reader": true
+     },
+     "errors": [],
+     "exit": 0,
+     "streams": {
+      "stderr": {
+       "bytes": 72,
+       "local_root_replacements": 0,
+       "portable_sha256": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e",
+       "sha256": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e"
+      },
+      "stdout": {
+       "bytes": 4027,
+       "local_root_replacements": 16,
+       "portable_sha256": "e820d1d17eee4e97a85ed1e240a14e567522abdce5bfb9f28f17e51b1f967e5c",
+       "sha256": "8eb48584d0ff020fe13ef7a115d6df3138f776b745fa8ca28d14934f2349768c"
+      }
+     }
+    },
+    "original": {
+     "artifacts": {
+      "api": false,
+      "client": false,
+      "provider": false,
+      "reader": false
+     },
+     "errors": [],
+     "exit": 0,
+     "streams": {
+      "stderr": {
+       "bytes": 650,
+       "local_root_replacements": 4,
+       "portable_sha256": "67b7dfea24bed010595fa0020c71c70f89384db77b2addb56b6b99b19015585e",
+       "sha256": "b51e198457a7976edc1574b6a9f76f30fabdb3e529dae22db11172a0a4065d9c"
+      },
+      "stdout": {
+       "bytes": 4031,
+       "local_root_replacements": 16,
+       "portable_sha256": "a07c0e6fb3cb4d476793989f8265f2a02d63765d3bfe3a01e3330848a7993a6d",
+       "sha256": "db2dc7fcccf871887edaf7d58ea839ccb980cf3b18883a78af72c80648962cfd"
+      }
+     }
+    },
+    "original-repeat": {
+     "artifacts": {
+      "api": true,
+      "client": true,
+      "provider": true,
+      "reader": true
+     },
+     "errors": [],
+     "exit": 0,
+     "streams": {
+      "stderr": {
+       "bytes": 72,
+       "local_root_replacements": 0,
+       "portable_sha256": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e",
+       "sha256": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e"
+      },
+      "stdout": {
+       "bytes": 4027,
+       "local_root_replacements": 16,
+       "portable_sha256": "e820d1d17eee4e97a85ed1e240a14e567522abdce5bfb9f28f17e51b1f967e5c",
+       "sha256": "8eb48584d0ff020fe13ef7a115d6df3138f776b745fa8ca28d14934f2349768c"
+      }
+     }
+    },
+    "restore": {
+     "artifacts": {
+      "api": true,
+      "client": false,
+      "provider": false,
+      "reader": false
+     },
+     "errors": [],
+     "exit": 0,
+     "streams": {
+      "stderr": {
+       "bytes": 511,
+       "local_root_replacements": 3,
+       "portable_sha256": "ae184c79eb30eed781dcf246de32597a41f5b27bc6943b04bacf52a05c6dea7c",
+       "sha256": "45d8061b326c5d1e5b940f151efdf0fa2df1ad4aad06be871e414cb7a3d747d4"
+      },
+      "stdout": {
+       "bytes": 4030,
+       "local_root_replacements": 16,
+       "portable_sha256": "ad8e31b83f1d9f043957300c8d25daa5c46a51368ce70418575de92f03577a87",
+       "sha256": "daded388a9b81d21699fc2cf487c03f5d028e3c727ad84ef0bfec1d40b2cf12c"
+      }
+     }
+    },
+    "restore-repeat": {
+     "artifacts": {
+      "api": true,
+      "client": true,
+      "provider": true,
+      "reader": true
+     },
+     "errors": [],
+     "exit": 0,
+     "streams": {
+      "stderr": {
+       "bytes": 72,
+       "local_root_replacements": 0,
+       "portable_sha256": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e",
+       "sha256": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e"
+      },
+      "stdout": {
+       "bytes": 4027,
+       "local_root_replacements": 16,
+       "portable_sha256": "e820d1d17eee4e97a85ed1e240a14e567522abdce5bfb9f28f17e51b1f967e5c",
+       "sha256": "8eb48584d0ff020fe13ef7a115d6df3138f776b745fa8ca28d14934f2349768c"
+      }
+     }
+    }
+   },
+   "sources": {
+    "Cargo.lock": {
+     "bytes": 387,
+     "sha256": "f5850b0cb47a76a48e34e3780038a1bec4219e3a500fdbf8f58bfdeb2e533fd0"
+    },
+    "Cargo.toml": {
+     "bytes": 70,
+     "sha256": "874c9acd074385477449a632e56e7c6b8c574086dfc3b490f434d478ba7e6937"
+    },
+    "api/Cargo.toml": {
+     "bytes": 67,
+     "sha256": "cafcb06287d9fafd5e4586a286f4cbbcbe493fcf6b16194327c3f7a9aead7fc3"
+    },
+    "api/src/lib.rs": {
+     "bytes": 93,
+     "sha256": "bdba7849cf695542561068f18dbae83ba511ca3e0124f8d5c1417d673b8bf4bc"
+    },
+    "client/Cargo.toml": {
+     "bytes": 96,
+     "sha256": "b14c6db062dde5ff7b7c71647b5a1f432822d75ccdbadcd0d94bd11e679cb305"
+    },
+    "client/src/main.rs": {
+     "bytes": 110,
+     "sha256": "30fbf7e77b90290d8e10bb869ca7eef64f9c4c92e7f7d48621f8dbae3da539e8"
+    },
+    "provider/Cargo.toml": {
+     "bytes": 92,
+     "sha256": "e9ae3b2f836628bf4603aab7e7ddd41c48b1efaf773ace9faf9bedf60178f0c1"
+    },
+    "provider/src/lib.rs": {
+     "bytes": 80,
+     "sha256": "c18e24a58daddd26b5fd4b341b835c5462e9d1d09b447e17c8e2303125ef9bcf"
+    },
+    "reader/Cargo.toml": {
+     "bytes": 120,
+     "sha256": "9fdad71798dd17968e18cff297e82be4a832f24688020dba8bbc5c9061fa9979"
+    },
+    "reader/src/lib.rs": {
+     "bytes": 106,
+     "sha256": "d4bffa1295ed1e9b9826c253870fc47b44c8786cde725ed8c789f9cbc09e263a"
+    }
+   },
+   "state": {
+    "edited-clean": {
+     "provider": {
+      "public_api": {
+       "bytes": 56,
+       "sha256": "8e931506694d4686e4eebe2bdc66fbf9250d30db886fb6479eca1ed7a6298b04",
+       "value": "ed795c345cb3b9d89e8c268083dfb72d"
+      },
+      "rmeta": {
+       "bytes": 3349,
+       "sha256": "7c26c840fccd7e8fd43d9f0b8b7c650392b7b3a7fee7c5549ed1b29c40c1d842"
+      },
+      "short": {
+       "bytes": 16,
+       "sha256": "80cb33e413262eccfffe563a0fa1fed580ca25e073a69b9e4d935a9f98099f85",
+       "value": "2ddbbf736843ce15"
+      }
+     },
+     "reader": {
+      "public_api": {
+       "bytes": 56,
+       "sha256": "23b880f752b3c50d40d3ba1bb81e6ff399d3f63ad25982b86b544460059ecc7a",
+       "value": "be7b8ad875a3a4d7211629c714cc42b6"
+      },
+      "rmeta": {
+       "bytes": 2849,
+       "sha256": "9f7296e36c4931b96906f2a9cc57f4ae70a5a4e1436524ac4ada343dc85de2de"
+      },
+      "short": {
+       "bytes": 16,
+       "sha256": "6903991ff1d3f311712a0e419a029c9de176c70df58e2c71aa6a8c9436a1e23e",
+       "value": "b2ddff68880e17ed"
+      }
+     }
+    },
+    "restored": {
+     "provider": {
+      "public_api": {
+       "bytes": 56,
+       "sha256": "6d138d0eb6c273215576d2b9a4ed3fe856a62b8fc02039595c787065cc80a690",
+       "value": "b7167ab3d2e6ca6b0c3a19ce4d498647"
+      },
+      "rmeta": {
+       "bytes": 2970,
+       "sha256": "c02de538d8bfdeaf11953daf3d6b488a8cc42b17e90579c5ee1dce082a3cfe01"
+      },
+      "short": {
+       "bytes": 16,
+       "sha256": "80cb33e413262eccfffe563a0fa1fed580ca25e073a69b9e4d935a9f98099f85",
+       "value": "2ddbbf736843ce15"
+      }
+     },
+     "reader": {
+      "public_api": {
+       "bytes": 56,
+       "sha256": "23b880f752b3c50d40d3ba1bb81e6ff399d3f63ad25982b86b544460059ecc7a",
+       "value": "be7b8ad875a3a4d7211629c714cc42b6"
+      },
+      "rmeta": {
+       "bytes": 2849,
+       "sha256": "a5e7fb3b3c259440d7c7573e9d50b3c9b1f9acb835584655b61c65bda82b7f4f"
+      },
+      "short": {
+       "bytes": 16,
+       "sha256": "6903991ff1d3f311712a0e419a029c9de176c70df58e2c71aa6a8c9436a1e23e",
+       "value": "b2ddff68880e17ed"
+      }
+     }
+    }
+   },
+   "worker_stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   },
+   "worker_stdout": "original 0 [] fresh []\noriginal-repeat 0 [] fresh ['api', 'client', 'provider', 'reader']\nedited 0 [] fresh ['api']\nedited-repeat 0 [] fresh ['api', 'client', 'provider', 'reader']\nedited-clean 101 [('client', 'E0034')] fresh []\nrestore 0 [] fresh ['api']\nrestore-repeat 0 [] fresh ['api', 'client', 'provider', 'reader']\nWarm result: stale\n",
+   "worker_stdout_sha256": "6fb0efc45736a4c4c984259b55af9832fd76fa13c7d1df314c92924bf615f426"
+  }
+ },
+ "release": {
+  "archive_sidecar": "ef21d83519bc376479811a7e01fa5ac8915ac0a500c6859bc22a1e0b4913d812",
+  "assets": {
+   "SHA256SUMS": {
+    "bytes": 860,
+    "sha256": "9f67e715ea1ff096b3c8d6e37d5f0889900ff9e33b79c1bf477cbe5b44f51081"
+   },
+   "ohm-1.99.0-19-aarch64-apple-darwin-provenance.json": {
+    "bytes": 731,
+    "sha256": "6b67a09d318844cbe4ef61e4d7c76c99bb7ee4508efe9a7dfcea57a8990a7149"
+   },
+   "ohm-1.99.0-19-aarch64-apple-darwin.tar.gz": {
+    "bytes": 294940203,
+    "sha256": "47757aa0e91eedc7389926fe1378b24f73c0e155f0575bff821da8f89980bdfe"
+   },
+   "ohm-1.99.0-19-aarch64-apple-darwin.tar.gz.sha256": {
+    "bytes": 108,
+    "sha256": "1d2ae094ec450517e71d5a1719d492e918693677cff064604dbf975a2e452408"
+   },
+   "ohm-1.99.0-19-x86_64-unknown-linux-gnu-provenance.json": {
+    "bytes": 868,
+    "sha256": "22692555fd14bc111d382bb7a3650df7d0d8d3837371cdf083906b3985dae853"
+   },
+   "ohm-1.99.0-19-x86_64-unknown-linux-gnu.tar.gz": {
+    "bytes": 359628600,
+    "sha256": "ef21d83519bc376479811a7e01fa5ac8915ac0a500c6859bc22a1e0b4913d812"
+   },
+   "ohm-1.99.0-19-x86_64-unknown-linux-gnu.tar.gz.sha256": {
+    "bytes": 112,
+    "sha256": "e08a90f17113bdc952df0ecb64d3e26dbcaa3baf0b9d9165cf55152bd42bed40"
+   },
+   "ohm-1.99.0-19.json": {
+    "bytes": 973,
+    "sha256": "38f6ffc6ceab9091894bbc7e46dcaf3a72de602edcf833b2d4cbecb55579dfa1"
+   },
+   "ohm-installer.sh": {
+    "bytes": 15288,
+    "sha256": "fb1ee22a80c47c9e0c598d9886b694b60923674b79cd9f4ed21cddba536a1fb0"
+   }
+  },
+  "images": {
+   "cargo": {
+    "archive_member": "rust-1.99.0-dev-x86_64-unknown-linux-gnu/cargo/bin/cargo",
+    "bytes": 38915800,
+    "sha256": "789c2f116732ed642565d0f92c500838f8cd53664fbe60f205a5621c43cbecf1"
+   },
+   "driver": {
+    "archive_member": "rust-1.99.0-dev-x86_64-unknown-linux-gnu/rustc/lib/librustc_driver-b03bf00bec23bb9a.so",
+    "bytes": 162569680,
+    "sha256": "f772b49abec18759edbd9cb7f9f2930097d6ba64d9a2b82837edf4451acc3014"
+   },
+   "rustc": {
+    "archive_member": "rust-1.99.0-dev-x86_64-unknown-linux-gnu/rustc/bin/rustc",
+    "bytes": 171720,
+    "sha256": "5694abe50767a22cebeccb767143f7404d5e81c4b1760cff4426466bf410e511"
+   },
+   "rustdoc": {
+    "archive_member": "rust-1.99.0-dev-x86_64-unknown-linux-gnu/rustc/bin/rustdoc",
+    "bytes": 12487272,
+    "sha256": "a368ad0fdc5a72d5832d0425c00ee41cf1368908eae4835d303262dd8b266cf0"
+   },
+   "wild": {
+    "archive_member": "rust-1.99.0-dev-x86_64-unknown-linux-gnu/rustc/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld/ld.bfd",
+    "bytes": 10319072,
+    "sha256": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+   }
+  },
+  "manifest": {
+   "$schema": "../manifest.schema.json",
+   "bundled_tools": {
+    "wild": {
+     "sha256": "25012a78de164686f552b7703b5d0223adab4829c79cd1fb351108221d61c7d8",
+     "version": "0.11.0"
+    }
+   },
+   "release": {
+    "ohm_revision": 19,
+    "toolchain_name": "ohm-1.99.0-19",
+    "upstream_rust_version": "1.99.0"
+   },
+   "schema_version": 1,
+   "sources": {
+    "cargo": {
+     "repository": "https://github.com/astral-sh/ohm-cargo",
+     "revision": "235f9228651b74c591e6f62cae4c9b761448dd2d"
+    },
+    "clippy": {
+     "repository": "https://github.com/astral-sh/ohm-rust-clippy",
+     "revision": "0d76dc1f4fe7ffb86ee5e1a8a9cc4d6bef1d1bf6"
+    },
+    "rust": {
+     "repository": "https://github.com/astral-sh/ohm-rust",
+     "revision": "eef2f3425c1c6f7fddfb4555769a9f90fe1e0f53"
+    },
+    "rustfmt": {
+     "repository": "https://github.com/astral-sh/ohm-rustfmt",
+     "revision": "3c9620c92b01e6c393324729c4861823cc3676e2"
+    }
+   },
+   "status": "pinned"
+  },
+  "platform": "x86_64-unknown-linux-gnu",
+  "published_at": "2026-10-29T06:41:55Z",
+  "raw": {
+   "SHA256SUMS": {
+    "bytes": 860,
+    "sha256": "9f67e715ea1ff096b3c8d6e37d5f0889900ff9e33b79c1bf477cbe5b44f51081"
+   },
+   "install.log": {
+    "bytes": 690,
+    "sha256": "a19f65285a85f68b2cebd214c6b3b20d9dac12fa9cf08b62342a077dea3d6e29"
+   },
+   "installed.json": {
+    "bytes": 1188,
+    "sha256": "a954acabeab3fd7b9392135b8e581565dd56935984b08aba93be50d839259634"
+   },
+   "ohm-1.99.0-19-x86_64-unknown-linux-gnu.tar.gz.sha256": {
+    "bytes": 112,
+    "sha256": "e08a90f17113bdc952df0ecb64d3e26dbcaa3baf0b9d9165cf55152bd42bed40"
+   },
+   "ohm-1.99.0-19.json": {
+    "bytes": 973,
+    "sha256": "38f6ffc6ceab9091894bbc7e46dcaf3a72de602edcf833b2d4cbecb55579dfa1"
+   },
+   "release.json": {
+    "bytes": 3072,
+    "sha256": "c56cc9f5f73abe3430a1ed1dff492075ad0ff36ee773f15f0915752c1f66ed20"
+   }
+  },
+  "tag": "ohm-1.99.0-19",
+  "versions": {
+   "cargo": "cargo 1.99.0-dev (235f92286 2026-10-28) (ohm-1.99.0-19)\nrelease: 1.99.0-dev\ncommit-hash: 235f9228651b74c591e6f62cae4c9b761448dd2d\ncommit-date: 2026-10-28\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.6.3)\nssl: OpenSSL 3.6.3 9 Jun 2026\nos: Ubuntu 24.4.0 (noble) [64-bit]\n",
+   "rustc": "rustc 1.99.0-dev (eef2f3425 2026-10-28) (ohm-1.99.0-19)\nbinary: rustc\ncommit-hash: eef2f3425c1c6f7fddfb4555769a9f90fe1e0f53\ncommit-date: 2026-10-28\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-dev\nLLVM version: 23.1.1\n"
+  }
+ },
+ "revert": {
+  "elfs": {
+   "program": {
+    "bytes": 436648,
+    "sha256": "0dfe4722bb9ea05666b511d5282a0ca6cf4eb869904c206850e6eebcdf8a94c8"
+   },
+   "wrapper": {
+    "bytes": 1163352,
+    "sha256": "667bf09a964263217b1a6f892957d8ea5ec4758b9e5555d9f0fc5628cd25d989"
+   }
+  },
+  "final_stdout": "1\n",
+  "first_stdout": "1\n",
+  "phases": {
+   "final-program": {
+    "errors": [],
+    "exit": 0,
+    "files": {
+     "exec.log": "fe1374d213da0d4de086af8a80834cc2b998911f92ecec4c86d2a08cbdf75061",
+     "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+     "stdout": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    },
+    "native": [],
+    "rustcs": []
+   },
+   "forced-failure": {
+    "errors": [],
+    "exit": 101,
+    "files": {
+     "exec.log": "67468a5a52f06fe049af3e57505cdf9050b5034ca8c9a9c43055e6049f9b14fb",
+     "stderr": "0810b9d96e14ad666becebe92e7dbc76cea406d4690ae28f4524d60d31850674",
+     "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "native": [
+     {
+      "crate": "dep",
+      "crate_type": "lib",
+      "literal_sha256": "86ef0e7d6ea25ab6027a14724666e8890d28f6f76871077b52ac55e07c383657"
+     },
+     {
+      "crate": "app",
+      "crate_type": "lib",
+      "literal_sha256": "0c63ee8af04f6684099686e8f65a029d1cab822d5da45fece7c9c3a2b1f39fc3"
+     }
+    ],
+    "rustcs": [
+     [
+      "dep",
+      "lib"
+     ],
+     [
+      "app",
+      "lib"
+     ]
+    ]
+   },
+   "make-wrapper": {
+    "errors": [],
+    "exit": 0,
+    "files": {
+     "exec.log": "d1dbd023da9eff8612c5642f22075e1e181bffbfaeaaf5a494214b138251596c",
+     "stderr": "475b4eb2213f581694c6da95659e31f4ffd15de99f4cc4c2db554180638065e4",
+     "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "native": [],
+    "rustcs": []
+   },
+   "prime": {
+    "errors": [],
+    "exit": 0,
+    "files": {
+     "exec.log": "1aea802fa207bb377cceba4d1c4cf1d8dd54477a825d95254f8616739cb8ad6d",
+     "stderr": "e694a2fd4a1b109bd2ea7e588e906b9d7d812de568f07a14d79077d7880a1b07",
+     "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "native": [
+     {
+      "crate": "dep",
+      "crate_type": "lib",
+      "literal_sha256": "264b197c7107c7b738862cfb15bc1a177d74b966f201cf19ee6a030240ecbc22"
+     },
+     {
+      "crate": "app",
+      "crate_type": "lib",
+      "literal_sha256": "8938fec490bb40c0e63b4536e156c5f54f45787a17b113ae42b3fe17ea6fb4a6"
+     },
+     {
+      "crate": "app",
+      "crate_type": "bin",
+      "literal_sha256": "6c846e6e0b322fa784650655d10827c1c1c77e00a3b530c7b30c22d93aafbb6d"
+     }
+    ],
+    "rustcs": [
+     [
+      "dep",
+      "lib"
+     ],
+     [
+      "app",
+      "lib"
+     ],
+     [
+      "app",
+      "bin"
+     ]
+    ]
+   },
+   "prime-program": {
+    "errors": [],
+    "exit": 0,
+    "files": {
+     "exec.log": "ecd48702ad00c5dcd3b42b30d52d07eb21f1745e1b0a3b7dd6fe3c79817a303d",
+     "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+     "stdout": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    },
+    "native": [],
+    "rustcs": []
+   },
+   "reverted": {
+    "errors": [
+     "E0460"
+    ],
+    "exit": 101,
+    "files": {
+     "exec.log": "f502ba716ce0e2d95a87f3c5d63c275516c32141f33861715c87d313f0d02204",
+     "stderr": "1ecb764195930db3ddf224876415598c981860067a848085a1a034358bf22e2c",
+     "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "native": [
+     {
+      "crate": "dep",
+      "crate_type": "lib",
+      "literal_sha256": "c69cea01a63d92633cd6c46ddf5f8727c1c030bc2d027008e3e164fa7040531e"
+     },
+     {
+      "crate": "app",
+      "crate_type": "bin",
+      "literal_sha256": "3de251aae4f502de784ffc0eaee950da0fb26bbe555288f7c530c633d267091f"
+     }
+    ],
+    "rustcs": [
+     [
+      "dep",
+      "lib"
+     ],
+     [
+      "app",
+      "bin"
+     ]
+    ]
+   },
+   "untouched-1": {
+    "errors": [],
+    "exit": 0,
+    "files": {
+     "exec.log": "19baf5f217385fd1348269ab365cbf911d1ffb7a77b51b59f12515967dc11ba4",
+     "stderr": "04d0f3410fbbdf3b8d881f78a166c1ff9b0c54272e82c611088c22f909a28ba0",
+     "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "native": [
+     {
+      "crate": "app",
+      "crate_type": "lib",
+      "literal_sha256": "58f1ba69542b903e9dc41f535ba34aadfeeddcaec27ba6720c87c9b9140dac30"
+     },
+     {
+      "crate": "app",
+      "crate_type": "bin",
+      "literal_sha256": "56e16178d1cc3c9ce45b04531006a6dc87b46bdce20c64abfb9cfbf618d32e56"
+     }
+    ],
+    "rustcs": [
+     [
+      "app",
+      "lib"
+     ],
+     [
+      "app",
+      "bin"
+     ]
+    ]
+   }
+  },
+  "result": {
+   "cargo_sha256": "789c2f116732ed642565d0f92c500838f8cd53664fbe60f205a5621c43cbecf1",
+   "first_success": "untouched-1",
+   "mode": "default",
+   "phases": {
+    "final-program": {
+     "errors": [],
+     "exit": 0,
+     "files": {
+      "exec.log": "fe1374d213da0d4de086af8a80834cc2b998911f92ecec4c86d2a08cbdf75061",
+      "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+     },
+     "rustcs": []
+    },
+    "forced-failure": {
+     "errors": [],
+     "exit": 101,
+     "files": {
+      "exec.log": "67468a5a52f06fe049af3e57505cdf9050b5034ca8c9a9c43055e6049f9b14fb",
+      "stderr": "0810b9d96e14ad666becebe92e7dbc76cea406d4690ae28f4524d60d31850674",
+      "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+     },
+     "rustcs": [
+      [
+       "dep",
+       "lib"
+      ],
+      [
+       "app",
+       "lib"
+      ]
+     ]
+    },
+    "make-wrapper": {
+     "errors": [],
+     "exit": 0,
+     "files": {
+      "exec.log": "d1dbd023da9eff8612c5642f22075e1e181bffbfaeaaf5a494214b138251596c",
+      "stderr": "475b4eb2213f581694c6da95659e31f4ffd15de99f4cc4c2db554180638065e4",
+      "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+     },
+     "rustcs": []
+    },
+    "prime": {
+     "errors": [],
+     "exit": 0,
+     "files": {
+      "exec.log": "1aea802fa207bb377cceba4d1c4cf1d8dd54477a825d95254f8616739cb8ad6d",
+      "stderr": "e694a2fd4a1b109bd2ea7e588e906b9d7d812de568f07a14d79077d7880a1b07",
+      "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+     },
+     "rustcs": [
+      [
+       "dep",
+       "lib"
+      ],
+      [
+       "app",
+       "lib"
+      ],
+      [
+       "app",
+       "bin"
+      ]
+     ]
+    },
+    "prime-program": {
+     "errors": [],
+     "exit": 0,
+     "files": {
+      "exec.log": "ecd48702ad00c5dcd3b42b30d52d07eb21f1745e1b0a3b7dd6fe3c79817a303d",
+      "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+     },
+     "rustcs": []
+    },
+    "reverted": {
+     "errors": [
+      "E0460"
+     ],
+     "exit": 101,
+     "files": {
+      "exec.log": "f502ba716ce0e2d95a87f3c5d63c275516c32141f33861715c87d313f0d02204",
+      "stderr": "1ecb764195930db3ddf224876415598c981860067a848085a1a034358bf22e2c",
+      "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+     },
+     "rustcs": [
+      [
+       "dep",
+       "lib"
+      ],
+      [
+       "app",
+       "bin"
+      ]
+     ]
+    },
+    "untouched-1": {
+     "errors": [],
+     "exit": 0,
+     "files": {
+      "exec.log": "19baf5f217385fd1348269ab365cbf911d1ffb7a77b51b59f12515967dc11ba4",
+      "stderr": "04d0f3410fbbdf3b8d881f78a166c1ff9b0c54272e82c611088c22f909a28ba0",
+      "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+     },
+     "rustcs": [
+      [
+       "app",
+       "lib"
+      ],
+      [
+       "app",
+       "bin"
+      ]
+     ]
+    }
+   },
+   "rustc_sha256": "5694abe50767a22cebeccb767143f7404d5e81c4b1760cff4426466bf410e511",
+   "value": 1
+  },
+  "result_digest": {
+   "bytes": 3381,
+   "sha256": "c19b067569351e03dca55e1c97962bb17551413691f0a4fd4f099c0015461f0e"
+  },
+  "retained_markers": {
+   "early": "ready",
+   "failed": "failed"
+  },
+  "source": {
+   "Cargo.lock": {
+    "bytes": 218,
+    "sha256": "35a8ad6a3317616820f3772bf2470cfe57ee3ea6697b1b1615cabbbf884b2a5b"
+   },
+   "Cargo.toml": {
+    "bytes": 206,
+    "sha256": "450dc366a27e101ea0cec648c339cf6d0e10fd49ca15115f12503fd047bb3342"
+   },
+   "dep/Cargo.toml": {
+    "bytes": 116,
+    "sha256": "445ac6f4cf2b8a1ee8616203f75151f89f89df574f12ed6ef5a2c07a9ae7cc31"
+   },
+   "dep/src/lib.rs": {
+    "bytes": 25,
+    "sha256": "00b5327bfb380b8c7b5743b134f675179b0df8e90f87a41c1c874a25d057b423"
+   },
+   "src/lib.rs": {
+    "bytes": 36,
+    "sha256": "1e25357913e2f1bcfb0c2d1c4e825c8ad581d669d71ab0a08a1321c5f18b308a"
+   },
+   "src/main.rs": {
+    "bytes": 43,
+    "sha256": "c247e57c1cb8c4b06a4d9b2e38da8b9412b460ba823a5699a6ce0f2a79e213cb"
+   }
+  },
+  "worker_stderr": {
+   "bytes": 0,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "worker_stdout": "default untouched-1 [['dep', 'lib'], ['app', 'bin']]\n",
+  "wrapper_source": {
+   "Cargo.lock": {
+    "bytes": 181,
+    "sha256": "17eaf827b129255c4158b329d801d8c8049472268dfbc08256df19e22da7ad52"
+   },
+   "Cargo.toml": {
+    "bytes": 169,
+    "sha256": "c4a6d75539a428b89e855afda1babdc8cbf9fcfcebd35dc0738adc3eaff28117"
+   },
+   "src/main.rs": {
+    "bytes": 10080,
+    "sha256": "67f31f7becfaabd5237fdc890eb7ec091b7c8a1c8336c8df37f820a338f02a9e"
+   }
+  }
+ },
+ "source_packets": {
+  "fixed": "54f63217c50e2c77349e932aff33e7c0f620dedf31d2b386e6eaf12aa13d41ef",
+  "revert": "7bd69adfb38cdf31f300b61679fef88bc60b2530757683d979de384ce144d264",
+  "trait": "53e1b6d317a749982edd6ff1cbb9362e865734a67cfcfa094c02c804654070ea"
+ }
+}
