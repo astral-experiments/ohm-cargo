@@ -1,0 +1,46 @@
+{
+  "affinity": [
+    12,
+    13,
+    14,
+    15
+  ],
+  "cargo": "b67aa69a76643f0d6149f046bf19d6933df4662a583ad1de968e98efeda08518",
+  "cargo_source": "34dad66fd2ac823bfb02c2c4a4bab02fb5ac4d31",
+  "command": [
+    "cargo",
+    "+ohm",
+    "test",
+    "--no-run",
+    "--locked",
+    "--offline",
+    "-j4",
+    "-p",
+    "ruff_python_formatter",
+    "--test",
+    "fixtures",
+    "--message-format=json"
+  ],
+  "historical_file": "crates/ruff_python_formatter/src/main.rs",
+  "known_wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+  "locked_archives": 498,
+  "preflight": {
+    "cold_dirty": 215,
+    "cold_initial": "5fcb21c36b5fcf9c90b1440bee0f802b5d00ae7765e9bf8023bfe3e7c63be7bd",
+    "cold_post_namespace": "66ed0d556269fe358b146872cc614e71b4a3de35323d12e2115050be9ba3beb6",
+    "cold_post_namespace_dirty": 210,
+    "harness_missing_cargo_manifest_dir": "b2612ba0301bbb7bdf010175201f43430b2ad8e4eaf4d7ef201a3fde562a63ee",
+    "offline_registry_replacement": "11a90f4d554f13409c2e3458a9c9568d9f93813db9e4c782b822042f18e0f2cb",
+    "unavailable_private_tracer": "01c79a7d47475a07737aecab58d739206fd0dcf4a572f2efdab84f037f393c00",
+    "unchecked_plain_formatter_cli_requires_target_version": "40955674413cfa470b1a81e2ef0b779bf07759bd74960f7af640f9366abb4ba3"
+  },
+  "ruff": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+  "rustc_release": "1.99.0-18",
+  "source_sha256": {
+    "invalid.rs": "48466eb21094e18fd185627a730b5866d66b07e9646a564f74221ba55b19d9ea",
+    "original.rs": "856fb5bc671a908c4e44f5e4829745c755a10998eadd2ac2cdd97092cbed1f9e",
+    "visibility.rs": "36ac73ea78d85496137f580a5bd15e4c45f1f1ffa7b55665d1394f978aba4634"
+  },
+  "upstream_edit": "6cfeb8aa07306cf06d7ab552d4190a5d24b6ff8d"
+}
