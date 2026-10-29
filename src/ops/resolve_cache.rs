@@ -106,7 +106,10 @@ fn workspace_resolve_fingerprint(
             let inputs = workspace
                 .root_maybe()
                 .document()
-                .and_then(|document| before_trailing_profiles(contents, document))
+                .map(|document| {
+                    let contents = before_trailing_profiles(contents, document).unwrap_or(contents);
+                    before_trailing_workspace_lints(contents, document).unwrap_or(contents)
+                })
                 .unwrap_or(contents);
             inputs.as_bytes().hash(&mut hasher);
         } else {
@@ -150,12 +153,40 @@ fn before_trailing_profiles<'a>(
 ) -> Option<&'a str> {
     let (key, _) = document.get_ref().get_key_value("profile")?;
     let start = key.span().start.checked_sub(1)?;
+    let (before, table) = trailing_table(contents, start, "[profile.")?;
+    (table.len() == 1 && table.contains_key("profile")).then_some(before)
+}
+
+/// Rust and Clippy lint settings affect compiler invocations after dependency resolution.
+fn before_trailing_workspace_lints<'a>(
+    contents: &'a str,
+    document: &toml::Spanned<toml::de::DeTable<'_>>,
+) -> Option<&'a str> {
+    let workspace = document.get_ref().get("workspace")?.get_ref().as_table()?;
+    let (key, _) = workspace.get_key_value("lints")?;
+    let start = key.span().start.checked_sub("[workspace.".len())?;
+    let (before, table) = trailing_table(contents, start, "[workspace.lints.")?;
+    let workspace = table.get("workspace")?.get_ref().as_table()?;
+    let lints = workspace.get("lints")?.get_ref().as_table()?;
+    (table.len() == 1
+        && workspace.len() == 1
+        && lints
+            .keys()
+            .all(|tool| matches!(tool.get_ref().as_ref(), "rust" | "clippy")))
+    .then_some(before)
+}
+
+/// Parses a complete manifest suffix beginning with the expected unindented table header.
+fn trailing_table<'a>(
+    contents: &'a str,
+    start: usize,
+    header: &str,
+) -> Option<(&'a str, toml::de::DeTable<'a>)> {
     let (before, suffix) = contents.split_at_checked(start)?;
-    if !(before.is_empty() || before.ends_with('\n')) || !suffix.starts_with("[profile.") {
+    if !(before.is_empty() || before.ends_with('\n')) || !suffix.starts_with(header) {
         return None;
     }
-    let parsed = toml::de::DeTable::parse(suffix).ok()?;
-    (parsed.get_ref().len() == 1 && parsed.get_ref().contains_key("profile")).then_some(before)
+    Some((before, toml::de::DeTable::parse(suffix).ok()?.into_inner()))
 }
 
 /// Excludes execution and presentation settings that cannot affect dependency resolution.
@@ -214,7 +245,39 @@ fn hash_config_value(value: &ConfigValue, hasher: &mut StableHasher) {
 
 #[cfg(test)]
 mod tests {
-    use super::{before_trailing_profiles, environment_affects_workspace_resolution};
+    use super::{
+        before_trailing_profiles, before_trailing_workspace_lints,
+        environment_affects_workspace_resolution,
+    };
+
+    #[test]
+    fn trailing_workspace_lints_preserve_dependency_and_cargo_settings() {
+        let prefix = "[workspace]\nmembers = ['member']\n";
+        let rust = "[workspace.lints.rust]\nunused_variables = 'deny'\n";
+        for (suffix, expected) in [
+            (rust.to_owned(), Some(prefix)),
+            (
+                format!("{rust}[workspace.lints.clippy]\npedantic = 'allow'\n"),
+                Some(prefix),
+            ),
+            (format!("{rust}[workspace.dependencies]\ndep = '1'\n"), None),
+            (
+                format!("{rust}[workspace.lints.cargo]\nunused_features = 'warn'\n"),
+                None,
+            ),
+            (
+                format!("{rust}[patch.crates-io]\ndep = {{ path = 'local' }}\n"),
+                None,
+            ),
+        ] {
+            let contents = format!("{prefix}{suffix}");
+            let document = toml::de::DeTable::parse(&contents).unwrap();
+            assert_eq!(
+                before_trailing_workspace_lints(&contents, &document),
+                expected
+            );
+        }
+    }
 
     #[test]
     fn trailing_profile_tables_preserve_the_other_manifest_inputs() {
