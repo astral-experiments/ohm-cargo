@@ -1396,6 +1396,9 @@ pub struct Fingerprint {
     /// Whether this unit or a dependency reused assembly that still requires native link checks.
     #[serde(skip)]
     recheck_dependent_links: bool,
+    /// The persisted action and its inputs were fresh before forcing a native link.
+    #[serde(skip)]
+    native_link_only: bool,
     /// Whether a procedural macro read foreign span data during the previous compile.
     #[serde(skip)]
     observes_foreign_span: bool,
@@ -1888,6 +1891,7 @@ impl Fingerprint {
             fs_status: Mutex::new(FsStatus::Stale),
             build_state: Mutex::new(BuildState::Pending),
             recheck_dependent_links: false,
+            native_link_only: false,
             observes_foreign_span: false,
             early_cutoff_candidate: AtomicBool::new(false),
             previously_changed_metadata_dependency: AtomicBool::new(false),
@@ -1931,6 +1935,15 @@ impl Fingerprint {
         self.recheck_dependent_links
             && matches!(unit.mode, CompileMode::Build | CompileMode::Test)
             && unit.requires_upstream_objects()
+    }
+
+    /// A dependency rebuilt after job preparation may have invalidated the cached objects.
+    pub(super) fn can_recheck_from_cached_codegen(&self) -> bool {
+        self.native_link_only
+            && self
+                .deps
+                .iter()
+                .all(|dep| matches!(dep.fingerprint.build_state(), BuildState::Fresh))
     }
 
     /// These compilers can read bytes that are absent from the public dependency metadata.
@@ -2549,6 +2562,22 @@ fn calculate(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
         .iter()
         .any(|dep| dep.fingerprint.recheck_dependent_links);
     if fingerprint.must_recheck_native_link(unit) {
+        // Keep forcing the real link, but preserve the original objects when the
+        // native recheck is the only reason this unit would run.
+        fingerprint.native_link_only = unit_can_use_relink_only(build_runner, unit)
+            && build_runner.bcx.build_config.primary_unit_rustc.is_none()
+            && build_runner.bcx.rustc().wrapper.is_none()
+            && build_runner.bcx.rustc().workspace_wrapper.is_none()
+            && matches!(
+                fingerprint.fs_status.get_mut().unwrap(),
+                FsStatus::UpToDate { .. }
+            )
+            && unit_has_exclusive_metadata_access(build_runner, unit)
+            && !previous_dependency_changes(&fingerprint).any
+            && short_fingerprint_matches(
+                &build_runner.files().fingerprint_file_path(unit, ""),
+                fingerprint.hash_u64(),
+            );
         *fingerprint.fs_status.get_mut().unwrap() = FsStatus::StaleItem(StaleItem::MissingFile {
             path: RECHECK_DEPENDENT_LINKS.into(),
         });
@@ -2785,6 +2814,7 @@ fn calculate_normal(
         compile_kind,
         index: build_runner.bcx.unit_to_index[unit],
         recheck_dependent_links: false,
+        native_link_only: false,
         observes_foreign_span: false,
         rustflags: extra_flags,
         fs_status: Mutex::new(FsStatus::Stale),

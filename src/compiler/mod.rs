@@ -466,7 +466,7 @@ fn compile<'gctx>(
                 let work = if unit.mode.is_doc() || unit.mode.is_doc_scrape() {
                     rustdoc(build_runner, unit)?
                 } else {
-                    rustc(build_runner, unit, exec)?
+                    rustc(build_runner, unit, exec, force)?
                 };
                 work.then(link_targets(build_runner, unit, false)?)
             } else {
@@ -1128,6 +1128,7 @@ fn rustc(
     build_runner: &mut BuildRunner<'_, '_>,
     unit: &Unit,
     exec: &Arc<dyn Executor>,
+    force: bool,
 ) -> CargoResult<Work> {
     let mut rustc = prepare_rustc(build_runner, unit)?;
 
@@ -1499,15 +1500,20 @@ fn rustc(
                             .is_some_and(|cache| cache.proves_unused_extern(extern_name))
                     })
             });
+        let recheck_native_link = !force
+            && check_relink_inputs
+            && fingerprint
+                .as_ref()
+                .is_some_and(|fp| fp.can_recheck_from_cached_codegen());
         let validation_started = Instant::now();
         let use_cached_relink = early_test.is_none()
             && deferred_dev_names.is_empty()
-            && can_relink_dependencies
+            && (can_relink_dependencies || recheck_native_link)
             && !observes_foreign_span
             && relink_cache
                 .as_ref()
                 .is_some_and(RelinkCachePaths::is_valid);
-        if can_relink_dependencies {
+        if can_relink_dependencies || recheck_native_link {
             tracing::info!(
                 "relink-only: cache validation for {unit_name} took {:?}",
                 validation_started.elapsed()
