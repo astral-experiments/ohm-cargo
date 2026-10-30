@@ -1,0 +1,151 @@
+{
+  "selection": "Supplement frozen before any #292 Cargo command. Existing primary stores stay physically independent. Every edit, E0308, current provider and forced/removal is performed on an additional originally empty focused store for each arm plus a distinct independent edited-empty generation. After both, ordinary whole-workspace native shadow is run in the original K/U stores, preserving every baseline and output CAS. A startup or mismatch stops the relevant comparison and all raw prior data remain. No elapsed metric.",
+  "primary_sha256sums": "0b6824efbe1ec584a832f135d06904634677c5d4b3032d1895c4dccad80d0ef0",
+  "entry_mem_gib": 48,
+  "entry_scratch_gib": 120,
+  "stop_mem_gib_plus_mib": [
+    24,
+    512
+  ],
+  "stop_scratch_gib": 48,
+  "orders": {
+    "focus": [
+      [
+        "01-original",
+        "original",
+        "absent",
+        false
+      ],
+      [
+        "02-edited",
+        "edited",
+        "absent",
+        false
+      ],
+      [
+        "03-edited-repeat",
+        "edited",
+        "absent",
+        false
+      ],
+      [
+        "04-invalid",
+        "invalid",
+        "absent",
+        false
+      ],
+      [
+        "05-recovery",
+        "edited",
+        "absent",
+        false
+      ],
+      [
+        "06-restored",
+        "original",
+        "absent",
+        false
+      ],
+      [
+        "09-valid",
+        "original",
+        "valid",
+        false
+      ],
+      [
+        "10-forced-valid",
+        "original",
+        "valid",
+        true
+      ],
+      [
+        "11-malformed",
+        "original",
+        "malformed",
+        false
+      ],
+      [
+        "12-remove",
+        "original",
+        "absent",
+        false
+      ],
+      [
+        "13-forced-malformed",
+        "original",
+        "malformed",
+        true
+      ],
+      [
+        "14-final-remove",
+        "original",
+        "absent",
+        false
+      ]
+    ],
+    "empty": [
+      [
+        "01-independent-edited",
+        "edited",
+        "absent",
+        false
+      ]
+    ],
+    "provider50": [
+      [
+        "01-native-valid",
+        "original",
+        "valid",
+        false
+      ],
+      [
+        "02-remove",
+        "original",
+        "absent",
+        false
+      ],
+      [
+        "03-forced-valid",
+        "original",
+        "valid",
+        true
+      ],
+      [
+        "04-malformed",
+        "original",
+        "malformed",
+        false
+      ],
+      [
+        "05-remove",
+        "original",
+        "absent",
+        false
+      ],
+      [
+        "06-forced-malformed",
+        "original",
+        "malformed",
+        true
+      ],
+      [
+        "07-final-remove",
+        "original",
+        "absent",
+        false
+      ]
+    ]
+  },
+  "provider_assembly_source": "provider.s in primary",
+  "provider_script": "INPUT ( <actual isolated object> <actual GCC libgcc_s.so> )",
+  "stock_script_sha256": "69a56a9993b7729b29b274e65016031c81f2397f176ed5ad44d59bd50425e0bd",
+  "probing_order": [
+    "K focused",
+    "K independently edited empty",
+    "U focused",
+    "U independently edited empty",
+    "K whole native",
+    "U whole native"
+  ],
+  "failure_semantics": "first failing run retained; no command replacement; earlier registration is primary"
+}

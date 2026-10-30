@@ -1,0 +1,330 @@
+{
+  "K-focus/11-malformed": {
+    "cargo_error_summaries": [
+      {
+        "package": "ty_server",
+        "target_role": "(test \"e2e\")"
+      }
+    ],
+    "exit": 101,
+    "native_diagnostic": "OHM_REJECT_BAD_WORKSPACE_TEST_LINK_SCRIPT",
+    "original_stderr_sha256": "fef549cfeb8847584e5096a445f9e7a455130a572092ac83b72b22717fcceb83",
+    "original_stdout_sha256": "95ef03c14ef8f91b6fceb9e45fd1b6ad183b05b9fc2568ac52c1efd2157dc0d7",
+    "typed_reports": [
+      {
+        "complete_original_diagnostic_sha256": "0011662e778bf668ed4e5cd5314fc55eeb68d437609cc2ca6bd88b3fc1d84638",
+        "kind": [
+          "test"
+        ],
+        "message_class": "linking with the native driver failed",
+        "target": "e2e"
+      }
+    ]
+  },
+  "K-focus/13-forced-malformed": {
+    "cargo_error_summaries": [
+      {
+        "package": "ty_server",
+        "target_role": "(test \"e2e\")"
+      }
+    ],
+    "exit": 101,
+    "native_diagnostic": "OHM_REJECT_BAD_WORKSPACE_TEST_LINK_SCRIPT",
+    "original_stderr_sha256": "209f7fad3127552c7a5c45a067d96e437d936f7331ad230a53d64b4c6ffde67b",
+    "original_stdout_sha256": "f8189803271725b7d38f514ca022d51248c823c164b9e367e6699db955c975c9",
+    "typed_reports": [
+      {
+        "complete_original_diagnostic_sha256": "77cde86437b7964aa25112490e11eb32aa8e9eaceb7ecaac01e2218296ee2dd0",
+        "kind": [
+          "test"
+        ],
+        "message_class": "linking with the native driver failed",
+        "target": "e2e"
+      }
+    ]
+  },
+  "K/04-malformed": {
+    "cargo_error_summaries": [
+      {
+        "package": "ruff_mdtest",
+        "target_role": "(test \"mdtest\")"
+      },
+      {
+        "package": "ty_wasm",
+        "target_role": "(lib)"
+      },
+      {
+        "package": "ruff_wasm",
+        "target_role": "(lib)"
+      },
+      {
+        "package": "ruff_dev",
+        "target_role": "(bin \"ruff_dev\" test)"
+      }
+    ],
+    "exit": 101,
+    "native_diagnostic": "OHM_REJECT_BAD_WORKSPACE_TEST_LINK_SCRIPT",
+    "original_stderr_sha256": "d9f8f6af202bd9eb37f8c23efadae1b00f6da6c4b686da62d3891864e321197a",
+    "original_stdout_sha256": "082141c729eefee999d1b5d8a0d98f04c5583547aa370436fa038d5c062391df",
+    "typed_reports": [
+      {
+        "complete_original_diagnostic_sha256": "bdeeffb95e712999355c923bb29c349d2cad3f5f0336c2e8f8229358cce068c0",
+        "kind": [
+          "test"
+        ],
+        "message_class": "linking with the native driver failed",
+        "target": "mdtest"
+      },
+      {
+        "complete_original_diagnostic_sha256": "38739a336dc70d6a73f33f000ebf03fc18375eb64cb4374a93e0c4bf7b344a4d",
+        "kind": [
+          "cdylib",
+          "rlib"
+        ],
+        "message_class": "linking with the native driver failed",
+        "target": "ty_wasm"
+      },
+      {
+        "complete_original_diagnostic_sha256": "533f18a9489f6ec0cbf01b7e29d4e69667f4998c53932d4bf643875bab103d29",
+        "kind": [
+          "cdylib",
+          "rlib"
+        ],
+        "message_class": "linking with the native driver failed",
+        "target": "ruff_wasm"
+      },
+      {
+        "complete_original_diagnostic_sha256": "c31cb639ad54836e410af4b47ef69e6b773ff4c406bb6d6f1f52f6f5072400be",
+        "kind": [
+          "bin"
+        ],
+        "message_class": "linking with the native driver failed",
+        "target": "ruff_dev"
+      }
+    ]
+  },
+  "K/06-forced-malformed": {
+    "cargo_error_summaries": [
+      {
+        "package": "ty_wasm",
+        "target_role": "(lib)"
+      },
+      {
+        "package": "ruff_wasm",
+        "target_role": "(lib)"
+      },
+      {
+        "package": "ruff_mdtest",
+        "target_role": "(test \"mdtest\")"
+      },
+      {
+        "package": "ruff_dev",
+        "target_role": "(bin \"ruff_dev\" test)"
+      }
+    ],
+    "exit": 101,
+    "native_diagnostic": "OHM_REJECT_BAD_WORKSPACE_TEST_LINK_SCRIPT",
+    "original_stderr_sha256": "ed42b79b1124617e298cb74b1ff76c5c9e6929a34d967a598c7fb9bf70f29803",
+    "original_stdout_sha256": "0cea1adb0ae3a46ac87a3002d7679fde7f2f6c4247e5f41ccb6e0fee5a7287d6",
+    "typed_reports": [
+      {
+        "complete_original_diagnostic_sha256": "bd1e8eb1093b1df0ca351ffa0f92264b91b31d7a66d413bdeb7145eeebea5b75",
+        "kind": [
+          "cdylib",
+          "rlib"
+        ],
+        "message_class": "linking with the native driver failed",
+        "target": "ty_wasm"
+      },
+      {
+        "complete_original_diagnostic_sha256": "686c8ae7382fd3bc9648ecca860e04bb9deb68380fcf09855daf4d2465e6823b",
+        "kind": [
+          "cdylib",
+          "rlib"
+        ],
+        "message_class": "linking with the native driver failed",
+        "target": "ruff_wasm"
+      },
+      {
+        "complete_original_diagnostic_sha256": "0388ebe63550a7fcf120817663a1db816ff6de45a13c5debcea4d919596295d3",
+        "kind": [
+          "test"
+        ],
+        "message_class": "linking with the native driver failed",
+        "target": "mdtest"
+      },
+      {
+        "complete_original_diagnostic_sha256": "3f050a05bdf4ada425e49b08f9f63876085c6707a051b9ec0376444592b63efe",
+        "kind": [
+          "bin"
+        ],
+        "message_class": "linking with the native driver failed",
+        "target": "ruff_dev"
+      }
+    ]
+  },
+  "U-focus/11-malformed": {
+    "cargo_error_summaries": [
+      {
+        "package": "ty_server",
+        "target_role": "(test \"e2e\")"
+      }
+    ],
+    "exit": 101,
+    "native_diagnostic": "OHM_REJECT_BAD_WORKSPACE_TEST_LINK_SCRIPT",
+    "original_stderr_sha256": "fef549cfeb8847584e5096a445f9e7a455130a572092ac83b72b22717fcceb83",
+    "original_stdout_sha256": "6a8c11893675a5cb9d838c2540de50677ddfee4bfd278bc72982d8b9d08c34c0",
+    "typed_reports": [
+      {
+        "complete_original_diagnostic_sha256": "d4809ea18bb05f9a0e03233d434fdff617360d601e23c5f0bbbf9c99258b6162",
+        "kind": [
+          "test"
+        ],
+        "message_class": "linking with the native driver failed",
+        "target": "e2e"
+      }
+    ]
+  },
+  "U-focus/13-forced-malformed": {
+    "cargo_error_summaries": [
+      {
+        "package": "ty_server",
+        "target_role": "(test \"e2e\")"
+      }
+    ],
+    "exit": 101,
+    "native_diagnostic": "OHM_REJECT_BAD_WORKSPACE_TEST_LINK_SCRIPT",
+    "original_stderr_sha256": "fef549cfeb8847584e5096a445f9e7a455130a572092ac83b72b22717fcceb83",
+    "original_stdout_sha256": "657940f7bd58002a1f0ed5f16fd9435f9aedaf554d6126af37c4bb1c6a240147",
+    "typed_reports": [
+      {
+        "complete_original_diagnostic_sha256": "b3a1d5fda427518e1493596c6677c046c08b2b2c9cc0d65fb2b1727279eb1338",
+        "kind": [
+          "test"
+        ],
+        "message_class": "linking with the native driver failed",
+        "target": "e2e"
+      }
+    ]
+  },
+  "U/04-malformed": {
+    "cargo_error_summaries": [
+      {
+        "package": "ruff_mdtest",
+        "target_role": "(test \"mdtest\")"
+      },
+      {
+        "package": "ruff_wasm",
+        "target_role": "(lib)"
+      },
+      {
+        "package": "ty_wasm",
+        "target_role": "(lib)"
+      },
+      {
+        "package": "ruff_dev",
+        "target_role": "(bin \"ruff_dev\" test)"
+      }
+    ],
+    "exit": 101,
+    "native_diagnostic": "OHM_REJECT_BAD_WORKSPACE_TEST_LINK_SCRIPT",
+    "original_stderr_sha256": "3dae79377fb76e74f45d5f5f2d4a2e7f60e11832123e594ac6a4ef93b91381d6",
+    "original_stdout_sha256": "45a2f12a4caf1b6ff7ecf2e81ef16e24c2edbbc572bf3136e4542bbc9afcc532",
+    "typed_reports": [
+      {
+        "complete_original_diagnostic_sha256": "6093bc9d8ead6ea298235b3f3942f9b0aad28a5fe4ee435d0b4feacf4e477f15",
+        "kind": [
+          "test"
+        ],
+        "message_class": "linking with the native driver failed",
+        "target": "mdtest"
+      },
+      {
+        "complete_original_diagnostic_sha256": "e2f42d59d07b54ea9bf83abd9a786135a499cd03676bc148395997b1334b4773",
+        "kind": [
+          "cdylib",
+          "rlib"
+        ],
+        "message_class": "linking with the native driver failed",
+        "target": "ruff_wasm"
+      },
+      {
+        "complete_original_diagnostic_sha256": "6e55ec824797f987e0e232802760f7be6bb047d43b50f718ee7d08fbd68e8a6a",
+        "kind": [
+          "cdylib",
+          "rlib"
+        ],
+        "message_class": "linking with the native driver failed",
+        "target": "ty_wasm"
+      },
+      {
+        "complete_original_diagnostic_sha256": "e69d2fa7c0f567b8ba123aabef035bb3b62eabf7a945c4dc27f5c3a62e2d343a",
+        "kind": [
+          "bin"
+        ],
+        "message_class": "linking with the native driver failed",
+        "target": "ruff_dev"
+      }
+    ]
+  },
+  "U/06-forced-malformed": {
+    "cargo_error_summaries": [
+      {
+        "package": "ruff",
+        "target_role": "(bin \"ruff\")"
+      },
+      {
+        "package": "ruff_wasm",
+        "target_role": "(lib)"
+      },
+      {
+        "package": "ty_wasm",
+        "target_role": "(lib)"
+      },
+      {
+        "package": "ruff_mdtest",
+        "target_role": "(test \"mdtest\")"
+      }
+    ],
+    "exit": 101,
+    "native_diagnostic": "OHM_REJECT_BAD_WORKSPACE_TEST_LINK_SCRIPT",
+    "original_stderr_sha256": "a055dfed46e5d8a270cc65b5632f9b278e393b6c0dcd7fdf55f25c9fb4b5bc24",
+    "original_stdout_sha256": "b61757722a1dce9613540829a3f11b35854ed6ca060f82378dd6877e2b83cd38",
+    "typed_reports": [
+      {
+        "complete_original_diagnostic_sha256": "22e9078c4f303bdfecbb808971ebb99e6a19d215fda03869e5bdfd18bf71d17d",
+        "kind": [
+          "bin"
+        ],
+        "message_class": "linking with the native driver failed",
+        "target": "ruff"
+      },
+      {
+        "complete_original_diagnostic_sha256": "dbf972c65768a6f866971f9309445d94bcaa6f707cdb4e7c64995acfb2b7c131",
+        "kind": [
+          "cdylib",
+          "rlib"
+        ],
+        "message_class": "linking with the native driver failed",
+        "target": "ruff_wasm"
+      },
+      {
+        "complete_original_diagnostic_sha256": "5cf1862136f38498ef57ea74d69cbef5cc5a3d9561586e0d81a7dc123c7cd267",
+        "kind": [
+          "cdylib",
+          "rlib"
+        ],
+        "message_class": "linking with the native driver failed",
+        "target": "ty_wasm"
+      },
+      {
+        "complete_original_diagnostic_sha256": "e07684a79241f1197ab381036f8b9bbf7d6b93c061f289a5315acbe68d5910a8",
+        "kind": [
+          "test"
+        ],
+        "message_class": "linking with the native driver failed",
+        "target": "mdtest"
+      }
+    ]
+  }
+}

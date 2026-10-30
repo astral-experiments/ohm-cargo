@@ -1,0 +1,221 @@
+{
+  "26_genuine_commands": true,
+  "all_corresponding_bodies_byte_identical": true,
+  "all_listings_byte_identical": true,
+  "all_raw_stdout_and_stderr_retained_and_hashed": true,
+  "cases": {
+    "01-independent-edited": {
+      "body": "2b13e02670cdcd694f5d154c3bdb83ab04bd47a7bab56dd03cc8a32909f5f28a",
+      "cargo": 0,
+      "processes": {
+        "K": [
+          303,
+          0,
+          48
+        ],
+        "U": [
+          303,
+          0,
+          48
+        ]
+      }
+    },
+    "01-original": {
+      "body": "09884ef6b815aa9d88c5e121e7fb5d733c412e5a195e3c7de5fbbd1d7e6b674e",
+      "cargo": 0,
+      "processes": {
+        "K": [
+          303,
+          0,
+          48
+        ],
+        "U": [
+          303,
+          0,
+          48
+        ]
+      }
+    },
+    "02-edited": {
+      "body": "2b13e02670cdcd694f5d154c3bdb83ab04bd47a7bab56dd03cc8a32909f5f28a",
+      "cargo": 0,
+      "processes": {
+        "K": [
+          4,
+          0,
+          2
+        ],
+        "U": [
+          4,
+          0,
+          2
+        ]
+      }
+    },
+    "03-edited-repeat": {
+      "body": "2b13e02670cdcd694f5d154c3bdb83ab04bd47a7bab56dd03cc8a32909f5f28a",
+      "cargo": 0,
+      "processes": {
+        "K": [
+          4,
+          0,
+          2
+        ],
+        "U": [
+          4,
+          0,
+          2
+        ]
+      }
+    },
+    "04-invalid": {
+      "body": null,
+      "cargo": 101,
+      "processes": {
+        "K": [
+          4,
+          0,
+          1
+        ],
+        "U": [
+          4,
+          0,
+          1
+        ]
+      }
+    },
+    "05-recovery": {
+      "body": "2b13e02670cdcd694f5d154c3bdb83ab04bd47a7bab56dd03cc8a32909f5f28a",
+      "cargo": 0,
+      "processes": {
+        "K": [
+          4,
+          0,
+          2
+        ],
+        "U": [
+          4,
+          0,
+          2
+        ]
+      }
+    },
+    "06-restored": {
+      "body": "09884ef6b815aa9d88c5e121e7fb5d733c412e5a195e3c7de5fbbd1d7e6b674e",
+      "cargo": 0,
+      "processes": {
+        "K": [
+          4,
+          0,
+          2
+        ],
+        "U": [
+          4,
+          0,
+          2
+        ]
+      }
+    },
+    "09-valid": {
+      "body": "25c1b1bb629669e3353d5a70bf6a505fb75e0f1a5998ed29f28f46e2d380c780",
+      "cargo": 0,
+      "processes": {
+        "K": [
+          4,
+          0,
+          2
+        ],
+        "U": [
+          4,
+          0,
+          2
+        ]
+      }
+    },
+    "10-forced-valid": {
+      "body": "25c1b1bb629669e3353d5a70bf6a505fb75e0f1a5998ed29f28f46e2d380c780",
+      "cargo": 0,
+      "processes": {
+        "K": [
+          4,
+          0,
+          2
+        ],
+        "U": [
+          4,
+          0,
+          2
+        ]
+      }
+    },
+    "11-malformed": {
+      "body": null,
+      "cargo": 101,
+      "processes": {
+        "K": [
+          4,
+          0,
+          2
+        ],
+        "U": [
+          4,
+          0,
+          2
+        ]
+      }
+    },
+    "12-remove": {
+      "body": "09884ef6b815aa9d88c5e121e7fb5d733c412e5a195e3c7de5fbbd1d7e6b674e",
+      "cargo": 0,
+      "processes": {
+        "K": [
+          4,
+          0,
+          2
+        ],
+        "U": [
+          4,
+          0,
+          2
+        ]
+      }
+    },
+    "13-forced-malformed": {
+      "body": null,
+      "cargo": 101,
+      "processes": {
+        "K": [
+          4,
+          0,
+          2
+        ],
+        "U": [
+          4,
+          0,
+          2
+        ]
+      }
+    },
+    "14-final-remove": {
+      "body": "09884ef6b815aa9d88c5e121e7fb5d733c412e5a195e3c7de5fbbd1d7e6b674e",
+      "cargo": 0,
+      "processes": {
+        "K": [
+          4,
+          0,
+          2
+        ],
+        "U": [
+          4,
+          0,
+          2
+        ]
+      }
+    }
+  },
+  "four_native_lanes": "65d7c2c927663a9f6a76aebc55d2ab3bed265c8b5a27f850221c5850a2bece2f",
+  "normal_test_stdout_except_libtest_elapsed": true,
+  "pairs_with_literal_stdout_elapsed_difference": 11,
+  "strict_literal_output_control": "Unrestricted stdout/stderr comparison rejects because libtest prints elapsed duration and LSP diagnostics include invocation details. Exact full native file, listing, each named pass and numeric exit remain separate endpoints.",
+  "tests_passed": 48
+}
