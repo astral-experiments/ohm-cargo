@@ -1,13 +1,14 @@
 # Ohm rustc on the first build after editing uv
 
-Recognizing two register-only x86-64 assembly templates in rustc sped up the first full uv test build after a real test edit by **3.183×**. All 12 pairs exceeded 2×. The complete Cargo command went from a median **9.973 s to 3.233 s**.
+On x86-64 Linux, recognizing two register-only assembly templates in rustc sped up the first build of uv’s production binaries after an edit to `uvx` by **4.235×**. The same compiler change sped up the first full test build after removing a uv integration test by **3.183×**. Both comparisons used Ohm −20 with Rust #270 as the control. All 12 pairs in each comparison exceeded 2×.
 
 | Build after the edit | Control median | Candidate median | Median paired speedup (96.14% interval) |
 | --- | ---: | ---: | ---: |
+| `cargo build -p uv --bins` | 3.578 s | 0.845 s | 4.235× (3.884–4.712×) |
 | `cargo test -p uv --no-run` | 9.973 s | 3.233 s | 3.183× (2.988–3.330×) |
 | `cargo test -p uv --test tool --no-run` | 4.757 s | 2.712 s | 1.771× (1.708–1.843×) |
 
-Both commands used `--locked --offline -j8` on x86-64 Linux.
+All three commands used `--locked --offline -j8` on x86-64 Linux.
 
 The control used the source shipped in Ohm 1.99.0-20 plus the existing libm assembly fix. The candidate added one compiler line for the x86-64 `# {reg}` barrier used by `zeroize` and the unsigned `div {reg}` used by `num-bigint`. Both matched SDKs were built from source. Their 64 common files, including Cargo, Wild, LLVM and the target standard library, were identical. Only the rustc driver differed. [Ohm release](https://github.com/astral-experiments/ohm/releases/tag/ohm-1.99.0-20) · [Existing libm PR](https://github.com/astral-experiments/ohm-rust/pull/270)
 
@@ -70,11 +71,25 @@ On the same edit, `cargo build -p uv` ran eight rustc processes on the control a
 
 ## Production launcher edit
 
-A separate comparison will time `cargo build --locked --offline -j8 -p uv --bins` after applying uv’s change to argument handling in the `uvx` launcher. The baseline and candidate compilers both include Rust #270. The candidate adds #275. Before each timed build, that compiler runs the same Cargo command on its own restored, pre-edit history. The protocol requires exact full binary hashes between compilers, an unchanged `uv`, a changed `uvx`, and checks for both launcher dispatch and argument forwarding.
+The edit changes how `uvx` forwards arguments to `uv tool run`. It changes one Rust source file in a temporary uv checkout at `c22e6b7`. Each compiler restored an independent pre-edit target, ran the normal build once and then timed the first `cargo build --locked --offline -j8 -p uv --bins` after applying the edit. The command builds both production programs. [Original uv change](https://github.com/astral-sh/uv/pull/22742)
 
-An excluded pilot must reach 1.8× before the 12 timed pairs can start. The schedule has six pairs in each order. This is the thirteenth comparison in the expanded family. [Upstream uv change](https://github.com/astral-sh/uv/pull/22742) · [Preregistered inputs, order and decision rules](production-bins-protocol.json)
+The median build went from **3.578 s to 0.845 s**. The 12 paired speedups ranged from 3.508× to 5.057×, with a median of **4.235×** and a 96.14% exact median interval of 3.884–4.712×. The six control-first pairs had a median speedup of 4.396× and the six candidate-first pairs 4.206×. All 12 exceeded 2×. The two-sided sign test against 2× gave p = 0.00048828125 and the Holm-adjusted p across the 13 registered comparisons was 0.00634765625. The separate 3.786× pilot was excluded.
 
-To reproduce the build on another x86-64 Linux machine, extract the [production build kit](rerun-production-uvx.zip) and follow `PRODUCTION.md`. It includes the original Git change and the argument-forwarding check.
+In a separate traced build, the control recompiled five dependencies (`zeroize`, `num-bigint`, `num-bigint-dig`, `rsa` and `secret-service`), then compiled and linked both binaries. The candidate compiled and linked only `uvx`. The produced `uv` and `uvx` files matched byte-for-byte between compilers before and after the edit. Within each compiler, only `uvx` changed. The command-line checks covered forwarded argument bytes and exit behavior, including empty arguments and non-UTF-8 input.
+
+[Original clocks and verifier](production-uvx-observations.zip) · [Per-pair CSV](production-uvx-pairs.csv) · [Compiler trace](production-uvx-trace.json) · [Whole-file checks](production-uvx-whole-elf.json) · [Fresh-run instructions and compiler checks](rerun-production-uvx.zip)
+
+To replay these 12 pairs, extract the production build kit and run the command below from its directory with the downloaded observations.
+
+```sh
+python3 -ISB production_score_after_48597.py /path/to/production-uvx-observations.zip \
+  --outer e5a71756f357aa1d2ed49690abd935a09e7ac899cf1718f5b4d02604b9cebc26 \
+  --packet-sha256 bcffde0aed9a5d35b4f16b141bc965fb83f0671bd5d59ad039d518127168ab5f
+```
+
+## Bare Ohm −20 and both compiler patches
+
+The first attempt at this full-package test comparison stopped after warming the control, before the candidate or the edit ran. The control’s 17 programs, 15 test lists and two CLI version outputs agreed across its warm repeats. The run contributes zero scored pairs and p = 1. The new, separately registered comparison reuses the control’s unedited history and assigns its own 12 pairs. [First attempt and replay](full-stack-first-attempt.zip) · [New protocol](https://github.com/astral-experiments/ohm-cargo/blob/bac6e783130f95c0ac78b3255f468a0fddbcc4fb/benchmarks/uv-rustc-20261030/full-stack-after-uvx-protocol.md) · [Fresh combined run](full-stack-after-uvx-rerun.zip)
 
 ## Private diagnostic on shipped Ohm −18
 
