@@ -54,14 +54,18 @@ To reproduce this comparison on x86-64 Linux, unpack the [full-stack rerun kit](
 
 ## Shipped releases
 
-The release archives ran the same uv edit from separate, initially empty target directories. Both produced matching inventories for all 15 test harnesses and matching outputs from both command-line programs.
+The shipped Linux toolchains ran each of the same two edits from its own initially empty target directory. Each cell is one ordinary Cargo invocation. The 12-pair experiments above used source-matched −20 compilers.
 
-| Shipped Linux SDK | Unchanged full test build | First full test build after the edit |
-| --- | ---: | ---: |
-| Ohm −18 | 0.627 s | 2.037 s |
-| Ohm −20 | 9.849 s | 9.710 s |
+| Shipped SDK | Unchanged production build | First build after launcher edit | Unchanged full test build | First test build after test edit |
+| --- | ---: | ---: | ---: | ---: |
+| Ohm −18 | 0.608 s | 1.671 s | 0.627 s | 2.037 s |
+| Ohm −20 | 3.946 s | 3.734 s | 9.849 s | 9.710 s |
 
-Each entry is one observation. The 12-pair comparison isolates the compiler change using source-matched −20 SDKs. To replay the shipped releases’ raw clocks, run `python3 -ISB ohm-18-20-uv-release-context.zip`. [Released SDK command logs, outputs and verifier](ohm-18-20-uv-release-context.zip)
+After the launcher edit, Cargo printed one package name on −18 and 76 on −20. The invocation timestamps changed for one and eight build units, respectively. Within each release, the launcher edit changed the complete `uvx` executable and left the `uv` executable byte-identical. Forwarded argument bytes, exit status and version outputs agreed across releases. The test edit produced matching inventories for all 15 test harnesses and matching CLI version outputs.
+
+Ohm added the LLVM backend’s assembly classifier between −18 and −20. The matched compiler experiments measure a change to that classifier. [Compiler change](https://github.com/astral-experiments/ohm-rust/commit/960c75a231a4bed61cb9fcfac744ea37161ea23d)
+
+Replay either downloaded archive with `python3 -ISB <archive>`. [Production build clocks and verifier](ohm-18-20-uvx-production-bins.zip) · [Full test build clocks and verifier](ohm-18-20-uv-release-context.zip)
 
 ## Production settings edit
 
