@@ -170,6 +170,23 @@ jobs:
               --exact --nocapture
           fi
 
+      - name: Verify both pinned Ohm profile tests against their compiled names
+        env:
+          RUSTUP_TOOLCHAIN: ohm-1.98.0-9
+          __CARGO_HEADSTART: "no"
+        run: |
+          set -euo pipefail
+          toolchain_bin="$(dirname "$(rustup which rustc)")"
+          rustup_bin="$(dirname "$(command -v rustup)")"
+          export PATH="$toolchain_bin:$rustup_bin:/usr/bin:/bin:/usr/sbin:/sbin"
+          testsuite="$(find "$CARGO_TARGET_DIR/debug/deps" -maxdepth 1 -type f -name 'testsuite-*' -perm -u+x -print -quit)"
+          test -x "$testsuite"
+          for case in profile_settings::ohm_default_debuginfo profile_settings::ohm_default_debuginfo_respects_overrides; do
+            transcript="$RUNNER_TEMP/full-cargo-305/${case#*::}.txt"
+            "$testsuite" "$case" --exact --include-ignored --nocapture | tee "$transcript"
+            grep -Fqx "test $case ... ok" "$transcript"
+            grep -F "test result: ok. 1 passed; 0 failed;" "$transcript"
+          done
       - name: Record resulting storage and checked-out tree
         if: always()
         run: |
