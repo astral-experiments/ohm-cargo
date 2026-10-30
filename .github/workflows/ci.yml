@@ -37,38 +37,40 @@ jobs:
           uname -a
           df -hT "$RUNNER_TEMP" /dev/shm
           findmnt -rn -t tmpfs,ext4 -o TARGET,FSTYPE,OPTIONS
-          target_free=$(df -PB1 "$RUNNER_TEMP" | awk 'NR==2 {print $4}')
-          (( target_free >= 40 * 1024 * 1024 * 1024 ))
-          fixture="$RUNNER_TEMP/ohm-unit-fixture"
-          mkdir -m 0700 "$fixture"
-          usable() {
-            candidate=$1
-            kind=$(stat -f -c %T "$candidate") || return 1
-            case "$kind" in ext2/ext3|tmpfs) ;; *) return 1 ;; esac
-            available=$(df -PB1 "$candidate" | awk 'NR==2 {print $4}')
-            (( available >= 256 * 1024 * 1024 )) || return 1
-            printf '#!/bin/sh\nexit 0\n' > "$candidate/exec-probe" || return 1
-            chmod +x "$candidate/exec-probe" || return 1
-            "$candidate/exec-probe" || return 1
-            test "$(stat -c %d "$candidate")" = "$(stat -c %d "$candidate/exec-probe")"
-          }
-          if ! usable "$fixture"; then
-            if sudo mount -t tmpfs -o "size=6G,mode=0700,uid=$(id -u),gid=$(id -g),nodev,nosuid,exec" tmpfs "$fixture" && usable "$fixture"; then
-              true
-            else
-              fixture=
-              for base in /dev/shm "/run/user/$(id -u)" /run; do
-                [[ -d $base ]] || continue
-                candidate="$base/ohm-unit-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
-                sudo install -d -m 0700 -o "$(id -u)" -g "$(id -g)" "$candidate"
-                if usable "$candidate"; then fixture=$candidate; break; fi
-              done
-            fi
+          # The unit suite uses std::env::temp_dir. Integration tests use Cargo's
+          # compile-time CARGO_TARGET_TMPDIR, which is inside this exact target path.
+          target="$RUNNER_TEMP/cargo-tests"
+          mkdir -m 0700 "$target"
+          root_free=$(df -PB1 "$RUNNER_TEMP" | awk 'NR==2 {print $4}')
+          (( root_free >= 100 * 1024 * 1024 * 1024 ))
+          read -r mem_kib < <(awk '/^MemAvailable:/ {print $2}' /proc/meminfo)
+          printf 'MemAvailable_kib=%s\n' "$mem_kib"
+          image="$RUNNER_TEMP/cargo-305-native.ext4"
+          truncate -s 72G "$image"
+          mkfs.ext4 -q -m 0 "$image"
+          if sudo mount -o loop,exec,nodev,nosuid "$image" "$target"; then
+            echo 'Using a job-private ext4 filesystem'
+          else
+            (( mem_kib >= 40 * 1024 * 1024 ))
+            sudo mount -t tmpfs -o size=48G,mode=0700,exec,nodev,nosuid tmpfs "$target"
+            echo 'Using a job-private executable tmpfs'
           fi
-          test -n "$fixture"
-          usable "$fixture"
+          sudo chown "$(id -u):$(id -g)" "$target"
+          fixture="$target/unit-fixture"
+          mkdir -m 0700 "$fixture" "$target/tmp"
+          kind=$(findmnt -T "$target" -n -o FSTYPE)
+          [[ $kind == ext4 || $kind == tmpfs ]]
+          target_free=$(df -PB1 "$target" | awk 'NR==2 {print $4}')
+          (( target_free >= 40 * 1024 * 1024 * 1024 ))
+          for scratch in "$fixture" "$target/tmp"; do
+            printf '#!/bin/sh\nexit 0\n' > "$scratch/exec-probe"
+            chmod +x "$scratch/exec-probe"
+            "$scratch/exec-probe"
+            test "$(stat -c %d "$target")" = "$(stat -c %d "$scratch/exec-probe")"
+            rm "$scratch/exec-probe"
+          done
           findmnt -T "$fixture" -o TARGET,FSTYPE,OPTIONS
-          df -PB1 "$fixture" "$RUNNER_TEMP"
+          df -PB1 "$target" "$target/tmp" "$fixture"
           printf 'TMPDIR=%s\n' "$fixture" >> "$GITHUB_ENV"
           printf '%s\n' "$fixture" > "$receipt/fixture-path"
       - name: Install Rust
