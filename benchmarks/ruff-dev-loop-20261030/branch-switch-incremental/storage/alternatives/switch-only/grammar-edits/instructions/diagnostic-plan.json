@@ -1,0 +1,35 @@
+{
+  "subject": "Separate post-acquisition diagnostic frozen after the original cross-arm literal-argv gate failed and before instruction effects were read.",
+  "primary": {
+    "accepted": 0,
+    "permission": "no differences anywhere across eight argv",
+    "observed": "two per-role stable 15,794-byte vectors; exactly 63/214 tokens differ solely in one same-length v2-* path component, including one output, 46 search directories and 16 externs",
+    "interpreted_effects": 0
+  },
+  "cases": {
+    "orders": [
+      [
+        "R",
+        "K"
+      ],
+      [
+        "K",
+        "R"
+      ]
+    ],
+    "phases": [
+      "edit-B",
+      "restore-B"
+    ],
+    "arms": "c9119d2 and 08d49cb",
+    "registered_physical": "52 successful ordinary commands, 8 complete processes, 8 uninstrumented literal flanks and four independently empty B/C references"
+  },
+  "allow": "Only the exact indistinguishably typed directory component under /workspaces/bf36f3330d5965d1/, role R=v2-f21268108672fd87, role K=v2-7e17aac3200cd4df. Enforce every other byte of each argv independently, including paths outside this component. All retained case counts are descriptive; no rescued primary result.",
+  "checks": [
+    "Reopen each literal measured argv and uninstrumented matching-input native flank and require byte equality under the individual role.",
+    "Reopen all 16 named concrete extern files, the native -L provider roots, all dependency search candidates and all named selected crate artifacts in the real read-only target stores under both role/block and clean B/C. Verify real Cargo typed fresh flags and physical names, stable per-role/provider identities across the training and each score and matching uninstrumented flank where those histories contain that witness.",
+    "Check both real library native object multisets and complete executable/grammar output against independently empty same-state sources. Retain whole file differences including metadata; no equivalence inferred from a name or a stripped projection.",
+    "No matched estimates if the strict extern/input proof fails. Preserve each per-role count as descriptive only and document what one would need to make a fresh, prospective comparison. Distinguish any native root-provider file from unrelated .d/metadata. No timing or significance."
+  ],
+  "pre_effect": true
+}

@@ -1,0 +1,274 @@
+{
+  "admission": {
+    "active": {
+      "home_gib": 140,
+      "memory_gib": 52,
+      "output_free_gib": 2,
+      "scratch_gib": 140,
+      "source_free_gib": 1
+    },
+    "entry": {
+      "memory_gib": 75,
+      "original_home_gib": 145,
+      "read_only_home_gib": 140,
+      "scratch_gib": 140
+    },
+    "route_rule": "After all non-HOME gates pass and before the first enrollment, select original if HOME >145 GiB, otherwise select authenticated read-only HOME if HOME >140 GiB. Wait below 140 GiB. Freeze the route once for pilot and confirmation; no switching, and no results can influence the selection. Both private worker namespaces enforce zero writable durable HOME and only the bounded current receipt subtree on durable scratch."
+  },
+  "cargo_argv": [
+    "cargo",
+    "+ohm",
+    "build",
+    "-p",
+    "ruff",
+    "--bin",
+    "ruff",
+    "--locked",
+    "--offline",
+    "-j4",
+    "--message-format=json"
+  ],
+  "cargo_elf": "1d06626bcef3c5235676ada14f4b7107f56e98aef620f81b0e0c47381dbe0add",
+  "cargo_source": "2d44bd4aa68b9ba32cacb5a384ecc18fa5e7553c",
+  "changed_paths": 169,
+  "compiler_driver": "3ad2cc4c6a903ea54ddcf74b4cfb6b0fa48fa67a17c43827f9261c81475c3191",
+  "compiler_frontend": "fb5c1341de5f7ea9350478b52383cb407d6d184bc257e2941ff998fcdec4df18",
+  "compiler_product": "f125d6e661731b07d183b782962044c0b51109cca2badb5cc70ae052550b7388",
+  "compiler_source": "08d49cba6aacb0cac27a96eea335ed1c7439f483",
+  "compiler_tree": "1df08b3c45a7e6fa3739a8e753132f707f97896a",
+  "confirmation_gate": "Only 12 newly enrolled chronological pairs. In both return directions the third paired off/on ratio strictly exceeds 2, and every correctness and capacity observation passes. Published 6b7 and current pilot data contribute zero confirmation observations.",
+  "durable_scratch_extra_at_entry_mib": 384,
+  "family_interval": {
+    "family_coverage_at_least": 0.955078125,
+    "lower_order_statistic": 3,
+    "lower_tail_probability": [
+      79,
+      4096
+    ],
+    "paired_estimand": "exponential of the median of the individual log elapsed ratios",
+    "population_assumption": "independent chronological pairs with a common median, conservative for ties",
+    "upper_order_statistic": 11,
+    "upper_tail_probability": [
+      13,
+      4096
+    ]
+  },
+  "graph_sha256": "38d3fd49b035775102dd433f08a9bbc99dfe7b883e1bbf22f10d91b542433adb",
+  "native_cross_option_policy": "Retain both raw complete products. Require identical genuine runtime and AST reader verdict. For a different CLI require a separately established, specific only-nonexecutable debug-path/GNU-ID explanation and identical executable bytes before timing. Never normalize the same-option whole-product comparison.",
+  "off_flag": null,
+  "on_flag": "-Zohm-branch-cache=yes",
+  "order_draw_bytes": [
+    [
+      102
+    ],
+    [
+      207
+    ],
+    [
+      109
+    ]
+  ],
+  "physical_rust_sdk_cargo_wild_roles": 57,
+  "pilot_gate": "All four matched off/on ordinary elapsed ratios on return-A/B over two full pairs strictly exceed 2. All physical sources, true native verdicts and same-option independently cold whole binaries match. Any missing observation or admission failure stops the study.",
+  "prerequisite_gates": [
+    "observed exact option-specific four-installation separate full CLI storage and native oracle",
+    "independent re-opened 12-pair matched parser check",
+    "independent re-opened 12-pair matched parser test --no-run",
+    "current ownership and all four dedicated CPUs verified, no other known host cold or wall work",
+    "published registration and authenticated private worker"
+  ],
+  "prior_measurements_included": 0,
+  "private_receipt_cap_mib": 384,
+  "randomization": {
+    "assignment_source": "OS CSPRNG bytes drawn once before any enrollment; reject bytes >=252; modulo 6 indexes the six lexicographic choices of the two OFF-first positions in each block",
+    "blocks": 3,
+    "off_first_per_block": 2,
+    "pairs_per_block": 4,
+    "permitted_assignments": 216,
+    "statistics": "one-sided arithmetic mean log paired ratios, sharp multiples 1 and 2, ties included; shared max statistic over both directions"
+  },
+  "registry_archives": 505,
+  "ruff": {
+    "A": "b5dba861cc38e3f7fb4524c9ceba3e01a474ea13",
+    "B": "7b13f01ba1569887a25670820764b24c206da8e5"
+  },
+  "ruff_pr": 28335,
+  "schedule": [
+    {
+      "arm": "on",
+      "pair": 1,
+      "slot": "pilot-01-on",
+      "stage": "pilot"
+    },
+    {
+      "arm": "off",
+      "pair": 1,
+      "slot": "pilot-01-off",
+      "stage": "pilot"
+    },
+    {
+      "arm": "off",
+      "pair": 2,
+      "slot": "pilot-02-off",
+      "stage": "pilot"
+    },
+    {
+      "arm": "on",
+      "pair": 2,
+      "slot": "pilot-02-on",
+      "stage": "pilot"
+    },
+    {
+      "arm": "off",
+      "pair": 1,
+      "slot": "confirmation-01-off",
+      "stage": "confirmation"
+    },
+    {
+      "arm": "on",
+      "pair": 1,
+      "slot": "confirmation-01-on",
+      "stage": "confirmation"
+    },
+    {
+      "arm": "off",
+      "pair": 2,
+      "slot": "confirmation-02-off",
+      "stage": "confirmation"
+    },
+    {
+      "arm": "on",
+      "pair": 2,
+      "slot": "confirmation-02-on",
+      "stage": "confirmation"
+    },
+    {
+      "arm": "on",
+      "pair": 3,
+      "slot": "confirmation-03-on",
+      "stage": "confirmation"
+    },
+    {
+      "arm": "off",
+      "pair": 3,
+      "slot": "confirmation-03-off",
+      "stage": "confirmation"
+    },
+    {
+      "arm": "on",
+      "pair": 4,
+      "slot": "confirmation-04-on",
+      "stage": "confirmation"
+    },
+    {
+      "arm": "off",
+      "pair": 4,
+      "slot": "confirmation-04-off",
+      "stage": "confirmation"
+    },
+    {
+      "arm": "on",
+      "pair": 5,
+      "slot": "confirmation-05-on",
+      "stage": "confirmation"
+    },
+    {
+      "arm": "off",
+      "pair": 5,
+      "slot": "confirmation-05-off",
+      "stage": "confirmation"
+    },
+    {
+      "arm": "off",
+      "pair": 6,
+      "slot": "confirmation-06-off",
+      "stage": "confirmation"
+    },
+    {
+      "arm": "on",
+      "pair": 6,
+      "slot": "confirmation-06-on",
+      "stage": "confirmation"
+    },
+    {
+      "arm": "off",
+      "pair": 7,
+      "slot": "confirmation-07-off",
+      "stage": "confirmation"
+    },
+    {
+      "arm": "on",
+      "pair": 7,
+      "slot": "confirmation-07-on",
+      "stage": "confirmation"
+    },
+    {
+      "arm": "on",
+      "pair": 8,
+      "slot": "confirmation-08-on",
+      "stage": "confirmation"
+    },
+    {
+      "arm": "off",
+      "pair": 8,
+      "slot": "confirmation-08-off",
+      "stage": "confirmation"
+    },
+    {
+      "arm": "off",
+      "pair": 9,
+      "slot": "confirmation-09-off",
+      "stage": "confirmation"
+    },
+    {
+      "arm": "on",
+      "pair": 9,
+      "slot": "confirmation-09-on",
+      "stage": "confirmation"
+    },
+    {
+      "arm": "on",
+      "pair": 10,
+      "slot": "confirmation-10-on",
+      "stage": "confirmation"
+    },
+    {
+      "arm": "off",
+      "pair": 10,
+      "slot": "confirmation-10-off",
+      "stage": "confirmation"
+    },
+    {
+      "arm": "off",
+      "pair": 11,
+      "slot": "confirmation-11-off",
+      "stage": "confirmation"
+    },
+    {
+      "arm": "on",
+      "pair": 11,
+      "slot": "confirmation-11-on",
+      "stage": "confirmation"
+    },
+    {
+      "arm": "on",
+      "pair": 12,
+      "slot": "confirmation-12-on",
+      "stage": "confirmation"
+    },
+    {
+      "arm": "off",
+      "pair": 12,
+      "slot": "confirmation-12-off",
+      "stage": "confirmation"
+    }
+  ],
+  "schema": 1,
+  "source_commits_must_match_genuine_native_cold": true,
+  "source_tmpfs_gib": 6,
+  "sparse_rows": 465,
+  "study": "whole Ruff CLI source 08d49 option off/on after actual branch returns",
+  "target_build_tmpfs_gib": 10,
+  "whole_native_reference_scope": "same-option complete independent cold CLI/reader on both branches, native runtime plus physical counts",
+  "wild_elf": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+}

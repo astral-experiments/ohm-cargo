@@ -34,6 +34,8 @@ Each order ran six times. The return intervals give simultaneous 95% coverage ov
 
 [Complete pairs](sample-tmpfs-12-pairs-202610300751.json.gz) · [Native verdicts and physical disk readback](native-tmpfs-12-pairs-202610300751.json.gz) · [Paired calculations](summary-tmpfs-12-pairs-202610300751.json)
 
+Across the same twelve pairs, the median ratio of total child CPU time was 7.22× on return to the parent and 5.93× on return to the feature. This sums user and system CPU for Cargo and its completed children.
+
 ## Check and test builds
 
 These additional runs held the complete compiler installation fixed. A two-pair range shows its two observations. For twelve pairs the ranges give simultaneous 95% coverage over both returns. The check replay requires the correct AST size and an E0308 for the contradictory size. Test builds must reproduce the clean executable, its 245-test inventory and three representative native verdicts. Those checks run outside the timer.
@@ -43,15 +45,17 @@ These additional runs held the complete compiler installation fixed. A two-pair 
 | `cargo check` | 2 | 3.08× (3.00–3.16×) | 2.96× (2.90–3.02×) | 182 → 171 MiB / 171 → 172 MiB | 1.48× |
 | `cargo test --lib --no-run` | 2 | 2.86× (2.73–2.99×) | 2.33× (2.31–2.35×) | 419 → 404 MiB / 385 → 406 MiB | 1.39× |
 
-For `cargo check` (2 pairs), the first visit to the feature took 7.11 → 7.29 s and used 176 → 203 MiB. The registration seed was `202610300800`. [Native/type readbacks](verb-check-2-pairs-202610300800-verified.json.gz) · [All observations](verb-check-2-pairs-202610300800-sample.json.gz) · [Paired calculations](verb-check-2-pairs-202610300800-summary.json)
+For `cargo check` (2 pairs), the first visit to the feature took 7.11 → 7.29 s and used 176 → 203 MiB. Median paired child CPU ratios on the two returns were 3.23× and 3.03×. The registration seed was `202610300800`. [Native/type readbacks](verb-check-2-pairs-202610300800-verified.json.gz) · [All observations](verb-check-2-pairs-202610300800-sample.json.gz) · [Paired calculations](verb-check-2-pairs-202610300800-summary.json)
 
-For `cargo test --lib --no-run` (2 pairs), the first visit to the feature took 11.08 → 12.23 s and used 402 → 454 MiB. The registration seed was `202610300801`. [Native/type readbacks](verb-test-no-run-2-pairs-202610300801-verified.json.gz) · [All observations](verb-test-no-run-2-pairs-202610300801-sample.json.gz) · [Paired calculations](verb-test-no-run-2-pairs-202610300801-summary.json)
+For `cargo test --lib --no-run` (2 pairs), the first visit to the feature took 11.08 → 12.23 s and used 402 → 454 MiB. Median paired child CPU ratios on the two returns were 7.06× and 5.70×. The registration seed was `202610300801`. [Native/type readbacks](verb-test-no-run-2-pairs-202610300801-verified.json.gz) · [All observations](verb-test-no-run-2-pairs-202610300801-sample.json.gz) · [Paired calculations](verb-test-no-run-2-pairs-202610300801-summary.json)
 
 ## Working on one branch
 
 This separate experiment compares two enabled branch caches. One compiler keeps uncompressed tables. The other compresses on checkout switches. Each block measured four changes to Ruff’s unary-pattern grammar, with both branches already built. The first dirty edit averaged 2.620 → 2.665 s. The next three averaged 2.636 → 2.640 s. The two blocks are too few to establish a small timing difference. After editing, the settled complete directories measured 376.35 → 288.09 MiB. The previously measured policy that compressed on every dirty edit added 0.38 s per edit in its own two-pair experiment. [Earlier compact policy](../native-compact)
 
 Separate kernel traces showed the genuine parser compiler read two packed tables on its first edit and created zero. The six later dirty compiles across both blocks performed zero packed-table operations. All 68 linked reader executables matched their clean builds and all 104 native object multisets matched. The incremental metadata and complete `.rlib` archives differed from the independent empty builds. The dirty library builds invoked one parser compiler. The separate reader linked and exercised the resulting libraries. [Full ordinary-edit records and verifier](grammar-edits)
+
+Eight complete parser instruction profiles were collected for ordinary grammar edits. The preregistered equality check rejected the comparison because Cargo selected different build namespaces for the two compiler versions. A separately registered readback found five of sixteen named Rust metadata inputs differed in each block. No paired CPU effect is reported from those profiles. [All eight counts, both failed checks and physical input identities](grammar-edits/instructions)
 
 ## Reproduce
 
@@ -67,4 +71,12 @@ For the twelve-pair confirmation, use `--pairs 12 --order-seed 202610300751` on 
 
 The ordinary grammar edit has its own reviewer command. It takes a Ruff checkout, two compiler SDKs, an offline Cargo registry and a fresh output directory. [Run the same-branch edit replay](grammar-edits/replay)
 
+A separate end-to-end run exercised that public command on fresh directories. All 42 ordinary Cargo builds and 42 independently linked readers produced the expected native verdict and clean-matching binary. The six empty references covered both branches and the local grammar edit on both compilers. [Reviewer command validation](grammar-edits/replay/qualification)
+
 The draft subsequently added the packed-cache, branch-cache flag and incremental crate tests to its native CI job. The only changed path in that commit was `.github/workflows/ci.yml`. The measurements use its parent’s compiler. [Tracked trees and CI change](ci-coverage.json) · [Git comparison](https://github.com/astral-experiments/ohm-rust/compare/08d49cba6aacb0cac27a96eea335ed1c7439f483...b676a640c76193a0e241d2517a64e37e156659b9)
+
+On Apple Silicon, the native job passed all 8 incremental unit tests and all 4 selected integration tests, including cache corruption and switching the option off. [macOS job](https://github.com/astral-experiments/ohm-rust/actions/runs/41027951230/job/123970482094)
+
+## Full Ruff CLI timing protocol
+
+A separately registered comparison uses the same physical compiler to build the complete Ruff executable with the option off and on. Two fresh pilot pairs must exceed 2× on all four branch returns before twelve new pairs can start. The protocol reports first-visit cost, child CPU and complete storage for every installation. [Frozen schedule, admission rules, verifier and rerun instructions](full-cli-timing/registration)

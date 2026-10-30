@@ -1,0 +1,7 @@
+# Reviewer script native qualification
+
+The unchanged reviewer script ran end to end on the two exact source-built compilers, c9119d267c98 and 08d49cba6aac, and matched Ohm Cargo, stock Wild and 53 target standard-library members. All target, compiler-bank and registry copies were on a fresh private Linux x86-64 RAM filesystem. No previously measured target or working checkout was reused. The reviewer script used the native sparse registry, its own stable visible paths, and held one physical launcher and driver inode for each role across all fresh installations.
+
+Six independent empty builds covered A, B and the B-local grammar edit with each compiler. Four additional installations performed the two mirror-ordered rounds and each of the nine historical source visits. All 42 real Cargo invocations produced 97 typed artifacts and passed the actual linked reader verdict. The three native executable hashes, for A, B and B with the grammar edit, matched per state and across arms in the full empty-reference and warm comparisons. The genuine grammar edits ran one dirty parser unit. The unchanged controls ran zero dirty units.
+
+Run *sha256sum -c SHA256SUMS* and *python3 -IB verify.py*. The compact native ledger records every selected tree, dirty roster, output digest, true verdict and SHA commitments to the original output streams. The issuing host also retains its raw streams and the complete clean executables. These calls qualify the reviewer-facing reproduction for the existing measurement. Their elapsed times are excluded from the experiment.

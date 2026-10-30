@@ -152,9 +152,21 @@ def main():
         subprocess.run([sys.executable, "-IB", switched / "verify.py"], check=True)
         subprocess.run([sys.executable, "-IB", switched / "grammar-edits" / "verify.py"], check=True)
         for verifier in (switched / "verify-verbs.py",
-                         switched / "grammar-edits" / "replay" / "check-recording.py"):
+                         switched / "grammar-edits" / "replay" / "check-recording.py",
+                         switched / "grammar-edits" / "instructions" / "verify.py"):
             if verifier.is_file():
                 subprocess.run([sys.executable, "-IB", verifier], check=True)
+        replay = switched / "grammar-edits" / "replay"
+        qualification = replay / "qualification"
+        if qualification.is_dir():
+            subject = sha256((replay / "replay-same-branch.py").read_bytes()).hexdigest()
+            assert json.loads((qualification / "registration.json").read_bytes())["reviewer_python"] == subject
+            assert json.loads((qualification / "terminal.json").read_bytes())["public"] == subject
+            subprocess.run([sys.executable, "-IB", qualification / "verify.py"], check=True)
+        cli_plan = switched / "full-cli-timing" / "registration"
+        if cli_plan.is_dir():
+            for script in ("analyze.py", "test_plan.py"):
+                subprocess.run([sys.executable, "-IB", script], cwd=cli_plan, check=True)
     if (ROOT / "check-test-instructions").exists():
         subprocess.run([sys.executable, "-IB", ROOT / "check-test-instructions" / "verify.py"], check=True)
     if (ROOT / "opt-in" / "compiler.json").is_file():

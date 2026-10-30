@@ -16,6 +16,19 @@
     "src/bootstrap": "1dcf3e6b142ba5c132f7a2370dffa6ba090b15e1",
     "tests": "f3ba9b0a487eee53b714b298b9058d33e7452615"
   },
+  "macos": {
+    "command": "python3 x.py --ci false --set build.submodules=false --set rust.debug-assertions=true --set rust.lto=off test --stage 1 compiler/rustc_fs_util compiler/rustc_incremental tests/run-make/incremental-directory-copy tests/run-make/incremental-session-fail tests/run-make/ohm-branch-cache-opt-out tests/run-make/ohm-packed-branch-cache",
+    "conclusion": "success",
+    "finished": "2026-10-30T08:49:28Z",
+    "head": "b676a640c76193a0e241d2517a64e37e156659b9",
+    "job": 123970482094,
+    "job_log_sha256": "b9d9c0ecd10f97bb94c379b8d55bf420da5fe03239dd8a8a22b8ef4ef63f28c0",
+    "run_make_tests": 4,
+    "rustc_incremental_unit_tests": 8,
+    "step": "Run incremental directory and branch cache tests",
+    "target": "aarch64-apple-darwin",
+    "url": "https://github.com/astral-experiments/ohm-rust/actions/runs/41027951230/job/123970482094"
+  },
   "measured": "08d49cba6aacb0cac27a96eea335ed1c7439f483",
   "workflow_after": "10190f86aa60704e7d6e0f636a9f48eda0deb1fb",
   "workflow_before": "12b9499c56542c9d0e03f556b8a470544644e2c8"
