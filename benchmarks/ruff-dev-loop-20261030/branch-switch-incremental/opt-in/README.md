@@ -51,3 +51,18 @@ Each saved native reader matched the full independent empty-build executable for
 Across 126 visits, including clean references and repairs, the correctly sized type probe passed and the contradictory size failed with E0308. Replay seed `202610300702`. [All pairs](option-check-12-pairs-elapsed-202610300702.json.gz) · [Order-statistic intervals and exact tests](statistics-option-check-12-pairs-elapsed-202610300702.json) · [Independent native or type verdicts](verdicts-option-check-12-pairs-elapsed-202610300702.json.gz)
 
 To rerun one fixed-installation cohort, use the option command above, omit `--screen`, pass `--pairs 12`, and select its published workflow and seed.
+
+## Compiler instructions at the opt-in head
+
+Two additional pairs counted each full Cargo-launched AST and parser compiler on both branches with the current option disabled and enabled. Each count sums the two independently verified, complete Callgrind profiles. The byte-identical compiler kept the same physical installation. These counters exclude Cargo and the native verification program.
+
+| Pair | Return | Default instructions | Opt-in instructions | Ratio |
+| ---: | --- | ---: | ---: | ---: |
+| 1 | parent | 62,171,550,029 | 6,884,208,681 | 9.031× |
+| 1 | feature | 62,480,827,441 | 7,000,086,272 | 8.926× |
+| 2 | parent | 62,246,100,552 | 6,885,457,072 | 9.040× |
+| 2 | feature | 62,437,873,199 | 6,999,884,063 | 8.920× |
+
+Every clean, warm and repaired native executable reproduced its expected output across 26 separate readbacks. Seed `202610300656`. [Per-crate instructions and profile digests](option-build-2-pairs-instructions-202610300656.json.gz) · [Native readbacks](verdicts-option-build-2-pairs-instructions-202610300656.json.gz)
+
+Reuse the fixed-installation build command with `--compiler-instructions --pairs 2` and the seed above. The replay requires Valgrind, Callgrind and a working C compiler on Linux. The clocked results above came from separate uninstrumented invocations.
