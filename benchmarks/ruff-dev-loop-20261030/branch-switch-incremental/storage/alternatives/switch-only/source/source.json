@@ -1,0 +1,43 @@
+{
+  "child": "08d49cba6aacb0cac27a96eea335ed1c7439f483",
+  "files": {
+    "compiler/rustc_incremental/src/persist/fs.rs": {
+      "after": "d8642980edcd6a9cd1d10e7ba7c871c97b3a2e1f56ff7731cc46e050b201bdfb",
+      "before": "37954290ea126482df64f4d3be1a88b3b1f9a06bff62813b3d29fd67cf0d2f42"
+    },
+    "compiler/rustc_incremental/src/persist/fs/tests.rs": {
+      "after": "fcfc05953775fc25f71fb6692569650df78f4ad0f8f22b6a154e428473388b3d",
+      "before": "b0b4677a8bf4b9923388d4a43d2d2aa6d8b3f7df3c8d420b27cb97d38b1d5854"
+    },
+    "tests/run-make/ohm-packed-branch-cache/rmake.rs": {
+      "after": "03654701f73d9e1f1c02bf5c7cc4cd7386baced0d955006c6411024ff9ba184a",
+      "before": "28cc3134f3c8e1d2de8ecd41dba1f16b9dc027beccef6c873f97393d23fd1528"
+    }
+  },
+  "independent_FxHashSet": "Both unmodified Rust selector bodies were extracted verbatim. The standalone witness substitutes a std HashSet for the membership-only FxHashSet and a no-op debug macro; shared session filename and timestamp parsers are the actual Rust functions.",
+  "originals": {
+    "after.json": {
+      "sha256": "bc6003cc55a9bf8c8f6cee3108981e72f547d703bbb668baa5ea8b3c59490993",
+      "source": "c2d5dc839bf91962a450c1becdedaca64f89e1caa970d40899ad5d94a9627cd4",
+      "status": 0,
+      "stderr": "",
+      "stdout": "\nrunning 2 tests\ntest test_find_source_directory_in_iter ... ok\ntest pack_only_on_checkout_switch ... ok\n\ntest result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n"
+    },
+    "before.json": {
+      "sha256": "e01682dc2edee5896e477c8d34ab2eb64a39013f5c420e9a64f88a381c367b78",
+      "source": "58fdfe1c946d74caf5b7d21e0e9dd57083a5ba531bf4c6ef86bd24d0e6378d9f",
+      "status": 101,
+      "stderr": "\nthread 'pack_only_on_checkout_switch' (895061) panicked at $TEMP/work/policy.rs:166:5:\nassertion `left == right` failed\n  left: (Some(\"s-3234-_000000000000000a_r-svh\"), true)\n right: (Some(\"s-3234-_000000000000000a_r-svh\"), false)\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n",
+      "stdout": "\nrunning 2 tests\ntest test_find_source_directory_in_iter ... ok\ntest pack_only_on_checkout_switch ... FAILED\n\nfailures:\n\nfailures:\n    pack_only_on_checkout_switch\n\ntest result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n"
+    },
+    "matrix.json": {
+      "sha256": "ac5a1ba86b2b1f6e073abff55a8ea528bd272fc4c4acbc415888bb51a3c910d3",
+      "source": "2d714b80d4971665663bd1e1031149e0323f5ac803f4cc4849e9b1b550e4e600",
+      "status": 0,
+      "stderr": "",
+      "stdout": "\nrunning 1 test\ncases=279620 packing_changed=94154 new_after_rejected=5264 with_latest_ties=207360\ntest compare_every_small_history ... ok\n\ntest result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.97s\n\n"
+    }
+  },
+  "parent": "b8226759bd1daa4812dd962c77de104d24ee3367",
+  "tree": "8852d19f44a404cb5f049f28bb8e9f3a127f142c"
+}

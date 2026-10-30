@@ -1,0 +1,118 @@
+diff --git a/compiler/rustc_incremental/src/persist/fs.rs b/compiler/rustc_incremental/src/persist/fs.rs
+index fc9ebb14bf974ad9cd86371d926f59c62f2dfea9..2c9ba9c02cc657ef34c05b3fd88c215ce4c000fd 100644
+--- a/compiler/rustc_incremental/src/persist/fs.rs
++++ b/compiler/rustc_incremental/src/persist/fs.rs
+@@ -611,7 +611,8 @@ where
+     I: Iterator<Item = PathBuf>,
+ {
+     let mut best_candidate = ((false, UNIX_EPOCH), None);
+-    let mut saw_other_checkout = false;
++    let mut newest_other_checkout = None;
++    let mut newest_same_or_unlabeled = None;
+ 
+     for session_dir in iter {
+         debug!("find_source_directory_in_iter - inspecting `{}`", session_dir.display());
+@@ -621,10 +622,7 @@ where
+             continue;
+         };
+ 
+-        if source_directories_already_tried.contains(&session_dir)
+-            || !is_session_directory(&directory_name)
+-            || !is_finalized(&directory_name)
+-        {
++        if !is_session_directory(&directory_name) || !is_finalized(&directory_name) {
+             debug!("find_source_directory_in_iter - ignoring");
+             continue;
+         }
+@@ -638,17 +636,26 @@ where
+         };
+ 
+         let same_checkout = checkout.is_some_and(|current| {
+-            let other = session_checkout(&session_dir);
+-            saw_other_checkout |= other.is_some_and(|key| key != current);
+-            other == Some(current)
++            let previous = session_checkout(&session_dir);
++            let newest = if previous.is_some_and(|key| key != current) {
++                &mut newest_other_checkout
++            } else {
++                &mut newest_same_or_unlabeled
++            };
++            *newest = (*newest).max(Some(timestamp));
++            previous == Some(current)
+         });
++        if source_directories_already_tried.contains(&session_dir) {
++            continue;
++        }
+         let rank = (same_checkout, timestamp);
+         if rank > best_candidate.0 {
+             best_candidate = (rank, Some(session_dir));
+         }
+     }
+ 
+-    (best_candidate.1, saw_other_checkout)
++    let switched = best_candidate.1.is_some() && newest_other_checkout > newest_same_or_unlabeled;
++    (best_candidate.1, switched)
+ }
+ 
+ fn is_finalized(directory_name: &str) -> bool {
+diff --git a/compiler/rustc_incremental/src/persist/fs/tests.rs b/compiler/rustc_incremental/src/persist/fs/tests.rs
+index bb1f8e1619b80be94eb1c82fcc00eb2cc6e96d24..d0b7458dbd2e1c9d9f7a8b509d1a5805b3b63684 100644
+--- a/compiler/rustc_incremental/src/persist/fs/tests.rs
++++ b/compiler/rustc_incremental/src/persist/fs/tests.rs
+@@ -129,3 +129,28 @@ fn checkout_sessions_prefer_a_match_and_keep_one_alternate() {
+         vec![a, b]
+     );
+ }
++
++#[test]
++fn pack_only_on_checkout_switch() {
++    let a = "s-1234-_000000000000000a_r-svh";
++    let b = "s-2234-_000000000000000b_r-svh";
++    let next_a = "s-3234-_000000000000000a_r-svh";
++    let tied_a = "s-2234-_000000000000000a_r-svh";
++    let legacy = "s-3234-0000-svh";
++    let select = |paths: &[&str], skipped: &[&str]| {
++        find_source_directory_in_iter(
++            paths.iter().map(PathBuf::from),
++            &skipped.iter().map(PathBuf::from).collect(),
++            Some(10),
++        )
++    };
++
++    assert_eq!(select(&[legacy], &[]), (Some(legacy.into()), false));
++    assert_eq!(select(&[a, b], &[]), (Some(a.into()), true));
++    assert_eq!(select(&[a, b, next_a], &[]), (Some(next_a.into()), false));
++    assert_eq!(select(&[a, b, legacy], &[]), (Some(a.into()), false));
++    assert_eq!(select(&[b, tied_a], &[]), (Some(tied_a.into()), false));
++    assert_eq!(select(&[tied_a, b], &[]), (Some(tied_a.into()), false));
++    assert_eq!(select(&[b, next_a], &[next_a]), (Some(b.into()), false));
++    assert_eq!(select(&[b], &[b]), (None, false));
++}
+diff --git a/tests/run-make/ohm-packed-branch-cache/rmake.rs b/tests/run-make/ohm-packed-branch-cache/rmake.rs
+index ed0a666f07aff5c23dc805e634757bc101c4e932..45f8504504595883d93dae22196f3b9a16aa07ce 100644
+--- a/tests/run-make/ohm-packed-branch-cache/rmake.rs
++++ b/tests/run-make/ohm-packed-branch-cache/rmake.rs
+@@ -68,6 +68,23 @@ fn main() {
+     switch("a", 17);
+     compile("cache", Some(true));
+     run("program").assert_stdout_equals("17");
++    let current = sessions().into_iter().find(|dir| dir != b).unwrap();
++    assert!(current.join("ohm-packed-query-cache.bin").is_file());
++    let other_bytes = fs::read(&saved).unwrap();
++    for value in [18, 17] {
++        switch("a", value);
++        compile("cache", Some(true));
++        run("program").assert_stdout_equals(value.to_string());
++        let dirs = sessions();
++        assert_eq!(dirs.len(), 2);
++        assert!(dirs.contains(b));
++        let current = dirs.into_iter().find(|dir| dir != b).unwrap();
++        for table in ["dep-graph.bin", "query-cache.bin"] {
++            assert!(current.join(table).is_file());
++            assert!(!current.join(format!("ohm-packed-{table}")).exists());
++        }
++        assert_eq!(fs::read(&saved).unwrap(), other_bytes);
++    }
+     let mut damaged = fs::read(&saved).unwrap();
+     damaged.pop().unwrap();
+     fs::write(&saved, damaged).unwrap();

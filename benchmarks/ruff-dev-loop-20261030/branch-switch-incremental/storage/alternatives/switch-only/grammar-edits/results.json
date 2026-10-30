@@ -1,0 +1,803 @@
+{
+  "filesystem": "tmpfs",
+  "means": {
+    "all_B_local_edits": {
+      "delta_s_per_call": 0.014036618124999789,
+      "delta_s_sum": 0.056146472499999156,
+      "raw_s_per_call": 2.6320027385,
+      "switch_s_per_call": 2.646039356625
+    },
+    "edit-B": {
+      "delta_s": 0.0443137535,
+      "raw_allocated": 394620928.0,
+      "raw_older": 112392192.0,
+      "raw_s": 2.620263762,
+      "switch_allocated": 302075904.0,
+      "switch_older": 64274432.0,
+      "switch_s": 2.6645775155
+    },
+    "edit-B-2": {
+      "delta_s": -0.006765019500000191,
+      "raw_allocated": 396173312.0,
+      "raw_older": 112392192.0,
+      "raw_s": 2.613696198,
+      "switch_allocated": 303626240.0,
+      "switch_older": 64274432.0,
+      "switch_s": 2.6069311785
+    },
+    "empty-A": {
+      "delta_s": 0.20542614949999916,
+      "raw_allocated": 268077056.0,
+      "raw_older": 0.0,
+      "raw_s": 34.3028460565,
+      "switch_allocated": 268081152.0,
+      "switch_older": 0.0,
+      "switch_s": 34.508272206
+    },
+    "first-B": {
+      "delta_s": 0.3170183275000005,
+      "raw_allocated": 395005952.0,
+      "raw_older": 110323712.0,
+      "raw_s": 8.449593289,
+      "switch_allocated": 337127424.0,
+      "switch_older": 110325760.0,
+      "switch_s": 8.7666116165
+    },
+    "first-return-A": {
+      "delta_s": 0.0607135565000001,
+      "raw_allocated": 397066240.0,
+      "raw_older": 126920704.0,
+      "raw_s": 2.5642793509999997,
+      "switch_allocated": 291067904.0,
+      "switch_older": 69038080.0,
+      "switch_s": 2.6249929075000002
+    },
+    "first_B_local_edit": {
+      "delta_s_per_call": 0.0443137535,
+      "delta_s_sum": 0.0443137535,
+      "raw_s_per_call": 2.620263762,
+      "switch_s_per_call": 2.6645775155
+    },
+    "first_feature_then_A": {
+      "delta_s_per_call": 0.1888659420000005,
+      "delta_s_sum": 0.377731884000001,
+      "raw_s_per_call": 5.506936319999999,
+      "switch_s_per_call": 5.695802262
+    },
+    "later_B_local_edits": {
+      "delta_s_per_call": 0.003944239666666682,
+      "delta_s_sum": 0.011832719000000047,
+      "raw_s_per_call": 2.6359157306666665,
+      "switch_s_per_call": 2.639859970333333
+    },
+    "native-edit-B": {
+      "raw_allocated": 380895232.0,
+      "raw_older": 114452480.0,
+      "switch_allocated": 297711616.0,
+      "switch_older": 65640448.0
+    },
+    "native-edit-B-2": {
+      "raw_allocated": 380502016.0,
+      "raw_older": 114452480.0,
+      "switch_allocated": 297316352.0,
+      "switch_older": 65640448.0
+    },
+    "native-restore-B": {
+      "raw_allocated": 379729920.0,
+      "raw_older": 114452480.0,
+      "switch_allocated": 296544256.0,
+      "switch_older": 65640448.0
+    },
+    "native-restore-B-2": {
+      "raw_allocated": 381280256.0,
+      "raw_older": 114452480.0,
+      "switch_allocated": 298096640.0,
+      "switch_older": 65640448.0
+    },
+    "restore-B": {
+      "delta_s": -0.02933020850000001,
+      "raw_allocated": 395401216.0,
+      "raw_older": 112392192.0,
+      "raw_s": 2.570374586,
+      "switch_allocated": 302854144.0,
+      "switch_older": 64274432.0,
+      "switch_s": 2.5410443775
+    },
+    "restore-B-2": {
+      "delta_s": 0.047927947000000026,
+      "raw_allocated": 394629120.0,
+      "raw_older": 112392192.0,
+      "raw_s": 2.723676408,
+      "switch_allocated": 302080000.0,
+      "switch_older": 64274432.0,
+      "switch_s": 2.771604355
+    },
+    "retrain-A": {
+      "delta_s": 0.5573115479999999,
+      "raw_allocated": 396681216.0,
+      "raw_older": 124475392.0,
+      "raw_s": 2.657749275,
+      "switch_allocated": 303437824.0,
+      "switch_older": 80041984.0,
+      "switch_s": 3.215060823
+    },
+    "retrain-B": {
+      "delta_s": 0.9326624155000001,
+      "raw_allocated": 380035072.0,
+      "raw_older": 114452480.0,
+      "raw_s": 2.5044010635,
+      "switch_allocated": 285456384.0,
+      "switch_older": 65640448.0,
+      "switch_s": 3.437063479
+    },
+    "trained-return-B": {
+      "delta_s": 0.5158392775,
+      "raw_allocated": 398938112.0,
+      "raw_older": 112392192.0,
+      "raw_s": 2.631168044,
+      "switch_allocated": 292487168.0,
+      "switch_older": 64274432.0,
+      "switch_s": 3.1470073215000003
+    },
+    "unchanged-B": {
+      "delta_s": -0.0547652785,
+      "raw_allocated": 394629120.0,
+      "raw_older": 112392192.0,
+      "raw_s": 0.215865155,
+      "switch_allocated": 302080000.0,
+      "switch_older": 64274432.0,
+      "switch_s": 0.16109987650000002
+    },
+    "unchanged-final": {
+      "delta_s": 0.011167157000000011,
+      "raw_allocated": 381280256.0,
+      "raw_older": 114452480.0,
+      "raw_s": 0.156088155,
+      "switch_allocated": 298096640.0,
+      "switch_older": 65640448.0,
+      "switch_s": 0.167255312
+    }
+  },
+  "native": {
+    "flanks": 16,
+    "physical_full": 16,
+    "physical_wild": 0
+  },
+  "oracles": {
+    "dirty_library_comparisons": 104,
+    "matching_final_ELFs": 68,
+    "matching_metadata": 0,
+    "matching_object_multisets": 104,
+    "matching_raw_archives": 0
+  },
+  "per_block": {
+    "1": {
+      "all_B_local_edits": {
+        "calls": 4,
+        "delta_s_per_call": -0.049211059750000175,
+        "delta_s_sum": -0.1968442390000007,
+        "raw_s_per_call": 2.7128216365,
+        "switch_s_per_call": 2.66361057675
+      },
+      "edit-B": {
+        "delta_s": 0.05538164400000012,
+        "raw_allocated": 394625024,
+        "raw_older": 112390144,
+        "raw_over_switch": 0.9792097009577921,
+        "raw_s": 2.60843978,
+        "switch_allocated": 302039040,
+        "switch_older": 64262144,
+        "switch_packed_files": {
+          "ruff_python_ast/ohm-packed-dep-graph.bin": 2,
+          "ruff_python_ast/ohm-packed-query-cache.bin": 2,
+          "ruff_python_parser/ohm-packed-dep-graph.bin": 1,
+          "ruff_python_parser/ohm-packed-query-cache.bin": 1
+        },
+        "switch_s": 2.663821424
+      },
+      "edit-B-2": {
+        "delta_s": -0.056135985000000055,
+        "raw_allocated": 396177408,
+        "raw_older": 112390144,
+        "raw_over_switch": 1.021226603316608,
+        "raw_s": 2.700741161,
+        "switch_allocated": 303587328,
+        "switch_older": 64262144,
+        "switch_packed_files": {
+          "ruff_python_ast/ohm-packed-dep-graph.bin": 2,
+          "ruff_python_ast/ohm-packed-query-cache.bin": 2,
+          "ruff_python_parser/ohm-packed-dep-graph.bin": 1,
+          "ruff_python_parser/ohm-packed-query-cache.bin": 1
+        },
+        "switch_s": 2.644605176
+      },
+      "empty-A": {
+        "delta_s": 0.8166578319999971,
+        "raw_allocated": 268075008,
+        "raw_older": 0,
+        "raw_over_switch": 0.9765804640977451,
+        "raw_s": 34.054137021,
+        "switch_allocated": 268075008,
+        "switch_older": 0,
+        "switch_packed_files": {},
+        "switch_s": 34.870794853
+      },
+      "first-B": {
+        "delta_s": 0.1656142230000004,
+        "raw_allocated": 395010048,
+        "raw_older": 110321664,
+        "raw_over_switch": 0.9813786472126791,
+        "raw_s": 8.728166207,
+        "switch_allocated": 337113088,
+        "switch_older": 110321664,
+        "switch_packed_files": {
+          "ruff_python_ast/ohm-packed-dep-graph.bin": 1,
+          "ruff_python_ast/ohm-packed-query-cache.bin": 1,
+          "ruff_python_parser/ohm-packed-dep-graph.bin": 1,
+          "ruff_python_parser/ohm-packed-query-cache.bin": 1
+        },
+        "switch_s": 8.89378043
+      },
+      "first-return-A": {
+        "delta_s": -0.07404285599999971,
+        "raw_allocated": 397070336,
+        "raw_older": 126926848,
+        "raw_over_switch": 1.0272674357482197,
+        "raw_s": 2.789474431,
+        "switch_allocated": 291045376,
+        "switch_older": 69029888,
+        "switch_packed_files": {
+          "ruff_python_ast/ohm-packed-dep-graph.bin": 2,
+          "ruff_python_ast/ohm-packed-query-cache.bin": 2,
+          "ruff_python_parser/ohm-packed-dep-graph.bin": 2,
+          "ruff_python_parser/ohm-packed-query-cache.bin": 2
+        },
+        "switch_s": 2.715431575
+      },
+      "first_B_local_edit": {
+        "calls": 1,
+        "delta_s_per_call": 0.05538164400000012,
+        "delta_s_sum": 0.05538164400000012,
+        "raw_s_per_call": 2.60843978,
+        "switch_s_per_call": 2.663821424
+      },
+      "first_feature_then_A": {
+        "calls": 2,
+        "delta_s_per_call": 0.04578568350000012,
+        "delta_s_sum": 0.09157136700000024,
+        "raw_s_per_call": 5.758820319,
+        "switch_s_per_call": 5.8046060025
+      },
+      "later_B_local_edits": {
+        "calls": 3,
+        "delta_s_per_call": -0.08407529433333316,
+        "delta_s_sum": -0.2522258829999995,
+        "raw_s_per_call": 2.7476155886666667,
+        "switch_s_per_call": 2.6635402943333335
+      },
+      "native-edit-B": {
+        "raw_allocated": 380891136,
+        "raw_full": [
+          "ruff_python_parser"
+        ],
+        "raw_older": 114446336,
+        "switch_allocated": 297676800,
+        "switch_full": [
+          "ruff_python_parser"
+        ],
+        "switch_older": 65622016,
+        "switch_packed_files": {
+          "ruff_python_ast/ohm-packed-dep-graph.bin": 2,
+          "ruff_python_ast/ohm-packed-query-cache.bin": 2,
+          "ruff_python_parser/ohm-packed-dep-graph.bin": 1,
+          "ruff_python_parser/ohm-packed-query-cache.bin": 1
+        },
+        "switch_table_io": {
+          "ruff_python_parser/dep-graph/open_read": 1,
+          "ruff_python_parser/query-cache/open_read": 1,
+          "unknown/dep-graph/unlinkat": 1,
+          "unknown/query-cache/unlinkat": 1
+        },
+        "wild": [
+          0,
+          0
+        ]
+      },
+      "native-edit-B-2": {
+        "raw_allocated": 380497920,
+        "raw_full": [
+          "ruff_python_parser"
+        ],
+        "raw_older": 114446336,
+        "switch_allocated": 297279488,
+        "switch_full": [
+          "ruff_python_parser"
+        ],
+        "switch_older": 65622016,
+        "switch_packed_files": {
+          "ruff_python_ast/ohm-packed-dep-graph.bin": 2,
+          "ruff_python_ast/ohm-packed-query-cache.bin": 2,
+          "ruff_python_parser/ohm-packed-dep-graph.bin": 1,
+          "ruff_python_parser/ohm-packed-query-cache.bin": 1
+        },
+        "switch_table_io": {},
+        "wild": [
+          0,
+          0
+        ]
+      },
+      "native-restore-B": {
+        "raw_allocated": 379723776,
+        "raw_full": [
+          "ruff_python_parser"
+        ],
+        "raw_older": 114446336,
+        "switch_allocated": 296509440,
+        "switch_full": [
+          "ruff_python_parser"
+        ],
+        "switch_older": 65622016,
+        "switch_packed_files": {
+          "ruff_python_ast/ohm-packed-dep-graph.bin": 2,
+          "ruff_python_ast/ohm-packed-query-cache.bin": 2,
+          "ruff_python_parser/ohm-packed-dep-graph.bin": 1,
+          "ruff_python_parser/ohm-packed-query-cache.bin": 1
+        },
+        "switch_table_io": {},
+        "wild": [
+          0,
+          0
+        ]
+      },
+      "native-restore-B-2": {
+        "raw_allocated": 381276160,
+        "raw_full": [
+          "ruff_python_parser"
+        ],
+        "raw_older": 114446336,
+        "switch_allocated": 298061824,
+        "switch_full": [
+          "ruff_python_parser"
+        ],
+        "switch_older": 65622016,
+        "switch_packed_files": {
+          "ruff_python_ast/ohm-packed-dep-graph.bin": 2,
+          "ruff_python_ast/ohm-packed-query-cache.bin": 2,
+          "ruff_python_parser/ohm-packed-dep-graph.bin": 1,
+          "ruff_python_parser/ohm-packed-query-cache.bin": 1
+        },
+        "switch_table_io": {},
+        "wild": [
+          0,
+          0
+        ]
+      },
+      "restore-B": {
+        "delta_s": -0.18961875400000006,
+        "raw_allocated": 395403264,
+        "raw_older": 112390144,
+        "raw_over_switch": 1.0760882556148625,
+        "raw_s": 2.6817084,
+        "switch_allocated": 302817280,
+        "switch_older": 64262144,
+        "switch_packed_files": {
+          "ruff_python_ast/ohm-packed-dep-graph.bin": 2,
+          "ruff_python_ast/ohm-packed-query-cache.bin": 2,
+          "ruff_python_parser/ohm-packed-dep-graph.bin": 1,
+          "ruff_python_parser/ohm-packed-query-cache.bin": 1
+        },
+        "switch_s": 2.492089646
+      },
+      "restore-B-2": {
+        "delta_s": -0.006471143999999818,
+        "raw_allocated": 394633216,
+        "raw_older": 112390144,
+        "raw_over_switch": 1.0022674532772347,
+        "raw_s": 2.860397205,
+        "switch_allocated": 302043136,
+        "switch_older": 64262144,
+        "switch_packed_files": {
+          "ruff_python_ast/ohm-packed-dep-graph.bin": 2,
+          "ruff_python_ast/ohm-packed-query-cache.bin": 2,
+          "ruff_python_parser/ohm-packed-dep-graph.bin": 1,
+          "ruff_python_parser/ohm-packed-query-cache.bin": 1
+        },
+        "switch_s": 2.853926061
+      },
+      "retrain-A": {
+        "delta_s": 0.6054309920000001,
+        "raw_allocated": 396681216,
+        "raw_older": 124481536,
+        "raw_over_switch": 0.8125100922990558,
+        "raw_s": 2.623708109,
+        "switch_allocated": 303394816,
+        "switch_older": 80019456,
+        "switch_packed_files": {
+          "ruff_python_ast/ohm-packed-dep-graph.bin": 2,
+          "ruff_python_ast/ohm-packed-query-cache.bin": 2,
+          "ruff_python_parser/ohm-packed-dep-graph.bin": 1,
+          "ruff_python_parser/ohm-packed-query-cache.bin": 1
+        },
+        "switch_s": 3.229139101
+      },
+      "retrain-B": {
+        "delta_s": 1.015122834,
+        "raw_allocated": 380030976,
+        "raw_older": 114446336,
+        "raw_over_switch": 0.7197525155376391,
+        "raw_s": 2.607114261,
+        "switch_allocated": 285417472,
+        "switch_older": 65622016,
+        "switch_packed_files": {
+          "ruff_python_ast/ohm-packed-dep-graph.bin": 2,
+          "ruff_python_ast/ohm-packed-query-cache.bin": 2,
+          "ruff_python_parser/ohm-packed-dep-graph.bin": 2,
+          "ruff_python_parser/ohm-packed-query-cache.bin": 2
+        },
+        "switch_s": 3.622237095
+      },
+      "trained-return-B": {
+        "delta_s": 0.4976981060000001,
+        "raw_allocated": 398942208,
+        "raw_older": 112390144,
+        "raw_over_switch": 0.8434572102116161,
+        "raw_s": 2.681612207,
+        "switch_allocated": 292433920,
+        "switch_older": 64262144,
+        "switch_packed_files": {
+          "ruff_python_ast/ohm-packed-dep-graph.bin": 2,
+          "ruff_python_ast/ohm-packed-query-cache.bin": 2,
+          "ruff_python_parser/ohm-packed-dep-graph.bin": 2,
+          "ruff_python_parser/ohm-packed-query-cache.bin": 2
+        },
+        "switch_s": 3.179310313
+      },
+      "unchanged-B": {
+        "delta_s": -0.0012696809999999947,
+        "raw_allocated": 394633216,
+        "raw_older": 112390144,
+        "raw_over_switch": 1.0077664367943546,
+        "raw_s": 0.16475276,
+        "switch_allocated": 302043136,
+        "switch_older": 64262144,
+        "switch_packed_files": {
+          "ruff_python_ast/ohm-packed-dep-graph.bin": 2,
+          "ruff_python_ast/ohm-packed-query-cache.bin": 2,
+          "ruff_python_parser/ohm-packed-dep-graph.bin": 1,
+          "ruff_python_parser/ohm-packed-query-cache.bin": 1
+        },
+        "switch_s": 0.163483079
+      },
+      "unchanged-final": {
+        "delta_s": -0.0010963619999999896,
+        "raw_allocated": 381276160,
+        "raw_older": 114446336,
+        "raw_over_switch": 1.006923158411396,
+        "raw_s": 0.159457898,
+        "switch_allocated": 298061824,
+        "switch_older": 65622016,
+        "switch_packed_files": {
+          "ruff_python_ast/ohm-packed-dep-graph.bin": 2,
+          "ruff_python_ast/ohm-packed-query-cache.bin": 2,
+          "ruff_python_parser/ohm-packed-dep-graph.bin": 1,
+          "ruff_python_parser/ohm-packed-query-cache.bin": 1
+        },
+        "switch_s": 0.158361536
+      }
+    },
+    "2": {
+      "all_B_local_edits": {
+        "calls": 4,
+        "delta_s_per_call": 0.07728429599999975,
+        "delta_s_sum": 0.309137183999999,
+        "raw_s_per_call": 2.5511838405000002,
+        "switch_s_per_call": 2.6284681365
+      },
+      "edit-B": {
+        "delta_s": 0.033245862999999876,
+        "raw_allocated": 394616832,
+        "raw_older": 112394240,
+        "raw_over_switch": 0.9875265659380552,
+        "raw_s": 2.632087744,
+        "switch_allocated": 302112768,
+        "switch_older": 64286720,
+        "switch_packed_files": {
+          "ruff_python_ast/ohm-packed-dep-graph.bin": 2,
+          "ruff_python_ast/ohm-packed-query-cache.bin": 2,
+          "ruff_python_parser/ohm-packed-dep-graph.bin": 1,
+          "ruff_python_parser/ohm-packed-query-cache.bin": 1
+        },
+        "switch_s": 2.665333607
+      },
+      "edit-B-2": {
+        "delta_s": 0.04260594599999967,
+        "raw_allocated": 396169216,
+        "raw_older": 112394240,
+        "raw_over_switch": 0.9834170178388227,
+        "raw_s": 2.526651235,
+        "switch_allocated": 303665152,
+        "switch_older": 64286720,
+        "switch_packed_files": {
+          "ruff_python_ast/ohm-packed-dep-graph.bin": 2,
+          "ruff_python_ast/ohm-packed-query-cache.bin": 2,
+          "ruff_python_parser/ohm-packed-dep-graph.bin": 1,
+          "ruff_python_parser/ohm-packed-query-cache.bin": 1
+        },
+        "switch_s": 2.569257181
+      },
+      "empty-A": {
+        "delta_s": -0.4058055329999988,
+        "raw_allocated": 268079104,
+        "raw_older": 0,
+        "raw_over_switch": 1.0118845109051953,
+        "raw_s": 34.551555092,
+        "switch_allocated": 268087296,
+        "switch_older": 0,
+        "switch_packed_files": {},
+        "switch_s": 34.145749559
+      },
+      "first-B": {
+        "delta_s": 0.46842243200000055,
+        "raw_allocated": 395001856,
+        "raw_older": 110325760,
+        "raw_over_switch": 0.9457809441324916,
+        "raw_s": 8.171020371,
+        "switch_allocated": 337141760,
+        "switch_older": 110329856,
+        "switch_packed_files": {
+          "ruff_python_ast/ohm-packed-dep-graph.bin": 1,
+          "ruff_python_ast/ohm-packed-query-cache.bin": 1,
+          "ruff_python_parser/ohm-packed-dep-graph.bin": 1,
+          "ruff_python_parser/ohm-packed-query-cache.bin": 1
+        },
+        "switch_s": 8.639442803
+      },
+      "first-return-A": {
+        "delta_s": 0.1954699689999999,
+        "raw_allocated": 397062144,
+        "raw_older": 126914560,
+        "raw_over_switch": 0.922877969658286,
+        "raw_s": 2.339084271,
+        "switch_allocated": 291090432,
+        "switch_older": 69046272,
+        "switch_packed_files": {
+          "ruff_python_ast/ohm-packed-dep-graph.bin": 2,
+          "ruff_python_ast/ohm-packed-query-cache.bin": 2,
+          "ruff_python_parser/ohm-packed-dep-graph.bin": 2,
+          "ruff_python_parser/ohm-packed-query-cache.bin": 2
+        },
+        "switch_s": 2.53455424
+      },
+      "first_B_local_edit": {
+        "calls": 1,
+        "delta_s_per_call": 0.033245862999999876,
+        "delta_s_sum": 0.033245862999999876,
+        "raw_s_per_call": 2.632087744,
+        "switch_s_per_call": 2.665333607
+      },
+      "first_feature_then_A": {
+        "calls": 2,
+        "delta_s_per_call": 0.3319462005000009,
+        "delta_s_sum": 0.6638924010000018,
+        "raw_s_per_call": 5.255052320999999,
+        "switch_s_per_call": 5.5869985215
+      },
+      "later_B_local_edits": {
+        "calls": 3,
+        "delta_s_per_call": 0.09196377366666653,
+        "delta_s_sum": 0.2758913209999996,
+        "raw_s_per_call": 2.524215872666667,
+        "switch_s_per_call": 2.6161796463333333
+      },
+      "native-edit-B": {
+        "raw_allocated": 380899328,
+        "raw_full": [
+          "ruff_python_parser"
+        ],
+        "raw_older": 114458624,
+        "switch_allocated": 297746432,
+        "switch_full": [
+          "ruff_python_parser"
+        ],
+        "switch_older": 65658880,
+        "switch_packed_files": {
+          "ruff_python_ast/ohm-packed-dep-graph.bin": 2,
+          "ruff_python_ast/ohm-packed-query-cache.bin": 2,
+          "ruff_python_parser/ohm-packed-dep-graph.bin": 1,
+          "ruff_python_parser/ohm-packed-query-cache.bin": 1
+        },
+        "switch_table_io": {
+          "ruff_python_parser/dep-graph/open_read": 1,
+          "ruff_python_parser/query-cache/open_read": 1,
+          "unknown/dep-graph/unlinkat": 1,
+          "unknown/query-cache/unlinkat": 1
+        },
+        "wild": [
+          0,
+          0
+        ]
+      },
+      "native-edit-B-2": {
+        "raw_allocated": 380506112,
+        "raw_full": [
+          "ruff_python_parser"
+        ],
+        "raw_older": 114458624,
+        "switch_allocated": 297353216,
+        "switch_full": [
+          "ruff_python_parser"
+        ],
+        "switch_older": 65658880,
+        "switch_packed_files": {
+          "ruff_python_ast/ohm-packed-dep-graph.bin": 2,
+          "ruff_python_ast/ohm-packed-query-cache.bin": 2,
+          "ruff_python_parser/ohm-packed-dep-graph.bin": 1,
+          "ruff_python_parser/ohm-packed-query-cache.bin": 1
+        },
+        "switch_table_io": {},
+        "wild": [
+          0,
+          0
+        ]
+      },
+      "native-restore-B": {
+        "raw_allocated": 379736064,
+        "raw_full": [
+          "ruff_python_parser"
+        ],
+        "raw_older": 114458624,
+        "switch_allocated": 296579072,
+        "switch_full": [
+          "ruff_python_parser"
+        ],
+        "switch_older": 65658880,
+        "switch_packed_files": {
+          "ruff_python_ast/ohm-packed-dep-graph.bin": 2,
+          "ruff_python_ast/ohm-packed-query-cache.bin": 2,
+          "ruff_python_parser/ohm-packed-dep-graph.bin": 1,
+          "ruff_python_parser/ohm-packed-query-cache.bin": 1
+        },
+        "switch_table_io": {},
+        "wild": [
+          0,
+          0
+        ]
+      },
+      "native-restore-B-2": {
+        "raw_allocated": 381284352,
+        "raw_full": [
+          "ruff_python_parser"
+        ],
+        "raw_older": 114458624,
+        "switch_allocated": 298131456,
+        "switch_full": [
+          "ruff_python_parser"
+        ],
+        "switch_older": 65658880,
+        "switch_packed_files": {
+          "ruff_python_ast/ohm-packed-dep-graph.bin": 2,
+          "ruff_python_ast/ohm-packed-query-cache.bin": 2,
+          "ruff_python_parser/ohm-packed-dep-graph.bin": 1,
+          "ruff_python_parser/ohm-packed-query-cache.bin": 1
+        },
+        "switch_table_io": {},
+        "wild": [
+          0,
+          0
+        ]
+      },
+      "restore-B": {
+        "delta_s": 0.13095833700000004,
+        "raw_allocated": 395399168,
+        "raw_older": 112394240,
+        "raw_over_switch": 0.9494369181267545,
+        "raw_s": 2.459040772,
+        "switch_allocated": 302891008,
+        "switch_older": 64286720,
+        "switch_packed_files": {
+          "ruff_python_ast/ohm-packed-dep-graph.bin": 2,
+          "ruff_python_ast/ohm-packed-query-cache.bin": 2,
+          "ruff_python_parser/ohm-packed-dep-graph.bin": 1,
+          "ruff_python_parser/ohm-packed-query-cache.bin": 1
+        },
+        "switch_s": 2.589999109
+      },
+      "restore-B-2": {
+        "delta_s": 0.10232703799999987,
+        "raw_allocated": 394625024,
+        "raw_older": 112394240,
+        "raw_over_switch": 0.9619500620219114,
+        "raw_s": 2.586955611,
+        "switch_allocated": 302116864,
+        "switch_older": 64286720,
+        "switch_packed_files": {
+          "ruff_python_ast/ohm-packed-dep-graph.bin": 2,
+          "ruff_python_ast/ohm-packed-query-cache.bin": 2,
+          "ruff_python_parser/ohm-packed-dep-graph.bin": 1,
+          "ruff_python_parser/ohm-packed-query-cache.bin": 1
+        },
+        "switch_s": 2.689282649
+      },
+      "retrain-A": {
+        "delta_s": 0.5091921039999998,
+        "raw_allocated": 396681216,
+        "raw_older": 124469248,
+        "raw_over_switch": 0.840926310330755,
+        "raw_s": 2.691790441,
+        "switch_allocated": 303480832,
+        "switch_older": 80064512,
+        "switch_packed_files": {
+          "ruff_python_ast/ohm-packed-dep-graph.bin": 2,
+          "ruff_python_ast/ohm-packed-query-cache.bin": 2,
+          "ruff_python_parser/ohm-packed-dep-graph.bin": 1,
+          "ruff_python_parser/ohm-packed-query-cache.bin": 1
+        },
+        "switch_s": 3.200982545
+      },
+      "retrain-B": {
+        "delta_s": 0.8502019970000001,
+        "raw_allocated": 380039168,
+        "raw_older": 114458624,
+        "raw_over_switch": 0.7385514169241715,
+        "raw_s": 2.401687866,
+        "switch_allocated": 285495296,
+        "switch_older": 65658880,
+        "switch_packed_files": {
+          "ruff_python_ast/ohm-packed-dep-graph.bin": 2,
+          "ruff_python_ast/ohm-packed-query-cache.bin": 2,
+          "ruff_python_parser/ohm-packed-dep-graph.bin": 2,
+          "ruff_python_parser/ohm-packed-query-cache.bin": 2
+        },
+        "switch_s": 3.251889863
+      },
+      "trained-return-B": {
+        "delta_s": 0.533980449,
+        "raw_allocated": 398934016,
+        "raw_older": 112394240,
+        "raw_over_switch": 0.8285614323462928,
+        "raw_s": 2.580723881,
+        "switch_allocated": 292540416,
+        "switch_older": 64286720,
+        "switch_packed_files": {
+          "ruff_python_ast/ohm-packed-dep-graph.bin": 2,
+          "ruff_python_ast/ohm-packed-query-cache.bin": 2,
+          "ruff_python_parser/ohm-packed-dep-graph.bin": 2,
+          "ruff_python_parser/ohm-packed-query-cache.bin": 2
+        },
+        "switch_s": 3.11470433
+      },
+      "unchanged-B": {
+        "delta_s": -0.108260876,
+        "raw_allocated": 394625024,
+        "raw_older": 112394240,
+        "raw_over_switch": 1.6821014659115148,
+        "raw_s": 0.26697755,
+        "switch_allocated": 302116864,
+        "switch_older": 64286720,
+        "switch_packed_files": {
+          "ruff_python_ast/ohm-packed-dep-graph.bin": 2,
+          "ruff_python_ast/ohm-packed-query-cache.bin": 2,
+          "ruff_python_parser/ohm-packed-dep-graph.bin": 1,
+          "ruff_python_parser/ohm-packed-query-cache.bin": 1
+        },
+        "switch_s": 0.158716674
+      },
+      "unchanged-final": {
+        "delta_s": 0.02343067600000001,
+        "raw_allocated": 381284352,
+        "raw_older": 114458624,
+        "raw_over_switch": 0.8669838358743021,
+        "raw_s": 0.152718412,
+        "switch_allocated": 298131456,
+        "switch_older": 65658880,
+        "switch_packed_files": {
+          "ruff_python_ast/ohm-packed-dep-graph.bin": 2,
+          "ruff_python_ast/ohm-packed-query-cache.bin": 2,
+          "ruff_python_parser/ohm-packed-dep-graph.bin": 1,
+          "ruff_python_parser/ohm-packed-query-cache.bin": 1
+        },
+        "switch_s": 0.176149088
+      }
+    }
+  }
+}

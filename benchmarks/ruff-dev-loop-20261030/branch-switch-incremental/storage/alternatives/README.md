@@ -48,3 +48,5 @@ Two fresh paired installations exercised this replay entry point in opposite ord
 ## Compression inside rustc
 
 A separately bootstrapped compiler compressed the same two tables inside rustc. Across twelve fresh pairs, parser branch returns sped up 3.05× and 2.51×. The complete settled directories measured 288 → 280 MiB returning to the parent branch and 258 → 281 MiB returning to the feature. After a switch, repeated edits on the same branch took an average of 0.38 s longer than with uncompressed two-session retention. [Compiler patch, clean binaries, timings and native disk records](native-compact)
+
+A second compiler compresses only when a newly published session follows another checkout. Two ext4 pairs kept the complete return footprint within 8.9% of one-session storage. After resuming work on a branch, six separately traced dirty parser compiles did zero packed-table operations. [Checkout switches and ordinary grammar edits](switch-only)
