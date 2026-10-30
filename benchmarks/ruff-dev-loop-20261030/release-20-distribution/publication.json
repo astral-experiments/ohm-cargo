@@ -1,0 +1,107 @@
+{
+  "immutable": true,
+  "jobs": [
+    {
+      "completed_at": "2026-10-30T04:45:28Z",
+      "conclusion": "success",
+      "html_url": "https://github.com/astral-experiments/ohm/actions/runs/41004598527/job/123896521018",
+      "id": 123896521018,
+      "name": "plan"
+    },
+    {
+      "completed_at": "2026-10-30T07:07:27Z",
+      "conclusion": "success",
+      "html_url": "https://github.com/astral-experiments/ohm/actions/runs/41004598527/job/123896687200",
+      "id": 123896687200,
+      "name": "build (aarch64-apple-darwin, macos-15)"
+    },
+    {
+      "completed_at": "2026-10-30T05:25:43Z",
+      "conclusion": "success",
+      "html_url": "https://github.com/astral-experiments/ohm/actions/runs/41004598527/job/123896687221",
+      "id": 123896687221,
+      "name": "build (x86_64-unknown-linux-gnu, namespace-profile-ubuntu-24-04-16)"
+    },
+    {
+      "completed_at": "2026-10-30T07:07:47Z",
+      "conclusion": "success",
+      "html_url": "https://github.com/astral-experiments/ohm/actions/runs/41004598527/job/123939039202",
+      "id": 123939039202,
+      "name": "assemble"
+    },
+    {
+      "completed_at": "2026-10-30T07:10:10Z",
+      "conclusion": "success",
+      "html_url": "https://github.com/astral-experiments/ohm/actions/runs/41004598527/job/123939150762",
+      "id": 123939150762,
+      "name": "smoke-test (x86_64-unknown-linux-gnu, ubuntu-24.04)"
+    },
+    {
+      "completed_at": "2026-10-30T07:10:02Z",
+      "conclusion": "success",
+      "html_url": "https://github.com/astral-experiments/ohm/actions/runs/41004598527/job/123939150765",
+      "id": 123939150765,
+      "name": "smoke-test (aarch64-apple-darwin, namespace-profile-macos-15)"
+    },
+    {
+      "completed_at": "2026-10-30T07:10:48Z",
+      "conclusion": "success",
+      "html_url": "https://github.com/astral-experiments/ohm/actions/runs/41004598527/job/123939919750",
+      "id": 123939919750,
+      "name": "publish"
+    },
+    {
+      "completed_at": "2026-10-30T07:11:20Z",
+      "conclusion": "failure",
+      "html_url": "https://github.com/astral-experiments/ohm/actions/runs/41004598527/job/123940126726",
+      "id": 123940126726,
+      "name": "publish-mirror / publish-mirror"
+    }
+  ],
+  "macos_sources": {
+    "cargo": {
+      "revision": "2d44bd4aa68b9ba32cacb5a384ecc18fa5e7553c"
+    },
+    "clippy": {
+      "revision": "0d76dc1f4fe7ffb86ee5e1a8a9cc4d6bef1d1bf6"
+    },
+    "rust": {
+      "revision": "7e71d3150938ff8ed82aca03416439d7e5b87ef3"
+    },
+    "rustfmt": {
+      "revision": "3c9620c92b01e6c393324729c4861823cc3676e2"
+    }
+  },
+  "mirror_failure": {
+    "asset": "ohm-1.99.0-20-x86_64-unknown-linux-gnu.tar.gz",
+    "code": "InvalidPart",
+    "failed_step_log_sha256": "3b9b01dbdb2f6e90202858f6df6d2fd0dc65467d06c59a39e8d43ee3afec64ad",
+    "latest_installer": "skipped",
+    "operation": "CompleteMultipartUpload"
+  },
+  "published_at": "2026-10-30T07:10:46Z",
+  "published_digests": {
+    "ohm-1.99.0-20-aarch64-apple-darwin-provenance.json": "1c69f4ffadeed83885a4f1b4c5878b912516223b9b061de3f884bd45dc87b060",
+    "ohm-1.99.0-20-aarch64-apple-darwin.tar.gz": "7cd292583785c25a315f67bf85c8f028a15ccb0be5461ac39ce6e46720807bb8",
+    "ohm-1.99.0-20-aarch64-apple-darwin.tar.gz.sha256": "406960a6082942c3440db8d61d1882379af52e46c1b3f2378f9b083dd5ace622",
+    "ohm-1.99.0-20-x86_64-unknown-linux-gnu-provenance.json": "1bac589fa5a90d9d9ddcbbc1e847ff2bf8cb500aa58df02b0dd8c2933ceeb15a",
+    "ohm-1.99.0-20-x86_64-unknown-linux-gnu.tar.gz": "edb64a2ee39b2f2951614f98d53ec4e4197f55149ff794c911bd81bc7f870b15",
+    "ohm-1.99.0-20-x86_64-unknown-linux-gnu.tar.gz.sha256": "31164b6c91d93ee4662b50ae347b1165983fc92521cf6faeb4cd322de2f10ec0",
+    "ohm-1.99.0-20.json": "d70c21c020164f641a41b52af533b1aaf99339b84e57d8dbd429649c092397ec",
+    "ohm-installer.sh": "3f5a137e9b9e59eef4572839af25c9108b34a02192748d88133c1344164c7e2a"
+  },
+  "release": "https://github.com/astral-experiments/ohm/releases/tag/ohm-1.99.0-20",
+  "release_and_linux_attestation": {
+    "linux-archive": {
+      "exit": 0,
+      "message": "",
+      "output_sha256": "72a0d3b0c5f61dfb99a85a24abfaa55b2cbc6fe104180dba67d1b31e56e0ec45"
+    },
+    "release": {
+      "exit": 0,
+      "message": "",
+      "output_sha256": "72a0d3b0c5f61dfb99a85a24abfaa55b2cbc6fe104180dba67d1b31e56e0ec45"
+    }
+  },
+  "tested_linux": "edb64a2ee39b2f2951614f98d53ec4e4197f55149ff794c911bd81bc7f870b15"
+}

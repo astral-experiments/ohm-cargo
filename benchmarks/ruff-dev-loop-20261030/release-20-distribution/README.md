@@ -2,6 +2,8 @@
 
 The Linux release candidate passed the reported proc-macro span, external assembler, and native-library regressions. Its artifact SHA-256 is `edb64a2ee39b2f2951614f98d53ec4e4197f55149ff794c911bd81bc7f870b15`. The Cargo and rustc executables identified their commits as `2d44bd4aa` and `7e71d3150`. These results use the Linux distribution built by the release workflow. The branch-return optimization in [Ohm Rust #274](https://github.com/astral-experiments/ohm-rust/pull/274) is outside these pins. [Release run](https://github.com/astral-experiments/ohm/actions/runs/41004598527)
 
+GitHub published the immutable release at 07:10 UTC. Both platform distributions passed their smoke tests. The release attestation and exact Linux archive attestation verified, and the published Linux bytes matched those tested here. The subsequent R2 upload of that Linux archive failed during multipart completion, and the mirror’s latest-installer step was skipped. [Published release](https://github.com/astral-experiments/ohm/releases/tag/ohm-1.99.0-20) · [Artifact digests and release jobs](publication.json) · [Mirror job](https://github.com/astral-experiments/ohm/actions/runs/41004598527/job/123940126726)
+
 | Build script declaration | Stock Cargo 1.99.0 | Signed Ohm -19 | Ohm -20 Linux |
 | --- | --- | --- | --- |
 | Native library file | 83 / 101 | 83 / 101 | 83 / 101 |
