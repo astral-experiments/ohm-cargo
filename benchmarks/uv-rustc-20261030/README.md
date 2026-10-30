@@ -89,7 +89,23 @@ python3 -ISB production_score_after_48597.py /path/to/production-uvx-observation
 
 ## Bare Ohm −20 and both compiler patches
 
-The first attempt at this full-package test comparison stopped after warming the control, before the candidate or the edit ran. The control’s 17 programs, 15 test lists and two CLI version outputs agreed across its warm repeats. The run contributes zero scored pairs and p = 1. The new, separately registered comparison reuses the control’s unedited history and assigns its own 12 pairs. [First attempt and replay](full-stack-first-attempt.zip) · [New protocol](https://github.com/astral-experiments/ohm-cargo/blob/bac6e783130f95c0ac78b3255f468a0fddbcc4fb/benchmarks/uv-rustc-20261030/full-stack-after-uvx-protocol.md) · [Fresh combined run](full-stack-after-uvx-rerun.zip)
+A separate 12-pair comparison measured both Rust patches together against the bare Ohm −20 compiler source. Both compilers were rebuilt with the same settings. The first full uv test build after removing the same integration test went from **9.957 s to 3.304 s**. The median paired speedup was **3.026×** (96.14% exact interval 2.770–3.592×). The 12 speedups ranged from 2.609× to 4.052×. The control-first median was 2.824× and the candidate-first median was 3.375×.
+
+All 12 pairs exceeded 2×. The two-sided sign test against 2× gave p = 0.00048828125. After Holm adjustment across all 14 registered comparisons the p-value was 0.0068359375. Both previously confirmed comparisons also have adjusted p = 0.0068359375 in this family.
+
+A separate trace showed 23 rustc processes and 17 links on bare −20, versus one rustc process and one link with both changes. All 15 test lists and both CLI version outputs agreed across compilers. The edit reduced the package inventory from 3,298 to 3,297 tests. Across all 24 timed outputs, 16 of 17 programs matched byte-for-byte. The two allowed images of the remaining `pip_install` test differed at one byte of a section header outside every load segment and at the associated 32-byte GNU build ID. Every other byte matched.
+
+The earlier combined attempt stopped after the control warm-up. It contributed zero edited pairs and p = 1. The completed comparison used that verified unedited control history and a fresh independent candidate history. It had no pilot or excluded timed pairs. [First attempt](full-stack-first-attempt.zip) · [Published decision rule](https://github.com/astral-experiments/ohm-cargo/blob/bac6e783130f95c0ac78b3255f468a0fddbcc4fb/benchmarks/uv-rustc-20261030/full-stack-after-uvx-protocol.md)
+
+[Observations and independent verifier](full-stack-after-uvx-observations.zip) · [12 paired clocks](full-stack-after-uvx-pairs.csv) · [Full executable verification](full-stack-after-uvx-elf-replay.json) · [Fresh-run kit](full-stack-after-uvx-rerun.zip)
+
+To replay the recorded comparison with Python, run the following in a directory containing the observations.
+
+```sh
+unzip -p full-stack-after-uvx-observations.zip verify.py > verify-fourteen.py
+python3 -ISB verify-fourteen.py full-stack-after-uvx-observations.zip \
+  --outer 0b464d05ebe19989694c08b2cd5775b5227dc23dd111750246617d25309bcb62
+```
 
 ## Private diagnostic on shipped Ohm −18
 

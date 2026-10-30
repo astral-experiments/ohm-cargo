@@ -1,0 +1,314 @@
+{
+  "actual_admission_processes": {
+    "CZD": {
+      "full_argv_restored": true,
+      "rustc": 1,
+      "trace_files": 64,
+      "wild": 1
+    },
+    "P": {
+      "full_argv_restored": true,
+      "rustc": 23,
+      "trace_files": 64,
+      "wild": 17
+    }
+  },
+  "counted_pairs": 12,
+  "earlier_failed_full_stack_outer_sha256": "463d220c5529aa264083970ce619a4c7be3d28f93404ee9e6b922b9354a447ce",
+  "earlier_thirteen_outer_sha256": "e5a71756f357aa1d2ed49690abd935a09e7ac899cf1718f5b4d02604b9cebc26",
+  "eligible": true,
+  "full_binaries_reread": true,
+  "holm14": {
+    "CZ/settings": {
+      "adjusted_p": 1.0,
+      "complete": false,
+      "confirmed": false,
+      "excluded": false,
+      "raw_p": 1.0
+    },
+    "CZ/tool-test": {
+      "adjusted_p": 1.0,
+      "complete": false,
+      "confirmed": false,
+      "excluded": false,
+      "raw_p": 1.0
+    },
+    "CZD/build": {
+      "adjusted_p": 1.0,
+      "complete": false,
+      "confirmed": false,
+      "excluded": true,
+      "raw_p": 1.0
+    },
+    "CZD/check": {
+      "adjusted_p": 1.0,
+      "complete": false,
+      "confirmed": false,
+      "excluded": true,
+      "raw_p": 1.0
+    },
+    "CZD/package-test": {
+      "adjusted_p": 1.0,
+      "complete": false,
+      "confirmed": false,
+      "excluded": true,
+      "raw_p": 1.0
+    },
+    "CZD/package-test-v2": {
+      "adjusted_p": 1.0,
+      "complete": false,
+      "confirmed": false,
+      "excluded": true,
+      "raw_p": 1.0
+    },
+    "CZD/package-test-v3": {
+      "adjusted_p": 0.0068359375,
+      "complete": true,
+      "confirmed": true,
+      "excluded": false,
+      "raw_p": 0.00048828125
+    },
+    "CZD/settings": {
+      "adjusted_p": 1.0,
+      "complete": false,
+      "confirmed": false,
+      "excluded": false,
+      "raw_p": 1.0
+    },
+    "CZD/tool-test": {
+      "adjusted_p": 0.0068359375,
+      "complete": true,
+      "confirmed": false,
+      "excluded": false,
+      "raw_p": 0.00048828125
+    },
+    "CZD/uvx-production-bins": {
+      "adjusted_p": 0.0068359375,
+      "complete": true,
+      "confirmed": true,
+      "excluded": false,
+      "raw_p": 0.00048828125
+    },
+    "P-to-CZD/package-test": {
+      "adjusted_p": 1.0,
+      "complete": false,
+      "confirmed": false,
+      "excluded": true,
+      "raw_p": 1.0
+    },
+    "P-to-CZD/package-test-capacity": {
+      "adjusted_p": 0.0068359375,
+      "complete": true,
+      "confirmed": true,
+      "excluded": false,
+      "raw_p": 0.00048828125
+    },
+    "P-to-ZD/package-test": {
+      "adjusted_p": 1.0,
+      "complete": false,
+      "confirmed": false,
+      "excluded": true,
+      "raw_p": 1.0
+    },
+    "P-to-ZD/tool-test": {
+      "adjusted_p": 1.0,
+      "complete": false,
+      "confirmed": false,
+      "excluded": false,
+      "raw_p": 1.0
+    }
+  },
+  "material_handoff": {
+    "full_local_transport_payloads_in_packet": false,
+    "optional_duplicate_bytes_released": 177926144,
+    "original_control_sha256": "ec50b80ee29d640e3f8a9c6c422d2b22eb08778531284688ecd76ec17cdb4996",
+    "original_inodes_retained": true,
+    "original_pack_failure": {
+      "chunk": "3ff10d",
+      "exit": 1,
+      "session": 54596
+    },
+    "original_pack_failure_sha256": "1fa4204da40254ae2004de2d9f5f8bb05c8e25d30ee67014ee60515c3d4ab190",
+    "pack_outer": {
+      "chunk": "06f39a",
+      "exit": 0,
+      "session": 52806
+    },
+    "pack_outer_sha256": "43223cf2f8b0903e144ed1eb7df31edda0daa710e51687d305b864a3ee5bb565",
+    "park_outer": {
+      "chunk": "9635e0",
+      "exit": 0,
+      "session": 9297
+    },
+    "park_outer_sha256": "267a7436c424763213335a4e30f7122512b1f0fcb2e51023cc7d3bd0f214ec8a",
+    "temporary_bytes_released": 3777794048,
+    "verified_old_archives": {
+      "C": "17bfe01b931b820738417a7cf8c9c4300b32e3445334cc1a209a1e0beee1c1e0",
+      "CZD": "b5d8065ae7fa459d02e85b581cba3870e61295a8a1e88df1efc7d3fac5803567",
+      "P": "ec50b80ee29d640e3f8a9c6c422d2b22eb08778531284688ecd76ec17cdb4996"
+    }
+  },
+  "native_capacity": {
+    "actual": {
+      "CZD": {
+        "compressed": 1906364416,
+        "full": 6923689984
+      },
+      "P": {
+        "compressed": 1922723840,
+        "full": 6947385344
+      }
+    },
+    "all_tmpfs_max": 27917287424,
+    "already_charged_products": {
+      "directories": 1,
+      "unique_allocated_bytes": 447918080,
+      "unique_inodes": 18
+    },
+    "ram_floor": 21474836480,
+    "root_scratch_floor": 130996502528,
+    "safe_current": {
+      "ram": 82476511232,
+      "root": 132330041344,
+      "scratch": 131659739136,
+      "shm": 19999481856,
+      "shm_actual_free": 38372233216,
+      "shm_total_used": 14360256512
+    },
+    "shm_floor": 6442450944,
+    "transient_link_allowance": 4612902528
+  },
+  "original_failed_contrast_p": 1,
+  "outer": {
+    "chunk": "f63a07",
+    "exit": 0,
+    "session": 12507
+  },
+  "outer_sha256": "0b464d05ebe19989694c08b2cd5775b5227dc23dd111750246617d25309bcb62",
+  "pooled": false,
+  "programs": {
+    "A": {
+      "independent_arm": "P",
+      "observed_unequal_roles": [],
+      "proofs": {},
+      "reference_sha256": "5639cd4ba6f28126e91f88b3d9f7b7396f4e37b5e1bcefed1f2dcf50e4b30cbf",
+      "roles": 17
+    },
+    "B": {
+      "independent_arm": "P",
+      "observed_unequal_roles": [
+        "tests/pip_install/main.rs"
+      ],
+      "proofs": {
+        "146f2e8931ea0273b01186988c50a7057ef3281cf37bffc1b4404c18034030dc.json": "6a83a950ded6113965ff182219039d9513ef89a5cf60f66240f91adbeafa7b0a"
+      },
+      "reference_sha256": "9584d27ea90480406bcf5a3ab53d76c811811b7a03aad22c7b4287d37bc88f37",
+      "roles": 17
+    }
+  },
+  "raw_P_CZD_ns": [
+    [
+      "CZD",
+      9645664327,
+      3646152106
+    ],
+    [
+      "P",
+      9807756832,
+      2607745153
+    ],
+    [
+      "P",
+      10105998312,
+      3588639024
+    ],
+    [
+      "P",
+      10352551840,
+      3441504734
+    ],
+    [
+      "CZD",
+      9844600578,
+      3234662630
+    ],
+    [
+      "P",
+      9635473429,
+      3693525426
+    ],
+    [
+      "P",
+      9701316786,
+      3425922882
+    ],
+    [
+      "CZD",
+      10074756318,
+      2821951656
+    ],
+    [
+      "CZD",
+      10070154858,
+      3166191550
+    ],
+    [
+      "P",
+      9343509065,
+      3372728846
+    ],
+    [
+      "CZD",
+      10649882557,
+      2628060140
+    ],
+    [
+      "CZD",
+      10196488273,
+      2838877076
+    ]
+  ],
+  "score": {
+    "CZD_seconds_median": 3.303695738,
+    "P_seconds_median": 9.957377718,
+    "exact_median_interval_coverage": 0.96142578125,
+    "individual_gate": true,
+    "p_against_1": {
+      "above": 12,
+      "below": 0,
+      "ties": 0,
+      "two_sided_p": 0.00048828125
+    },
+    "p_against_2": {
+      "above": 12,
+      "below": 0,
+      "ties": 0,
+      "two_sided_p": 0.00048828125
+    },
+    "paired_seconds_saved_median": 6.756950628,
+    "pairs": 12,
+    "per_order_ratio_medians": {
+      "CZD-first": 3.375331956598794,
+      "P-first": 2.82392356570578
+    },
+    "rank_3_to_10": [
+      2.77031136851729,
+      3.591732928206575
+    ],
+    "ratio_median": 3.025808750489934,
+    "raw_ratio": [
+      2.6454366264993117,
+      3.761010473250029,
+      2.816108904911691,
+      3.0081469125185287,
+      3.0434705884613384,
+      2.6087470147552194,
+      2.831738226499869,
+      3.570137814579202,
+      3.180526098618386,
+      2.77031136851729,
+      4.052373990573899,
+      3.591732928206575
+    ]
+  }
+}
