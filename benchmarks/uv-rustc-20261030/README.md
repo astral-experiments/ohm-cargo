@@ -51,6 +51,17 @@ A separate 12-pair comparison will measure the complete #270 and #275 compiler s
 
 To reproduce this comparison on x86-64 Linux, unpack the [full-stack rerun kit](rerun-full-stack.zip) and follow `FULL-STACK.md`. Supply the P and CZD SDKs, a uv clone and the offline Cargo cache. The kit compares bare Ohm −20 against both compiler patches together. It checks the first edited build in 12 new pairs.
 
+## Shipped releases
+
+The release archives ran the same uv edit from separate, initially empty target directories. Both produced matching inventories for all 15 test harnesses and matching outputs from both command-line programs.
+
+| Shipped Linux SDK | Unchanged full test build | First full test build after the edit |
+| --- | ---: | ---: |
+| Ohm −18 | 0.627 s | 2.037 s |
+| Ohm −20 | 9.849 s | 9.710 s |
+
+Each entry is one observation. The 12-pair comparison isolates the compiler change using source-matched −20 SDKs. To replay the shipped releases’ raw clocks, run `python3 -ISB ohm-18-20-uv-release-context.zip`. [Released SDK command logs, outputs and verifier](ohm-18-20-uv-release-context.zip)
+
 ## Production settings edit
 
 Both compilers completed `cargo check --locked --offline -j8 -p uv` after an edit to `ToolListSettings`. The change dirtied the uv library and its two binaries on each compiler. Each check launched three rustc processes and zero linkers. The separate timing experiment stopped before collecting pairs because the two warm metadata files had different bytes. The trace packet includes the commands, process records and an independent replay. [Check trace and replay](production-check-trace.zip)
