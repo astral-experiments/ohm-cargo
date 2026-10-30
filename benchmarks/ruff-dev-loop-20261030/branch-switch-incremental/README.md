@@ -75,6 +75,10 @@ python3 -IB replay.py --parent-sdk "$PARENT_SDK" --candidate-sdk "$CANDIDATE_SDK
 
 Two fresh pairs exercised that command. The parent executed 9.034 and 9.033 times as many instructions as the candidate on A, and 8.923 and 8.926 times as many on B. These functional replay pairs were kept separate from the registered eight-pair cohort.
 
+## Formatter test build
+
+Twelve independent pairs measured 22.14 → 5.29 s on return to the parent branch and 22.31 → 5.32 s on return to the feature branch. Paired speedups were 4.17× (simultaneous interval 3.97–4.42×) and 4.18× (4.07–4.30×). All pairs exceeded 2× in both directions. Each observed return still ran four rustcs and one real Wild link. It created one codegen object instead of 310. The final incremental files grew from 300 to 545 MiB. Both complete test executables matched their clean builds. [Formatter measurements, storage and replay](formatter-confirmation)
+
 ## Complete Cargo build directory sizes
 
 In two independent ext4 pairs, the complete target and build directories grew from 288 to 380 MiB on return to the parent branch (+32%) and from 258 to 382 MiB on return to the feature branch (+48%). Both compilers used 257 MiB for the first build. Most bytes exclusive to the older branch were in the dependency graph and query cache. [Breakdown, physical-size counter and all 24 visits](storage)

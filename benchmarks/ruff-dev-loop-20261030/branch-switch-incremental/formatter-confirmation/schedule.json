@@ -1,0 +1,98 @@
+{
+  "A": "b5dba861cc38e3f7fb4524c9ceba3e01a474ea13",
+  "B": "7b13f01ba1569887a25670820764b24c206da8e5",
+  "candidate": "6b7f424ece4bc978ead5546b73e1b31d5ccb1e70",
+  "cargo": "2d44bd4aa68b9ba32cacb5a384ecc18fa5e7553c",
+  "cpu": [
+    28,
+    29,
+    30,
+    31
+  ],
+  "design": "exact 12 independently installed two-arm pairs",
+  "independent_pilot_readback": "fc5e90b39956a45fdaeab64d1225c4f7da96bbdc7458a77b9a8496ea4786d857",
+  "order": [
+    "admit-P",
+    "admit-Q",
+    "n01-Q",
+    "n01-P",
+    "n02-P",
+    "n02-Q",
+    "n03-P",
+    "n03-Q",
+    "n04-P",
+    "n04-Q",
+    "n05-Q",
+    "n05-P",
+    "n06-P",
+    "n06-Q",
+    "n07-P",
+    "n07-Q",
+    "n08-Q",
+    "n08-P",
+    "n09-P",
+    "n09-Q",
+    "n10-Q",
+    "n10-P",
+    "n11-Q",
+    "n11-P",
+    "n12-Q",
+    "n12-P",
+    "post-Q",
+    "post-P"
+  ],
+  "pairs": [
+    [
+      "Q",
+      "P"
+    ],
+    [
+      "P",
+      "Q"
+    ],
+    [
+      "P",
+      "Q"
+    ],
+    [
+      "P",
+      "Q"
+    ],
+    [
+      "Q",
+      "P"
+    ],
+    [
+      "P",
+      "Q"
+    ],
+    [
+      "P",
+      "Q"
+    ],
+    [
+      "Q",
+      "P"
+    ],
+    [
+      "P",
+      "Q"
+    ],
+    [
+      "Q",
+      "P"
+    ],
+    [
+      "Q",
+      "P"
+    ],
+    [
+      "Q",
+      "P"
+    ]
+  ],
+  "parent": "7e71d3150938ff8ed82aca03416439d7e5b87ef3",
+  "pilot_manifest": "6c7029547d0a70724df5769d3e03dd5d37f40817566afd5ee581ebf1d8ec5e1b",
+  "randomization_key": "rank raw SHA256(seed + newline + decimal pair number), six lowest P-first",
+  "seed": "astral-experiments/ohm-rust 6b7f424e historical Ruff #28335 independent formatter native confirmation 2026-10-30 v1"
+}

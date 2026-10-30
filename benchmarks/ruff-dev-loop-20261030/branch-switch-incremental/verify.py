@@ -130,6 +130,8 @@ def main():
         subprocess.run([sys.executable, "-IB", ROOT / "native-inputs" / mode / "verify.py"], check=True)
     subprocess.run([sys.executable, "-IB", ROOT / "concurrent-sessions" / "verify.py"], check=True)
     subprocess.run([sys.executable, "-IB", ROOT / "formatter-screen" / "verify.py"], check=True)
+    if (ROOT / "formatter-confirmation").exists():
+        subprocess.run([sys.executable, "-IB", ROOT / "formatter-confirmation" / "verify.py"], check=True)
     subprocess.run([sys.executable, "-IB", ROOT / "moved-branch" / "verify.py"], check=True)
     if (ROOT / "block-device").exists():
         subprocess.run([sys.executable, "-IB", ROOT / "block-device" / "verify.py"], check=True)
