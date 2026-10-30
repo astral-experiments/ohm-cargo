@@ -49,6 +49,19 @@ For `cargo check` (2 pairs), the first visit to the feature took 7.11 → 7.29 s
 
 For `cargo test --lib --no-run` (2 pairs), the first visit to the feature took 11.08 → 12.23 s and used 402 → 454 MiB. Median paired child CPU ratios on the two returns were 7.06× and 5.70×. The registration seed was `202610300801`. [Native/type readbacks](verb-test-no-run-2-pairs-202610300801-verified.json.gz) · [All observations](verb-test-no-run-2-pairs-202610300801-sample.json.gz) · [Paired calculations](verb-test-no-run-2-pairs-202610300801-summary.json)
 
+## Complete compiler instructions
+
+These two pairs ran both returning compilers under Callgrind. Every count was reopened from the complete instruction profile, reconciled with its own independent log, and tied to the actual Cargo compiler invocation. The counts include the codec and exclude Cargo and the later native reader.
+
+| Pair | Return | Default instructions | Opt-in instructions | Ratio |
+| ---: | --- | ---: | ---: | ---: |
+| 1 | parent | 62,187,151,911 | 12,907,775,642 | 4.818× |
+| 1 | feature | 62,422,491,336 | 16,412,453,528 | 3.803× |
+| 2 | parent | 62,167,172,937 | 12,903,650,998 | 4.818× |
+| 2 | feature | 62,450,749,213 | 16,415,193,152 | 3.804× |
+
+[Per-crate counts](sample-tmpfs-2-pairs-instructions-202610300810.json.gz) · [Independent profile and argv reconciliation](counter-tmpfs-2-pairs-instructions-202610300810.json)
+
 ## Working on one branch
 
 This separate experiment compares two enabled branch caches. One compiler keeps uncompressed tables. The other compresses on checkout switches. Each block measured four changes to Ruff’s unary-pattern grammar, with both branches already built. The first dirty edit averaged 2.620 → 2.665 s. The next three averaged 2.636 → 2.640 s. The two blocks are too few to establish a small timing difference. After editing, the settled complete directories measured 376.35 → 288.09 MiB. The previously measured policy that compressed on every dirty edit added 0.38 s per edit in its own two-pair experiment. [Earlier compact policy](../native-compact)
