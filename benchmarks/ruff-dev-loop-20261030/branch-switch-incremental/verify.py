@@ -130,6 +130,7 @@ def main():
         subprocess.run([sys.executable, "-IB", ROOT / "native-inputs" / mode / "verify.py"], check=True)
     subprocess.run([sys.executable, "-IB", ROOT / "concurrent-sessions" / "verify.py"], check=True)
     subprocess.run([sys.executable, "-IB", ROOT / "formatter-screen" / "verify.py"], check=True)
+    subprocess.run([sys.executable, "-IB", ROOT / "moved-branch" / "verify.py"], check=True)
     print("The SDK, source, schedules, native-input controls and available paired endpoints agree.")
 
 

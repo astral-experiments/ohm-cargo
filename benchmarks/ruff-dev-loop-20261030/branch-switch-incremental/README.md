@@ -12,6 +12,8 @@ Each row is a complete ordinary Cargo invocation on a return to a previously bui
 | --- | --- | ---: | ---: | ---: | ---: |
 | `cargo build` | A | 8.960 s | 2.648 s | 3.39× | 3.23–3.49× |
 | `cargo build` | B | 9.029 s | 2.710 s | 3.33× | 3.18–3.44× |
+| `cargo test --no-run` | A | 11.643 s | 3.498 s | 3.32× | 3.20–3.56× |
+| `cargo test --no-run` | B | 11.653 s | 3.427 s | 3.35× | 3.23–3.52× |
 | `cargo check` | A | 7.146 s | 2.090 s | 3.44× | 3.30–3.64× |
 | `cargo check` | B | 7.175 s | 2.093 s | 3.42× | 3.33–3.51× |
 
@@ -20,6 +22,7 @@ The intervals use order statistics on the within-pair ratios, with Bonferroni co
 | Control | Empty A, parent / candidate | First B, parent / candidate | Unchanged B, parent / candidate | Extra retained on return A / B |
 | --- | ---: | ---: | ---: | ---: |
 | `cargo build` | 36.195 / 36.025 s | 8.941 / 8.826 s | 0.187 / 0.210 s | 92 / 124 MiB |
+| `cargo test --no-run` | 67.792 / 67.615 s | 11.534 / 11.412 s | 0.212 / 0.211 s | 101 / 137 MiB |
 | `cargo check` | 27.191 / 27.409 s | 7.138 / 7.007 s | 0.175 / 0.173 s | 58 / 70 MiB |
 
 Storage counts allocated filesystem blocks for the two crates’ finalized incremental sessions, deduplicated by inode. Other target and build-directory files are outside that total. The compiler can retain one previous checkout alongside the latest session. Ordinary serial builds on a single branch keep one session.
@@ -54,6 +57,10 @@ python3 -IB replay.py --parent-sdk "$PARENT_SDK" --candidate-sdk "$CANDIDATE_SDK
 ```
 
 Each output path must be new. Supply `--offline` to use an existing populated Cargo registry cache and `--pack <ruff.pack>` to use a local copy of both Git trees. Each arm records Cargo’s raw JSON, process timings and verdicts under the output directory. The cold references are retained separately. The compressed measurement files carry the paired observations plus SHA-256 commitments to the original streams. The complete kernel traces and Callgrind outputs were independently reopened to produce these projections.
+
+## A branch that advances while checked out elsewhere
+
+The candidate selected the earlier branch session even after that branch acquired a new parser implementation. Reverting Ruff’s real unary-pattern validation made the unchanged upstream regression test fail. Restoring the implementation made it pass again. The parser compiled and the integration executable linked once on each change. Both full test executables matched their respective empty builds byte for byte. [Changed-branch workload and replay](moved-branch)
 
 ## Formatter test build
 
