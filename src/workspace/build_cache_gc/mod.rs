@@ -4,8 +4,9 @@
 //! Explicit GC reclaims legacy layouts, obsolete compilers, and idle dependencies.
 
 use std::collections::{BTreeSet, VecDeque};
+use std::ffi::OsStr;
 use std::fs::{self, File, Metadata, OpenOptions, TryLockError};
-use std::io;
+use std::io::{self, Write as _};
 use std::path::{Component, Path, PathBuf};
 use std::time::{Duration, Instant, SystemTime};
 
@@ -29,9 +30,46 @@ const RENAME_BUDGET: usize = 8;
 const CONTEXT_MAX_IDLE: Duration = Duration::from_secs(60 * 60);
 const LAST_USED: &str = "last-used"; // Legacy file-based bookkeeping.
 
+mod mount_path;
 mod tracker;
 pub(crate) mod worktrees;
+use mount_path::MountPath;
 use tracker::Tracker;
+
+/// Keep the selected cache mounted throughout a batch. The mount table prevents moving
+/// a tree with a nested mount; descriptor-relative lookup also checks mounts added later.
+struct SharedRoot {
+    directory: MountPath,
+    #[cfg(target_os = "linux")]
+    mounts: worktrees::mounts::Mounts,
+}
+
+impl SharedRoot {
+    fn open(root: &Path) -> CargoResult<Self> {
+        Ok(Self {
+            directory: MountPath::root(root)?,
+            #[cfg(target_os = "linux")]
+            mounts: worktrees::mounts::Mounts::read(root)?,
+        })
+    }
+
+    fn blocked(&self, path: &Path, recursive: bool, summary: &mut Summary<'_>) -> bool {
+        #[cfg(target_os = "linux")]
+        return self.mounts.blocked(path, recursive, summary);
+        #[cfg(not(target_os = "linux"))]
+        {
+            let _ = (path, recursive, summary);
+            false
+        }
+    }
+
+    fn parent(&self, path: &Path) -> CargoResult<MountPath> {
+        let parent = path.parent().context("cache entry has no parent")?;
+        Ok(self
+            .directory
+            .child_dir(parent.strip_prefix(self.directory.path())?)?)
+    }
+}
 
 /// Refreshes context and dependency activity at build start and completion.
 /// The caller must hold a consumer lease until this guard has been dropped.
@@ -406,6 +444,13 @@ impl Summary<'_> {
 
     /// Preserve inaccessible payloads while collecting their independent siblings.
     fn path_error<T: Default>(&mut self, path: &Path, error: anyhow::Error) -> CargoResult<T> {
+        if error
+            .downcast_ref::<io::Error>()
+            .is_some_and(|e| e.kind() == io::ErrorKind::CrossesDevices)
+        {
+            self.skip_path(path, "on a different filesystem; left untouched");
+            return Ok(T::default());
+        }
         if let Some(cause) = error.downcast_ref::<io::Error>()
             && matches!(
                 cause.kind(),
@@ -573,8 +618,13 @@ fn collect_with_lock_budget(
     if !cfg!(any(target_os = "linux", target_os = "macos")) {
         return Ok(());
     }
+    let cache = SharedRoot::open(root)?;
     ensure!(
-        regular(&root.join(Layout::SHARED_REGISTRY_CACHE_MARKER)),
+        cache
+            .directory
+            .child(Path::new(Layout::SHARED_REGISTRY_CACHE_MARKER))
+            .and_then(|marker| marker.metadata())
+            .is_ok_and(|metadata| metadata.is_file()),
         "not an owned shared registry cache"
     );
     ensure!(
@@ -584,6 +634,9 @@ fn collect_with_lock_budget(
     // Previewing a legacy cache must not enroll it or create locks. Real collection
     // installs the same consumer lock used by new builds before inspecting profiles.
     let directory = root.join(DIRECTORY);
+    if cache.blocked(&directory, true, summary) {
+        return Ok(());
+    }
     if !dry_run || !absent(&directory) {
         metadata_dir(root, !dry_run)?;
     }
@@ -602,7 +655,8 @@ fn collect_with_lock_budget(
         Some(collector)
     };
     let tracker = Tracker::existing(root, dry_run)?;
-    let profiles = profiles(root)?;
+    let mut profiles = profiles(root)?;
+    profiles.retain(|profile| !cache.blocked(profile, false, summary));
     let mut ready = Vec::new();
     let mut discovered_dependencies = VecDeque::new();
     let mut trash_roots = profiles
@@ -681,7 +735,7 @@ fn collect_with_lock_budget(
                 if trash == root.join(METADATA_TRASH) {
                     continue;
                 }
-                if retire(&namespace, root, &source, &trash, true, summary)
+                if retire(&namespace, &cache, &source, &trash, true, summary)
                     .or_else(|error| summary.path_error(&source, error))?
                 {
                     sources.push(source);
@@ -704,11 +758,20 @@ fn collect_with_lock_budget(
                 continue;
             }
             counted.insert(source.clone());
-            let device = filesystem_device(&fs::symlink_metadata(&source)?);
-            remove_bounded(&source, device, &mut remaining, summary, true, None)?;
+            let parent = cache.parent(&source)?;
+            let device = filesystem_device(&parent.metadata()?);
+            remove_bounded(
+                &parent,
+                source.file_name().unwrap(),
+                device,
+                &mut remaining,
+                summary,
+                true,
+                None,
+            )?;
         }
         for trash in trash_roots {
-            drain_trash(&trash, &mut remaining, summary, true, None)?;
+            drain_trash(&cache, &trash, &mut remaining, summary, true, None)?;
         }
         return Ok(());
     }
@@ -820,7 +883,7 @@ fn collect_with_lock_budget(
                     partial = true;
                     break;
                 }
-                if retire(&namespace, root, source, trash, false, summary)
+                if retire(&namespace, &cache, source, trash, false, summary)
                     .or_else(|error| summary.path_error(source, error))?
                 {
                     remaining -= 1;
@@ -837,7 +900,7 @@ fn collect_with_lock_budget(
                     .iter()
                     .all(|(source, _)| safely_absent(root, source));
             if completed {
-                if namespace.finish(&directory, tracker.as_ref(), summary)? {
+                if namespace.finish(&cache, tracker.as_ref(), summary)? {
                     summary.retired += 1;
                 } else {
                     summary.advanced |= namespace.defer(&mut state.deferred);
@@ -864,10 +927,11 @@ fn collect_with_lock_budget(
     // starts or another context remains in use.
     let mut remaining = DELETE_BUDGET;
     for trash in trash_roots {
-        drain_trash(&trash, &mut remaining, summary, false, None)?;
+        drain_trash(&cache, &trash, &mut remaining, summary, false, None)?;
     }
     let mut metadata_summary = Summary::default();
     drain_trash(
+        &cache,
         &root.join(METADATA_TRASH),
         &mut remaining,
         &mut metadata_summary,
@@ -1222,10 +1286,11 @@ impl Namespace {
 
     fn finish(
         &self,
-        directory: &Path,
+        cache: &SharedRoot,
         tracker: Option<&Tracker>,
         summary: &mut Summary<'_>,
     ) -> CargoResult<bool> {
+        let directory = cache.directory.path().join(DIRECTORY);
         let paths = match self {
             Self::Dependency { .. } | Self::ThinLto { .. } | Self::LegacyThinLto(_) => Vec::new(),
             Self::Context(id) => vec![
@@ -1237,9 +1302,16 @@ impl Namespace {
             }
         };
         for path in paths {
-            if plain_ancestors(directory, &path)?
-                && regular(&path)
-                && let Err(error) = fs::remove_file(&path)
+            if cache.blocked(&path, false, summary) {
+                return Ok(false);
+            }
+            if !plain_ancestors(&directory, &path)? || !regular(&path) {
+                continue;
+            }
+            let parent = cache.parent(&path)?;
+            let name = path.file_name().unwrap();
+            if parent.child(Path::new(name))?.metadata()?.is_file()
+                && let Err(error) = fs::remove_file(parent.address().join(name))
             {
                 return summary.path_error(&path, error.into());
             }
@@ -1424,14 +1496,14 @@ fn safely_absent(root: &Path, path: &Path) -> bool {
 
 fn retire(
     namespace: &Namespace,
-    root: &Path,
+    cache: &SharedRoot,
     source: &Path,
     trash: &Path,
     dry_run: bool,
     summary: &mut Summary<'_>,
 ) -> CargoResult<bool> {
     retire_path(
-        root,
+        cache,
         source,
         trash,
         dry_run,
@@ -1443,7 +1515,7 @@ fn retire(
 }
 
 fn retire_path(
-    root: &Path,
+    cache: &SharedRoot,
     source: &Path,
     trash: &Path,
     dry_run: bool,
@@ -1451,6 +1523,10 @@ fn retire_path(
     non_directory_reason: Option<&str>,
     allow_symlink: bool,
 ) -> CargoResult<bool> {
+    let root = cache.directory.path();
+    if cache.blocked(source, true, summary) || cache.blocked(trash, false, summary) {
+        return Ok(false);
+    }
     if safely_absent(root, source) {
         return Ok(false);
     }
@@ -1458,7 +1534,9 @@ fn retire_path(
         summary.skip_path(source, "parent is not a plain directory");
         return Ok(false);
     }
-    let metadata = fs::symlink_metadata(source)?;
+    let source_parent = cache.parent(source)?;
+    let source_name = source.file_name().unwrap();
+    let metadata = source_parent.child(Path::new(source_name))?.metadata()?;
     if let Some(reason) = non_directory_reason
         && !metadata.is_dir()
     {
@@ -1469,8 +1547,9 @@ fn retire_path(
         summary.skip_path(source, "not a regular file or directory");
         return Ok(false);
     }
-    if filesystem_device(&metadata)
-        != filesystem_device(&fs::symlink_metadata(trash.parent().unwrap())?)
+    let trash_parent = cache.parent(trash)?;
+    if (!cfg!(target_os = "linux") || metadata.is_dir())
+        && filesystem_device(&metadata) != filesystem_device(&trash_parent.metadata()?)
     {
         summary.skip_path(
             source,
@@ -1481,13 +1560,34 @@ fn retire_path(
     if dry_run {
         return Ok(true);
     }
-    create_plain(trash)?;
-    let stage = tempfile::Builder::new()
+    let trash_name = trash.file_name().unwrap();
+    create_plain(&trash_parent.address().join(trash_name))?;
+    let trash_dir = trash_parent.child_dir(Path::new(trash_name))?;
+    let stage_path = tempfile::Builder::new()
         .prefix("entry-")
-        .tempdir_in(trash)?;
-    fs::write(stage.path().join("owner"), b"ohm-build-gc-v1\n")?;
-    // A separate mount fails rename. Never fall back to recursive source deletion.
-    if let Err(error) = fs::rename(source, stage.path().join("payload")) {
+        .tempdir_in(trash_dir.address())?
+        // TempDir's recursive cleanup cannot check for mountpoints.
+        .keep();
+    let stage_name = stage_path.file_name().unwrap();
+    let moved = trash_dir
+        .child_dir(Path::new(stage_name))
+        .and_then(|stage| {
+            let owner = stage.address().join("owner");
+            let mut marker = File::create_new(&owner)?;
+            let result = marker.write_all(b"ohm-build-gc-v1\n").and_then(|()| {
+                fs::rename(
+                    source_parent.address().join(source_name),
+                    stage.address().join("payload"),
+                )
+            });
+            if result.is_err() {
+                fs::remove_file(owner)?;
+            }
+            result
+        });
+    if let Err(error) = moved {
+        // Only undo the empty stage. Never recursively delete an unexpected entry.
+        fs::remove_dir(trash_dir.address().join(stage_name))?;
         if error.kind() == io::ErrorKind::CrossesDevices {
             summary.skip_path(
                 source,
@@ -1498,33 +1598,49 @@ fn retire_path(
         return Err(error)
             .with_context(|| format!("failed to move {} into cleanup trash", source.display()));
     }
-    let _ = stage.keep();
     Ok(true)
 }
 
 fn drain_trash(
+    cache: &SharedRoot,
     trash: &Path,
     remaining: &mut usize,
     summary: &mut Summary<'_>,
     dry_run: bool,
     bookkeeping: Option<&str>,
 ) -> CargoResult<()> {
-    if !plain_directory(trash) {
+    if !plain_directory(trash) || cache.blocked(trash, false, summary) {
         return Ok(());
     }
-    let Some(entries) = summary.payload_entries(trash)? else {
-        return Ok(());
+    let directory = cache
+        .directory
+        .child_dir(trash.strip_prefix(cache.directory.path())?)?;
+    let device = filesystem_device(&directory.metadata()?);
+    let entries = match fs::read_dir(directory.address()) {
+        Ok(entries) => entries,
+        Err(error) => return summary.path_error(trash, error.into()),
     };
-    let device = filesystem_device(&fs::symlink_metadata(trash)?);
     for entry in entries {
         summary.tick();
         let entry = entry?;
         if !entry.file_type()?.is_dir() {
             continue;
         }
-        let path = entry.path();
-        drain_entry(&path, device, remaining, summary, dry_run, bookkeeping)
-            .or_else(|error| summary.path_error(&path, error))?;
+        let name = entry.file_name();
+        let path = trash.join(&name);
+        if cache.blocked(&path, true, summary) {
+            continue;
+        }
+        drain_entry(
+            &directory,
+            &name,
+            device,
+            remaining,
+            summary,
+            dry_run,
+            bookkeeping,
+        )
+        .or_else(|error| summary.path_error(&path, error))?;
         if !dry_run && *remaining < 2 {
             summary.pending = true;
             break;
@@ -1535,41 +1651,43 @@ fn drain_trash(
 
 /// A blocked entry in the trash must not prevent draining another retired path.
 fn drain_entry(
-    path: &Path,
+    trash: &MountPath,
+    name: &OsStr,
     device: u64,
     remaining: &mut usize,
     summary: &mut Summary<'_>,
     dry_run: bool,
     bookkeeping: Option<&str>,
 ) -> CargoResult<()> {
-    let owner = path.join("owner");
-    match fs::symlink_metadata(&owner) {
-        Ok(metadata) if !metadata.is_file() => return Ok(()),
+    let entry = trash.child_dir(Path::new(name))?;
+    let owner = match entry.child(Path::new("owner")) {
+        Ok(owner) if owner.metadata()?.is_file() => owner,
+        Ok(_) => return Ok(()),
         Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(()),
         Err(error) => return Err(error.into()),
-        Ok(_) => {}
-    }
-    if fs::read(&owner)? != b"ohm-build-gc-v1\n" {
+    };
+    if fs::read(owner.address())? != b"ohm-build-gc-v1\n" {
         return Ok(());
     }
-    if fs::read_dir(path)?.any(|child| {
+    if fs::read_dir(entry.address())?.any(|child| {
         !child.is_ok_and(|child| child.file_name() == "owner" || child.file_name() == "payload")
     }) {
         return Ok(());
     }
-    let payload = path.join("payload");
+    let payload = entry.path().join("payload");
     let bookkeeping = bookkeeping.map(|name| payload.join(name));
-    remove_bounded(
-        &payload,
+    let complete = remove_bounded(
+        &entry,
+        OsStr::new("payload"),
         device,
         remaining,
         summary,
         dry_run,
         bookkeeping.as_deref(),
     )?;
-    if !dry_run && absent(&payload) && *remaining >= 2 {
-        fs::remove_file(owner)?;
-        fs::remove_dir(path)?;
+    if !dry_run && complete && *remaining >= 2 && absent(&entry.address().join("payload")) {
+        fs::remove_file(entry.address().join("owner"))?;
+        fs::remove_dir(trash.address().join(name))?;
         *remaining -= 2;
         summary.deleted_entries += 2;
     }
@@ -1578,46 +1696,61 @@ fn drain_entry(
 
 /// Visits siblings after a skipped subtree, but never removes its ancestors.
 fn remove_bounded(
-    path: &Path,
+    parent: &MountPath,
+    name: &OsStr,
     device: u64,
     remaining: &mut usize,
     summary: &mut Summary<'_>,
     dry_run: bool,
     bookkeeping: Option<&Path>,
 ) -> CargoResult<bool> {
-    remove_entry(path, device, remaining, summary, dry_run, bookkeeping)
-        .or_else(|error| summary.path_error(path, error))
+    remove_entry(
+        parent,
+        name,
+        device,
+        remaining,
+        summary,
+        dry_run,
+        bookkeeping,
+    )
+    .or_else(|error| summary.path_error(&parent.path().join(name), error))
 }
 
 fn remove_entry(
-    path: &Path,
+    parent: &MountPath,
+    name: &OsStr,
     device: u64,
     remaining: &mut usize,
     summary: &mut Summary<'_>,
     dry_run: bool,
     bookkeeping: Option<&Path>,
 ) -> CargoResult<bool> {
-    if absent(path) {
-        return Ok(true);
-    }
+    let entry = match parent.child(Path::new(name)) {
+        Ok(entry) => entry,
+        Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(true),
+        Err(error) => return Err(error.into()),
+    };
+    let path = entry.path();
     if *remaining == 0 {
         return Ok(false);
     }
-    let metadata = fs::symlink_metadata(path)?;
-    if filesystem_device(&metadata) != device {
+    let metadata = entry.metadata()?;
+    // Overlayfs can report a different device for ordinary files on the same Linux mount.
+    if (!cfg!(target_os = "linux") || metadata.is_dir()) && filesystem_device(&metadata) != device {
         summary.skip_path(path, "on a different filesystem; left untouched");
         return Ok(false);
     }
     if metadata.is_dir() {
         let mut complete = true;
-        for child in
-            fs::read_dir(path).with_context(|| format!("failed to read {}", path.display()))?
+        for child in fs::read_dir(entry.address())
+            .with_context(|| format!("failed to read {}", path.display()))?
         {
             if *remaining == 0 {
                 return Ok(false);
             }
             complete &= remove_bounded(
-                &child?.path(),
+                &entry,
+                &child?.file_name(),
                 device,
                 remaining,
                 summary,
@@ -1628,7 +1761,7 @@ fn remove_entry(
         if *remaining == 0 || !complete {
             return Ok(false);
         }
-        if !dry_run && let Err(error) = fs::remove_dir(path) {
+        if !dry_run && let Err(error) = fs::remove_dir(parent.address().join(name)) {
             if error.kind() == io::ErrorKind::DirectoryNotEmpty {
                 summary.skip_path(path, "directory contents changed during cleanup");
                 return Ok(false);
@@ -1636,7 +1769,8 @@ fn remove_entry(
             return Err(error).with_context(|| format!("failed to remove {}", path.display()));
         }
     } else if !dry_run {
-        fs::remove_file(path).with_context(|| format!("failed to remove {}", path.display()))?;
+        fs::remove_file(parent.address().join(name))
+            .with_context(|| format!("failed to remove {}", path.display()))?;
     }
     *remaining -= 1;
     summary.deleted_entries += 1;
@@ -1984,7 +2118,7 @@ mod tests {
             let retired = cache.artifact("retired")?;
             assert!(retire(
                 &Namespace::Context(idle.to_owned()),
-                &cache.root,
+                &SharedRoot::open(&cache.root)?,
                 &retired,
                 &cache.profile.join(TRASH),
                 false,
@@ -3094,15 +3228,57 @@ mod tests {
         Ok(())
     }
 
+    #[cfg(target_os = "linux")]
+    #[test]
+    fn shared_cleanup_preserves_a_nested_mount_in_active_and_retired_trees() -> CargoResult<()> {
+        let files = Cache::new()?;
+        let source = files.artifact("build/registries/abcdef")?;
+        let trash = files.profile.join(TRASH);
+        let retired = trash.join("entry-blocked");
+        let healthy = trash.join("entry-ordinary");
+        for stage in [&retired, &healthy] {
+            fs::create_dir_all(stage.join("payload"))?;
+            fs::write(stage.join("owner"), b"ohm-build-gc-v1\n")?;
+            fs::write(stage.join("payload/file"), b"data")?;
+        }
+        let mut cache = SharedRoot::open(&files.root)?;
+        cache.mounts = worktrees::mounts::Mounts::for_test(vec![
+            source.join("artifact"),
+            retired.join("payload/file"),
+        ]);
+        for dry_run in [true, false] {
+            let mut summary = Summary::default();
+            assert!(!retire(
+                &Namespace::Context("abcdef".to_owned()),
+                &cache,
+                &source,
+                &trash,
+                dry_run,
+                &mut summary,
+            )?);
+            let mut budget = DELETE_BUDGET;
+            drain_trash(&cache, &trash, &mut budget, &mut summary, dry_run, None)?;
+            assert_eq!(summary.counts.files, 1);
+            assert_eq!(summary.counts.bytes, 4);
+            assert_eq!(fs::read(source.join("artifact"))?, b"cached");
+            assert_eq!(fs::read(retired.join("payload/file"))?, b"data");
+            assert_eq!(healthy.exists(), dry_run);
+        }
+        Ok(())
+    }
+
     #[test]
     fn trash_does_not_delete_another_filesystem() -> CargoResult<()> {
         let cache = Cache::new()?;
         let payload = cache.artifact("payload")?;
+        let parent = MountPath::root(payload.parent().unwrap())?;
+        let name = payload.file_name().unwrap();
         let wrong_device = filesystem_device(&fs::symlink_metadata(&payload)?) ^ 1;
         let mut remaining = DELETE_BUDGET;
         let mut summary = Summary::default();
         remove_bounded(
-            &payload,
+            &parent,
+            name,
             wrong_device,
             &mut remaining,
             &mut summary,
@@ -3120,7 +3296,8 @@ mod tests {
             )]
         );
         remove_bounded(
-            &payload,
+            &parent,
+            name,
             wrong_device,
             &mut remaining,
             &mut summary,
@@ -3373,7 +3550,7 @@ mod tests {
         let source = cache.profile.join("build/registries/abcdef");
         assert!(!retire(
             &Namespace::Context("abcdef".to_owned()),
-            &cache.root,
+            &SharedRoot::open(&cache.root)?,
             &source,
             &cache.profile.join(TRASH),
             false,
