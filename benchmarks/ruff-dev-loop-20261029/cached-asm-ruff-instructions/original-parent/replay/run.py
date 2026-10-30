@@ -12,6 +12,8 @@ import tempfile
 
 HERE = Path(__file__).resolve().parent
 DATA = HERE.parent
+sys.path.insert(0, str(HERE))
+from counts import actual_ir
 ROOT = "ruff_python_ast"
 WILD = Path("lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld/ld.bfd")
 S = json.loads((DATA / "sources.json").read_bytes())
@@ -169,7 +171,6 @@ def main():
         terminal=read(f/"terminal.json")
         require(terminal["consumer"]["native"]==terminal["consumer"]["profile"]==[gold["old"],gold["changed"]]
                 and read(f/"actual-dirty-argv.json")==gold["argv"],"independent native/profile/clean")
-        from counts import actual_ir
         ir=actual_ir(f)
         replay_rows.append([name,direction,a,number,ir])
         print(name,ir,flush=True)
