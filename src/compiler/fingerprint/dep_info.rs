@@ -688,6 +688,9 @@ fn rustc_input_rules<'a>(contents: &'a str, output: &Path) -> Option<(Vec<&'a st
                     || rest.starts_with("# checksum:")
                     || rest.starts_with("\n# env-dep:"))
             {
+                if has_link_only_marker(&paths, &inputs[..offset], output) {
+                    paths.pop();
+                }
                 return Some((paths, rest));
             }
             let Some(next) = tail.strip_prefix(' ') else {
@@ -697,6 +700,37 @@ fn rustc_input_rules<'a>(contents: &'a str, output: &Path) -> Option<(Vec<&'a st
         }
     }
     None
+}
+
+const RECHECK_DEPENDENT_LINKS: &str = "/dev/null/ohm-recheck-dependent-links";
+
+/// Rustc omits its advisory link marker from the depfile's own rule. Real
+/// dependencies occur in both lists, even if they happen to use the marker's name.
+fn has_link_only_marker(inputs: &[&str], targets: &str, output: &Path) -> bool {
+    let Some((&RECHECK_DEPENDENT_LINKS, ordinary)) = inputs.split_last() else {
+        return false;
+    };
+    if !cfg!(unix)
+        || ordinary
+            .iter()
+            .any(|p| p.contains(['\n', '\r']) || Path::new(p) == Path::new(RECHECK_DEPENDENT_LINKS))
+    {
+        return false;
+    }
+    let Some(output) = output.to_str().filter(|p| !p.contains(['\n', '\r'])) else {
+        return false;
+    };
+    let Some((_, last_rule)) = targets.rsplit_once("\n\n") else {
+        return false;
+    };
+    let target = output.replace(' ', "\\ ").replace(':', "\\:");
+    let Some(actual) = last_rule
+        .strip_prefix(&target)
+        .and_then(|s| s.strip_prefix(": "))
+    else {
+        return false;
+    };
+    actual == ordinary.join(" ")
 }
 
 /// Parses Cargo's internal [`EncodedDepInfo`] structure that was previously
@@ -979,6 +1013,46 @@ pub enum InvalidChecksum {
 #[cfg(test)]
 mod encoded_dep_info {
     use super::*;
+
+    #[cfg(unix)]
+    #[test]
+    fn only_the_compilers_advisory_link_marker_is_omitted() {
+        let temp = tempfile::tempdir().unwrap();
+        let dep = temp.path().join("ru: st.d");
+        let target = dep
+            .to_str()
+            .unwrap()
+            .replace(' ', "\\ ")
+            .replace(':', "\\:");
+        let marker = RECHECK_DEPENDENT_LINKS;
+        let rebuild = "/dev/null/ohm-untracked-relink-inputs";
+        for (ordinary, last, marked, tracked) in [
+            ("src.rs".to_owned(), marker, true, false),
+            (format!("src.rs {marker}"), marker, false, true),
+            (format!("src.rs {marker}"), marker, true, true),
+            (
+                "src.rs /dev//null/./ohm-recheck-dependent-links".to_owned(),
+                marker,
+                true,
+                true,
+            ),
+            ("src.rs".to_owned(), rebuild, true, true),
+        ] {
+            let inputs = if marked {
+                format!("{ordinary} {last}")
+            } else {
+                ordinary.clone()
+            };
+            let mut data = format!("lib.rlib: {inputs}\n\n{target}: {ordinary}\n\n");
+            for path in inputs.split(' ') {
+                data.push_str(&format!("{path}:\n"));
+            }
+            std::fs::write(&dep, data).unwrap();
+            let files = parse_rustc_dep_info(&dep).unwrap().files;
+            assert!(files.contains_key(Path::new("src.rs")));
+            assert_eq!(files.contains_key(Path::new(last)), tracked);
+        }
+    }
 
     #[test]
     fn input_rule_separators_are_independent_of_filename_bytes() {
