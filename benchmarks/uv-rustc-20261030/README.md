@@ -33,6 +33,14 @@ The two earlier package attempts each contribute zero usable pairs and p = 1. Th
 
 ## Reproduce
 
+Download the [one-command verifier](replay-combined.py) and the [full-package observations](package-test-v3-combined.zip) into the same directory. Python 3.11 or newer can recompute the wall times and confidence interval without a compiler SDK.
+
+```sh
+python3 -ISB replay-combined.py package-test-v3-combined.zip
+```
+
+The verifier checks the downloaded packet’s digest and replays the original scorer on its 12 raw pairs. To measure fresh builds on another machine, use the source and compiler instructions below.
+
 [Raw observations and standalone verifier](tool-test-pairs.zip) · [Per-pair clocks](tool-test-pairs.csv) · [Machine-readable statistics](tool-test-result.json) · [Fresh-run scripts, exact compiler patches and SDK identities](rerun.zip)
 
 Unpack `tool-test-pairs.zip` and run `python3 -ISB fresh-edit/verify.py` to recompute the times, verify all three output hashes and check the test inventory. To run fresh builds, unpack `rerun.zip` and follow its `README.md` and `REBUILD.md`. `PACKAGE.md` covers the full `cargo test -p uv --no-run`. Both runners pin Git abbreviation in their private clone and check the uv version description.
