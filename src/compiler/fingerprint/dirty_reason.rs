@@ -344,7 +344,7 @@ impl DirtyReason {
                 }
             },
             DirtyReason::PreviousBuildIncomplete => {
-                s.dirty_because(unit, "the previous build did not finish successfully")
+                s.dirty_because(unit, "the previous build has no matching fingerprint")
             }
             DirtyReason::NothingObvious => {
                 // See comment in fingerprint compare method.
