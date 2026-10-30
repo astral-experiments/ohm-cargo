@@ -171,6 +171,9 @@ def main():
         if cli_plan.is_dir():
             for script in ("analyze.py", "test_plan.py"):
                 subprocess.run([sys.executable, "-IB", script], cwd=cli_plan, check=True)
+        external = cli_plan.with_name("registration-external-receipts")
+        if external.is_dir():
+            subprocess.run([sys.executable, "-IB", external / "test_registration.py", cli_plan], check=True)
     if (ROOT / "check-test-instructions").exists():
         subprocess.run([sys.executable, "-IB", ROOT / "check-test-instructions" / "verify.py"], check=True)
     if (ROOT / "opt-in" / "compiler.json").is_file():

@@ -1,0 +1,134 @@
+{
+  "accepted_archives": 7,
+  "all_named_writes_after_blocking_wait": true,
+  "bounded_receiver": {
+    "after_fallocate_allocation": 16777216,
+    "after_format_allocation": 11476992,
+    "backing": "private RAM for scaled formatting and ENOSPC; separate real ext4 fsync proof",
+    "image_bytes": 16777216,
+    "unchanged_image_digest": "7edc13b995ecd53064a40a1be810c0a48b8558f8ca2f2fc6f2aef829adec5831"
+  },
+  "external_ext4_full_errno": 28,
+  "fd_reconnect": [
+    {
+      "archive": "6f576748ca2ce5b2d74ec739bcab346a1def3553d162873e32103fb9184132dd",
+      "exit": 0,
+      "files": {
+        "failure-artifacts/reader.elf": [
+          15840,
+          "22b2c872951f49712f556c32516470d9c26f8acb04d7b9009833e3484533bf01"
+        ],
+        "failure-artifacts/ruff.elf": [
+          15840,
+          "22b2c872951f49712f556c32516470d9c26f8acb04d7b9009833e3484533bf01"
+        ]
+      }
+    },
+    {
+      "archive": "91f8d0fa5e7836b4f6a2de40867142b28eedc5c2416fc9057e926e0bc019ebc0",
+      "exit": 101,
+      "files": {
+        "failure-artifacts/reader.elf": [
+          15840,
+          "22b2c872951f49712f556c32516470d9c26f8acb04d7b9009833e3484533bf01"
+        ],
+        "failure-artifacts/ruff.elf": [
+          15840,
+          "3ade513e8167a8c5d58c9847ff9ec866b3dffed20e7d82f9d56441444226d98a"
+        ]
+      }
+    }
+  ],
+  "kernel_read_only_rejections": [
+    30,
+    30,
+    30
+  ],
+  "malformed_input": "e8f8d566de312f575716de5c76bde8f1706f76edb68898cdbf8e3b59623f24b4",
+  "malformed_link_exit": 1,
+  "measured_samples": 0,
+  "ordinary": [
+    [
+      "cold",
+      0,
+      17,
+      "636c92459383b30d8451079248cb09413fad81f19074cdd8a47a9f6dfbc77765"
+    ],
+    [
+      "edit",
+      0,
+      29,
+      "51225285badaf560d01d22484aee959843a73d8dca928a256615fdbc4b85b6a2"
+    ],
+    [
+      "fresh",
+      0,
+      29,
+      "51225285badaf560d01d22484aee959843a73d8dca928a256615fdbc4b85b6a2"
+    ],
+    [
+      "invalid",
+      101,
+      null,
+      null
+    ],
+    [
+      "repair",
+      0,
+      29,
+      "51225285badaf560d01d22484aee959843a73d8dca928a256615fdbc4b85b6a2"
+    ]
+  ],
+  "physical_non_ram_lower_fsync": "bd4faf722cf4dbba663ca7ef86eedecbc07126a6e99d537596944d75bd9cb9d6",
+  "positive_output": "22b2c872951f49712f556c32516470d9c26f8acb04d7b9009833e3484533bf01",
+  "private_raw_receipts": {
+    "image-allocation.json": "7366fba01a298077e0c72d8a276ee551e3082d5043c34654b2bb0a52a2c8fc5d",
+    "io-result.json": "81c55091386ff74bba1a99fc37b49c02a8907eba15f7c183c3ae94db47daca13",
+    "nested.json": "90bef0d6c9c4a2b761316b59428d5fb62cb63f9500ab31c2347cde112d255bf8",
+    "raw.json": "c93c8501cd83e7ad1b6e2a13a4889bcba842b76ecc0c4bafbc930c493cdacad4",
+    "receiver-result.json": "bdb21136679fea04751addf2b452a5f9c46b35f0a5ce7c6a1b2304db786d281e"
+  },
+  "raw_spool_full_errno": 28,
+  "real_coordinator_met_production_resource_rules": false,
+  "real_enospc": 28,
+  "selector": [
+    "original",
+    "external-home",
+    "wait",
+    "wait",
+    "wait"
+  ],
+  "six_unscored_timer_calibrations": 6,
+  "small_block_disk_file_and_directory_fsync_observed": true,
+  "source_and_kit": {
+    "cargo": "cargo 1.99.0-dev (7caf39914 2026-10-28) (ohm-1.99.0-18)\nrelease: 1.99.0-dev\ncommit-hash: 7caf39914da1e28a67744ecbc963a5f26361474d\ncommit-date: 2026-10-28\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.6.3)\nssl: OpenSSL 3.6.3 9 Jun 2026\nos: Ubuntu 24.4.0 (noble) [64-bit]",
+    "compiler": "rustc 1.99.0-dev (a4fa11bcd 2026-10-28) (ohm-1.99.0-18)\nbinary: rustc\ncommit-hash: a4fa11bcd38280639cb94daacc125472657db6c3\ncommit-date: 2026-10-28\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-dev\nLLVM version: 23.1.1",
+    "ordinary_timer": "6f65efcd5a68b79766cca27069c2e200cd4db7b1c01c6fbebb19d7bb98913df5",
+    "physical_sdk": {
+      "cargo": [
+        38918472,
+        "02a86ebd2d9e4f237b33f212102b81ed145eb77fae090d67e379cb6f1d70a573"
+      ],
+      "driver": [
+        162599552,
+        "a7648053cbad025c1bb0bebb7009ce9e1515bdb02e8c30bef29b52a881e5b8de"
+      ],
+      "rustc": [
+        171720,
+        "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60"
+      ],
+      "wild": [
+        10319072,
+        "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+      ]
+    }
+  },
+  "unpublished_partial_preserved": true,
+  "whole_raw": {
+    "all_original_bytes_reopened": true,
+    "members": 56,
+    "sha256": "0d69984b87afce56e59de9607e22317926c195d6947cfc9db1cf9763e29554c5",
+    "size": 3435834
+  },
+  "wrong_output": "3ade513e8167a8c5d58c9847ff9ec866b3dffed20e7d82f9d56441444226d98a"
+}

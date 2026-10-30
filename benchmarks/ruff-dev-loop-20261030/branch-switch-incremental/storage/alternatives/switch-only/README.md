@@ -102,3 +102,5 @@ On Apple Silicon, the native job passed all 8 incremental unit tests and all 4 s
 ## Full Ruff CLI timing protocol
 
 A separately registered comparison uses the same physical compiler to build the complete Ruff executable with the option off and on. Two fresh pilot pairs must exceed 2× on all four branch returns before twelve new pairs can start. The protocol reports first-visit cost, child CPU and complete storage for every installation. [Frozen schedule, admission rules, verifier and rerun instructions](full-cli-timing/registration)
+
+If the original host has too little free scratch to archive the receipts, a separately registered collector can put the receipts on a different volume after Cargo exits. The workload, timing, schedule and thresholds stay the same. [Selection rule and independent calibration](full-cli-timing/registration-external-receipts)
