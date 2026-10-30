@@ -1,0 +1,58 @@
+{
+  "forward-P": {
+    "profile": "de34a906520bc90ede4e40d662dabdeec9bfd62c44fd5fca4de50fc5678f09ac",
+    "selected_edges": [
+      {
+        "callee": "<rustc_middle::ty::context::TyCtxt>::instance_mir",
+        "caller": "<core::slice::iter::Iter<rustc_middle::mono::CodegenUnit> as core::iter::traits::iterator::Iterator>::any::<rustc_codegen_ssa::base::has_untracked_relink_inputs<rustc_codegen_llvm::asm::relink_inputs::{closure#0}>::{closure#0}>",
+        "calls": 10049,
+        "inclusive_Ir": 289856940
+      }
+    ]
+  },
+  "forward-Q": {
+    "profile": "5eb465113ddce50bc876221dbcd5c9234d1f948a11ecdd47e42b92f4405d8f92",
+    "selected_edges": [
+      {
+        "callee": "rustc_query_impl::query_vtables::ohm_has_inline_asm::execute_query_incr::__rust_end_short_backtrace",
+        "caller": "<core::slice::iter::Iter<rustc_middle::mono::CodegenUnit> as core::iter::traits::iterator::Iterator>::any::<rustc_codegen_ssa::base::any_untracked_codegen_input<rustc_codegen_ssa::base::has_untracked_inline_asm_inputs<rustc_codegen_llvm::asm::relink_inputs::{closure#0}>::{closure#0}>::{closure#0}>",
+        "calls": 4103,
+        "inclusive_Ir": 10631902
+      },
+      {
+        "callee": "<rustc_middle::ty::context::TyCtxt>::instance_mir",
+        "caller": "<core::slice::iter::Iter<rustc_middle::mono::CodegenUnit> as core::iter::traits::iterator::Iterator>::any::<rustc_codegen_ssa::base::any_untracked_codegen_input<rustc_codegen_ssa::base::has_untracked_inline_asm_inputs<rustc_codegen_llvm::asm::relink_inputs::{closure#0}>::{closure#0}>::{closure#0}>",
+        "calls": 1,
+        "inclusive_Ir": 22528
+      }
+    ]
+  },
+  "reverse-P": {
+    "profile": "4d53d87d804f03d0825d1fa0c8ceae984a34904a5dc819194453d37c027372fe",
+    "selected_edges": [
+      {
+        "callee": "<rustc_middle::ty::context::TyCtxt>::instance_mir",
+        "caller": "<core::slice::iter::Iter<rustc_middle::mono::CodegenUnit> as core::iter::traits::iterator::Iterator>::any::<rustc_codegen_ssa::base::has_untracked_relink_inputs<rustc_codegen_llvm::asm::relink_inputs::{closure#0}>::{closure#0}>",
+        "calls": 10049,
+        "inclusive_Ir": 286162543
+      }
+    ]
+  },
+  "reverse-Q": {
+    "profile": "28f15f687d3b6cb4c2386052e905b97dd080545f742cb6e59717792ae05b269d",
+    "selected_edges": [
+      {
+        "callee": "rustc_query_impl::query_vtables::ohm_has_inline_asm::execute_query_incr::__rust_end_short_backtrace",
+        "caller": "<core::slice::iter::Iter<rustc_middle::mono::CodegenUnit> as core::iter::traits::iterator::Iterator>::any::<rustc_codegen_ssa::base::any_untracked_codegen_input<rustc_codegen_ssa::base::has_untracked_inline_asm_inputs<rustc_codegen_llvm::asm::relink_inputs::{closure#0}>::{closure#0}>::{closure#0}>",
+        "calls": 4103,
+        "inclusive_Ir": 10628878
+      },
+      {
+        "callee": "<rustc_middle::ty::context::TyCtxt>::instance_mir",
+        "caller": "<core::slice::iter::Iter<rustc_middle::mono::CodegenUnit> as core::iter::traits::iterator::Iterator>::any::<rustc_codegen_ssa::base::any_untracked_codegen_input<rustc_codegen_ssa::base::has_untracked_inline_asm_inputs<rustc_codegen_llvm::asm::relink_inputs::{closure#0}>::{closure#0}>::{closure#0}>",
+        "calls": 1,
+        "inclusive_Ir": 22590
+      }
+    ]
+  }
+}

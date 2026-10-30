@@ -1,0 +1,45 @@
+{
+  "child": "2813724f18d9228075f6086d4f050a147f6e761e",
+  "common_literal_native_argv_sha256": "f7816ec2b333b3614e401213529d6de25c4a4481b83f812013d7cd5cc9777e7d",
+  "full_compressed_subjects": [
+    "68b05e1e9f4362e8c19fff1259e73abaf575a1a3e7acabbffc3babff9a685427",
+    "e496cba25fb0014abeb97af74b445605109fe13b7187c01386f67bb51a92e141"
+  ],
+  "identical_paths_and_files": 54,
+  "new_physical_native_command_count": 119,
+  "old_physical_native_command_count": 119,
+  "only_new_native_argv": [],
+  "only_old_native_argv": [],
+  "parent": "ad005f99d0b51fd62b5c237bc13b31b371a1686e",
+  "same_literal_native_argv_multiset": true,
+  "same_stage0_rustc_cargo_llvm_config": {
+    "cargo0": "ba03ac96ba5ebfff69a37d8a898e4bba90e29c1a62141cef8a759b91232b7b7e",
+    "config": "d96f73fd1f4f2a2a0e1a129b77be9d09ff9017b91d5961fe5c212edbd62368b5",
+    "llvm": "43bac9749e539cd5988a4d5452b64582cf07ac9e7c059fde29c7bee76e106c51",
+    "stage0": "6109cff145371a50c4f62b61908d2ffbf6d259b180c8effde07baa426aab682a"
+  },
+  "same_stamp": "9f8db07b69b2f58ac9b64e3c9ec1ef8decdb5d1e",
+  "sdk_member_differences": {
+    "lib/librustc_driver-15d35e5526bb94f8.so": [
+      {
+        "bytes": 143687024,
+        "mode": 493,
+        "sha256": "ab3cffaacb292cb8ce80d7561c03409df49b7fa7d0ad6a3421b8f2a588f716d4"
+      },
+      {
+        "bytes": 143741792,
+        "mode": 493,
+        "sha256": "2d658db32458ee114260b8d571f49ffa577b78986200afa25de5620139870c45"
+      }
+    ]
+  },
+  "shared_llvm": "43bac9749e539cd5988a4d5452b64582cf07ac9e7c059fde29c7bee76e106c51",
+  "source_rosters_recovered_from_enrolled_baseline": true,
+  "unchanged_std_entries": 53,
+  "verified_direct_source_changes": [
+    "compiler/rustc_codegen_llvm/src/asm.rs",
+    "compiler/rustc_codegen_ssa/src/base.rs",
+    "compiler/rustc_incremental/src/persist/file_format.rs",
+    "compiler/rustc_middle/src/queries.rs"
+  ]
+}
