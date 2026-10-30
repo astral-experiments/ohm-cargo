@@ -100,6 +100,8 @@ A separate whole-CLI storage census counted both roots after one installation pe
 
 Separate prototypes measured how far compression could reduce the storage cost. [Experimental storage and time measurements](storage/alternatives)
 
+With switch-only compression enabled on `08d49cba6aac`, twelve fresh pairs measured 3.22× and 2.65× faster returns. Complete storage was 286 → 277 MiB and 255 → 278 MiB. The first feature visit used 271 → 321 MiB. [Compiler source, native measurements and checkout-switch cost](storage/alternatives/switch-only)
+
 ## Block-backed build confirmation
 
 Twelve new pairs repeated the whole build command with both the checkout and all Cargo outputs on ext4. The OS page cache was active throughout. Each direction cleared 2× in all 12 pairs. [Block device, records and offline verification](block-device)

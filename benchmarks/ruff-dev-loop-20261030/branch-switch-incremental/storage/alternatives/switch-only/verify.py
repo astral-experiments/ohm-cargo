@@ -20,8 +20,15 @@ def verify(root, shared):
         block=gzip.decompress(sample.read_bytes());observed=json.loads(block);raw=checker.load(root/f'native-{label}.json.gz')
         assert hashlib.sha256(block).hexdigest()==raw['verified_sha256']
         assert observed['recipe']['commit']==compiler['source'] and observed['driver_sha256']==compiler['native_files'][compiler['driver']]
-        assert observed['filesystem']==('tmpfs' if observed['recipe']['pairs']==12 else 'ext4')
+        assert observed['filesystem']==('tmpfs' if observed['recipe']['pairs']==12 or observed['recipe']['instructions'] else 'ext4')
         summary=checker.check(observed,raw);assert summary==checker.load(root/f'summary-{label}.json')
+        if observed['recipe']['instructions']:
+            readback=checker.load(root/f'counter-{label}.json');assert readback['source']==compiler['source'] and readback['registered']==raw['enrollment_sha256']
+            for tag,d in readback['profiles'].items():
+                slot,phase,crate=tag.split('/');metric=observed['samples'][slot][phase];entry=metric['counts']['crates'][crate]
+                assert d['collected']==metric['compiler_Ir'][crate]==entry['Ir'] and d['reader_elf']==metric['ELF']
+                assert d['argv_sha256']==entry['argv_sha256'] and d['profile_sha256']==entry['compressed_sha256']
+            assert len(readback['profiles'])==16
         print(label,[(p,round(summary[p]['paired_median'],3),round(summary[p]['max_storage_ratio'],4)) for p in checker.TARGETS])
 
 

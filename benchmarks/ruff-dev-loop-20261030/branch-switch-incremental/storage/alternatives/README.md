@@ -1,6 +1,6 @@
 # Measuring ways to reduce the cost of a second branch
 
-These are separate research prototypes. Ohm Rust #274 retains its ordinary incremental files. For each prototype, two counterbalanced pairs switched between the historical Ruff parser branches, using a fresh installation per arm on ext4. Each return ran both rustcs, and each resulting executable matched the corresponding empty build. The storage measure counts the entire target and build directories, with hard links counted once. [Current PR footprint](..)
+The initial opt-in version of Ohm Rust #274 retained uncompressed incremental files. For each prototype below, two counterbalanced pairs switched between the historical Ruff parser branches, using a fresh installation per arm on ext4. Each return ran both rustcs, and each resulting executable matched the corresponding empty build. The storage measure counts the entire target and build directories, with hard links counted once. [Uncompressed footprint](..)
 
 | Experimental behavior | Return to parent branch | Return to feature branch | Complete storage on return, parent / feature |
 | --- | ---: | ---: | ---: |
@@ -49,4 +49,4 @@ Two fresh paired installations exercised this replay entry point in opposite ord
 
 A separately bootstrapped compiler compressed the same two tables inside rustc. Across twelve fresh pairs, parser branch returns sped up 3.05× and 2.51×. The complete settled directories measured 288 → 280 MiB returning to the parent branch and 258 → 281 MiB returning to the feature. After a switch, repeated edits on the same branch took an average of 0.38 s longer than with uncompressed two-session retention. [Compiler patch, clean binaries, timings and native disk records](native-compact)
 
-A second compiler compresses only when a newly published session follows another checkout. Two ext4 pairs kept the complete return footprint within 8.9% of one-session storage. After resuming work on a branch, six separately traced dirty parser compiles did zero packed-table operations. [Checkout switches and ordinary grammar edits](switch-only)
+A second compiler compresses only when a newly published session follows another checkout. In twelve fresh pairs, parser builds on returning to a branch were 3.22× and 2.65× faster with retention enabled. The complete directories measured 286 → 277 MiB and 255 → 278 MiB. The first feature visit used 271 → 321 MiB. Two independent ext4 pairs also kept the complete return footprint within 8.9% of one-session storage. After resuming work on a branch, six separately traced dirty parser compiles performed zero packed-table operations. [Checkout switches and ordinary grammar edits](switch-only)

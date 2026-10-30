@@ -143,10 +143,18 @@ def main():
     if compact.is_dir():
         subprocess.run([sys.executable, "-IB", compact / "verify.py"], check=True)
         subprocess.run([sys.executable, "-IB", compact / "grammar-edits" / "verify.py"], check=True)
+        full_cli = compact / "full-ruff-cli"
+        if full_cli.is_dir():
+            for name in ("verify.py", "verify-checkouts.py"):
+                subprocess.run([sys.executable, "-IB", name, "observations.json"], cwd=full_cli, check=True)
     switched = ROOT / "storage" / "alternatives" / "switch-only"
     if switched.is_dir():
         subprocess.run([sys.executable, "-IB", switched / "verify.py"], check=True)
         subprocess.run([sys.executable, "-IB", switched / "grammar-edits" / "verify.py"], check=True)
+        for verifier in (switched / "verify-verbs.py",
+                         switched / "grammar-edits" / "replay" / "check-recording.py"):
+            if verifier.is_file():
+                subprocess.run([sys.executable, "-IB", verifier], check=True)
     if (ROOT / "check-test-instructions").exists():
         subprocess.run([sys.executable, "-IB", ROOT / "check-test-instructions" / "verify.py"], check=True)
     if (ROOT / "opt-in" / "compiler.json").is_file():

@@ -1,0 +1,125 @@
+{
+  "deltas": {
+    "empty-A": {
+      "whole": [
+        2416447488,
+        2416443392,
+        -4096,
+        0.9999983049497163
+      ],
+      "incremental": [
+        1087815680,
+        1087811584,
+        -4096,
+        0.9999962346562241
+      ],
+      "peak": [
+        2416447488,
+        2416443392,
+        -4096,
+        0.9999983049497163
+      ]
+    },
+    "first-B": {
+      "whole": [
+        2528669696,
+        3047895040,
+        519225344,
+        1.2053353764714076
+      ],
+      "incremental": [
+        1200451584,
+        1719672832,
+        519221248,
+        1.4325216068022615
+      ],
+      "peak": [
+        2821394432,
+        3275218944,
+        453824512,
+        1.160851140433526
+      ]
+    },
+    "return-A": {
+      "whole": [
+        2636464128,
+        2687762432,
+        51298304,
+        1.0194572357177925
+      ],
+      "incremental": [
+        1307807744,
+        1359122432,
+        51314688,
+        1.039237180109556
+      ],
+      "peak": [
+        2975592448,
+        3249348608,
+        273756160,
+        1.0920005561191692
+      ]
+    },
+    "return-B": {
+      "whole": [
+        2417881088,
+        2695577600,
+        277696512,
+        1.1148511865940034
+      ],
+      "incremental": [
+        1089658880,
+        1367351296,
+        277692416,
+        1.2548434387099199
+      ],
+      "peak": [
+        2803851264,
+        3275161600,
+        471310336,
+        1.1680939149845004
+      ]
+    },
+    "unchanged-B": {
+      "whole": [
+        2417881088,
+        2695577600,
+        277696512,
+        1.1148511865940034
+      ],
+      "incremental": [
+        1089658880,
+        1367351296,
+        277692416,
+        1.2548434387099199
+      ],
+      "peak": [
+        2417881088,
+        2695577600,
+        277696512,
+        1.1148511865940034
+      ]
+    }
+  },
+  "all_raw_sample_streams": 12,
+  "separate_native_and_debug": {
+    "both_native_cold_receipts": true,
+    "five_archive_or_metadata_inputs_per_mode": 5,
+    "strict_original_cross_option_refusal_retained": true,
+    "full_elf_debug_path_only_by_source": {
+      "A": true,
+      "B": true
+    }
+  },
+  "rejected_mutations": [
+    "hardlink counted twice",
+    "unobserved peak",
+    "clean ELF mismatch",
+    "missing stock Wild",
+    "wrong branch semantics",
+    "false positive malformed verdict",
+    "missing packed table",
+    "changed rustc physical inode",
+    "source data charged to output volume"
+  ]
+}

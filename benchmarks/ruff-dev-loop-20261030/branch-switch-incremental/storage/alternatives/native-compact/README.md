@@ -47,3 +47,7 @@ python3 -IB opt-in/run.py --parent-sdk "$SDK" --candidate-sdk "$SDK" \
 ```
 
 From this directory, `python3 -IB verify.py` reopens both readbacks and recomputes the paired speedups, intervals and storage ratios. `python3 -IB grammar-edits/verify.py` checks the ordinary edits separately.
+
+## Complete Ruff executable
+
+One separate installation per option built the entire Ruff CLI through the same five visits. The first feature build used 495 MiB more with retention enabled (+20.5%). The returns used 49 MiB (+1.9%) and 265 MiB (+11.5%) more. The highest observed allocation over the five commands increased by 286 MiB (+10.1%). The warmed feature executable matched an independently empty build byte for byte in each setting. This study measures disk usage. [All visits, sampled allocation and native file checks](full-ruff-cli)
