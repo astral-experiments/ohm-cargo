@@ -4309,7 +4309,7 @@ fn early_cutoff_skips_dependent_rebuild() {
     );
 
     // The leaf's public API hash is unchanged, but the middle crate also has
-    // a local source change and therefore must not be skipped.
+    // a local source change. The failed build already cleared the app's fingerprint.
     p.cargo("build -v")
         .env("RUSTC_WRAPPER", &wrapper)
         .env("RUSTFLAGS", "-Zpublic-api-hash")
@@ -4320,13 +4320,14 @@ fn early_cutoff_skips_dependent_rebuild() {
 [DIRTY] middle v0.1.0 ([ROOT]/foo/middle): the file `middle/src/lib.rs` has changed ([TIME_DIFF_AFTER_LAST_BUILD])
 [COMPILING] middle v0.1.0 ([ROOT]/foo/middle)
 [RUNNING] `[..]/public-api-hash-wrapper[EXE] rustc --crate-name middle [..]`
-[DIRTY] app v0.1.0 ([ROOT]/foo): the dependency `middle` was rebuilt
+[DIRTY] app v0.1.0 ([ROOT]/foo): the previous build has no matching fingerprint
 [COMPILING] app v0.1.0 ([ROOT]/foo)
 [RUNNING] `[..]/public-api-hash-wrapper[EXE] rustc --crate-name app [..]`
 [FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
 
 "#]])
         .run();
+    p.process(&p.bin("app")).with_stdout_data("3\n").run();
 }
 
 fn assert_early_cutoff_checks_dependents(
