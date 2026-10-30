@@ -27,6 +27,10 @@ recorded(CENSUS, "audit.py", "verified.json")
 storage = recorded(CENSUS, "metrics.py", "storage.json")
 recorded(CENSUS, "mutations.py", "mutations.json")
 recorded(ROOT / "by-crate", "by-unit.py", "by-unit.json", CENSUS)
+bound = ROOT / "object-dedup-bound"
+if bound.is_dir():
+    subprocess.run(["sha256sum", "--quiet", "-c", "SHA256SUMS"], cwd=bound, check=True)
+    subprocess.run([sys.executable, "-IB", bound / "verify.py", CENSUS, "--check"], check=True)
 subprocess.run([sys.executable, "-IB", ROOT / "native/verify.py"], check=True)
 native = json.loads((ROOT / "native/native.json").read_bytes())
 for branch, compared in native["branches"].items():

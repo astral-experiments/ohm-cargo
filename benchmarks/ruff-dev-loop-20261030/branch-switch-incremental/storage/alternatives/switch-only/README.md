@@ -74,6 +74,8 @@ Separate kernel traces showed the genuine parser compiler read two packed tables
 
 Eight complete parser instruction profiles were collected for ordinary grammar edits. The preregistered equality check rejected the comparison because Cargo selected different build namespaces for the two compiler versions. A separately registered readback found five of sixteen named Rust metadata inputs differed in each block. No paired CPU effect is reported from those profiles. [All eight counts, both failed checks and physical input identities](grammar-edits/instructions)
 
+Two new compiler-only pairs supplied both compiler versions with identical physical dependencies and the same full argument vector. On the first dirty parser edit after a return, the raw two-session cache executed 11.08 billion instructions and the compact version executed 11.70 billion (+5.64%). On the immediate restore they averaged 10.94 and 10.94 billion. The two restore differences had opposite signs. All 38 invocations passed the native checks. The complete parser archives differed from clean builds in metadata, while their native objects and linked readers matched. [Direct compiler counts and physical input checks](grammar-edits/common-inputs)
+
 ## Reproduce
 
 Start from Ohm Rust `c9119d267c9843f0fb5dcbc1cc05653eac6051e3`. Apply the first compiler patch in `../native-compact/compiler.patch`, then `source/source.patch`. The complete resulting tree is `8852d19f44a404cb5f049f28bb8e9f3a127f142c`. Build the compiler using the matched toolchain setup in the main study. From the branch-switch benchmark directory, the two-pair ext4 replay is

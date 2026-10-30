@@ -15,4 +15,6 @@ Native objects added 174.2 MiB, including 90.1 MiB from `ruff_linter`. Rust meta
 
 All 12 ordinary Cargo commands produced the expected CLI and linked reader. Both branch returns matched the entire independently clean executable for their own option. Across options, every executable section matched. The differences in the full ELF were confined to the build ID and debug data for Cargo’s actual jemalloc build path. The decoder compared both entire debug streams after substituting that path. Neither the census nor this native comparison measured elapsed speedup. [Native comparison](native) · [Separate timing protocol](../full-cli-timing/registration)
 
+Of the 174.2 MiB of extra object files, at most 76.43 MiB could match an existing whole object by length. The cache already shares 889 A/B object pairs through hard links. We cannot assign any actual recoverable byte count without the object contents. [File-length bounds and existing sharing](object-dedup-bound)
+
 Run `python3 -IB verify.py` here to reopen the sample streams, recompute the file classes, replay the negative controls and reconcile all four clean binaries with the native comparison. The census contains the source-history replay command.

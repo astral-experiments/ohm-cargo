@@ -156,7 +156,8 @@ def main():
             subprocess.run([sys.executable, "-IB", current_cli], check=True)
         for verifier in (switched / "verify-verbs.py",
                          switched / "grammar-edits" / "replay" / "check-recording.py",
-                         switched / "grammar-edits" / "instructions" / "verify.py"):
+                         switched / "grammar-edits" / "instructions" / "verify.py",
+                         switched / "grammar-edits" / "common-inputs" / "verify.py"):
             if verifier.is_file():
                 subprocess.run([sys.executable, "-IB", verifier], check=True)
         replay = switched / "grammar-edits" / "replay"
