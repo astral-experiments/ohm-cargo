@@ -104,6 +104,8 @@ Separate prototypes measured how far compression could reduce the storage cost. 
 
 With switch-only compression enabled on `08d49cba6aac`, twelve fresh pairs measured 3.22× and 2.65× faster returns. Complete storage was 286 → 277 MiB and 255 → 278 MiB. The first feature visit used 271 → 321 MiB. [Compiler source, native measurements and checkout-switch cost](storage/alternatives/switch-only)
 
+The draft compiler’s full Ruff CLI census measured 2.25 → 2.51 GiB settled across both directories (+265 MiB, 11.49%). The first switch added 496 MiB. Each branch reproduced its complete clean binary within each setting. [Current whole-CLI storage and native comparisons](storage/alternatives/switch-only/full-ruff-cli)
+
 ## Block-backed build confirmation
 
 Twelve new pairs repeated the whole build command with both the checkout and all Cargo outputs on ext4. The OS page cache was active throughout. Each direction cleared 2× in all 12 pairs. [Block device, records and offline verification](block-device)

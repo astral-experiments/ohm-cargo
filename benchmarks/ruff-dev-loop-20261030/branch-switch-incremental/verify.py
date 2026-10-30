@@ -151,6 +151,9 @@ def main():
     if switched.is_dir():
         subprocess.run([sys.executable, "-IB", switched / "verify.py"], check=True)
         subprocess.run([sys.executable, "-IB", switched / "grammar-edits" / "verify.py"], check=True)
+        current_cli = switched / "full-ruff-cli" / "verify.py"
+        if current_cli.is_file():
+            subprocess.run([sys.executable, "-IB", current_cli], check=True)
         for verifier in (switched / "verify-verbs.py",
                          switched / "grammar-edits" / "replay" / "check-recording.py",
                          switched / "grammar-edits" / "instructions" / "verify.py"):

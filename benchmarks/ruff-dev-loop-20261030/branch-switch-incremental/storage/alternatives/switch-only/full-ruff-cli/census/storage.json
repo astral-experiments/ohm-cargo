@@ -1,0 +1,2249 @@
+{
+  "category_failures": {},
+  "complete_own_mode_elf_and_reader": {
+    "off-A": {
+      "cli": {
+        "bytes": 149933440,
+        "sha256": "0d33178310994503675cb55d2a35a395dfdf71d1c078d970be8056ec494215d3"
+      },
+      "consumer": "Expr=64 valid=1 rejected",
+      "equals_separately_built_8ea": false,
+      "matches_empty": true,
+      "reader": {
+        "bytes": 13231240,
+        "sha256": "87dedef6a2b66c1998dd3bc4dcca0b45dd9713fbb28985bd45a8985f58798816"
+      }
+    },
+    "off-B": {
+      "cli": {
+        "bytes": 149789624,
+        "sha256": "2a49674cf5d71b4f9145314bbf3fff1fd11e4179134596d4aff841245ef031d4"
+      },
+      "consumer": "Expr=56 valid=1 rejected",
+      "equals_separately_built_8ea": false,
+      "matches_empty": true,
+      "reader": {
+        "bytes": 13223400,
+        "sha256": "d5cdbc87717ddd119f74c4b840dd9fa2efc7cbc0af02ec5707a96ae738c839f0"
+      }
+    },
+    "on-A": {
+      "cli": {
+        "bytes": 149933440,
+        "sha256": "8218f509bf9d1b2c7228a5ffdc5f783fe45742e14e19e39f427c8f87e7d67758"
+      },
+      "consumer": "Expr=64 valid=1 rejected",
+      "equals_separately_built_8ea": false,
+      "matches_empty": true,
+      "reader": {
+        "bytes": 13231240,
+        "sha256": "87dedef6a2b66c1998dd3bc4dcca0b45dd9713fbb28985bd45a8985f58798816"
+      }
+    },
+    "on-B": {
+      "cli": {
+        "bytes": 149789624,
+        "sha256": "61eee1f72058a4bc01a6570b778a97bf2ff3f3e7a857f772739c3f8caa1bf697"
+      },
+      "consumer": "Expr=56 valid=1 rejected",
+      "equals_separately_built_8ea": false,
+      "matches_empty": true,
+      "reader": {
+        "bytes": 13223400,
+        "sha256": "d5cdbc87717ddd119f74c4b840dd9fa2efc7cbc0af02ec5707a96ae738c839f0"
+      }
+    }
+  },
+  "empty_B": {
+    "off": {
+      "incremental": 1088045056,
+      "physical": {
+        "GCC": 590,
+        "SDK rustc": 379,
+        "build script": 37,
+        "collect2": 131,
+        "stock Wild": 69
+      },
+      "sampled_max": 2416246784,
+      "size_and_sha": {
+        "bytes": 149789624,
+        "sha256": "2a49674cf5d71b4f9145314bbf3fff1fd11e4179134596d4aff841245ef031d4"
+      },
+      "whole": 2416246784
+    },
+    "on": {
+      "incremental": 1088049152,
+      "physical": {
+        "GCC": 590,
+        "SDK rustc": 379,
+        "build script": 37,
+        "collect2": 131,
+        "stock Wild": 69
+      },
+      "sampled_max": 2416250880,
+      "size_and_sha": {
+        "bytes": 149789624,
+        "sha256": "61eee1f72058a4bc01a6570b778a97bf2ff3f3e7a857f772739c3f8caa1bf697"
+      },
+      "whole": 2416250880
+    }
+  },
+  "kit_roles_matching_previous_bytes": {
+    "off-clean-B": 56,
+    "off-storage": 56,
+    "on-clean-B": 56,
+    "on-storage": 56
+  },
+  "largest_allocation_during_history": {
+    "change_bytes": 300265472,
+    "off": 2974994432,
+    "on": 3275259904,
+    "percent_from_off": 10.092975931996628
+  },
+  "ledger": {
+    "all_phase_weak_or_unknown": 0,
+    "all_reported_regular_nlink_outside_visible_roots": {
+      "off-clean-B/empty-B": {},
+      "off-storage/empty-A": {},
+      "off-storage/first-B": {},
+      "off-storage/return-A": {},
+      "off-storage/return-B": {},
+      "off-storage/unchanged-B": {},
+      "on-clean-B/empty-B": {},
+      "on-storage/empty-A": {},
+      "on-storage/first-B": {},
+      "on-storage/return-A": {},
+      "on-storage/return-B": {},
+      "on-storage/unchanged-B": {}
+    },
+    "maximum_unique_inodes": 10339,
+    "mixed_class_unique_inodes_by_visit": {
+      "off-clean-B/empty-B": 0,
+      "off-storage/empty-A": 0,
+      "off-storage/first-B": 0,
+      "off-storage/return-A": 0,
+      "off-storage/return-B": 0,
+      "off-storage/unchanged-B": 0,
+      "on-clean-B/empty-B": 0,
+      "on-storage/empty-A": 0,
+      "on-storage/first-B": 0,
+      "on-storage/return-A": 0,
+      "on-storage/return-B": 0,
+      "on-storage/unchanged-B": 0
+    },
+    "paths_per_visit": [
+      9451,
+      11444
+    ],
+    "visits": 12
+  },
+  "phases": {
+    "empty-A": {
+      "all": {
+        "change_bytes": 8192,
+        "off": 2416443392,
+        "on": 2416451584,
+        "percent_from_off": 0.0003390106313672092
+      },
+      "all_incremental": {
+        "change_bytes": 8192,
+        "off": 1087811584,
+        "on": 1087819776,
+        "percent_from_off": 0.0007530715907533292
+      },
+      "all_physical_classes": {
+        "cargo-dep-info-or-fingerprint": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 0,
+          "number_of_inodes": {
+            "off": 562,
+            "on": 562
+          },
+          "number_of_names": {
+            "off": 562,
+            "on": 562
+          },
+          "off": 6516736,
+          "on": 6516736,
+          "percent_from_off": 0.0
+        },
+        "directory": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 0,
+          "number_of_inodes": {
+            "off": 1704,
+            "on": 1704
+          },
+          "number_of_names": {
+            "off": 1704,
+            "on": 1704
+          },
+          "off": 0,
+          "on": 0,
+          "percent_from_off": null
+        },
+        "executable": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 0,
+          "number_of_inodes": {
+            "off": 38,
+            "on": 38
+          },
+          "number_of_names": {
+            "off": 39,
+            "on": 39
+          },
+          "off": 178946048,
+          "on": 178946048,
+          "percent_from_off": 0.0
+        },
+        "incremental-work-product-index": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 0,
+            "off": 290816,
+            "on": 290816,
+            "percent_from_off": 0.0
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 0,
+          "number_of_inodes": {
+            "off": 38,
+            "on": 38
+          },
+          "number_of_names": {
+            "off": 38,
+            "on": 38
+          },
+          "off": 290816,
+          "on": 290816,
+          "percent_from_off": 0.0
+        },
+        "native-library-archive": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 0,
+          "number_of_inodes": {
+            "off": 5,
+            "on": 5
+          },
+          "number_of_names": {
+            "off": 5,
+            "on": 5
+          },
+          "off": 170020864,
+          "on": 170020864,
+          "percent_from_off": 0.0
+        },
+        "native-object": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 0,
+            "off": 232337408,
+            "on": 232337408,
+            "percent_from_off": 0.0
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 0,
+          "number_of_inodes": {
+            "off": 2681,
+            "on": 2681
+          },
+          "number_of_names": {
+            "off": 2681,
+            "on": 2681
+          },
+          "off": 356757504,
+          "on": 356757504,
+          "percent_from_off": 0.0
+        },
+        "other-regular": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 0,
+            "off": 5971968,
+            "on": 5971968,
+            "percent_from_off": 0.0
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 0,
+          "number_of_inodes": {
+            "off": 3517,
+            "on": 3517
+          },
+          "number_of_names": {
+            "off": 3552,
+            "on": 3552
+          },
+          "off": 24686592,
+          "on": 24686592,
+          "percent_from_off": 0.0
+        },
+        "raw-query-and-dep-tables": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 8192,
+            "off": 807137280,
+            "on": 807145472,
+            "percent_from_off": 0.0010149450661023351
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 8192,
+          "number_of_inodes": {
+            "off": 76,
+            "on": 76
+          },
+          "number_of_names": {
+            "off": 148,
+            "on": 148
+          },
+          "off": 807137280,
+          "on": 807145472,
+          "percent_from_off": 0.0010149450661023351
+        },
+        "rust-library-archive": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 0,
+          "number_of_inodes": {
+            "off": 309,
+            "on": 309
+          },
+          "number_of_names": {
+            "off": 309,
+            "on": 309
+          },
+          "off": 495906816,
+          "on": 495906816,
+          "percent_from_off": 0.0
+        },
+        "rust-link-recipe": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 0,
+          "number_of_inodes": {
+            "off": 1,
+            "on": 1
+          },
+          "number_of_names": {
+            "off": 1,
+            "on": 1
+          },
+          "off": 147456,
+          "on": 147456,
+          "percent_from_off": 0.0
+        },
+        "rust-metadata": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 0,
+            "off": 20480,
+            "on": 20480,
+            "percent_from_off": 0.0
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 42053632,
+            "on": 42053632,
+            "percent_from_off": 0.0
+          },
+          "change_bytes": 0,
+          "number_of_inodes": {
+            "off": 311,
+            "on": 311
+          },
+          "number_of_names": {
+            "off": 381,
+            "on": 381
+          },
+          "off": 254894080,
+          "on": 254894080,
+          "percent_from_off": 0.0
+        },
+        "shared-library": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 0,
+          "number_of_inodes": {
+            "off": 31,
+            "on": 31
+          },
+          "number_of_names": {
+            "off": 31,
+            "on": 31
+          },
+          "off": 121139200,
+          "on": 121139200,
+          "percent_from_off": 0.0
+        }
+      },
+      "both_roots_same_inode": {
+        "change_bytes": 0,
+        "off": 0,
+        "on": 0,
+        "percent_from_off": null
+      },
+      "cross_class_aliases": {
+        "change_bytes": 0,
+        "off": 0,
+        "on": 0,
+        "percent_from_off": null
+      },
+      "incremental_also_named_outside": {
+        "change_bytes": 0,
+        "off": 42053632,
+        "on": 42053632,
+        "percent_from_off": 0.0
+      },
+      "incremental_only": {
+        "change_bytes": 8192,
+        "off": 1045757952,
+        "on": 1045766144,
+        "percent_from_off": 0.0007833552672753541
+      },
+      "largest_absolute_class_changes": [
+        "raw-query-and-dep-tables",
+        "cargo-dep-info-or-fingerprint",
+        "directory",
+        "executable",
+        "incremental-work-product-index",
+        "native-library-archive",
+        "native-object",
+        "other-regular",
+        "rust-library-archive",
+        "rust-link-recipe",
+        "rust-metadata",
+        "shared-library"
+      ],
+      "maximum_observed": {
+        "change_bytes": 8192,
+        "off": 2416443392,
+        "on": 2416451584,
+        "percent_from_off": 0.0003390106313672092
+      },
+      "other_change": 0,
+      "packed_tables": {
+        "change_bytes": 0,
+        "off": 0,
+        "on": 0,
+        "percent_from_off": null
+      },
+      "products": {
+        "change_bytes": 8192,
+        "off": 2416369664,
+        "on": 2416377856,
+        "percent_from_off": 0.0003390209752263118
+      },
+      "raw_tables": {
+        "change_bytes": 8192,
+        "off": 807137280,
+        "on": 807145472,
+        "percent_from_off": 0.0010149450661023351
+      },
+      "shared": {
+        "change_bytes": 0,
+        "off": 73728,
+        "on": 73728,
+        "percent_from_off": 0.0
+      },
+      "table_change": 8192
+    },
+    "first-B": {
+      "all": {
+        "change_bytes": 519622656,
+        "off": 2528419840,
+        "on": 3048042496,
+        "percent_from_off": 20.551280597450152
+      },
+      "all_incremental": {
+        "change_bytes": 519622656,
+        "off": 1200201728,
+        "on": 1719824384,
+        "percent_from_off": 43.29460988744718
+      },
+      "all_physical_classes": {
+        "cargo-dep-info-or-fingerprint": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 0,
+          "number_of_inodes": {
+            "off": 562,
+            "on": 562
+          },
+          "number_of_names": {
+            "off": 562,
+            "on": 562
+          },
+          "off": 6516736,
+          "on": 6516736,
+          "percent_from_off": 0.0
+        },
+        "directory": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 0,
+          "number_of_inodes": {
+            "off": 1704,
+            "on": 1724
+          },
+          "number_of_names": {
+            "off": 1704,
+            "on": 1724
+          },
+          "off": 0,
+          "on": 0,
+          "percent_from_off": null
+        },
+        "executable": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 0,
+          "number_of_inodes": {
+            "off": 38,
+            "on": 38
+          },
+          "number_of_names": {
+            "off": 39,
+            "on": 39
+          },
+          "off": 178802688,
+          "on": 178802688,
+          "percent_from_off": 0.0
+        },
+        "incremental-work-product-index": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 188416,
+            "off": 290816,
+            "on": 479232,
+            "percent_from_off": 64.7887323943662
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 188416,
+          "number_of_inodes": {
+            "off": 38,
+            "on": 58
+          },
+          "number_of_names": {
+            "off": 38,
+            "on": 58
+          },
+          "off": 290816,
+          "on": 479232,
+          "percent_from_off": 64.7887323943662
+        },
+        "native-library-archive": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 0,
+          "number_of_inodes": {
+            "off": 5,
+            "on": 5
+          },
+          "number_of_names": {
+            "off": 5,
+            "on": 5
+          },
+          "off": 170020864,
+          "on": 170020864,
+          "percent_from_off": 0.0
+        },
+        "native-object": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 182661120,
+            "off": 232046592,
+            "on": 414707712,
+            "percent_from_off": 78.7174327472993
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 182661120,
+          "number_of_inodes": {
+            "off": 2681,
+            "on": 3589
+          },
+          "number_of_names": {
+            "off": 2681,
+            "on": 4478
+          },
+          "off": 356466688,
+          "on": 539127808,
+          "percent_from_off": 51.24212896998668
+        },
+        "other-regular": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 4882432,
+            "off": 5976064,
+            "on": 10858496,
+            "percent_from_off": 81.69979437971213
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 4882432,
+          "number_of_inodes": {
+            "off": 3517,
+            "on": 3576
+          },
+          "number_of_names": {
+            "off": 3552,
+            "on": 3630
+          },
+          "off": 24690688,
+          "on": 29573120,
+          "percent_from_off": 19.774386197743855
+        },
+        "packed-query-and-dep-tables": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 406536192,
+            "off": 0,
+            "on": 406536192,
+            "percent_from_off": null
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 406536192,
+          "number_of_inodes": {
+            "off": 0,
+            "on": 40
+          },
+          "number_of_names": {
+            "off": 0,
+            "on": 40
+          },
+          "off": 0,
+          "on": 406536192,
+          "percent_from_off": null
+        },
+        "raw-query-and-dep-tables": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": -112631808,
+            "off": 919777280,
+            "on": 807145472,
+            "percent_from_off": -12.245552314577724
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": -112631808,
+          "number_of_inodes": {
+            "off": 76,
+            "on": 76
+          },
+          "number_of_names": {
+            "off": 148,
+            "on": 148
+          },
+          "off": 919777280,
+          "on": 807145472,
+          "percent_from_off": -12.245552314577724
+        },
+        "rust-library-archive": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 0,
+          "number_of_inodes": {
+            "off": 309,
+            "on": 309
+          },
+          "number_of_names": {
+            "off": 309,
+            "on": 309
+          },
+          "off": 495636480,
+          "on": 495636480,
+          "percent_from_off": 0.0
+        },
+        "rust-link-recipe": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 0,
+          "number_of_inodes": {
+            "off": 1,
+            "on": 1
+          },
+          "number_of_names": {
+            "off": 1,
+            "on": 1
+          },
+          "off": 147456,
+          "on": 147456,
+          "percent_from_off": 0.0
+        },
+        "rust-metadata": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 37986304,
+            "off": 20480,
+            "on": 38006784,
+            "percent_from_off": 185480.0
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 42090496,
+            "on": 42090496,
+            "percent_from_off": 0.0
+          },
+          "change_bytes": 37986304,
+          "number_of_inodes": {
+            "off": 311,
+            "on": 330
+          },
+          "number_of_names": {
+            "off": 381,
+            "on": 419
+          },
+          "off": 254930944,
+          "on": 292917248,
+          "percent_from_off": 14.900625010041946
+        },
+        "shared-library": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 0,
+          "number_of_inodes": {
+            "off": 31,
+            "on": 31
+          },
+          "number_of_names": {
+            "off": 31,
+            "on": 31
+          },
+          "off": 121139200,
+          "on": 121139200,
+          "percent_from_off": 0.0
+        }
+      },
+      "both_roots_same_inode": {
+        "change_bytes": 0,
+        "off": 0,
+        "on": 0,
+        "percent_from_off": null
+      },
+      "cross_class_aliases": {
+        "change_bytes": 0,
+        "off": 0,
+        "on": 0,
+        "percent_from_off": null
+      },
+      "incremental_also_named_outside": {
+        "change_bytes": 0,
+        "off": 42090496,
+        "on": 42090496,
+        "percent_from_off": 0.0
+      },
+      "incremental_only": {
+        "change_bytes": 519622656,
+        "off": 1158111232,
+        "on": 1677733888,
+        "percent_from_off": 44.86811297932392
+      },
+      "largest_absolute_class_changes": [
+        "packed-query-and-dep-tables",
+        "native-object",
+        "raw-query-and-dep-tables",
+        "rust-metadata",
+        "other-regular",
+        "incremental-work-product-index",
+        "cargo-dep-info-or-fingerprint",
+        "directory",
+        "executable",
+        "native-library-archive",
+        "rust-library-archive",
+        "rust-link-recipe",
+        "shared-library"
+      ],
+      "maximum_observed": {
+        "change_bytes": 454111232,
+        "off": 2821148672,
+        "on": 3275259904,
+        "percent_from_off": 16.096678509256535
+      },
+      "other_change": 225718272,
+      "packed_tables": {
+        "change_bytes": 406536192,
+        "off": 0,
+        "on": 406536192,
+        "percent_from_off": null
+      },
+      "products": {
+        "change_bytes": 519622656,
+        "off": 2528346112,
+        "on": 3047968768,
+        "percent_from_off": 20.551879884394552
+      },
+      "raw_tables": {
+        "change_bytes": -112631808,
+        "off": 919777280,
+        "on": 807145472,
+        "percent_from_off": -12.245552314577724
+      },
+      "shared": {
+        "change_bytes": 0,
+        "off": 73728,
+        "on": 73728,
+        "percent_from_off": 0.0
+      },
+      "table_change": 293904384
+    },
+    "return-A": {
+      "all": {
+        "change_bytes": 51847168,
+        "off": 2636128256,
+        "on": 2687975424,
+        "percent_from_off": 1.9667923167999257
+      },
+      "all_incremental": {
+        "change_bytes": 51863552,
+        "off": 1307475968,
+        "on": 1359339520,
+        "percent_from_off": 3.9666925640961415
+      },
+      "all_physical_classes": {
+        "cargo-dep-info-or-fingerprint": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 0,
+          "number_of_inodes": {
+            "off": 562,
+            "on": 562
+          },
+          "number_of_names": {
+            "off": 562,
+            "on": 562
+          },
+          "off": 6516736,
+          "on": 6516736,
+          "percent_from_off": 0.0
+        },
+        "directory": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 0,
+          "number_of_inodes": {
+            "off": 1704,
+            "on": 1724
+          },
+          "number_of_names": {
+            "off": 1704,
+            "on": 1724
+          },
+          "off": 0,
+          "on": 0,
+          "percent_from_off": null
+        },
+        "executable": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 0,
+          "number_of_inodes": {
+            "off": 38,
+            "on": 38
+          },
+          "number_of_names": {
+            "off": 39,
+            "on": 39
+          },
+          "off": 178946048,
+          "on": 178946048,
+          "percent_from_off": 0.0
+        },
+        "incremental-work-product-index": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 188416,
+            "off": 290816,
+            "on": 479232,
+            "percent_from_off": 64.7887323943662
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 188416,
+          "number_of_inodes": {
+            "off": 38,
+            "on": 58
+          },
+          "number_of_names": {
+            "off": 38,
+            "on": 58
+          },
+          "off": 290816,
+          "on": 479232,
+          "percent_from_off": 64.7887323943662
+        },
+        "native-library-archive": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 0,
+          "number_of_inodes": {
+            "off": 5,
+            "on": 5
+          },
+          "number_of_names": {
+            "off": 5,
+            "on": 5
+          },
+          "off": 170020864,
+          "on": 170020864,
+          "percent_from_off": 0.0
+        },
+        "native-object": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 182370304,
+            "off": 232337408,
+            "on": 414707712,
+            "percent_from_off": 78.49373270102076
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 182370304,
+          "number_of_inodes": {
+            "off": 2681,
+            "on": 3589
+          },
+          "number_of_names": {
+            "off": 2681,
+            "on": 4478
+          },
+          "off": 356757504,
+          "on": 539127808,
+          "percent_from_off": 51.11884177774717
+        },
+        "other-regular": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 4886528,
+            "off": 5971968,
+            "on": 10858496,
+            "percent_from_off": 81.82441700960219
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 4886528,
+          "number_of_inodes": {
+            "off": 3517,
+            "on": 3576
+          },
+          "number_of_names": {
+            "off": 3552,
+            "on": 3630
+          },
+          "off": 24686592,
+          "on": 29573120,
+          "percent_from_off": 19.794259167081464
+        },
+        "packed-query-and-dep-tables": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 779063296,
+            "off": 0,
+            "on": 779063296,
+            "percent_from_off": null
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 779063296,
+          "number_of_inodes": {
+            "off": 0,
+            "on": 80
+          },
+          "number_of_names": {
+            "off": 0,
+            "on": 80
+          },
+          "off": 0,
+          "on": 779063296,
+          "percent_from_off": null
+        },
+        "raw-query-and-dep-tables": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": -952647680,
+            "off": 1026781184,
+            "on": 74133504,
+            "percent_from_off": -92.78000949421372
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": -952647680,
+          "number_of_inodes": {
+            "off": 76,
+            "on": 36
+          },
+          "number_of_names": {
+            "off": 148,
+            "on": 68
+          },
+          "off": 1026781184,
+          "on": 74133504,
+          "percent_from_off": -92.78000949421372
+        },
+        "rust-library-archive": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": -20480,
+          "number_of_inodes": {
+            "off": 309,
+            "on": 309
+          },
+          "number_of_names": {
+            "off": 309,
+            "on": 309
+          },
+          "off": 495927296,
+          "on": 495906816,
+          "percent_from_off": -0.004129637583005774
+        },
+        "rust-link-recipe": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 4096,
+          "number_of_inodes": {
+            "off": 1,
+            "on": 1
+          },
+          "number_of_names": {
+            "off": 1,
+            "on": 1
+          },
+          "off": 147456,
+          "on": 151552,
+          "percent_from_off": 2.777777777777768
+        },
+        "rust-metadata": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 38023168,
+            "off": 20480,
+            "on": 38043648,
+            "percent_from_off": 185660.0
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": -20480,
+            "off": 42074112,
+            "on": 42053632,
+            "percent_from_off": -0.04867601246105746
+          },
+          "change_bytes": 38002688,
+          "number_of_inodes": {
+            "off": 311,
+            "on": 330
+          },
+          "number_of_names": {
+            "off": 381,
+            "on": 419
+          },
+          "off": 254914560,
+          "on": 292917248,
+          "percent_from_off": 14.908009962239888
+        },
+        "shared-library": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 0,
+          "number_of_inodes": {
+            "off": 31,
+            "on": 31
+          },
+          "number_of_names": {
+            "off": 31,
+            "on": 31
+          },
+          "off": 121139200,
+          "on": 121139200,
+          "percent_from_off": 0.0
+        }
+      },
+      "both_roots_same_inode": {
+        "change_bytes": 0,
+        "off": 0,
+        "on": 0,
+        "percent_from_off": null
+      },
+      "cross_class_aliases": {
+        "change_bytes": 0,
+        "off": 0,
+        "on": 0,
+        "percent_from_off": null
+      },
+      "incremental_also_named_outside": {
+        "change_bytes": -20480,
+        "off": 42074112,
+        "on": 42053632,
+        "percent_from_off": -0.04867601246105746
+      },
+      "incremental_only": {
+        "change_bytes": 51884032,
+        "off": 1265401856,
+        "on": 1317285888,
+        "percent_from_off": 4.100201983582363
+      },
+      "largest_absolute_class_changes": [
+        "raw-query-and-dep-tables",
+        "packed-query-and-dep-tables",
+        "native-object",
+        "rust-metadata",
+        "other-regular",
+        "incremental-work-product-index",
+        "rust-library-archive",
+        "rust-link-recipe",
+        "cargo-dep-info-or-fingerprint",
+        "directory",
+        "executable",
+        "native-library-archive",
+        "shared-library"
+      ],
+      "maximum_observed": {
+        "change_bytes": 284729344,
+        "off": 2974994432,
+        "on": 3259723776,
+        "percent_from_off": 9.570752164688411
+      },
+      "other_change": 225431552,
+      "packed_tables": {
+        "change_bytes": 779063296,
+        "off": 0,
+        "on": 779063296,
+        "percent_from_off": null
+      },
+      "products": {
+        "change_bytes": 51847168,
+        "off": 2636054528,
+        "on": 2687901696,
+        "percent_from_off": 1.9668473261566843
+      },
+      "raw_tables": {
+        "change_bytes": -952647680,
+        "off": 1026781184,
+        "on": 74133504,
+        "percent_from_off": -92.78000949421372
+      },
+      "shared": {
+        "change_bytes": 0,
+        "off": 73728,
+        "on": 73728,
+        "percent_from_off": 0.0
+      },
+      "table_change": -173584384
+    },
+    "return-B": {
+      "all": {
+        "change_bytes": 277741568,
+        "off": 2417872896,
+        "on": 2695614464,
+        "percent_from_off": 11.487021028255073
+      },
+      "all_incremental": {
+        "change_bytes": 277737472,
+        "off": 1089650688,
+        "on": 1367388160,
+        "percent_from_off": 25.488670365525422
+      },
+      "all_physical_classes": {
+        "cargo-dep-info-or-fingerprint": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 0,
+          "number_of_inodes": {
+            "off": 562,
+            "on": 562
+          },
+          "number_of_names": {
+            "off": 562,
+            "on": 562
+          },
+          "off": 6516736,
+          "on": 6516736,
+          "percent_from_off": 0.0
+        },
+        "directory": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 0,
+          "number_of_inodes": {
+            "off": 1704,
+            "on": 1724
+          },
+          "number_of_names": {
+            "off": 1704,
+            "on": 1724
+          },
+          "off": 0,
+          "on": 0,
+          "percent_from_off": null
+        },
+        "executable": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 0,
+          "number_of_inodes": {
+            "off": 38,
+            "on": 38
+          },
+          "number_of_names": {
+            "off": 39,
+            "on": 39
+          },
+          "off": 178802688,
+          "on": 178802688,
+          "percent_from_off": 0.0
+        },
+        "incremental-work-product-index": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 188416,
+            "off": 290816,
+            "on": 479232,
+            "percent_from_off": 64.7887323943662
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 188416,
+          "number_of_inodes": {
+            "off": 38,
+            "on": 58
+          },
+          "number_of_names": {
+            "off": 38,
+            "on": 58
+          },
+          "off": 290816,
+          "on": 479232,
+          "percent_from_off": 64.7887323943662
+        },
+        "native-library-archive": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 0,
+          "number_of_inodes": {
+            "off": 5,
+            "on": 5
+          },
+          "number_of_names": {
+            "off": 5,
+            "on": 5
+          },
+          "off": 170020864,
+          "on": 170020864,
+          "percent_from_off": 0.0
+        },
+        "native-object": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 182661120,
+            "off": 232046592,
+            "on": 414707712,
+            "percent_from_off": 78.7174327472993
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 182661120,
+          "number_of_inodes": {
+            "off": 2681,
+            "on": 3589
+          },
+          "number_of_names": {
+            "off": 2681,
+            "on": 4478
+          },
+          "off": 356466688,
+          "on": 539127808,
+          "percent_from_off": 51.24212896998668
+        },
+        "other-regular": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 4882432,
+            "off": 5976064,
+            "on": 10858496,
+            "percent_from_off": 81.69979437971213
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 4882432,
+          "number_of_inodes": {
+            "off": 3517,
+            "on": 3576
+          },
+          "number_of_names": {
+            "off": 3552,
+            "on": 3630
+          },
+          "off": 24694784,
+          "on": 29577216,
+          "percent_from_off": 19.771106319455956
+        },
+        "packed-query-and-dep-tables": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 787111936,
+            "off": 0,
+            "on": 787111936,
+            "percent_from_off": null
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 787111936,
+          "number_of_inodes": {
+            "off": 0,
+            "on": 80
+          },
+          "number_of_names": {
+            "off": 0,
+            "on": 80
+          },
+          "off": 0,
+          "on": 787111936,
+          "percent_from_off": null
+        },
+        "raw-query-and-dep-tables": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": -735092736,
+            "off": 809226240,
+            "on": 74133504,
+            "percent_from_off": -90.8389643914661
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": -735092736,
+          "number_of_inodes": {
+            "off": 76,
+            "on": 36
+          },
+          "number_of_names": {
+            "off": 148,
+            "on": 68
+          },
+          "off": 809226240,
+          "on": 74133504,
+          "percent_from_off": -90.8389643914661
+        },
+        "rust-library-archive": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 0,
+          "number_of_inodes": {
+            "off": 309,
+            "on": 309
+          },
+          "number_of_names": {
+            "off": 309,
+            "on": 309
+          },
+          "off": 495636480,
+          "on": 495636480,
+          "percent_from_off": 0.0
+        },
+        "rust-link-recipe": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 4096,
+          "number_of_inodes": {
+            "off": 1,
+            "on": 1
+          },
+          "number_of_names": {
+            "off": 1,
+            "on": 1
+          },
+          "off": 147456,
+          "on": 151552,
+          "percent_from_off": 2.777777777777768
+        },
+        "rust-metadata": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 37986304,
+            "off": 20480,
+            "on": 38006784,
+            "percent_from_off": 185480.0
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 42090496,
+            "on": 42090496,
+            "percent_from_off": 0.0
+          },
+          "change_bytes": 37986304,
+          "number_of_inodes": {
+            "off": 311,
+            "on": 330
+          },
+          "number_of_names": {
+            "off": 381,
+            "on": 419
+          },
+          "off": 254930944,
+          "on": 292917248,
+          "percent_from_off": 14.900625010041946
+        },
+        "shared-library": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 0,
+          "number_of_inodes": {
+            "off": 31,
+            "on": 31
+          },
+          "number_of_names": {
+            "off": 31,
+            "on": 31
+          },
+          "off": 121139200,
+          "on": 121139200,
+          "percent_from_off": 0.0
+        }
+      },
+      "both_roots_same_inode": {
+        "change_bytes": 0,
+        "off": 0,
+        "on": 0,
+        "percent_from_off": null
+      },
+      "cross_class_aliases": {
+        "change_bytes": 0,
+        "off": 0,
+        "on": 0,
+        "percent_from_off": null
+      },
+      "incremental_also_named_outside": {
+        "change_bytes": 0,
+        "off": 42090496,
+        "on": 42090496,
+        "percent_from_off": 0.0
+      },
+      "incremental_only": {
+        "change_bytes": 277737472,
+        "off": 1047560192,
+        "on": 1325297664,
+        "percent_from_off": 26.51279364384247
+      },
+      "largest_absolute_class_changes": [
+        "packed-query-and-dep-tables",
+        "raw-query-and-dep-tables",
+        "native-object",
+        "rust-metadata",
+        "other-regular",
+        "incremental-work-product-index",
+        "rust-link-recipe",
+        "cargo-dep-info-or-fingerprint",
+        "directory",
+        "executable",
+        "native-library-archive",
+        "rust-library-archive",
+        "shared-library"
+      ],
+      "maximum_observed": {
+        "change_bytes": 471986176,
+        "off": 2803245056,
+        "on": 3275231232,
+        "percent_from_off": 16.837135768411393
+      },
+      "other_change": 225722368,
+      "packed_tables": {
+        "change_bytes": 787111936,
+        "off": 0,
+        "on": 787111936,
+        "percent_from_off": null
+      },
+      "products": {
+        "change_bytes": 277741568,
+        "off": 2417795072,
+        "on": 2695536640,
+        "percent_from_off": 11.487390772546014
+      },
+      "raw_tables": {
+        "change_bytes": -735092736,
+        "off": 809226240,
+        "on": 74133504,
+        "percent_from_off": -90.8389643914661
+      },
+      "shared": {
+        "change_bytes": 0,
+        "off": 77824,
+        "on": 77824,
+        "percent_from_off": 0.0
+      },
+      "table_change": 52019200
+    },
+    "unchanged-B": {
+      "all": {
+        "change_bytes": 277741568,
+        "off": 2417872896,
+        "on": 2695614464,
+        "percent_from_off": 11.487021028255073
+      },
+      "all_incremental": {
+        "change_bytes": 277737472,
+        "off": 1089650688,
+        "on": 1367388160,
+        "percent_from_off": 25.488670365525422
+      },
+      "all_physical_classes": {
+        "cargo-dep-info-or-fingerprint": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 0,
+          "number_of_inodes": {
+            "off": 562,
+            "on": 562
+          },
+          "number_of_names": {
+            "off": 562,
+            "on": 562
+          },
+          "off": 6516736,
+          "on": 6516736,
+          "percent_from_off": 0.0
+        },
+        "directory": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 0,
+          "number_of_inodes": {
+            "off": 1704,
+            "on": 1724
+          },
+          "number_of_names": {
+            "off": 1704,
+            "on": 1724
+          },
+          "off": 0,
+          "on": 0,
+          "percent_from_off": null
+        },
+        "executable": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 0,
+          "number_of_inodes": {
+            "off": 38,
+            "on": 38
+          },
+          "number_of_names": {
+            "off": 39,
+            "on": 39
+          },
+          "off": 178802688,
+          "on": 178802688,
+          "percent_from_off": 0.0
+        },
+        "incremental-work-product-index": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 188416,
+            "off": 290816,
+            "on": 479232,
+            "percent_from_off": 64.7887323943662
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 188416,
+          "number_of_inodes": {
+            "off": 38,
+            "on": 58
+          },
+          "number_of_names": {
+            "off": 38,
+            "on": 58
+          },
+          "off": 290816,
+          "on": 479232,
+          "percent_from_off": 64.7887323943662
+        },
+        "native-library-archive": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 0,
+          "number_of_inodes": {
+            "off": 5,
+            "on": 5
+          },
+          "number_of_names": {
+            "off": 5,
+            "on": 5
+          },
+          "off": 170020864,
+          "on": 170020864,
+          "percent_from_off": 0.0
+        },
+        "native-object": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 182661120,
+            "off": 232046592,
+            "on": 414707712,
+            "percent_from_off": 78.7174327472993
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 182661120,
+          "number_of_inodes": {
+            "off": 2681,
+            "on": 3589
+          },
+          "number_of_names": {
+            "off": 2681,
+            "on": 4478
+          },
+          "off": 356466688,
+          "on": 539127808,
+          "percent_from_off": 51.24212896998668
+        },
+        "other-regular": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 4882432,
+            "off": 5976064,
+            "on": 10858496,
+            "percent_from_off": 81.69979437971213
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 4882432,
+          "number_of_inodes": {
+            "off": 3517,
+            "on": 3576
+          },
+          "number_of_names": {
+            "off": 3552,
+            "on": 3630
+          },
+          "off": 24694784,
+          "on": 29577216,
+          "percent_from_off": 19.771106319455956
+        },
+        "packed-query-and-dep-tables": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 787111936,
+            "off": 0,
+            "on": 787111936,
+            "percent_from_off": null
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 787111936,
+          "number_of_inodes": {
+            "off": 0,
+            "on": 80
+          },
+          "number_of_names": {
+            "off": 0,
+            "on": 80
+          },
+          "off": 0,
+          "on": 787111936,
+          "percent_from_off": null
+        },
+        "raw-query-and-dep-tables": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": -735092736,
+            "off": 809226240,
+            "on": 74133504,
+            "percent_from_off": -90.8389643914661
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": -735092736,
+          "number_of_inodes": {
+            "off": 76,
+            "on": 36
+          },
+          "number_of_names": {
+            "off": 148,
+            "on": 68
+          },
+          "off": 809226240,
+          "on": 74133504,
+          "percent_from_off": -90.8389643914661
+        },
+        "rust-library-archive": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 0,
+          "number_of_inodes": {
+            "off": 309,
+            "on": 309
+          },
+          "number_of_names": {
+            "off": 309,
+            "on": 309
+          },
+          "off": 495636480,
+          "on": 495636480,
+          "percent_from_off": 0.0
+        },
+        "rust-link-recipe": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 4096,
+          "number_of_inodes": {
+            "off": 1,
+            "on": 1
+          },
+          "number_of_names": {
+            "off": 1,
+            "on": 1
+          },
+          "off": 147456,
+          "on": 151552,
+          "percent_from_off": 2.777777777777768
+        },
+        "rust-metadata": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 37986304,
+            "off": 20480,
+            "on": 38006784,
+            "percent_from_off": 185480.0
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 42090496,
+            "on": 42090496,
+            "percent_from_off": 0.0
+          },
+          "change_bytes": 37986304,
+          "number_of_inodes": {
+            "off": 311,
+            "on": 330
+          },
+          "number_of_names": {
+            "off": 381,
+            "on": 419
+          },
+          "off": 254930944,
+          "on": 292917248,
+          "percent_from_off": 14.900625010041946
+        },
+        "shared-library": {
+          "bytes_exclusively_in_incremental_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "bytes_in_incremental_and_other_directories": {
+            "change_bytes": 0,
+            "off": 0,
+            "on": 0,
+            "percent_from_off": null
+          },
+          "change_bytes": 0,
+          "number_of_inodes": {
+            "off": 31,
+            "on": 31
+          },
+          "number_of_names": {
+            "off": 31,
+            "on": 31
+          },
+          "off": 121139200,
+          "on": 121139200,
+          "percent_from_off": 0.0
+        }
+      },
+      "both_roots_same_inode": {
+        "change_bytes": 0,
+        "off": 0,
+        "on": 0,
+        "percent_from_off": null
+      },
+      "cross_class_aliases": {
+        "change_bytes": 0,
+        "off": 0,
+        "on": 0,
+        "percent_from_off": null
+      },
+      "incremental_also_named_outside": {
+        "change_bytes": 0,
+        "off": 42090496,
+        "on": 42090496,
+        "percent_from_off": 0.0
+      },
+      "incremental_only": {
+        "change_bytes": 277737472,
+        "off": 1047560192,
+        "on": 1325297664,
+        "percent_from_off": 26.51279364384247
+      },
+      "largest_absolute_class_changes": [
+        "packed-query-and-dep-tables",
+        "raw-query-and-dep-tables",
+        "native-object",
+        "rust-metadata",
+        "other-regular",
+        "incremental-work-product-index",
+        "rust-link-recipe",
+        "cargo-dep-info-or-fingerprint",
+        "directory",
+        "executable",
+        "native-library-archive",
+        "rust-library-archive",
+        "shared-library"
+      ],
+      "maximum_observed": {
+        "change_bytes": 277741568,
+        "off": 2417872896,
+        "on": 2695614464,
+        "percent_from_off": 11.487021028255073
+      },
+      "other_change": 225722368,
+      "packed_tables": {
+        "change_bytes": 787111936,
+        "off": 0,
+        "on": 787111936,
+        "percent_from_off": null
+      },
+      "products": {
+        "change_bytes": 277741568,
+        "off": 2417795072,
+        "on": 2695536640,
+        "percent_from_off": 11.487390772546014
+      },
+      "raw_tables": {
+        "change_bytes": -735092736,
+        "off": 809226240,
+        "on": 74133504,
+        "percent_from_off": -90.8389643914661
+      },
+      "shared": {
+        "change_bytes": 0,
+        "off": 77824,
+        "on": 77824,
+        "percent_from_off": 0.0
+      },
+      "table_change": 52019200
+    }
+  },
+  "sampler": {
+    "maximum_gap_ns": 419270876,
+    "nominal_interval_ns": 10000000,
+    "range_of_command_median_gaps_ns": [
+      10134733,
+      10146857
+    ],
+    "total_samples": 190617
+  }
+}

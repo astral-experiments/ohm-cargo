@@ -62,6 +62,10 @@ These two pairs ran both returning compilers under Callgrind. Every count was re
 
 [Per-crate counts](sample-tmpfs-2-pairs-instructions-202610300810.json.gz) · [Independent profile and argv reconciliation](counter-tmpfs-2-pairs-instructions-202610300810.json)
 
+## Full Ruff CLI storage
+
+On the same draft source, the full CLI used 2,305.9 → 2,570.7 MiB after the final unchanged build (+11.49%). The first feature visit added 495.6 MiB and the return to the parent added 49.4 MiB. The largest sampled allocation across each history grew by 10.09%. Current branch returns matched clean whole executables within each setting. Across settings, the reader and executable sections matched on both branches. [Complete measured history, object files by crate, native comparisons and replay](full-ruff-cli)
+
 ## Working on one branch
 
 This separate experiment compares two enabled branch caches. One compiler keeps uncompressed tables. The other compresses on checkout switches. Each block measured four changes to Ruff’s unary-pattern grammar, with both branches already built. The first dirty edit averaged 2.620 → 2.665 s. The next three averaged 2.636 → 2.640 s. The two blocks are too few to establish a small timing difference. After editing, the settled complete directories measured 376.35 → 288.09 MiB. The previously measured policy that compressed on every dirty edit added 0.38 s per edit in its own two-pair experiment. [Earlier compact policy](../native-compact)
