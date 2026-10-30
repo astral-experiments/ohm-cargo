@@ -29,6 +29,15 @@ def verify_product():
     assert [v["sessions"] for v in visits] == [1, 1, 1, 2, 2, 2, 1, 1, 1]
     assert (visits[7]["full"], visits[7]["wild"], visits[7]["fresh"], visits[7]["verdict"]) == (0, 0, True, "29")
     assert (visits[8]["full"], visits[8]["wild"], visits[8]["fresh"], visits[8]["verdict"]) == (1, 1, False, "41")
+    negative = json.loads((ROOT / "negative-controls.json").read_bytes())
+    assert len(negative) == 4
+    assert {(r["enable_in_candidate"], r["arm"]) for r in negative.values()} == {
+        (mode, arm) for mode in (False, True) for arm in "PQ"
+    }
+    for control in negative.values():
+        assert control["invalid"] == 101 and control["error"] == "E0308" and control["matched_inserted_source"]
+        assert control["repair"] == 0 and control["native_verdict"] == "Expr=56 valid=1 rejected"
+        assert len(control["invalid_stdout"]) == len(control["repair_stdout"]) == 64
     return data
 
 

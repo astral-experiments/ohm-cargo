@@ -11,7 +11,7 @@ Two more pairs compared opting in and out on the same compiler build. Both modes
 | Ruff parent | 3.21×, 3.44× | 288 → 380 MiB |
 | Ruff feature | 3.47×, 3.37× | 258 → 382 MiB |
 
-Both AST and parser rustcs ran on every return. All four sampled installations returned exactly the clean branch-specific executable, rejected the invalid edit and recovered after its repair. The test compiler also passed its complete four-test incremental unit suite, the seven-invocation option regression and twelve invocations covering externally read native assembly. [Compiler qualification](compiler.json)
+Both AST and parser rustcs ran on every return. All four sampled installations returned the clean branch-specific executable. The first pair in each cohort also ran the invalid edit and its repair on both arms. Each of these four controls returned Cargo 101 with E0308, then built successfully and recovered the feature branch’s expected native behavior. [Error and recovery records](negative-controls.json) The test compiler also passed its complete four-test incremental unit suite, the seven-invocation option regression and twelve invocations covering externally read native assembly. [Compiler qualification](compiler.json)
 
 A separate nine-command ordinary Cargo fixture used shell `RUSTFLAGS` and project `.cargo/config.toml`. All real compiler invocations used the same incremental crate directory. The finalized session counts were 1, 1, 1, 2, 2, 2, 1, 1 and 1. The eighth Cargo command recovered a fully fresh executable returning 29 with zero compilers and zero linkers. A real source edit then returned 41 with one compiler and one Wild link, keeping one session. [Native commands and outcomes](cargo-config.json)
 
