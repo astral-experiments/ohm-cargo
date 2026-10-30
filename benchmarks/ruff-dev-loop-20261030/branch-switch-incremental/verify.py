@@ -133,6 +133,8 @@ def main():
     subprocess.run([sys.executable, "-IB", ROOT / "moved-branch" / "verify.py"], check=True)
     if (ROOT / "block-device").exists():
         subprocess.run([sys.executable, "-IB", ROOT / "block-device" / "verify.py"], check=True)
+    if (ROOT / "storage").exists():
+        subprocess.run([sys.executable, "-IB", ROOT / "storage" / "verify.py"], check=True)
     if (ROOT / "portable-instruction-smoke.json").exists():
         measured = read("portable-instruction-smoke.json")["data"]
         guards = read("counter-reader-validation.json")

@@ -75,6 +75,10 @@ python3 -IB replay.py --parent-sdk "$PARENT_SDK" --candidate-sdk "$CANDIDATE_SDK
 
 Two fresh pairs exercised that command. The parent executed 9.034 and 9.033 times as many instructions as the candidate on A, and 8.923 and 8.926 times as many on B. These functional replay pairs were kept separate from the registered eight-pair cohort.
 
+## Complete Cargo build directory sizes
+
+In two independent ext4 pairs, the complete target and build directories grew from 288 to 380 MiB on return to the parent branch (+32%) and from 258 to 382 MiB on return to the feature branch (+48%). Both compilers used 257 MiB for the first build. Most bytes exclusive to the older branch were in the dependency graph and query cache. [Breakdown, physical-size counter and all 24 visits](storage)
+
 ## Block-backed build confirmation
 
 Twelve new pairs repeated the whole build command with both the checkout and all Cargo outputs on ext4. The OS page cache was active throughout. Each direction cleared 2× in all 12 pairs. [Block device, records and offline verification](block-device)

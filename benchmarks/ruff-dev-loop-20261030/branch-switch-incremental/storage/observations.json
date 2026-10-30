@@ -1,0 +1,379 @@
+{
+  "filesystem": "ext4 with the normal OS page cache",
+  "native_replay_sha256": "814cee8a4ceef6a05c9e4aadfa87ee11e910d65d343dc21d03534da176b97d44",
+  "native_summary_sha256": "fee35cfeb1c30c95b751c857b1a6aaf20a6838dff171e09a093dff9f1c6481c3",
+  "observations": {
+    "pair-01-P/empty-A": {
+      "bytes": 269721600,
+      "exclusive_older_bytes": 0,
+      "older_categories": {},
+      "older_sessions": 0,
+      "phase": "empty-A",
+      "role": "P",
+      "root_bytes": {
+        "build": 81920,
+        "target": 269639680
+      }
+    },
+    "pair-01-P/first-B": {
+      "bytes": 286359552,
+      "exclusive_older_bytes": 0,
+      "older_categories": {},
+      "older_sessions": 0,
+      "phase": "first-B",
+      "role": "P",
+      "root_bytes": {
+        "build": 81920,
+        "target": 286277632
+      }
+    },
+    "pair-01-P/recovery": {
+      "bytes": 301572096,
+      "exclusive_older_bytes": 0,
+      "older_categories": {},
+      "older_sessions": 0,
+      "phase": "recovery",
+      "role": "P",
+      "root_bytes": {
+        "build": 81920,
+        "target": 301490176
+      }
+    },
+    "pair-01-P/return-A": {
+      "bytes": 301989888,
+      "exclusive_older_bytes": 0,
+      "older_categories": {},
+      "older_sessions": 0,
+      "phase": "return-A",
+      "role": "P",
+      "root_bytes": {
+        "build": 81920,
+        "target": 301907968
+      }
+    },
+    "pair-01-P/return-B": {
+      "bytes": 270286848,
+      "exclusive_older_bytes": 0,
+      "older_categories": {},
+      "older_sessions": 0,
+      "phase": "return-B",
+      "role": "P",
+      "root_bytes": {
+        "build": 81920,
+        "target": 270204928
+      }
+    },
+    "pair-01-P/unchanged-B": {
+      "bytes": 270286848,
+      "exclusive_older_bytes": 0,
+      "older_categories": {},
+      "older_sessions": 0,
+      "phase": "unchanged-B",
+      "role": "P",
+      "root_bytes": {
+        "build": 81920,
+        "target": 270204928
+      }
+    },
+    "pair-01-Q/empty-A": {
+      "bytes": 269729792,
+      "exclusive_older_bytes": 0,
+      "older_categories": {},
+      "older_sessions": 0,
+      "phase": "empty-A",
+      "role": "Q",
+      "root_bytes": {
+        "build": 81920,
+        "target": 269647872
+      }
+    },
+    "pair-01-Q/first-B": {
+      "bytes": 396693504,
+      "exclusive_older_bytes": 110342144,
+      "older_categories": {
+        "codegen objects": 11759616,
+        "compiler metadata": 7729152,
+        "dep-graph.bin | ohm-build-dep-graph.bin": 62906368,
+        "directories": 8192,
+        "metadata-prefix-v3.ohm-prefix-v3 | ohm-build-metadata-prefix-v3.ohm-prefix-v3": 1490944,
+        "ohm-build-metadata.bin": 8192,
+        "ohm-build-query-cache.bin | query-cache.bin": 26423296,
+        "work-products.bin": 16384
+      },
+      "older_sessions": 2,
+      "phase": "first-B",
+      "role": "Q",
+      "root_bytes": {
+        "build": 81920,
+        "target": 396611584
+      }
+    },
+    "pair-01-Q/recovery": {
+      "bytes": 429961216,
+      "exclusive_older_bytes": 112406528,
+      "older_categories": {
+        "codegen objects": 11759616,
+        "compiler metadata": 7729152,
+        "dep-graph.bin | ohm-build-dep-graph.bin": 62914560,
+        "directories": 8192,
+        "metadata-prefix-v3.ohm-prefix-v3 | ohm-build-metadata-prefix-v3.ohm-prefix-v3": 1490944,
+        "ohm-build-metadata.bin": 8192,
+        "ohm-build-query-cache.bin | query-cache.bin": 28479488,
+        "work-products.bin": 16384
+      },
+      "older_sessions": 2,
+      "phase": "recovery",
+      "role": "Q",
+      "root_bytes": {
+        "build": 81920,
+        "target": 429879296
+      }
+    },
+    "pair-01-Q/return-A": {
+      "bytes": 398749696,
+      "exclusive_older_bytes": 126955520,
+      "older_categories": {
+        "codegen objects": 11739136,
+        "compiler metadata": 7757824,
+        "dep-graph.bin | ohm-build-dep-graph.bin": 63516672,
+        "directories": 8192,
+        "metadata-prefix-v3.ohm-prefix-v3 | ohm-build-metadata-prefix-v3.ohm-prefix-v3": 1495040,
+        "ohm-build-metadata.bin": 8192,
+        "ohm-build-query-cache.bin | query-cache.bin": 42414080,
+        "work-products.bin": 16384
+      },
+      "older_sessions": 2,
+      "phase": "return-A",
+      "role": "Q",
+      "root_bytes": {
+        "build": 81920,
+        "target": 398667776
+      }
+    },
+    "pair-01-Q/return-B": {
+      "bytes": 400625664,
+      "exclusive_older_bytes": 112406528,
+      "older_categories": {
+        "codegen objects": 11759616,
+        "compiler metadata": 7729152,
+        "dep-graph.bin | ohm-build-dep-graph.bin": 62914560,
+        "directories": 8192,
+        "metadata-prefix-v3.ohm-prefix-v3 | ohm-build-metadata-prefix-v3.ohm-prefix-v3": 1490944,
+        "ohm-build-metadata.bin": 8192,
+        "ohm-build-query-cache.bin | query-cache.bin": 28479488,
+        "work-products.bin": 16384
+      },
+      "older_sessions": 2,
+      "phase": "return-B",
+      "role": "Q",
+      "root_bytes": {
+        "build": 81920,
+        "target": 400543744
+      }
+    },
+    "pair-01-Q/unchanged-B": {
+      "bytes": 400625664,
+      "exclusive_older_bytes": 112406528,
+      "older_categories": {
+        "codegen objects": 11759616,
+        "compiler metadata": 7729152,
+        "dep-graph.bin | ohm-build-dep-graph.bin": 62914560,
+        "directories": 8192,
+        "metadata-prefix-v3.ohm-prefix-v3 | ohm-build-metadata-prefix-v3.ohm-prefix-v3": 1490944,
+        "ohm-build-metadata.bin": 8192,
+        "ohm-build-query-cache.bin | query-cache.bin": 28479488,
+        "work-products.bin": 16384
+      },
+      "older_sessions": 2,
+      "phase": "unchanged-B",
+      "role": "Q",
+      "root_bytes": {
+        "build": 81920,
+        "target": 400543744
+      }
+    },
+    "pair-02-P/empty-A": {
+      "bytes": 269709312,
+      "exclusive_older_bytes": 0,
+      "older_categories": {},
+      "older_sessions": 0,
+      "phase": "empty-A",
+      "role": "P",
+      "root_bytes": {
+        "build": 81920,
+        "target": 269627392
+      }
+    },
+    "pair-02-P/first-B": {
+      "bytes": 286310400,
+      "exclusive_older_bytes": 0,
+      "older_categories": {},
+      "older_sessions": 0,
+      "phase": "first-B",
+      "role": "P",
+      "root_bytes": {
+        "build": 81920,
+        "target": 286228480
+      }
+    },
+    "pair-02-P/return-A": {
+      "bytes": 301957120,
+      "exclusive_older_bytes": 0,
+      "older_categories": {},
+      "older_sessions": 0,
+      "phase": "return-A",
+      "role": "P",
+      "root_bytes": {
+        "build": 81920,
+        "target": 301875200
+      }
+    },
+    "pair-02-P/return-B": {
+      "bytes": 270303232,
+      "exclusive_older_bytes": 0,
+      "older_categories": {},
+      "older_sessions": 0,
+      "phase": "return-B",
+      "role": "P",
+      "root_bytes": {
+        "build": 81920,
+        "target": 270221312
+      }
+    },
+    "pair-02-P/unchanged-B": {
+      "bytes": 270303232,
+      "exclusive_older_bytes": 0,
+      "older_categories": {},
+      "older_sessions": 0,
+      "phase": "unchanged-B",
+      "role": "P",
+      "root_bytes": {
+        "build": 81920,
+        "target": 270221312
+      }
+    },
+    "pair-02-Q/empty-A": {
+      "bytes": 269725696,
+      "exclusive_older_bytes": 0,
+      "older_categories": {},
+      "older_sessions": 0,
+      "phase": "empty-A",
+      "role": "Q",
+      "root_bytes": {
+        "build": 81920,
+        "target": 269643776
+      }
+    },
+    "pair-02-Q/first-B": {
+      "bytes": 396644352,
+      "exclusive_older_bytes": 110338048,
+      "older_categories": {
+        "codegen objects": 11759616,
+        "compiler metadata": 7729152,
+        "dep-graph.bin | ohm-build-dep-graph.bin": 62906368,
+        "directories": 8192,
+        "metadata-prefix-v3.ohm-prefix-v3 | ohm-build-metadata-prefix-v3.ohm-prefix-v3": 1490944,
+        "ohm-build-metadata.bin": 8192,
+        "ohm-build-query-cache.bin | query-cache.bin": 26419200,
+        "work-products.bin": 16384
+      },
+      "older_sessions": 2,
+      "phase": "first-B",
+      "role": "Q",
+      "root_bytes": {
+        "build": 86016,
+        "target": 396558336
+      }
+    },
+    "pair-02-Q/return-A": {
+      "bytes": 398712832,
+      "exclusive_older_bytes": 126902272,
+      "older_categories": {
+        "codegen objects": 11739136,
+        "compiler metadata": 7757824,
+        "dep-graph.bin | ohm-build-dep-graph.bin": 63524864,
+        "directories": 8192,
+        "metadata-prefix-v3.ohm-prefix-v3 | ohm-build-metadata-prefix-v3.ohm-prefix-v3": 1495040,
+        "ohm-build-metadata.bin": 8192,
+        "ohm-build-query-cache.bin | query-cache.bin": 42352640,
+        "work-products.bin": 16384
+      },
+      "older_sessions": 2,
+      "phase": "return-A",
+      "role": "Q",
+      "root_bytes": {
+        "build": 86016,
+        "target": 398626816
+      }
+    },
+    "pair-02-Q/return-B": {
+      "bytes": 400588800,
+      "exclusive_older_bytes": 112414720,
+      "older_categories": {
+        "codegen objects": 11759616,
+        "compiler metadata": 7729152,
+        "dep-graph.bin | ohm-build-dep-graph.bin": 62918656,
+        "directories": 8192,
+        "metadata-prefix-v3.ohm-prefix-v3 | ohm-build-metadata-prefix-v3.ohm-prefix-v3": 1490944,
+        "ohm-build-metadata.bin": 8192,
+        "ohm-build-query-cache.bin | query-cache.bin": 28483584,
+        "work-products.bin": 16384
+      },
+      "older_sessions": 2,
+      "phase": "return-B",
+      "role": "Q",
+      "root_bytes": {
+        "build": 86016,
+        "target": 400502784
+      }
+    },
+    "pair-02-Q/unchanged-B": {
+      "bytes": 400588800,
+      "exclusive_older_bytes": 112414720,
+      "older_categories": {
+        "codegen objects": 11759616,
+        "compiler metadata": 7729152,
+        "dep-graph.bin | ohm-build-dep-graph.bin": 62918656,
+        "directories": 8192,
+        "metadata-prefix-v3.ohm-prefix-v3 | ohm-build-metadata-prefix-v3.ohm-prefix-v3": 1490944,
+        "ohm-build-metadata.bin": 8192,
+        "ohm-build-query-cache.bin | query-cache.bin": 28483584,
+        "work-products.bin": 16384
+      },
+      "older_sessions": 2,
+      "phase": "unchanged-B",
+      "role": "Q",
+      "root_bytes": {
+        "build": 86016,
+        "target": 400502784
+      }
+    },
+    "reference-7b13f01b/empty": {
+      "bytes": 270069760,
+      "exclusive_older_bytes": 0,
+      "older_categories": {},
+      "older_sessions": 0,
+      "phase": "empty",
+      "role": "P",
+      "root_bytes": {
+        "build": 81920,
+        "target": 269987840
+      }
+    },
+    "reference-b5dba861/empty": {
+      "bytes": 269713408,
+      "exclusive_older_bytes": 0,
+      "older_categories": {},
+      "older_sessions": 0,
+      "phase": "empty",
+      "role": "P",
+      "root_bytes": {
+        "build": 81920,
+        "target": 269631488
+      }
+    }
+  },
+  "public_measurement_script": "22e7b675b6fcf87ca9b5857962f167598f69eb6aec6e09f2fc3b0ca05b1749f6",
+  "raw_sha256": "52789fcde572b6b472d37c6f453f8eaa816e4fbdad47606fdfc1ce2e5d0c0923",
+  "scope": "Unique allocated blocks across the complete Cargo target and shared build directories; paths are traversed with lstat and deduplicated by device and inode; GNU du -sx -B1 independently agreed at every visit."
+}
