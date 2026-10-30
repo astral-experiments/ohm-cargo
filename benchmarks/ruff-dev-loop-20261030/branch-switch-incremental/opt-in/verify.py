@@ -1,6 +1,8 @@
 """Recompute the paired comparisons from the opted-in and default compiler records."""
 import gzip
+import hashlib
 import json
+from itertools import combinations
 from pathlib import Path
 import math
 from statistics import median
@@ -91,6 +93,27 @@ def verify_sample(path, product):
                 counts = record["compiler_Ir"]
                 assert set(counts) == {"ruff_python_ast", "ruff_python_parser"} and min(counts.values()) > 0
                 assert counts == {k: v["Ir"] for k, v in record["counts"]["crates"].items()}
+    label = path.name.removesuffix(".json.gz")
+    verdict_file = ROOT / ("verdicts-" + label + ".json.gz")
+    if verdict_file.is_file():
+        verdicts = read_result(verdict_file)
+        assert verdicts["source"] == plan["commit"] and verdicts["mode"] == plan["workflow"]
+        assert verdicts["raw_verified"] == hashlib.sha256(gzip.decompress(path.read_bytes())).hexdigest()
+        assert len(verdicts["samples"]) == 10 * plan["pairs"] + 6
+        for visit in verdicts["samples"].values():
+            if check:
+                expected = "64" if visit["branch"] == "A" else "56"
+                for width, v in visit["sizes"].items():
+                    assert v["exit"] == int(width != expected) and v["E0308"] == (width != expected)
+            elif plan["workflow"] == "build":
+                size = "64" if visit["branch"] == "A" else "56"
+                assert visit["verdict"] == "Expr=" + size + " valid=1 rejected"
+            else:
+                assert visit["listed_tests"] == 245 and len(visit["representative_tests"]) == 3
+        if plan["workflow"] == "test-no-run":
+            assert len({v["inventory"] for v in verdicts["samples"].values()}) == 1
+    analysis_file = ROOT / ("statistics-" + label + ".json")
+    confirmation = json.loads(analysis_file.read_bytes()) if analysis_file.is_file() else {}
     for phase in RETURNS:
         rows = paired(data, phase)
         sizes = [q["bytes"] / p["bytes"] for p, q in rows]
@@ -107,13 +130,22 @@ def verify_sample(path, product):
                        if 2 * sum(math.comb(12, j) for j in range(k)) / 2**12 <= .05 / 2)
             ordered = sorted(ratios)
             interval = [ordered[rank - 1], ordered[-rank]]
+            if confirmation:
+                point = confirmation[phase]
+                assert point["paired_median"] == median(ratios) and point["simultaneous_ci"] == interval
+                assert point["storage_max_ratio"] == max(sizes)
+                effects = [math.log(r) * (1 if o == "PQ" else -1) for r, o in zip(ratios, plan["orders"])]
+                observed = abs(sum(map(math.log, ratios)))
+                null = [abs(sum(v * (1 if i in idx else -1) for i, v in enumerate(effects)))
+                        for idx in combinations(range(12), 6)]
+                assert sum(v + 1e-10 >= observed for v in null) / len(null) == point["balanced_two_sided_p_vs_equal"]
         print(path.name, phase, f"{median(ratios):.3f}×", "interval", interval,
               "size", f"{median(sizes):.4f}×")
 
 
 if __name__ == "__main__":
     compiler = verify_product()
-    paths = sorted(ROOT.glob("*.json.gz"))
+    paths = sorted([*ROOT.glob("default-*.json.gz"), *ROOT.glob("option-*.json.gz")])
     assert paths
     for result in paths:
         verify_sample(result, compiler)
