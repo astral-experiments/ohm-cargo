@@ -1,0 +1,186 @@
+{
+  "collector_resource_minimum": {
+    "relay": 3221188608,
+    "system": 23049670656,
+    "work": 3988422656
+  },
+  "eligible_training_config": "unstable.ohm-defaults=false",
+  "invalid": {
+    "collector_exit": 1,
+    "dependency_crates": 306,
+    "diagnostic": "E0308",
+    "invalid_source_sha256": "ea3206e094dfbfc1b05180c98b7b3205606f695d29d8e384d313d8441abcd048",
+    "original_source_sha256": "04d7748eeaa824f28e7961386997730a0f5246d5859d28b183a84f0ee45f5dad",
+    "preparation_commands": 347,
+    "real_root_argv_sha256": "0c9b6adcf869d0d3aa118034bfbf8729862f136150cace1170caf28264d638e1",
+    "real_root_exit": 1,
+    "real_root_pid": 155087,
+    "strict_wrapper_pid": 155086
+  },
+  "native_trace_commitments": {
+    "native": {
+      "bytes": 6725685,
+      "files": 4536,
+      "ledger_sha256": "21b312e66194bb285b18a14d850e8e6ba06cdc4e24edc1b548a1b5274660a230"
+    },
+    "restored.native": {
+      "bytes": 411138,
+      "files": 54,
+      "ledger_sha256": "96c7b39b64471a14462edb340987329717d1c366e9075c7296f44595c830f17d"
+    }
+  },
+  "raw_files": {
+    "../reopened-invalid-repair-products-v1.json": {
+      "sha256": "ff8b5ee6d4d59c025f735bdfc0883731931f20b8b181e7969a10ebdd3523c6b0",
+      "size": 3050
+    },
+    "../repaired-final-link-v1.json": {
+      "sha256": "a3fdfd1dcaad212aa5ca3a0bb4d36a73c9ac5f8ce7210ce7e652de50507017d6",
+      "size": 1416
+    },
+    "../worker.py": {
+      "sha256": "61899aa675c9927e3be1275f0db2db746121583a8324910dfd53812adfafc8a7",
+      "size": 17119
+    },
+    "actual-recovered-cli.json": {
+      "sha256": "439c20d3dcb16a851995159d41158d46e684dfc2bee0cd0688a29f279a25d0e8",
+      "size": 1306
+    },
+    "complete.json": {
+      "sha256": "ab11ac5212127e7f331b88f98734c7b8815aa894830a149a1bb94074eb0b92c0",
+      "size": 1880
+    },
+    "native.json": {
+      "sha256": "4d3f071c5027487d3380802085072e0f10efb40a36e3eeaceb77329438d01b32",
+      "size": 354599
+    },
+    "observations.json": {
+      "sha256": "a4a021e765da11a72b42734bc71aae2a260e418cbf6a16318dc5e3586fd311b0",
+      "size": 1579
+    },
+    "restored.native.json": {
+      "sha256": "1071847a24197d9e993347969a46a06dd5b27243389d539159357cdcd134165e",
+      "size": 2395
+    },
+    "restored.stderr.gz": {
+      "sha256": "79e1b1a25e0433ebfe7f793aaa9c6a27c4532806b2c7f823987ce2eab62077cf",
+      "size": 197
+    },
+    "restored.stdout.gz": {
+      "sha256": "abaf5e72c41fde0bc516dbb9039d111d53cdebf4f4d99794630238a8d831b601",
+      "size": 23187
+    },
+    "result.json": {
+      "sha256": "9eb46c357d7ad8639b4b1ca81f37b65e4d33a9bed3fcabce77efd9c404c14dd0",
+      "size": 2052
+    },
+    "sources.json": {
+      "sha256": "aa38098d2d32ac4c331646089cbf51f6967f4444ab93fa083194f90368f5ed5d",
+      "size": 1395
+    },
+    "stderr.gz": {
+      "sha256": "4a74699ebe069ae1a28be4c36313f2b58ae520831ae14ee01935bc36c80ca893",
+      "size": 3223
+    },
+    "stdout.gz": {
+      "sha256": "2a004159dfe253b2d9e2d6f4f5ad64b295b308d30fbc44102be8058340196258",
+      "size": 27
+    },
+    "tools.json": {
+      "sha256": "5ae3d9674b1d0ad937465d22906b1da2c150d46930dcc6c8c841b1732fc72c94",
+      "size": 1167
+    }
+  },
+  "repair": {
+    "actual_root_program_compiles": 1,
+    "archive_members": 18,
+    "cargo_json_success": true,
+    "elf": {
+      "first16": "7f454c46020101000000000000000000",
+      "sha256": "24c8ab427fe7b87f4476544cc05fa3b6b7632c90affa836cc978a5fbe2b5ef15",
+      "size": 356342712
+    },
+    "genuine_final_link": [
+      {
+        "argv_sha256": "f7c3f4ac3973a23faa053b746832caefbf9cd99ec5986160b6f12a8a8f80cf61",
+        "exec_trace_sha256": "9402b71b0c0fe312bf0ffbb5bb44d320826741d7311c58936b473899f29105a3",
+        "exit": 0,
+        "image_sha256": "1b99826121ae6682a634e5efe09bd3e3df58ce58e0b28f849114ab5b89139c26",
+        "matched_final_inode": true,
+        "name": "cc",
+        "pid": 158042,
+        "resolved": "x86_64-linux-gnu-gcc-13",
+        "size": 1023032
+      },
+      {
+        "argv_sha256": "2286f4c20cc59051b287e5d2cf87dcc4b82be30678d4cd1c887fa20f6170b6b9",
+        "exec_trace_sha256": "05bddadf1573614df994a2afa9170f7988a008ef961e0259b91ed359492a26a5",
+        "exit": 0,
+        "image_sha256": "4d1f341ae5b763b513258ee2812422a45e063c30a2f1924a0cf63d3699f3a158",
+        "matched_final_inode": true,
+        "name": "collect2",
+        "pid": 158043,
+        "resolved": "collect2",
+        "size": 336056
+      },
+      {
+        "argv_sha256": "17e4b6ac1b7225fecd6683f88c788a6316a3dd6fe5f543a85cf2dc137486170c",
+        "exec_trace_sha256": "c6c08cd534e22dc3b4432b5a7fd212cf5e0e1b76d3da77916193fd4ca7e462a2",
+        "exit": 0,
+        "image_sha256": "e9ceb054c12207970f2726dfc07e9a66b411602748628baf27399f02a9bbb31b",
+        "matched_final_inode": true,
+        "name": "ld",
+        "pid": 158044,
+        "resolved": "x86_64-linux-gnu-ld.bfd",
+        "size": 1359128
+      }
+    ],
+    "member_names_sha256": "ab74ded3182a90c3ee86ac0cd82a6017928e82fdc7cacaaaab069e3c36078b47",
+    "product_verdicts": [
+      {
+        "actual": "0.1.7",
+        "exit": 0,
+        "manifest_sha256": "05434edc24238bba1acc130883531b33662800d9ea786ac5f7fddca651785e30",
+        "stdout_sha256": "ba7e1fc0f1beeac5dfd17c24f65ca6e582f3359ac2567878954d4d57fa4f3a05",
+        "wanted": "0.1.7"
+      },
+      {
+        "actual": "0.2.9",
+        "exit": 0,
+        "manifest_sha256": "181e33469d78ba9a79ae7e67de62f43a60b545928d22e1f106978b4799511d92",
+        "stdout_sha256": "97c19da977c3cc46f17e3df915366bda1b1dc76b06c0868d5d01225310c16d56",
+        "wanted": "0.2.9"
+      }
+    ],
+    "product_version": "cargo 1.86.1",
+    "real_lockfile_sha256": "d304f399d3207a7013015032ddef6fecfb5165ee5da75be44f1c45bc75e9cb69",
+    "restored_source_sha256": "04d7748eeaa824f28e7961386997730a0f5246d5859d28b183a84f0ee45f5dad",
+    "retained_dependency_archives": 301,
+    "rlib": {
+      "first16": "213c617263683e0a2f20202020202020",
+      "sha256": "047c7078f933ea101d73c14d886601a38023a69f12195bb800a8d6d7ee4e8cb4",
+      "size": 345144958
+    }
+  },
+  "repair_resource_minimum": {
+    "relay": 3220815872,
+    "system": 22774804480,
+    "work": 4303491072
+  },
+  "schema": 1,
+  "scope": "Actual Linux rustc-perf collector workload and product verdicts with source-built E. The compiler was not instrumented for profile generation.",
+  "subject": {
+    "cargo": "7277e6cdaba44c43294a07c0661fc8e69fd8e3e7",
+    "collector": "0a054b0ead56e41a4584bfab6fdc1a5fad2aedc3",
+    "images_sha256": {
+      "cargo": "43acdc336b077657fc4182a2ad79a6dc1cfb2f5e84f83dcd9ab6576e037aa276",
+      "collector": "00545362b4aa98827676e7b7d37f5e29ea9ee9d95175838087fe414db8701bc0",
+      "driver": "5becad96c462ebded234e1cfe87d9ed86f66d7ef364a26cff507495165a7ad82",
+      "fake": "4aab0d744e5de158a5a6e76569d99a8cf421cda48f81c465cc05e68842f4f2bf",
+      "rustc": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+    },
+    "rust": "05efba7a06f5bb71d1efb4b86805800f8b810779"
+  },
+  "verified": true
+}

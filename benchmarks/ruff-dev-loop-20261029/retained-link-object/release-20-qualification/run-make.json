@@ -1,0 +1,62 @@
+{
+  "receipts": [
+    {
+      "actual_compilers": 17,
+      "driver": "librustc_driver-15d35e5526bb94f8.so",
+      "exit": 0,
+      "source": {
+        "inline.rs": "59de78ed2ac01dd1e715ea168d28d88bad598b9b618595f5886a68be046d096a",
+        "rmake.rs": "9f513220fe829fba977352d4364c9af91b7286bd81d8b3bf2073daa51a7882f9"
+      },
+      "test": "ohm-checked-dep-info",
+      "trace": "492bf692833b538b13da32ea7b55f031abbbb0b99c8bcb69dbd82eefe419c25e"
+    },
+    {
+      "actual_compilers": 7,
+      "driver": "librustc_driver-15d35e5526bb94f8.so",
+      "exit": 0,
+      "source": {
+        "engine.rs": "2ad5f05664a800b2bc27878225229f7d3ad7181ba292afbea6d31d41acf6c17a",
+        "reader.rs": "67a170bf4da15875aaa6379e74f45589bf4edcf25b85cef6527376bfce1482ca",
+        "rmake.rs": "7fd79d46857a773696f4a06773a909433e509205418d4ba6eb2283f58b3cd55c"
+      },
+      "test": "ohm-relink-assembler-inputs",
+      "trace": "7b3e6c4cdc4bccc6e4ae89ebbd6de65987f7d26aa4fe90e5edd055f88b743b08"
+    },
+    {
+      "actual_compilers": 3,
+      "driver": "librustc_driver-15d35e5526bb94f8.so",
+      "exit": 0,
+      "source": {
+        "main.rs": "d7cdf3f0e9b0b20c7a9934e085b69ff29a5954f8b050620d0c21e09c55ca0c81",
+        "rmake.rs": "901d5e37182e0481566931df3b6b240fef3f31323857b3bb79327d41dd57212e",
+        "span_lib.rs": "4c0fd7b4427efa6201a11bb58682f0a86f4d77329edb88c90efa2584f982d8d1",
+        "subspan.rs": "f0889903beb523d5050c4d6f105fb76aaeadcb2633152c5993e86f515bf54cef"
+      },
+      "test": "rdr-public-hash-proc-macro-utf8-subspan",
+      "trace": "463c80f67d502a02cc5a295a1ff094ee1cbe2b95a619e84e1fb4aa7be00e1ee6"
+    },
+    {
+      "actual_compilers": 8,
+      "driver": "librustc_driver-15d35e5526bb94f8.so",
+      "exit": 0,
+      "source": {
+        "rmake.rs": "40c0ddd41d6177de1db6f296486340d53888f22d387a3ac00bf0d47b03ba3ca4"
+      },
+      "test": "separate-link",
+      "trace": "f303e502457eccec7e59520881170c4c0c65f683f12b69417f055eb4f4a2a20a"
+    },
+    {
+      "actual_compilers": 3,
+      "driver": "librustc_driver-15d35e5526bb94f8.so",
+      "exit": 0,
+      "source": {
+        "main.rs": "4bd54b2d1aba39ad450d4a1c7b7d22b63085f91f98c7c56d9f1112b92c6edc8b",
+        "rmake.rs": "c47ab1304d167ceee205b94d703b46415a13180649d9c41f9c0c99174253be55"
+      },
+      "test": "ohm-relink-incremental-objects",
+      "trace": "ae6393781e48540a74d9c4d1af7ce7495b606a6018d5cc1f8003288eb7910f23"
+    }
+  ],
+  "subject": "05efba7a06f5bb71d1efb4b86805800f8b810779"
+}
