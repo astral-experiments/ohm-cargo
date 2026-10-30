@@ -1,0 +1,146 @@
+{
+  "Ruff": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "actual_reader_body_sha256_to_bytes_and_stdout": {
+    "8c66bf8d4f4b8257c1321845fade73174098bc2f55ee61715409fb7e86c0420b": [
+      3966208,
+      "3.15 3.15 3.11"
+    ],
+    "b965c13c7ae005b22622458d785be98664ceb9156eeb925742f9d130678dbe9d": [
+      3966208,
+      "3.14 3.14 3.10"
+    ]
+  },
+  "cold_typed_full_rustc_Wild": [
+    39,
+    39,
+    8
+  ],
+  "edit": [
+    39,
+    1,
+    0
+  ],
+  "independent_native_sha256": "2a0807529e695fbd4d577addd647ffc3e1e4a6bff353caebb1e6a99141e2ec52",
+  "lock_sha256": "c9e345325bec5ff08dbbe3916edd39ad0c3d1c7797a8c241ae32f62754e764bf",
+  "native_replicas": 4,
+  "raw_rust_product_sha256": {
+    "forward": {
+      "independent-changed": {
+        "arms": {
+          "N": {
+            ".rlib": "767d3727d664127a46848b30dcec9e7b88bec60de73134b525fd31bb9d8ac334",
+            ".rmeta": "f049cd63496fcae348150f59150a79f5daa289d08486f47c70f4859e656c0cdf"
+          },
+          "W": {
+            ".rlib": "688649630d59c399a1d1c2b0a8ee0a20d6081068345f9ce86a1ccee5b1f02518",
+            ".rmeta": "e66a98ae440a0fcfc433487c5f3c233edc32ca2507e71790de844be6ad890267"
+          }
+        },
+        "raw_libraries_match_across_arms": false
+      },
+      "native-edit": {
+        "arms": {
+          "N": {
+            ".rlib": "a324fe26b93da7db450b90be5313c654c9959e61ebb87430f1d176d6461281c4",
+            ".rmeta": "f049cd63496fcae348150f59150a79f5daa289d08486f47c70f4859e656c0cdf"
+          },
+          "W": {
+            ".rlib": "4750c02590bd50f86a3c06c618a0f88b08ef41a892abdb379da62f03acb374fd",
+            ".rmeta": "f6dc4053f12c3d5a4e7c605601c63f53d8d0464d747969cce37f9189e1411186"
+          }
+        },
+        "raw_libraries_match_across_arms": false
+      },
+      "native-edited-unchanged": {
+        "arms": {
+          "N": {
+            ".rlib": "a324fe26b93da7db450b90be5313c654c9959e61ebb87430f1d176d6461281c4",
+            ".rmeta": "f049cd63496fcae348150f59150a79f5daa289d08486f47c70f4859e656c0cdf"
+          },
+          "W": {
+            ".rlib": "4750c02590bd50f86a3c06c618a0f88b08ef41a892abdb379da62f03acb374fd",
+            ".rmeta": "f6dc4053f12c3d5a4e7c605601c63f53d8d0464d747969cce37f9189e1411186"
+          }
+        },
+        "raw_libraries_match_across_arms": false
+      },
+      "native-initial": {
+        "arms": {
+          "N": {
+            ".rlib": "c28faf3a6f650d413799fbfea72833cb1bf76ac37b2ed8edf3c6f5b074307d70",
+            ".rmeta": "069bd5a7c7d73216f68e43eb0dd68d1f7eb3de388b33b61d183320ca8565815e"
+          },
+          "W": {
+            ".rlib": "0cc448da7c18acc59a58f7d33b4883625c1f4738eeedd0686b2298a292fc17df",
+            ".rmeta": "a2144a8123ba5237d0949ae6d2d8baea11c12cb230a0d8d96f146177be1e9cc8"
+          }
+        },
+        "raw_libraries_match_across_arms": false
+      }
+    },
+    "reverse": {
+      "independent-changed": {
+        "arms": {
+          "N": {
+            ".rlib": "4ed948bee3a8e036fdf1f546a369bfc23ff65745d713bcfad729529244f07230",
+            ".rmeta": "a2144a8123ba5237d0949ae6d2d8baea11c12cb230a0d8d96f146177be1e9cc8"
+          },
+          "W": {
+            ".rlib": "e429471d504c60f82209f3961c155e7ff440fd0b3c2df6ead73c3927d182f76f",
+            ".rmeta": "9acbd486fc29ad8b45d2fa4a112ae47bcd598a154de31d90716e16c1d86f6f5a"
+          }
+        },
+        "raw_libraries_match_across_arms": false
+      },
+      "native-edit": {
+        "arms": {
+          "N": {
+            ".rlib": "788d52e4281cd185ab80342d7c86bc7dce6aa20f83445f9612ea4418e12e5c55",
+            ".rmeta": "47af90eb1ab1c5136609035fbfafc0b236166cdb5b5a64aee53734f0aace28c5"
+          },
+          "W": {
+            ".rlib": "7d41b90a21579048a1a8732565d419baf5edb857af545aaa8fe523e678615178",
+            ".rmeta": "772ed965bd09e8a8dbf3e9de69bdcff68d90cdba77e4951e7d81475a64e908ae"
+          }
+        },
+        "raw_libraries_match_across_arms": false
+      },
+      "native-edited-unchanged": {
+        "arms": {
+          "N": {
+            ".rlib": "788d52e4281cd185ab80342d7c86bc7dce6aa20f83445f9612ea4418e12e5c55",
+            ".rmeta": "47af90eb1ab1c5136609035fbfafc0b236166cdb5b5a64aee53734f0aace28c5"
+          },
+          "W": {
+            ".rlib": "7d41b90a21579048a1a8732565d419baf5edb857af545aaa8fe523e678615178",
+            ".rmeta": "772ed965bd09e8a8dbf3e9de69bdcff68d90cdba77e4951e7d81475a64e908ae"
+          }
+        },
+        "raw_libraries_match_across_arms": false
+      },
+      "native-initial": {
+        "arms": {
+          "N": {
+            ".rlib": "d11468425a07e4f812410fa91f4a880c65b5356e9dae296ade6ea983096865fc",
+            ".rmeta": "21049eb7acccd3895bdd03bdd2f7f229160f0cf96441849751dad8821c02780e"
+          },
+          "W": {
+            ".rlib": "f94f45faa7b2d7126d0001174736ec29b4437cc239d2aa45c97d515c238c0c8f",
+            ".rmeta": "669f9a0c451ad633bd0d5a449caec9916da5cc5de90a1f4f64df60329c7f6813"
+          }
+        },
+        "raw_libraries_match_across_arms": false
+      }
+    }
+  },
+  "registered_native": "b6348591b1808c0eba3c1cb69fc7988b27bdce9f16ce0ee3ea579cec6b499d4d",
+  "registry_archives": 498,
+  "tracked_files": 11244,
+  "tree": "62d3f106c5e41f6022847f26ff8c7dc00139f7b1",
+  "unchanged": [
+    39,
+    0,
+    0
+  ],
+  "whole_sdk_members_per_arm": 2453
+}

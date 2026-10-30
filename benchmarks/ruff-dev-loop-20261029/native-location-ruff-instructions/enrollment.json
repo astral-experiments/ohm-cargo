@@ -1,0 +1,44 @@
+{
+  "Cargo_sha256": "96d49e1e0609d39bbfe6dc804ef0dc30211e0dc4bab24a1cb0b243f32c36b3a5",
+  "Wild_sha256": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+  "bootstrap_samples": 20000,
+  "bootstrap_seed": 202610292112267,
+  "calibration": {
+    "1": 4,
+    "100001": 300004,
+    "fork-long": 145007,
+    "fork-short": 145007,
+    "thread-long": 449123,
+    "thread-short": 149009,
+    "true": 167007
+  },
+  "candidate_parent_native_build_argv": 119,
+  "declared_measurement": "complete selected rustc all threads, dynamic guest Ir via calibrated Callgrind, descendants excluded",
+  "driver_sha256": {
+    "N": "74d8c35fcf9ec4231aeb0a76cf040b7bec5238e3709201c96a5684e85d065692",
+    "W": "ab3cffaacb292cb8ce80d7561c03409df49b7fa7d0ad6a3421b8f2a588f716d4"
+  },
+  "linux_host": {
+    "architecture": "x86_64",
+    "cpus": [
+      8,
+      9,
+      10,
+      11
+    ],
+    "kernel": "7.0.0-42-generic",
+    "model": "AMD EPYC-Milan Processor"
+  },
+  "registration_sha256": "6c00fafc01df370e4e2f5f406ea4bf8d78623874007a0bcdc46075311bfa8719",
+  "release_PGO_or_BOLT": false,
+  "same_std": 53,
+  "schedule_sha256": "ebf4e11cfd368a13bdd75d77ef3b865a26538ffe4af2cc0f677587999db758ca",
+  "seed": 8666424429099425711,
+  "source": {
+    "N": "20f07a0e6dbf600f3d0a90b11db3f8b84f41212d",
+    "W": "ad005f99d0b51fd62b5c237bc13b31b371a1686e"
+  },
+  "source_built_optimized_stage1": true,
+  "source_transfer_sha256": "36d6505e84f61cb70afba344d5526e2537b100b4bf61cdff170025932f0ec9a9",
+  "two_sided_randomization_assignments": 924
+}
