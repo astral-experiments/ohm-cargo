@@ -48,3 +48,9 @@ Unpack `tool-test-pairs.zip` and run `python3 -ISB fresh-edit/verify.py` to reco
 The [full-package protocol](complete-package-protocol.json) and [separate comparison without #270](standalone-package-protocol.json) were published before the respective timing runs. The reproduction archive covers both comparisons.
 
 A separate 12-pair comparison will measure the complete #270 and #275 compiler stack against bare Ohm −20 source. Its two arms independently start from the same real uv edit. [Prospective plan](full-stack-protocol.md) · [Machine-readable protocol](full-stack-protocol.json)
+
+To reproduce this comparison on x86-64 Linux, unpack the [full-stack rerun kit](rerun-full-stack.zip) and follow `FULL-STACK.md`. Supply the P and CZD SDKs, a uv clone and the offline Cargo cache. The kit compares bare Ohm −20 against both compiler patches together. It checks the first edited build in 12 new pairs.
+
+## Production settings edit
+
+Both compilers completed `cargo check --locked --offline -j8 -p uv` after an edit to `ToolListSettings`. The change dirtied the uv library and its two binaries on each compiler. Each check launched three rustc processes and zero linkers. The separate timing experiment stopped before collecting pairs because the two warm metadata files had different bytes. The trace packet includes the commands, process records and an independent replay. [Check trace and replay](production-check-trace.zip)
