@@ -1,0 +1,304 @@
+{
+  "admission_order": [
+    "C",
+    "CZD"
+  ],
+  "archives": {
+    "C": {
+      "allocated": 1092919296,
+      "archive_compared_with_live": true,
+      "archive_identity": [
+        29,
+        2944614
+      ],
+      "bytes": 1092918368,
+      "original": [
+        29,
+        2918461
+      ],
+      "path": "/dev/shm/ohm-guard-ordinary-build-20261030/checkpoint-C",
+      "root_mode": 448,
+      "sha256": "0bdddd8d6dd6ff36d1caf0b4a3814907d1132cc8b9fea01349811e4dd39a2975",
+      "state": {
+        "allocated_unique": 3720900608,
+        "logical_unique": 3680118100,
+        "manifest_sha256": "2c2a654af2dfc17bf81586151f77ef6a46d4b5ed7d8b36bc7cdbaa1bf71cf634",
+        "nodes": 19437,
+        "unique_files": 16094
+      }
+    },
+    "CZD": {
+      "allocated": 1092866048,
+      "archive_compared_with_live": true,
+      "archive_identity": [
+        29,
+        2970276
+      ],
+      "bytes": 1092862234,
+      "original": [
+        29,
+        2944615
+      ],
+      "path": "/dev/shm/ohm-guard-ordinary-build-20261030/checkpoint-CZD",
+      "root_mode": 448,
+      "sha256": "f63e6e62838e95614b02fcba55522b3f2afc060eef042bcd64478da913a15502",
+      "state": {
+        "allocated_unique": 3720867840,
+        "logical_unique": 3680076560,
+        "manifest_sha256": "0b01f9d48b5a4b391544e018eee7bfd993180f42b698a40c047d55318c871976",
+        "nodes": 19437,
+        "unique_files": 16094
+      }
+    }
+  },
+  "argv": [
+    "cargo",
+    "build",
+    "--locked",
+    "--offline",
+    "-j8",
+    "-p",
+    "uv",
+    "--bins"
+  ],
+  "bench": "One disjoint full restore of original arm A per arm and round, retain both and run the exact unwrapped ordinary --bins A once each, no B. Both primers complete before choosing a common strictly newer real B mtime; selected order then runs the first ordinary command immediately after a one-file B write. Excluded admission traces both B processes. All subsequent B samples are unwrapped, separate output and command clocks. Every restored clone is checked and retired by identity after both outputs and summaries are retained.",
+  "confirmation": "Use unmodified fresh-edit-trial/score.py score_times(C first, C wall, CZD wall); paired median, 3rd\u201310th order interval, both order strata and two-sided sign test against 2. Require its original individual_gate and Holm13 <0.05.",
+  "confirmation_pairs": 12,
+  "family": {
+    "ordered_labels": [
+      "CZ/tool-test",
+      "CZ/settings",
+      "CZD/tool-test",
+      "CZD/settings",
+      "CZD/check",
+      "CZD/build",
+      "P-to-ZD/tool-test",
+      "CZD/package-test",
+      "CZD/package-test-v2",
+      "CZD/package-test-v3",
+      "P-to-ZD/package-test",
+      "P-to-CZD/package-test",
+      "CZD/uvx-production-bins"
+    ],
+    "permanently_excluded": [
+      "CZD/package-test",
+      "CZD/package-test-v2",
+      "P-to-ZD/package-test",
+      "CZD/check",
+      "CZD/build"
+    ],
+    "separate_holm12_preserved": true,
+    "unfinished_p": 1
+  },
+  "group": "CZD/uvx-production-bins",
+  "handoff": "only after the actual declared full-stack P/CZD native outer, or a separately checked explicit future resource disposition of that failed scope. The previous failure alone cannot authorize native work.",
+  "inputs": {
+    "guard-file-free-math-asm/after-ordinary-failures/registration.json": "cc4006bc3add86c1d5baf1e72263a9ba36ee9715453bb936cc48850695bb38fe",
+    "guard-file-free-math-asm/fresh-edit-trial/score.py": "376a2dfb658cd1f087e1d96f46ea370077d37cc02fa51b135e8223d0c5e879f5",
+    "guard-file-free-math-asm/ordinary-modes/failed-build/registration.json": "2c66e1ff3f6b8c1fccbf7b248e5daff1607dd16e9b9869301636d60169ff8f71",
+    "guard-file-free-math-asm/ordinary-modes/physical-build/prepare/warm-C/lastA/products.json": "9bd54aea2cb01a9d9f8fedddd28af25e8a3897793416f87d4be433fe56ee1a8f",
+    "guard-file-free-math-asm/ordinary-modes/physical-build/prepare/warm-C/subject.json": "5c9bc027296298b4ddaa51466d937504bdbf5873ffccb4a6c927ebeae3a17b9f",
+    "guard-file-free-math-asm/ordinary-modes/physical-build/prepare/warm-C/transport.json": "a33f81292fda782c040a0584889d7f8eb6115f17c07bc19463352629dd993e6d",
+    "guard-file-free-math-asm/ordinary-modes/physical-build/prepare/warm-C/warm.json": "c729777c27697eee67acc06c1455e174cf50da2c25b4f45728d8659e6161e8e4",
+    "guard-file-free-math-asm/ordinary-modes/physical-build/prepare/warm-CZD/lastA/products.json": "b5efd62940f0ab45626076cdaadfa9d97b01d72a62c8afee8ea7c917c65eb4de",
+    "guard-file-free-math-asm/ordinary-modes/physical-build/prepare/warm-CZD/subject.json": "e08fc6d7f7132a5b0861ab02ed21acafb744b4e84c1a34f438e61e7a08d1fa61",
+    "guard-file-free-math-asm/ordinary-modes/physical-build/prepare/warm-CZD/transport.json": "71fd3e56539fba7e9519a44d3be7286c1e3e6637b1dcfe7de3023858583c6369",
+    "guard-file-free-math-asm/ordinary-modes/physical-build/prepare/warm-CZD/warm.json": "f8df3b0c0a0d0170ef34fbf3468c1e242854b1502b9d4fabc75e97316198c49c",
+    "guard-file-free-math-asm/package-test-full-stack/protocol.json": "c545177f4e5e2fb4284ce034187fa5d8b4619154a3d659f57fbdf2a589112cd1",
+    "guard-file-free-math-asm/package-test-full-stack/replay.py": "3ce662996efa335eebcf13eeee2af8e6184b7e559f3059ac11ad96eca8a9b340",
+    "uvx-binary-edit/A.rs": "d56860e6e1685296b845304afeff93a259a9d3f002ca3493b7d33774f53130a9",
+    "uvx-binary-edit/B.rs": "3e5c98c082c54aa77c06750e7f3f9f6e0eee1353b9a510734e4d02c729e21d75",
+    "uvx-binary-edit/behavior-control.json": "3c823b3573afddd55c0d807f33a9e55732305f07526b9bd13bc3ee39ecdfae42",
+    "uvx-binary-edit/behavior.py": "e34bc1989a036fe422d7a0e75f53ae3702983f1b8d45d8e08fce4446bb58e5bb",
+    "uvx-binary-edit/edit.json": "66fc3684f9c478940e544286cdc682749eba9de250bf5bb799927be8461920fe",
+    "uvx-binary-edit/upstream-commit.json": "afe78f4e7d12ae30c577eff4edde117db98cfddef97fbfb3a34fdd28d7ee0da4"
+  },
+  "limits": {
+    "immutable_new_archives": 0,
+    "physical_cpu": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "root_floor": 130996502528,
+    "scratch_floor": 130996502528,
+    "spare_shm": 6442450944,
+    "spare_system_ram": 21474836480,
+    "two_live_slots": true
+  },
+  "order_seed": "9e530108cd11db196e2091f1acd8ee8f8afea43ee71b9d18b5601514d3896693",
+  "pairs": [
+    [
+      "C",
+      "CZD"
+    ],
+    [
+      "CZD",
+      "C"
+    ],
+    [
+      "C",
+      "CZD"
+    ],
+    [
+      "C",
+      "CZD"
+    ],
+    [
+      "CZD",
+      "C"
+    ],
+    [
+      "C",
+      "CZD"
+    ],
+    [
+      "C",
+      "CZD"
+    ],
+    [
+      "CZD",
+      "C"
+    ],
+    [
+      "C",
+      "CZD"
+    ],
+    [
+      "CZD",
+      "C"
+    ],
+    [
+      "CZD",
+      "C"
+    ],
+    [
+      "CZD",
+      "C"
+    ]
+  ],
+  "pilot_minimum": 1.8,
+  "pilot_order": [
+    "C",
+    "CZD"
+  ],
+  "pilot_primers": [
+    "CZD",
+    "C"
+  ],
+  "primer_seed": "221970f00c7cea4fedb5693f01b481bcb22b4b445b535b6e4d19deb2d9e1febc",
+  "primers": [
+    [
+      "C",
+      "CZD"
+    ],
+    [
+      "C",
+      "CZD"
+    ],
+    [
+      "C",
+      "CZD"
+    ],
+    [
+      "CZD",
+      "C"
+    ],
+    [
+      "CZD",
+      "C"
+    ],
+    [
+      "C",
+      "CZD"
+    ],
+    [
+      "CZD",
+      "C"
+    ],
+    [
+      "CZD",
+      "C"
+    ],
+    [
+      "CZD",
+      "C"
+    ],
+    [
+      "C",
+      "CZD"
+    ],
+    [
+      "CZD",
+      "C"
+    ],
+    [
+      "C",
+      "CZD"
+    ]
+  ],
+  "product": "Compare complete raw bytes+length+owner/private-to-public identity for uv and uvx, all admitted or confirmed executions. uv A==B, uvx A!=B. Compare real uv + uvx sibling --version, actual git inputs, and forwarded binary argv and exit including missing sibling separately from timing. Carry library/stamps as diagnostics, no library equivalence claimed.",
+  "source": {
+    "A_blob": "074817b3f41536438e5d61642f5a15122a3ab5b1",
+    "A_sha256": "d56860e6e1685296b845304afeff93a259a9d3f002ca3493b7d33774f53130a9",
+    "B_blob": "8b95bde06acefef97e4405a21b0a4256d93f29b7",
+    "B_sha256": "3e5c98c082c54aa77c06750e7f3f9f6e0eee1353b9a510734e4d02c729e21d75",
+    "added": 5,
+    "commit_paths": [
+      "crates/uv/src/bin/uvx.rs"
+    ],
+    "deleted": 13,
+    "pr": "https://github.com/astral-sh/uv/pull/22742",
+    "repo": "astral-sh/uv",
+    "source_path": "crates/uv/src/bin/uvx.rs",
+    "title": "Avoid intermediate argument allocations in uvx (#22742)",
+    "upstream_commit": "801cb8566547b0d74690a0daf9c795502a5ddafb",
+    "upstream_parent": "deba0cbdc329d0a6cd118d5e1d58a203df08c0d3",
+    "uv_base": "c22e6b71933443e9cd299d4b6ac8de035ed4825b"
+  },
+  "stop": "Any exception, foreign work, process ownership or floor failure, wrong scope, missing actual sole uvx owner or Wild link in each traced B, differing paired inputs, product/behavior or per-arm roster fails closed; preserve partial evidence, zero-score whole endpoint. No replacements. Pilot below 1.8 stops with zero scored rows.",
+  "subjects": {
+    "C": {
+      "arm": "C",
+      "cargo_sha256": "fec5428ba68f417876a5869f5b1d61f35911c7672f7feaa587bb416bc95a9a9e",
+      "cargo_version": "cargo 1.99.0-dev (2d44bd4aa 2026-10-30) (ohm-ruff-lint-scout)\nrelease: 1.99.0-dev\ncommit-hash: 2d44bd4aa68b9ba32cacb5a384ecc18fa5e7553c\ncommit-date: 2026-10-30\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.6.3)\nssl: OpenSSL 3.6.3 9 Jun 2026\nos: Ubuntu 24.4.0 (noble) [64-bit]\n",
+      "driver": "lib/librustc_driver-dd8317bbc9bafd2c.so",
+      "driver_sha256": "d9604aa100650ae1af30d4edf4eb9a9d5b78c4b8f43849055fd694a7b9fafdb7",
+      "file_count": 65,
+      "launcher_sha256": "1308a1e234fb21697bc4eebda2aa7a975ac5491f3bcebbfeadca917ff8334429",
+      "ready_sha256": "d4e88dfcf166474f01c895b66bec6fca2c18e670560eaa33fef7ed80745ca361",
+      "rustc_version": "rustc 1.99.0-dev (9f8db07b6 2026-10-29) (ohm-ruff-lint-scout)\nbinary: rustc\ncommit-hash: 9f8db07b69b2f58ac9b64e3c9ec1ef8decdb5d1e\ncommit-date: 2026-10-29\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-dev\nLLVM version: 23.1.1\n",
+      "sdk": "/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/round18-rustc/guard-file-free-math-asm/bootstrap/physical-v2/C/sdk",
+      "source": "7553def9cbd378c033806c8de8c169e1d0ca01fa",
+      "source_sha256": "6d9e89d6a4414729cf36a6139984d15e7b06215df0994e74ef25d2704cf20bd4"
+    },
+    "CZD": {
+      "arm": "CZD",
+      "cargo_sha256": "fec5428ba68f417876a5869f5b1d61f35911c7672f7feaa587bb416bc95a9a9e",
+      "cargo_version": "cargo 1.99.0-dev (2d44bd4aa 2026-10-30) (ohm-ruff-lint-scout)\nrelease: 1.99.0-dev\ncommit-hash: 2d44bd4aa68b9ba32cacb5a384ecc18fa5e7553c\ncommit-date: 2026-10-30\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.6.3)\nssl: OpenSSL 3.6.3 9 Jun 2026\nos: Ubuntu 24.4.0 (noble) [64-bit]\n",
+      "driver": "lib/librustc_driver-dd8317bbc9bafd2c.so",
+      "driver_sha256": "21ff46bc296fe958884abc98a3e3d9a5ea6931eb3f1ae68e54ac580e675d2ed2",
+      "file_count": 65,
+      "launcher_sha256": "1308a1e234fb21697bc4eebda2aa7a975ac5491f3bcebbfeadca917ff8334429",
+      "ready_sha256": "4a63a75e64f0616601dd1b638d211e76ea980b802b22461593fd2ac097e4687b",
+      "rustc_version": "rustc 1.99.0-dev (9f8db07b6 2026-10-29) (ohm-ruff-lint-scout)\nbinary: rustc\ncommit-hash: 9f8db07b69b2f58ac9b64e3c9ec1ef8decdb5d1e\ncommit-date: 2026-10-29\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-dev\nLLVM version: 23.1.1\n",
+      "sdk": "/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/round18-rustc/guard-file-free-math-asm/bootstrap/subject-recovery/physical/CZD/sdk",
+      "source": "f78a9c378d843ba2c2928bf26902be8d1be03c75",
+      "source_sha256": "c13d5ee786438869e06c5d9d4f55c4ffe8c4cadb1f89c3275d55efcbea1580c8"
+    }
+  },
+  "title": "First ordinary two-binary build after the real uvx argument-construction edit"
+}

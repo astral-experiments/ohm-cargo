@@ -54,3 +54,11 @@ To reproduce this comparison on x86-64 Linux, unpack the [full-stack rerun kit](
 ## Production settings edit
 
 Both compilers completed `cargo check --locked --offline -j8 -p uv` after an edit to `ToolListSettings`. The change dirtied the uv library and its two binaries on each compiler. Each check launched three rustc processes and zero linkers. The separate timing experiment stopped before collecting pairs because the two warm metadata files had different bytes. The trace packet includes the commands, process records and an independent replay. [Check trace and replay](production-check-trace.zip)
+
+On the same edit, `cargo build -p uv` ran eight rustc processes on the control and three on the candidate. Each ran two linkers, and both resulting binaries matched byte-for-byte. The ordinary build had also stopped before collecting timing pairs because the initial library archives differed. [Build trace and independent replay](production-build-trace.zip)
+
+## Production launcher edit
+
+A separate comparison will time `cargo build --locked --offline -j8 -p uv --bins` after applying uv’s change to argument handling in the `uvx` launcher. The baseline and candidate compilers both include Rust #270. The candidate adds #275. Before each timed build, that compiler runs the same Cargo command on its own restored, pre-edit history. The protocol requires exact full binary hashes between compilers, an unchanged `uv`, a changed `uvx`, and checks for both launcher dispatch and argument forwarding.
+
+An excluded pilot must reach 1.8× before the 12 timed pairs can start. The schedule has six pairs in each order. This is the thirteenth comparison in the expanded family. [Upstream uv change](https://github.com/astral-sh/uv/pull/22742) · [Preregistered inputs, order and decision rules](production-bins-protocol.json)
