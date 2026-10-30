@@ -1,0 +1,565 @@
+{
+  "bundled": {
+    "both": {
+      "cargo": "96d49e1e0609d39bbfe6dc804ef0dc30211e0dc4bab24a1cb0b243f32c36b3a5",
+      "commit": "b9b4105463dd4a9a16f39509d868aa15d5f96e00",
+      "malformed_rejected": true,
+      "valid_visible": true,
+      "verdicts": {
+        "clean-invalid": {
+          "archive": "f28a03e8eca644deea446e940d9855745f29286e5d1f32c4fdad81ea643189fa",
+          "cargo": 101,
+          "compilers": [
+            "build_script_build",
+            "bundled",
+            "reader"
+          ],
+          "wild": 1
+        },
+        "clean29": {
+          "archive": "4885f278107d264d2993cb5208bc665a8ce5e546b788897a01de25b088c06c10",
+          "cargo": 0,
+          "compilers": [
+            "build_script_build",
+            "bundled",
+            "reader",
+            "integration"
+          ],
+          "elf": "25d06517a094c19546e3aef4ad16ae01c33f006b47a7baa7897f321d7ddc9ba8",
+          "wild": 2
+        },
+        "native29": {
+          "archive": "4885f278107d264d2993cb5208bc665a8ce5e546b788897a01de25b088c06c10",
+          "cargo": 0,
+          "compilers": [
+            "bundled",
+            "integration"
+          ],
+          "elf": "25d06517a094c19546e3aef4ad16ae01c33f006b47a7baa7897f321d7ddc9ba8",
+          "wild": 1
+        },
+        "natural-invalid": {
+          "archive": "f28a03e8eca644deea446e940d9855745f29286e5d1f32c4fdad81ea643189fa",
+          "cargo": 101,
+          "compilers": [
+            "bundled"
+          ],
+          "wild": 0
+        },
+        "relink29": {
+          "archive": "4885f278107d264d2993cb5208bc665a8ce5e546b788897a01de25b088c06c10",
+          "cargo": 0,
+          "compilers": [
+            "bundled",
+            "integration"
+          ],
+          "elf": "25d06517a094c19546e3aef4ad16ae01c33f006b47a7baa7897f321d7ddc9ba8",
+          "wild": 1
+        },
+        "restored17": {
+          "archive": "f52ddd5b268d7db92a26b2fba5ee4bfe40ee7e576ec961eacd0b7c84cfaf031a",
+          "cargo": 0,
+          "compilers": [
+            "build_script_build",
+            "bundled",
+            "reader",
+            "integration"
+          ],
+          "elf": "6e3547b5aaa653a43473c7a2e9e038e7876b29b465a02505a30be9043955c1c9",
+          "wild": 2
+        },
+        "seed17": {
+          "archive": "f52ddd5b268d7db92a26b2fba5ee4bfe40ee7e576ec961eacd0b7c84cfaf031a",
+          "cargo": 0,
+          "compilers": [
+            "build_script_build",
+            "bundled",
+            "reader",
+            "integration"
+          ],
+          "elf": "6e3547b5aaa653a43473c7a2e9e038e7876b29b465a02505a30be9043955c1c9",
+          "wild": 2
+        },
+        "steady17": {
+          "archive": "f52ddd5b268d7db92a26b2fba5ee4bfe40ee7e576ec961eacd0b7c84cfaf031a",
+          "cargo": 0,
+          "compilers": [
+            "bundled",
+            "integration"
+          ],
+          "elf": "6e3547b5aaa653a43473c7a2e9e038e7876b29b465a02505a30be9043955c1c9",
+          "wild": 1
+        }
+      }
+    },
+    "rust": {
+      "cargo": "43acdc336b077657fc4182a2ad79a6dc1cfb2f5e84f83dcd9ab6576e037aa276",
+      "commit": "b9b4105463dd4a9a16f39509d868aa15d5f96e00",
+      "malformed_rejected": true,
+      "valid_visible": true,
+      "verdicts": {
+        "clean-invalid": {
+          "archive": "f28a03e8eca644deea446e940d9855745f29286e5d1f32c4fdad81ea643189fa",
+          "cargo": 101,
+          "compilers": [
+            "build_script_build",
+            "bundled",
+            "reader"
+          ],
+          "wild": 1
+        },
+        "clean29": {
+          "archive": "4885f278107d264d2993cb5208bc665a8ce5e546b788897a01de25b088c06c10",
+          "cargo": 0,
+          "compilers": [
+            "build_script_build",
+            "bundled",
+            "reader",
+            "integration"
+          ],
+          "elf": "25d06517a094c19546e3aef4ad16ae01c33f006b47a7baa7897f321d7ddc9ba8",
+          "wild": 2
+        },
+        "native29": {
+          "archive": "4885f278107d264d2993cb5208bc665a8ce5e546b788897a01de25b088c06c10",
+          "cargo": 0,
+          "compilers": [
+            "bundled",
+            "integration"
+          ],
+          "elf": "25d06517a094c19546e3aef4ad16ae01c33f006b47a7baa7897f321d7ddc9ba8",
+          "wild": 1
+        },
+        "natural-invalid": {
+          "archive": "f28a03e8eca644deea446e940d9855745f29286e5d1f32c4fdad81ea643189fa",
+          "cargo": 101,
+          "compilers": [
+            "bundled"
+          ],
+          "wild": 0
+        },
+        "relink29": {
+          "archive": "4885f278107d264d2993cb5208bc665a8ce5e546b788897a01de25b088c06c10",
+          "cargo": 0,
+          "compilers": [
+            "bundled",
+            "integration"
+          ],
+          "elf": "25d06517a094c19546e3aef4ad16ae01c33f006b47a7baa7897f321d7ddc9ba8",
+          "wild": 1
+        },
+        "restored17": {
+          "archive": "f52ddd5b268d7db92a26b2fba5ee4bfe40ee7e576ec961eacd0b7c84cfaf031a",
+          "cargo": 0,
+          "compilers": [
+            "build_script_build",
+            "bundled",
+            "reader",
+            "integration"
+          ],
+          "elf": "6e3547b5aaa653a43473c7a2e9e038e7876b29b465a02505a30be9043955c1c9",
+          "wild": 2
+        },
+        "seed17": {
+          "archive": "f52ddd5b268d7db92a26b2fba5ee4bfe40ee7e576ec961eacd0b7c84cfaf031a",
+          "cargo": 0,
+          "compilers": [
+            "build_script_build",
+            "bundled",
+            "reader",
+            "integration"
+          ],
+          "elf": "6e3547b5aaa653a43473c7a2e9e038e7876b29b465a02505a30be9043955c1c9",
+          "wild": 2
+        },
+        "steady17": {
+          "archive": "f52ddd5b268d7db92a26b2fba5ee4bfe40ee7e576ec961eacd0b7c84cfaf031a",
+          "cargo": 0,
+          "compilers": [
+            "bundled",
+            "integration"
+          ],
+          "elf": "6e3547b5aaa653a43473c7a2e9e038e7876b29b465a02505a30be9043955c1c9",
+          "wild": 1
+        }
+      }
+    }
+  },
+  "compiler_suites": {
+    "receipts": [
+      {
+        "actual_compilers": 18,
+        "driver": "librustc_driver-15d35e5526bb94f8.so",
+        "exit": 0,
+        "source": {
+          "inline.rs": "3f6d37f00b38f06a0b64de3c278bd02090e37efb15eb81d77b5818decdeb5875",
+          "rmake.rs": "4fdff92dfecb57c8516995197d3cd818795eb573414ee3d696b34be4ceede3a0"
+        },
+        "test": "ohm-checked-dep-info",
+        "trace": "f8ed68b32ade793eeccfa37dcd349c51b4ffc44902f1353b015492797513f47d"
+      },
+      {
+        "actual_compilers": 7,
+        "driver": "librustc_driver-15d35e5526bb94f8.so",
+        "exit": 0,
+        "source": {
+          "engine.rs": "2ad5f05664a800b2bc27878225229f7d3ad7181ba292afbea6d31d41acf6c17a",
+          "reader.rs": "67a170bf4da15875aaa6379e74f45589bf4edcf25b85cef6527376bfce1482ca",
+          "rmake.rs": "7fd79d46857a773696f4a06773a909433e509205418d4ba6eb2283f58b3cd55c"
+        },
+        "test": "ohm-relink-assembler-inputs",
+        "trace": "bdbcfb6f61bd0fb348392207cadbb9064d098c87b6545fb3ea8a4353c24631fc"
+      },
+      {
+        "actual_compilers": 3,
+        "driver": "librustc_driver-15d35e5526bb94f8.so",
+        "exit": 0,
+        "source": {
+          "main.rs": "d7cdf3f0e9b0b20c7a9934e085b69ff29a5954f8b050620d0c21e09c55ca0c81",
+          "rmake.rs": "901d5e37182e0481566931df3b6b240fef3f31323857b3bb79327d41dd57212e",
+          "span_lib.rs": "4c0fd7b4427efa6201a11bb58682f0a86f4d77329edb88c90efa2584f982d8d1",
+          "subspan.rs": "f0889903beb523d5050c4d6f105fb76aaeadcb2633152c5993e86f515bf54cef"
+        },
+        "test": "rdr-public-hash-proc-macro-utf8-subspan",
+        "trace": "9251a0965f60d90b0778dd93a2f66e66f5adadda4869b991b4b4edad30eeb3be"
+      }
+    ],
+    "subject": "b9b4105463dd4a9a16f39509d868aa15d5f96e00"
+  },
+  "generic": {
+    "both": {
+      "cargo": "96d49e1e0609d39bbfe6dc804ef0dc30211e0dc4bab24a1cb0b243f32c36b3a5",
+      "commit": "b9b4105463dd4a9a16f39509d868aa15d5f96e00",
+      "driver": "4c316288bba940787cc3d8f4d3ec34a010b1d0825abf8024752bc6508733a22a",
+      "engine": "9a43f1b58d27c42c5d87388cf73b62be78c051b802798539f60671a35d61d155",
+      "phases": {
+        "clean-hazard": {
+          "compilers": [
+            "engine",
+            "reader"
+          ],
+          "elf": "5737e13640a473531b12b21922dcc5eb23d80ee7c50d659382f8092663d4749e",
+          "exit": 0,
+          "output": "797",
+          "wild": 1
+        },
+        "clean-safe": {
+          "compilers": [
+            "engine",
+            "reader"
+          ],
+          "elf": "b426e7455f8c02644abf94fb24f88fc1e42fe4e076e1c381cbab723f57f95e83",
+          "exit": 0,
+          "output": "7",
+          "wild": 1
+        },
+        "direct-restamped": {
+          "compilers": [
+            "reader"
+          ],
+          "elf": "3ca3f860cc4bf8fa7b2f4e032719937972b13b78d40fc7cd66196b09c886fd1e",
+          "exit": 0,
+          "output": "541",
+          "wild": 1
+        },
+        "enters-unsafe": {
+          "compilers": [
+            "reader"
+          ],
+          "elf": "1f5a7f52aee544bf717cecbc133ed86dc68cb690c3d90aa65d361a3b32e30bc4",
+          "exit": 0,
+          "output": "529",
+          "wild": 1
+        },
+        "indirect-restamped": {
+          "compilers": [
+            "reader"
+          ],
+          "elf": "5737e13640a473531b12b21922dcc5eb23d80ee7c50d659382f8092663d4749e",
+          "exit": 0,
+          "output": "797",
+          "wild": 1
+        },
+        "missing-nested-1": {
+          "compilers": [
+            "reader"
+          ],
+          "exit": 101,
+          "missing": "nested.s",
+          "wild": 0
+        },
+        "missing-nested-2": {
+          "compilers": [
+            "reader"
+          ],
+          "exit": 101,
+          "missing": "nested.s",
+          "wild": 0
+        },
+        "repaired": {
+          "compilers": [
+            "reader"
+          ],
+          "elf": "5737e13640a473531b12b21922dcc5eb23d80ee7c50d659382f8092663d4749e",
+          "exit": 0,
+          "output": "797",
+          "wild": 1
+        },
+        "restored-safe": {
+          "compilers": [
+            "reader"
+          ],
+          "elf": "b426e7455f8c02644abf94fb24f88fc1e42fe4e076e1c381cbab723f57f95e83",
+          "exit": 0,
+          "output": "7",
+          "wild": 1
+        },
+        "restored-safe-repeat": {
+          "compilers": [
+            "reader"
+          ],
+          "elf": "b426e7455f8c02644abf94fb24f88fc1e42fe4e076e1c381cbab723f57f95e83",
+          "exit": 0,
+          "output": "7",
+          "wild": 1
+        },
+        "safe": {
+          "compilers": [
+            "engine",
+            "reader"
+          ],
+          "elf": "b426e7455f8c02644abf94fb24f88fc1e42fe4e076e1c381cbab723f57f95e83",
+          "exit": 0,
+          "output": "7",
+          "wild": 1
+        },
+        "safe-files-absent": {
+          "compilers": [
+            "reader"
+          ],
+          "elf": "b426e7455f8c02644abf94fb24f88fc1e42fe4e076e1c381cbab723f57f95e83",
+          "exit": 0,
+          "output": "7",
+          "wild": 1
+        },
+        "safe-repeat": {
+          "compilers": [
+            "reader"
+          ],
+          "elf": "b426e7455f8c02644abf94fb24f88fc1e42fe4e076e1c381cbab723f57f95e83",
+          "exit": 0,
+          "output": "7",
+          "wild": 1
+        }
+      },
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+    },
+    "rust": {
+      "cargo": "43acdc336b077657fc4182a2ad79a6dc1cfb2f5e84f83dcd9ab6576e037aa276",
+      "commit": "b9b4105463dd4a9a16f39509d868aa15d5f96e00",
+      "driver": "4c316288bba940787cc3d8f4d3ec34a010b1d0825abf8024752bc6508733a22a",
+      "engine": "9a43f1b58d27c42c5d87388cf73b62be78c051b802798539f60671a35d61d155",
+      "phases": {
+        "clean-hazard": {
+          "compilers": [
+            "engine",
+            "reader"
+          ],
+          "elf": "5737e13640a473531b12b21922dcc5eb23d80ee7c50d659382f8092663d4749e",
+          "exit": 0,
+          "output": "797",
+          "wild": 1
+        },
+        "clean-safe": {
+          "compilers": [
+            "engine",
+            "reader"
+          ],
+          "elf": "b426e7455f8c02644abf94fb24f88fc1e42fe4e076e1c381cbab723f57f95e83",
+          "exit": 0,
+          "output": "7",
+          "wild": 1
+        },
+        "direct-restamped": {
+          "compilers": [
+            "reader"
+          ],
+          "elf": "3ca3f860cc4bf8fa7b2f4e032719937972b13b78d40fc7cd66196b09c886fd1e",
+          "exit": 0,
+          "output": "541",
+          "wild": 1
+        },
+        "enters-unsafe": {
+          "compilers": [
+            "reader"
+          ],
+          "elf": "1f5a7f52aee544bf717cecbc133ed86dc68cb690c3d90aa65d361a3b32e30bc4",
+          "exit": 0,
+          "output": "529",
+          "wild": 1
+        },
+        "indirect-restamped": {
+          "compilers": [
+            "reader"
+          ],
+          "elf": "5737e13640a473531b12b21922dcc5eb23d80ee7c50d659382f8092663d4749e",
+          "exit": 0,
+          "output": "797",
+          "wild": 1
+        },
+        "missing-nested-1": {
+          "compilers": [
+            "reader"
+          ],
+          "exit": 101,
+          "missing": "nested.s",
+          "wild": 0
+        },
+        "missing-nested-2": {
+          "compilers": [
+            "reader"
+          ],
+          "exit": 101,
+          "missing": "nested.s",
+          "wild": 0
+        },
+        "repaired": {
+          "compilers": [
+            "reader"
+          ],
+          "elf": "5737e13640a473531b12b21922dcc5eb23d80ee7c50d659382f8092663d4749e",
+          "exit": 0,
+          "output": "797",
+          "wild": 1
+        },
+        "restored-safe": {
+          "compilers": [
+            "reader"
+          ],
+          "elf": "b426e7455f8c02644abf94fb24f88fc1e42fe4e076e1c381cbab723f57f95e83",
+          "exit": 0,
+          "output": "7",
+          "wild": 1
+        },
+        "restored-safe-repeat": {
+          "compilers": [
+            "reader"
+          ],
+          "elf": "b426e7455f8c02644abf94fb24f88fc1e42fe4e076e1c381cbab723f57f95e83",
+          "exit": 0,
+          "output": "7",
+          "wild": 1
+        },
+        "safe": {
+          "compilers": [
+            "engine",
+            "reader"
+          ],
+          "elf": "b426e7455f8c02644abf94fb24f88fc1e42fe4e076e1c381cbab723f57f95e83",
+          "exit": 0,
+          "output": "7",
+          "wild": 1
+        },
+        "safe-files-absent": {
+          "compilers": [
+            "reader"
+          ],
+          "elf": "b426e7455f8c02644abf94fb24f88fc1e42fe4e076e1c381cbab723f57f95e83",
+          "exit": 0,
+          "output": "7",
+          "wild": 1
+        },
+        "safe-repeat": {
+          "compilers": [
+            "reader"
+          ],
+          "elf": "b426e7455f8c02644abf94fb24f88fc1e42fe4e076e1c381cbab723f57f95e83",
+          "exit": 0,
+          "output": "7",
+          "wild": 1
+        }
+      },
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+    }
+  },
+  "implicit": {
+    "both": {
+      "classification": "fixed",
+      "records": {
+        "forced_invalid": {
+          "cargo": 101
+        },
+        "forced_valid": {
+          "cargo": 0,
+          "elf": "921d8a3dd88054c5b155ec7975b839e3f69d15316be78372ec516633c62913cd",
+          "program": 83
+        },
+        "independent_invalid": {
+          "cargo": 101
+        },
+        "independent_valid": {
+          "cargo": 0,
+          "elf": "921d8a3dd88054c5b155ec7975b839e3f69d15316be78372ec516633c62913cd",
+          "program": 83
+        },
+        "unchanged_invalid": {
+          "cargo": 101
+        },
+        "unchanged_valid": {
+          "cargo": 0,
+          "elf": "921d8a3dd88054c5b155ec7975b839e3f69d15316be78372ec516633c62913cd",
+          "program": 83
+        },
+        "warm_original": {
+          "cargo": 0,
+          "elf": "927664c9b21cc7b77db996d9872c1ff76b2fa2dd1d611a89cf29a3a7523a1657",
+          "program": 0
+        }
+      }
+    },
+    "rust": {
+      "classification": "fixed",
+      "records": {
+        "forced_invalid": {
+          "cargo": 101
+        },
+        "forced_valid": {
+          "cargo": 0,
+          "elf": "921d8a3dd88054c5b155ec7975b839e3f69d15316be78372ec516633c62913cd",
+          "program": 83
+        },
+        "independent_invalid": {
+          "cargo": 101
+        },
+        "independent_valid": {
+          "cargo": 0,
+          "elf": "921d8a3dd88054c5b155ec7975b839e3f69d15316be78372ec516633c62913cd",
+          "program": 83
+        },
+        "unchanged_invalid": {
+          "cargo": 101
+        },
+        "unchanged_valid": {
+          "cargo": 0,
+          "elf": "921d8a3dd88054c5b155ec7975b839e3f69d15316be78372ec516633c62913cd",
+          "program": 83
+        },
+        "warm_original": {
+          "cargo": 0,
+          "elf": "927664c9b21cc7b77db996d9872c1ff76b2fa2dd1d611a89cf29a3a7523a1657",
+          "program": 0
+        }
+      }
+    }
+  },
+  "matched_bootstrap": {
+    "child": "b9b4105463dd4a9a16f39509d868aa15d5f96e00",
+    "common_literal_native_argv_sha256": "f7816ec2b333b3614e401213529d6de25c4a4481b83f812013d7cd5cc9777e7d",
+    "new_physical_native_command_count": 119,
+    "old_physical_native_command_count": 119,
+    "only_new_native_argv": [],
+    "only_old_native_argv": [],
+    "parent": "ad005f99d0b51fd62b5c237bc13b31b371a1686e",
+    "same_literal_native_argv_multiset": true
+  }
+}
