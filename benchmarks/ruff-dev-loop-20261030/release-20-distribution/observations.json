@@ -1,0 +1,431 @@
+{
+  "archive": "edb64a2ee39b2f2951614f98d53ec4e4197f55149ff794c911bd81bc7f870b15",
+  "cargo_and_rustc_versions": {
+    "19": {
+      "cargo": "cargo 1.99.0-dev (235f92286 2026-10-28) (ohm-1.99.0-19)",
+      "rustc": "rustc 1.99.0-dev (eef2f3425 2026-10-28) (ohm-1.99.0-19)"
+    },
+    "20": {
+      "cargo": "cargo 1.99.0-dev (2d44bd4aa 2026-10-29) (ohm-1.99.0-20)",
+      "rustc": "rustc 1.99.0-dev (7e71d3150 2026-10-29) (ohm-1.99.0-20)"
+    },
+    "stock": {
+      "cargo": "cargo 1.99.0 (5f94df478 2026-08-27)",
+      "rustc": "rustc 1.99.0 (b940084d7 2026-09-28)"
+    }
+  },
+  "native_inputs": {
+    "19-declared-directory": {
+      "builds": {
+        "forced_invalid": {
+          "cargo": 101
+        },
+        "forced_valid": {
+          "cargo": 0,
+          "elf": "edead7d38d40d6204f1c1319e65a84c6dba8187dad7176885c2e4b3ce0a14dac",
+          "program": 83
+        },
+        "independent_invalid": {
+          "cargo": 101
+        },
+        "independent_valid": {
+          "cargo": 0,
+          "elf": "edead7d38d40d6204f1c1319e65a84c6dba8187dad7176885c2e4b3ce0a14dac",
+          "program": 83
+        },
+        "unchanged_invalid": {
+          "cargo": 101
+        },
+        "unchanged_valid": {
+          "cargo": 0,
+          "elf": "edead7d38d40d6204f1c1319e65a84c6dba8187dad7176885c2e4b3ce0a14dac",
+          "program": 83
+        },
+        "warm_original": {
+          "cargo": 0,
+          "elf": "5e7d1c4d8207bdcd9a8a2c26db4b1746424452600d426b16786b2fa338d0f8fc",
+          "program": 0
+        }
+      },
+      "changed": [
+        83,
+        101
+      ],
+      "changed_equals_clean_elf": true,
+      "forced_and_empty": [
+        83,
+        101
+      ],
+      "raw_results_sha256": "4185c6973f1967ffc6911b1c9275aa6626f4467a096ce7d25b102f0f5a9b66e9"
+    },
+    "19-declared-file": {
+      "builds": {
+        "forced_invalid": {
+          "cargo": 101
+        },
+        "forced_valid": {
+          "cargo": 0,
+          "elf": "edead7d38d40d6204f1c1319e65a84c6dba8187dad7176885c2e4b3ce0a14dac",
+          "program": 83
+        },
+        "independent_invalid": {
+          "cargo": 101
+        },
+        "independent_valid": {
+          "cargo": 0,
+          "elf": "edead7d38d40d6204f1c1319e65a84c6dba8187dad7176885c2e4b3ce0a14dac",
+          "program": 83
+        },
+        "unchanged_invalid": {
+          "cargo": 101
+        },
+        "unchanged_valid": {
+          "cargo": 0,
+          "elf": "edead7d38d40d6204f1c1319e65a84c6dba8187dad7176885c2e4b3ce0a14dac",
+          "program": 83
+        },
+        "warm_original": {
+          "cargo": 0,
+          "elf": "5e7d1c4d8207bdcd9a8a2c26db4b1746424452600d426b16786b2fa338d0f8fc",
+          "program": 0
+        }
+      },
+      "changed": [
+        83,
+        101
+      ],
+      "changed_equals_clean_elf": true,
+      "forced_and_empty": [
+        83,
+        101
+      ],
+      "raw_results_sha256": "4185c6973f1967ffc6911b1c9275aa6626f4467a096ce7d25b102f0f5a9b66e9"
+    },
+    "19-undeclared": {
+      "builds": {
+        "forced_invalid": {
+          "cargo": 101
+        },
+        "forced_valid": {
+          "cargo": 0,
+          "elf": "edead7d38d40d6204f1c1319e65a84c6dba8187dad7176885c2e4b3ce0a14dac",
+          "program": 83
+        },
+        "independent_invalid": {
+          "cargo": 101
+        },
+        "independent_valid": {
+          "cargo": 0,
+          "elf": "edead7d38d40d6204f1c1319e65a84c6dba8187dad7176885c2e4b3ce0a14dac",
+          "program": 83
+        },
+        "unchanged_invalid": {
+          "cargo": 0,
+          "elf": "edead7d38d40d6204f1c1319e65a84c6dba8187dad7176885c2e4b3ce0a14dac",
+          "program": 83
+        },
+        "unchanged_valid": {
+          "cargo": 0,
+          "elf": "5e7d1c4d8207bdcd9a8a2c26db4b1746424452600d426b16786b2fa338d0f8fc",
+          "program": 0
+        },
+        "warm_original": {
+          "cargo": 0,
+          "elf": "5e7d1c4d8207bdcd9a8a2c26db4b1746424452600d426b16786b2fa338d0f8fc",
+          "program": 0
+        }
+      },
+      "changed": [
+        0,
+        0
+      ],
+      "changed_equals_clean_elf": false,
+      "forced_and_empty": [
+        83,
+        101
+      ],
+      "raw_results_sha256": "e3156a0825a9591381808519172d1c1d009786fd703342b178f2e8d6240f0309"
+    },
+    "20-declared-directory": {
+      "builds": {
+        "forced_invalid": {
+          "cargo": 101
+        },
+        "forced_valid": {
+          "cargo": 0,
+          "elf": "286ccfe88b20fbf26fe2caab42632f63e6edbbc79d2451b507621e8810ad53fa",
+          "program": 83
+        },
+        "independent_invalid": {
+          "cargo": 101
+        },
+        "independent_valid": {
+          "cargo": 0,
+          "elf": "286ccfe88b20fbf26fe2caab42632f63e6edbbc79d2451b507621e8810ad53fa",
+          "program": 83
+        },
+        "unchanged_invalid": {
+          "cargo": 101
+        },
+        "unchanged_valid": {
+          "cargo": 0,
+          "elf": "286ccfe88b20fbf26fe2caab42632f63e6edbbc79d2451b507621e8810ad53fa",
+          "program": 83
+        },
+        "warm_original": {
+          "cargo": 0,
+          "elf": "ade8b22d9b70fb87d42ffb4635733ab226152282d04877491a5f68e5a1b7df0e",
+          "program": 0
+        }
+      },
+      "changed": [
+        83,
+        101
+      ],
+      "changed_equals_clean_elf": true,
+      "forced_and_empty": [
+        83,
+        101
+      ],
+      "raw_results_sha256": "cb03db353fb18a4b789b78dc0e0030d53c9ccb31c99e10e98da69cb796635e0c"
+    },
+    "20-declared-file": {
+      "builds": {
+        "forced_invalid": {
+          "cargo": 101
+        },
+        "forced_valid": {
+          "cargo": 0,
+          "elf": "286ccfe88b20fbf26fe2caab42632f63e6edbbc79d2451b507621e8810ad53fa",
+          "program": 83
+        },
+        "independent_invalid": {
+          "cargo": 101
+        },
+        "independent_valid": {
+          "cargo": 0,
+          "elf": "286ccfe88b20fbf26fe2caab42632f63e6edbbc79d2451b507621e8810ad53fa",
+          "program": 83
+        },
+        "unchanged_invalid": {
+          "cargo": 101
+        },
+        "unchanged_valid": {
+          "cargo": 0,
+          "elf": "286ccfe88b20fbf26fe2caab42632f63e6edbbc79d2451b507621e8810ad53fa",
+          "program": 83
+        },
+        "warm_original": {
+          "cargo": 0,
+          "elf": "ade8b22d9b70fb87d42ffb4635733ab226152282d04877491a5f68e5a1b7df0e",
+          "program": 0
+        }
+      },
+      "changed": [
+        83,
+        101
+      ],
+      "changed_equals_clean_elf": true,
+      "forced_and_empty": [
+        83,
+        101
+      ],
+      "raw_results_sha256": "cb03db353fb18a4b789b78dc0e0030d53c9ccb31c99e10e98da69cb796635e0c"
+    },
+    "20-undeclared": {
+      "builds": {
+        "forced_invalid": {
+          "cargo": 101
+        },
+        "forced_valid": {
+          "cargo": 0,
+          "elf": "286ccfe88b20fbf26fe2caab42632f63e6edbbc79d2451b507621e8810ad53fa",
+          "program": 83
+        },
+        "independent_invalid": {
+          "cargo": 101
+        },
+        "independent_valid": {
+          "cargo": 0,
+          "elf": "286ccfe88b20fbf26fe2caab42632f63e6edbbc79d2451b507621e8810ad53fa",
+          "program": 83
+        },
+        "unchanged_invalid": {
+          "cargo": 0,
+          "elf": "286ccfe88b20fbf26fe2caab42632f63e6edbbc79d2451b507621e8810ad53fa",
+          "program": 83
+        },
+        "unchanged_valid": {
+          "cargo": 0,
+          "elf": "ade8b22d9b70fb87d42ffb4635733ab226152282d04877491a5f68e5a1b7df0e",
+          "program": 0
+        },
+        "warm_original": {
+          "cargo": 0,
+          "elf": "ade8b22d9b70fb87d42ffb4635733ab226152282d04877491a5f68e5a1b7df0e",
+          "program": 0
+        }
+      },
+      "changed": [
+        0,
+        0
+      ],
+      "changed_equals_clean_elf": false,
+      "forced_and_empty": [
+        83,
+        101
+      ],
+      "raw_results_sha256": "6287b1da449df4c5dba20083e63498c09ffd26d01e7cae06af5941bc50a0666d"
+    },
+    "stock-declared-directory": {
+      "builds": {
+        "forced_invalid": {
+          "cargo": 101
+        },
+        "forced_valid": {
+          "cargo": 0,
+          "elf": "50a998dd7f9d71c50071a2a49ed8fb02c6e9a2c8e11944de228aa1879b71c31f",
+          "program": 83
+        },
+        "independent_invalid": {
+          "cargo": 101
+        },
+        "independent_valid": {
+          "cargo": 0,
+          "elf": "50a998dd7f9d71c50071a2a49ed8fb02c6e9a2c8e11944de228aa1879b71c31f",
+          "program": 83
+        },
+        "unchanged_invalid": {
+          "cargo": 101
+        },
+        "unchanged_valid": {
+          "cargo": 0,
+          "elf": "50a998dd7f9d71c50071a2a49ed8fb02c6e9a2c8e11944de228aa1879b71c31f",
+          "program": 83
+        },
+        "warm_original": {
+          "cargo": 0,
+          "elf": "d4c5bd644d2bdea615149d232a50c27cb433250f33c600a50d571d1efd9d3a28",
+          "program": 0
+        }
+      },
+      "changed": [
+        83,
+        101
+      ],
+      "changed_equals_clean_elf": true,
+      "forced_and_empty": [
+        83,
+        101
+      ],
+      "raw_results_sha256": "e4ff743e9f2c8f57f233aa659854c1fbe2c57f528ea8d84e2ac82d96a782da22"
+    },
+    "stock-declared-file": {
+      "builds": {
+        "forced_invalid": {
+          "cargo": 101
+        },
+        "forced_valid": {
+          "cargo": 0,
+          "elf": "b189ed12c1d0a9137bacb5a987afa74ae70adeff8d8ca6a688ce4b0d12f3e5b7",
+          "program": 83
+        },
+        "independent_invalid": {
+          "cargo": 101
+        },
+        "independent_valid": {
+          "cargo": 0,
+          "elf": "b189ed12c1d0a9137bacb5a987afa74ae70adeff8d8ca6a688ce4b0d12f3e5b7",
+          "program": 83
+        },
+        "unchanged_invalid": {
+          "cargo": 101
+        },
+        "unchanged_valid": {
+          "cargo": 0,
+          "elf": "b189ed12c1d0a9137bacb5a987afa74ae70adeff8d8ca6a688ce4b0d12f3e5b7",
+          "program": 83
+        },
+        "warm_original": {
+          "cargo": 0,
+          "elf": "69254ca01cb1e042eea22c9acc44d623a8e17204e5c33c5857f50a5d7d748008",
+          "program": 0
+        }
+      },
+      "changed": [
+        83,
+        101
+      ],
+      "changed_equals_clean_elf": true,
+      "forced_and_empty": [
+        83,
+        101
+      ],
+      "raw_results_sha256": "2854b903b84a305fa4cb0b943c8932a876b9946e5fc829922e986baea6dad725"
+    },
+    "stock-undeclared": {
+      "builds": {
+        "forced_invalid": {
+          "cargo": 101
+        },
+        "forced_valid": {
+          "cargo": 0,
+          "elf": "d400f499d9e2213ef8ca6365dbf442a830ca77de5f8e242784a15e6eea1ce9c2",
+          "program": 83
+        },
+        "independent_invalid": {
+          "cargo": 101
+        },
+        "independent_valid": {
+          "cargo": 0,
+          "elf": "d400f499d9e2213ef8ca6365dbf442a830ca77de5f8e242784a15e6eea1ce9c2",
+          "program": 83
+        },
+        "unchanged_invalid": {
+          "cargo": 0,
+          "elf": "d400f499d9e2213ef8ca6365dbf442a830ca77de5f8e242784a15e6eea1ce9c2",
+          "program": 83
+        },
+        "unchanged_valid": {
+          "cargo": 0,
+          "elf": "3bb20c15ff489f75fb04568509fff40af7efb78adff110c94fa096b8c35c2394",
+          "program": 0
+        },
+        "warm_original": {
+          "cargo": 0,
+          "elf": "3bb20c15ff489f75fb04568509fff40af7efb78adff110c94fa096b8c35c2394",
+          "program": 0
+        }
+      },
+      "changed": [
+        0,
+        0
+      ],
+      "changed_equals_clean_elf": false,
+      "forced_and_empty": [
+        83,
+        101
+      ],
+      "raw_results_sha256": "5e509f77bb10be7dbe3173fa8a5b7eafaf6190560150bf9eaa4f6ebb81607f69"
+    }
+  },
+  "sources": {
+    "matrix_libraries_sha256": {
+      "declared-directory": "70938e466d5e1fd1b101fedb374548c4db43620a72177dea3f22e34be9a495a0",
+      "declared-file": "5f1891ad72b6f20b8c4dff48b529262b4140fcefa299c7a7089623d804cc0641",
+      "undeclared": "dd854fa9b4eff3c5e8428694740c7355fb2bb63c3624651e4ed75233e36f4f22"
+    },
+    "replay_sha256": "dd854fa9b4eff3c5e8428694740c7355fb2bb63c3624651e4ed75233e36f4f22"
+  },
+  "span_and_assembler": {
+    "assembler-default": "cd631afcddff65c5d9fd4e0792f2de42bb9c3cb7135e09fbe2bf0da3a3f2296e",
+    "assembler-opt-out": "62f20122f53586d560e007443f2faf7c9803a5a2ff85a4b5ddb1122887a9ef9c",
+    "span-default-build": "4a847ec147d0013e30f23a00d16668e46c55363f530d3a8212932ce5a5513935",
+    "span-default-check": "cf511886bd51f20b7e1d10d111bc4b0984775b731b78ed5c58c01150065fb57f",
+    "span-default-test": "72eb299551fe995579d7df617a086f8c3f80b668b0e50fc0725d6dc5b9c5c02a",
+    "span-opt-out-build": "042ee44d5df8394c5d981c839b7f7be825c01d1cdad2ebcc0dbaab9a4eeb43ce",
+    "span-opt-out-check": "6f3918c35b452529e22b415ad62a7b36e414764d320b3731faed8909f88665fd",
+    "span-opt-out-test": "cba8a4301bc81c4fb1e3f93103361ba40ea7ca23a04398b7b467cdd174dbc854"
+  },
+  "status": "pass"
+}
