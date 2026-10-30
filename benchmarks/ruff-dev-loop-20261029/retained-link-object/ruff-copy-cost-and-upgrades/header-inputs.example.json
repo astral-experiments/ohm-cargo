@@ -1,0 +1,22 @@
+{
+  "cargo": "/path/to/common/cargo",
+  "cargo_sha256": "96d49e1e0609d39bbfe6dc804ef0dc30211e0dc4bab24a1cb0b243f32c36b3a5",
+  "drivers": {
+    "E": "5becad96c462ebded234e1cfe87d9ed86f66d7ef364a26cff507495165a7ad82",
+    "W": "ab3cffaacb292cb8ce80d7561c03409df49b7fa7d0ad6a3421b8f2a588f716d4"
+  },
+  "formats": {
+    "E": 8,
+    "W": 7
+  },
+  "kits": {
+    "E": "/path/to/repaired-sdk",
+    "W": "/path/to/first-sdk"
+  },
+  "order": [
+    "W",
+    "E"
+  ],
+  "proxy": "/path/to/rustup",
+  "work": "/path/to/fresh/private/work"
+}
