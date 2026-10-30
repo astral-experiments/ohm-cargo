@@ -1,0 +1,31 @@
+--- replay.py
++++ replay.py
+@@ -161 +160,0 @@
+-    sdk_history = []
+@@ -296,8 +295,7 @@
+-        if not a.same_sdk or not sdk_history:
+-            for donor, destination in [(source_driver, current), (kits[role] / "bin/rustc", private_bin / "rustc")]:
+-                tmp = out / "next-sdk-file"
+-                shutil.copy2(donor, tmp)
+-                os.replace(tmp, destination)
+-            stale = [d for d in private_lib.glob("librustc_driver*.so") if d != current]
+-            for d in stale:
+-                d.unlink()
++        for donor, destination in [(source_driver, current), (kits[role] / "bin/rustc", private_bin / "rustc")]:
++            tmp = out / "next-sdk-file"
++            shutil.copy2(donor, tmp)
++            os.replace(tmp, destination)
++        stale = [d for d in private_lib.glob("librustc_driver*.so") if d != current]
++        for d in stale:
++            d.unlink()
+@@ -307,10 +304,0 @@
+-        identity_files = {}
+-        for key, path in (("rustc", private_bin / "rustc"), ("driver", current), ("cargo", private_bin / "cargo")):
+-            info = path.stat()
+-            identity_files[key] = [info.st_dev, info.st_ino, info.st_ctime_ns]
+-        if a.same_sdk and sdk_history:
+-            assert identity_files == sdk_history[0]["files"]
+-        snapshot = {"role": role, "files": identity_files}
+-        sdk_history.append(snapshot)
+-        with (out / "sdk-inodes.jsonl").open("a") as stream:
+-            stream.write(json.dumps(snapshot, sort_keys=True) + "\n")

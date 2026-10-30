@@ -141,6 +141,8 @@ def main():
         subprocess.run([sys.executable, "-IB", ROOT / "storage" / "alternatives" / "verify.py"], check=True)
     if (ROOT / "check-test-instructions").exists():
         subprocess.run([sys.executable, "-IB", ROOT / "check-test-instructions" / "verify.py"], check=True)
+    if (ROOT / "opt-in" / "compiler.json").is_file():
+        subprocess.run([sys.executable, "-IB", ROOT / "opt-in" / "verify.py"], check=True)
     if (ROOT / "storage" / "full-ruff-cli").exists():
         subprocess.run([sys.executable, "-IB", ROOT / "storage" / "full-ruff-cli" / "verify.py"], check=True)
     if (ROOT / "storage" / "alternatives" / "same-branch-edits").exists():

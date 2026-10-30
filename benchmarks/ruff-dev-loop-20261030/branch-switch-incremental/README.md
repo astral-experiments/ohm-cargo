@@ -4,6 +4,8 @@ Ruff #28335 changed the size of an AST expression from 64 to 56 bytes. It touche
 
 The comparison uses optimized x86-64 Linux stage 1 compilers built from the proposed Ohm distribution’s Rust revision and the branch-aware compiler. Cargo, the standard library, the rustc executable and the bundled Wild binary are shared byte for byte. The compiler driver is the single changed SDK file. Both compilers use the same bootstrap metadata stamp. The tracked source and physical tool hashes identify the builds. The Linux distribution applies PGO and BOLT separately. [Compiler build and configuration](compiler-build)
 
+The first measurements below use the automatically enabled revision at `6b7f424e`. The revised compiler keeps one session by default. Exact default disk checks, explicit opt-in results and commands are available for the revised head. [Opt-in qualification](opt-in)
+
 ## Whole-command results
 
 Each row is a complete ordinary Cargo invocation on a return to a previously built branch. Every workflow has 12 new installation pairs with six in each order. The elapsed interval starts with Cargo and ends when it exits. Git time, child CPU, independently compiled consumers, test execution and instrumentation are recorded separately. Both branches and all pairs are included.

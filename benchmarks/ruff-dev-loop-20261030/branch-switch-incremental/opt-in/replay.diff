@@ -1,0 +1,122 @@
+--- replay.py
++++ replay.py
+@@ -54,0 +55,4 @@
++    args.add_argument("--enable-retention", action="store_true",
++                      help="Enable the candidate rustc option through Cargo RUSTFLAGS")
++    args.add_argument("--order-seed", type=int, required=True)
++    args.add_argument("--same-sdk", action="store_true", help="Compare opting in and out on one exact SDK")
+@@ -66,2 +70,4 @@
+-    if identity["P"]["cargo"] != identity["Q"]["cargo"] or identity["P"]["rustc"] != identity["Q"]["rustc"] or identity["P"]["driver"] == identity["Q"]["driver"]:
+-        args.error("Supply matched Cargo and rustc launchers with distinct compiler drivers.")
++    if identity["P"]["cargo"] != identity["Q"]["cargo"]:
++        args.error("Both SDKs must have the same Cargo")
++    if a.same_sdk != (identity["P"] == identity["Q"]):
++        args.error("Requested comparison does not match the supplied physical SDK identities")
+@@ -97 +103,13 @@
+-    shutil.copytree(kits["P"], stable_kit, symlinks=True)
++
++    def copy_sdk_file(src, dst):
++        # Immutable SDK members stay on the same device. Only driver.next is
++        # replaced during measurements, and replacement cannot modify its donor.
++        try:
++            os.link(src, dst)
++            return dst
++        except OSError as error:
++            import errno
++            if error.errno != errno.EXDEV:
++                raise
++            return shutil.copy2(src, dst)
++    shutil.copytree(kits["P"], stable_kit, symlinks=True, copy_function=copy_sdk_file)
+@@ -107,0 +126,2 @@
++    sys.path.insert(0, str(Path(__file__).resolve().parent))
++    import count
+@@ -135 +155 @@
+-    random.Random(0xc0ffee43).shuffle(orders)
++    random.Random(a.order_seed).shuffle(orders)
+@@ -138,0 +159 @@
++                                              "candidate_option": a.enable_retention, "seed": a.order_seed,
+@@ -139,0 +161,2 @@
++    sdk_history = []
++    role_cursor = [None]
+@@ -184,0 +208 @@
++        key = (role_cursor[0], rev)
+@@ -210,0 +235,7 @@
++        count.record(d, target, shared, role_cursor[0], phase)
++        tables = {}
++        for folder, older in count.session_dirs((target, shared)).items():
++            if folder.parent.name.startswith(("ruff_python_ast-", "ruff_python_parser-")):
++                names = ["dep-graph.bin", "query-cache.bin", "ohm-packed-dep-graph.bin", "ohm-packed-query-cache.bin"]
++                tables[str(folder.relative_to(out))] = {"older": older, "files": {n: (folder / n).stat().st_size for n in names if (folder / n).is_file()}}
++        (d / "table-files.json").write_text(json.dumps(tables, sort_keys=True))
+@@ -213 +244 @@
+-            assert phase_outputs.setdefault(rev, size) == size
++            assert phase_outputs.setdefault(key, size) == size
+@@ -219,4 +250,4 @@
+-            if rev not in phase_outputs:
+-                phase_outputs[rev] = product
+-                shutil.copy2(exe, out / ("clean-" + rev[:8] + ".elf"))
+-            assert phase_outputs[rev] == product, (phase, rev, phase_outputs[rev], product)
++            if key not in phase_outputs:
++                phase_outputs[key] = product
++                shutil.copy2(exe, out / ("clean-" + role_cursor[0] + "-" + rev[:8] + ".elf"))
++            assert phase_outputs[key] == product, (phase, rev, phase_outputs[key], product)
+@@ -243,2 +274,2 @@
+-        if rev in phase_outputs:
+-            assert h == phase_outputs[rev], (phase, rev, h, phase_outputs[rev])
++        if key in phase_outputs:
++            assert h == phase_outputs[key], (phase, rev, h, phase_outputs[key])
+@@ -246,2 +277,2 @@
+-            phase_outputs[rev] = h
+-            shutil.copy2(elf, out / ("clean-" + rev[:8] + ".elf"))
++            phase_outputs[key] = h
++            shutil.copy2(elf, out / ("clean-" + role_cursor[0] + "-" + rev[:8] + ".elf"))
+@@ -252,0 +284,5 @@
++        role_cursor[0] = role
++        if a.enable_retention and role == "Q":
++            env["CARGO_ENCODED_RUSTFLAGS"] = "-Zohm-branch-cache=yes"
++        else:
++            env.pop("CARGO_ENCODED_RUSTFLAGS", None)
+@@ -256,4 +292,25 @@
+-        temporary_driver = out / "driver.next"
+-        shutil.copy2(source_driver, temporary_driver)
+-        os.replace(temporary_driver, installed_driver)
+-        assert digest(installed_driver) == identity[role]["driver"]
++        private_bin = stable_kit / "bin"
++        private_lib = stable_kit / "lib"
++        assert private_bin.resolve().is_relative_to(stable_kit) and private_lib.resolve().is_relative_to(stable_kit)
++        current = private_lib / source_driver.name
++        if not a.same_sdk or not sdk_history:
++            for donor, destination in [(source_driver, current), (kits[role] / "bin/rustc", private_bin / "rustc")]:
++                tmp = out / "next-sdk-file"
++                shutil.copy2(donor, tmp)
++                os.replace(tmp, destination)
++            stale = [d for d in private_lib.glob("librustc_driver*.so") if d != current]
++            for d in stale:
++                d.unlink()
++        assert digest(current) == identity[role]["driver"] and digest(private_bin / "rustc") == identity[role]["rustc"]
++        dynamic = subprocess.check_output(["readelf", "-d", private_bin / "rustc"], text=True)
++        assert "Shared library: [" + source_driver.name + "]" in dynamic
++        identity_files = {}
++        for key, path in (("rustc", private_bin / "rustc"), ("driver", current), ("cargo", private_bin / "cargo")):
++            info = path.stat()
++            identity_files[key] = [info.st_dev, info.st_ino, info.st_ctime_ns]
++        if a.same_sdk and sdk_history:
++            assert identity_files == sdk_history[0]["files"]
++        snapshot = {"role": role, "files": identity_files}
++        sdk_history.append(snapshot)
++        with (out / "sdk-inodes.jsonl").open("a") as stream:
++            stream.write(json.dumps(snapshot, sort_keys=True) + "\n")
+@@ -269,6 +326,7 @@
+-    for rev in (A, B):
+-        independent("P")
+-        d = out / ("reference-" + rev[:8])
+-        d.mkdir()
+-        build(d, "empty", rev)
+-    assert phase_outputs[A] != phase_outputs[B]
++    for role in ("P", "Q"):
++        for rev in (A, B):
++            independent(role)
++            d = out / ("reference-" + role + "-" + rev[:8])
++            d.mkdir()
++            build(d, "empty", rev)
++        assert phase_outputs[(role,A)] != phase_outputs[(role,B)]
