@@ -43,12 +43,16 @@ Each workflow below used twelve additional fresh pairs and six pairs in each ord
 | `cargo build` | feature | 9.03 s | 2.72 s | 3.33× | 3.12–3.61× | 258 → 382 MiB |
 | `cargo check` | parent | 6.72 s | 2.05 s | 3.29× | 3.08–3.58× | 184 → 242 MiB |
 | `cargo check` | feature | 6.90 s | 2.05 s | 3.34× | 2.97–3.67× | 173 → 243 MiB |
+| `cargo test --lib --no-run` | parent | 11.59 s | 3.51 s | 3.29× | 3.23–3.48× | 424 → 525 MiB |
+| `cargo test --lib --no-run` | feature | 11.68 s | 3.65 s | 3.21× | 3.07–3.34× | 390 → 527 MiB |
 
-The first visit to the new branch and its following return form a shorter history than repeated branch switches. Their combined median paired speedups were 1.53× for `cargo build`, 1.55× for `cargo check`.
+The first visit to the new branch and its following return form a shorter history than repeated branch switches. Their combined median paired speedups were 1.53× for `cargo build`, 1.55× for `cargo check`, 1.52× for `cargo test --lib --no-run`.
 
 Each saved native reader matched the full independent empty-build executable for its branch. Replay seed `202610300701`. [All pairs](option-build-12-pairs-elapsed-202610300701.json.gz) · [Order-statistic intervals and exact tests](statistics-option-build-12-pairs-elapsed-202610300701.json) · [Independent native or type verdicts](verdicts-option-build-12-pairs-elapsed-202610300701.json.gz)
 
 Across 126 visits, including clean references and repairs, the correctly sized type probe passed and the contradictory size failed with E0308. Replay seed `202610300702`. [All pairs](option-check-12-pairs-elapsed-202610300702.json.gz) · [Order-statistic intervals and exact tests](statistics-option-check-12-pairs-elapsed-202610300702.json) · [Independent native or type verdicts](verdicts-option-check-12-pairs-elapsed-202610300702.json.gz)
+
+All 126 test-build visits reproduced the same 245-test inventory and passed three representative native tests. Replay seed `202610300710`. [All pairs](option-test-no-run-12-pairs-elapsed-202610300710.json.gz) · [Order-statistic intervals and exact tests](statistics-option-test-no-run-12-pairs-elapsed-202610300710.json) · [Independent native or type verdicts](verdicts-option-test-no-run-12-pairs-elapsed-202610300710.json.gz)
 
 To rerun one fixed-installation cohort, use the option command above, omit `--screen`, pass `--pairs 12`, and select its published workflow and seed.
 
