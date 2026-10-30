@@ -79,3 +79,9 @@ To reproduce the build on another x86-64 Linux machine, extract the [production 
 ## Private diagnostic on shipped Ohm −18
 
 Changing a diagnostic in the body of `uv-normalize`’s `InvalidNameError::fmt` changed the message printed by a clean caller. The crate’s metadata bytes and private hash changed. Its public hash stayed fixed. The first ordinary workspace `cargo check --locked --offline -j4` took 0.993 s. In an independently restored copy, a process trace recorded one rustc invocation, for `uv_normalize`, despite 35 Cargo progress messages. Both workspaces recorded a changed invocation stamp for that crate alone. Extract the [raw commands, metadata, traces and independent verifier](uv-normalize-private-check.zip) and run `python3 -ISB verify.py`.
+
+## Combined compiler changes after the storage stop
+
+The first run built and verified all 17 programs on bare Ohm −20. It stopped before compiling with the candidate because the memory-backed filesystem had insufficient space under the registered reserve. It contributed zero edited pairs and retains p = 1.
+
+The next comparison reuses its verified, unedited control checkpoint. It will warm the candidate independently, then run twelve new pairs in a separately balanced order. The fourteen-comparison correction includes the stopped run. [Workload and decision rules](full-stack-after-uvx-protocol.md) · [Preregistered inputs and order](full-stack-after-uvx-protocol.json)
