@@ -139,6 +139,10 @@ def main():
         subprocess.run([sys.executable, "-IB", ROOT / "formatter-reviewer-replay" / "verify.py"], check=True)
     if (ROOT / "storage" / "alternatives").exists():
         subprocess.run([sys.executable, "-IB", ROOT / "storage" / "alternatives" / "verify.py"], check=True)
+    compact = ROOT / "storage" / "alternatives" / "native-compact"
+    if compact.is_dir():
+        subprocess.run([sys.executable, "-IB", compact / "verify.py"], check=True)
+        subprocess.run([sys.executable, "-IB", compact / "grammar-edits" / "verify.py"], check=True)
     if (ROOT / "check-test-instructions").exists():
         subprocess.run([sys.executable, "-IB", ROOT / "check-test-instructions" / "verify.py"], check=True)
     if (ROOT / "opt-in" / "compiler.json").is_file():

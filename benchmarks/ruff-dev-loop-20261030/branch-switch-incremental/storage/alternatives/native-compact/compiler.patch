@@ -1,0 +1,818 @@
+diff --git a/Cargo.lock b/Cargo.lock
+index 1a4155a7c5f450485724fe3336d69ac922051f26..6d165d8686cf768d4da55bf845cd8534cccafd82 100644
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -4205,6 +4205,7 @@ dependencies = [
+ name = "rustc_incremental"
+ version = "0.0.0"
+ dependencies = [
++ "flate2",
+  "rand 0.9.3",
+  "rustc_data_structures",
+  "rustc_errors",
+diff --git a/compiler/rustc_incremental/Cargo.toml b/compiler/rustc_incremental/Cargo.toml
+index ac4d7d8e1cbc03027fc29799b7fd3b7ddf1c4684..7399533c791482784f6c08d1874a015e773a7477 100644
+--- a/compiler/rustc_incremental/Cargo.toml
++++ b/compiler/rustc_incremental/Cargo.toml
+@@ -5,6 +5,7 @@ edition = "2024"
+ 
+ [dependencies]
+ # tidy-alphabetical-start
++flate2 = "1.1.9"
+ rand = "0.9.0"
+ rustc_data_structures = { path = "../rustc_data_structures" }
+ rustc_errors = { path = "../rustc_errors" }
+diff --git a/compiler/rustc_incremental/src/persist/fs.rs b/compiler/rustc_incremental/src/persist/fs.rs
+index e2f530011b0025e52e8f5f3ed947fee59f04ecc8..fc9ebb14bf974ad9cd86371d926f59c62f2dfea9 100644
+--- a/compiler/rustc_incremental/src/persist/fs.rs
++++ b/compiler/rustc_incremental/src/persist/fs.rs
+@@ -37,8 +37,10 @@
+ //!    finalizes and "publishes" its private session directory by renaming it
+ //!    from "s-{timestamp}-{unique}-working" to "s-{timestamp}-{unique}-{SVH}".
+ //! 6. At this point the "old" session directory that we copied our data from
+-//!    at the beginning of the session has usually become obsolete. With the branch cache
+-//!    enabled the compiler also keeps the most recent session from another checkout.
++//!    at the beginning of the session has usually become obsolete. With the optional
++//!    branch cache, the compiler also keeps the latest session from another checkout.
++//!    The new session can pack its two largest tables before publication. Readers
++//!    restore these tables only in their private working directory.
+ //!
+ //! ## Garbage Collection
+ //!
+@@ -125,6 +127,7 @@ use tracing::debug;
+ 
+ use crate::diagnostics;
+ 
++mod packed;
+ #[cfg(test)]
+ mod tests;
+ 
+@@ -262,7 +265,7 @@ pub(crate) fn prepare_session_directory(
+ 
+         // Find a suitable source directory to copy from. Ignore those that we
+         // have already tried before.
+-        let source_directory =
++        let (source_directory, compact_branch_cache) =
+             find_source_directory(&crate_dir, &source_directories_already_tried, checkout);
+ 
+         let Some(source_directory) = source_directory else {
+@@ -273,7 +276,11 @@ pub(crate) fn prepare_session_directory(
+                     directory."
+             );
+ 
+-            return IncrCompSession { session_directory: session_dir, _lock_file: directory_lock };
++            return IncrCompSession {
++                session_directory: session_dir,
++                _lock_file: directory_lock,
++                compact_branch_cache,
++            };
+         };
+ 
+         debug!("attempting to copy data from source: {}", source_directory.display());
+@@ -286,7 +293,11 @@ pub(crate) fn prepare_session_directory(
+                 sess.dcx().emit_warn(diagnostics::HardLinkFailed { path: &session_dir });
+             }
+ 
+-            return IncrCompSession { session_directory: session_dir, _lock_file: directory_lock };
++            return IncrCompSession {
++                session_directory: session_dir,
++                _lock_file: directory_lock,
++                compact_branch_cache,
++            };
+         } else {
+             debug!("copying failed - trying next directory");
+ 
+@@ -351,6 +362,10 @@ pub fn finalize_session_directory(
+     let new_path = incr_comp_session_dir.parent().unwrap().join(&*sub_dir_name);
+     debug!("finalize_session_directory() - new path: {}", new_path.display());
+ 
++    if incr_comp_session.compact_branch_cache {
++        packed::pack(&incr_comp_session_dir);
++    }
++
+     match rename_path_with_retry(&*incr_comp_session_dir, &new_path, 3) {
+         Ok(_) => {
+             debug!("finalize_session_directory() - directory renamed successfully");
+@@ -403,6 +418,7 @@ fn copy_files(sess: &Session, target_dir: &Path, source_dir: &Path) -> Result<bo
+     // destination absent until cloning has been attempted; its separate lock file is held too.
+     #[cfg(target_os = "macos")]
+     if rustc_fs_util::clone_directory(source_dir, target_dir).is_ok() {
++        packed::restore_clone(source_dir, target_dir).map_err(|_| ())?;
+         if sess.opts.unstable_opts.incremental_info {
+             eprintln!("[incremental] session directory cloned with copy-on-write");
+         }
+@@ -411,6 +427,7 @@ fn copy_files(sess: &Session, target_dir: &Path, source_dir: &Path) -> Result<bo
+ 
+     create_dir(sess, target_dir, "session");
+ 
++    let mut packed = Vec::new();
+     let mut files_linked = 0;
+     let mut files_copied = 0;
+ 
+@@ -418,6 +435,10 @@ fn copy_files(sess: &Session, target_dir: &Path, source_dir: &Path) -> Result<bo
+         match entry {
+             Ok(entry) => {
+                 let file_name = entry.file_name();
++                if let Some(table) = packed::table(&file_name) {
++                    packed.push(table);
++                    continue;
++                }
+ 
+                 let target_file_path = target_dir.join(file_name);
+                 let source_path = entry.path();
+@@ -444,6 +465,7 @@ fn copy_files(sess: &Session, target_dir: &Path, source_dir: &Path) -> Result<bo
+         );
+     }
+ 
++    packed::restore(&packed, source_dir, target_dir).map_err(|_| ())?;
+     Ok(files_linked > 0 || files_copied == 0)
+ }
+ 
+@@ -571,7 +593,7 @@ fn find_source_directory(
+     crate_dir: &Path,
+     source_directories_already_tried: &FxHashSet<PathBuf>,
+     checkout: Option<u64>,
+-) -> Option<PathBuf> {
++) -> (Option<PathBuf>, bool) {
+     let iter = crate_dir
+         .read_dir()
+         .unwrap() // FIXME
+@@ -584,11 +606,12 @@ fn find_source_directory_in_iter<I>(
+     iter: I,
+     source_directories_already_tried: &FxHashSet<PathBuf>,
+     checkout: Option<u64>,
+-) -> Option<PathBuf>
++) -> (Option<PathBuf>, bool)
+ where
+     I: Iterator<Item = PathBuf>,
+ {
+     let mut best_candidate = ((false, UNIX_EPOCH), None);
++    let mut saw_other_checkout = false;
+ 
+     for session_dir in iter {
+         debug!("find_source_directory_in_iter - inspecting `{}`", session_dir.display());
+@@ -614,13 +637,18 @@ where
+             }
+         };
+ 
+-        let rank = (checkout.is_some() && session_checkout(&session_dir) == checkout, timestamp);
++        let same_checkout = checkout.is_some_and(|current| {
++            let other = session_checkout(&session_dir);
++            saw_other_checkout |= other.is_some_and(|key| key != current);
++            other == Some(current)
++        });
++        let rank = (same_checkout, timestamp);
+         if rank > best_candidate.0 {
+             best_candidate = (rank, Some(session_dir));
+         }
+     }
+ 
+-    best_candidate.1
++    (best_candidate.1, saw_other_checkout)
+ }
+ 
+ fn is_finalized(directory_name: &str) -> bool {
+@@ -908,22 +936,25 @@ pub(crate) fn garbage_collect_session_directories(
+             }
+             None
+         });
+-    let obsolete = all_except_most_recent(deletion_candidates.into(), branch_cache_enabled(sess));
++    let deletion_candidates = deletion_candidates.into();
+ 
+-    obsolete.into_items().all(|(path, lock)| {
+-        debug!("garbage_collect_session_directories() - deleting `{}`", path.display());
++    // Keep the newest session and at most one other Git checkout.
++    all_except_most_recent(deletion_candidates, branch_cache_enabled(sess)).into_items().all(
++        |(path, lock)| {
++            debug!("garbage_collect_session_directories() - deleting `{}`", path.display());
+ 
+-        if let Err(err) = std_fs::remove_dir_all(&path) {
+-            sess.dcx().emit_warn(diagnostics::FinalizedGcFailed { path: &path, err });
+-        } else {
+-            delete_session_dir_lock_file(sess, &lock_file_path(&path));
+-        }
++            if let Err(err) = std_fs::remove_dir_all(&path) {
++                sess.dcx().emit_warn(diagnostics::FinalizedGcFailed { path: &path, err });
++            } else {
++                delete_session_dir_lock_file(sess, &lock_file_path(&path));
++            }
+ 
+-        // Let's make it explicit that the file lock is released at this point,
+-        // or rather, that we held on to it until here
+-        drop(lock);
+-        true
+-    });
++            // Let's make it explicit that the file lock is released at this point,
++            // or rather, that we held on to it until here
++            drop(lock);
++            true
++        },
++    );
+ 
+     Ok(())
+ }
+@@ -942,11 +973,15 @@ fn all_except_most_recent(
+     deletion_candidates: UnordMap<(SystemTime, PathBuf), Option<flock::Lock>>,
+     keep_other_checkout: bool,
+ ) -> UnordMap<PathBuf, Option<flock::Lock>> {
+-    let newest =
+-        deletion_candidates.items().map(|((time, path), _)| (*time, session_checkout(path))).max();
++    let newest = deletion_candidates
++        .items()
++        .map(|((time, path), _)| {
++            (*time, keep_other_checkout.then(|| session_checkout(path)).flatten())
++        })
++        .max();
+ 
+     if let Some((most_recent, checkout)) = newest {
+-        let other_checkout = checkout.filter(|_| keep_other_checkout).and_then(|key| {
++        let other_checkout = checkout.and_then(|key| {
+             deletion_candidates
+                 .items()
+                 .filter_map(|((time, path), _)| {
+diff --git a/compiler/rustc_incremental/src/persist/fs/packed.rs b/compiler/rustc_incremental/src/persist/fs/packed.rs
+new file mode 100644
+index 0000000000000000000000000000000000000000..52336eae26b677d2ccc7b5746b750aad8d39cab0
+--- /dev/null
++++ b/compiler/rustc_incremental/src/persist/fs/packed.rs
+@@ -0,0 +1,264 @@
++use std::ffi::OsStr;
++use std::fs::{self, File};
++#[cfg(unix)]
++use std::io::BufWriter;
++use std::io::{self, BufRead, BufReader, Read, Write};
++use std::path::Path;
++
++#[cfg(unix)]
++use flate2::{Compression, write::ZlibEncoder};
++use flate2::{Decompress, FlushDecompress, Status};
++use rustc_session::filesearch::open_regular_file;
++
++use super::{
++    BUILD_DEP_GRAPH, BUILD_QUERY_CACHE, CHECK_DEP_GRAPH, CHECK_QUERY_CACHE, DEP_GRAPH_FILENAME,
++    QUERY_CACHE_FILENAME,
++};
++
++const LIMIT: u64 = 512 << 20;
++const MIN_SIZE: u64 = 64 << 10;
++const TABLES: [Table; 2] = [
++    Table {
++        packed: "ohm-packed-dep-graph.bin",
++        names: [DEP_GRAPH_FILENAME, BUILD_DEP_GRAPH, CHECK_DEP_GRAPH],
++        tag: b'G',
++    },
++    Table {
++        packed: "ohm-packed-query-cache.bin",
++        names: [QUERY_CACHE_FILENAME, BUILD_QUERY_CACHE, CHECK_QUERY_CACHE],
++        tag: b'Q',
++    },
++];
++
++pub(super) struct Table {
++    packed: &'static str,
++    names: [&'static str; 3],
++    tag: u8,
++}
++
++pub(super) fn table(name: &OsStr) -> Option<&'static Table> {
++    TABLES.iter().find(|t| name == t.packed)
++}
++
++pub(super) fn pack(dir: &Path) {
++    #[cfg(unix)]
++    {
++        let mut encoded: Vec<(&Table, u8)> = Vec::new();
++        for table in &TABLES {
++            let Ok(Some(aliases)) = table.encode(dir) else {
++                for (table, _) in encoded {
++                    let _ = fs::remove_file(dir.join(table.packed));
++                }
++                return;
++            };
++            encoded.push((table, aliases));
++        }
++        // Both complete streams exist before any raw filename is removed. A partial set is rejected.
++        for (table, aliases) in encoded {
++            for (i, name) in table.names.iter().enumerate() {
++                if aliases & (1 << i) != 0 {
++                    let _ = fs::remove_file(dir.join(name));
++                }
++            }
++        }
++    }
++    #[cfg(not(unix))]
++    let _ = dir;
++}
++
++#[cfg(target_os = "macos")]
++pub(super) fn restore_clone(source: &Path, target: &Path) -> io::Result<()> {
++    let mut present = Vec::new();
++    for table in &TABLES {
++        match fs::symlink_metadata(target.join(table.packed)) {
++            Ok(_) => {
++                present.push(table);
++            }
++            Err(e) if e.kind() == io::ErrorKind::NotFound => {}
++            Err(e) => return Err(e),
++        }
++    }
++    restore(&present, source, target)?;
++    for table in present {
++        fs::remove_file(target.join(table.packed))?;
++    }
++    Ok(())
++}
++
++pub(super) fn restore(tables: &[&Table], source: &Path, target: &Path) -> io::Result<()> {
++    if !tables.is_empty() && tables.len() != TABLES.len() {
++        return Err(invalid());
++    }
++    for table in tables {
++        table.restore(source, target)?;
++    }
++    Ok(())
++}
++
++fn invalid() -> io::Error {
++    io::ErrorKind::InvalidData.into()
++}
++
++// Finalization replaces only the suffix, from `-working` to the crate hash.
++fn session_prefix(dir: &Path) -> io::Result<&[u8]> {
++    let name = dir.file_name().and_then(OsStr::to_str).ok_or_else(invalid)?;
++    Ok(name.rsplit_once('-').map_or(name, |(prefix, _)| prefix).as_bytes())
++}
++
++impl Table {
++    #[cfg(unix)]
++    fn encode(&self, dir: &Path) -> io::Result<Option<u8>> {
++        use std::os::unix::fs::MetadataExt;
++
++        let raw = dir.join(self.names[0]);
++        let meta = fs::symlink_metadata(&raw)?;
++        if !meta.is_file() || !(MIN_SIZE..=LIMIT).contains(&meta.len()) {
++            return Ok(None);
++        }
++        let mut source = BufReader::new(open_regular_file(&raw)?);
++        let opened = source.get_ref().metadata()?;
++        if (meta.dev(), meta.ino()) != (opened.dev(), opened.ino())
++            || !source.fill_buf()?.starts_with(b"RSIC")
++        {
++            return Ok(None);
++        }
++        let mut aliases = 1u8;
++        for (i, name) in self.names.iter().enumerate().skip(1) {
++            match fs::symlink_metadata(dir.join(name)) {
++                Ok(m) if (m.dev(), m.ino()) == (meta.dev(), meta.ino()) => aliases |= 1 << i,
++                Ok(_) => {}
++                Err(e) if e.kind() == io::ErrorKind::NotFound => {}
++                Err(e) => return Err(e),
++            }
++        }
++        if meta.nlink() != u64::from(aliases.count_ones()) {
++            return Ok(None);
++        }
++        let path = dir.join(self.packed);
++        let file = File::create_new(&path)?;
++        let encode = || -> io::Result<bool> {
++            let mut zip = ZlibEncoder::new(BufWriter::new(&file), Compression::fast());
++            zip.write_all(&[1, self.tag, aliases])?;
++            zip.write_all(&meta.len().to_le_bytes())?;
++            zip.write_all(session_prefix(dir)?)?;
++            zip.write_all(&[0])?;
++            if io::copy(&mut source.take(meta.len() + 1), &mut zip)? != meta.len() {
++                return Err(invalid());
++            }
++            zip.finish()?.flush()?;
++            if file.metadata()?.blocks() >= meta.blocks() {
++                return Ok(false);
++            }
++            file.set_permissions(meta.permissions())?;
++            file.set_modified(meta.modified()?)?;
++            Ok(true)
++        };
++        if matches!(encode(), Ok(true)) {
++            Ok(Some(aliases))
++        } else {
++            fs::remove_file(path)?;
++            Ok(None)
++        }
++    }
++
++    fn restore(&self, source: &Path, target: &Path) -> io::Result<()> {
++        let path = source.join(self.packed);
++        let meta = fs::symlink_metadata(&path)?;
++        if !meta.is_file() || meta.len() > LIMIT {
++            return Err(invalid());
++        }
++        let file = open_regular_file(&path)?;
++        #[cfg(unix)]
++        {
++            use std::os::unix::fs::MetadataExt;
++            let opened = file.metadata()?;
++            if (meta.dev(), meta.ino()) != (opened.dev(), opened.ino()) {
++                return Err(invalid());
++            }
++        }
++        let mut decoder = CheckedZlib {
++            input: BufReader::new(file),
++            codec: Decompress::new(true),
++            finished: false,
++        };
++        let mut head = [0; 11];
++        decoder.read_exact(&mut head)?;
++        let aliases = head[2];
++        let size = u64::from_le_bytes(head[3..].try_into().unwrap());
++        if head[..2] != [1, self.tag]
++            || aliases & !7 != 0
++            || aliases & 1 == 0
++            || !(MIN_SIZE..=LIMIT).contains(&size)
++        {
++            return Err(invalid());
++        }
++        let prefix = session_prefix(source)?;
++        let mut saved_prefix = vec![0; prefix.len() + 1];
++        decoder.read_exact(&mut saved_prefix)?;
++        if saved_prefix[..prefix.len()] != *prefix || saved_prefix[prefix.len()] != 0 {
++            return Err(invalid());
++        }
++        let mut magic = [0; 4];
++        decoder.read_exact(&mut magic)?;
++        if &magic != b"RSIC" {
++            return Err(invalid());
++        }
++        let raw = target.join(self.names[0]);
++        let mut out = File::create_new(&raw)?;
++        out.write_all(&magic)?;
++        let remaining = size - magic.len() as u64;
++        if io::copy(&mut decoder.take(remaining + 1), &mut out)? != remaining {
++            return Err(invalid());
++        }
++        out.set_permissions(meta.permissions())?;
++        out.set_modified(meta.modified()?)?;
++        for (i, alias) in self.names.iter().enumerate().skip(1) {
++            if aliases & (1 << i) != 0 {
++                fs::hard_link(&raw, target.join(alias))?;
++            }
++        }
++        Ok(())
++    }
++}
++
++// Reaching the end of the input must also reach the zlib checksum and stream end.
++struct CheckedZlib<R> {
++    input: R,
++    codec: Decompress,
++    finished: bool,
++}
++
++impl<R: BufRead> Read for CheckedZlib<R> {
++    fn read(&mut self, out: &mut [u8]) -> io::Result<usize> {
++        if self.finished || out.is_empty() {
++            return Ok(0);
++        }
++        loop {
++            let buf = self.input.fill_buf()?;
++            let flush =
++                if buf.is_empty() { FlushDecompress::Finish } else { FlushDecompress::None };
++            let before_in = self.codec.total_in();
++            let before_out = self.codec.total_out();
++            let status = self.codec.decompress(buf, out, flush)?;
++            let consumed = (self.codec.total_in() - before_in) as usize;
++            let written = (self.codec.total_out() - before_out) as usize;
++            self.input.consume(consumed);
++            if status == Status::StreamEnd {
++                if !self.input.fill_buf()?.is_empty() {
++                    return Err(invalid());
++                }
++                self.finished = true;
++                return Ok(written);
++            }
++            if written != 0 {
++                return Ok(written);
++            }
++            if consumed == 0 {
++                return Err(invalid());
++            }
++        }
++    }
++}
++
++#[cfg(all(test, unix))]
++mod tests;
+diff --git a/compiler/rustc_incremental/src/persist/fs/packed/tests.rs b/compiler/rustc_incremental/src/persist/fs/packed/tests.rs
+new file mode 100644
+index 0000000000000000000000000000000000000000..03c7a8bf1b23aad116f4a352f2460631ecfa5b2d
+--- /dev/null
++++ b/compiler/rustc_incremental/src/persist/fs/packed/tests.rs
+@@ -0,0 +1,129 @@
++use std::os::unix::fs::{MetadataExt, PermissionsExt, symlink};
++
++use rustc_fs_util::TempDirBuilder;
++
++use super::*;
++
++fn fixture(dir: &Path) -> Vec<Vec<u8>> {
++    TABLES
++        .iter()
++        .map(|t| {
++            let mut bytes = vec![t.tag; MIN_SIZE as usize * 2];
++            bytes[..4].copy_from_slice(b"RSIC");
++            fs::write(dir.join(t.names[0]), &bytes).unwrap();
++            fs::hard_link(dir.join(t.names[0]), dir.join(t.names[1])).unwrap();
++            bytes
++        })
++        .collect()
++}
++
++#[test]
++fn hydrates_only_private_tables_and_their_inode_aliases() {
++    let tmp = TempDirBuilder::new().tempdir_in(std::env::temp_dir()).unwrap();
++    let dir = tmp.path();
++    let raw = fixture(dir);
++    fs::write(dir.join(CHECK_DEP_GRAPH), b"independent stage").unwrap();
++    let before: Vec<_> =
++        TABLES.iter().map(|t| fs::metadata(dir.join(t.names[0])).unwrap()).collect();
++    pack(dir);
++    for t in &TABLES {
++        assert!(dir.join(t.packed).is_file());
++        assert!(!dir.join(t.names[0]).exists());
++        assert!(!dir.join(t.names[1]).exists());
++    }
++    assert_eq!(fs::read(dir.join(CHECK_DEP_GRAPH)).unwrap(), b"independent stage");
++    for case in ["first", "concurrent"] {
++        let target = dir.join(case);
++        fs::create_dir(&target).unwrap();
++        restore(&TABLES.iter().collect::<Vec<_>>(), dir, &target).unwrap();
++        for (i, t) in TABLES.iter().enumerate() {
++            assert_eq!(fs::read(target.join(t.names[0])).unwrap(), raw[i]);
++            let m = fs::metadata(target.join(t.names[0])).unwrap();
++            assert_eq!(m.ino(), fs::metadata(target.join(t.names[1])).unwrap().ino());
++            assert_eq!(m.permissions().mode(), before[i].permissions().mode());
++            assert_eq!(m.modified().unwrap(), before[i].modified().unwrap());
++            assert!(!target.join(t.names[2]).exists());
++        }
++    }
++    let name = DEP_GRAPH_FILENAME;
++    assert_ne!(
++        fs::metadata(dir.join("first").join(name)).unwrap().ino(),
++        fs::metadata(dir.join("concurrent").join(name)).unwrap().ino()
++    );
++}
++
++#[test]
++fn externally_shared_or_missing_group_leaves_both_tables_raw() {
++    let tmp = TempDirBuilder::new().tempdir_in(std::env::temp_dir()).unwrap();
++    let dir = tmp.path();
++    let raw = fixture(dir);
++    fs::hard_link(dir.join(QUERY_CACHE_FILENAME), dir.join("other-session")).unwrap();
++    pack(dir);
++    assert_eq!(fs::read(dir.join(DEP_GRAPH_FILENAME)).unwrap(), raw[0]);
++    assert_eq!(fs::read(dir.join(QUERY_CACHE_FILENAME)).unwrap(), raw[1]);
++    assert!(TABLES.iter().all(|t| !dir.join(t.packed).exists()));
++    fs::remove_file(dir.join(QUERY_CACHE_FILENAME)).unwrap();
++    pack(dir);
++    assert!(TABLES.iter().all(|t| !dir.join(t.packed).exists()));
++    assert!(restore(&[], dir, dir).is_ok());
++}
++
++#[test]
++fn rejects_incomplete_or_mixed_generations_and_damaged_streams() {
++    let tmp = TempDirBuilder::new().tempdir_in(std::env::temp_dir()).unwrap();
++    let source = tmp.path();
++    fixture(source);
++    pack(source);
++    let tables = [&TABLES[0], &TABLES[1]];
++    let graph = source.join(TABLES[0].packed);
++    let valid = fs::read(&graph).unwrap();
++    let mut bad_checksum = valid.clone();
++    *bad_checksum.last_mut().unwrap() ^= 1;
++    let mut extra = valid.clone();
++    extra.push(0);
++    let wrong_table = fs::read(source.join(TABLES[1].packed)).unwrap();
++    let mut oversized = ZlibEncoder::new(Vec::new(), Compression::fast());
++    oversized.write_all(&[1, b'G', 1]).unwrap();
++    oversized.write_all(&(LIMIT + 1).to_le_bytes()).unwrap();
++    let mut bad_magic = ZlibEncoder::new(Vec::new(), Compression::fast());
++    bad_magic.write_all(&[1, b'G', 1]).unwrap();
++    bad_magic.write_all(&MIN_SIZE.to_le_bytes()).unwrap();
++    bad_magic.write_all(session_prefix(source).unwrap()).unwrap();
++    bad_magic.write_all(&[0]).unwrap();
++    bad_magic.write_all(&vec![0; MIN_SIZE as usize]).unwrap();
++    for (i, bad) in [
++        bad_checksum,
++        valid[..valid.len() - 1].to_vec(),
++        extra,
++        wrong_table,
++        oversized.finish().unwrap(),
++        bad_magic.finish().unwrap(),
++    ]
++    .into_iter()
++    .enumerate()
++    {
++        let dst = source.join(format!("bad-{i}"));
++        fs::create_dir(&dst).unwrap();
++        fs::write(&graph, bad).unwrap();
++        assert!(restore(&tables, source, &dst).is_err());
++    }
++    fs::write(&graph, &valid).unwrap();
++    let foreign = source.join("s-1234-another-working");
++    fs::create_dir(&foreign).unwrap();
++    fixture(&foreign);
++    pack(&foreign);
++    fs::copy(foreign.join(TABLES[0].packed), &graph).unwrap();
++    let dst = source.join("foreign");
++    fs::create_dir(&dst).unwrap();
++    assert!(restore(&tables, source, &dst).is_err());
++    fs::write(&graph, &valid).unwrap();
++    let dst = source.join("mixed");
++    fs::create_dir(&dst).unwrap();
++    assert!(restore(&tables[..1], source, &dst).is_err());
++    fs::write(dst.join(DEP_GRAPH_FILENAME), b"old compiler's raw table").unwrap();
++    assert!(restore(&tables, source, &dst).is_err());
++    assert_eq!(fs::read(dst.join(DEP_GRAPH_FILENAME)).unwrap(), b"old compiler's raw table");
++    fs::remove_file(&graph).unwrap();
++    symlink(source.join(TABLES[1].packed), &graph).unwrap();
++    assert!(restore(&tables, source, &dst).is_err());
++}
+diff --git a/compiler/rustc_incremental/src/persist/fs/tests.rs b/compiler/rustc_incremental/src/persist/fs/tests.rs
+index a1f359ead248988e4389a2a07514f893714b403e..bb1f8e1619b80be94eb1c82fcc00eb2cc6e96d24 100644
+--- a/compiler/rustc_incremental/src/persist/fs/tests.rs
++++ b/compiler/rustc_incremental/src/persist/fs/tests.rs
+@@ -45,7 +45,7 @@ fn test_find_source_directory_in_iter() {
+             &already_visited,
+             None,
+         ),
+-        Some(PathBuf::from("crate-dir/s-3234-0000-svh"))
++        (Some(PathBuf::from("crate-dir/s-3234-0000-svh")), false)
+     );
+ 
+     // Filter out "-working"
+@@ -60,11 +60,14 @@ fn test_find_source_directory_in_iter() {
+             &already_visited,
+             None,
+         ),
+-        Some(PathBuf::from("crate-dir/s-2234-0000-svh"))
++        (Some(PathBuf::from("crate-dir/s-2234-0000-svh")), false)
+     );
+ 
+     // Handle empty
+-    assert_eq!(find_source_directory_in_iter([].into_iter(), &already_visited, None), None);
++    assert_eq!(
++        find_source_directory_in_iter([].into_iter(), &already_visited, None),
++        (None, false)
++    );
+ 
+     // Handle only working
+     assert_eq!(
+@@ -78,7 +81,7 @@ fn test_find_source_directory_in_iter() {
+             &already_visited,
+             None,
+         ),
+-        None
++        (None, false)
+     );
+ }
+ 
+@@ -93,11 +96,26 @@ fn checkout_sessions_prefer_a_match_and_keep_one_alternate() {
+     let skipped = FxHashSet::default();
+     assert_eq!(
+         find_source_directory_in_iter(paths.clone().into_iter(), &skipped, Some(11)),
+-        Some(b.clone())
++        (Some(b.clone()), true)
+     );
+     assert_eq!(
+         find_source_directory_in_iter(paths.into_iter(), &skipped, Some(13)),
+-        Some(c.clone())
++        (Some(c.clone()), true)
++    );
++    assert_eq!(
++        find_source_directory_in_iter([a.clone()].into_iter(), &skipped, Some(10)),
++        (Some(a.clone()), false),
++    );
++    let inactive: UnordMap<_, Option<flock::Lock>> = [a.clone(), b.clone()]
++        .into_iter()
++        .map(|p| ((extract_timestamp_from_session_dir(p.to_str().unwrap()).unwrap(), p), None))
++        .collect();
++    assert_eq!(
++        all_except_most_recent(inactive, false)
++            .into_items()
++            .map(|(p, _)| p)
++            .into_sorted_stable_ord(),
++        vec![a.clone()]
+     );
+     let candidates: UnordMap<_, Option<flock::Lock>> = [a.clone(), b.clone(), a2, c]
+         .into_iter()
+diff --git a/compiler/rustc_session/src/session.rs b/compiler/rustc_session/src/session.rs
+index 5015ca1a65225a59f467eb376fdea0d5806ef2ae..319cb7f249d83d475f660242da0d432332b93035 100644
+--- a/compiler/rustc_session/src/session.rs
++++ b/compiler/rustc_session/src/session.rs
+@@ -1721,6 +1721,8 @@ pub struct IncrCompSession {
+     /// session can be read out of it and new data for the current session will
+     /// be written into it.
+     pub session_directory: PathBuf,
++    /// Whether preparation found a completed session from another checkout.
++    pub compact_branch_cache: bool,
+     /// `_lock_file` is never directly used, but its presence
+     /// alone has an effect, because the file will unlock when the session is
+     /// dropped.
+diff --git a/tests/run-make/ohm-packed-branch-cache/rmake.rs b/tests/run-make/ohm-packed-branch-cache/rmake.rs
+new file mode 100644
+index 0000000000000000000000000000000000000000..ed0a666f07aff5c23dc805e634757bc101c4e932
+--- /dev/null
++++ b/tests/run-make/ohm-packed-branch-cache/rmake.rs
+@@ -0,0 +1,94 @@
++//@ only-unix
++//@ ignore-cross-compile
++// Reason: runs the executable and checks native incremental hardlinks.
++
++use std::fs;
++use std::path::PathBuf;
++
++use run_make_support::{cwd, rfs, run, rustc};
++
++fn switch(branch: &str, value: u32) {
++    rfs::write("checkout/.git/HEAD", format!("ref: refs/heads/{branch}\n"));
++    let mut src = String::from("#![allow(dead_code)]\n");
++    for i in 0..384 {
++        src.push_str(&format!("pub fn f{i}(x: u32) -> u32 {{ x.wrapping_add({i}) }}\n"));
++    }
++    src.push_str(&format!("fn main() {{ println!(\"{{}}\", f0({value})); }}\n"));
++    rfs::write("checkout/main.rs", src);
++}
++
++fn compile(cache: &str, option: Option<bool>) {
++    let mut cmd = rustc();
++    cmd.input("checkout/main.rs")
++        .crate_name("branch_tables")
++        .env("CARGO_MANIFEST_DIR", cwd().join("checkout"))
++        .arg("-Zohm-check-relink-inputs")
++        .arg("-Zohm-shared-stages")
++        .incremental(cache)
++        .codegen_units(1)
++        .output("program");
++    if let Some(enabled) = option {
++        cmd.arg(if enabled { "-Zohm-branch-cache=yes" } else { "-Zohm-branch-cache=no" });
++    }
++    cmd.run();
++}
++
++fn sessions() -> Vec<PathBuf> {
++    let mut crates =
++        fs::read_dir("cache").unwrap().map(|e| e.unwrap().path()).filter(|p| p.is_dir());
++    let dir = crates.next().unwrap();
++    assert!(crates.next().is_none());
++    fs::read_dir(dir).unwrap().map(|e| e.unwrap().path()).filter(|p| p.is_dir()).collect()
++}
++
++fn main() {
++    rfs::create_dir_all("checkout/.git");
++    switch("a", 17);
++    compile("cache", None);
++    run("program").assert_stdout_equals("17");
++    switch("b", 29);
++    compile("cache", None);
++    run("program").assert_stdout_equals("29");
++    assert_eq!(sessions().len(), 1);
++
++    switch("a", 17);
++    compile("cache", Some(true));
++    run("program").assert_stdout_equals("17");
++    let [a]: [_; 1] = sessions().try_into().unwrap();
++    switch("b", 29);
++    compile("cache", Some(true));
++    let dirs = sessions();
++    assert_eq!(dirs.len(), 2);
++    assert!(a.join("dep-graph.bin").is_file());
++    let b = dirs.iter().find(|d| **d != a).unwrap();
++    let saved = b.join("ohm-packed-query-cache.bin");
++    assert!(saved.is_file());
++    assert!(!b.join("query-cache.bin").exists());
++
++    switch("a", 17);
++    compile("cache", Some(true));
++    run("program").assert_stdout_equals("17");
++    let mut damaged = fs::read(&saved).unwrap();
++    damaged.pop().unwrap();
++    fs::write(&saved, damaged).unwrap();
++    fs::write(b.join("old-source-sentinel"), b"discard this session").unwrap();
++    switch("b", 29);
++    compile("cache", Some(true));
++    run("program").assert_stdout_equals("29");
++    assert!(sessions().iter().all(|s| !s.join("old-source-sentinel").exists()));
++    let repaired = fs::read("program").unwrap();
++    compile("independently-empty", Some(true));
++    assert_eq!(repaired, fs::read("program").unwrap());
++
++    switch("a", 17);
++    compile("cache", Some(false));
++    run("program").assert_stdout_equals("17");
++    let off = sessions();
++    assert_eq!(off.len(), 1);
++    assert!(off[0].join("dep-graph.bin").is_file());
++    assert!(off[0].join("query-cache.bin").is_file());
++    assert!(!off[0].join("ohm-packed-dep-graph.bin").exists());
++    assert!(
++        !off[0].file_name().unwrap().to_str().unwrap().split('-').nth(2).unwrap().starts_with('_')
++    );
++}

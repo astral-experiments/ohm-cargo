@@ -1,0 +1,125 @@
+{
+  "schema": 1,
+  "question": "What space and whole-command edit latency do two native branch-retaining Rust compilers trade on a real same-branch Ruff parser grammar edit after visiting both branches?",
+  "raw": "c9119d267c9843f0fb5dcbc1cc05653eac6051e3",
+  "compact": "8ea2252344ba85e7406f4f04f979053e2bd191b1",
+  "driver": {
+    "R": "eb2cb59dbc3cc8a263af53ad2b09892e46dc49490677336ff660e792a767f4e0",
+    "K": "9de25028ec1b4ed84c8e5398aecc6e1672236bfdea69ace42dd856d9ada1feff"
+  },
+  "cargo": "1d06626bcef3c5235676ada14f4b7107f56e98aef620f81b0e0c47381dbe0add",
+  "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+  "cpu": [
+    28,
+    29,
+    30,
+    31
+  ],
+  "orders": [
+    [
+      "R",
+      "K"
+    ],
+    [
+      "K",
+      "R"
+    ]
+  ],
+  "slots": [
+    "ref-R-B",
+    "ref-K-C",
+    "ref-K-B",
+    "ref-R-C",
+    "pair-1-R",
+    "pair-1-K",
+    "pair-2-K",
+    "pair-2-R"
+  ],
+  "phases": [
+    [
+      "empty-A",
+      "A",
+      ""
+    ],
+    [
+      "first-B",
+      "B",
+      ""
+    ],
+    [
+      "first-return-A",
+      "A",
+      ""
+    ],
+    [
+      "trained-return-B",
+      "B",
+      ""
+    ],
+    [
+      "edit-B",
+      "C",
+      "reverse"
+    ],
+    [
+      "restore-B",
+      "B",
+      "restore"
+    ],
+    [
+      "edit-B-2",
+      "C",
+      "reverse"
+    ],
+    [
+      "restore-B-2",
+      "B",
+      "restore"
+    ],
+    [
+      "unchanged-B",
+      "B",
+      ""
+    ],
+    [
+      "post-edit-return-A",
+      "A",
+      ""
+    ],
+    [
+      "post-edit-return-B",
+      "B",
+      ""
+    ],
+    [
+      "unchanged-final",
+      "B",
+      ""
+    ],
+    [
+      "native-edit-B",
+      "C",
+      "reverse"
+    ],
+    [
+      "native-restore-B",
+      "B",
+      "restore"
+    ],
+    [
+      "native-return-A",
+      "A",
+      ""
+    ],
+    [
+      "native-return-B",
+      "B",
+      ""
+    ]
+  ],
+  "archive": "one physically verified whole reader ELF per source state+native role, SHA256/length/member census of both rlibs on all commands, retained complete archives for each independent B/C reference, every default compiler process byte bound to the same immutable per-role inode and source",
+  "timing": "real normal native Cargo blocking wait only from subprocess entry until terminal stdout/stderr collection; independent verification, reader, storage and strace after timing. Each mirrored installation is a separate observation. No statistical inference, clock comparisons on shared host descriptive. Track each first visit/return and both same-branch edit/restore; no substitution of a different selector or producer.",
+  "guards": "No global modifications. Entry 70 GiB live 45 GiB memory. Always home >140 GiB scratch >133 GiB. Bulk volume must have at least 10GiB above its own floor at protocol entry; prefer scratch then home, no mixing. No synthetic rustc wrapper or component replaced, real --check-relink-inputs enabled, and branch retention selected identically.",
+  "stops": "If a dirty/unchanged native roster changes, literal tool or same-role clean semantic/ELF differs classify discrepancy before comparison; preserve every original. No participant may be silently replaced.",
+  "refs": "B/C independently empty per role. Both first empty A installations independently compare within role. All 97 typed and stable source/branch IDs, exact stale/fresh native grammar verdict (B rejects, C accepts). No wall claim for clean or traced flanks; actual source branches and driver cache namespaces included."
+}

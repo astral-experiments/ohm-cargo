@@ -44,3 +44,7 @@ python3 -IB replay.py --parent-sdk "$PARENT_SDK" --candidate-sdk "$CANDIDATE_SDK
 Each successful visit records the complete deduplicated physical sizes in `allocated.json`. The `table-visits` subdirectory records which compiler restored and encoded each graph. Finished paired timings are written to `summary.json`. [Compiler wrapper and codec](replay)
 
 Two fresh paired installations exercised this replay entry point in opposite orders. All 24 allocated-size records reconciled with the complete directories, and both branch executables matched their independent clean builds. The four return ratios ranged from 2.36× to 2.77×. These observations qualify the public script separately from the twelve-pair sample. [Replay source hashes and qualification](replay-qualification.json)
+
+## Compression inside rustc
+
+A separately bootstrapped compiler compressed the same two tables inside rustc. Across twelve fresh pairs, parser branch returns sped up 3.05× and 2.51×. The complete settled directories measured 288 → 280 MiB returning to the parent branch and 258 → 281 MiB returning to the feature. After a switch, repeated edits on the same branch took an average of 0.38 s longer than with uncompressed two-session retention. [Compiler patch, clean binaries, timings and native disk records](native-compact)

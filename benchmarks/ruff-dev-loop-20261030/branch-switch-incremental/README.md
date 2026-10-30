@@ -33,7 +33,12 @@ Storage counts allocated filesystem blocks for the two crates’ finalized incre
 
 Both complete Rust compiler processes are counted with Callgrind after the kernel selects the genuine compiler launched by Cargo. Cargo, rustup and the downstream validation programs run outside the counter. The counter preserves the compiler argument vector, environment, working directory and jobserver descriptors. Its final instruction count must agree with the sum of all self costs and with the independent Valgrind log.
 
-One completed admission per compiler and return direction consumed 62.17B → 6.88B instructions on A and 62.44B → 7.00B on B. Both admissions recovered exactly 300,000 additional guest instructions on each measured coordinate of the small calibration program. These observations identify the reduced compiler work. The separate eight-pair instruction cohort is registered in this directory.
+| Return | Parent median instructions | Candidate median instructions | Median paired ratio | Simultaneous 95% interval |
+| --- | ---: | ---: | ---: | ---: |
+| A | 62.163B | 6.884B | 9.03× | 9.02–9.04× |
+| B | 62.453B | 7.000B | 8.92× | 8.92–8.92× |
+
+Eight new paired installations ran four times in each order. Each compiler, command output and complete profile has a separate commitment in the projection.
 
 In the native build controls the two full rustcs created 89 distinct codegen objects on the parent and zero on the candidate in each direction. The test build created 90 and one, respectively, and ran the same single stock Wild link. Kernel traces count successful create-and-write opens and genuine compiler or linker executions. Each build consumer parsed valid Python, rejected invalid syntax, printed the expected version-specific AST size, and matched an independent empty-build executable exactly. Both test executables matched their empty references byte for byte and listed the same 245 tests. Three specified parser and lexer tests ran after each measured command. The metadata check compiled two downstream size assertions, accepting the correct size and requiring E0308 for the opposite size. Raw metadata can vary across independent builds even with the parent compiler.
 
