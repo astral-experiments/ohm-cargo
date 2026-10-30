@@ -1,4 +1,5 @@
 """Check both independent branch returns and their physical storage measurements."""
+import hashlib
 import json
 import math
 from pathlib import Path
@@ -101,3 +102,16 @@ def check_registered(path):
 registered=root/'twelve-pairs.json'
 if registered.is_file():
     check_registered(registered)
+
+receipt_path = root / 'replay-qualification.json'
+if receipt_path.is_file():
+    receipt = json.loads(receipt_path.read_bytes())
+    assert receipt['run_orders'] == ['PQ', 'QP'] and receipt['full_timing_sample'] is False
+    assert receipt['correct_storage_snapshots'] == 24 and receipt['codecs_invocations'] == 18
+    assert set(receipt['elapsed_return_ratios']) == {'return-A', 'return-B'}
+    assert all(len(ratios) == 2 and min(ratios) > 2 for ratios in receipt['elapsed_return_ratios'].values())
+    assert len(set(receipt['matched_clean'].values())) == 2
+    for relative, expected in receipt['source_sha256'].items():
+        with (root.parents[1] / relative).open('rb') as member:
+            assert hashlib.file_digest(member, 'sha256').hexdigest() == expected, relative
+    print('Public compression replay verified against its measured source')

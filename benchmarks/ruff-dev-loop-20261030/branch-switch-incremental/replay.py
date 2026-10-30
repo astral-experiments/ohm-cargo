@@ -50,7 +50,11 @@ def main():
     args.add_argument("--pack", type=Path, help="Optional complete Git pack for the historical Ruff refs")
     args.add_argument("--ruff-url", default="https://github.com/astral-sh/ruff.git")
     args.add_argument("--offline", action="store_true", help="Use an already populated CARGO_HOME")
+    args.add_argument("--compress-incremental-tables", action="store_true",
+                      help="Run the separate serial Zstandard prototype on the parser build")
     a = args.parse_args()
+    if a.compress_incremental_tables and (a.workflow != "build" or a.compiler_instructions):
+        args.error("The serial table prototype measures the native parser build.")
     if a.pairs < 2 or a.pairs % 2 or a.jobs < 1:
         args.error("Choose an even number of at least two pairs and positive jobs.")
     kits = {k: p.resolve(strict=True) for k, p in (("P", a.parent_sdk), ("Q", a.candidate_sdk))}
@@ -106,6 +110,19 @@ def main():
     for name in ("RUSTFLAGS", "CARGO_ENCODED_RUSTFLAGS", "RUSTC_WRAPPER", "RUSTC_WORKSPACE_WRAPPER",
                  "RUSTC", "CARGO_INCREMENTAL", "CARGO_UNSTABLE_OHM_DEFAULTS"):
         env.pop(name, None)
+    if a.compress_incremental_tables:
+        storage = Path(__file__).resolve().parent / "storage"
+        sys.path.insert(0, str(storage))
+        import count
+        codec = storage / "alternatives" / "replay"
+        binary = shutil.which("zstd")
+        if not binary:
+            args.error("The table prototype requires the zstd CLI.")
+        (out / ".table-replay").touch(exist_ok=False)
+        shutil.copy2(codec / "tables.py", out / "tables.py")
+        wrapper = out / "table-compiler"
+        subprocess.run(["rustc", "+ohm", "--edition=2024", "-Copt-level=2", codec / "entry.rs", "-o", wrapper], env=env, check=True)
+        env.update(RUSTC_WRAPPER=str(wrapper), OHM_REPLAY_DIRECTORY=str(out), OHM_REPLAY_ZSTD=binary)
     subcommand = "test" if a.workflow == "test-no-run" else a.workflow
     cargo = ["cargo", "+ohm", subcommand, "-p", "ruff_python_parser"]
     if subcommand == "test":
@@ -118,6 +135,7 @@ def main():
     random.Random(0xc0ffee43).shuffle(orders)
     (out / "plan.json").write_text(json.dumps({"orders": orders, "sdk": identity, "A": A, "B": B,
                                               "workflow": a.workflow, "cargo": cargo,
+                                              "compress_incremental_tables": a.compress_incremental_tables,
                                               "compiler_instructions": a.compiler_instructions}, indent=2))
     phase_outputs = {}
     observed = {}
@@ -170,6 +188,8 @@ def main():
         assert git("rev-parse", "HEAD").decode().strip() == rev
         counted = tracer is not None and phase.startswith("return-")
         program = compiler_counts.command(tracer, stable_kit, d, cargo) if counted else cargo
+        if a.compress_incremental_tables:
+            env["OHM_REPLAY_PHASE"] = str(d.relative_to(out))
         proc, score = run(program, cwd=source, env=env, out=d / "cargo", expected=101 if invalid else 0)
         if counted:
             score["compiler_Ir"] = compiler_counts.read(d, proc.stderr, subcommand)
@@ -226,8 +246,12 @@ def main():
             phase_outputs[rev] = h
             shutil.copy2(elf, out / ("clean-" + rev[:8] + ".elf"))
         score["ELF"] = h
+        if a.compress_incremental_tables:
+            count.record(d, target, shared, env["OHM_REPLAY_ROLE"], phase)
         return score
     def independent(role):
+        if a.compress_incremental_tables:
+            env["OHM_REPLAY_ROLE"] = role
         source_driver, = (kits[role] / "lib").glob("librustc_driver*.so")
         temporary_driver = out / "driver.next"
         shutil.copy2(source_driver, temporary_driver)

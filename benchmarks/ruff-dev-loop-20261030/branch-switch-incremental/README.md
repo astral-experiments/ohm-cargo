@@ -89,6 +89,8 @@ A fresh checkout independently exercised the public formatter replay. Both execu
 
 In two independent ext4 pairs, the complete target and build directories grew from 288 to 380 MiB on return to the parent branch (+32%) and from 258 to 382 MiB on return to the feature branch (+48%). Both compilers used 257 MiB for the first build. Most bytes exclusive to the older branch were in the dependency graph and query cache. [Breakdown, physical-size counter and all 24 visits](storage)
 
+A separate whole-CLI storage census counted both roots after one installation per compiler. The complete build grew from 2.25 to 3.27 GiB, entirely in incremental files. This was an unscored admission run. [Full Ruff CLI storage, hardlink accounting and ELF control](storage/full-ruff-cli)
+
 Separate prototypes measured how far compression could reduce the storage cost. [Experimental storage and time measurements](storage/alternatives)
 
 ## Block-backed build confirmation

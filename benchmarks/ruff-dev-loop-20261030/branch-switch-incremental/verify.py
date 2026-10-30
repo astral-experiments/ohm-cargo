@@ -141,6 +141,10 @@ def main():
         subprocess.run([sys.executable, "-IB", ROOT / "storage" / "alternatives" / "verify.py"], check=True)
     if (ROOT / "check-test-instructions").exists():
         subprocess.run([sys.executable, "-IB", ROOT / "check-test-instructions" / "verify.py"], check=True)
+    if (ROOT / "storage" / "full-ruff-cli").exists():
+        subprocess.run([sys.executable, "-IB", ROOT / "storage" / "full-ruff-cli" / "verify.py"], check=True)
+    if (ROOT / "storage" / "alternatives" / "same-branch-edits").exists():
+        subprocess.run([sys.executable, "-IB", ROOT / "storage" / "alternatives" / "same-branch-edits" / "verify.py"], check=True)
     if (ROOT / "storage").exists():
         subprocess.run([sys.executable, "-IB", ROOT / "storage" / "verify.py"], check=True)
     if (ROOT / "portable-instruction-smoke.json").exists():

@@ -1,0 +1,17 @@
+pair	phase	crate	decode_groups	encode_groups	before_rustc_s	after_rustc_s
+1	first-B	ruff_python_ast	0	4	0.000069	1.114203
+1	first-B	ruff_python_parser	0	4	0.000052	0.375960
+1	edit-B	ruff_python_parser	2	2	0.138870	0.218273
+1	restore-B	ruff_python_parser	2	2	0.136083	0.184643
+1	return-A	ruff_python_parser	2	2	0.127440	0.312302
+1	return-A	ruff_python_ast	2	2	0.362232	0.483422
+1	return-B	ruff_python_ast	2	2	0.498255	0.584016
+1	return-B	ruff_python_parser	2	2	0.127042	0.177187
+2	first-B	ruff_python_parser	0	4	0.000044	0.372098
+2	first-B	ruff_python_ast	0	4	0.000045	1.215758
+2	edit-B	ruff_python_parser	2	2	0.203349	0.213124
+2	restore-B	ruff_python_parser	2	2	0.256925	0.172035
+2	return-A	ruff_python_parser	2	2	0.117477	0.192548
+2	return-A	ruff_python_ast	2	2	0.371280	0.545049
+2	return-B	ruff_python_ast	2	2	0.415983	0.576065
+2	return-B	ruff_python_parser	2	2	0.148929	0.269060

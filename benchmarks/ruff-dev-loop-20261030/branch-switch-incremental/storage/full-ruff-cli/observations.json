@@ -1,0 +1,179 @@
+{
+  "arms_measured": 2,
+  "cargo_command": "cargo +ohm build -p ruff --bin ruff --locked --offline -j4 --message-format=json",
+  "cross_compiler_raw_gate": {
+    "actual_first_rejected_source": "parent",
+    "actual_result_same_arm": true,
+    "all_segments_equal_after_masking_only_gnu_build_id": true,
+    "different_jemalloc_native_build_path_components": [
+      "v2-93f3be603fe669f3",
+      "v2-f6679d907b9daf2c"
+    ],
+    "distinct_replaced_debug_string_value": 1,
+    "empty_feature_debug_string_count": 161120,
+    "masked_PT_LOAD_segments_per_revision": 4,
+    "pass": false,
+    "per_history_native_counts": {
+      "each_real_return": {
+        "GCC": 1,
+        "build_script": 1,
+        "collect2": 1,
+        "rustc_full": 20,
+        "stock_Wild": 1
+      },
+      "unchanged": {
+        "rustc_full": 0,
+        "stock_Wild": 0
+      }
+    },
+    "rejection_sha256": "bca0a7da0b49bc2fb877f3f02915da2c0ca9823cf323fbdfd4ca4c97d7267ed4",
+    "same_runtime_across_arms": true,
+    "sampled_ordinary_timed_arms": 0,
+    "unchanged_sections_except": [
+      ".debug_info",
+      ".debug_macro",
+      ".debug_str",
+      ".note.gnu.build-id"
+    ]
+  },
+  "evidence": {
+    "empty_feature_complete_elf_sections": "80b6e2069baf6caa3a6bdc2ff689af9fc571f7ca1415088e77733e3c50dadef1",
+    "empty_feature_debug_str_classification": "5438fa5673a859af16062ff53e10763ca03b4a71fe25bffe06c1506efec303d8",
+    "original_native_plan": "d7bfe14be88d0965b5c98c5ef49f7c10ddbf1219f3b7be8ad364e377db20e114",
+    "original_native_readback": "3feadce62ce3846db22a1e5e60cee1dcd7c286251d3f1cca2e956477fd0c519f",
+    "parent_complete_elf_sections": "12d7f491a8d68fde0362610b8834273199d6bea79e2e75162c4e5152f203d724",
+    "passive_meter": "ebcb3866811f5309b80c42ffc390fbc92bf392e8cb6f76f64ed2f8719c683e66",
+    "registered_passive_meter_with_calibration": "b2ead95ab2cb53d696105a51d1a4b01adae2f6163ad0305d69546f1843146d76"
+  },
+  "file_system": "per-installation Linux tmpfs with live kernel cache and a fresh 18 GiB upper limit; accounting is allocated 512-byte blocks",
+  "pairs_per_role": 1,
+  "phase": "after real unchanged parent-branch Cargo exited, following independently empty feature, first parent, returned feature, returned parent, unchanged parent",
+  "roles": {
+    "guarded": {
+      "body_storage_as_seen": {
+        "all": {
+          "allocated_bytes": 3513303040,
+          "inodes": 10339,
+          "logical_bytes_unique_inodes": 3492143245
+        },
+        "all_incremental": {
+          "allocated_bytes": 2184646656,
+          "inodes": 3876,
+          "logical_bytes_unique_inodes": 2177083873
+        },
+        "both_roots_same_inode": {
+          "allocated_bytes": 0,
+          "inodes": 0,
+          "logical_bytes_unique_inodes": 0
+        },
+        "incremental_also_named_outside": {
+          "allocated_bytes": 42074112,
+          "inodes": 35,
+          "logical_bytes_unique_inodes": 42005566
+        },
+        "incremental_only": {
+          "allocated_bytes": 2142572544,
+          "inodes": 3841,
+          "logical_bytes_unique_inodes": 2135078307
+        },
+        "name_plus_inode_ledger_sha256": "1c85f248806896a3500a9c57f87e948c2230e8fc5762edbc76a43dd9ab4031f7",
+        "path_entries": 11484,
+        "products": {
+          "allocated_bytes": 3513229312,
+          "inodes": 10330,
+          "logical_bytes_unique_inodes": 3492073109
+        },
+        "shared": {
+          "allocated_bytes": 73728,
+          "inodes": 9,
+          "logical_bytes_unique_inodes": 70136
+        },
+        "working_directories": []
+      },
+      "cargo_sha256": "1d06626bcef3c5235676ada14f4b7107f56e98aef620f81b0e0c47381dbe0add",
+      "cpu_s": 0.30987299999999995,
+      "driver_sha256": "b2a7780120821b363986bccb91646050d963a644d13ae354ffb87348cdb20e0c",
+      "last_reader_witness": "Expr=64 valid=1 rejected",
+      "observed_last_phase_actual_unchanged": true,
+      "original_raw_storage_sha256": "2e609a0534de348f9cf2da4fd39b7fe92989c6e15dc9d50dad4b58b685720458",
+      "rust": "6b7f424ece4bc978ead5546b73e1b31d5ccb1e70",
+      "same_arm_cli_sha256_by_branch": {
+        "feature": "2ab5fc4d1e5db410ac6e21feaa2f9b5c401020724268538e1aa9822cfa218b01",
+        "parent": "dcc9d5e0b4f3c3d0e5590f919760b94b0db75f82c397ea2821645c492e74b267"
+      },
+      "source_phase": "parent",
+      "two_equal_complete_ledgers": true,
+      "typed_artifacts_unchanged": 375,
+      "wall_s": 0.30987130900030024
+    },
+    "parent": {
+      "body_storage_as_seen": {
+        "all": {
+          "allocated_bytes": 2418098176,
+          "inodes": 9273,
+          "logical_bytes_unique_inodes": 2399088870
+        },
+        "all_incremental": {
+          "allocated_bytes": 1089441792,
+          "inodes": 2810,
+          "logical_bytes_unique_inodes": 1084025698
+        },
+        "both_roots_same_inode": {
+          "allocated_bytes": 0,
+          "inodes": 0,
+          "logical_bytes_unique_inodes": 0
+        },
+        "incremental_also_named_outside": {
+          "allocated_bytes": 42074112,
+          "inodes": 35,
+          "logical_bytes_unique_inodes": 42006206
+        },
+        "incremental_only": {
+          "allocated_bytes": 1047367680,
+          "inodes": 2775,
+          "logical_bytes_unique_inodes": 1042019492
+        },
+        "name_plus_inode_ledger_sha256": "aa819c6866bbfa1eb5bb111d65f0e213cd87185025f6e2d7f608fdef49dc3934",
+        "path_entries": 9451,
+        "products": {
+          "allocated_bytes": 2418020352,
+          "inodes": 9264,
+          "logical_bytes_unique_inodes": 2399014614
+        },
+        "shared": {
+          "allocated_bytes": 77824,
+          "inodes": 9,
+          "logical_bytes_unique_inodes": 74256
+        },
+        "working_directories": []
+      },
+      "cargo_sha256": "1d06626bcef3c5235676ada14f4b7107f56e98aef620f81b0e0c47381dbe0add",
+      "cpu_s": 0.26237900000000003,
+      "driver_sha256": "66380b2752a864d14799b7931e011d4ff55ce4e326a5b77e80d8b06d9dfddd5e",
+      "last_reader_witness": "Expr=64 valid=1 rejected",
+      "observed_last_phase_actual_unchanged": true,
+      "original_raw_storage_sha256": "610f91008b70a50e6cd6fec83cf6bb7dcd4618049baec8b7feda5a4e03f3626d",
+      "rust": "7e71d3150938ff8ed82aca03416439d7e5b87ef3",
+      "same_arm_cli_sha256_by_branch": {
+        "feature": "b38680bed327221c40b889aeb4b285009a9106db6cae41b87defeb7cbd7941c2",
+        "parent": "ce491801e04ef04734a7377eca866f5375da90d14b33dbd4e7a47905a843bc64"
+      },
+      "source_phase": "parent",
+      "two_equal_complete_ledgers": true,
+      "typed_artifacts_unchanged": 375,
+      "wall_s": 0.26237753599707503
+    }
+  },
+  "schema": "ruff-full-cli-allocated-storage-v1",
+  "source": {
+    "feature": {
+      "revision": "7b13f01ba1569887a25670820764b24c206da8e5",
+      "tree": "97ca36909f1ae8fa028b2c1f48f452fbdcdbbd4c"
+    },
+    "parent": {
+      "revision": "b5dba861cc38e3f7fb4524c9ceba3e01a474ea13",
+      "tree": "2b61306d708a211b3725c8d920e7590be6da41ad"
+    },
+    "stock_Wild_sha256": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+  }
+}

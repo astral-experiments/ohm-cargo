@@ -1,0 +1,131 @@
+source	installation	phase	crate	raw_sha256	same_raw_as_empty_P	same_payload_multiset_as_empty_P	same_raw_as_empty_G	same_payload_multiset_as_empty_G
+A	ref-P-A	empty	ruff_python_ast	8832ab3a65ac4b107545ac81e4d25c7b2d3e93538ea2482114b3db3cc62065e4	True	True		
+A	ref-P-A	empty	ruff_python_parser	3d4d306890fbd4775db7a435978bafeaa58eb28c31d0bd944ca06194b7126d78	True	True		
+A	pair-1-P	empty-A	ruff_python_ast	28eccd0b207dcd640b5eba405ec1a29ab60f97c5ab2153f04fb9586c71dcb7b6	False	False		
+A	pair-1-P	empty-A	ruff_python_parser	70d0e16f0becd4fbcc350e0e6013e36be3e131d5f27dfe55650b756b2c2735cc	False	False		
+A	pair-1-P	return-A	ruff_python_ast	d63454ff40f572cc70142a92d3b7982e1f763946eb02127421cbb22cf93b7ea4	False	False		
+A	pair-1-P	return-A	ruff_python_parser	cb3cfd9269bb60ec21e2dc4467a4a4cee0500e0d6679ce7227898090b69bc564	False	False		
+A	pair-1-G	empty-A	ruff_python_ast	e56cf3f4df2ea264500255681163f805586dc11773f401a98a9e5d7c7fdce492	False	False		
+A	pair-1-G	empty-A	ruff_python_parser	6f5ce1d805cf0fca87c4fc11087bd4498a8b67608845bfb2a5431bdae796270d	False	False		
+A	pair-1-G	return-A	ruff_python_ast	31f8625df794e65e8940d2354bbce5dcfeb980e2048a401148b5ae7d29ffbf64	False	False		
+A	pair-1-G	return-A	ruff_python_parser	04742462eaf796d730bfa6c5ee0b6e6d5b08b9c2ad3f275fb58c5d08525cfed7	False	False		
+A	pair-1-Q	empty-A	ruff_python_ast	0265f7eed5425d0b9251efbac64be6067a0c18049531db26f02edbc31e63499e	False	False		
+A	pair-1-Q	empty-A	ruff_python_parser	2e013ddca6c07f90cd22d5ceede5f8a9ab352615b0e595944b82288d8352e668	False	False		
+A	pair-1-Q	return-A	ruff_python_ast	cee613495c97eec197f61f32049637933c057a83795f4fd9abb9ae8fafa3baa1	False	False		
+A	pair-1-Q	return-A	ruff_python_parser	dc6260cabdf2539b3f6ac78319eeda4ba6576156d0085909c22418b9eb01e50a	False	False		
+A	pair-2-Q	empty-A	ruff_python_ast	d4e5bfff0748892244586a9877759f88f49497086747605a94c59472f2e0230c	False	False		
+A	pair-2-Q	empty-A	ruff_python_parser	e88ee4193b16202be350247706e90c8542988b27e04c97fa743a90f7999ed23b	False	False		
+A	pair-2-Q	return-A	ruff_python_ast	e98e7a3b163137af3502897a47529c1b8326c94befc6b8d50e3b2340b3c09418	False	False		
+A	pair-2-Q	return-A	ruff_python_parser	f893704424b70d88801eb6c7d310724f2693b9424a341377cf8d45534a841876	False	False		
+A	pair-2-G	empty-A	ruff_python_ast	9d0c36e0e343d0fcd846e8b2bad5bfd8ff1b74735eff9184d6007b924b92d7e3	False	False		
+A	pair-2-G	empty-A	ruff_python_parser	e5912d5e8562b8d316626cb34d9bd499071c0a2c0c55c002fbdfc2a2f55fc898	False	False		
+A	pair-2-G	return-A	ruff_python_ast	b0be53c9508e28908df87677cc28abc416022aa9feb343c08d3408e2fc17c2fb	False	False		
+A	pair-2-G	return-A	ruff_python_parser	0f762e3aa68fd2c7eab8bb348a8eb3844beb9e863396745d0a633dd82ac3548d	False	False		
+A	pair-2-P	empty-A	ruff_python_ast	c246959f1130eac3e549d5c29c87cf1dd6c4a3f78d1470768e538f20265a5aec	False	False		
+A	pair-2-P	empty-A	ruff_python_parser	acdbb08c254590e65d275321459abeb8a1ec430a21385a344ec1d87efc92b5bb	False	False		
+A	pair-2-P	return-A	ruff_python_ast	4325748222e760c3444c76c8195d2b336c708e22a9e05219afc6a671afc95159	False	False		
+A	pair-2-P	return-A	ruff_python_parser	612a36e89512cd72705c250ad7b41210dd426437fdd85fc2ddced9eeba5f2cf6	False	False		
+B	ref-P-B	empty	ruff_python_ast	3556fd2b8e8d2bc00f0f813ca1612b5221418f341e8ebade1bc6303f15005791	True	True	False	False
+B	ref-P-B	empty	ruff_python_parser	35e04f841b6663afa21dc6ba0795e86014a00162e530a441a4169cf7fe878ab0	True	True	False	False
+B	ref-G-B	empty	ruff_python_ast	32ff0f0a7b1e75df840e46726ae54ba723c89bea55aa889714e2dbabb2d3b777	False	False	True	True
+B	ref-G-B	empty	ruff_python_parser	256daf437cd375d7f78b11b21ab7283cb8db458599aa92063873211dadbb4149	False	False	True	True
+B	pair-1-P	first-B	ruff_python_ast	d5db7a932c3c81380c7266289b206f870c94f387750aafd074fd5337072842c0	False	False	False	False
+B	pair-1-P	first-B	ruff_python_parser	576dd3a6eef420441f3b9782cba10cbe4a6a87c8f8ff67ea5cd02ec3ca0c6669	False	False	False	False
+B	pair-1-P	restore-B	ruff_python_ast	d5db7a932c3c81380c7266289b206f870c94f387750aafd074fd5337072842c0	False	False	False	False
+B	pair-1-P	restore-B	ruff_python_parser	eed38e06848997da0372a45459a35a3c89554221408e606f80d80e84cbbeaf66	False	False	False	False
+B	pair-1-P	unchanged-B	ruff_python_ast	d5db7a932c3c81380c7266289b206f870c94f387750aafd074fd5337072842c0	False	False	False	False
+B	pair-1-P	unchanged-B	ruff_python_parser	eed38e06848997da0372a45459a35a3c89554221408e606f80d80e84cbbeaf66	False	False	False	False
+B	pair-1-P	return-B	ruff_python_ast	8e53246818386f787293d825fb60bcb8da4fce02ba306e4489ac89d25449dddb	False	False	False	False
+B	pair-1-P	return-B	ruff_python_parser	f186f0b05128dcd27c6cd00bdae1c6ea7fbf6e2eb2f366599e063a52fb36776f	False	False	False	False
+B	pair-1-P	unchanged-final	ruff_python_ast	8e53246818386f787293d825fb60bcb8da4fce02ba306e4489ac89d25449dddb	False	False	False	False
+B	pair-1-P	unchanged-final	ruff_python_parser	f186f0b05128dcd27c6cd00bdae1c6ea7fbf6e2eb2f366599e063a52fb36776f	False	False	False	False
+B	pair-1-P	native-restore-B	ruff_python_ast	8e53246818386f787293d825fb60bcb8da4fce02ba306e4489ac89d25449dddb	False	False	False	False
+B	pair-1-P	native-restore-B	ruff_python_parser	f3105760a4654eb42268121203710f3a7165e8d6fae74c22c31943e8d729511c	False	False	False	False
+B	pair-1-G	first-B	ruff_python_ast	52d9072742c55c3c74f1c41e70e7dd91f62c8622c72f116669d7eb8ed451829e	False	False	False	False
+B	pair-1-G	first-B	ruff_python_parser	0fcb681ef6ec14d26c896a07e435c4657706ac574faf2e5202eff25cc891ab1a	False	False	False	False
+B	pair-1-G	restore-B	ruff_python_ast	52d9072742c55c3c74f1c41e70e7dd91f62c8622c72f116669d7eb8ed451829e	False	False	False	False
+B	pair-1-G	restore-B	ruff_python_parser	da16a527dc27b618c4808591ca3ffe9a41a6eae84c49deaf667f504c6b49c0c8	False	False	False	False
+B	pair-1-G	unchanged-B	ruff_python_ast	52d9072742c55c3c74f1c41e70e7dd91f62c8622c72f116669d7eb8ed451829e	False	False	False	False
+B	pair-1-G	unchanged-B	ruff_python_parser	da16a527dc27b618c4808591ca3ffe9a41a6eae84c49deaf667f504c6b49c0c8	False	False	False	False
+B	pair-1-G	return-B	ruff_python_ast	f27d95e6e2d00022b1efebec8bf6ba254e01fee6189cb097b7a9fda46f3dffc3	False	False	False	False
+B	pair-1-G	return-B	ruff_python_parser	7faa00be7a206d40226038bd38aa158a84f09a59d7f77ed81e582611abe96711	False	False	False	False
+B	pair-1-G	unchanged-final	ruff_python_ast	f27d95e6e2d00022b1efebec8bf6ba254e01fee6189cb097b7a9fda46f3dffc3	False	False	False	False
+B	pair-1-G	unchanged-final	ruff_python_parser	7faa00be7a206d40226038bd38aa158a84f09a59d7f77ed81e582611abe96711	False	False	False	False
+B	pair-1-G	native-restore-B	ruff_python_ast	f27d95e6e2d00022b1efebec8bf6ba254e01fee6189cb097b7a9fda46f3dffc3	False	False	False	False
+B	pair-1-G	native-restore-B	ruff_python_parser	4000e1e61e3910faba715415736d9924c59b2e2c54917fa5516ec43ac4cdd4c6	False	False	False	False
+B	pair-1-Q	first-B	ruff_python_ast	a5e7d45724ee96d200ef31ee63b6a77a7cf780615dffc74f8f333ea83ded3efe	False	False	False	False
+B	pair-1-Q	first-B	ruff_python_parser	ca0c759c28ff4b76c2435fad1bd04d4bfeffe08575276d2b60c89f8157847362	False	False	False	False
+B	pair-1-Q	restore-B	ruff_python_ast	a5e7d45724ee96d200ef31ee63b6a77a7cf780615dffc74f8f333ea83ded3efe	False	False	False	False
+B	pair-1-Q	restore-B	ruff_python_parser	c7d1141dfacd1fff3a6fea20d3cc1d16b7dc338fc5ce54f4e84e7ff6a82b27d6	False	False	False	False
+B	pair-1-Q	unchanged-B	ruff_python_ast	a5e7d45724ee96d200ef31ee63b6a77a7cf780615dffc74f8f333ea83ded3efe	False	False	False	False
+B	pair-1-Q	unchanged-B	ruff_python_parser	c7d1141dfacd1fff3a6fea20d3cc1d16b7dc338fc5ce54f4e84e7ff6a82b27d6	False	False	False	False
+B	pair-1-Q	return-B	ruff_python_ast	9c07c3cc840daf221881a6bf68353b9d8fda063259abf95bb752b15e5d1646e6	False	False	False	False
+B	pair-1-Q	return-B	ruff_python_parser	30b694759331837becf0be528f717757c8304a4da8bc6a5a1d8c59d04d70ca8b	False	False	False	False
+B	pair-1-Q	unchanged-final	ruff_python_ast	9c07c3cc840daf221881a6bf68353b9d8fda063259abf95bb752b15e5d1646e6	False	False	False	False
+B	pair-1-Q	unchanged-final	ruff_python_parser	30b694759331837becf0be528f717757c8304a4da8bc6a5a1d8c59d04d70ca8b	False	False	False	False
+B	pair-1-Q	native-restore-B	ruff_python_ast	9c07c3cc840daf221881a6bf68353b9d8fda063259abf95bb752b15e5d1646e6	False	False	False	False
+B	pair-1-Q	native-restore-B	ruff_python_parser	cf9006fb99cf7a30f039f3883e336da3854fc1b80c381fe5d90e6aa0a9eebb91	False	False	False	False
+B	pair-2-Q	first-B	ruff_python_ast	83ebfc1bba52491d16f097ff2db2d2a8014b81041bb9cfe26f7b7a71d9c0a5c4	False	False	False	False
+B	pair-2-Q	first-B	ruff_python_parser	cd893e2a41b1dd36762abbfb185eb792c6ddf8a9e27be11ae1be0e70c4e6f628	False	False	False	False
+B	pair-2-Q	restore-B	ruff_python_ast	83ebfc1bba52491d16f097ff2db2d2a8014b81041bb9cfe26f7b7a71d9c0a5c4	False	False	False	False
+B	pair-2-Q	restore-B	ruff_python_parser	6498ce8379bce88fcee73348e122aa99fcd067831ca96df0fbddbfe6d8a6f43d	False	False	False	False
+B	pair-2-Q	unchanged-B	ruff_python_ast	83ebfc1bba52491d16f097ff2db2d2a8014b81041bb9cfe26f7b7a71d9c0a5c4	False	False	False	False
+B	pair-2-Q	unchanged-B	ruff_python_parser	6498ce8379bce88fcee73348e122aa99fcd067831ca96df0fbddbfe6d8a6f43d	False	False	False	False
+B	pair-2-Q	return-B	ruff_python_ast	4a5c4cd4b1c20bd1683e85737a74304ad4cc97debc8f7afb8733f7eac3ea8226	False	False	False	False
+B	pair-2-Q	return-B	ruff_python_parser	92a24f622bc456777e1b842b7b95add092ec30881a133e90803c478c1a5e9815	False	False	False	False
+B	pair-2-Q	unchanged-final	ruff_python_ast	4a5c4cd4b1c20bd1683e85737a74304ad4cc97debc8f7afb8733f7eac3ea8226	False	False	False	False
+B	pair-2-Q	unchanged-final	ruff_python_parser	92a24f622bc456777e1b842b7b95add092ec30881a133e90803c478c1a5e9815	False	False	False	False
+B	pair-2-Q	native-restore-B	ruff_python_ast	4a5c4cd4b1c20bd1683e85737a74304ad4cc97debc8f7afb8733f7eac3ea8226	False	False	False	False
+B	pair-2-Q	native-restore-B	ruff_python_parser	d64aa5866bef7e89a4541b2659256987007fff3f2b8894591ac5f3dd311751a3	False	False	False	False
+B	pair-2-G	first-B	ruff_python_ast	dd1c4818b24e7696451b53762d054c39d2cc61a8223e75477b0227ebaf89bc4e	False	False	False	False
+B	pair-2-G	first-B	ruff_python_parser	a1ef1adeead62825c4b5a5a79a5906a7fe377c5aa4c384c13ea67ab871d98c82	False	False	False	False
+B	pair-2-G	restore-B	ruff_python_ast	dd1c4818b24e7696451b53762d054c39d2cc61a8223e75477b0227ebaf89bc4e	False	False	False	False
+B	pair-2-G	restore-B	ruff_python_parser	c6c059df7362673dbe14b946d5879aecb34ca16a563ac27b3b01fca7fe97c9b3	False	False	False	False
+B	pair-2-G	unchanged-B	ruff_python_ast	dd1c4818b24e7696451b53762d054c39d2cc61a8223e75477b0227ebaf89bc4e	False	False	False	False
+B	pair-2-G	unchanged-B	ruff_python_parser	c6c059df7362673dbe14b946d5879aecb34ca16a563ac27b3b01fca7fe97c9b3	False	False	False	False
+B	pair-2-G	return-B	ruff_python_ast	73afee5000443df1b3236d3f2fc9c81e896769b23f9e052db626800719cdf4ec	False	False	False	False
+B	pair-2-G	return-B	ruff_python_parser	b510c4186162f03073c35fa6b899edd03d2261f18ea7c9cf42501d7f64f42172	False	False	False	False
+B	pair-2-G	unchanged-final	ruff_python_ast	73afee5000443df1b3236d3f2fc9c81e896769b23f9e052db626800719cdf4ec	False	False	False	False
+B	pair-2-G	unchanged-final	ruff_python_parser	b510c4186162f03073c35fa6b899edd03d2261f18ea7c9cf42501d7f64f42172	False	False	False	False
+B	pair-2-G	native-restore-B	ruff_python_ast	73afee5000443df1b3236d3f2fc9c81e896769b23f9e052db626800719cdf4ec	False	False	False	False
+B	pair-2-G	native-restore-B	ruff_python_parser	c96265a07957b75e93a52281d48c353b71f30a4218602633ba3b667f6870c831	False	False	False	False
+B	pair-2-P	first-B	ruff_python_ast	680c6f30c0cbcecc405403f18ca53f499281224d88c54b60dc48430e14adbfe6	False	False	False	False
+B	pair-2-P	first-B	ruff_python_parser	6a5ff92b51e132b69f660f201f86e717a6840c0e7320672ae27b749ca2debe3b	False	False	False	False
+B	pair-2-P	restore-B	ruff_python_ast	680c6f30c0cbcecc405403f18ca53f499281224d88c54b60dc48430e14adbfe6	False	False	False	False
+B	pair-2-P	restore-B	ruff_python_parser	078e3b0e7c95adb9a25d5ee1d88e94d2027de26f5dc74c7ae2fa3b1ea2baf92f	False	False	False	False
+B	pair-2-P	unchanged-B	ruff_python_ast	680c6f30c0cbcecc405403f18ca53f499281224d88c54b60dc48430e14adbfe6	False	False	False	False
+B	pair-2-P	unchanged-B	ruff_python_parser	078e3b0e7c95adb9a25d5ee1d88e94d2027de26f5dc74c7ae2fa3b1ea2baf92f	False	False	False	False
+B	pair-2-P	return-B	ruff_python_ast	0bb71ff82748c3ff431e84e1b27fad0cec7835441486680dc4c267ae279cacaf	False	False	False	False
+B	pair-2-P	return-B	ruff_python_parser	f775eb9ab286fc357671dced8f63122b153ebcf800cf570e7c303021b5ab31bb	False	False	False	False
+B	pair-2-P	unchanged-final	ruff_python_ast	0bb71ff82748c3ff431e84e1b27fad0cec7835441486680dc4c267ae279cacaf	False	False	False	False
+B	pair-2-P	unchanged-final	ruff_python_parser	f775eb9ab286fc357671dced8f63122b153ebcf800cf570e7c303021b5ab31bb	False	False	False	False
+B	pair-2-P	native-restore-B	ruff_python_ast	0bb71ff82748c3ff431e84e1b27fad0cec7835441486680dc4c267ae279cacaf	False	False	False	False
+B	pair-2-P	native-restore-B	ruff_python_parser	67358cd64c4363ea0d302117c2a722c6ef2d695d450968e2aa151f1de3ae6c3c	False	False	False	False
+C	ref-P-C	empty	ruff_python_ast	0c682e35de559e50d1ca4eb81fd90a47d2da906c8fdbac382265987d19b1a2d6	True	True	False	False
+C	ref-P-C	empty	ruff_python_parser	242e7973cfb05ee92c9378e5337a72498866830a7015d3357f46db31122c5060	True	True	False	False
+C	ref-G-C	empty	ruff_python_ast	60fccd7961088319dab7c19e9b14196a00bf9ac1a21166ef365c944543206a16	False	False	True	True
+C	ref-G-C	empty	ruff_python_parser	9f458d5df05d9f83cb8fe231a5327d14e692b05157fa9438ee17778e1b70c025	False	False	True	True
+C	pair-1-P	edit-B	ruff_python_ast	d5db7a932c3c81380c7266289b206f870c94f387750aafd074fd5337072842c0	False	False	False	False
+C	pair-1-P	edit-B	ruff_python_parser	9a95060701d2309209d82588d280168b4cbef9fe873f473af67fae076892aa9b	False	False	False	False
+C	pair-1-P	native-edit-B	ruff_python_ast	8e53246818386f787293d825fb60bcb8da4fce02ba306e4489ac89d25449dddb	False	False	False	False
+C	pair-1-P	native-edit-B	ruff_python_parser	df0518aa82cd6dd27e9e5c3a0da10b5a2fd35f84b8fb7365288e91ee35dd7caa	False	False	False	False
+C	pair-1-G	edit-B	ruff_python_ast	52d9072742c55c3c74f1c41e70e7dd91f62c8622c72f116669d7eb8ed451829e	False	False	False	False
+C	pair-1-G	edit-B	ruff_python_parser	5f32fb0183e4f8d4e07b441af71a8068404e6af09fcc893cb176695bcfc375ea	False	False	False	False
+C	pair-1-G	native-edit-B	ruff_python_ast	f27d95e6e2d00022b1efebec8bf6ba254e01fee6189cb097b7a9fda46f3dffc3	False	False	False	False
+C	pair-1-G	native-edit-B	ruff_python_parser	3d6107b3f6f1eb3625247b29afde72ea3be3577a151028b888cac6a892635aba	False	False	False	False
+C	pair-1-Q	edit-B	ruff_python_ast	a5e7d45724ee96d200ef31ee63b6a77a7cf780615dffc74f8f333ea83ded3efe	False	False	False	False
+C	pair-1-Q	edit-B	ruff_python_parser	3c73802b5b783e75f380407d43fe66aed5dd40da59c2d84b6ba0ff9d04d5a5ae	False	False	False	False
+C	pair-1-Q	native-edit-B	ruff_python_ast	9c07c3cc840daf221881a6bf68353b9d8fda063259abf95bb752b15e5d1646e6	False	False	False	False
+C	pair-1-Q	native-edit-B	ruff_python_parser	d279d15629cbd160c548b8cadec73c8d8fccbb140f8cfbb09c4e594447b405a0	False	False	False	False
+C	pair-2-Q	edit-B	ruff_python_ast	83ebfc1bba52491d16f097ff2db2d2a8014b81041bb9cfe26f7b7a71d9c0a5c4	False	False	False	False
+C	pair-2-Q	edit-B	ruff_python_parser	8ee3c61ef2ea8bdbad45b9ea699e682b84780356947d04c6f9f1728113d26a46	False	False	False	False
+C	pair-2-Q	native-edit-B	ruff_python_ast	4a5c4cd4b1c20bd1683e85737a74304ad4cc97debc8f7afb8733f7eac3ea8226	False	False	False	False
+C	pair-2-Q	native-edit-B	ruff_python_parser	d52dc3c8205547c8ab045b949a2a7e02f36135b6bde8e8b20d4e516323d06b6c	False	False	False	False
+C	pair-2-G	edit-B	ruff_python_ast	dd1c4818b24e7696451b53762d054c39d2cc61a8223e75477b0227ebaf89bc4e	False	False	False	False
+C	pair-2-G	edit-B	ruff_python_parser	8649212d1bff7f7d68a866b6fc25520270218a608ce8e6254074c6361a01cf8b	False	False	False	False
+C	pair-2-G	native-edit-B	ruff_python_ast	73afee5000443df1b3236d3f2fc9c81e896769b23f9e052db626800719cdf4ec	False	False	False	False
+C	pair-2-G	native-edit-B	ruff_python_parser	b21c0388cfe77838c95461bf70634c7989e2ea2023ba4c0996b8826873d1c82c	False	False	False	False
+C	pair-2-P	edit-B	ruff_python_ast	680c6f30c0cbcecc405403f18ca53f499281224d88c54b60dc48430e14adbfe6	False	False	False	False
+C	pair-2-P	edit-B	ruff_python_parser	db8d7b7e2d17ca7a8a689aa367a1a9b3a700297eeddae0132ce9d3eaab70262f	False	False	False	False
+C	pair-2-P	native-edit-B	ruff_python_ast	0bb71ff82748c3ff431e84e1b27fad0cec7835441486680dc4c267ae279cacaf	False	False	False	False
+C	pair-2-P	native-edit-B	ruff_python_parser	b0ab9766274ccf1e8c37d3046051bd78f415aa1568a3f396135f35b1dce78819	False	False	False	False

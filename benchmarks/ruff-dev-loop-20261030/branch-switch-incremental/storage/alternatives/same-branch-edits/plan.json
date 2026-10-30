@@ -1,0 +1,82 @@
+{
+  "study": "Same historical B branch after visiting A and B, Linux ext4. Prototype of compressing two rustc incremental tables with external flate2 1.1.9.",
+  "cpu": [
+    28,
+    29,
+    30,
+    31
+  ],
+  "verb": [
+    "cargo",
+    "+ohm",
+    "build",
+    "-p",
+    "ruff_python_parser",
+    "--locked",
+    "--offline",
+    "-j4",
+    "--message-format=json"
+  ],
+  "arm": {
+    "P": "7e71d315 parent, common passthrough wrapper",
+    "G": "6b7f424e guarded compiler, identical passthrough wrapper",
+    "Q": "6b7f424e guarded compiler, frozen table codec on actual rustc entry"
+  },
+  "orders": [
+    [
+      "P",
+      "G",
+      "Q"
+    ],
+    [
+      "Q",
+      "G",
+      "P"
+    ]
+  ],
+  "sample": [
+    "empty-A",
+    "first-B",
+    "edit-B",
+    "restore-B",
+    "unchanged-B",
+    "return-A",
+    "return-B",
+    "unchanged-final"
+  ],
+  "flanks": [
+    "native-edit-B",
+    "native-restore-B"
+  ],
+  "clean": [
+    "P-A",
+    "P-B",
+    "P-C",
+    "G-C",
+    "G-B"
+  ],
+  "grammar": {
+    "worktree": "historical-feature",
+    "head": "7b13f01ba1569887a25670820764b24c206da8e5",
+    "original_tree": "97ca36909f1ae8fa028b2c1f48f452fbdcdbbd4c",
+    "regressed_tree": "a880a27e6d496af407411ba47a14279a631b40c3",
+    "original_file": "da5e9a4ce7e4d9e01c19d8b2797c666a8e7b87c41362937546abd10a46289ccc",
+    "regressed_file": "8fdc43aca04b07c900a152349e2af4572a6d0f03850e432d816a22d772b2c799",
+    "patch": "8834f59a8db47efd11997bd3599b08765ff14c9fc1f28a6d6241225d71952b13",
+    "path": "crates/ruff_python_parser/src/parser/pattern.rs",
+    "upstream": "0ecff877901a0377ad966ffab528488ce872b50e",
+    "subject": "Validate unary expressions when parsing (#28233)"
+  },
+  "cost": "Per paired block separately: whole Cargo monotonic wall around a blocking wait, excluding source operations and native semantic checks. Q minus G isolates the codec; Q minus P measures full change. Report both directions separately, and mean across edit+restore within each pair. Gross return saving = average P minus Q for the two branch returns after the edit loop. Divide by positive mean Q-minus-P same-branch edit cost to describe break-even; separately report first visit, pair variability, zero-cost/negative cases, and Q-minus-G. No significance, forecast or elapsed-time extrapolation to a release.",
+  "gate": "Compiler package and whole independently clean consumer ELF + exact stdout for all A,B,edited B states, equal across roles; report both complete raw rlibs and actual ar member payload multisets against P/G empty controls. A raw archive/layout discrepancy is preserved and limits any byte-equivalence claim. Disallow incorrect clean semantic ELF, affected crate or verdict. Program accepts the invalid signed power pattern only on B with the grammar rule reversed. Entire cargo outputs and native witnesses retained. Two off-clock edit/restore kernel exec flanks per role after the reported phases. Include every registered install or report the failure. Source and Cargo/stock-Wild unchanged.",
+  "floors": {
+    "admission_memory": 75161927680,
+    "live_memory": 48318382080,
+    "home": 150323855360,
+    "scratch": 142807662592,
+    "extra_admission_scratch": 10737418240
+  },
+  "roles": "No individual rustc/Callgrind instrumentation. Identical release rustup/Cargo + compiled entry wrapper for all arms. Real kernel observer only outside measured calls. Timing includes Q restore, decode, digest, compress and persistence through wrapper return. Branch name and exact baseline commit stay invariant across same-branch edits and repeats. Per-state public API consumer compiles, links and executes outside recorded Cargo seconds.",
+  "design": "Two independent mirrored three-arm blocks, preserving both orderings for every contrast. Sequential per-host on CPUs 28–31, ext4; no branch inference to other packages or performance claims for a production compressor.",
+  "baseline_streams": "No new pilot or outcome before enabling this registration. Former branch-return screen has distinct inputs/harness and provides context; paired return figures here come from these installs."
+}
