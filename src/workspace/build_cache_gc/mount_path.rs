@@ -111,19 +111,27 @@ impl MountPath {
     /// Address the pinned directory when using APIs that take paths instead of descriptors.
     pub(super) fn address(&self) -> Cow<'_, Path> {
         #[cfg(target_os = "linux")]
-        return Cow::Owned(PathBuf::from(format!(
-            "/proc/self/fd/{}",
-            self.file.as_raw_fd()
-        )));
+        {
+            Cow::Owned(PathBuf::from(format!(
+                "/proc/self/fd/{}",
+                self.file.as_raw_fd()
+            )))
+        }
         #[cfg(not(target_os = "linux"))]
-        return Cow::Borrowed(&self.path);
+        {
+            Cow::Borrowed(&self.path)
+        }
     }
 
     pub(super) fn metadata(&self) -> io::Result<Metadata> {
         #[cfg(target_os = "linux")]
-        return self.file.metadata();
+        {
+            self.file.metadata()
+        }
         #[cfg(not(target_os = "linux"))]
-        return std::fs::symlink_metadata(&self.path);
+        {
+            std::fs::symlink_metadata(&self.path)
+        }
     }
 }
 

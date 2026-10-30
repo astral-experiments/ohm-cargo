@@ -55,7 +55,9 @@ impl SharedRoot {
 
     fn blocked(&self, path: &Path, recursive: bool, summary: &mut Summary<'_>) -> bool {
         #[cfg(target_os = "linux")]
-        return self.mounts.blocked(path, recursive, summary);
+        {
+            self.mounts.blocked(path, recursive, summary)
+        }
         #[cfg(not(target_os = "linux"))]
         {
             let _ = (path, recursive, summary);
@@ -68,6 +70,16 @@ impl SharedRoot {
         Ok(self
             .directory
             .child_dir(parent.strip_prefix(self.directory.path())?)?)
+    }
+
+    /// An inaccessible path behind another mount or a symlink may still contain live data.
+    fn absent(&self, path: &Path) -> bool {
+        path.strip_prefix(self.directory.path())
+            .is_ok_and(|relative| {
+                self.directory
+                    .child(relative)
+                    .is_err_and(|error| error.kind() == io::ErrorKind::NotFound)
+            })
     }
 }
 
@@ -767,11 +779,10 @@ fn collect_with_lock_budget(
                 &mut remaining,
                 summary,
                 true,
-                None,
             )?;
         }
         for trash in trash_roots {
-            drain_trash(&cache, &trash, &mut remaining, summary, true, None)?;
+            drain_trash(&cache, &trash, &mut remaining, summary, true)?;
         }
         return Ok(());
     }
@@ -864,7 +875,7 @@ fn collect_with_lock_budget(
                 namespace.detail(root, &profiles, age, current_ohm, tracker.as_ref())
             else {
                 if let Some((source, _)) = paths.first()
-                    && !safely_absent(root, source)
+                    && !cache.absent(source)
                 {
                     summary.skip_path(
                         source,
@@ -894,11 +905,11 @@ fn collect_with_lock_budget(
             if retired && summary.details.len() < 32 && !summary.details.contains(&detail) {
                 summary.details.push(detail);
             }
-            let completed = paths.iter().all(|(source, _)| safely_absent(root, source))
+            let completed = paths.iter().all(|(source, _)| cache.absent(source))
                 && namespace
                     .paths(root, &profiles)
                     .iter()
-                    .all(|(source, _)| safely_absent(root, source));
+                    .all(|(source, _)| cache.absent(source));
             if completed {
                 if namespace.finish(&cache, tracker.as_ref(), summary)? {
                     summary.retired += 1;
@@ -911,7 +922,7 @@ fn collect_with_lock_budget(
             } else if !partial {
                 if summary.skipped.len() + summary.errors.len() == skipped_before {
                     for (source, _) in &paths {
-                        if !safely_absent(root, source) {
+                        if !cache.absent(source) {
                             summary.skip_path(source, "path changed during cleanup");
                         }
                     }
@@ -927,7 +938,7 @@ fn collect_with_lock_budget(
     // starts or another context remains in use.
     let mut remaining = DELETE_BUDGET;
     for trash in trash_roots {
-        drain_trash(&cache, &trash, &mut remaining, summary, false, None)?;
+        drain_trash(&cache, &trash, &mut remaining, summary, false)?;
     }
     let mut metadata_summary = Summary::default();
     drain_trash(
@@ -936,7 +947,6 @@ fn collect_with_lock_budget(
         &mut remaining,
         &mut metadata_summary,
         false,
-        None,
     )?;
     summary.deleted_entries += metadata_summary.deleted_entries;
     summary.pending |= metadata_summary.pending;
@@ -1502,32 +1512,11 @@ fn retire(
     dry_run: bool,
     summary: &mut Summary<'_>,
 ) -> CargoResult<bool> {
-    retire_path(
-        cache,
-        source,
-        trash,
-        dry_run,
-        summary,
-        matches!(namespace, Namespace::Dependency { .. })
-            .then_some("dependency path is no longer a plain directory"),
-        false,
-    )
-}
-
-fn retire_path(
-    cache: &SharedRoot,
-    source: &Path,
-    trash: &Path,
-    dry_run: bool,
-    summary: &mut Summary<'_>,
-    non_directory_reason: Option<&str>,
-    allow_symlink: bool,
-) -> CargoResult<bool> {
     let root = cache.directory.path();
     if cache.blocked(source, true, summary) || cache.blocked(trash, false, summary) {
         return Ok(false);
     }
-    if safely_absent(root, source) {
+    if cache.absent(source) {
         return Ok(false);
     }
     if !plain_ancestors(root, source)? {
@@ -1537,13 +1526,11 @@ fn retire_path(
     let source_parent = cache.parent(source)?;
     let source_name = source.file_name().unwrap();
     let metadata = source_parent.child(Path::new(source_name))?.metadata()?;
-    if let Some(reason) = non_directory_reason
-        && !metadata.is_dir()
-    {
-        summary.skip_path(source, reason);
+    if matches!(namespace, Namespace::Dependency { .. }) && !metadata.is_dir() {
+        summary.skip_path(source, "dependency path is no longer a plain directory");
         return Ok(false);
     }
-    if !(metadata.is_dir() || metadata.is_file() || allow_symlink && metadata.is_symlink()) {
+    if !(metadata.is_dir() || metadata.is_file()) {
         summary.skip_path(source, "not a regular file or directory");
         return Ok(false);
     }
@@ -1607,7 +1594,6 @@ fn drain_trash(
     remaining: &mut usize,
     summary: &mut Summary<'_>,
     dry_run: bool,
-    bookkeeping: Option<&str>,
 ) -> CargoResult<()> {
     if !plain_directory(trash) || cache.blocked(trash, false, summary) {
         return Ok(());
@@ -1631,16 +1617,8 @@ fn drain_trash(
         if cache.blocked(&path, true, summary) {
             continue;
         }
-        drain_entry(
-            &directory,
-            &name,
-            device,
-            remaining,
-            summary,
-            dry_run,
-            bookkeeping,
-        )
-        .or_else(|error| summary.path_error(&path, error))?;
+        drain_entry(&directory, &name, device, remaining, summary, dry_run)
+            .or_else(|error| summary.path_error(&path, error))?;
         if !dry_run && *remaining < 2 {
             summary.pending = true;
             break;
@@ -1657,7 +1635,6 @@ fn drain_entry(
     remaining: &mut usize,
     summary: &mut Summary<'_>,
     dry_run: bool,
-    bookkeeping: Option<&str>,
 ) -> CargoResult<()> {
     let entry = trash.child_dir(Path::new(name))?;
     let owner = match entry.child(Path::new("owner")) {
@@ -1674,8 +1651,6 @@ fn drain_entry(
     }) {
         return Ok(());
     }
-    let payload = entry.path().join("payload");
-    let bookkeeping = bookkeeping.map(|name| payload.join(name));
     let complete = remove_bounded(
         &entry,
         OsStr::new("payload"),
@@ -1683,7 +1658,6 @@ fn drain_entry(
         remaining,
         summary,
         dry_run,
-        bookkeeping.as_deref(),
     )?;
     if !dry_run && complete && *remaining >= 2 && absent(&entry.address().join("payload")) {
         fs::remove_file(entry.address().join("owner"))?;
@@ -1702,18 +1676,9 @@ fn remove_bounded(
     remaining: &mut usize,
     summary: &mut Summary<'_>,
     dry_run: bool,
-    bookkeeping: Option<&Path>,
 ) -> CargoResult<bool> {
-    remove_entry(
-        parent,
-        name,
-        device,
-        remaining,
-        summary,
-        dry_run,
-        bookkeeping,
-    )
-    .or_else(|error| summary.path_error(&parent.path().join(name), error))
+    remove_entry(parent, name, device, remaining, summary, dry_run)
+        .or_else(|error| summary.path_error(&parent.path().join(name), error))
 }
 
 fn remove_entry(
@@ -1723,7 +1688,6 @@ fn remove_entry(
     remaining: &mut usize,
     summary: &mut Summary<'_>,
     dry_run: bool,
-    bookkeeping: Option<&Path>,
 ) -> CargoResult<bool> {
     let entry = match parent.child(Path::new(name)) {
         Ok(entry) => entry,
@@ -1755,7 +1719,6 @@ fn remove_entry(
                 remaining,
                 summary,
                 dry_run,
-                bookkeeping,
             )?;
         }
         if *remaining == 0 || !complete {
@@ -1774,10 +1737,8 @@ fn remove_entry(
     }
     *remaining -= 1;
     summary.deleted_entries += 1;
-    if bookkeeping != Some(path) {
-        summary.counts.record(&metadata);
-        summary.tick();
-    }
+    summary.counts.record(&metadata);
+    summary.tick();
     Ok(true)
 }
 
@@ -3257,7 +3218,7 @@ mod tests {
                 &mut summary,
             )?);
             let mut budget = DELETE_BUDGET;
-            drain_trash(&cache, &trash, &mut budget, &mut summary, dry_run, None)?;
+            drain_trash(&cache, &trash, &mut budget, &mut summary, dry_run)?;
             assert_eq!(summary.counts.files, 1);
             assert_eq!(summary.counts.bytes, 4);
             assert_eq!(fs::read(source.join("artifact"))?, b"cached");
@@ -3283,7 +3244,6 @@ mod tests {
             &mut remaining,
             &mut summary,
             false,
-            None,
         )?;
         assert!(payload.join("artifact").exists());
         assert_eq!(remaining, DELETE_BUDGET);
@@ -3302,7 +3262,6 @@ mod tests {
             &mut remaining,
             &mut summary,
             true,
-            None,
         )?;
         assert_eq!(summary.counts, FileCounts::default());
         Ok(())
