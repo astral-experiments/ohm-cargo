@@ -1,0 +1,19 @@
+{
+  "existing_test": "line_index::tests::line_end_exclusive_handles_different_line_endings",
+  "fixed_implementation": "            let next_line_start = starts[row_index + 1].to_usize();\n            let bytes = contents.as_bytes();\n\n            let line_ending_len = if bytes[..next_line_start].ends_with(b\"\\r\\n\") {\n                2\n            } else {\n                1\n            };\n            starts[row_index + 1] - TextSize::new(line_ending_len)\n",
+  "head": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "historical_commit": "88d851449d2345e11da991794f3e9bfbbd666719",
+  "historical_full_file_diff": "914a91f649098a291c8796f446c5d28da80c6551cc33944489f10f239c859035",
+  "historical_parent": "a8d0fffc4d72da193b2a2ae4c53277fdf1f1794d",
+  "historical_source_only_diff": "c80a146015e5b7180900a9fc167e19b9c6e7129cdb0be2e29622c2c1a6ffc1d4",
+  "invalid_implementation": "            starts[row_index + 1] - ohm_missing_crlf_offset()\n",
+  "old_implementation": "            starts[row_index + 1] - TextSize::new(1)\n",
+  "public_method": "ruff_source_file::SourceCode::line_end_exclusive",
+  "relative": "crates/ruff_source_file/src/line_index.rs",
+  "states": {
+    "invalid": "73c3db6256682206d2587a972fc5f974db1e75e3c428b1194d66d72d38dbc76f",
+    "original": "0ebaad70053510b8fcddb8bb26d05517d997b5622fc0933750fe1fd08b176168",
+    "reverse-production-hunk": "9e67f88ad0255bff8b4dfeca2cc536aa13c9052b0b531f6bdd7a31d0b5fb6d64"
+  },
+  "untouched_test_module": "4cca75e5fc10cfdba999a36227dd6a7a63ada99cd54c183e81bc15216e597ee5"
+}
