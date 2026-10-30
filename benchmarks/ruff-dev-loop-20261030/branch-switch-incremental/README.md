@@ -2,7 +2,7 @@
 
 Ruff #28335 changed the size of an AST expression from 64 to 56 bytes. It touched the parser, AST, formatter and several downstream crates. The build loop switches between the real parent and feature branches in one Git checkout and builds the parser after each switch. Each compiler gets a new target directory and a separate empty Cargo build directory at the same absolute paths. The primary elapsed and instruction cohorts put the checkout, target and Cargo build directory on a private Linux tmpfs. [Historical Ruff change](https://github.com/astral-sh/ruff/pull/28335)
 
-The comparison uses optimized x86-64 Linux stage 1 compilers built from the proposed Ohm distribution’s Rust revision and the branch-aware compiler. Cargo, the standard library, the rustc executable and the bundled Wild binary are shared byte for byte. The compiler driver is the single changed SDK file. Both compilers use the same bootstrap metadata stamp. The tracked source and physical tool hashes identify the builds. The Linux distribution applies PGO and BOLT separately.
+The comparison uses optimized x86-64 Linux stage 1 compilers built from the proposed Ohm distribution’s Rust revision and the branch-aware compiler. Cargo, the standard library, the rustc executable and the bundled Wild binary are shared byte for byte. The compiler driver is the single changed SDK file. Both compilers use the same bootstrap metadata stamp. The tracked source and physical tool hashes identify the builds. The Linux distribution applies PGO and BOLT separately. [Compiler build and configuration](compiler-build)
 
 ## Whole-command results
 
@@ -25,7 +25,7 @@ The intervals use order statistics on the within-pair ratios, with Bonferroni co
 | `cargo test --no-run` | 67.792 / 67.615 s | 11.534 / 11.412 s | 0.212 / 0.211 s | 101 / 137 MiB |
 | `cargo check` | 27.191 / 27.409 s | 7.138 / 7.007 s | 0.175 / 0.173 s | 58 / 70 MiB |
 
-Storage counts allocated filesystem blocks for the two crates’ finalized incremental sessions, deduplicated by inode. Other target and build-directory files are outside that total. The compiler can retain one previous checkout alongside the latest session. Ordinary serial builds on a single branch keep one session.
+Storage counts allocated filesystem blocks for the two crates’ finalized incremental sessions, deduplicated by inode. Other target and build-directory files are outside that total. The compiler can retain one previous checkout alongside the latest session. Our serial builds on a single branch kept one session. An active lock or tied creation timestamps can preserve extra directories during collection.
 
 ## Compiler instructions and native work
 
@@ -65,3 +65,21 @@ The candidate selected the earlier branch session even after that branch acquire
 ## Formatter test build
 
 Returning to either branch also rebuilt the formatter test binary. In a separate two-pair screen, the ordinary four-compiler command fell from 22.20–23.20 s to 5.33–5.52 s. Each direction created one codegen object instead of 310 and ran one stock Wild link. Both executables matched their respective empty builds. This screen is separate from the 12-pair parser results above. [Formatter screen, workload and replay](formatter-screen)
+
+To repeat the complete compiler instruction comparison, install a C compiler and Valgrind with its Callgrind tool on x86-64 Linux. The host must allow a process to trace its own children. Each arm preserves its complete per-process profiles, captured argument vectors, jobserver descriptors and native outputs. The summary reports summed rustc instructions.
+
+```sh
+python3 -IB replay.py --parent-sdk "$PARENT_SDK" --candidate-sdk "$CANDIDATE_SDK" \
+  --workflow build --compiler-instructions --pairs 8 --out "$run_dir/replay-instructions"
+```
+
+Two fresh pairs exercised that command. The parent executed 9.034 and 9.033 times as many instructions as the candidate on A, and 8.923 and 8.926 times as many on B. These functional replay pairs were kept separate from the registered eight-pair cohort.
+
+## Block-backed build confirmation
+
+Twelve new pairs repeated the whole build command with both the checkout and all Cargo outputs on ext4. The OS page cache was active throughout. Each direction cleared 2× in all 12 pairs. [Block device, records and offline verification](block-device)
+
+| Return | Parent median | Candidate median | Median paired speedup | 96.14% interval for that direction | Median paired CPU ratio |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| A | 8.859 s | 2.695 s | 3.25× | 3.13–3.39× | 8.19× |
+| B | 8.802 s | 2.756 s | 3.20× | 3.04–3.31× | 8.06× |

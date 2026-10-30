@@ -1,0 +1,43 @@
+{
+  "case": "portable-instructions",
+  "data": {
+    "installations": {
+      "pair-01-P": {
+        "return-A": 62162084650,
+        "return-B": 62440705527
+      },
+      "pair-01-Q": {
+        "return-A": 6881089029,
+        "return-B": 6997967120
+      },
+      "pair-02-P": {
+        "return-A": 62165533067,
+        "return-B": 62457257563
+      },
+      "pair-02-Q": {
+        "return-A": 6882017550,
+        "return-B": 6997618338
+      }
+    },
+    "published_reader_sha256": "8f6dfff1b37b9157b74d55f5acf8a7921fc9e25ee92a8fd923c596998afe2ef2",
+    "summary": {
+      "return-A": {
+        "median_speedup": 9.033397898692986,
+        "metric": "summed rustc instructions",
+        "paired_ratios": [
+          9.03375677716435,
+          9.03303902022162
+        ]
+      },
+      "return-B": {
+        "median_speedup": 8.924097098679495,
+        "metric": "summed rustc instructions",
+        "paired_ratios": [
+          8.92269204131385,
+          8.92550215604514
+        ]
+      }
+    }
+  },
+  "sha256": "f5b0fc307662c4c43d709bba928f8ce501fea546b5ff9432b66e646607000a69"
+}

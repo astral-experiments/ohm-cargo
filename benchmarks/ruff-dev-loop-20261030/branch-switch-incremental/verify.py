@@ -131,6 +131,18 @@ def main():
     subprocess.run([sys.executable, "-IB", ROOT / "concurrent-sessions" / "verify.py"], check=True)
     subprocess.run([sys.executable, "-IB", ROOT / "formatter-screen" / "verify.py"], check=True)
     subprocess.run([sys.executable, "-IB", ROOT / "moved-branch" / "verify.py"], check=True)
+    if (ROOT / "block-device").exists():
+        subprocess.run([sys.executable, "-IB", ROOT / "block-device" / "verify.py"], check=True)
+    if (ROOT / "portable-instruction-smoke.json").exists():
+        measured = read("portable-instruction-smoke.json")["data"]
+        guards = read("counter-reader-validation.json")
+        assert sha256((ROOT / "compiler_counts.py").read_bytes()).hexdigest() == guards["reader_sha256"] == measured["published_reader_sha256"]
+        assert guards["controls"]["original"] == {"accepted": True, "whole_rustcs": 2, "wild_links": 1}
+        assert set(guards["controls"]) == {"original", "other-parent", "child-events", "extra-profile", "wrong-root-pid"}
+        for phase in ("return-A", "return-B"):
+            slots = measured["installations"]
+            ratios = [slots[f"pair-{i:02}-P"][phase] / slots[f"pair-{i:02}-Q"][phase] for i in (1, 2)]
+            assert ratios == measured["summary"][phase]["paired_ratios"]
     print("The SDK, source, schedules, native-input controls and available paired endpoints agree.")
 
 

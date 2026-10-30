@@ -45,6 +45,8 @@ def main():
     args.add_argument("--pairs", type=int, default=12, help="Even, counterbalanced sample size")
     args.add_argument("--jobs", type=int, default=4)
     args.add_argument("--workflow", choices=("build", "check", "test-no-run"), default="build")
+    args.add_argument("--compiler-instructions", action="store_true",
+                      help="Use complete Callgrind instruction counts for the two returning rustcs")
     args.add_argument("--pack", type=Path, help="Optional complete Git pack for the historical Ruff refs")
     args.add_argument("--ruff-url", default="https://github.com/astral-sh/ruff.git")
     args.add_argument("--offline", action="store_true", help="Use an already populated CARGO_HOME")
@@ -61,6 +63,12 @@ def main():
         args.error("Supply matched Cargo and rustc launchers with distinct compiler drivers.")
     out = a.out.resolve()
     out.mkdir(mode=0o700)
+    tracer = None
+    if a.compiler_instructions:
+        # Isolated Python omits the script's own directory from module lookup.
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        import compiler_counts
+        tracer = compiler_counts.prepare(out)
     source = out / "ruff"
     subprocess.run(["git", "init", "--quiet", source], check=True)
     def git(*argv):
@@ -109,7 +117,8 @@ def main():
     orders = ["PQ", "QP"] * (a.pairs // 2)
     random.Random(0xc0ffee43).shuffle(orders)
     (out / "plan.json").write_text(json.dumps({"orders": orders, "sdk": identity, "A": A, "B": B,
-                                              "workflow": a.workflow, "cargo": cargo}, indent=2))
+                                              "workflow": a.workflow, "cargo": cargo,
+                                              "compiler_instructions": a.compiler_instructions}, indent=2))
     phase_outputs = {}
     observed = {}
     src = (Path(__file__).resolve().parent / "consumer.rs").resolve(strict=True)
@@ -159,7 +168,11 @@ def main():
         d.mkdir()
         _, sw = run(["git", "switch", "--quiet", BRANCH[rev]], cwd=source, env=env, out=d / "switch")
         assert git("rev-parse", "HEAD").decode().strip() == rev
-        proc, score = run(cargo, cwd=source, env=env, out=d / "cargo", expected=101 if invalid else 0)
+        counted = tracer is not None and phase.startswith("return-")
+        program = compiler_counts.command(tracer, stable_kit, d, cargo) if counted else cargo
+        proc, score = run(program, cwd=source, env=env, out=d / "cargo", expected=101 if invalid else 0)
+        if counted:
+            score["compiler_Ir"] = compiler_counts.read(d, proc.stderr, subcommand)
         rows = list(map(json.loads, proc.stdout.splitlines()))
         assert rows[-1] == {"reason": "build-finished", "success": not invalid}
         if invalid:
@@ -254,8 +267,12 @@ def main():
             print(f"Finished {i}/{a.pairs} {role}", flush=True)
     summary = {}
     for phase in ("return-A", "return-B"):
-        ratios = [observed[i, "P"][phase]["wall_s"] / observed[i, "Q"][phase]["wall_s"] for i in range(1, a.pairs + 1)]
-        summary[phase] = {"paired_ratios": ratios, "median_speedup": median(ratios)}
+        def primary_score(pair, role):
+            row = observed[pair, role][phase]
+            return sum(row["compiler_Ir"].values()) if a.compiler_instructions else row["wall_s"]
+        ratios = [primary_score(i, "P") / primary_score(i, "Q") for i in range(1, a.pairs + 1)]
+        summary[phase] = {"paired_ratios": ratios, "median_speedup": median(ratios),
+                          "metric": "summed rustc instructions" if a.compiler_instructions else "whole Cargo seconds"}
     (out / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
     print(json.dumps(summary, indent=2))
 if __name__ == "__main__":

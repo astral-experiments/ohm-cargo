@@ -1,0 +1,50 @@
+profile = "dist"
+change-id = "ignore"
+
+[build]
+description = "ohm-ruff-lint-scout"
+build-dir = "@BOOTSTRAP_ROOT@/build"
+rustc = "@BOOTSTRAP_ROOT@/bootstrap-runtime/bin/rustc"
+rustdoc = "@BOOTSTRAP_ROOT@/bootstrap-runtime/bin/rustdoc"
+cargo = "@BOOTSTRAP_ROOT@/cargo-ohm"
+local-rebuild = true
+jobs = 12
+submodules = false
+vendor = false
+locked-deps = true
+extended = false
+docs = false
+compiler-docs = false
+profiler = false
+optimized-compiler-builtins = false
+build-stage = 1
+test-stage = 1
+print-step-timings = true
+
+[rust]
+channel = "dev"
+omit-git-hash = false
+download-rustc = false
+optimize = true
+debug-assertions = false
+debug-logging = false
+debuginfo-level = 0
+incremental = false
+codegen-units = 16
+codegen-units-std = 1
+lto = "off"
+frame-pointers = false
+mimalloc = true
+jemalloc = true
+remap-debuginfo = true
+lld = false
+llvm-bitcode-linker = false
+llvm-tools = false
+
+[llvm]
+download-ci-llvm = false
+link-shared = true
+
+[target.x86_64-unknown-linux-gnu]
+llvm-config = "@BOOTSTRAP_ROOT@/ci-llvm/bin/llvm-config"
+llvm-has-rust-patches = true
