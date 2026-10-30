@@ -19,3 +19,7 @@ The regression fixtures exercise register, literal, symbol, memory, malformed an
 [Raw observations and standalone verifier](tool-test-pairs.zip) · [Per-pair clocks](tool-test-pairs.csv) · [Machine-readable statistics](tool-test-result.json) · [Fresh-run scripts, exact compiler patches and SDK identities](rerun.zip)
 
 Unpack `tool-test-pairs.zip` and run `python3 -ISB fresh-edit/verify.py` to recompute the times, verify all three output hashes and check the test inventory. To run fresh builds, unpack `rerun.zip` and follow its `README.md` and `REBUILD.md`. `PACKAGE.md` covers the full `cargo test -p uv --no-run`. Both runners pin Git abbreviation in their private clone and check the uv version description.
+
+The fresh full-package experiment compares 17 programs and the 15 test listings. The first confirmation stopped because one unrelated executable changed across two builds with the same compiler and the same sources. Those observations are excluded. The new protocol accepts the two exact observed versions of that one file. They differ at one `.rodata` header byte and at the 32-byte build ID derived from it. A third version or any change to the other programs or listings fails the comparison.
+
+The reproduction archive includes the checksums of both original executable forms, the raw comparison, and the newly randomized schedules for the combined and standalone trials. The combined trial counts the excluded experiment in its nine-comparison Holm correction. The separate standalone trial requires a confirmed combined result.
