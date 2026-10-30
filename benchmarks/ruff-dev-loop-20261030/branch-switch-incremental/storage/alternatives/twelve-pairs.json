@@ -1,0 +1,1230 @@
+{
+  "actual_candidate_calls": 98,
+  "clean": {
+    "A": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+    "B": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a"
+  },
+  "gate_passed": true,
+  "plan": {
+    "candidate_rust": "6b7f424ece4bc978ead5546b73e1b31d5ccb1e70",
+    "environment": "24-27 x86_64 ext4; warm OS cache; new Cargo-installed state per arm, fixed physical root",
+    "exclusions": "none allowed for a native or output mismatch; preserve the data of any failed cohort separately",
+    "gates": "two simultaneous median confidence intervals lower bounds above 2x; complete product storage both under +10% in all pairs; report initial-visit regressions and unchanged controls separately",
+    "method": "two simultaneous distribution-free intervals with Bonferroni correction; exact balanced-order randomization against equal time and sign test on >2x; elapsed times reopened only after all arms finish",
+    "orders": [
+      "PQ",
+      "QP",
+      "PQ",
+      "QP",
+      "PQ",
+      "PQ",
+      "PQ",
+      "QP",
+      "QP",
+      "QP",
+      "PQ",
+      "QP"
+    ],
+    "pairs": 12,
+    "parent_rust": "7e71d3150938ff8ed82aca03416439d7e5b87ef3",
+    "primary": [
+      "return-A",
+      "return-B"
+    ],
+    "primary_metric": "complete elapsed native Cargo command including wrapper, all compression, restoration and verification",
+    "reference": "new clean P build for both revisions and each successful consumer identical to its reference",
+    "scope": "prototype external graph codec invoked by real rustc entry in actual Cargo process tree; candidate same shipped library/driver as draft #274",
+    "screen_sha256": "03c556060dde008dadc2f9e3b70e1763cc4cf66321b7f9e8e9e8fa132792f834",
+    "secondary": [
+      "complete target+build physical bytes",
+      "total CPU",
+      "empty-A",
+      "first-B",
+      "unchanged-B",
+      "first B and following return A combined"
+    ],
+    "workflow": "real cargo +ohm build -p ruff_python_parser --locked --offline -j4"
+  },
+  "samples": {
+    "pair-01-P": {
+      "empty-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 269824000,
+        "cpu": 114.86888199999999,
+        "dirty": 97,
+        "stdout_sha256": "aeddfbd2e713d01ee9e843d22046b658d2389ce6f2eff7c717a9ea456486307d",
+        "wall": 32.020671071
+      },
+      "first-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 286433280,
+        "cpu": 23.90785800000002,
+        "dirty": 2,
+        "stdout_sha256": "9f7bfb0bf311632db849082835514b4305cc286ee88df78bbf0b0e46cd86fdc6",
+        "wall": 8.150763293
+      },
+      "return-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 302084096,
+        "cpu": 25.002151999999995,
+        "dirty": 2,
+        "stdout_sha256": "4f7de1329f0bfceb5f311f47430ec216583ca6e9f1f70f5664eaed0bbbfc765a",
+        "wall": 8.641097797
+      },
+      "return-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 270381056,
+        "cpu": 26.308992999999987,
+        "dirty": 2,
+        "stdout_sha256": "f1ae3292672acc8667c95dc434969882572b09b843b386d0fd553bada91b6666",
+        "wall": 8.944820013
+      },
+      "unchanged-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 270381056,
+        "cpu": 0.1422009999999858,
+        "dirty": 0,
+        "stdout_sha256": "2cc7f03585e151c995fb34649f67588d71c57c4e68e08195398e6fce6b3791ed",
+        "wall": 0.155212879
+      }
+    },
+    "pair-01-Q": {
+      "empty-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 269811712,
+        "cpu": 118.54416,
+        "dirty": 97,
+        "stdout_sha256": "d743603c12676d4fb2c25220b3e5a9369a7285ba513b860d2fd0880b0599181f",
+        "wall": 33.798996628
+      },
+      "first-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 287731712,
+        "cpu": 25.813584000000034,
+        "dirty": 2,
+        "stdout_sha256": "79344fa07eb856cd14447ac609f656ff4d6ad45d13e3383924dd474b77238d30",
+        "wall": 8.900069481
+      },
+      "return-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 289255424,
+        "cpu": 4.397498000000041,
+        "dirty": 2,
+        "stdout_sha256": "db4d3569f82767ef546003315322c72b36c0032b57cfb04330112e2c16529885",
+        "wall": 3.430025047
+      },
+      "return-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 290627584,
+        "cpu": 4.409777000000034,
+        "dirty": 2,
+        "stdout_sha256": "64f02e64e5cfc4bd046b51227f9865fd52d5b1472e601960d89b94a7061762f3",
+        "wall": 3.350466735
+      },
+      "unchanged-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 290627584,
+        "cpu": 0.22536199999998985,
+        "dirty": 0,
+        "stdout_sha256": "91d10023064f7c8916f72a70affb19478bb213ab0bd5daf3fa81030adcd7cf68",
+        "wall": 0.244663937
+      }
+    },
+    "pair-02-P": {
+      "empty-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 269815808,
+        "cpu": 117.38572099999999,
+        "dirty": 97,
+        "stdout_sha256": "98aa03ce0a530328094459bbf9c7ce6e7bfbd2ce8f1d31ab0e1d2d0e40b61831",
+        "wall": 33.76803486
+      },
+      "first-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 286437376,
+        "cpu": 24.29387600000001,
+        "dirty": 2,
+        "stdout_sha256": "9780c2832509b60a33709cb70520049d422b6cc3d254c4846a41a7b9e55b7681",
+        "wall": 8.551250228
+      },
+      "return-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 302080000,
+        "cpu": 25.978736000000055,
+        "dirty": 2,
+        "stdout_sha256": "e8a9706cdabb143f42e9f6a21a8829b8679a61bba08369a316a4138e5b267796",
+        "wall": 8.818910485
+      },
+      "return-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 270381056,
+        "cpu": 24.587146999999902,
+        "dirty": 2,
+        "stdout_sha256": "2a84163cab1d59ddcacda3a0fc4346af95f33679a69e84791ed2b288537fcbef",
+        "wall": 8.65855571
+      },
+      "unchanged-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 270381056,
+        "cpu": 0.2612779999999759,
+        "dirty": 0,
+        "stdout_sha256": "33e1491f4229ba14ed25cd0f2b503fbec9f67e69d8383a2a493539e5f98392f9",
+        "wall": 0.289800304
+      }
+    },
+    "pair-02-Q": {
+      "empty-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 269828096,
+        "cpu": 114.120039,
+        "dirty": 97,
+        "stdout_sha256": "7a09b56679b312c4431fd9c6b87334238d2af1368aed62082a447ad64da95c6c",
+        "wall": 32.65814497
+      },
+      "first-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 287694848,
+        "cpu": 26.292659999999955,
+        "dirty": 2,
+        "stdout_sha256": "fc3d41be47c7d5b46e7c695adc4478b34468e2052a9291ed186c10ab68aaf9bc",
+        "wall": 9.210341389
+      },
+      "return-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 289214464,
+        "cpu": 5.266975999999957,
+        "dirty": 2,
+        "stdout_sha256": "920ffc8e62ede14275be7f42651faa852ef42a3df5cafb33d10ee5ee996952c6",
+        "wall": 4.075413274
+      },
+      "return-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 290594816,
+        "cpu": 4.308842999999982,
+        "dirty": 2,
+        "stdout_sha256": "b59c13a4893b3a5faaa1397950de441e47d2eb2ddb5c4206dad124f3b319499c",
+        "wall": 3.276046699
+      },
+      "unchanged-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 290594816,
+        "cpu": 0.1465010000000717,
+        "dirty": 0,
+        "stdout_sha256": "921ab07af4afc02a219f85bb1550b4804cceb38e453c1d9129ff41cd123a95ab",
+        "wall": 0.156861623
+      }
+    },
+    "pair-03-P": {
+      "empty-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 269819904,
+        "cpu": 119.02598900000001,
+        "dirty": 97,
+        "stdout_sha256": "54e4926dfeee89f323adb79b0671dd4df2f1142215781e1b12b92427a08e1dba",
+        "wall": 33.953110597
+      },
+      "first-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 286429184,
+        "cpu": 25.133544000000057,
+        "dirty": 2,
+        "stdout_sha256": "6690a1ff637a89ae588307684841780b805449fd07c46925a4be01ef58875d34",
+        "wall": 8.825439524
+      },
+      "return-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 302055424,
+        "cpu": 24.560775000000035,
+        "dirty": 2,
+        "stdout_sha256": "e4a7e003a400ef3c2800d625670349c46ce052b0007e0635d5f763644d115f40",
+        "wall": 8.773102704
+      },
+      "return-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 270376960,
+        "cpu": 26.345705000000095,
+        "dirty": 2,
+        "stdout_sha256": "76dc7ea6ea73784b2fbf31ea545e05e4408c34e940e5fc1df9c1530c1fc5d22e",
+        "wall": 9.309447385
+      },
+      "unchanged-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 270376960,
+        "cpu": 0.22592299999999454,
+        "dirty": 0,
+        "stdout_sha256": "fd525bdc3ccd84862f7fd6930b12a7fca3ad734b343826cb4cc698581003b798",
+        "wall": 0.245381839
+      }
+    },
+    "pair-03-Q": {
+      "empty-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 269819904,
+        "cpu": 118.11570600000013,
+        "dirty": 97,
+        "stdout_sha256": "d892d1353a77f710d844092b31cfa40a33859924c4460b74fdb2441ce23704ba",
+        "wall": 33.829001393
+      },
+      "first-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 287580160,
+        "cpu": 25.53913200000011,
+        "dirty": 2,
+        "stdout_sha256": "c9ba9ec7b09fcca0e5c7fb71f59da71c697da4512290b92190889df62e73a589",
+        "wall": 8.887939286
+      },
+      "return-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 289087488,
+        "cpu": 4.41060200000004,
+        "dirty": 2,
+        "stdout_sha256": "ca7b0b08ea8652f03c42d9519df04b88059dfd3908ef6ba67c7226c54e21f43a",
+        "wall": 3.136573368
+      },
+      "return-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 290480128,
+        "cpu": 4.1327730000000145,
+        "dirty": 2,
+        "stdout_sha256": "743c50aa18fb6b5c402a7a83889ecf768e218e04215e7fc1eeba23f3884585a4",
+        "wall": 3.116402606
+      },
+      "unchanged-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 290480128,
+        "cpu": 0.14240099999989297,
+        "dirty": 0,
+        "stdout_sha256": "60579faf3ad5f01c41cbafa0bb1e300edda57b95ace16f00cda7fa21358dcf65",
+        "wall": 0.160831053
+      }
+    },
+    "pair-04-P": {
+      "empty-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 269807616,
+        "cpu": 115.70610600000006,
+        "dirty": 97,
+        "stdout_sha256": "9017c5c39fa3efdf27560133fcf9a2c7bc51f76dd96ae554028a7bfff42c394d",
+        "wall": 33.510044382
+      },
+      "first-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 286416896,
+        "cpu": 24.18357399999988,
+        "dirty": 2,
+        "stdout_sha256": "d28e8d1c35a7b5cb5e7f687a27da109f8b7a0d8afa3c66bf922c54c98b294f73",
+        "wall": 8.246184032
+      },
+      "return-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 302080000,
+        "cpu": 24.38501500000001,
+        "dirty": 2,
+        "stdout_sha256": "c00ed9852f4d2ee11c2f5769206530b2a2f3597df7834fc92a10cde90d99b8cd",
+        "wall": 8.244264374
+      },
+      "return-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 270393344,
+        "cpu": 24.979112000000015,
+        "dirty": 2,
+        "stdout_sha256": "a8a28a2058cb25e107f423e615fdff36538f86d1c24f54ddbfeee5e598fd6ba5",
+        "wall": 8.684994313
+      },
+      "unchanged-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 270393344,
+        "cpu": 0.13541899999987095,
+        "dirty": 0,
+        "stdout_sha256": "98380a4e683bce43ba78336ac1bbdda4070803faa63b334289afc948e834fb8c",
+        "wall": 0.144801954
+      }
+    },
+    "pair-04-Q": {
+      "empty-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 269811712,
+        "cpu": 114.5123649999999,
+        "dirty": 97,
+        "stdout_sha256": "7feda5360c23ff75ff55437eda8ef98682d681f56a83dc0a5388d8cb93e83a0f",
+        "wall": 33.289686672
+      },
+      "first-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 287588352,
+        "cpu": 26.516265000000146,
+        "dirty": 2,
+        "stdout_sha256": "1350ab8fc019db914fe27d5d53dc62e0d977fda777620692090d8636e0fd0ae6",
+        "wall": 9.221823689
+      },
+      "return-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 289071104,
+        "cpu": 4.041134,
+        "dirty": 2,
+        "stdout_sha256": "be64388d1adbe090128488dc1d09889bd82e3bbb907cbac2799caac09a7b3743",
+        "wall": 3.150453182
+      },
+      "return-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 290439168,
+        "cpu": 4.315774000000147,
+        "dirty": 2,
+        "stdout_sha256": "d1759aa040d1af44ab163dd3a0accd4ccbdd933e02e3c55d38cf156ce45cd9cb",
+        "wall": 3.270492018
+      },
+      "unchanged-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 290439168,
+        "cpu": 0.14870799999982864,
+        "dirty": 0,
+        "stdout_sha256": "9ae0658288b9b32458ee4ad9d6c6962e0bbd78741bdfa0dff6da62977a6cd886",
+        "wall": 0.174959267
+      }
+    },
+    "pair-05-P": {
+      "empty-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 269832192,
+        "cpu": 116.85570600000014,
+        "dirty": 97,
+        "stdout_sha256": "96998f8e3cf8d4af20777c12c5677b3117064bef6642cfc81375a3d09b1a1d02",
+        "wall": 33.659942262
+      },
+      "first-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 286429184,
+        "cpu": 25.42364099999986,
+        "dirty": 2,
+        "stdout_sha256": "04ae34f1517c192da5123948eabf93c669ea375818a0369a458e5024e825804b",
+        "wall": 8.749108862
+      },
+      "return-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 302051328,
+        "cpu": 25.420972000000177,
+        "dirty": 2,
+        "stdout_sha256": "2a960c2fc81f773cb3e4e8435f965920f8ee76e4c337812333a951b5d1fc5b0a",
+        "wall": 8.770941729
+      },
+      "return-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 270385152,
+        "cpu": 25.50389199999995,
+        "dirty": 2,
+        "stdout_sha256": "57a54e874991a8d8ef8566fa7e2da460ec3e0ce20abd29f0c5f0f3dd56653f0c",
+        "wall": 8.615058734
+      },
+      "unchanged-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 270385152,
+        "cpu": 0.19113699999985556,
+        "dirty": 0,
+        "stdout_sha256": "691b5fc9091b929a31f7df4dd235f906b83b03eb25d0d5aa5896b3d4d98e10ec",
+        "wall": 0.227022063
+      }
+    },
+    "pair-05-Q": {
+      "empty-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 269815808,
+        "cpu": 120.43889400000018,
+        "dirty": 97,
+        "stdout_sha256": "b3c839b3ce0aea5f61e9db28f718074167588ff8fdfb99dbcf50d0dc1aa97ede",
+        "wall": 34.848359435
+      },
+      "first-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 287543296,
+        "cpu": 26.32928400000003,
+        "dirty": 2,
+        "stdout_sha256": "c3ff1754f6bc7786c5dd7eaebb421d1740548c7992df3fae40033755986cc611",
+        "wall": 9.29926713
+      },
+      "return-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 289067008,
+        "cpu": 4.244781999999873,
+        "dirty": 2,
+        "stdout_sha256": "e9e74ade94554d3b1f9e5e086dc90f7c99f0b4dad03fa90a1ed402f9bac2ef7d",
+        "wall": 3.186961586
+      },
+      "return-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 290463744,
+        "cpu": 4.307438000000047,
+        "dirty": 2,
+        "stdout_sha256": "9cce4bab732097f31c78811d3cd0295208e6564fafd5e31bb72c82ce0deaa804",
+        "wall": 3.270180387
+      },
+      "unchanged-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 290463744,
+        "cpu": 0.2689680000000294,
+        "dirty": 0,
+        "stdout_sha256": "bde03cbc501d1d5304d97966373c6731460f0fb62fc602cd56522ca3532bd7fc",
+        "wall": 0.289155741
+      }
+    },
+    "pair-06-P": {
+      "empty-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 269811712,
+        "cpu": 118.52398,
+        "dirty": 97,
+        "stdout_sha256": "982643112de05b567559961ca0cca40870a86994a20ab82ffdb95fa02198928b",
+        "wall": 34.250241069
+      },
+      "first-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 286416896,
+        "cpu": 26.12729100000007,
+        "dirty": 2,
+        "stdout_sha256": "a7d7d5ddfb77d17d957c5b694692d2b34792e2179118b607d5114eb956ceea84",
+        "wall": 8.949138905
+      },
+      "return-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 302030848,
+        "cpu": 26.65926100000013,
+        "dirty": 2,
+        "stdout_sha256": "1eeea314b79238d24bb8bd8f336220ba16094de95fd3d83d88c3101000a04619",
+        "wall": 9.156841339
+      },
+      "return-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 270385152,
+        "cpu": 26.115789000000007,
+        "dirty": 2,
+        "stdout_sha256": "41a4d2b80b36720f803cf05a44c372b762d3a01c95de7f4650890ab5a4ce3d32",
+        "wall": 9.202347815
+      },
+      "unchanged-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 270385152,
+        "cpu": 0.36615499999987833,
+        "dirty": 0,
+        "stdout_sha256": "140fa2fe3033246bfb61e1475c7b8dc33f70c7410c598d0171d8db7163e13b6c",
+        "wall": 0.382727553
+      }
+    },
+    "pair-06-Q": {
+      "empty-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 269828096,
+        "cpu": 118.83476299999995,
+        "dirty": 97,
+        "stdout_sha256": "563525696abbe3a682a3cb81eb09e5b839aa7d939b6f7b48a8a0a8d2bb6ab493",
+        "wall": 34.052196115
+      },
+      "first-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 287637504,
+        "cpu": 26.994007000000124,
+        "dirty": 2,
+        "stdout_sha256": "87853aba8b215afb415fb84fce33282ccdab033cfbaea1f8ec2ab31c7de9c5e4",
+        "wall": 9.39727626
+      },
+      "return-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 289120256,
+        "cpu": 4.031819000000041,
+        "dirty": 2,
+        "stdout_sha256": "ac1c2cbd561f687e717fa5ffc583bf6c7443b165fb56e6f178783ee4f81d7d0a",
+        "wall": 3.165191896
+      },
+      "return-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 290488320,
+        "cpu": 4.283515999999906,
+        "dirty": 2,
+        "stdout_sha256": "9455e69b25dc30573fb28b50f2582f2c04ce51ef2a9d6a9b3eb5d03cdf79385f",
+        "wall": 3.189105503
+      },
+      "unchanged-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 290488320,
+        "cpu": 0.1292750000000069,
+        "dirty": 0,
+        "stdout_sha256": "95c4b80cbee4cb2ac82087e1b155517b182973d81d94aed7ec1bf1f0ddfdac5f",
+        "wall": 0.141057888
+      }
+    },
+    "pair-07-P": {
+      "empty-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 269828096,
+        "cpu": 117.76592999999991,
+        "dirty": 97,
+        "stdout_sha256": "d2793b757c990426c79eeccf5ac49739cbe123e038465d10d3764ecc981dabf3",
+        "wall": 33.662116694
+      },
+      "first-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 286400512,
+        "cpu": 24.297960000000216,
+        "dirty": 2,
+        "stdout_sha256": "4202cb4af95e3bb4e6dd60d99e8b060f84ddf930a7d7dd29a6e652bf40437a70",
+        "wall": 8.276236798
+      },
+      "return-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 302051328,
+        "cpu": 24.27151500000008,
+        "dirty": 2,
+        "stdout_sha256": "a55d78d1c9bc2d3e4104220d4743b183f6d0ec9661421a0c727fd35f09f69fb7",
+        "wall": 8.318339745
+      },
+      "return-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 270381056,
+        "cpu": 24.316201000000092,
+        "dirty": 2,
+        "stdout_sha256": "33f8a42dafe79e0f0ea1af40a35d701ed6da2e5481d57bb19e6662f13710b392",
+        "wall": 8.260703927
+      },
+      "unchanged-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 270381056,
+        "cpu": 0.13495900000015126,
+        "dirty": 0,
+        "stdout_sha256": "79c236fd3aeba17de9910f7059beb60c47292d2599537fe51a796b9095419a1e",
+        "wall": 0.146256078
+      }
+    },
+    "pair-07-Q": {
+      "empty-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 269811712,
+        "cpu": 115.0499229999997,
+        "dirty": 97,
+        "stdout_sha256": "e402fc2d371fa0618912dc4e8198e688674a0fde7cb95da87e133bb93d7b3040",
+        "wall": 32.861509918
+      },
+      "first-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 287686656,
+        "cpu": 25.96260100000029,
+        "dirty": 2,
+        "stdout_sha256": "849e69426dc0aba2e44a2adc5c6b193648bc69be14934f450de8ae0a48c96141",
+        "wall": 8.999342705
+      },
+      "return-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 289161216,
+        "cpu": 3.816022000000032,
+        "dirty": 2,
+        "stdout_sha256": "d46932e8a73b7770d5900cc41447f622706f14877b07123a06b532a6bbc002cf",
+        "wall": 2.956802519
+      },
+      "return-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 290545664,
+        "cpu": 4.213349000000051,
+        "dirty": 2,
+        "stdout_sha256": "643fe1b484d67d43e3c2931a450d5b271b0ef333489ef8ab168151bd85c9c61f",
+        "wall": 3.186148526
+      },
+      "unchanged-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 290545664,
+        "cpu": 0.13866600000000062,
+        "dirty": 0,
+        "stdout_sha256": "6acf0d3754161558a272847368c1aae71c8f87284cc33d549aa9ffe0e51bf7df",
+        "wall": 0.154392125
+      }
+    },
+    "pair-08-P": {
+      "empty-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 269807616,
+        "cpu": 114.30683600000009,
+        "dirty": 97,
+        "stdout_sha256": "445315426b3bd588861f9ae078c29f33c3651ca667ee53e877002e3e08db20f9",
+        "wall": 32.999043039
+      },
+      "first-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 286441472,
+        "cpu": 24.122387999999944,
+        "dirty": 2,
+        "stdout_sha256": "c00a0a43ed284d668af6004299e800011afb264cc64a4890cd3aaf68af8b41e9",
+        "wall": 8.181852622
+      },
+      "return-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 302084096,
+        "cpu": 24.566979000000288,
+        "dirty": 2,
+        "stdout_sha256": "96a77fbc9faf6c2e822c998ecb71b28ef45a592c0fa2bef29cd5943175d7194c",
+        "wall": 8.480735809
+      },
+      "return-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 270389248,
+        "cpu": 25.123989999999992,
+        "dirty": 2,
+        "stdout_sha256": "26c2011e37ae7902d87723746a7079e42de2b179088fdbc899618113addfd5dd",
+        "wall": 8.680888838
+      },
+      "unchanged-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 270389248,
+        "cpu": 0.13111199999968903,
+        "dirty": 0,
+        "stdout_sha256": "6db65c2fc8d5bb6d7c1662b871e82941e8b02204c345bceb3c65e0375d553684",
+        "wall": 0.149327831
+      }
+    },
+    "pair-08-Q": {
+      "empty-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 269819904,
+        "cpu": 114.86056900000005,
+        "dirty": 97,
+        "stdout_sha256": "9494c9772628dab1a23987b1e7462dfdd1ca1c6906c96b5f3ea50888a9240806",
+        "wall": 33.395806299
+      },
+      "first-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 287535104,
+        "cpu": 26.632656000000225,
+        "dirty": 2,
+        "stdout_sha256": "2f3e0b782ce970d47c0b58688d05cb185dc126f8dddd00860c8407f856efeadf",
+        "wall": 9.057286483
+      },
+      "return-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 289026048,
+        "cpu": 4.158523000000116,
+        "dirty": 2,
+        "stdout_sha256": "7e55d189711963cfb0d24bea5708ed75ea2a30cca634812208da5b4166451e18",
+        "wall": 3.18466081
+      },
+      "return-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 290422784,
+        "cpu": 4.366469000000222,
+        "dirty": 2,
+        "stdout_sha256": "5c7c0667ea013a5a19a307a4eba772ac961a423a2f07aa72056b1599590ee788",
+        "wall": 3.147885014
+      },
+      "unchanged-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 290422784,
+        "cpu": 0.1377550000002543,
+        "dirty": 0,
+        "stdout_sha256": "741e0136b31fba128b51c2c51f80aa03ee08e649e38ebb8d11273aef16509b26",
+        "wall": 0.150875554
+      }
+    },
+    "pair-09-P": {
+      "empty-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 269811712,
+        "cpu": 113.85681400000004,
+        "dirty": 97,
+        "stdout_sha256": "1719484ca463deb9f6e9c9df14e44578d162427659b7b31f7a15bee9cf932d98",
+        "wall": 32.77679662
+      },
+      "first-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 286437376,
+        "cpu": 24.519114999999942,
+        "dirty": 2,
+        "stdout_sha256": "af0bd2434bcb33d1657d74d4928243925e55f37ad3db4b0bb3064d819b767fd3",
+        "wall": 8.254154313
+      },
+      "return-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 302075904,
+        "cpu": 23.780689999999993,
+        "dirty": 2,
+        "stdout_sha256": "ab106f9eb4779ec183d30e29d4d4dcda6eaefb37879fb4c786e620e43e73650c",
+        "wall": 8.474930748
+      },
+      "return-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 270376960,
+        "cpu": 24.64451199999985,
+        "dirty": 2,
+        "stdout_sha256": "b85081107e88a3c9a90e418670b70690d2fe69ad825d784750a6995c6b0dbacc",
+        "wall": 8.457363434
+      },
+      "unchanged-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 270376960,
+        "cpu": 0.3026719999999159,
+        "dirty": 0,
+        "stdout_sha256": "997c1bc6effe87a70bc13c49218378217f3b8e63c23fff769dbf3ddc32569ab3",
+        "wall": 0.323399808
+      }
+    },
+    "pair-09-Q": {
+      "empty-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 269819904,
+        "cpu": 115.70638099999974,
+        "dirty": 97,
+        "stdout_sha256": "623f95cd7330c56f3875f25b8862e4cadaaf602fa0b9e89a3061f7852ba94751",
+        "wall": 32.964100168
+      },
+      "first-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 287629312,
+        "cpu": 25.365064000000018,
+        "dirty": 2,
+        "stdout_sha256": "2f0137fdf6ec03d5bc78fb48e747b079d62b71c6fb9a64e2ad02515b8df528cb",
+        "wall": 8.800459331
+      },
+      "return-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 289067008,
+        "cpu": 4.010732000000189,
+        "dirty": 2,
+        "stdout_sha256": "f16a0a503f131d0910d7f0fb924b7540ef21ea6f66f605a757391baf78bc4f04",
+        "wall": 3.102195404
+      },
+      "return-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 290455552,
+        "cpu": 4.032455000000255,
+        "dirty": 2,
+        "stdout_sha256": "81c70311f8068ce31c923e043565b432f61a95af245cf0eaddac1a1b31d14e34",
+        "wall": 3.043838586
+      },
+      "unchanged-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 290455552,
+        "cpu": 0.14675999999997202,
+        "dirty": 0,
+        "stdout_sha256": "597f97fc92fce1d5fc3654947348680451c07a09f1353e04fa9a1b436ef592fb",
+        "wall": 0.173883215
+      }
+    },
+    "pair-10-P": {
+      "empty-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 269807616,
+        "cpu": 114.5273230000002,
+        "dirty": 97,
+        "stdout_sha256": "3ef31aa73aaba7cb9ea3781b6753799d9828d5c7c1e58d8f055d1d57d4f19379",
+        "wall": 33.603299365
+      },
+      "first-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 286420992,
+        "cpu": 24.338843999999995,
+        "dirty": 2,
+        "stdout_sha256": "5da34cc9dff87607ec0dd1a9379e0916fd1e4aec9be0b58ea8159370170260ef",
+        "wall": 8.410502925
+      },
+      "return-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 302030848,
+        "cpu": 23.47251899999992,
+        "dirty": 2,
+        "stdout_sha256": "231649ed9ba4d7d9572cfed8172f575eca6261c1da65359abc177599e30b6a1f",
+        "wall": 8.062263224
+      },
+      "return-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 270385152,
+        "cpu": 24.241134999999986,
+        "dirty": 2,
+        "stdout_sha256": "0d0d98a8304919ec1b44ec42baa406f7fe12c4b701c85475a7d2d5f4d3ae00d4",
+        "wall": 8.276378486
+      },
+      "unchanged-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 270385152,
+        "cpu": 0.13763900000026297,
+        "dirty": 0,
+        "stdout_sha256": "03e99982fb3502127749fbb35452a1b025bc6544b1104af2fc3157aa1a4b6848",
+        "wall": 0.167560416
+      }
+    },
+    "pair-10-Q": {
+      "empty-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 269807616,
+        "cpu": 115.71760399999988,
+        "dirty": 97,
+        "stdout_sha256": "6dbedccdf4157530d37fcfbd35f7c11f47dfde60cb6b6caa287a906867565967",
+        "wall": 33.553861218
+      },
+      "first-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 287625216,
+        "cpu": 25.54503200000005,
+        "dirty": 2,
+        "stdout_sha256": "472e87c92a45a09abe65667f4fb2e0252c872f471df746787a35783f85a6cba0",
+        "wall": 8.985714741
+      },
+      "return-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 289144832,
+        "cpu": 4.016553999999871,
+        "dirty": 2,
+        "stdout_sha256": "7329223aee2dd39e5eea65d860a844bd1a5f69b25897ba47182d070a7b8d6578",
+        "wall": 3.108801943
+      },
+      "return-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 290525184,
+        "cpu": 4.21933400000006,
+        "dirty": 2,
+        "stdout_sha256": "90c529271dd80ae0e87df982d24980a46f238384285de40e42077a105b8bd6ff",
+        "wall": 3.20187084
+      },
+      "unchanged-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 290525184,
+        "cpu": 0.1372199999998429,
+        "dirty": 0,
+        "stdout_sha256": "0c588e3f469f1e84dfbcc8714d9fc0d72074d75d4e4eb491b538d0ba024fce0c",
+        "wall": 0.156131916
+      }
+    },
+    "pair-11-P": {
+      "empty-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 269819904,
+        "cpu": 113.12210800000025,
+        "dirty": 97,
+        "stdout_sha256": "13620d1ff1240c5376bb72fa80169c90755c519851400f9ded5c93b280d5f86b",
+        "wall": 32.864072224
+      },
+      "first-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 286453760,
+        "cpu": 24.780003999999963,
+        "dirty": 2,
+        "stdout_sha256": "28d759aac4e6993c0ef067d07c777ab3da52bbb3a191c470f1748bea11c0834f",
+        "wall": 8.477835308
+      },
+      "return-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 302104576,
+        "cpu": 25.208329999999933,
+        "dirty": 2,
+        "stdout_sha256": "a832bee22bd5136af1d7435029538792912d1a2be4da57be01e7c9064a0e3d27",
+        "wall": 8.865991584
+      },
+      "return-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 270381056,
+        "cpu": 24.869896999999924,
+        "dirty": 2,
+        "stdout_sha256": "6654540351cd7b4b0c56afde2157db903249cab66cdea04a45d17dbbb26f6a17",
+        "wall": 8.484193639
+      },
+      "unchanged-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 270381056,
+        "cpu": 0.13841400000001158,
+        "dirty": 0,
+        "stdout_sha256": "d5090ab8b44dbfe634a8ccb711c8c84583db14f92577360f9373859da4d109b7",
+        "wall": 0.151063212
+      }
+    },
+    "pair-11-Q": {
+      "empty-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 269824000,
+        "cpu": 116.29707199999996,
+        "dirty": 97,
+        "stdout_sha256": "7e9f6586b00b1e1b242fcffd7766a0741d6a5104e9b504892f930b3f02a84c4c",
+        "wall": 33.816473972
+      },
+      "first-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 287576064,
+        "cpu": 26.35083099999997,
+        "dirty": 2,
+        "stdout_sha256": "3ab2c7a584edb3e0867e51ec58145ac92edf92bdd256bcff79a6a68e973a543e",
+        "wall": 8.920985978
+      },
+      "return-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 289067008,
+        "cpu": 4.011610000000019,
+        "dirty": 2,
+        "stdout_sha256": "1e846d1d1cc2b6f20dfc3c04439f5b5e4a743a6223cd8e6aa040af13909647da",
+        "wall": 3.113209663
+      },
+      "return-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 290459648,
+        "cpu": 4.197402999999781,
+        "dirty": 2,
+        "stdout_sha256": "ffaa99d096882f4580a3ae88148dfff81c8ef000e48e3ff1d37efc3931e4bc10",
+        "wall": 3.169109316
+      },
+      "unchanged-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 290459648,
+        "cpu": 0.21228699999971923,
+        "dirty": 0,
+        "stdout_sha256": "1cd2c72d83619addc54aeca9f0804adc599d5ef12d5dd66b0fe77bf94800b9c5",
+        "wall": 0.236266886
+      }
+    },
+    "pair-12-P": {
+      "empty-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 269819904,
+        "cpu": 115.63429799999983,
+        "dirty": 97,
+        "stdout_sha256": "32cf6772bff2a28c36e0f17e82e7ab85ca9a74ff34e88ae22a3ba512d52b6e88",
+        "wall": 33.220472984
+      },
+      "first-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 286425088,
+        "cpu": 24.326339000000075,
+        "dirty": 2,
+        "stdout_sha256": "29098a2a4dd70713e5b5513866cbc6b24d08fd0a65018d2dee14f8c04fd866db",
+        "wall": 8.361444073
+      },
+      "return-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 302080000,
+        "cpu": 25.25129400000037,
+        "dirty": 2,
+        "stdout_sha256": "09048dc7e960667207ba8ed73b843b2684436ffb00fd601164663c1a9a1bc749",
+        "wall": 8.664573498
+      },
+      "return-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 270385152,
+        "cpu": 24.603952000000163,
+        "dirty": 2,
+        "stdout_sha256": "131e489d04ed014d9fd18f86f99efb1015febdd8b5ed001816a99edc9a78495a",
+        "wall": 8.63766381
+      },
+      "unchanged-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 270385152,
+        "cpu": 0.1341939999999795,
+        "dirty": 0,
+        "stdout_sha256": "656250f1833f6e97cd4a1cddba4400a1a80c5937dc1389a391a372681d97fc01",
+        "wall": 0.1525539
+      }
+    },
+    "pair-12-Q": {
+      "empty-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 269815808,
+        "cpu": 115.59667000000024,
+        "dirty": 97,
+        "stdout_sha256": "ded03dfa61afb9a60624455dee9ef1015e452632315fdfe812efa5b19c1afe69",
+        "wall": 33.221299513
+      },
+      "first-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 287723520,
+        "cpu": 25.39419600000008,
+        "dirty": 2,
+        "stdout_sha256": "7a2aba96ab349e4f81d88005ea91a70310c7032ef46e0b7b9207a7fa5f14b621",
+        "wall": 8.742470001
+      },
+      "return-A": {
+        "ELF": "5da4de21f4c6389f5c706cf9d2562a51f6655f618338601386b0f7232ea4566f",
+        "bytes": 289206272,
+        "cpu": 4.4134720000001835,
+        "dirty": 2,
+        "stdout_sha256": "77a043dabf7051a8fda5b6a6bec7751c243e15ea87156361e3ec5ea3d84e4c68",
+        "wall": 3.298741772
+      },
+      "return-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 290594816,
+        "cpu": 4.455241999999657,
+        "dirty": 2,
+        "stdout_sha256": "4b51472ad509cdc395bc92b32f1857695f6ee501a11ad406b3371cc441fa3bdb",
+        "wall": 3.23195782
+      },
+      "unchanged-B": {
+        "ELF": "2c362bf42509961e987bb00fa37a5b9ac9be09fb6a64a763db8bed5c0d1c779a",
+        "bytes": 290594816,
+        "cpu": 0.1362040000004754,
+        "dirty": 0,
+        "stdout_sha256": "e57f388c6aca85acdf56c2991e95e06710ef50b10aa165f89499968b4553cbf6",
+        "wall": 0.15701742
+      }
+    }
+  },
+  "summary": {
+    "empty-A": {
+      "all_speedups": [
+        0.9473852559419831,
+        0.9658974714371659,
+        0.9718361604232131,
+        0.9881193687480491,
+        0.994317953560224,
+        0.9999751205096695,
+        1.0014733966585483,
+        1.0036687220695104,
+        1.0058159231002655,
+        1.0066193987396503,
+        1.0243630550756118,
+        1.0339850867530764
+      ],
+      "balanced_two_sided_p_vs_equal": 0.487012987012987,
+      "candidate_median": 33.4748337585,
+      "cpu_speedup": 0.996281916049753,
+      "one_sided_sign_p_vs_2x": 1.0,
+      "paired_median": 1.000724258584109,
+      "parent_median": 33.556671873499994,
+      "simultaneous_ci": [
+        0.9658974714371659,
+        1.0243630550756118
+      ],
+      "storage_P": 269817856.0,
+      "storage_Q": 269817856.0,
+      "storage_max_ratio": 1.0000607238280301
+    },
+    "first-B": {
+      "all_speedups": [
+        0.8942031760850334,
+        0.9033447972918667,
+        0.9158089507503702,
+        0.9196490309677566,
+        0.928440094328408,
+        0.9359859696663387,
+        0.93792312452651,
+        0.940838534874952,
+        0.9503249224813433,
+        0.9523119952419064,
+        0.9564166730962284,
+        0.9929680255468838
+      ],
+      "balanced_two_sided_p_vs_equal": 0.0021645021645021645,
+      "candidate_median": 8.992528723,
+      "cpu_speedup": 0.9465849236084836,
+      "one_sided_sign_p_vs_2x": 1.0,
+      "paired_median": 0.9369545470964245,
+      "parent_median": 8.385973498999999,
+      "simultaneous_ci": [
+        0.9033447972918667,
+        0.9564166730962284
+      ],
+      "storage_P": 286429184.0,
+      "storage_Q": 287627264.0,
+      "storage_max_ratio": 1.0045332341837319
+    },
+    "first-B+return-A": {
+      "all_speedups": [
+        1.3074274780472064,
+        1.3328547831525486,
+        1.3611060423800174,
+        1.3618598828961064,
+        1.362002846363596,
+        1.3879537452998738,
+        1.4031499013428772,
+        1.4054919203703171,
+        1.4139787499774255,
+        1.4412119770523182,
+        1.441275712635526,
+        1.463555549766566
+      ],
+      "balanced_two_sided_p_vs_equal": 0.0021645021645021645,
+      "candidate_median": 12.1682319885,
+      "one_sided_sign_p_vs_2x": 1.0,
+      "paired_median": 1.3955518233213755,
+      "parent_median": 16.908939330499997,
+      "simultaneous_ci": [
+        1.3328547831525486,
+        1.441275712635526
+      ]
+    },
+    "return-A": {
+      "all_speedups": [
+        2.1639303530913514,
+        2.5192520983360622,
+        2.5933666318478625,
+        2.6168503062046136,
+        2.626629817327817,
+        2.6629949985160275,
+        2.731913901062565,
+        2.7521328677226173,
+        2.7970341116535296,
+        2.813288913124062,
+        2.847862027852121,
+        2.892981417831862
+      ],
+      "balanced_two_sided_p_vs_equal": 0.0021645021645021645,
+      "candidate_median": 3.157822539,
+      "cpu_speedup": 5.918442785790072,
+      "one_sided_sign_p_vs_2x": 0.000244140625,
+      "paired_median": 2.697454449789296,
+      "parent_median": 8.6528356475,
+      "simultaneous_ci": [
+        2.5192520983360622,
+        2.847862027852121
+      ],
+      "storage_P": 302077952.0,
+      "storage_Q": 289103872.0,
+      "storage_max_ratio": 0.957532779216553
+    },
+    "return-B": {
+      "all_speedups": [
+        2.584857072498277,
+        2.592692669406335,
+        2.63442921015843,
+        2.642989098001255,
+        2.655561996543604,
+        2.6697235700207598,
+        2.6725793748137465,
+        2.6771539865051475,
+        2.757689305483634,
+        2.7785190295238604,
+        2.88555766071186,
+        2.987241560854991
+      ],
+      "balanced_two_sided_p_vs_equal": 0.0021645021645021645,
+      "candidate_median": 3.1954881715,
+      "cpu_speedup": 5.854379838730367,
+      "one_sided_sign_p_vs_2x": 0.000244140625,
+      "paired_median": 2.671151472417253,
+      "parent_median": 8.64810976,
+      "simultaneous_ci": [
+        2.592692669406335,
+        2.88555766071186
+      ],
+      "storage_P": 270383104.0,
+      "storage_Q": 290484224.0,
+      "storage_max_ratio": 1.0748814591507476
+    },
+    "unchanged-B": {
+      "all_speedups": [
+        0.6343921417401208,
+        0.6393753037401949,
+        0.7851203722079998,
+        0.827632376854894,
+        0.947302707311011,
+        0.9715730904252534,
+        0.9897417244943472,
+        1.073197718267929,
+        1.5257118225794368,
+        1.847490153789879,
+        1.8598678889161326,
+        2.7132658685489464
+      ],
+      "balanced_two_sided_p_vs_equal": 0.474025974025974,
+      "candidate_median": 0.15892423649999998,
+      "cpu_speedup": 0.9792547112720781,
+      "one_sided_sign_p_vs_2x": 0.999755859375,
+      "paired_median": 0.9806574074598002,
+      "parent_median": 0.16138664749999998,
+      "simultaneous_ci": [
+        0.6393753037401949,
+        1.8598678889161326
+      ],
+      "storage_P": 270383104.0,
+      "storage_Q": 290484224.0,
+      "storage_max_ratio": 1.0748814591507476
+    }
+  }
+}

@@ -135,6 +135,12 @@ def main():
     subprocess.run([sys.executable, "-IB", ROOT / "moved-branch" / "verify.py"], check=True)
     if (ROOT / "block-device").exists():
         subprocess.run([sys.executable, "-IB", ROOT / "block-device" / "verify.py"], check=True)
+    if (ROOT / "formatter-reviewer-replay").exists():
+        subprocess.run([sys.executable, "-IB", ROOT / "formatter-reviewer-replay" / "verify.py"], check=True)
+    if (ROOT / "storage" / "alternatives").exists():
+        subprocess.run([sys.executable, "-IB", ROOT / "storage" / "alternatives" / "verify.py"], check=True)
+    if (ROOT / "check-test-instructions").exists():
+        subprocess.run([sys.executable, "-IB", ROOT / "check-test-instructions" / "verify.py"], check=True)
     if (ROOT / "storage").exists():
         subprocess.run([sys.executable, "-IB", ROOT / "storage" / "verify.py"], check=True)
     if (ROOT / "portable-instruction-smoke.json").exists():
