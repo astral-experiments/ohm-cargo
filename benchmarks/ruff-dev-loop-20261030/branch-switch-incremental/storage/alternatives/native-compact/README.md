@@ -32,6 +32,19 @@ The two directions used mirrored installation orders. The range shows the two ob
 
 [Complete observations](sample-build-2-pairs-elapsed-202610300704.json.gz) · [Independent native and disk readback](native-build-2-pairs-elapsed-202610300704.json.gz) · [Paired calculations](summary-build-2-pairs-elapsed-202610300704.json)
 
+## Instructions in both returning compilers
+
+Each row sums the complete AST and parser rustc invocations from Cargo. The counts include the work of restoring and compressing the tables. Each compiler’s profile, process log and actual command line were reopened separately.
+
+| Pair | Return | Default instructions | Opt-in instructions | Ratio |
+| ---: | --- | ---: | ---: | ---: |
+| 1 | parent | 62,168,238,891 | 12,914,841,357 | 4.814× |
+| 1 | feature | 62,439,313,611 | 16,416,351,398 | 3.803× |
+| 2 | parent | 62,158,123,156 | 12,910,866,271 | 4.814× |
+| 2 | feature | 62,440,743,535 | 16,412,567,531 | 3.804× |
+
+[Per-crate totals](sample-build-2-pairs-instructions-202610300713.json.gz) · [Independent profile and process checks](counter-build-2-pairs-instructions-202610300713.json)
+
 ## Edits after a branch switch
 
 A second experiment kept retention enabled on both compilers and compared raw files against the integrated codec. After visiting both branches, reversing and restoring a real Ruff grammar edit took an average of 2.680 s with raw files and 3.064 s with compression. The compact compiler added 0.387 and 0.380 s per dirty edit in the two fresh, mirrored blocks. It saved 99 MiB when the feature branch had settled after editing. Both compilers produced the clean-matching runnable reader and the native object contents for all source states. [Ordinary edits, per-block costs and native readbacks](grammar-edits)
@@ -51,3 +64,11 @@ From this directory, `python3 -IB verify.py` reopens both readbacks and recomput
 ## Complete Ruff executable
 
 One separate installation per option built the entire Ruff CLI through the same five visits. The first feature build used 495 MiB more with retention enabled (+20.5%). The returns used 49 MiB (+1.9%) and 265 MiB (+11.5%) more. The highest observed allocation over the five commands increased by 286 MiB (+10.1%). The warmed feature executable matched an independently empty build byte for byte in each setting. This study measures disk usage. [All visits, sampled allocation and native file checks](full-ruff-cli)
+
+The following differences separate the raw and compressed dependency and query tables from every other inode in the two Cargo directories. Each column shows opt-in minus default.
+
+| Visit | Tables | Other allocations | Complete directories |
+| --- | ---: | ---: | ---: |
+| First feature visit | +279.9 MiB | +215.3 MiB | +495.2 MiB |
+| Return to parent | -166.1 MiB | +215.0 MiB | +48.9 MiB |
+| Return to feature | +49.6 MiB | +215.3 MiB | +264.8 MiB |

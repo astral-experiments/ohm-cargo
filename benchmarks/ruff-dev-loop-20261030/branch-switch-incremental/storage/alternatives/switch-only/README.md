@@ -66,3 +66,5 @@ python3 -IB opt-in/run.py --parent-sdk "$SDK" --candidate-sdk "$SDK" \
 For the twelve-pair confirmation, use `--pairs 12 --order-seed 202610300751` on a fresh private tmpfs. `python3 -IB verify.py` in this directory recomputes the recorded pairs. `python3 -IB grammar-edits/verify.py` rechecks the ordinary edits and real native table operations.
 
 The ordinary grammar edit has its own reviewer command. It takes a Ruff checkout, two compiler SDKs, an offline Cargo registry and a fresh output directory. [Run the same-branch edit replay](grammar-edits/replay)
+
+The draft subsequently added the packed-cache, branch-cache flag and incremental crate tests to its native CI job. The only changed path in that commit was `.github/workflows/ci.yml`. The measurements use its parent’s compiler. [Tracked trees and CI change](ci-coverage.json) · [Git comparison](https://github.com/astral-experiments/ohm-rust/compare/08d49cba6aacb0cac27a96eea335ed1c7439f483...b676a640c76193a0e241d2517a64e37e156659b9)

@@ -4,7 +4,7 @@ Ruff #28335 changed the size of an AST expression from 64 to 56 bytes. It touche
 
 The comparison uses optimized x86-64 Linux stage 1 compilers built from the proposed Ohm distribution’s Rust revision and the branch-aware compiler. Cargo, the standard library, the rustc executable and the bundled Wild binary are shared byte for byte. The compiler driver is the single changed SDK file. Both compilers use the same bootstrap metadata stamp. The tracked source and physical tool hashes identify the builds. The Linux distribution applies PGO and BOLT separately. [Compiler build and configuration](compiler-build)
 
-The first measurements below use the automatically enabled revision at `6b7f424e`. The revised compiler keeps one session by default. Exact default disk checks, explicit opt-in results and commands are available for the revised head. [Opt-in qualification](opt-in)
+The first measurements below use the automatically enabled, uncompressed compiler at `6b7f424e`. Revision `c9119d26` made the second history opt-in. The switch-only compiler at `08d49cba` keeps that default and compresses two large tables when it detects a checkout switch. Each comparison names its compiler and its control. [Uncompressed opt-in qualification](opt-in) · [Switch-only compression](storage/alternatives/switch-only)
 
 ## Whole-command results
 
@@ -97,6 +97,8 @@ A fresh checkout independently exercised the public formatter replay. Both execu
 In two independent ext4 pairs, the complete target and build directories grew from 288 to 380 MiB on return to the parent branch (+32%) and from 258 to 382 MiB on return to the feature branch (+48%). Both compilers used 257 MiB for the first build. Most bytes exclusive to the older branch were in the dependency graph and query cache. [Breakdown, physical-size counter and all 24 visits](storage)
 
 A separate whole-CLI storage census counted both roots after one installation per compiler. The complete build grew from 2.25 to 3.27 GiB, entirely in incremental files. This was an unscored admission run. [Full Ruff CLI storage, hardlink accounting and ELF control](storage/full-ruff-cli)
+
+On the earlier uncompressed compiler `6b7f424e`, two fresh pairs timed a full `cargo build -p ruff --bin ruff`. All four ordinary return ratios were between 4.65× and 5.14×. Both settings ran 20 compilers and one Wild link. In each setting, the final CLI matched its independent clean binary. The current compact compiler has its own measurements. [All full-CLI returns, CPU and native controls](full-cli-screen)
 
 Separate prototypes measured how far compression could reduce the storage cost. [Experimental storage and time measurements](storage/alternatives)
 

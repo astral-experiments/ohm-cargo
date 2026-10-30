@@ -161,6 +161,8 @@ def main():
         subprocess.run([sys.executable, "-IB", ROOT / "opt-in" / "verify.py"], check=True)
     if (ROOT / "storage" / "full-ruff-cli").exists():
         subprocess.run([sys.executable, "-IB", ROOT / "storage" / "full-ruff-cli" / "verify.py"], check=True)
+    if (ROOT / "full-cli-screen").is_dir():
+        subprocess.run([sys.executable, "-IB", ROOT / "full-cli-screen" / "verify.py"], check=True)
     if (ROOT / "storage" / "alternatives" / "same-branch-edits").exists():
         subprocess.run([sys.executable, "-IB", ROOT / "storage" / "alternatives" / "same-branch-edits" / "verify.py"], check=True)
     if (ROOT / "storage").exists():

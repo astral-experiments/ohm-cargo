@@ -23,17 +23,25 @@ def inspect(data, raw, infer):
     assert not plan['instructions'] and raw['mode']==mode and raw['pairs']==n
     assert len(data['sdk_identities'])==4+2*n and all(s['files']==data['sdk_identities'][0]['files'] for s in data['sdk_identities'])
     assert plan['orders'].count('PQ')==plan['orders'].count('QP')==n//2
-    assert len(raw['samples'])==10*n+6 and set(raw['physical'])==set(data['samples'])
+    expected = {f'{slot}/{phase}': phase[-1] for slot in data['samples'] for phase in PHASES}
+    expected.update({f'reference-{arm}-{rev}/empty': branch for arm in 'PQ'
+                     for rev, branch in [('b5dba861','A'), ('7b13f01b','B')]})
+    expected.update({f'pair-01-{arm}/recovery': 'B' for arm in 'PQ'})
+    assert len(expected)==10*n+6 and set(raw['samples'])==set(expected)
+    assert set(raw['physical'])==set(data['samples'])
     for name,verdict in raw['samples'].items():
+        assert verdict['branch']==expected[name]
         if mode=='check':
-            expected='64' if verdict['branch']=='A' else '56'
+            correct='64' if verdict['branch']=='A' else '56'
+            assert set(verdict['sizes'])=={'64','56'}
             for size,value in verdict['sizes'].items():
-                assert value['exit']==int(size!=expected) and value['E0308']==(size!=expected)
+                assert value['exit']==int(size!=correct) and value['E0308']==(size!=correct)
         else:
-            assert verdict['listed_tests']==245 and len(verdict['representative_tests'])==3
+            assert verdict['listed_tests']==245 and len(set(verdict['representative_tests']))==3
     if mode=='test-no-run':
         assert len({v['inventory'] for v in raw['samples'].values()})==1
-        assert set(data['references'])=={'PA','PB','QA','QB'}
+        refs=data['references']
+        assert set(refs)=={'PA','PB','QA','QB'} and refs['PA']!=refs['PB'] and refs['QA']!=refs['QB']
     else:
         assert data['references']=={}
     for slot,observations in data['samples'].items():
@@ -44,7 +52,7 @@ def inspect(data, raw, infer):
             count=sum(n.startswith('ohm-packed-') for t in disk['tables'].values() for n in t['files'])
             assert count==disk['packed_tables']==obs['packed_tables']
             if arm=='P' or phase=='empty-A':assert obs['older']==0 and count==0
-            elif phase.startswith('return-'):assert obs['older']==2 and len(disk['tables'])==4
+            elif phase.startswith('return-'):assert obs['older']==2 and len(disk['tables'])==4 and count==8
             if mode=='test-no-run':assert obs['ELF']==data['references'][arm+phase[-1]]
     out={}
     for phase in (*PHASES,'first-B+return-A'):

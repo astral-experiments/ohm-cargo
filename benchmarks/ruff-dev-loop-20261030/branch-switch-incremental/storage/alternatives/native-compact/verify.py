@@ -121,6 +121,18 @@ if __name__=="__main__":
         assert data["recipe"]["commit"] == compiler["measured_source"]
         assert data["driver_sha256"] == product["native_files"][product["compiler_driver"]]
         summary=check(data,reopened)
+        if data['recipe']['instructions']:
+            counts=load(HERE/('counter-'+key.removesuffix('.gz')))
+            assert counts['source']==data['recipe']['commit'] and counts['registered']==reopened['enrollment_sha256']
+            assert len(counts['profiles'])==len(data['samples'])*len(TARGETS)*len(CRATES)
+            for slot,phases in data['samples'].items():
+                for phase in TARGETS:
+                    for crate,original in phases[phase]['counts']['crates'].items():
+                        counter=counts['profiles'][f'{slot}/{phase}/{crate}']
+                        assert counter['collected']==original['Ir']
+                        assert counter['profile_sha256']==original['compressed_sha256']
+                        assert original['profile']==f"output.{counter['pid']}.{counter['pid']}.gz"
+                        assert counter['reader_elf']==phases[phase]['ELF']
         if (HERE/("summary-"+key.removesuffix(".gz"))).exists():
             assert summary==load(HERE/("summary-"+key.removesuffix(".gz")))
         print(key,[(phase,round(summary[phase]["paired_median"],3),round(summary[phase]["max_storage_ratio"],4)) for phase in TARGETS])
