@@ -1,0 +1,375 @@
+{
+  "candidate": "6b7f424ece4bc978ead5546b73e1b31d5ccb1e70",
+  "cargo": "2d44bd4aa68b9ba32cacb5a384ecc18fa5e7553c",
+  "created": "2026-10-30T04:20:19.058322+00:00",
+  "discovery_sha256": "3543d443bc65e8d050a280c52d73e1b3da27ef7083caa35af89d11b5f9576f9d",
+  "parent": "7e71d3150938ff8ed82aca03416439d7e5b87ef3",
+  "predecessor_source": "a6865b6a180a05e2609e80cc9862e5cabb926bde",
+  "purpose": "Independent confirmation of metadata checks after returning to either side of Ruff #28335, using the exact guarded Rust head. All screening measurements are excluded.",
+  "slots": [
+    {
+      "arm": "P",
+      "cpus": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "id": "check-cold-P",
+      "lane": "check",
+      "mode": "cold-B",
+      "verb": "check"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "id": "check-cold-Q",
+      "lane": "check",
+      "mode": "cold-B",
+      "verb": "check"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "id": "check-trace-P",
+      "lane": "check",
+      "mode": "trace",
+      "verb": "check"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "id": "check-trace-Q",
+      "lane": "check",
+      "mode": "trace",
+      "verb": "check"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "id": "check-pair-01-Q",
+      "lane": "check",
+      "mode": "confirm",
+      "verb": "check"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "id": "check-pair-01-P",
+      "lane": "check",
+      "mode": "confirm",
+      "verb": "check"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "id": "check-pair-02-P",
+      "lane": "check",
+      "mode": "confirm",
+      "verb": "check"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "id": "check-pair-02-Q",
+      "lane": "check",
+      "mode": "confirm",
+      "verb": "check"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "id": "check-pair-03-P",
+      "lane": "check",
+      "mode": "confirm",
+      "verb": "check"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "id": "check-pair-03-Q",
+      "lane": "check",
+      "mode": "confirm",
+      "verb": "check"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "id": "check-pair-04-P",
+      "lane": "check",
+      "mode": "confirm",
+      "verb": "check"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "id": "check-pair-04-Q",
+      "lane": "check",
+      "mode": "confirm",
+      "verb": "check"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "id": "check-pair-05-P",
+      "lane": "check",
+      "mode": "confirm",
+      "verb": "check"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "id": "check-pair-05-Q",
+      "lane": "check",
+      "mode": "confirm",
+      "verb": "check"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "id": "check-pair-06-Q",
+      "lane": "check",
+      "mode": "confirm",
+      "verb": "check"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "id": "check-pair-06-P",
+      "lane": "check",
+      "mode": "confirm",
+      "verb": "check"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "id": "check-pair-07-Q",
+      "lane": "check",
+      "mode": "confirm",
+      "verb": "check"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "id": "check-pair-07-P",
+      "lane": "check",
+      "mode": "confirm",
+      "verb": "check"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "id": "check-pair-08-P",
+      "lane": "check",
+      "mode": "confirm",
+      "verb": "check"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "id": "check-pair-08-Q",
+      "lane": "check",
+      "mode": "confirm",
+      "verb": "check"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "id": "check-pair-09-Q",
+      "lane": "check",
+      "mode": "confirm",
+      "verb": "check"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "id": "check-pair-09-P",
+      "lane": "check",
+      "mode": "confirm",
+      "verb": "check"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "id": "check-pair-10-Q",
+      "lane": "check",
+      "mode": "confirm",
+      "verb": "check"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "id": "check-pair-10-P",
+      "lane": "check",
+      "mode": "confirm",
+      "verb": "check"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "id": "check-pair-11-P",
+      "lane": "check",
+      "mode": "confirm",
+      "verb": "check"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "id": "check-pair-11-Q",
+      "lane": "check",
+      "mode": "confirm",
+      "verb": "check"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "id": "check-pair-12-Q",
+      "lane": "check",
+      "mode": "confirm",
+      "verb": "check"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "id": "check-pair-12-P",
+      "lane": "check",
+      "mode": "confirm",
+      "verb": "check"
+    }
+  ]
+}

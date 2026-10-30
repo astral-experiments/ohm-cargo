@@ -1,0 +1,375 @@
+{
+  "candidate": "6b7f424ece4bc978ead5546b73e1b31d5ccb1e70",
+  "cargo": "2d44bd4aa68b9ba32cacb5a384ecc18fa5e7553c",
+  "created": "2026-10-30T03:41:52.361250+00:00",
+  "discovery_sha256": "58869e2ee37290d198ba86ba66f35972ca05b7dda400a0334cbda15e497c37a4",
+  "parent": "7e71d3150938ff8ed82aca03416439d7e5b87ef3",
+  "predecessor_source": "a6865b6a180a05e2609e80cc9862e5cabb926bde",
+  "purpose": "Qualify the native-input-guarded PR head. The predecessor failed on changed and missing assembly payloads with Ohm defaults disabled.",
+  "slots": [
+    {
+      "arm": "P",
+      "cpus": [
+        20,
+        21,
+        22,
+        23
+      ],
+      "id": "test-cold-P",
+      "lane": "test",
+      "mode": "cold-B",
+      "verb": "test"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        20,
+        21,
+        22,
+        23
+      ],
+      "id": "test-cold-Q",
+      "lane": "test",
+      "mode": "cold-B",
+      "verb": "test"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        20,
+        21,
+        22,
+        23
+      ],
+      "id": "test-trace-Q",
+      "lane": "test",
+      "mode": "trace",
+      "verb": "test"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        20,
+        21,
+        22,
+        23
+      ],
+      "id": "test-trace-P",
+      "lane": "test",
+      "mode": "trace",
+      "verb": "test"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        20,
+        21,
+        22,
+        23
+      ],
+      "id": "test-pair-01-P",
+      "lane": "test",
+      "mode": "confirm",
+      "verb": "test"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        20,
+        21,
+        22,
+        23
+      ],
+      "id": "test-pair-01-Q",
+      "lane": "test",
+      "mode": "confirm",
+      "verb": "test"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        20,
+        21,
+        22,
+        23
+      ],
+      "id": "test-pair-02-Q",
+      "lane": "test",
+      "mode": "confirm",
+      "verb": "test"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        20,
+        21,
+        22,
+        23
+      ],
+      "id": "test-pair-02-P",
+      "lane": "test",
+      "mode": "confirm",
+      "verb": "test"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        20,
+        21,
+        22,
+        23
+      ],
+      "id": "test-pair-03-Q",
+      "lane": "test",
+      "mode": "confirm",
+      "verb": "test"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        20,
+        21,
+        22,
+        23
+      ],
+      "id": "test-pair-03-P",
+      "lane": "test",
+      "mode": "confirm",
+      "verb": "test"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        20,
+        21,
+        22,
+        23
+      ],
+      "id": "test-pair-04-P",
+      "lane": "test",
+      "mode": "confirm",
+      "verb": "test"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        20,
+        21,
+        22,
+        23
+      ],
+      "id": "test-pair-04-Q",
+      "lane": "test",
+      "mode": "confirm",
+      "verb": "test"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        20,
+        21,
+        22,
+        23
+      ],
+      "id": "test-pair-05-P",
+      "lane": "test",
+      "mode": "confirm",
+      "verb": "test"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        20,
+        21,
+        22,
+        23
+      ],
+      "id": "test-pair-05-Q",
+      "lane": "test",
+      "mode": "confirm",
+      "verb": "test"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        20,
+        21,
+        22,
+        23
+      ],
+      "id": "test-pair-06-Q",
+      "lane": "test",
+      "mode": "confirm",
+      "verb": "test"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        20,
+        21,
+        22,
+        23
+      ],
+      "id": "test-pair-06-P",
+      "lane": "test",
+      "mode": "confirm",
+      "verb": "test"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        20,
+        21,
+        22,
+        23
+      ],
+      "id": "test-pair-07-P",
+      "lane": "test",
+      "mode": "confirm",
+      "verb": "test"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        20,
+        21,
+        22,
+        23
+      ],
+      "id": "test-pair-07-Q",
+      "lane": "test",
+      "mode": "confirm",
+      "verb": "test"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        20,
+        21,
+        22,
+        23
+      ],
+      "id": "test-pair-08-P",
+      "lane": "test",
+      "mode": "confirm",
+      "verb": "test"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        20,
+        21,
+        22,
+        23
+      ],
+      "id": "test-pair-08-Q",
+      "lane": "test",
+      "mode": "confirm",
+      "verb": "test"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        20,
+        21,
+        22,
+        23
+      ],
+      "id": "test-pair-09-Q",
+      "lane": "test",
+      "mode": "confirm",
+      "verb": "test"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        20,
+        21,
+        22,
+        23
+      ],
+      "id": "test-pair-09-P",
+      "lane": "test",
+      "mode": "confirm",
+      "verb": "test"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        20,
+        21,
+        22,
+        23
+      ],
+      "id": "test-pair-10-P",
+      "lane": "test",
+      "mode": "confirm",
+      "verb": "test"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        20,
+        21,
+        22,
+        23
+      ],
+      "id": "test-pair-10-Q",
+      "lane": "test",
+      "mode": "confirm",
+      "verb": "test"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        20,
+        21,
+        22,
+        23
+      ],
+      "id": "test-pair-11-Q",
+      "lane": "test",
+      "mode": "confirm",
+      "verb": "test"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        20,
+        21,
+        22,
+        23
+      ],
+      "id": "test-pair-11-P",
+      "lane": "test",
+      "mode": "confirm",
+      "verb": "test"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        20,
+        21,
+        22,
+        23
+      ],
+      "id": "test-pair-12-Q",
+      "lane": "test",
+      "mode": "confirm",
+      "verb": "test"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        20,
+        21,
+        22,
+        23
+      ],
+      "id": "test-pair-12-P",
+      "lane": "test",
+      "mode": "confirm",
+      "verb": "test"
+    }
+  ]
+}

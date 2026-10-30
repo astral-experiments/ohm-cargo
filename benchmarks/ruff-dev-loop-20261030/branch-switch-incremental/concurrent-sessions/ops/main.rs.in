@@ -1,0 +1,6 @@
+fn main() {
+    let observed: u32 = lock_qa_gate::wait_value!(VALUE);
+    #[cfg(lock_qa_invalid)]
+    let _: u32 = "intentional E0308";
+    println!("lock-oracle={}", observed);
+}

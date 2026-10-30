@@ -1,0 +1,78 @@
+{
+  "counts": {
+    "ordinary": 30,
+    "representative_passes": 96,
+    "size_accepted": 32,
+    "size_rejected_E0308": 32,
+    "traced": 4
+  },
+  "diagnostics": {
+    "P": [
+      [
+        "E0308",
+        "mismatched types",
+        [
+          [
+            "crates/ruff_python_formatter/src/lib.rs",
+            410,
+            45
+          ]
+        ]
+      ]
+    ],
+    "Q": [
+      [
+        "E0308",
+        "mismatched types",
+        [
+          [
+            "crates/ruff_python_formatter/src/lib.rs",
+            410,
+            45
+          ]
+        ]
+      ]
+    ]
+  },
+  "empty_suites_pass_fail_ignore": {
+    "admit-P/empty-B": [
+      51,
+      0,
+      2
+    ],
+    "admit-Q/empty-B": [
+      51,
+      0,
+      2
+    ],
+    "pair1-P/empty-A": [
+      51,
+      0,
+      2
+    ],
+    "pair1-Q/empty-A": [
+      51,
+      0,
+      2
+    ]
+  },
+  "minimum_observed_before_or_after_Cargo_bytes": {
+    "home": 160398921728,
+    "memory": 84984004608,
+    "private": 11659534336,
+    "scratch": 177760997376
+  },
+  "tests": [
+    "tests::basic",
+    "tests::string_processing",
+    "comments::tests::parenthesized_expression"
+  ],
+  "toolchain": {
+    "cargo": "1d06626bcef3c5235676ada14f4b7107f56e98aef620f81b0e0c47381dbe0add",
+    "drivers": {
+      "P": "66380b2752a864d14799b7931e011d4ff55ce4e326a5b77e80d8b06d9dfddd5e",
+      "Q": "b2a7780120821b363986bccb91646050d963a644d13ae354ffb87348cdb20e0c"
+    },
+    "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+  }
+}

@@ -1,0 +1,536 @@
+{
+  "cargo": "1d06626bcef3c5235676ada14f4b7107f56e98aef620f81b0e0c47381dbe0add",
+  "collector_sha256": "5e2e7df57e5acde87ab2088d3550664320734dedcdc4cd91534a327af4dd382f",
+  "discarded_donor": "First run-make image contained the matched #269 rustc but older Cargo 7277, and was rejected prior to any compiler or Cargo invocation. Final source-bound parent Cargo is identical to the child.",
+  "drivers": {
+    "G": "b2a7780120821b363986bccb91646050d963a644d13ae354ffb87348cdb20e0c",
+    "P": "66380b2752a864d14799b7931e011d4ff55ce4e326a5b77e80d8b06d9dfddd5e"
+  },
+  "extra_unscored_calls": {
+    "native_proc_macro_builds": 2,
+    "ordinary_Cargo_builds": 2
+  },
+  "git": {
+    "A": {
+      "head": "02a5e138a825b0595d4c555c683daa53f38c0871",
+      "source": "0019fa151db749e5ac5eafc011f9b208646f780687fec37e992894caeceab9a0",
+      "symbolic": "refs/heads/qa_A"
+    },
+    "B": {
+      "head": "1a7ae2863afb6577ac483e2ecd349b0205589fa5",
+      "source": "fbfa612226624cc103f18cc44f63d3a2325722ba07c6818775a22746a7e141bc",
+      "symbolic": "refs/heads/qa_B"
+    },
+    "C": {
+      "head": "5307cfc5a2462828926f4d18fe66c4c5f58f3962",
+      "source": "1b2572cd1aacc1273f6494f633fedd0ddc5507363f13d26f176d4de5fe2b19d4",
+      "symbolic": "refs/heads/qa_C"
+    }
+  },
+  "git_labels": {
+    "A": "1e80cbb50c683fdc",
+    "B": "b9f96b8c102c8790",
+    "C": "fb0949659bf3d72a"
+  },
+  "kernel_trace_bytes": 1310503,
+  "kernel_traces": 690,
+  "native_terminal": "a6973b86bb65e79f55d12ca5edaa29b506f4c49af54a75ca8d4dfdec3795f4eb",
+  "overlaps_and_retention": [
+    {
+      "actual_GC_EAGAIN": true,
+      "arm": "P",
+      "crate_id": "lock_subject-3ss9hvii3e2h2",
+      "first_exit": 0,
+      "observed_distinct_exclusive_FLOCKs": true,
+      "phase": "overlap-success",
+      "second_exit": 0,
+      "survivor_identity_and_lock_preserved": true,
+      "young_session_at_peer_GC_micros": 11079119
+    },
+    {
+      "actual_GC_EAGAIN": false,
+      "arm": "P",
+      "crate_id": "lock_subject-3ss9hvii3e2h2",
+      "first_exit": 1,
+      "observed_distinct_exclusive_FLOCKs": true,
+      "phase": "overlap-fail-first",
+      "second_exit": 0,
+      "survivor_identity_and_lock_preserved": true,
+      "young_session_at_peer_GC_micros": null
+    },
+    {
+      "actual_GC_EAGAIN": false,
+      "arm": "P",
+      "crate_id": "lock_subject-3ss9hvii3e2h2",
+      "first_exit": 0,
+      "observed_distinct_exclusive_FLOCKs": true,
+      "phase": "overlap-fail-late",
+      "second_exit": 1,
+      "survivor_identity_and_lock_preserved": true,
+      "young_session_at_peer_GC_micros": null
+    },
+    {
+      "abandoned_young_before_final_collection": 2,
+      "after_unlock": [
+        null
+      ],
+      "arm": "P",
+      "phase": "reader-protected-extra",
+      "quiescent": [
+        null
+      ],
+      "while_reader": [
+        null,
+        null
+      ]
+    },
+    {
+      "actual_GC_EAGAIN": true,
+      "arm": "G",
+      "crate_id": "lock_subject-3ss9hvii3e2h2",
+      "first_exit": 0,
+      "observed_distinct_exclusive_FLOCKs": true,
+      "phase": "overlap-success",
+      "second_exit": 0,
+      "survivor_identity_and_lock_preserved": true,
+      "young_session_at_peer_GC_micros": 11067614
+    },
+    {
+      "actual_GC_EAGAIN": false,
+      "arm": "G",
+      "crate_id": "lock_subject-3ss9hvii3e2h2",
+      "first_exit": 1,
+      "observed_distinct_exclusive_FLOCKs": true,
+      "phase": "overlap-fail-first",
+      "second_exit": 0,
+      "survivor_identity_and_lock_preserved": true,
+      "young_session_at_peer_GC_micros": null
+    },
+    {
+      "actual_GC_EAGAIN": false,
+      "arm": "G",
+      "crate_id": "lock_subject-3ss9hvii3e2h2",
+      "first_exit": 0,
+      "observed_distinct_exclusive_FLOCKs": true,
+      "phase": "overlap-fail-late",
+      "second_exit": 1,
+      "survivor_identity_and_lock_preserved": true,
+      "young_session_at_peer_GC_micros": null
+    },
+    {
+      "abandoned_young_before_final_collection": 2,
+      "after_unlock": [
+        "b9f96b8c102c8790",
+        "1e80cbb50c683fdc"
+      ],
+      "arm": "G",
+      "phase": "reader-protected-extra",
+      "quiescent": [
+        "1e80cbb50c683fdc",
+        "fb0949659bf3d72a"
+      ],
+      "while_reader": [
+        "fb0949659bf3d72a",
+        "1e80cbb50c683fdc",
+        "b9f96b8c102c8790"
+      ]
+    }
+  ],
+  "per_successful_elf_and_independent_failure": {
+    "A": {
+      "elf_sha256": "404dd50d12869b24c7f3c51077b04b957f8bcdfddbd1b8edfb06751523b76b88",
+      "len": 433992,
+      "verdict": "lock-oracle=17"
+    },
+    "B": {
+      "elf_sha256": "854f3a137e70c7634c8223e2dd355dd4d538bbc5043489d9f5716259b412d390",
+      "len": 433992,
+      "verdict": "lock-oracle=29"
+    },
+    "C": {
+      "elf_sha256": "a8d3059d6449ab26ba646f1657a986219bb2d09afd80c971d1f2dc47cfe8907f",
+      "len": 433992,
+      "verdict": "lock-oracle=41"
+    },
+    "invalid": [
+      [
+        "E0308",
+        "mismatched types",
+        [
+          [
+            "main.rs",
+            4,
+            18,
+            4,
+            37,
+            true
+          ],
+          [
+            "main.rs",
+            4,
+            12,
+            4,
+            15,
+            false
+          ]
+        ]
+      ]
+    ]
+  },
+  "phase_columns": [
+    "exit",
+    "physical_rustc",
+    "physical_Wild",
+    "checkout",
+    "original_result_sha256",
+    "kernel_trace_sha256"
+  ],
+  "phases": {
+    "G/final-quiescent-C": [
+      0,
+      1,
+      1,
+      "C",
+      "caf3d23d598d34473dc6279bd2b9514c7925a890e8f30ed6cb2c29a0da6dd068",
+      "38e9df07ab4882ea8da6d4ea4aa37218a905b5b43ed0fb9303ebe3706db5f8aa"
+    ],
+    "G/independent-A": [
+      0,
+      1,
+      1,
+      "A",
+      "92eff89394d13085caa545795d792e7e27e2d1dd91dd8cd172037297b8868ae6",
+      "2787cd861f06a6cde185f2b9e47433ba311c5b8734596f47405a03dd5442bb70"
+    ],
+    "G/independent-B": [
+      0,
+      1,
+      1,
+      "B",
+      "48dbd37fa10bd9c9951e07c2f67bbdd9d2d3c1f7626eb86fee9a26af9d2859e5",
+      "3ef712d356c47cb080bfd20534a46bcf42a8950c23ee0fb63d74e719e32c25f7"
+    ],
+    "G/independent-C": [
+      0,
+      1,
+      1,
+      "C",
+      "0f91a073ceeba0613e9c745c63d0aa356e589898f91221abc9e9666bc9374655",
+      "a86a9602ab4ba9dcc0963fe4ea71e16c0057457e6caa9e1b69384d033b59455e"
+    ],
+    "G/independent-invalid": [
+      1,
+      1,
+      0,
+      "B",
+      "02cecd2b0ab67165968a8799abd34ff042752d341b008531494a87b188f1d4b5",
+      "f4259958cc33824a809ef9afb5f202e04e6337f599ae6086be1a3866dfc818c7"
+    ],
+    "G/overlap-fail-first-A": [
+      0,
+      1,
+      1,
+      "A",
+      "5764f85258f35a6657ed62ccdfb6544683e2fd325fc545697f132ea60b43f41e",
+      "77ec50b87cffd654844c705925a264f285dc95749d96fc56b015cb7620183027"
+    ],
+    "G/overlap-fail-first-B": [
+      1,
+      1,
+      0,
+      "B",
+      "c7e3443bc2b7f49ff564e23ee2a628d51aea9e51aa72f976bcfd7463c262a01f",
+      "b4f4311042e93836781cea0f16273c7f24f813eeed052eee639e9a7a00051d64"
+    ],
+    "G/overlap-fail-late-A": [
+      0,
+      1,
+      1,
+      "A",
+      "7c1625bc54df08e1d7fedab052bfca813a9d2cceb9238959295a8d777d925ff7",
+      "6be905982d2baa80a08fa57bac064892257d8349a8fd238105b6aff5c6851852"
+    ],
+    "G/overlap-fail-late-B": [
+      1,
+      1,
+      0,
+      "B",
+      "5cbfd7002c4291880ff3db1ebde37b54a988624cc1f4bf5ea408d42171a1c4a5",
+      "2cb81e80844fbe83189b465d97cb6c2e0d5d384e60f0a52c322bdfe34d7d87a2"
+    ],
+    "G/overlap-success-A": [
+      0,
+      1,
+      1,
+      "A",
+      "5e4c4318dcd249ff35ed4d77378a770de32955dcbd53fee3901fb3d447978063",
+      "ed35b11a7f5b75bd124c6e5cb703cf038f0171b9fb6fc6018b06b595a98883ee"
+    ],
+    "G/overlap-success-B": [
+      0,
+      1,
+      1,
+      "B",
+      "6c05f3205af44f5f7f96a62a977016fcf2c14f0ef36f458d58f939ab6dece528",
+      "69634e11f519e30355ccc959e3188e0ad0720ca941c6e70cc247b6a3fcde804b"
+    ],
+    "G/seed-C": [
+      0,
+      1,
+      1,
+      "C",
+      "32b2f6af4b0c5a714cd11d31dec4ced37e42a79234be012a884d11370185a01e",
+      "09c0d7b04efade6e34c496cf1453ab863e2117936d5ccb575b82782e36286828"
+    ],
+    "G/serial-0-A": [
+      0,
+      1,
+      1,
+      "A",
+      "a060da0d72c304c8c544d1602110f9be7431ca0a47ca09624e94eb8b1d659516",
+      "89314ea23aac7ca48f2bdc05f4bacdbfe06267530d626eb488d9c7cbb9ef4c01"
+    ],
+    "G/serial-1-B": [
+      0,
+      1,
+      1,
+      "B",
+      "a0931de6ba9f5a9e4c24d80fe937278e091e9cbfb60268b3fd19e6b1252a6191",
+      "5f20ac64595e8eeacb17f209f81c7301aa0470d341cc98d470fc3ae165d1b7dc"
+    ],
+    "G/serial-2-C": [
+      0,
+      1,
+      1,
+      "C",
+      "1d0c2f692a3bb39553078b8d909b55104b23c7c6f4170d3914b94ae86fb96292",
+      "a697373dfe50cf0743d95c8394a0f28abd5551757b439616a8b00dbe0cdb55f7"
+    ],
+    "G/serial-3-A": [
+      0,
+      1,
+      1,
+      "A",
+      "96cbdeef823f22c58a60203f3381abd806a541193ee56ff4b2f021d70dbca48f",
+      "6f9fb36ad3cbc9f502b04ce9aeab4ce4a599e516990861ace9ec1a4e3f9fff00"
+    ],
+    "G/serial-4-B": [
+      0,
+      1,
+      1,
+      "B",
+      "b1eabbe433d5ebd07ee0298b62a03087f3e17f9a669902cdf2f978ff34ea1e1e",
+      "5b94f3e63d745974f186ef7d223ee394e0817f2fdce63272483be41f70697c72"
+    ],
+    "G/serial-5-C": [
+      0,
+      1,
+      1,
+      "C",
+      "f369092a1000918700f96aacde8871c117e2a5aff93c09b3c4485de0e57c59d3",
+      "c24095841abe0afaa797b9ecd945bcee3eb9011d7b2cf4abe5a8fc302b1b3c73"
+    ],
+    "G/shared-lock-protects-C-during-A": [
+      0,
+      1,
+      1,
+      "A",
+      "b66dc1bb27ee0361fb6b07483f73272f96dfec49591486a7796c05cd385eeebf",
+      "badbb2bca0aed992eb26a0d0b102f284296dae1d53bda5f9d9221ec3a1c5945b"
+    ],
+    "G/shared-lock-protects-C-during-B": [
+      0,
+      1,
+      1,
+      "B",
+      "4692bf3d9de9e601b41dec49a1845981008368a9b71c9a1daf8bf2a41c2db47d",
+      "6c0960698037ca4b6c513fc7498e8f5db0cac62a375abb554001551210f10a9c"
+    ],
+    "G/shared-lock-released-A": [
+      0,
+      1,
+      1,
+      "A",
+      "acfd85a5c3cefff0bf2a89190446a62ac2719cd58e1726e3bc3ebc6a6306e581",
+      "e95a5b05b60dbf49e78a939aaf43d5f14e2090bbe57a1df1e9b0b4c3b5724358"
+    ],
+    "P/final-quiescent-C": [
+      0,
+      1,
+      1,
+      "C",
+      "0a9cd4b3109d74554800ecf49e618f1f62c1a44753cede0a339a2f061f44db60",
+      "e7d44031fea2e9178921e421ae84133b4de82bca7ac02295c4841551bf6ddbd3"
+    ],
+    "P/independent-A": [
+      0,
+      1,
+      1,
+      "A",
+      "f39c0e90bb3782869f93a6cb8e63df58848cf20c2f1e25a6e788528a7dd6b9ec",
+      "d5b0a899ed4004cfa3ed44f81e0a235d7d7ea211cd3a9d691467de61a74ce67d"
+    ],
+    "P/independent-B": [
+      0,
+      1,
+      1,
+      "B",
+      "af946c396b7451fd1f98646d16f40b20492e5b78f83e61f76c4b73e144d715c8",
+      "ea8c8fc48ac9265e7ddbe7cb8ee35da1e90c0f7b16c1e15ee60e3b2a11306dfa"
+    ],
+    "P/independent-C": [
+      0,
+      1,
+      1,
+      "C",
+      "3c7d5598736c51116af57d00e2be77c2a85bf6fcaf12d3d0f6e572cc40bc6eff",
+      "86c0896e5c67d5ae5b6d45307b4463f8a7381f41ab345eb5d912bd06a9212c50"
+    ],
+    "P/independent-invalid": [
+      1,
+      1,
+      0,
+      "B",
+      "386cc53e50144ccbe320f096adf6be36e97840b39fadf708e8b869c1bcd7ca1e",
+      "ebc8ca6a268b1cf5f6cfc1ef40343bb847df06d74952245aed95b65ac3a0365b"
+    ],
+    "P/overlap-fail-first-A": [
+      0,
+      1,
+      1,
+      "A",
+      "96d211a233430a1f8e5038dd82fbcfdd25604bc44c1b1815b5dafbab682982be",
+      "8d0afefd14a1be9c273f15e9faf0998c76644c2a1d7f8fe6fa7a8873dbaaf23f"
+    ],
+    "P/overlap-fail-first-B": [
+      1,
+      1,
+      0,
+      "B",
+      "40af150c5b8c4eab125ec70d2819afe41a00831f49041c6f4bdc64a34d47e5c5",
+      "5313d4f60018f6c62072f5e9b24a7c7179d86fb11ba10ffb406baaa84382fbb2"
+    ],
+    "P/overlap-fail-late-A": [
+      0,
+      1,
+      1,
+      "A",
+      "2085d758bcb0b784906fe4e74acf2a9a3231cd044d8f3baa1d7f75e18c5c4ecc",
+      "f568ad2a3106b2b3ba23da74facd4160ffa170d80ac8a8769de06b964a775794"
+    ],
+    "P/overlap-fail-late-B": [
+      1,
+      1,
+      0,
+      "B",
+      "ef4610605cd137152cf666b5d7d31d0574ef66caaf9bdc239f808a54f827c63d",
+      "92862a895c0e94748bf3d546056aef550fccadbd2ffc71a1d3551d81ce512474"
+    ],
+    "P/overlap-success-A": [
+      0,
+      1,
+      1,
+      "A",
+      "10e96b855582cd9e1676a4140f5be39996e6d9136486ad22229752ece9e40c97",
+      "ea004c131bbca86f69b197ebbbd4c18e6b9fcaa81071158bccb370b7eb89d80d"
+    ],
+    "P/overlap-success-B": [
+      0,
+      1,
+      1,
+      "B",
+      "4464ab8d4c293ef66ef54e7f64cea58d9e4a5b09e1b5abb74415071d5e290ea0",
+      "1b166b46ebe47143ed0d8bcc081b0b7d2543d3f4f8661053fc48baac21980ac6"
+    ],
+    "P/seed-C": [
+      0,
+      1,
+      1,
+      "C",
+      "90089926e6d65fa3b8244f605cc8121394fdb2b373e9ca52ce88cceb08d6d3f6",
+      "6aa7d110ed029e97bd3e9842fbc111f8c1dfc27eae21e4a8b20d4d8ce83814f9"
+    ],
+    "P/serial-0-A": [
+      0,
+      1,
+      1,
+      "A",
+      "09582f8ea5d443f6a969207333a0187077aab5d2d5d837cb2907ca71ac4a2a39",
+      "afd80aaad5421f79830e1ed12251b10351e1c9fa45501a22b70e6e1efd412145"
+    ],
+    "P/serial-1-B": [
+      0,
+      1,
+      1,
+      "B",
+      "cd121dfcf2c4ae83b8e3237ebaab5321d84b0770ed116049b03c95d467857316",
+      "4a02c3c632b3927523b991cea0c350f206550e268d6dac2c566f9f7daeff146d"
+    ],
+    "P/serial-2-C": [
+      0,
+      1,
+      1,
+      "C",
+      "79a450415a29534fea3546fadffff688519e3c6c1cc913c33c53e4de5eef62b8",
+      "c959550e2a5c8d64833053d9660fd0f0722c70b7feff1c29aba1773ec004d009"
+    ],
+    "P/serial-3-A": [
+      0,
+      1,
+      1,
+      "A",
+      "f4c9299764bad936ee75c4643cf9f9559df3a85de571feb62cf5be96d9f12c51",
+      "30af49fd08da7839166ab27caf80051de2625fcd08389c52c4ded095b7410b6a"
+    ],
+    "P/serial-4-B": [
+      0,
+      1,
+      1,
+      "B",
+      "dd9d0d8e3c5a875349f4e91a50cf8b09b0420be6e2d01668b004746c4705aca5",
+      "c52099038ea71bebd1462cbcfcb3662ce067b17599284da19c1110357512fa52"
+    ],
+    "P/serial-5-C": [
+      0,
+      1,
+      1,
+      "C",
+      "c7b40f451fa08bd07caf150d1c2931c53c904ea4bedb8e742dd7419be367936d",
+      "33dea28f3a237d30d6a5cafafe8cd4f8038840e0bbfe687d20eeeb66e213f98d"
+    ],
+    "P/shared-lock-protects-C-during-A": [
+      0,
+      1,
+      1,
+      "A",
+      "0e6c210183b7e3779bd45056695bca69ca836977f28836c8081dc41475a93a1b",
+      "d169597a7506d6dbc997479ed1207448bcfad8477279aa67953092af2d62af6e"
+    ],
+    "P/shared-lock-protects-C-during-B": [
+      0,
+      1,
+      1,
+      "B",
+      "52ad0e705b3b52e40a55309a9aee6904bb0a4f708b99b4d1534c45670d1d6b64",
+      "ca85647070bfe9cf6409093b29219fe1943a8010d299370fcb26f3452e7a79a8"
+    ],
+    "P/shared-lock-released-A": [
+      0,
+      1,
+      1,
+      "A",
+      "02330647518a7a541d17b04b289abbf38ff36e4712d6f08d85a2b671d8d4d7e2",
+      "644c182faa0357adddcf413b9d40012ced6bda534ad5f99ec580880f2e8509a1"
+    ]
+  },
+  "reader_amendment": "Flock was issued by a compiler worker TID, while /proc/<tgid>/fdinfo independently identifies the process holding that same inode. The first supplementary reader required matching TID and TGID, and a subsequent script failed Python syntax before starting. The underlying native run is unchanged.",
+  "registration": "7082d60bfdbf64cf517ca8031ee97f5d6f05c4444c368cb735e321951461e829",
+  "same_frontend": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+  "scope": "Unscored, overlapping direct real rustc processes, each with its own executable output and same actual per-crate incremental root. The sole experimental flag and packaged linker flags were observed in an ordinary build with each complete SDK. Each direct successful native binary was independently reopened, hashed and executed at the time of validation.",
+  "setup_sha256": "167ca49068ca7b6f8da15b118a4540d98320fad85bb94573c021863bf3f94532",
+  "sources": {
+    "G": "6b7f424ece4bc978ead5546b73e1b31d5ccb1e70",
+    "P": "7e71d3150938ff8ed82aca03416439d7e5b87ef3"
+  },
+  "stock_wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+}

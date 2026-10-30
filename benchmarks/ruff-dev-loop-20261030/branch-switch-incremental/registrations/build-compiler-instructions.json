@@ -1,0 +1,562 @@
+{
+  "candidate": "6b7f424ece4bc978ead5546b73e1b31d5ccb1e70",
+  "cargo": "2d44bd4aa68b9ba32cacb5a384ecc18fa5e7553c",
+  "created": "2026-10-30T03:41:52.361250+00:00",
+  "parent": "7e71d3150938ff8ed82aca03416439d7e5b87ef3",
+  "predecessor_source": "a6865b6a180a05e2609e80cc9862e5cabb926bde",
+  "purpose": "Qualify the native-input-guarded PR head. The predecessor failed on changed and missing assembly payloads with Ohm defaults disabled.",
+  "slots": [
+    {
+      "arm": "P",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "id": "N-admit-P",
+      "lane": "native",
+      "mode": "admit"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "id": "N-cold-B-P",
+      "lane": "native",
+      "mode": "cold-B"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "id": "N-admit-Q",
+      "lane": "native",
+      "mode": "admit"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "id": "N-cold-B-Q",
+      "lane": "native",
+      "mode": "cold-B"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        8,
+        9,
+        10,
+        11
+      ],
+      "id": "I-admit-Q",
+      "lane": "ir",
+      "mode": "ir-admit"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        8,
+        9,
+        10,
+        11
+      ],
+      "id": "I-admit-P",
+      "lane": "ir",
+      "mode": "ir-admit"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "id": "native-01-Q",
+      "lane": "native",
+      "mode": "native"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "id": "native-01-P",
+      "lane": "native",
+      "mode": "native"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "id": "native-02-P",
+      "lane": "native",
+      "mode": "native"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "id": "native-02-Q",
+      "lane": "native",
+      "mode": "native"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "id": "native-03-P",
+      "lane": "native",
+      "mode": "native"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "id": "native-03-Q",
+      "lane": "native",
+      "mode": "native"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "id": "native-04-Q",
+      "lane": "native",
+      "mode": "native"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "id": "native-04-P",
+      "lane": "native",
+      "mode": "native"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "id": "native-05-Q",
+      "lane": "native",
+      "mode": "native"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "id": "native-05-P",
+      "lane": "native",
+      "mode": "native"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "id": "native-06-Q",
+      "lane": "native",
+      "mode": "native"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "id": "native-06-P",
+      "lane": "native",
+      "mode": "native"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "id": "native-07-P",
+      "lane": "native",
+      "mode": "native"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "id": "native-07-Q",
+      "lane": "native",
+      "mode": "native"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "id": "native-08-P",
+      "lane": "native",
+      "mode": "native"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "id": "native-08-Q",
+      "lane": "native",
+      "mode": "native"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "id": "native-09-P",
+      "lane": "native",
+      "mode": "native"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "id": "native-09-Q",
+      "lane": "native",
+      "mode": "native"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "id": "native-10-Q",
+      "lane": "native",
+      "mode": "native"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "id": "native-10-P",
+      "lane": "native",
+      "mode": "native"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "id": "native-11-P",
+      "lane": "native",
+      "mode": "native"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "id": "native-11-Q",
+      "lane": "native",
+      "mode": "native"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "id": "native-12-Q",
+      "lane": "native",
+      "mode": "native"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "id": "native-12-P",
+      "lane": "native",
+      "mode": "native"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        8,
+        9,
+        10,
+        11
+      ],
+      "id": "ir-01-P",
+      "lane": "ir",
+      "mode": "ir"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        8,
+        9,
+        10,
+        11
+      ],
+      "id": "ir-01-Q",
+      "lane": "ir",
+      "mode": "ir"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        8,
+        9,
+        10,
+        11
+      ],
+      "id": "ir-02-Q",
+      "lane": "ir",
+      "mode": "ir"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        8,
+        9,
+        10,
+        11
+      ],
+      "id": "ir-02-P",
+      "lane": "ir",
+      "mode": "ir"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        8,
+        9,
+        10,
+        11
+      ],
+      "id": "ir-03-P",
+      "lane": "ir",
+      "mode": "ir"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        8,
+        9,
+        10,
+        11
+      ],
+      "id": "ir-03-Q",
+      "lane": "ir",
+      "mode": "ir"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        8,
+        9,
+        10,
+        11
+      ],
+      "id": "ir-04-Q",
+      "lane": "ir",
+      "mode": "ir"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        8,
+        9,
+        10,
+        11
+      ],
+      "id": "ir-04-P",
+      "lane": "ir",
+      "mode": "ir"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        8,
+        9,
+        10,
+        11
+      ],
+      "id": "ir-05-P",
+      "lane": "ir",
+      "mode": "ir"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        8,
+        9,
+        10,
+        11
+      ],
+      "id": "ir-05-Q",
+      "lane": "ir",
+      "mode": "ir"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        8,
+        9,
+        10,
+        11
+      ],
+      "id": "ir-06-Q",
+      "lane": "ir",
+      "mode": "ir"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        8,
+        9,
+        10,
+        11
+      ],
+      "id": "ir-06-P",
+      "lane": "ir",
+      "mode": "ir"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        8,
+        9,
+        10,
+        11
+      ],
+      "id": "ir-07-Q",
+      "lane": "ir",
+      "mode": "ir"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        8,
+        9,
+        10,
+        11
+      ],
+      "id": "ir-07-P",
+      "lane": "ir",
+      "mode": "ir"
+    },
+    {
+      "arm": "P",
+      "cpus": [
+        8,
+        9,
+        10,
+        11
+      ],
+      "id": "ir-08-P",
+      "lane": "ir",
+      "mode": "ir"
+    },
+    {
+      "arm": "Q",
+      "cpus": [
+        8,
+        9,
+        10,
+        11
+      ],
+      "id": "ir-08-Q",
+      "lane": "ir",
+      "mode": "ir"
+    }
+  ]
+}

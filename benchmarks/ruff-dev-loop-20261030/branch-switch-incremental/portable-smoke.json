@@ -1,0 +1,62 @@
+{
+  "build": {
+    "case": "portable-build",
+    "data": {
+      "return-A": {
+        "median_speedup": 3.215401050854495,
+        "paired_ratios": [
+          2.993165648750885,
+          3.4376364529581047
+        ]
+      },
+      "return-B": {
+        "median_speedup": 3.4108486700778324,
+        "paired_ratios": [
+          3.3699411072805265,
+          3.4517562328751383
+        ]
+      }
+    },
+    "sha256": "4258765dc142a7ede9672abe094e0ef243d075a7ebbc31d0edaec345482034fa"
+  },
+  "check": {
+    "case": "portable-check",
+    "data": {
+      "return-A": {
+        "median_speedup": 3.3867232508092378,
+        "paired_ratios": [
+          3.440533425276759,
+          3.3329130763417165
+        ]
+      },
+      "return-B": {
+        "median_speedup": 3.6004821099124102,
+        "paired_ratios": [
+          3.470665461827464,
+          3.7302987579973568
+        ]
+      }
+    },
+    "sha256": "1f1da017e75d042028fa9fd408a73503e3483bbb63eaec456ae141db502d02cd"
+  },
+  "test-no-run": {
+    "case": "portable-test-no-run",
+    "data": {
+      "return-A": {
+        "median_speedup": 3.360304700191488,
+        "paired_ratios": [
+          3.3557470365367,
+          3.364862363846276
+        ]
+      },
+      "return-B": {
+        "median_speedup": 3.3385330600700867,
+        "paired_ratios": [
+          3.4515872056204597,
+          3.225478914519713
+        ]
+      }
+    },
+    "sha256": "a4137c1b90fe91d269e191070fc59604b6dd3c613c15b1b2bf00423b184b3543"
+  }
+}

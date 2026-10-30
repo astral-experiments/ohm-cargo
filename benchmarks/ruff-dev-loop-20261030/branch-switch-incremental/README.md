@@ -1,0 +1,60 @@
+# Building after switching back to a Ruff branch
+
+Ruff #28335 changed the size of an AST expression from 64 to 56 bytes. It touched the parser, AST, formatter and several downstream crates. The build loop switches between the real parent and feature branches in one Git checkout and builds the parser after each switch. Each compiler gets a new target directory and a separate empty Cargo build directory at the same absolute paths. The primary elapsed and instruction cohorts put the checkout, target and Cargo build directory on a private Linux tmpfs. [Historical Ruff change](https://github.com/astral-sh/ruff/pull/28335)
+
+The comparison uses optimized x86-64 Linux stage 1 compilers built from the proposed Ohm distribution’s Rust revision and the branch-aware compiler. Cargo, the standard library, the rustc executable and the bundled Wild binary are shared byte for byte. The compiler driver is the single changed SDK file. Both compilers use the same bootstrap metadata stamp. The tracked source and physical tool hashes identify the builds. The Linux distribution applies PGO and BOLT separately.
+
+## Whole-command results
+
+Each row is a complete ordinary Cargo invocation on a return to a previously built branch. Every workflow has 12 new installation pairs with six in each order. The elapsed interval starts with Cargo and ends when it exits. Git time, child CPU, independently compiled consumers, test execution and instrumentation are recorded separately. Both branches and all pairs are included.
+
+| Workflow | Return | Parent median | Candidate median | Median paired speedup | Simultaneous 95% interval |
+| --- | --- | ---: | ---: | ---: | ---: |
+| `cargo build` | A | 8.960 s | 2.648 s | 3.39× | 3.23–3.49× |
+| `cargo build` | B | 9.029 s | 2.710 s | 3.33× | 3.18–3.44× |
+| `cargo check` | A | 7.146 s | 2.090 s | 3.44× | 3.30–3.64× |
+| `cargo check` | B | 7.175 s | 2.093 s | 3.42× | 3.33–3.51× |
+
+The intervals use order statistics on the within-pair ratios, with Bonferroni coverage for the two preselected return directions in each workflow. The no-effect test enumerates all 924 allowed balanced orders on the log ratios. The projection includes the sign test against 2× and the timings with Git added. Timing data from traced commands and the two-pair exploratory screens are excluded.
+
+| Control | Empty A, parent / candidate | First B, parent / candidate | Unchanged B, parent / candidate | Extra retained on return A / B |
+| --- | ---: | ---: | ---: | ---: |
+| `cargo build` | 36.195 / 36.025 s | 8.941 / 8.826 s | 0.187 / 0.210 s | 92 / 124 MiB |
+| `cargo check` | 27.191 / 27.409 s | 7.138 / 7.007 s | 0.175 / 0.173 s | 58 / 70 MiB |
+
+Storage counts allocated filesystem blocks for the two crates’ finalized incremental sessions, deduplicated by inode. Other target and build-directory files are outside that total. The compiler can retain one previous checkout alongside the latest session. Ordinary serial builds on a single branch keep one session.
+
+## Compiler instructions and native work
+
+Both complete Rust compiler processes are counted with Callgrind after the kernel selects the genuine compiler launched by Cargo. Cargo, rustup and the downstream validation programs run outside the counter. The counter preserves the compiler argument vector, environment, working directory and jobserver descriptors. Its final instruction count must agree with the sum of all self costs and with the independent Valgrind log.
+
+One completed admission per compiler and return direction consumed 62.17B → 6.88B instructions on A and 62.44B → 7.00B on B. Both admissions recovered exactly 300,000 additional guest instructions on each measured coordinate of the small calibration program. These observations identify the reduced compiler work. The separate eight-pair instruction cohort is registered in this directory.
+
+In the native build controls the two full rustcs created 89 distinct codegen objects on the parent and zero on the candidate in each direction. The test build created 90 and one, respectively, and ran the same single stock Wild link. Kernel traces count successful create-and-write opens and genuine compiler or linker executions. Each build consumer parsed valid Python, rejected invalid syntax, printed the expected version-specific AST size, and matched an independent empty-build executable exactly. Both test executables matched their empty references byte for byte and listed the same 245 tests. Three specified parser and lexer tests ran after each measured command. The metadata check compiled two downstream size assertions, accepting the correct size and requiring E0308 for the opposite size. Raw metadata can vary across independent builds even with the parent compiler.
+
+## Correctness
+
+With Ohm defaults disabled, an earlier prototype reused a stale assembler byte and accepted missing or malformed assembler input. The fixed compiler prefers an older checkout only when rustc rechecks external native inputs. The checked-in rustc regression passes on the parent and fixed compiler and fails on the rejected prototype. Both the fixed and rejected projections contain the original 120 Cargo build verdicts, native read records, complete executable digests, a ten-command standalone run, and an executable reproducer. The two modes cover nested assembler file reads and the default-mode controls cover tracked Rust byte inclusion and a static archive declared by a build script.
+
+Two concurrent compiler processes also exercised the same incremental crate directory. A successful participant retained its working session and lock when the peer failed with E0308 or ran garbage collection past the ten-second age threshold. Three independent clean executables matched the overlapping run results byte for byte. A deliberately held shared lock temporarily preserved a third finalized checkout. The next serial collection returned to two after the lock was released. [Concurrent-session replay](concurrent-sessions)
+
+## Reproduce locally
+
+Use a Linux x86-64 host with Git, rustup shims, Python 3.11 or newer, and two complete Ohm SDKs from the parent and candidate revisions recorded in `sources.json`. Both SDKs need the same Cargo, rustc launcher and standard library. The replay copies the parent SDK to a private directory and swaps its compiler driver for each arm. It creates a real Ruff checkout, verifies its two commits, starts each arm with empty Cargo outputs, and validates every produced binary or metadata consumer. A Rust type error and the following recovery run provide negative controls. Test execution is outside Cargo’s measured interval.
+
+```sh
+python3 -IB verify.py
+run_dir=$(mktemp -d)
+python3 -IB replay.py --parent-sdk "$PARENT_SDK" --candidate-sdk "$CANDIDATE_SDK" \
+  --workflow build --pairs 12 --out "$run_dir/replay-build"
+python3 -IB replay.py --parent-sdk "$PARENT_SDK" --candidate-sdk "$CANDIDATE_SDK" \
+  --workflow test-no-run --pairs 12 --out "$run_dir/replay-test"
+python3 -IB replay.py --parent-sdk "$PARENT_SDK" --candidate-sdk "$CANDIDATE_SDK" \
+  --workflow check --pairs 12 --out "$run_dir/replay-check"
+```
+
+Each output path must be new. Supply `--offline` to use an existing populated Cargo registry cache and `--pack <ruff.pack>` to use a local copy of both Git trees. Each arm records Cargo’s raw JSON, process timings and verdicts under the output directory. The cold references are retained separately. The compressed measurement files carry the paired observations plus SHA-256 commitments to the original streams. The complete kernel traces and Callgrind outputs were independently reopened to produce these projections.
+
+## Formatter test build
+
+Returning to either branch also rebuilt the formatter test binary. In a separate two-pair screen, the ordinary four-compiler command fell from 22.20–23.20 s to 5.33–5.52 s. Each direction created one codegen object instead of 310 and ran one stock Wild link. Both executables matched their respective empty builds. This screen is separate from the 12-pair parser results above. [Formatter screen, workload and replay](formatter-screen)
