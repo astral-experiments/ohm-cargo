@@ -25,6 +25,15 @@ use crate::CARGO_ENV;
 use crate::CargoResult;
 use crate::workspace::manifest::ManifestMetadata;
 
+const RECHECK_MARKERS: [&str; 2] = [
+    RECHECK_DEPENDENT_LINKS,
+    "/dev/null/ohm-recheck-dependent-links-v2",
+];
+
+fn is_recheck_marker(path: &Path) -> bool {
+    RECHECK_MARKERS.iter().any(|name| path == Path::new(name))
+}
+
 /// The current format version of [`EncodedDepInfo`].
 // Older records can contain a truncated filename and accept the wrong file as fresh.
 const CURRENT_ENCODED_DEP_INFO_VERSION: u8 = 4;
@@ -179,7 +188,7 @@ impl EncodedDepInfo {
             let (digest, rest) = suffix.split_first_chunk::<32>()?;
             if !cfg!(unix)
                 || *kind != DepInfoPathType::BuildRootRelative
-                || path != Path::new(RECHECK_DEPENDENT_LINKS)
+                || !is_recheck_marker(path)
                 || checksum.is_some()
                 || blake3::hash(body).as_bytes() != digest
             {
@@ -535,10 +544,7 @@ pub fn translate_dep_info(
     };
 
     for (file, checksum_info) in depinfo.files {
-        if depinfo.recheck_dependent_links
-            && file == Path::new(RECHECK_DEPENDENT_LINKS)
-            && checksum_info.is_none()
-        {
+        if depinfo.recheck_dependent_links && is_recheck_marker(&file) && checksum_info.is_none() {
             on_disk_info.recheck_dependent_links = Some(on_disk_info.files.len());
             on_disk_info
                 .files
@@ -746,13 +752,14 @@ fn rustc_input_rules<'a>(
 /// Rustc omits only its synthetic marker from the depfile's own rule. A path
 /// actually tracked by rustc or a proc macro occurs in both lists.
 fn has_link_only_marker(inputs: &[&str], targets: &str, output: &Path) -> bool {
-    let Some((&RECHECK_DEPENDENT_LINKS, ordinary)) = inputs.split_last() else {
+    let Some((marker, ordinary)) = inputs.split_last() else {
         return false;
     };
-    if !cfg!(unix)
+    if !RECHECK_MARKERS.contains(marker)
+        || !cfg!(unix)
         || ordinary
             .iter()
-            .any(|p| p.contains(['\n', '\r']) || Path::new(p) == Path::new(RECHECK_DEPENDENT_LINKS))
+            .any(|p| p.contains(['\n', '\r']) || is_recheck_marker(Path::new(p)))
     {
         return false;
     }
@@ -1068,15 +1075,28 @@ mod encoded_dep_info {
             .replace(':', "\\:");
         let record = root.join("cargo.d");
         let marker = RECHECK_DEPENDENT_LINKS;
-        for (ordinary, marked, expected) in [
-            ("src.rs".to_owned(), true, true),
-            (format!("src.rs {marker}"), false, false),
-            (format!("src.rs {marker}"), true, false),
+        let v2 = "/dev/null/ohm-recheck-dependent-links-v2";
+        for (marker, ordinary, marked, expected) in [
+            (marker, "src.rs".to_owned(), true, true),
+            (marker, format!("src.rs {marker}"), false, false),
+            (marker, format!("src.rs {marker}"), true, false),
             (
+                marker,
                 format!("src.rs {}", marker.replace("/null/", "//null/./")),
                 true,
                 false,
             ),
+            (v2, "src.rs".to_owned(), true, true),
+            (v2, format!("src.rs {v2}"), false, false),
+            (v2, format!("src.rs {v2}"), true, false),
+            (
+                v2,
+                format!("src.rs {}", v2.replace("/null/", "//null/./")),
+                true,
+                false,
+            ),
+            (v2, format!("src.rs {marker}"), true, false),
+            (marker, format!("src.rs {v2}"), true, false),
         ] {
             let inputs = if marked {
                 format!("{ordinary} {marker}")

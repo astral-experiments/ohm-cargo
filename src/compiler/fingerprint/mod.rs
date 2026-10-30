@@ -2829,7 +2829,11 @@ fn calculate_normal(
     }
     if super::unit_checks_relink_inputs(build_runner, unit) {
         // Dep-info from an older or unwrapped compiler may omit assembler inputs.
-        "ohm-checked-native-inputs-v2".hash(&mut config);
+        if build_runner.bcx.target_data.short_name(&unit.kind) == "aarch64-unknown-linux-gnu" {
+            "ohm-checked-native-inputs-v3".hash(&mut config);
+        } else {
+            "ohm-checked-native-inputs-v2".hash(&mut config);
+        }
     }
 
     let compile_kind = unit.kind.fingerprint_hash();
