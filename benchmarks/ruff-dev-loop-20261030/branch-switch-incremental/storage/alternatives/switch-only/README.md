@@ -44,13 +44,18 @@ These additional runs held the complete compiler installation fixed. A two-pair 
 | --- | ---: | ---: | ---: | --- | ---: |
 | `cargo check` | 12 | 3.38× (2.59–3.77×) | 2.82× (2.28–3.31×) | 182 → 171 MiB / 171 → 172 MiB | 1.50× |
 | `cargo check` | 2 | 3.08× (3.00–3.16×) | 2.96× (2.90–3.02×) | 182 → 171 MiB / 171 → 172 MiB | 1.48× |
+| `cargo test --lib --no-run` | 12 | 2.54× (2.38–3.03×) | 2.12× (1.9992–2.25×) | 419 → 404 MiB / 385 → 406 MiB | 1.36× |
 | `cargo test --lib --no-run` | 2 | 2.86× (2.73–2.99×) | 2.33× (2.31–2.35×) | 419 → 404 MiB / 385 → 406 MiB | 1.39× |
 
 For `cargo check` (12 pairs), the first visit to the feature took 7.08 → 7.53 s and used 176 → 203 MiB. Median paired child CPU ratios on the two returns were 3.32× and 2.91×. The registration seed was `202610300808`. [Native/type readbacks](verb-check-12-pairs-202610300808-verified.json.gz) · [All observations](verb-check-12-pairs-202610300808-sample.json.gz) · [Paired calculations](verb-check-12-pairs-202610300808-summary.json)
 
 For `cargo check` (2 pairs), the first visit to the feature took 7.11 → 7.29 s and used 176 → 203 MiB. Median paired child CPU ratios on the two returns were 3.23× and 3.03×. The registration seed was `202610300800`. [Native/type readbacks](verb-check-2-pairs-202610300800-verified.json.gz) · [All observations](verb-check-2-pairs-202610300800-sample.json.gz) · [Paired calculations](verb-check-2-pairs-202610300800-summary.json)
 
+For `cargo test --lib --no-run` (12 pairs), the first visit to the feature took 10.75 → 12.00 s and used 402 → 454 MiB. Median paired child CPU ratios on the two returns were 6.15× and 5.21×. The registration seed was `202610300809`. [Native/type readbacks](verb-test-no-run-12-pairs-202610300809-verified.json.gz) · [All observations](verb-test-no-run-12-pairs-202610300809-sample.json.gz) · [Paired calculations](verb-test-no-run-12-pairs-202610300809-summary.json)
+
 For `cargo test --lib --no-run` (2 pairs), the first visit to the feature took 11.08 → 12.23 s and used 402 → 454 MiB. Median paired child CPU ratios on the two returns were 7.06× and 5.70×. The registration seed was `202610300801`. [Native/type readbacks](verb-test-no-run-2-pairs-202610300801-verified.json.gz) · [All observations](verb-test-no-run-2-pairs-202610300801-sample.json.gz) · [Paired calculations](verb-test-no-run-2-pairs-202610300801-summary.json)
+
+The test-build confirmation cleared 2× returning to the parent. Returning to the feature had a 1.9992× lower confidence bound. Across all twelve pairs, the smallest return-to-feature speedup was 1.966×.
 
 ## Complete compiler instructions
 
