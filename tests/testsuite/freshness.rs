@@ -4506,6 +4506,63 @@ fn early_cutoff_skips_check_test_dependents() {
 }
 
 #[cargo_test]
+fn early_cutoff_rechecks_a_repaired_test_after_failure() {
+    let valid = "pub fn value() -> u32 { dep::value() }\nfn unused_after_repair() {}\n";
+    let p = project()
+        .file(
+            "Cargo.toml",
+            &format!(
+                "{}\n[dependencies]\ndep = {{ path = \"dep\" }}",
+                basic_manifest("app", "0.1.0")
+            ),
+        )
+        .file("src/lib.rs", valid)
+        .file("dep/Cargo.toml", &basic_lib_manifest("dep"))
+        .file("dep/src/lib.rs", "pub fn value() -> u32 { 1 }")
+        .build();
+    let wrapper = public_api_hash_wrapper();
+    let log = p.root().join("rustc-invocations");
+    let check = || {
+        let mut cmd = p.cargo("-Zohm-defaults check --tests --message-format=json");
+        cmd.masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("RUSTC_WRAPPER", &wrapper)
+            .env("PUBLIC_API_HASH_WRAPPER_LOG", &log);
+        cmd
+    };
+    check().run();
+
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    p.change_file(
+        "src/lib.rs",
+        &format!("{valid}const BAD: u32 = \"invalid\";\n"),
+    );
+    check()
+        .with_status(101)
+        .with_stdout_contains("[..]E0308[..]")
+        .run();
+
+    // The wrapper reports the same public hash for both edits to the dependency.
+    p.change_file("src/lib.rs", valid);
+    for (value, expected) in [(2, "dep\napp\n"), (3, "dep\n")] {
+        if is_coarse_mtime() {
+            sleep_ms(1000);
+        }
+        p.change_file(
+            "dep/src/lib.rs",
+            &format!("pub fn value() -> u32 {{ {value} }}"),
+        );
+        fs::write(&log, "").unwrap();
+        check()
+            .with_stdout_does_not_contain("[..]E0308[..]")
+            .with_stdout_contains("[..]unused_after_repair[..]")
+            .run();
+        assert_eq!(fs::read_to_string(&log).unwrap(), expected);
+    }
+}
+
+#[cargo_test]
 fn ohm_defaults_enable_check_early_cutoff() {
     assert_early_cutoff_checks_dependents("-Zohm-defaults check", None, "dep\n");
 }

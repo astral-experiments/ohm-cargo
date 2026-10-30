@@ -3174,15 +3174,25 @@ fn _compare_old_fingerprint(
     let old_fingerprint_short = paths::read(old_hash_path)?;
     let new_hash = new_fingerprint.hash_u64();
 
-    if util::to_hex(new_hash) == old_fingerprint_short
-        && new_fingerprint.fs_status.lock().unwrap().up_to_date()
-    {
+    let hash_matches = util::to_hex(new_hash) == old_fingerprint_short;
+    if hash_matches && new_fingerprint.fs_status.lock().unwrap().up_to_date() {
         return Ok(FingerprintComparison::Fresh);
     }
 
     let old_fingerprint_json = paths::read(&old_hash_path.with_extension("json"))?;
     let old_fingerprint: Fingerprint = serde_json::from_str(&old_fingerprint_json)
         .with_context(|| internal("failed to deserialize json"))?;
+    let reason = new_fingerprint.compare(&old_fingerprint);
+    // The JSON survives a failed or interrupted rebuild so we can explain what changed.
+    // Only the short fingerprint is committed on success and authorizes reusing the outputs.
+    if reason.is_dependency_only()
+        && !hash_matches
+        && old_fingerprint_short != util::to_hex(old_fingerprint.hash_u64())
+    {
+        return Ok(FingerprintComparison::Dirty {
+            reason: DirtyReason::PreviousBuildIncomplete,
+        });
+    }
     // Fingerprint can be empty after a failed rebuild (see comment in prepare_target).
     if !old_fingerprint_short.is_empty() {
         debug_assert_eq!(
@@ -3191,7 +3201,6 @@ fn _compare_old_fingerprint(
         );
     }
 
-    let reason = new_fingerprint.compare(&old_fingerprint);
     Ok(FingerprintComparison::Dirty { reason })
 }
 
