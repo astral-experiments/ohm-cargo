@@ -80,6 +80,7 @@ pub enum DirtyReason {
         unit: UnitIndex,
     },
     FsStatusOutdated(FsStatus),
+    PreviousBuildIncomplete,
     NothingObvious,
     Forced,
     /// First time to build something.
@@ -338,6 +339,9 @@ impl DirtyReason {
                     unreachable!()
                 }
             },
+            DirtyReason::PreviousBuildIncomplete => {
+                s.dirty_because(unit, "the previous build has no matching fingerprint")
+            }
             DirtyReason::NothingObvious => {
                 // See comment in fingerprint compare method.
                 s.dirty_because(unit, "the fingerprint comparison turned up nothing obvious")
