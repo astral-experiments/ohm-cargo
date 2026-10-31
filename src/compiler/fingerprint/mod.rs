@@ -2809,9 +2809,8 @@ fn calculate_normal(
         ("ohm-worktree-seeds", 6_u8).hash(&mut config);
     }
     if unit_consumes_public_api_hash(build_runner, unit) {
-        // Older implementations cannot soundly reuse the preserved metadata
-        // generations without propagating the corresponding link generations.
-        ("ohm-reduced-dependency-rebuild", 2_u8).hash(&mut config);
+        // Older generations could miss a changed link or retain diagnostics from a failed build.
+        ("ohm-reduced-dependency-rebuild", 3_u8).hash(&mut config);
     }
     if super::unit_suppresses_default_public_api_hash(build_runner, unit) {
         ("ohm-terminal-check-public-api-hash", 1_u8).hash(&mut config);
@@ -3296,15 +3295,15 @@ fn _compare_old_fingerprint(
     let old_fingerprint_json = paths::read(&old_hash_path.with_extension("json"))?;
     let old_fingerprint: Fingerprint = serde_json::from_str(&old_fingerprint_json)
         .with_context(|| internal("failed to deserialize json"))?;
-    // Fingerprint can be empty after a failed rebuild (see comment in prepare_target).
-    if !old_fingerprint_short.is_empty() {
-        debug_assert_eq!(
-            util::to_hex(old_fingerprint.hash_u64()),
-            old_fingerprint_short
-        );
+    let mut reason = new_fingerprint.compare(&old_fingerprint);
+    // A failed rebuild clears the short fingerprint, and interruption can leave the JSON
+    // from an older build. Keep its explanation, but only reuse outputs from a matching pair.
+    if reason.is_dependency_only()
+        && old_fingerprint_short != util::to_hex(old_fingerprint.hash_u64())
+    {
+        reason = DirtyReason::PreviousBuildIncomplete;
     }
 
-    let reason = new_fingerprint.compare(&old_fingerprint);
     Ok(FingerprintComparison::Dirty { reason })
 }
 
@@ -4076,6 +4075,31 @@ mod early_cutoff_tests {
             only_requires_rmeta: true,
             fingerprint: fp,
         }
+    }
+
+    #[test]
+    fn a_short_fingerprint_from_another_build_cannot_authorize_early_cutoff() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("unit");
+        let with_dependency = |rustc| {
+            let mut dep = Fingerprint::new();
+            dep.rustc = rustc;
+            let mut fp = make_stale_due_to_dep();
+            fp.rustc = 1;
+            fp.deps.push(make_dep_fingerprint(Arc::new(dep)));
+            fp
+        };
+        let previous = with_dependency(1);
+        let current = with_dependency(2);
+        write_fingerprint(&path, &previous).unwrap();
+        // Simulate interruption after the new short hash is written, before the JSON.
+        std::fs::write(&path, util::to_hex(current.hash_u64())).unwrap();
+        assert!(matches!(
+            _compare_old_fingerprint(&path, &current).unwrap(),
+            FingerprintComparison::Dirty {
+                reason: DirtyReason::PreviousBuildIncomplete
+            }
+        ));
     }
 
     #[test]
