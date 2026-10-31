@@ -1,0 +1,2155 @@
+{
+  "distribution": {
+    "all_five_successful": {
+      "distinct": 12,
+      "median": [
+        310400107906555473531563,
+        227226936423632176045568
+      ],
+      "rank11": [
+        240458163217,
+        176017031131
+      ],
+      "rank2": [
+        5289865064732,
+        3872564888139
+      ]
+    },
+    "all_seven": {
+      "distinct": 12,
+      "median": [
+        4704782023130600398321231,
+        3480035443573507904724300
+      ],
+      "rank11": [
+        1337488887717,
+        989256674527
+      ],
+      "rank2": [
+        5349718359780,
+        3957237192727
+      ]
+    },
+    "cold-A": {
+      "distinct": 12,
+      "median": [
+        4875933792793913050158869,
+        4875962721207052223862594
+      ],
+      "rank11": [
+        2704448873222,
+        2704364784337
+      ],
+      "rank2": [
+        62893313939,
+        62895182753
+      ]
+    },
+    "cold_through_return_B": {
+      "distinct": 12,
+      "median": [
+        20429371814799744100984229,
+        14948767268530558778015155
+      ],
+      "rank11": [
+        5283851836506,
+        3866144409263
+      ],
+      "rank2": [
+        5283636947805,
+        3866334928354
+      ]
+    },
+    "first-B": {
+      "distinct": 12,
+      "median": [
+        391140811500952448066163,
+        415078134700031933816444
+      ],
+      "rank11": [
+        53664799299,
+        56931751738
+      ],
+      "rank2": [
+        171714680356,
+        182244267693
+      ]
+    },
+    "first_switch_and_return_A": {
+      "distinct": 12,
+      "median": [
+        502316653777418049043163,
+        299094603494448822742836
+      ],
+      "rank11": [
+        859253421271,
+        511483731995
+      ],
+      "rank2": [
+        1718209820229,
+        1023167239571
+      ]
+    },
+    "invalid": {
+      "distinct": 12,
+      "median": [
+        561506973488109672,
+        748538758486669309
+      ],
+      "rank11": [
+        486810389,
+        648686343
+      ],
+      "rank2": [
+        33569893,
+        44764866
+      ]
+    },
+    "repair": {
+      "distinct": 12,
+      "median": [
+        1584152213050719442717,
+        2244995292590925243676
+      ],
+      "rank11": [
+        8275522401,
+        11722249748
+      ],
+      "rank2": [
+        14476513373,
+        20519389804
+      ]
+    },
+    "return-A": {
+      "distinct": 12,
+      "median": [
+        192545306539034854121939,
+        25080497398225229337078
+      ],
+      "rank11": [
+        859814030022,
+        111977941255
+      ],
+      "rank2": [
+        859611429158,
+        112012024473
+      ]
+    },
+    "return-B": {
+      "distinct": 12,
+      "median": [
+        119663464541458556254001,
+        19306051205934139495680
+      ],
+      "rank11": [
+        430666100327,
+        69470151826
+      ],
+      "rank2": [
+        172255401287,
+        27796884934
+      ]
+    },
+    "return_sum": {
+      "distinct": 12,
+      "median": [
+        431837552125295461653191,
+        62969491035141190402630
+      ],
+      "rank11": [
+        74832444812,
+        10909488909
+      ],
+      "rank2": [
+        1720949065975,
+        250982718429
+      ]
+    },
+    "unchanged-B": {
+      "distinct": 12,
+      "median": [
+        25864690321648405325,
+        25869490377576993202
+      ],
+      "rank11": [
+        6228658551,
+        6228879379
+      ],
+      "rank2": [
+        6227645425,
+        6230071169
+      ]
+    }
+  },
+  "mode": "confirmation",
+  "positions": {
+    "01": {
+      "boot": "599dd4ad-14ad-4158-a352-b7ae5adf6c12",
+      "order": [
+        "Foff",
+        "Fon"
+      ],
+      "original": "sha256:6640e2c4fcbacd054d21f18ff47d49932b12750754312f3c687614768b337ff1",
+      "pairs": {
+        "all_five_successful": [
+          5290303141802,
+          3872436422674
+        ],
+        "all_seven": [
+          5350168614100,
+          3957077471122
+        ],
+        "cold-A": [
+          2704206156515,
+          2704310901821
+        ],
+        "cold_through_return_B": [
+          5284074483251,
+          3866207543295
+        ],
+        "first-B": [
+          858739115762,
+          910984410828
+        ],
+        "first_switch_and_return_A": [
+          1718506842542,
+          1022967463990
+        ],
+        "invalid": [
+          1947841144,
+          2594310848
+        ],
+        "repair": [
+          57917631154,
+          82046737600
+        ],
+        "return-A": [
+          859767726780,
+          111983053162
+        ],
+        "return-B": [
+          861361484194,
+          138929177484
+        ],
+        "return_sum": [
+          1721129210974,
+          250912230646
+        ],
+        "unchanged-B": [
+          6228658551,
+          6228879379
+        ]
+      },
+      "phases": {
+        "Foff": {
+          "cold-A": {
+            "allocated": 2581381120,
+            "dirty": 390,
+            "exit": 0,
+            "instructions": 2704206156515,
+            "typed": 390
+          },
+          "first-B": {
+            "allocated": 2696425472,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 858739115762,
+            "typed": 390
+          },
+          "invalid": {
+            "allocated": 2585370624,
+            "dirty": 0,
+            "exit": 101,
+            "instructions": 1947841144,
+            "typed": 373
+          },
+          "repair": {
+            "allocated": 2591531008,
+            "dirty": 17,
+            "exit": 0,
+            "instructions": 57917631154,
+            "typed": 390
+          },
+          "return-A": {
+            "allocated": 2807406592,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 859767726780,
+            "typed": 390
+          },
+          "return-B": {
+            "allocated": 2582765568,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 861361484194,
+            "typed": 390
+          },
+          "unchanged-B": {
+            "allocated": 2582765568,
+            "dirty": 2,
+            "exit": 0,
+            "instructions": 6228658551,
+            "typed": 390
+          }
+        },
+        "Fon": {
+          "cold-A": {
+            "allocated": 2581319680,
+            "dirty": 390,
+            "exit": 0,
+            "instructions": 2704310901821,
+            "typed": 390
+          },
+          "first-B": {
+            "allocated": 3219390464,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 910984410828,
+            "typed": 390
+          },
+          "invalid": {
+            "allocated": 2889568256,
+            "dirty": 0,
+            "exit": 101,
+            "instructions": 2594310848,
+            "typed": 373
+          },
+          "repair": {
+            "allocated": 3082166272,
+            "dirty": 17,
+            "exit": 0,
+            "instructions": 82046737600,
+            "typed": 390
+          },
+          "return-A": {
+            "allocated": 2852696064,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 111983053162,
+            "typed": 390
+          },
+          "return-B": {
+            "allocated": 2860310528,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 138929177484,
+            "typed": 390
+          },
+          "unchanged-B": {
+            "allocated": 2860310528,
+            "dirty": 2,
+            "exit": 0,
+            "instructions": 6228879379,
+            "typed": 390
+          }
+        }
+      },
+      "plan": "e9ff2bc6ee12e71a07b3120668006935c9dd2bb40a862a8a5dbe863fa2a3fb16",
+      "suite_names_sha": "51fc64a8ded99efb44380e78d8ce4bc582d375c266d163555b38b4ffcf20f553"
+    },
+    "02": {
+      "boot": "f2f1936f-67ad-4eb9-9365-9eb696867ad3",
+      "order": [
+        "Fon",
+        "Foff"
+      ],
+      "original": "sha256:ba52c06c86b3074bf998add6bd4e562ab6e965591948ffa3d6e8a36f65652133",
+      "pairs": {
+        "all_five_successful": [
+          5289865271776,
+          3872614464377
+        ],
+        "all_seven": [
+          5349712670496,
+          3957277161855
+        ],
+        "cold-A": [
+          2704299232816,
+          2704337286468
+        ],
+        "cold_through_return_B": [
+          5283637626351,
+          3866384393208
+        ],
+        "first-B": [
+          858513351396,
+          911098736961
+        ],
+        "first_switch_and_return_A": [
+          1718212977412,
+          1023112153908
+        ],
+        "invalid": [
+          1946912171,
+          2596552448
+        ],
+        "repair": [
+          57900486549,
+          82066145030
+        ],
+        "return-A": [
+          859699626016,
+          112013416947
+        ],
+        "return-B": [
+          861125416123,
+          138934952832
+        ],
+        "return_sum": [
+          1720825042139,
+          250948369779
+        ],
+        "unchanged-B": [
+          6227645425,
+          6230071169
+        ]
+      },
+      "phases": {
+        "Foff": {
+          "cold-A": {
+            "allocated": 2581315584,
+            "dirty": 390,
+            "exit": 0,
+            "instructions": 2704299232816,
+            "typed": 390
+          },
+          "first-B": {
+            "allocated": 2696331264,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 858513351396,
+            "typed": 390
+          },
+          "invalid": {
+            "allocated": 2585239552,
+            "dirty": 0,
+            "exit": 101,
+            "instructions": 1946912171,
+            "typed": 373
+          },
+          "repair": {
+            "allocated": 2591408128,
+            "dirty": 17,
+            "exit": 0,
+            "instructions": 57900486549,
+            "typed": 390
+          },
+          "return-A": {
+            "allocated": 2806919168,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 859699626016,
+            "typed": 390
+          },
+          "return-B": {
+            "allocated": 2582646784,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 861125416123,
+            "typed": 390
+          },
+          "unchanged-B": {
+            "allocated": 2582646784,
+            "dirty": 2,
+            "exit": 0,
+            "instructions": 6227645425,
+            "typed": 390
+          }
+        },
+        "Fon": {
+          "cold-A": {
+            "allocated": 2581331968,
+            "dirty": 390,
+            "exit": 0,
+            "instructions": 2704337286468,
+            "typed": 390
+          },
+          "first-B": {
+            "allocated": 3219423232,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 911098736961,
+            "typed": 390
+          },
+          "invalid": {
+            "allocated": 2889568256,
+            "dirty": 0,
+            "exit": 101,
+            "instructions": 2596552448,
+            "typed": 373
+          },
+          "repair": {
+            "allocated": 3082076160,
+            "dirty": 17,
+            "exit": 0,
+            "instructions": 82066145030,
+            "typed": 390
+          },
+          "return-A": {
+            "allocated": 2852651008,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 112013416947,
+            "typed": 390
+          },
+          "return-B": {
+            "allocated": 2860298240,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 138934952832,
+            "typed": 390
+          },
+          "unchanged-B": {
+            "allocated": 2860298240,
+            "dirty": 2,
+            "exit": 0,
+            "instructions": 6230071169,
+            "typed": 390
+          }
+        }
+      },
+      "plan": "e9ff2bc6ee12e71a07b3120668006935c9dd2bb40a862a8a5dbe863fa2a3fb16",
+      "suite_names_sha": "51fc64a8ded99efb44380e78d8ce4bc582d375c266d163555b38b4ffcf20f553"
+    },
+    "03": {
+      "boot": "a24b6a71-4828-4df3-a0b3-cb7bb716b254",
+      "order": [
+        "Foff",
+        "Fon"
+      ],
+      "original": "sha256:0b5937cbb97414bd7526ec7679fc4c2231de3a1a1e4d442c014f15cf80921809",
+      "pairs": {
+        "all_five_successful": [
+          5290147188766,
+          3872645613056
+        ],
+        "all_seven": [
+          5349976696337,
+          3957296617435
+        ],
+        "cold-A": [
+          2704276546969,
+          2704312653452
+        ],
+        "cold_through_return_B": [
+          5283918528011,
+          3866415367939
+        ],
+        "first-B": [
+          858532811072,
+          911169826225
+        ],
+        "first_switch_and_return_A": [
+          1718331614534,
+          1023158434851
+        ],
+        "invalid": [
+          1947353947,
+          2596288651
+        ],
+        "repair": [
+          57882153624,
+          82054715728
+        ],
+        "return-A": [
+          859798803462,
+          111988608626
+        ],
+        "return-B": [
+          861310366508,
+          138944279636
+        ],
+        "return_sum": [
+          1721109169970,
+          250932888262
+        ],
+        "unchanged-B": [
+          6228660755,
+          6230245117
+        ]
+      },
+      "phases": {
+        "Foff": {
+          "cold-A": {
+            "allocated": 2581323776,
+            "dirty": 390,
+            "exit": 0,
+            "instructions": 2704276546969,
+            "typed": 390
+          },
+          "first-B": {
+            "allocated": 2696192000,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 858532811072,
+            "typed": 390
+          },
+          "invalid": {
+            "allocated": 2585296896,
+            "dirty": 0,
+            "exit": 101,
+            "instructions": 1947353947,
+            "typed": 373
+          },
+          "repair": {
+            "allocated": 2591526912,
+            "dirty": 17,
+            "exit": 0,
+            "instructions": 57882153624,
+            "typed": 390
+          },
+          "return-A": {
+            "allocated": 2807291904,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 859798803462,
+            "typed": 390
+          },
+          "return-B": {
+            "allocated": 2582769664,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 861310366508,
+            "typed": 390
+          },
+          "unchanged-B": {
+            "allocated": 2582769664,
+            "dirty": 2,
+            "exit": 0,
+            "instructions": 6228660755,
+            "typed": 390
+          }
+        },
+        "Fon": {
+          "cold-A": {
+            "allocated": 2581327872,
+            "dirty": 390,
+            "exit": 0,
+            "instructions": 2704312653452,
+            "typed": 390
+          },
+          "first-B": {
+            "allocated": 3219435520,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 911169826225,
+            "typed": 390
+          },
+          "invalid": {
+            "allocated": 2889707520,
+            "dirty": 0,
+            "exit": 101,
+            "instructions": 2596288651,
+            "typed": 373
+          },
+          "repair": {
+            "allocated": 3082043392,
+            "dirty": 17,
+            "exit": 0,
+            "instructions": 82054715728,
+            "typed": 390
+          },
+          "return-A": {
+            "allocated": 2852687872,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 111988608626,
+            "typed": 390
+          },
+          "return-B": {
+            "allocated": 2860437504,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 138944279636,
+            "typed": 390
+          },
+          "unchanged-B": {
+            "allocated": 2860437504,
+            "dirty": 2,
+            "exit": 0,
+            "instructions": 6230245117,
+            "typed": 390
+          }
+        }
+      },
+      "plan": "e9ff2bc6ee12e71a07b3120668006935c9dd2bb40a862a8a5dbe863fa2a3fb16",
+      "suite_names_sha": "51fc64a8ded99efb44380e78d8ce4bc582d375c266d163555b38b4ffcf20f553"
+    },
+    "04": {
+      "boot": "be41eae4-b9f6-4421-9bf9-32abec0e5ee0",
+      "order": [
+        "Fon",
+        "Foff"
+      ],
+      "original": "sha256:cf1a6dfb6a6c9eec6855da7d08567942221ac57e7f21d97d8cc47e4178dd8e2e",
+      "pairs": {
+        "all_five_successful": [
+          5290194356892,
+          3872770609476
+        ],
+        "all_seven": [
+          5350051417732,
+          3957434059118
+        ],
+        "cold-A": [
+          2704448873222,
+          2704364784337
+        ],
+        "cold_through_return_B": [
+          5283965165054,
+          3866540595708
+        ],
+        "first-B": [
+          858573401780,
+          911221338465
+        ],
+        "first_switch_and_return_A": [
+          1718257488899,
+          1023218600426
+        ],
+        "invalid": [
+          1947489535,
+          2596000436
+        ],
+        "repair": [
+          57909571305,
+          82067449206
+        ],
+        "return-A": [
+          859684087119,
+          111997261961
+        ],
+        "return-B": [
+          861258802933,
+          138957210945
+        ],
+        "return_sum": [
+          1720942890052,
+          250954472906
+        ],
+        "unchanged-B": [
+          6229191838,
+          6230013768
+        ]
+      },
+      "phases": {
+        "Foff": {
+          "cold-A": {
+            "allocated": 2581372928,
+            "dirty": 390,
+            "exit": 0,
+            "instructions": 2704448873222,
+            "typed": 390
+          },
+          "first-B": {
+            "allocated": 2696093696,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 858573401780,
+            "typed": 390
+          },
+          "invalid": {
+            "allocated": 2585219072,
+            "dirty": 0,
+            "exit": 101,
+            "instructions": 1947489535,
+            "typed": 373
+          },
+          "repair": {
+            "allocated": 2591457280,
+            "dirty": 17,
+            "exit": 0,
+            "instructions": 57909571305,
+            "typed": 390
+          },
+          "return-A": {
+            "allocated": 2806759424,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 859684087119,
+            "typed": 390
+          },
+          "return-B": {
+            "allocated": 2582695936,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 861258802933,
+            "typed": 390
+          },
+          "unchanged-B": {
+            "allocated": 2582695936,
+            "dirty": 2,
+            "exit": 0,
+            "instructions": 6229191838,
+            "typed": 390
+          }
+        },
+        "Fon": {
+          "cold-A": {
+            "allocated": 2581319680,
+            "dirty": 390,
+            "exit": 0,
+            "instructions": 2704364784337,
+            "typed": 390
+          },
+          "first-B": {
+            "allocated": 3219423232,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 911221338465,
+            "typed": 390
+          },
+          "invalid": {
+            "allocated": 2889555968,
+            "dirty": 0,
+            "exit": 101,
+            "instructions": 2596000436,
+            "typed": 373
+          },
+          "repair": {
+            "allocated": 3082043392,
+            "dirty": 17,
+            "exit": 0,
+            "instructions": 82067449206,
+            "typed": 390
+          },
+          "return-A": {
+            "allocated": 2852675584,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 111997261961,
+            "typed": 390
+          },
+          "return-B": {
+            "allocated": 2860384256,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 138957210945,
+            "typed": 390
+          },
+          "unchanged-B": {
+            "allocated": 2860380160,
+            "dirty": 2,
+            "exit": 0,
+            "instructions": 6230013768,
+            "typed": 390
+          }
+        }
+      },
+      "plan": "e9ff2bc6ee12e71a07b3120668006935c9dd2bb40a862a8a5dbe863fa2a3fb16",
+      "suite_names_sha": "51fc64a8ded99efb44380e78d8ce4bc582d375c266d163555b38b4ffcf20f553"
+    },
+    "05": {
+      "boot": "5b9eb52a-062e-4aa5-862b-4b8e6023d352",
+      "order": [
+        "Foff",
+        "Fon"
+      ],
+      "original": "sha256:fd57c516a7c5ac6684ea7478c06461496981cf4b0d7e681e86fae030620c7c6d",
+      "pairs": {
+        "all_five_successful": [
+          5290079590774,
+          3872374684882
+        ],
+        "all_seven": [
+          5349955550868,
+          3957026698108
+        ],
+        "cold-A": [
+          2704360481285,
+          2704316402600
+        ],
+        "cold_through_return_B": [
+          5283851836506,
+          3866144409263
+        ],
+        "first-B": [
+          858636788784,
+          910908027808
+        ],
+        "first_switch_and_return_A": [
+          1718478464911,
+          1022880830128
+        ],
+        "invalid": [
+          1947303287,
+          2596264990
+        ],
+        "repair": [
+          57928656807,
+          82055748236
+        ],
+        "return-A": [
+          859841676127,
+          111972802320
+        ],
+        "return-B": [
+          861012890310,
+          138947176535
+        ],
+        "return_sum": [
+          1720854566437,
+          250919978855
+        ],
+        "unchanged-B": [
+          6227754268,
+          6230275619
+        ]
+      },
+      "phases": {
+        "Foff": {
+          "cold-A": {
+            "allocated": 2581315584,
+            "dirty": 390,
+            "exit": 0,
+            "instructions": 2704360481285,
+            "typed": 390
+          },
+          "first-B": {
+            "allocated": 2696134656,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 858636788784,
+            "typed": 390
+          },
+          "invalid": {
+            "allocated": 2585288704,
+            "dirty": 0,
+            "exit": 101,
+            "instructions": 1947303287,
+            "typed": 373
+          },
+          "repair": {
+            "allocated": 2591535104,
+            "dirty": 17,
+            "exit": 0,
+            "instructions": 57928656807,
+            "typed": 390
+          },
+          "return-A": {
+            "allocated": 2807033856,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 859841676127,
+            "typed": 390
+          },
+          "return-B": {
+            "allocated": 2582761472,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 861012890310,
+            "typed": 390
+          },
+          "unchanged-B": {
+            "allocated": 2582761472,
+            "dirty": 2,
+            "exit": 0,
+            "instructions": 6227754268,
+            "typed": 390
+          }
+        },
+        "Fon": {
+          "cold-A": {
+            "allocated": 2581336064,
+            "dirty": 390,
+            "exit": 0,
+            "instructions": 2704316402600,
+            "typed": 390
+          },
+          "first-B": {
+            "allocated": 3219406848,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 910908027808,
+            "typed": 390
+          },
+          "invalid": {
+            "allocated": 2889469952,
+            "dirty": 0,
+            "exit": 101,
+            "instructions": 2596264990,
+            "typed": 373
+          },
+          "repair": {
+            "allocated": 3081998336,
+            "dirty": 17,
+            "exit": 0,
+            "instructions": 82055748236,
+            "typed": 390
+          },
+          "return-A": {
+            "allocated": 2852601856,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 111972802320,
+            "typed": 390
+          },
+          "return-B": {
+            "allocated": 2860261376,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 138947176535,
+            "typed": 390
+          },
+          "unchanged-B": {
+            "allocated": 2860261376,
+            "dirty": 2,
+            "exit": 0,
+            "instructions": 6230275619,
+            "typed": 390
+          }
+        }
+      },
+      "plan": "e9ff2bc6ee12e71a07b3120668006935c9dd2bb40a862a8a5dbe863fa2a3fb16",
+      "suite_names_sha": "51fc64a8ded99efb44380e78d8ce4bc582d375c266d163555b38b4ffcf20f553"
+    },
+    "06": {
+      "boot": "2704fc6c-17a2-4955-8906-b1973132af53",
+      "order": [
+        "Fon",
+        "Foff"
+      ],
+      "original": "sha256:f9a5b58ff78d4625459c3ef288827f50f450a67b428083c0b7f232c72fa38526",
+      "pairs": {
+        "all_five_successful": [
+          5290053860808,
+          3872540713098
+        ],
+        "all_seven": [
+          5349910197181,
+          3957202041525
+        ],
+        "cold-A": [
+          2704257405590,
+          2704236223390
+        ],
+        "cold_through_return_B": [
+          5283826298117,
+          3866311776145
+        ],
+        "first-B": [
+          858633155698,
+          911149142383
+        ],
+        "first_switch_and_return_A": [
+          1718334226107,
+          1023136863826
+        ],
+        "invalid": [
+          1946906821,
+          2594858189
+        ],
+        "repair": [
+          57909429552,
+          82066470238
+        ],
+        "return-A": [
+          859701070409,
+          111987721443
+        ],
+        "return-B": [
+          861234666420,
+          138938688929
+        ],
+        "return_sum": [
+          1720935736829,
+          250926410372
+        ],
+        "unchanged-B": [
+          6227562691,
+          6228936953
+        ]
+      },
+      "phases": {
+        "Foff": {
+          "cold-A": {
+            "allocated": 2581323776,
+            "dirty": 390,
+            "exit": 0,
+            "instructions": 2704257405590,
+            "typed": 390
+          },
+          "first-B": {
+            "allocated": 2696327168,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 858633155698,
+            "typed": 390
+          },
+          "invalid": {
+            "allocated": 2585247744,
+            "dirty": 0,
+            "exit": 101,
+            "instructions": 1946906821,
+            "typed": 373
+          },
+          "repair": {
+            "allocated": 2591477760,
+            "dirty": 17,
+            "exit": 0,
+            "instructions": 57909429552,
+            "typed": 390
+          },
+          "return-A": {
+            "allocated": 2807328768,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 859701070409,
+            "typed": 390
+          },
+          "return-B": {
+            "allocated": 2582716416,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 861234666420,
+            "typed": 390
+          },
+          "unchanged-B": {
+            "allocated": 2582716416,
+            "dirty": 2,
+            "exit": 0,
+            "instructions": 6227562691,
+            "typed": 390
+          }
+        },
+        "Fon": {
+          "cold-A": {
+            "allocated": 2581360640,
+            "dirty": 390,
+            "exit": 0,
+            "instructions": 2704236223390,
+            "typed": 390
+          },
+          "first-B": {
+            "allocated": 3219480576,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 911149142383,
+            "typed": 390
+          },
+          "invalid": {
+            "allocated": 2889551872,
+            "dirty": 0,
+            "exit": 101,
+            "instructions": 2594858189,
+            "typed": 373
+          },
+          "repair": {
+            "allocated": 3082080256,
+            "dirty": 17,
+            "exit": 0,
+            "instructions": 82066470238,
+            "typed": 390
+          },
+          "return-A": {
+            "allocated": 2852741120,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 111987721443,
+            "typed": 390
+          },
+          "return-B": {
+            "allocated": 2860355584,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 138938688929,
+            "typed": 390
+          },
+          "unchanged-B": {
+            "allocated": 2860355584,
+            "dirty": 2,
+            "exit": 0,
+            "instructions": 6228936953,
+            "typed": 390
+          }
+        }
+      },
+      "plan": "e9ff2bc6ee12e71a07b3120668006935c9dd2bb40a862a8a5dbe863fa2a3fb16",
+      "suite_names_sha": "51fc64a8ded99efb44380e78d8ce4bc582d375c266d163555b38b4ffcf20f553"
+    },
+    "07": {
+      "boot": "869d493e-f488-41ad-924b-8d1ea0aad9d7",
+      "order": [
+        "Foff",
+        "Fon"
+      ],
+      "original": "sha256:9969cf9268dc6c2dd47d156ad9c10d4b995400c548d53a6b104f9852aa3e710e",
+      "pairs": {
+        "all_five_successful": [
+          5290153010432,
+          3872604431746
+        ],
+        "all_seven": [
+          5349999865754,
+          3957257268802
+        ],
+        "cold-A": [
+          2704363301282,
+          2704378042171
+        ],
+        "cold_through_return_B": [
+          5283924762298,
+          3866375345634
+        ],
+        "first-B": [
+          858649002123,
+          911033067185
+        ],
+        "first_switch_and_return_A": [
+          1718370648628,
+          1023033876715
+        ],
+        "invalid": [
+          1947293266,
+          2595136507
+        ],
+        "repair": [
+          57899562056,
+          82057700549
+        ],
+        "return-A": [
+          859721646505,
+          112000809530
+        ],
+        "return-B": [
+          861190812388,
+          138963426748
+        ],
+        "return_sum": [
+          1720912458893,
+          250964236278
+        ],
+        "unchanged-B": [
+          6228248134,
+          6229086112
+        ]
+      },
+      "phases": {
+        "Foff": {
+          "cold-A": {
+            "allocated": 2581348352,
+            "dirty": 390,
+            "exit": 0,
+            "instructions": 2704363301282,
+            "typed": 390
+          },
+          "first-B": {
+            "allocated": 2696327168,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 858649002123,
+            "typed": 390
+          },
+          "invalid": {
+            "allocated": 2585157632,
+            "dirty": 0,
+            "exit": 101,
+            "instructions": 1947293266,
+            "typed": 373
+          },
+          "repair": {
+            "allocated": 2591436800,
+            "dirty": 17,
+            "exit": 0,
+            "instructions": 57899562056,
+            "typed": 390
+          },
+          "return-A": {
+            "allocated": 2807259136,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 859721646505,
+            "typed": 390
+          },
+          "return-B": {
+            "allocated": 2582683648,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 861190812388,
+            "typed": 390
+          },
+          "unchanged-B": {
+            "allocated": 2582683648,
+            "dirty": 2,
+            "exit": 0,
+            "instructions": 6228248134,
+            "typed": 390
+          }
+        },
+        "Fon": {
+          "cold-A": {
+            "allocated": 2581348352,
+            "dirty": 390,
+            "exit": 0,
+            "instructions": 2704378042171,
+            "typed": 390
+          },
+          "first-B": {
+            "allocated": 3219546112,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 911033067185,
+            "typed": 390
+          },
+          "invalid": {
+            "allocated": 2889875456,
+            "dirty": 0,
+            "exit": 101,
+            "instructions": 2595136507,
+            "typed": 373
+          },
+          "repair": {
+            "allocated": 3082178560,
+            "dirty": 17,
+            "exit": 0,
+            "instructions": 82057700549,
+            "typed": 390
+          },
+          "return-A": {
+            "allocated": 2852888576,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 112000809530,
+            "typed": 390
+          },
+          "return-B": {
+            "allocated": 2860687360,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 138963426748,
+            "typed": 390
+          },
+          "unchanged-B": {
+            "allocated": 2860691456,
+            "dirty": 2,
+            "exit": 0,
+            "instructions": 6229086112,
+            "typed": 390
+          }
+        }
+      },
+      "plan": "e9ff2bc6ee12e71a07b3120668006935c9dd2bb40a862a8a5dbe863fa2a3fb16",
+      "suite_names_sha": "51fc64a8ded99efb44380e78d8ce4bc582d375c266d163555b38b4ffcf20f553"
+    },
+    "08": {
+      "boot": "f8a67c5a-7249-473d-b8e1-2230417661b2",
+      "order": [
+        "Fon",
+        "Foff"
+      ],
+      "original": "sha256:557f1477a25f33a2c8daa63d183912a920b6090d637ba2c77a098195c98a9e60",
+      "pairs": {
+        "all_five_successful": [
+          5290366376973,
+          3872638861475
+        ],
+        "all_seven": [
+          5350233663296,
+          3957289276610
+        ],
+        "cold-A": [
+          2704465518135,
+          2704482867321
+        ],
+        "cold_through_return_B": [
+          5284138119096,
+          3866409462232
+        ],
+        "first-B": [
+          858685028552,
+          910963387768
+        ],
+        "first_switch_and_return_A": [
+          1718395594526,
+          1022942170241
+        ],
+        "invalid": [
+          1947376245,
+          2596561429
+        ],
+        "repair": [
+          57919910078,
+          82053853706
+        ],
+        "return-A": [
+          859710565974,
+          111978782473
+        ],
+        "return-B": [
+          861277006435,
+          138984424670
+        ],
+        "return_sum": [
+          1720987572409,
+          250963207143
+        ],
+        "unchanged-B": [
+          6228257877,
+          6229399243
+        ]
+      },
+      "phases": {
+        "Foff": {
+          "cold-A": {
+            "allocated": 2581319680,
+            "dirty": 390,
+            "exit": 0,
+            "instructions": 2704465518135,
+            "typed": 390
+          },
+          "first-B": {
+            "allocated": 2696376320,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 858685028552,
+            "typed": 390
+          },
+          "invalid": {
+            "allocated": 2585374720,
+            "dirty": 0,
+            "exit": 101,
+            "instructions": 1947376245,
+            "typed": 373
+          },
+          "repair": {
+            "allocated": 2591555584,
+            "dirty": 17,
+            "exit": 0,
+            "instructions": 57919910078,
+            "typed": 390
+          },
+          "return-A": {
+            "allocated": 2807009280,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 859710565974,
+            "typed": 390
+          },
+          "return-B": {
+            "allocated": 2582773760,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 861277006435,
+            "typed": 390
+          },
+          "unchanged-B": {
+            "allocated": 2582777856,
+            "dirty": 2,
+            "exit": 0,
+            "instructions": 6228257877,
+            "typed": 390
+          }
+        },
+        "Fon": {
+          "cold-A": {
+            "allocated": 2581368832,
+            "dirty": 390,
+            "exit": 0,
+            "instructions": 2704482867321,
+            "typed": 390
+          },
+          "first-B": {
+            "allocated": 3219525632,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 910963387768,
+            "typed": 390
+          },
+          "invalid": {
+            "allocated": 2889789440,
+            "dirty": 0,
+            "exit": 101,
+            "instructions": 2596561429,
+            "typed": 373
+          },
+          "repair": {
+            "allocated": 3082125312,
+            "dirty": 17,
+            "exit": 0,
+            "instructions": 82053853706,
+            "typed": 390
+          },
+          "return-A": {
+            "allocated": 2852810752,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 111978782473,
+            "typed": 390
+          },
+          "return-B": {
+            "allocated": 2860523520,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 138984424670,
+            "typed": 390
+          },
+          "unchanged-B": {
+            "allocated": 2860523520,
+            "dirty": 2,
+            "exit": 0,
+            "instructions": 6229399243,
+            "typed": 390
+          }
+        }
+      },
+      "plan": "e9ff2bc6ee12e71a07b3120668006935c9dd2bb40a862a8a5dbe863fa2a3fb16",
+      "suite_names_sha": "51fc64a8ded99efb44380e78d8ce4bc582d375c266d163555b38b4ffcf20f553"
+    },
+    "09": {
+      "boot": "b9bd3b2e-dfd7-49b9-bb7e-34213c87bee9",
+      "order": [
+        "Foff",
+        "Fon"
+      ],
+      "original": "sha256:cfbef72862102f2b57ca77133927507ed22c92408b5ccfdc26349d9ce04c0edd",
+      "pairs": {
+        "all_five_successful": [
+          5290095071521,
+          3872545040349
+        ],
+        "all_seven": [
+          5349953567297,
+          3957217736975
+        ],
+        "cold-A": [
+          2704346263475,
+          2704230227638
+        ],
+        "cold_through_return_B": [
+          5283866563862,
+          3866315967423
+        ],
+        "first-B": [
+          858571234412,
+          911103021356
+        ],
+        "first_switch_and_return_A": [
+          1718202776311,
+          1023128257795
+        ],
+        "invalid": [
+          1947053794,
+          2596362228
+        ],
+        "repair": [
+          57911441982,
+          82076334398
+        ],
+        "return-A": [
+          859631541899,
+          112025236439
+        ],
+        "return-B": [
+          861317524076,
+          138957481990
+        ],
+        "return_sum": [
+          1720949065975,
+          250982718429
+        ],
+        "unchanged-B": [
+          6228507659,
+          6229072926
+        ]
+      },
+      "phases": {
+        "Foff": {
+          "cold-A": {
+            "allocated": 2581360640,
+            "dirty": 390,
+            "exit": 0,
+            "instructions": 2704346263475,
+            "typed": 390
+          },
+          "first-B": {
+            "allocated": 2696216576,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 858571234412,
+            "typed": 390
+          },
+          "invalid": {
+            "allocated": 2585329664,
+            "dirty": 0,
+            "exit": 101,
+            "instructions": 1947053794,
+            "typed": 373
+          },
+          "repair": {
+            "allocated": 2591481856,
+            "dirty": 17,
+            "exit": 0,
+            "instructions": 57911441982,
+            "typed": 390
+          },
+          "return-A": {
+            "allocated": 2806853632,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 859631541899,
+            "typed": 390
+          },
+          "return-B": {
+            "allocated": 2582732800,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 861317524076,
+            "typed": 390
+          },
+          "unchanged-B": {
+            "allocated": 2582732800,
+            "dirty": 2,
+            "exit": 0,
+            "instructions": 6228507659,
+            "typed": 390
+          }
+        },
+        "Fon": {
+          "cold-A": {
+            "allocated": 2581311488,
+            "dirty": 390,
+            "exit": 0,
+            "instructions": 2704230227638,
+            "typed": 390
+          },
+          "first-B": {
+            "allocated": 3219427328,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 911103021356,
+            "typed": 390
+          },
+          "invalid": {
+            "allocated": 2889576448,
+            "dirty": 0,
+            "exit": 101,
+            "instructions": 2596362228,
+            "typed": 373
+          },
+          "repair": {
+            "allocated": 3082096640,
+            "dirty": 17,
+            "exit": 0,
+            "instructions": 82076334398,
+            "typed": 390
+          },
+          "return-A": {
+            "allocated": 2852691968,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 112025236439,
+            "typed": 390
+          },
+          "return-B": {
+            "allocated": 2860326912,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 138957481990,
+            "typed": 390
+          },
+          "unchanged-B": {
+            "allocated": 2860326912,
+            "dirty": 2,
+            "exit": 0,
+            "instructions": 6229072926,
+            "typed": 390
+          }
+        }
+      },
+      "plan": "e9ff2bc6ee12e71a07b3120668006935c9dd2bb40a862a8a5dbe863fa2a3fb16",
+      "suite_names_sha": "51fc64a8ded99efb44380e78d8ce4bc582d375c266d163555b38b4ffcf20f553"
+    },
+    "10": {
+      "boot": "ee77bd56-d8a9-4c39-aee2-2cc76a88ff5a",
+      "order": [
+        "Fon",
+        "Foff"
+      ],
+      "original": "sha256:1412b00ddfb6096522f017a6b16596d03729e0e6ecfa98231e65bb6ed5de0e50",
+      "pairs": {
+        "all_five_successful": [
+          5290187707301,
+          3872726948313
+        ],
+        "all_seven": [
+          5350072376398,
+          3957376708388
+        ],
+        "cold-A": [
+          2704412499377,
+          2704492858379
+        ],
+        "cold_through_return_B": [
+          5283955147358,
+          3866498026066
+        ],
+        "first-B": [
+          858461674632,
+          911080560381
+        ],
+        "first_switch_and_return_A": [
+          1718300713005,
+          1023064467610
+        ],
+        "invalid": [
+          1946839621,
+          2595437997
+        ],
+        "repair": [
+          57937829476,
+          82054322078
+        ],
+        "return-A": [
+          859839038373,
+          111983907229
+        ],
+        "return-B": [
+          861241934976,
+          138940700077
+        ],
+        "return_sum": [
+          1721080973349,
+          250924607306
+        ],
+        "unchanged-B": [
+          6232559943,
+          6228922247
+        ]
+      },
+      "phases": {
+        "Foff": {
+          "cold-A": {
+            "allocated": 2581364736,
+            "dirty": 390,
+            "exit": 0,
+            "instructions": 2704412499377,
+            "typed": 390
+          },
+          "first-B": {
+            "allocated": 2696081408,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 858461674632,
+            "typed": 390
+          },
+          "invalid": {
+            "allocated": 2585366528,
+            "dirty": 0,
+            "exit": 101,
+            "instructions": 1946839621,
+            "typed": 373
+          },
+          "repair": {
+            "allocated": 2591539200,
+            "dirty": 17,
+            "exit": 0,
+            "instructions": 57937829476,
+            "typed": 390
+          },
+          "return-A": {
+            "allocated": 2807013376,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 859839038373,
+            "typed": 390
+          },
+          "return-B": {
+            "allocated": 2582769664,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 861241934976,
+            "typed": 390
+          },
+          "unchanged-B": {
+            "allocated": 2582773760,
+            "dirty": 2,
+            "exit": 0,
+            "instructions": 6232559943,
+            "typed": 390
+          }
+        },
+        "Fon": {
+          "cold-A": {
+            "allocated": 2581327872,
+            "dirty": 390,
+            "exit": 0,
+            "instructions": 2704492858379,
+            "typed": 390
+          },
+          "first-B": {
+            "allocated": 3219423232,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 911080560381,
+            "typed": 390
+          },
+          "invalid": {
+            "allocated": 2889625600,
+            "dirty": 0,
+            "exit": 101,
+            "instructions": 2595437997,
+            "typed": 373
+          },
+          "repair": {
+            "allocated": 3081998336,
+            "dirty": 17,
+            "exit": 0,
+            "instructions": 82054322078,
+            "typed": 390
+          },
+          "return-A": {
+            "allocated": 2852634624,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 111983907229,
+            "typed": 390
+          },
+          "return-B": {
+            "allocated": 2860433408,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 138940700077,
+            "typed": 390
+          },
+          "unchanged-B": {
+            "allocated": 2860433408,
+            "dirty": 2,
+            "exit": 0,
+            "instructions": 6228922247,
+            "typed": 390
+          }
+        }
+      },
+      "plan": "e9ff2bc6ee12e71a07b3120668006935c9dd2bb40a862a8a5dbe863fa2a3fb16",
+      "suite_names_sha": "51fc64a8ded99efb44380e78d8ce4bc582d375c266d163555b38b4ffcf20f553"
+    },
+    "11": {
+      "boot": "d6c9ed74-82b1-4546-9b1f-403b947b95d7",
+      "order": [
+        "Foff",
+        "Fon"
+      ],
+      "original": "sha256:8776f5b94af17e9acc48deddbf4ee2cde2f3b7a498fe0d17c284f658d33159c0",
+      "pairs": {
+        "all_five_successful": [
+          5290224686892,
+          3872726269556
+        ],
+        "all_seven": [
+          5350093456541,
+          3957381839934
+        ],
+        "cold-A": [
+          2704269071317,
+          2704329596131
+        ],
+        "cold_through_return_B": [
+          5283996647286,
+          3866497059635
+        ],
+        "first-B": [
+          858581345293,
+          911249218597
+        ],
+        "first_switch_and_return_A": [
+          1718395375315,
+          1023227159852
+        ],
+        "invalid": [
+          1947190079,
+          2595650073
+        ],
+        "repair": [
+          57921579570,
+          82059920305
+        ],
+        "return-A": [
+          859814030022,
+          111977941255
+        ],
+        "return-B": [
+          861332200654,
+          138940303652
+        ],
+        "return_sum": [
+          1721146230676,
+          250918244907
+        ],
+        "unchanged-B": [
+          6228039606,
+          6229209921
+        ]
+      },
+      "phases": {
+        "Foff": {
+          "cold-A": {
+            "allocated": 2581311488,
+            "dirty": 390,
+            "exit": 0,
+            "instructions": 2704269071317,
+            "typed": 390
+          },
+          "first-B": {
+            "allocated": 2696327168,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 858581345293,
+            "typed": 390
+          },
+          "invalid": {
+            "allocated": 2585321472,
+            "dirty": 0,
+            "exit": 101,
+            "instructions": 1947190079,
+            "typed": 373
+          },
+          "repair": {
+            "allocated": 2591535104,
+            "dirty": 17,
+            "exit": 0,
+            "instructions": 57921579570,
+            "typed": 390
+          },
+          "return-A": {
+            "allocated": 2807136256,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 859814030022,
+            "typed": 390
+          },
+          "return-B": {
+            "allocated": 2582765568,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 861332200654,
+            "typed": 390
+          },
+          "unchanged-B": {
+            "allocated": 2582769664,
+            "dirty": 2,
+            "exit": 0,
+            "instructions": 6228039606,
+            "typed": 390
+          }
+        },
+        "Fon": {
+          "cold-A": {
+            "allocated": 2581319680,
+            "dirty": 390,
+            "exit": 0,
+            "instructions": 2704329596131,
+            "typed": 390
+          },
+          "first-B": {
+            "allocated": 3219484672,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 911249218597,
+            "typed": 390
+          },
+          "invalid": {
+            "allocated": 2889588736,
+            "dirty": 0,
+            "exit": 101,
+            "instructions": 2595650073,
+            "typed": 373
+          },
+          "repair": {
+            "allocated": 3081977856,
+            "dirty": 17,
+            "exit": 0,
+            "instructions": 82059920305,
+            "typed": 390
+          },
+          "return-A": {
+            "allocated": 2852683776,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 111977941255,
+            "typed": 390
+          },
+          "return-B": {
+            "allocated": 2860326912,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 138940303652,
+            "typed": 390
+          },
+          "unchanged-B": {
+            "allocated": 2860326912,
+            "dirty": 2,
+            "exit": 0,
+            "instructions": 6229209921,
+            "typed": 390
+          }
+        }
+      },
+      "plan": "e9ff2bc6ee12e71a07b3120668006935c9dd2bb40a862a8a5dbe863fa2a3fb16",
+      "suite_names_sha": "51fc64a8ded99efb44380e78d8ce4bc582d375c266d163555b38b4ffcf20f553"
+    },
+    "12": {
+      "boot": "fc9eac7e-744a-43d6-ba74-d99eb7e025f4",
+      "order": [
+        "Fon",
+        "Foff"
+      ],
+      "original": "sha256:8ee9706a1327db08c20a7a44652218ecb0835106aad5a388b94965d1b70f3677",
+      "pairs": {
+        "all_five_successful": [
+          5289865064732,
+          3872564888139
+        ],
+        "all_seven": [
+          5349718359780,
+          3957237192727
+        ],
+        "cold-A": [
+          2704272368255,
+          2704207148163
+        ],
+        "cold_through_return_B": [
+          5283636947805,
+          3866334928354
+        ],
+        "first-B": [
+          858598391071,
+          911155215098
+        ],
+        "first_switch_and_return_A": [
+          1718209820229,
+          1023167239571
+        ],
+        "invalid": [
+          1947241556,
+          2594745372
+        ],
+        "repair": [
+          57906053492,
+          82077559216
+        ],
+        "return-A": [
+          859611429158,
+          112012024473
+        ],
+        "return-B": [
+          861154759321,
+          138960540620
+        ],
+        "return_sum": [
+          1720766188479,
+          250972565093
+        ],
+        "unchanged-B": [
+          6228116927,
+          6229959785
+        ]
+      },
+      "phases": {
+        "Foff": {
+          "cold-A": {
+            "allocated": 2581364736,
+            "dirty": 390,
+            "exit": 0,
+            "instructions": 2704272368255,
+            "typed": 390
+          },
+          "first-B": {
+            "allocated": 2696409088,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 858598391071,
+            "typed": 390
+          },
+          "invalid": {
+            "allocated": 2585182208,
+            "dirty": 0,
+            "exit": 101,
+            "instructions": 1947241556,
+            "typed": 373
+          },
+          "repair": {
+            "allocated": 2591498240,
+            "dirty": 17,
+            "exit": 0,
+            "instructions": 57906053492,
+            "typed": 390
+          },
+          "return-A": {
+            "allocated": 2807058432,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 859611429158,
+            "typed": 390
+          },
+          "return-B": {
+            "allocated": 2582720512,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 861154759321,
+            "typed": 390
+          },
+          "unchanged-B": {
+            "allocated": 2582720512,
+            "dirty": 2,
+            "exit": 0,
+            "instructions": 6228116927,
+            "typed": 390
+          }
+        },
+        "Fon": {
+          "cold-A": {
+            "allocated": 2581327872,
+            "dirty": 390,
+            "exit": 0,
+            "instructions": 2704207148163,
+            "typed": 390
+          },
+          "first-B": {
+            "allocated": 3219419136,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 911155215098,
+            "typed": 390
+          },
+          "invalid": {
+            "allocated": 2889666560,
+            "dirty": 0,
+            "exit": 101,
+            "instructions": 2594745372,
+            "typed": 373
+          },
+          "repair": {
+            "allocated": 3082092544,
+            "dirty": 17,
+            "exit": 0,
+            "instructions": 82077559216,
+            "typed": 390
+          },
+          "return-A": {
+            "allocated": 2852724736,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 112012024473,
+            "typed": 390
+          },
+          "return-B": {
+            "allocated": 2860335104,
+            "dirty": 21,
+            "exit": 0,
+            "instructions": 138960540620,
+            "typed": 390
+          },
+          "unchanged-B": {
+            "allocated": 2860335104,
+            "dirty": 2,
+            "exit": 0,
+            "instructions": 6229959785,
+            "typed": 390
+          }
+        }
+      },
+      "plan": "e9ff2bc6ee12e71a07b3120668006935c9dd2bb40a862a8a5dbe863fa2a3fb16",
+      "suite_names_sha": "51fc64a8ded99efb44380e78d8ce4bc582d375c266d163555b38b4ffcf20f553"
+    }
+  }
+}

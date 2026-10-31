@@ -1,0 +1,28 @@
+12 hosts, 168 whole commands, 144 successful off-clock 96-test suites
+cold-A                     off  2704.323B  on  2704.323B  median ratio 0.999994
+first-B                    off   858.590B  on   911.101B  median ratio 0.942331
+return-A                   off   859.716B  on   111.988B  median ratio 7.677093  ranks 2 and 11 7.674278, 7.678423
+return-B                   off   861.250B  on   138.946B  median ratio 6.198236  ranks 2 and 11 6.196932, 6.199297
+unchanged-B                off     6.228B  on     6.229B  median ratio 0.999814
+invalid                    off     1.947B  on     2.596B  median ratio 0.750137
+repair                     off    57.911B  on    82.059B  median ratio 0.705637
+return_sum                 off  1720.946B  on   250.941B  median ratio 6.857885  ranks 2 and 11 6.856843, 6.859391
+first_switch_and_return_A  off  1718.333B  on  1023.120B  median ratio 1.679457
+cold_through_return_B      off  5283.922B  on  3866.380B  median ratio 1.366626
+all_five_successful        off  5290.150B  on  3872.609B  median ratio 1.366036
+all_seven                  off  5349.988B  on  3957.267B  median ratio 1.351935
+first-B                    median extra after exit 498.95 MiB
+unchanged-B                median extra after exit 264.78 MiB
+repair                     median extra after exit 467.86 MiB
+Foff                       largest visit-end allocation on each host 2.614 to 2.615 GiB
+Fon                        largest visit-end allocation on each host 2.998 to 2.998 GiB
+Three lower bounds strictly above 2: True. Marginal coverage 99.365234375%, simultaneous coverage at least 98.095703125%.
+return-A distinct ratios 12
+  Foff first: 6 hosts, median 7.677608
+  Fon first: 6 hosts, median 7.676341
+return-B distinct ratios 12
+  Foff first: 6 hosts, median 6.198694
+  Fon first: 6 hosts, median 6.198031
+return_sum distinct ratios 12
+  Foff first: 6 hosts, median 6.858512
+  Fon first: 6 hosts, median 6.857560
