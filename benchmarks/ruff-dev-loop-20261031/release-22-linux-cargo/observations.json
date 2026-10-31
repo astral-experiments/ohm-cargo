@@ -1,0 +1,492 @@
+{
+  "cargo_gc": {
+    "late": {
+      "fixed-native": {
+        "canary_bytes": 137,
+        "cargo": "33b8a25b5277671b0ce95070f8e749801b4f6e643efcbabc0ff08e6086a9c219",
+        "eligible_sibling_unlinks": 1,
+        "exit": 0,
+        "held_nlink": 1,
+        "successful_external_unlinks": 0,
+        "trace_sha256": "7ddde51de2b05a31a4350214cbbef203e0a671ab66c814f893fe198db8dce702",
+        "uid": 1000
+      },
+      "fixed-no-openat2": {
+        "canary_bytes": 137,
+        "cargo": "33b8a25b5277671b0ce95070f8e749801b4f6e643efcbabc0ff08e6086a9c219",
+        "eligible_sibling_unlinks": 1,
+        "exit": 0,
+        "held_nlink": 1,
+        "successful_external_unlinks": 0,
+        "trace_sha256": "d2b209508128c446cf3a836a6d5504af2ca38fd21b699d7f8b8767945649dbf3",
+        "uid": 1000
+      },
+      "signed-native": {
+        "canary_bytes": 137,
+        "cargo": "df35740ab292c3654e0dac2728c3814e4c4c033c266adc4f5ef4f78856320229",
+        "eligible_sibling_unlinks": 1,
+        "exit": 101,
+        "held_nlink": 0,
+        "successful_external_unlinks": 1,
+        "trace_sha256": "2eb73af1af4e80b93b2370701481ae7ecc838006978e613a55ff8c222812fe5c",
+        "uid": 1000
+      }
+    },
+    "private": {
+      "fixed": {
+        "canary_bytes": 43,
+        "cargo": "33b8a25b5277671b0ce95070f8e749801b4f6e643efcbabc0ff08e6086a9c219",
+        "cross_mount_openat2_EXDEV": 1,
+        "events": 5,
+        "exit": 0,
+        "held_nlink": 1,
+        "successful_external_unlinks": 0
+      },
+      "signed": {
+        "canary_bytes": 43,
+        "cargo": "df35740ab292c3654e0dac2728c3814e4c4c033c266adc4f5ef4f78856320229",
+        "cross_mount_openat2_EXDEV": 0,
+        "events": 4,
+        "exit": 101,
+        "held_nlink": 0,
+        "successful_external_unlinks": 1
+      }
+    }
+  },
+  "fixed_cargo": "33b8a25b5277671b0ce95070f8e749801b4f6e643efcbabc0ff08e6086a9c219",
+  "official_linux": {
+    "bytes": 356746335,
+    "head": "007da57ba792129adb5754546e1158e7e6d732b7",
+    "id": 13057710231,
+    "job": 124644935360,
+    "job_name": "build (x86_64-unknown-linux-gnu, namespace-profile-ubuntu-24-04-16)",
+    "run": 41237680370,
+    "zip_sha256": "bb270473af5d365049ce2ca2e02eba9c628722510cd4c758e684ca256dffede9"
+  },
+  "official_provenance": {
+    "bundled_tools": {
+      "wild": {
+        "sha256": "25012a78de164686f552b7703b5d0223adab4829c79cd1fb351108221d61c7d8",
+        "version": "0.11.0"
+      }
+    },
+    "coordinator": {
+      "repository": "astral-experiments/ohm",
+      "revision": "007da57ba792129adb5754546e1158e7e6d732b7"
+    },
+    "manifest": {
+      "path": "toolchains/1.99.0/22.json",
+      "sha256": "68c7d720adfc40e7f0cb617b0b1de0621346df863328bd9b56de7c4d516a4ffd"
+    },
+    "schema_version": 1,
+    "sources": {
+      "cargo": {
+        "revision": "8269d772aa1ef02e5efaa331dfb40eb55d71f719"
+      },
+      "clippy": {
+        "revision": "0d76dc1f4fe7ffb86ee5e1a8a9cc4d6bef1d1bf6"
+      },
+      "rust": {
+        "revision": "556a8364f1485a03be31b1a50c250d63198a943d"
+      },
+      "rustfmt": {
+        "revision": "3c9620c92b01e6c393324729c4861823cc3676e2"
+      }
+    },
+    "target": "x86_64-unknown-linux-gnu",
+    "toolchain": "ohm-1.99.0-22"
+  },
+  "packaged_cargo": "df35740ab292c3654e0dac2728c3814e4c4c033c266adc4f5ef4f78856320229",
+  "ron": {
+    "bidirectional": {
+      "82a09414edc2a2b83f8f25be01ec8d38afa97a61f76a4a5468556138c1f8236f": {
+        "complete_bytes": 778342,
+        "difference_classes": {
+          "forward_path_hash": 39,
+          "inverse_path_index": 5,
+          "item_public_fingerprint": 79,
+          "key": 5,
+          "span_and_ident": 10
+        },
+        "different_bytes": 138,
+        "reconstructed_sha256": "82a09414edc2a2b83f8f25be01ec8d38afa97a61f76a4a5468556138c1f8236f"
+      },
+      "9d19d4d959f93129b650b104497bd6152a821ac25c84f9e76df8e1d5036aa5f2": {
+        "complete_bytes": 778342,
+        "difference_classes": {
+          "forward_path_hash": 32,
+          "inverse_path_index": 4,
+          "item_public_fingerprint": 64,
+          "key": 4,
+          "span_and_ident": 8
+        },
+        "different_bytes": 112,
+        "reconstructed_sha256": "9d19d4d959f93129b650b104497bd6152a821ac25c84f9e76df8e1d5036aa5f2"
+      },
+      "dad4ccaacc1bdc4e323ea80b667f6c1a198c17b895df9cd54a2e6d25ea0d8bac": {
+        "complete_bytes": 778342,
+        "difference_classes": {
+          "forward_path_hash": 39,
+          "inverse_path_index": 5,
+          "item_public_fingerprint": 80,
+          "key": 5,
+          "span_and_ident": 10
+        },
+        "different_bytes": 139,
+        "reconstructed_sha256": "dad4ccaacc1bdc4e323ea80b667f6c1a198c17b895df9cd54a2e6d25ea0d8bac"
+      }
+    },
+    "physical_compiler_listing_sha256": "b10aabf2d81a7df670a00db5f0605526711d9bcaa11f2fddfe9f20cc9cf95802",
+    "physical_images": 4,
+    "reference": "45719c73728cd2434e429a784d8355c6c092fc05a0d7ec110cc7d80c946d9ff5"
+  },
+  "ruff": {
+    "fixed-empty": {
+      "cargo_exit": 0,
+      "cargo_units": 303,
+      "diagnostic_codes_lines_and_source": [
+        [
+          "deprecated",
+          1243,
+          [
+            "const _: u8 = OHM_QA_OLD_CONST;"
+          ]
+        ]
+      ],
+      "dirty_artifacts": 303,
+      "negative_reader": "E0308",
+      "positive_reader": [
+        3144,
+        "21fd62a129ed3e12f34fb8717ef6f71f45ec5e43a53e0778bbe0b382dbc2055a"
+      ],
+      "ron": [
+        778342,
+        "45719c73728cd2434e429a784d8355c6c092fc05a0d7ec110cc7d80c946d9ff5"
+      ],
+      "source_sha256": "3e9f6852ac58d9b26ac7571ae92d424e2241e772eca7d9538d033817816ecc18",
+      "stdout_sha256": "8593aff0896bd9eb3309d43aabdb42774b64a275a8921f0d0af4124889671413"
+    },
+    "fixed-invalid": {
+      "cargo_exit": 101,
+      "cargo_units": 302,
+      "diagnostic_codes_lines_and_source": [
+        [
+          "E0308",
+          1240,
+          [
+            "const _: u8 = \"OHM_RON_CHECK_BAD_TYPE\";"
+          ]
+        ]
+      ],
+      "dirty_artifacts": 15,
+      "source_sha256": "0aa431793a70f0d44070f8d880be777f8ce0ab198c9036953786bc745dc03597",
+      "stdout_sha256": "c112d644f514a0dcdc81a4645bd260861aa4b3c0713bc0112f7fad4187d4838e"
+    },
+    "fixed-repair": {
+      "cargo_exit": 0,
+      "cargo_units": 303,
+      "diagnostic_codes_lines_and_source": [
+        [
+          "deprecated",
+          1243,
+          [
+            "const _: u8 = OHM_QA_OLD_CONST;"
+          ]
+        ]
+      ],
+      "dirty_artifacts": 16,
+      "negative_reader": "E0308",
+      "positive_reader": [
+        3144,
+        "21fd62a129ed3e12f34fb8717ef6f71f45ec5e43a53e0778bbe0b382dbc2055a"
+      ],
+      "ron": [
+        778342,
+        "82a09414edc2a2b83f8f25be01ec8d38afa97a61f76a4a5468556138c1f8236f"
+      ],
+      "source_sha256": "3e9f6852ac58d9b26ac7571ae92d424e2241e772eca7d9538d033817816ecc18",
+      "stdout_sha256": "ff0fe337045f87b9cd6f5bedf68c8f62e1968bece35af7f1d34eeb479edd10c8"
+    },
+    "fixed-repeat": {
+      "cargo_exit": 0,
+      "cargo_units": 303,
+      "diagnostic_codes_lines_and_source": [
+        [
+          "deprecated",
+          1243,
+          [
+            "const _: u8 = OHM_QA_OLD_CONST;"
+          ]
+        ]
+      ],
+      "dirty_artifacts": 16,
+      "negative_reader": "E0308",
+      "positive_reader": [
+        3144,
+        "21fd62a129ed3e12f34fb8717ef6f71f45ec5e43a53e0778bbe0b382dbc2055a"
+      ],
+      "ron": [
+        778342,
+        "9d19d4d959f93129b650b104497bd6152a821ac25c84f9e76df8e1d5036aa5f2"
+      ],
+      "source_sha256": "3e9f6852ac58d9b26ac7571ae92d424e2241e772eca7d9538d033817816ecc18",
+      "stdout_sha256": "9ab4e3f76ad31a987f72f4c612a9067546f3b40bf3d88846eafc455ba9faf0ed"
+    },
+    "fixed-upgrade": {
+      "cargo_exit": 0,
+      "cargo_units": 303,
+      "diagnostic_codes_lines_and_source": [
+        [
+          "deprecated",
+          1243,
+          [
+            "const _: u8 = OHM_QA_OLD_CONST;"
+          ]
+        ]
+      ],
+      "dirty_artifacts": 303,
+      "negative_reader": "E0308",
+      "positive_reader": [
+        3144,
+        "21fd62a129ed3e12f34fb8717ef6f71f45ec5e43a53e0778bbe0b382dbc2055a"
+      ],
+      "ron": [
+        778342,
+        "45719c73728cd2434e429a784d8355c6c092fc05a0d7ec110cc7d80c946d9ff5"
+      ],
+      "source_sha256": "3e9f6852ac58d9b26ac7571ae92d424e2241e772eca7d9538d033817816ecc18",
+      "stdout_sha256": "f665e00f45282ed4b313950bf0275a473c9d08c4d33151edcfd0ec719284945d"
+    },
+    "historical-edit": {
+      "cargo_exit": 0,
+      "cargo_units": 303,
+      "diagnostic_codes_lines_and_source": [],
+      "dirty_artifacts": 16,
+      "source_sha256": "d560695aa852f6f95c0218c0aba27aecd10e1d26980d9b4679e51d08ab69d309",
+      "stdout_sha256": "6039819017917e3f75878cb3d812f8b41fa2dd9b98cac1b35d65e62c37d6e74e"
+    },
+    "invalid": {
+      "cargo_exit": 101,
+      "cargo_units": 302,
+      "diagnostic_codes_lines_and_source": [
+        [
+          "E0308",
+          1240,
+          [
+            "const _: u8 = \"OHM_RON_CHECK_BAD_TYPE\";"
+          ]
+        ]
+      ],
+      "dirty_artifacts": 15,
+      "source_sha256": "0aa431793a70f0d44070f8d880be777f8ce0ab198c9036953786bc745dc03597",
+      "stdout_sha256": "32d26e8b24fe425f81ad3ad210b6df71aa8d5edd98987ec1b494e737b85c4d0a"
+    },
+    "original": {
+      "cargo_exit": 0,
+      "cargo_units": 303,
+      "diagnostic_codes_lines_and_source": [],
+      "dirty_artifacts": 303,
+      "source_sha256": "d560695aa852f6f95c0218c0aba27aecd10e1d26980d9b4679e51d08ab69d309",
+      "stdout_sha256": "f35e2275da878f4b35a752e98cd40c4420be2f75c21e80dbf2a50bedf6bb4c17"
+    },
+    "packaged-empty": {
+      "cargo_exit": 0,
+      "cargo_units": 303,
+      "diagnostic_codes_lines_and_source": [
+        [
+          "deprecated",
+          1243,
+          [
+            "const _: u8 = OHM_QA_OLD_CONST;"
+          ]
+        ]
+      ],
+      "dirty_artifacts": 303,
+      "negative_reader": "E0308",
+      "positive_reader": [
+        3144,
+        "21fd62a129ed3e12f34fb8717ef6f71f45ec5e43a53e0778bbe0b382dbc2055a"
+      ],
+      "ron": [
+        778342,
+        "45719c73728cd2434e429a784d8355c6c092fc05a0d7ec110cc7d80c946d9ff5"
+      ],
+      "source_sha256": "3e9f6852ac58d9b26ac7571ae92d424e2241e772eca7d9538d033817816ecc18",
+      "stdout_sha256": "75090cb6226e802d819d1e3e5996df78e8cf37277c6c99a8332952679ebd4d84"
+    },
+    "packaged-repair": {
+      "cargo_exit": 0,
+      "cargo_units": 303,
+      "diagnostic_codes_lines_and_source": [
+        [
+          "E0308",
+          1240,
+          [
+            "const _: u8 = \"OHM_RON_CHECK_BAD_TYPE\";"
+          ]
+        ]
+      ],
+      "dirty_artifacts": 16,
+      "negative_reader": "E0308",
+      "positive_reader": [
+        3144,
+        "21fd62a129ed3e12f34fb8717ef6f71f45ec5e43a53e0778bbe0b382dbc2055a"
+      ],
+      "ron": [
+        778342,
+        "82a09414edc2a2b83f8f25be01ec8d38afa97a61f76a4a5468556138c1f8236f"
+      ],
+      "source_sha256": "3e9f6852ac58d9b26ac7571ae92d424e2241e772eca7d9538d033817816ecc18",
+      "stdout_sha256": "b8516fae218aafa8fcc0cc18bb45e4311cdee7119b151d946f98d5d6291ef45e"
+    },
+    "packaged-repeat": {
+      "cargo_exit": 0,
+      "cargo_units": 303,
+      "diagnostic_codes_lines_and_source": [
+        [
+          "E0308",
+          1240,
+          [
+            "const _: u8 = \"OHM_RON_CHECK_BAD_TYPE\";"
+          ]
+        ]
+      ],
+      "dirty_artifacts": 16,
+      "negative_reader": "E0308",
+      "positive_reader": [
+        3144,
+        "21fd62a129ed3e12f34fb8717ef6f71f45ec5e43a53e0778bbe0b382dbc2055a"
+      ],
+      "ron": [
+        778342,
+        "dad4ccaacc1bdc4e323ea80b667f6c1a198c17b895df9cd54a2e6d25ea0d8bac"
+      ],
+      "source_sha256": "3e9f6852ac58d9b26ac7571ae92d424e2241e772eca7d9538d033817816ecc18",
+      "stdout_sha256": "effa4704713774630ada191a0d207da441c97a9573b82efa0047c1ccc6f79553"
+    },
+    "unchanged-warning": {
+      "cargo_exit": 0,
+      "cargo_units": 303,
+      "diagnostic_codes_lines_and_source": [
+        [
+          "deprecated",
+          1243,
+          [
+            "const _: u8 = OHM_QA_OLD_CONST;"
+          ]
+        ]
+      ],
+      "dirty_artifacts": 16,
+      "source_sha256": "3e9f6852ac58d9b26ac7571ae92d424e2241e772eca7d9538d033817816ecc18",
+      "stdout_sha256": "fd3020eae773be42ad606909c60fe357fed542263757550e039be33ee3bf1334"
+    },
+    "warning": {
+      "cargo_exit": 0,
+      "cargo_units": 303,
+      "diagnostic_codes_lines_and_source": [
+        [
+          "deprecated",
+          1243,
+          [
+            "const _: u8 = OHM_QA_OLD_CONST;"
+          ]
+        ]
+      ],
+      "dirty_artifacts": 16,
+      "negative_reader": "E0308",
+      "positive_reader": [
+        3144,
+        "21fd62a129ed3e12f34fb8717ef6f71f45ec5e43a53e0778bbe0b382dbc2055a"
+      ],
+      "ron": [
+        778342,
+        "82a09414edc2a2b83f8f25be01ec8d38afa97a61f76a4a5468556138c1f8236f"
+      ],
+      "source_sha256": "3e9f6852ac58d9b26ac7571ae92d424e2241e772eca7d9538d033817816ecc18",
+      "stdout_sha256": "60478f0c41cb6faee3f1ba962efa9cf6e6f8bf5633d81465d9449de5999aecd4"
+    }
+  },
+  "tar_sha256": "68ee7aa1405b0bf7c676f0778862ed27449c9d010a9064ec6e8bc313a2ad78f5",
+  "two_crate_reproduction": {
+    "fixed": {
+      "cold": [
+        0,
+        [
+          "dead_code"
+        ]
+      ],
+      "empty": [
+        0,
+        [
+          "dead_code"
+        ]
+      ],
+      "invalid": [
+        101,
+        [
+          "E0308"
+        ]
+      ],
+      "repair": [
+        0,
+        [
+          "dead_code"
+        ]
+      ],
+      "repeat": [
+        0,
+        [
+          "dead_code"
+        ]
+      ],
+      "same-interface-edit": [
+        0,
+        [
+          "dead_code"
+        ]
+      ]
+    },
+    "packaged": {
+      "cold": [
+        0,
+        [
+          "dead_code"
+        ]
+      ],
+      "empty": [
+        0,
+        [
+          "dead_code"
+        ]
+      ],
+      "invalid": [
+        101,
+        [
+          "E0308"
+        ]
+      ],
+      "repair": [
+        0,
+        [
+          "E0308"
+        ]
+      ],
+      "repeat": [
+        0,
+        [
+          "E0308"
+        ]
+      ],
+      "same-interface-edit": [
+        0,
+        [
+          "E0308"
+        ]
+      ]
+    }
+  },
+  "unchanged_rustc": [
+    171720,
+    "f5af460932d42f5d91578f0ec17a6c27e721892b46c4901e85bcfe30a0b9bde1"
+  ]
+}
