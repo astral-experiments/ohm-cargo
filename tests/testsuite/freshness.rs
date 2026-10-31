@@ -5474,6 +5474,22 @@ pub(super) fn relink_only_wrapper() -> PathBuf {
                         command.arg("--force-warn=unused_crate_dependencies");
                     }
                     let mut output = command.output().expect("rustc should run");
+                    // Model rustc's link-only marker on a dependency of an otherwise fresh binary.
+                    if output.status.success() && crate_name(args) == Some("dep")
+                        && env::var_os("RELINK_WRAPPER_COMPILER").is_some()
+                    {
+                        let out = args.windows(2).find(|pair| pair[0] == "--out-dir").unwrap();
+                        let file = fs::read_dir(&out[1]).unwrap().map(|e| e.unwrap().path())
+                            .find(|path| path.extension().is_some_and(|ext| ext == "d")
+                                && path.file_stem().unwrap().as_encoded_bytes().starts_with(b"dep-")).unwrap();
+                        let raw = fs::read_to_string(&file).unwrap();
+                        let (rule, input) = raw.lines().find_map(|line| line.split_once(".d: ")).unwrap();
+                        let (_, annotations) = raw.split_once(&format!("\n\n{input}:\n")).unwrap();
+                        let prefix = raw.lines().next().filter(|line| line.starts_with('#'))
+                            .map(|line| format!("{line}\n")).unwrap_or_default();
+                        let marker = "/dev/null/ohm-recheck-dependent-links";
+                        fs::write(&file, format!("{prefix}libdep.rlib: {input} {marker}\n\n{rule}.d: {input}\n\n{input}:\n{marker}:\n{annotations}")).unwrap();
+                    }
                     if let Some(control) = &control {
                         if crate_name(args) == Some("app") {
                             fs::write(control.join("library-finished"), "").unwrap();
@@ -5595,7 +5611,8 @@ pub(super) fn relink_only_wrapper() -> PathBuf {
 
                 fn main() {
                     let mut wrapper_args = env::args_os().skip(1);
-                    let rustc = wrapper_args.next().expect("rustc path");
+                    let rustc = env::var_os("RELINK_WRAPPER_COMPILER")
+                        .unwrap_or_else(|| wrapper_args.next().expect("rustc path"));
                     let args = wrapper_args.collect::<Vec<_>>();
                     let stripped = strip_flags(&args);
 
@@ -5657,6 +5674,53 @@ pub(super) fn relink_only_wrapper() -> PathBuf {
         .masquerade_as_nightly_cargo(&["ohm-defaults"])
         .run();
     wrapper.bin("relink-only-wrapper")
+}
+
+#[cfg(unix)]
+#[cargo_test]
+fn native_recheck_reuses_codegen_until_the_root_changes() {
+    let wrapper = relink_only_wrapper();
+    let p = project()
+        .file(
+            "Cargo.toml",
+            &format!(
+                "{}\n[dependencies]\ndep = {{ path = 'dep' }}",
+                basic_manifest("app", "0.1.0")
+            ),
+        )
+        .file(
+            "src/main.rs",
+            "extern crate dep; fn main() { println!(\"{}\", dep::value()); }",
+        )
+        .file("dep/Cargo.toml", &basic_manifest("dep", "0.1.0"))
+        .file("dep/src/lib.rs", "pub fn value() -> i32 { 17 }")
+        .build();
+    let log = p.root().join("compiler.log");
+    let build = || {
+        fs::write(&log, "").unwrap();
+        p.cargo("-Zohm-defaults build")
+            .masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("RUSTC", &wrapper)
+            .env(
+                "RELINK_WRAPPER_COMPILER",
+                std::env::var_os("RUSTC").unwrap_or_else(|| "rustc".into()),
+            )
+            .env("RELINK_WRAPPER_LOG", &log)
+            .run();
+        fs::read_to_string(&log).unwrap()
+    };
+    assert_eq!(build(), "compile:dep\ncompile-link:app\n");
+    assert_eq!(build(), "link:app\n");
+    p.change_file("dep/src/lib.rs", "pub fn value() -> i32 { 18 }");
+    assert_eq!(build(), "compile:dep\nlink:app\n");
+    p.process(&p.bin("app")).with_stdout_data("18\n").run();
+    p.change_file("dep/src/lib.rs", "pub fn value() -> i32 { 17 }");
+    p.change_file(
+        "src/main.rs",
+        "extern crate dep; fn main() { println!(\"{}\", dep::value() + 25); }",
+    );
+    assert_eq!(build(), "compile:dep\ncompile-link:app\n");
+    p.process(&p.bin("app")).with_stdout_data("42\n").run();
 }
 
 #[cfg(unix)]

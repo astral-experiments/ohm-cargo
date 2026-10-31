@@ -20,9 +20,19 @@ use cargo_util::Sha256;
 use cargo_util::paths;
 use serde::Serialize;
 
+use super::RECHECK_DEPENDENT_LINKS;
 use crate::CARGO_ENV;
 use crate::CargoResult;
 use crate::workspace::manifest::ManifestMetadata;
+
+const RECHECK_MARKERS: [&str; 2] = [
+    RECHECK_DEPENDENT_LINKS,
+    "/dev/null/ohm-recheck-dependent-links-v2",
+];
+
+fn is_recheck_marker(path: &Path) -> bool {
+    RECHECK_MARKERS.iter().any(|name| path == Path::new(name))
+}
 
 /// The current format version of [`EncodedDepInfo`].
 // Older records can contain a truncated filename and accept the wrong file as fresh.
@@ -38,6 +48,8 @@ pub struct RustcDepInfo {
     pub files: HashMap<PathBuf, Option<(u64, Checksum)>>,
     /// The deliberately missing dep-info input for a procedural macro that observed foreign spans.
     pub foreign_span_marker: Option<PathBuf>,
+    /// Rustc proved it could reuse the object code if consumers still check their native links.
+    pub(super) recheck_dependent_links: bool,
     raw_checksum_paths: bool,
     /// The list of environment variables we found that the rustc compilation
     /// depends on.
@@ -116,6 +128,8 @@ pub enum DepInfoPathType {
 pub struct EncodedDepInfo {
     /// The trailer points at the missing input used to force an observing compiler to run.
     pub observer: Option<usize>,
+    /// Index of the compiler-generated marker, distinct from an ordinary missing input.
+    recheck_dependent_links: Option<usize>,
     pub files: Vec<(DepInfoPathType, PathBuf, Option<(u64, String)>)>,
     pub env: Vec<(String, Option<String>)>,
 }
@@ -167,6 +181,24 @@ impl EncodedDepInfo {
             };
             env.push((key, val));
         }
+        let recheck_dependent_links = if let Some(mut suffix) = bytes.strip_prefix(b"LNK1") {
+            let index = read_usize(&mut suffix)?;
+            let (kind, path, checksum) = files.get(index)?;
+            let body = &record[..record.len() - suffix.len()];
+            let (digest, rest) = suffix.split_first_chunk::<32>()?;
+            if !cfg!(unix)
+                || *kind != DepInfoPathType::BuildRootRelative
+                || !is_recheck_marker(path)
+                || checksum.is_some()
+                || blake3::hash(body).as_bytes() != digest
+            {
+                return None;
+            }
+            *bytes = rest;
+            Some(index)
+        } else {
+            None
+        };
         let observer = if bytes.is_empty() {
             // Legacy ordinary paths were canonicalized and made relative. Even a name without
             // spaces may have come from a symlink or prefix for which rustc hashed a different file.
@@ -201,6 +233,7 @@ impl EncodedDepInfo {
             files,
             env,
             observer,
+            recheck_dependent_links,
         });
 
         /// See [`EncodedDepInfo`] for why a magic marker exists.
@@ -283,6 +316,12 @@ impl EncodedDepInfo {
                 }
             }
         }
+        if let Some(index) = self.recheck_dependent_links {
+            dst.extend_from_slice(b"LNK1");
+            write_usize(dst, index);
+            let digest = blake3::hash(dst);
+            dst.extend_from_slice(digest.as_bytes());
+        }
         if let Some(index) = self.observer {
             dst.extend_from_slice(b"OBS1");
             write_usize(dst, index);
@@ -359,7 +398,7 @@ pub fn translate_dep_info(
     allow_package: bool,
     env_config: &Arc<HashMap<String, OsString>>,
     worktree_seed_namespace: Option<&Path>,
-) -> CargoResult<()> {
+) -> CargoResult<bool> {
     let mut depinfo = parse_rustc_dep_info(rustc_dep_info)?;
     if !depinfo.raw_checksum_paths {
         // Older rustc hashed Make-escaped paths and could merge distinct lossy filenames.
@@ -505,6 +544,13 @@ pub fn translate_dep_info(
     };
 
     for (file, checksum_info) in depinfo.files {
+        if depinfo.recheck_dependent_links && is_recheck_marker(&file) && checksum_info.is_none() {
+            on_disk_info.recheck_dependent_links = Some(on_disk_info.files.len());
+            on_disk_info
+                .files
+                .push((DepInfoPathType::BuildRootRelative, file, None));
+            continue;
+        }
         if observer && file == marker {
             on_disk_info.observer = Some(on_disk_info.files.len());
         }
@@ -518,7 +564,7 @@ pub fn translate_dep_info(
         ));
     }
     paths::write(cargo_dep_info, on_disk_info.serialize()?)?;
-    Ok(())
+    Ok(depinfo.recheck_dependent_links)
 }
 
 /// Cargo supplies these paths from the current unit, not from package metadata.
@@ -558,7 +604,16 @@ pub fn parse_rustc_dep_info(rustc_dep_info: &Path) -> CargoResult<RustcDepInfo> 
     let rules = rustc_input_rules(contents, rustc_dep_info);
     let has_input_rules = rules.is_some();
     let mut found_deps = has_input_rules;
-    let data = if let Some((inputs, annotations)) = rules {
+    let data = if let Some((mut inputs, targets, annotations)) = rules {
+        if has_link_only_marker(&inputs, targets, rustc_dep_info) {
+            if inputs.last() == Some(&RECHECK_DEPENDENT_LINKS) {
+                // As on the released Cargo, old drivers rely on declared native inputs.
+                inputs.pop();
+            } else {
+                // Keep the versioned marker on disk for readers that predate the trailer.
+                ret.recheck_dependent_links = true;
+            }
+        }
         for input in inputs {
             ret.files.insert(input.replace("\\ ", " ").into(), None);
         }
@@ -660,7 +715,10 @@ pub fn parse_rustc_dep_info(rustc_dep_info: &Path) -> CargoResult<RustcDepInfo> 
 /// Rustc writes the same filenames twice, separated by spaces in each output
 /// rule and by a colon and newline in its empty input rules. Reading the lists
 /// together distinguishes separators from literal whitespace and backslashes.
-fn rustc_input_rules<'a>(contents: &'a str, output: &Path) -> Option<(Vec<&'a str>, &'a str)> {
+fn rustc_input_rules<'a>(
+    contents: &'a str,
+    output: &Path,
+) -> Option<(Vec<&'a str>, &'a str, &'a str)> {
     // The first target can itself contain a colon followed by a space.
     let rule = output
         .to_str()
@@ -688,10 +746,7 @@ fn rustc_input_rules<'a>(contents: &'a str, output: &Path) -> Option<(Vec<&'a st
                     || rest.starts_with("# checksum:")
                     || rest.starts_with("\n# env-dep:"))
             {
-                if has_link_only_marker(&paths, &inputs[..offset], output) {
-                    paths.pop();
-                }
-                return Some((paths, rest));
+                return Some((paths, &inputs[..offset], rest));
             }
             let Some(next) = tail.strip_prefix(' ') else {
                 break;
@@ -702,18 +757,17 @@ fn rustc_input_rules<'a>(contents: &'a str, output: &Path) -> Option<(Vec<&'a st
     None
 }
 
-const RECHECK_DEPENDENT_LINKS: &str = "/dev/null/ohm-recheck-dependent-links";
-
-/// Rustc omits its advisory link marker from the depfile's own rule. Real
-/// dependencies occur in both lists, even if they happen to use the marker's name.
+/// Rustc omits only its synthetic marker from the depfile's own rule. A path
+/// actually tracked by rustc or a proc macro occurs in both lists.
 fn has_link_only_marker(inputs: &[&str], targets: &str, output: &Path) -> bool {
-    let Some((&RECHECK_DEPENDENT_LINKS, ordinary)) = inputs.split_last() else {
+    let Some((marker, ordinary)) = inputs.split_last() else {
         return false;
     };
-    if !cfg!(unix)
+    if !RECHECK_MARKERS.contains(marker)
+        || !cfg!(unix)
         || ordinary
             .iter()
-            .any(|p| p.contains(['\n', '\r']) || Path::new(p) == Path::new(RECHECK_DEPENDENT_LINKS))
+            .any(|p| p.contains(['\n', '\r']) || is_recheck_marker(Path::new(p)))
     {
         return false;
     }
@@ -758,15 +812,17 @@ pub fn parse_dep_info(
         let (ty, path, _) = &info.files[index];
         make_absolute_path(*ty, pkg_root, build_root, path.clone())
     });
-    ret.files
-        .extend(info.files.into_iter().map(|(ty, path, checksum_info)| {
-            (
+    ret.recheck_dependent_links = info.recheck_dependent_links.is_some();
+    for (index, (ty, path, checksum_info)) in info.files.into_iter().enumerate() {
+        if Some(index) != info.recheck_dependent_links {
+            ret.files.insert(
                 make_absolute_path(ty, pkg_root, build_root, path),
                 checksum_info.and_then(|(file_len, checksum)| {
                     Checksum::from_str(&checksum).ok().map(|c| (file_len, c))
                 }),
-            )
-        }));
+            );
+        }
+    }
     Ok(Some(ret))
 }
 
@@ -1016,41 +1072,95 @@ mod encoded_dep_info {
 
     #[cfg(unix)]
     #[test]
-    fn only_the_compilers_advisory_link_marker_is_omitted() {
+    fn recheck_links_only_for_the_compiler_generated_marker() {
         let temp = tempfile::tempdir().unwrap();
-        let dep = temp.path().join("ru: st.d");
-        let target = dep
+        let root = temp.path().canonicalize().unwrap();
+        let raw = root.join("ru: st.d");
+        let target = raw
             .to_str()
             .unwrap()
             .replace(' ', "\\ ")
             .replace(':', "\\:");
+        let record = root.join("cargo.d");
         let marker = RECHECK_DEPENDENT_LINKS;
-        let rebuild = "/dev/null/ohm-untracked-relink-inputs";
-        for (ordinary, last, marked, tracked) in [
-            ("src.rs".to_owned(), marker, true, false),
-            (format!("src.rs {marker}"), marker, false, true),
-            (format!("src.rs {marker}"), marker, true, true),
+        let v2 = "/dev/null/ohm-recheck-dependent-links-v2";
+        for (marker, ordinary, marked, synthetic) in [
+            (marker, "src.rs".to_owned(), true, true),
+            (marker, format!("src.rs {marker}"), false, false),
+            (marker, format!("src.rs {marker}"), true, false),
             (
-                "src.rs /dev//null/./ohm-recheck-dependent-links".to_owned(),
                 marker,
+                format!("src.rs {}", marker.replace("/null/", "//null/./")),
                 true,
-                true,
+                false,
             ),
-            ("src.rs".to_owned(), rebuild, true, true),
+            (v2, "src.rs".to_owned(), true, true),
+            (v2, format!("src.rs {v2}"), false, false),
+            (v2, format!("src.rs {v2}"), true, false),
+            (
+                v2,
+                format!("src.rs {}", v2.replace("/null/", "//null/./")),
+                true,
+                false,
+            ),
+            (v2, format!("src.rs {marker}"), true, false),
+            (marker, format!("src.rs {v2}"), true, false),
+            (
+                "/dev/null/ohm-untracked-relink-inputs",
+                "src.rs".to_owned(),
+                true,
+                false,
+            ),
         ] {
             let inputs = if marked {
-                format!("{ordinary} {last}")
+                format!("{ordinary} {marker}")
             } else {
                 ordinary.clone()
             };
             let mut data = format!("lib.rlib: {inputs}\n\n{target}: {ordinary}\n\n");
-            for path in inputs.split(' ') {
-                data.push_str(&format!("{path}:\n"));
+            for input in inputs.split(' ') {
+                data.push_str(&format!("{input}:\n"));
             }
-            std::fs::write(&dep, data).unwrap();
-            let files = parse_rustc_dep_info(&dep).unwrap().files;
-            assert!(files.contains_key(Path::new("src.rs")));
-            assert_eq!(files.contains_key(Path::new(last)), tracked);
+            std::fs::write(&raw, data).unwrap();
+            let parsed = parse_rustc_dep_info(&raw).unwrap();
+            let recheck = synthetic && marker == v2;
+            let keep_path = !synthetic || recheck;
+            assert!(parsed.files.contains_key(Path::new("src.rs")));
+            assert_eq!(parsed.recheck_dependent_links, recheck);
+            assert_eq!(parsed.files.contains_key(Path::new(marker)), keep_path);
+            translate_dep_info(
+                &raw,
+                &record,
+                &root,
+                &root,
+                &root,
+                &ProcessBuilder::new("rustc"),
+                true,
+                &Arc::default(),
+                None,
+            )
+            .unwrap();
+            let info = parse_dep_info(&root, &root, &record).unwrap().unwrap();
+            assert_eq!(info.recheck_dependent_links, recheck);
+            assert_eq!(info.files.contains_key(Path::new(marker)), !synthetic);
+            assert_eq!(
+                dep_info_paths(&root, &root, &record)
+                    .unwrap()
+                    .any(|p| p == Path::new(marker)),
+                keep_path,
+            );
+            if recheck {
+                let mut bytes = std::fs::read(&record).unwrap();
+                // An older record with no link marker trailer still tracks the missing path.
+                let end = bytes.len() - 40;
+                assert_eq!(&bytes[end..end + 4], b"LNK1");
+                std::fs::write(&record, &bytes[..end]).unwrap();
+                let old = parse_dep_info(&root, &root, &record).unwrap().unwrap();
+                assert!(!old.recheck_dependent_links);
+                assert!(old.files.contains_key(Path::new(marker)));
+                *bytes.last_mut().unwrap() ^= 1;
+                assert!(EncodedDepInfo::parse(&bytes).is_none());
+            }
         }
     }
 
@@ -1265,6 +1375,7 @@ mod encoded_dep_info {
 
         let depinfo = EncodedDepInfo {
             observer: None,
+            recheck_dependent_links: None,
             files: vec![lib_rs.clone()],
             env: Vec::new(),
         };
@@ -1278,6 +1389,7 @@ mod encoded_dep_info {
         );
         let depinfo = EncodedDepInfo {
             observer: None,
+            recheck_dependent_links: None,
             files: vec![lib_rs.clone(), mod_rs.clone()],
             env: Vec::new(),
         };
@@ -1286,6 +1398,7 @@ mod encoded_dep_info {
 
         let depinfo = EncodedDepInfo {
             observer: None,
+            recheck_dependent_links: None,
             files: vec![lib_rs, mod_rs],
             env: vec![
                 ("Gimli".into(), Some("Legolas".into())),
@@ -1340,6 +1453,7 @@ mod encoded_dep_info {
             EncodedDepInfo::parse(&data).unwrap(),
             EncodedDepInfo {
                 observer: None,
+                recheck_dependent_links: None,
                 files: vec![(DepInfoPathType::PackageRootRelative, "rust".into(), None)],
                 env: Vec::new(),
             }

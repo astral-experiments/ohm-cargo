@@ -15,6 +15,10 @@ mod commands;
 use crate::command_prelude::*;
 
 fn main() {
+    #[cfg(all(feature = "ohm-defaults", target_os = "macos", target_arch = "aarch64"))]
+    if let Some(code) = cargo::compiler::native_link_driver::enter_cli() {
+        std::process::exit(code);
+    }
     #[cfg(unix)]
     if cargo::ops::run_ready_test_relay() {
         return;
