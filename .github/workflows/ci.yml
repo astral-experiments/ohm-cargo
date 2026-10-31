@@ -1,279 +1,64 @@
-name: CI
-
+name: RC22 native marker qualification
 on:
-  push:
-    branches:
-      - ohm-1.99.0
-  pull_request:
   workflow_dispatch:
-    inputs:
-      clippy_apfs_replay:
-        description: Run the isolated production Clippy APFS storage and performance replay
-        type: boolean
-        default: false
-
 permissions:
   contents: read
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
-env:
-  RUST_VERSION: 1.99.0
-
 jobs:
-  rustfmt:
-    name: Rustfmt
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - name: Install Rust
-        run: rustup toolchain install "$RUST_VERSION" --profile minimal --component rustfmt
-      - name: Check formatting
-        run: cargo +"$RUST_VERSION" fmt --all --check
-
-  clippy:
-    name: Clippy (${{ matrix.os }})
-    runs-on: ${{ matrix.os == 'depot-macos-15' && 'namespace-profile-macos-15' || 'namespace-profile-ubuntu-24-04-16' }}
+  exact:
+    name: Marker handling (${{ matrix.host }}, ${{ matrix.role }})
     strategy:
       fail-fast: false
       matrix:
-        os: [depot-ubuntu-24.04-8, depot-macos-15]
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - name: Install Rust
-        run: rustup toolchain install "$RUST_VERSION" --profile minimal --component clippy
-      - name: Check lints
-        run: cargo +"$RUST_VERSION" clippy --workspace --all-targets --no-deps -- -D warnings
-
-  cargo-tests:
-    name: Cargo tests (${{ matrix.os }})
-    runs-on: ${{ matrix.os == 'depot-macos-15' && 'namespace-profile-macos-15' || 'namespace-profile-ubuntu-24-04-16' }}
+        host: [Linux, macOS]
+        role: [parent, fixed]
+    runs-on: ${{ matrix.host == 'macOS' && 'namespace-profile-macos-15' || 'namespace-profile-ubuntu-24-04-16' }}
+    timeout-minutes: 60
     env:
-      CARGO_PROFILE_DEV_DEBUG: 1
-      CARGO_PROFILE_TEST_DEBUG: 1
-      CARGO_INCREMENTAL: 0
-      CARGO_PUBLIC_NETWORK_TESTS: 1
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: depot-ubuntu-24.04-16
-            other: i686-unknown-linux-gnu
-          - os: depot-macos-15
-            other: x86_64-apple-darwin
+      CARGO_PROFILE_DEV_DEBUG: '0'
+      CARGO_PROFILE_TEST_DEBUG: '0'
+      CARGO_INCREMENTAL: '0'
+      CARGO_TERM_COLOR: never
+      RUSTUP_TOOLCHAIN: 1.99.0
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - name: Install Rust
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          fetch-depth: 3
+          persist-credentials: false
+      - name: Isolate an actual native fixture filesystem
+        shell: bash
         run: |
-          # Keep compiled-in test scratch paths outside this repository and any
-          # `target` component, for Git discovery and automatic shared-build admission.
-          echo "CARGO_TARGET_DIR=$RUNNER_TEMP/cargo-tests" >> "$GITHUB_ENV"
-          rustup toolchain install "$RUST_VERSION" --profile minimal --component rustfmt
-          rustup target add --toolchain "$RUST_VERSION" "${{ matrix.other }}" wasm32-unknown-unknown
-      - name: Install system dependencies
-        if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y gcc-multilib libsecret-1-0 libsecret-1-dev
-      - name: Prepare a private ext4 directory for the Linux tests
-        if: runner.os == 'Linux'
-        id: linux_scratch
-        run: |
-          # GC checks mount boundaries. The runner's root overlay can report
-          # different device numbers for files and their parent directory.
-          test "$(findmnt -n -T /cache -o FSTYPE)" = ext4
-          scratch="$(sudo mktemp -d "/cache/ohm-cargo-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT-XXXXXXXX")"
-          echo "path=$scratch" >> "$GITHUB_OUTPUT"
-          sudo chown "$(id -u):$(id -g)" "$scratch"
-          mkdir "$scratch/tmp"
-          cp /bin/true "$scratch/check-exec"
-          "$scratch/check-exec"
-          echo "TMPDIR=$scratch/tmp" >> "$GITHUB_ENV"
-          echo "CARGO_TARGET_DIR=$scratch/cargo-tests" >> "$GITHUB_ENV"
-      - name: Run Cargo unit and integration tests
-        run: cargo +"$RUST_VERSION" test -p cargo
-      - name: Install Ohm for shared-registry integration coverage
-        if: runner.os == 'Linux'
-        env:
-          OHM_VERSION: ohm-1.97.1-16
-          OHM_INSTALLER_SHA256: e8f33de7d5a2def0205fbde4db499853f44b3444037559637d2d8ff1e6cc92a4
-        run: |
-          installer="$RUNNER_TEMP/ohm-installer.sh"
-          curl --proto '=https' --tlsv1.2 --fail --silent --show-error --location \
-            --output "$installer" \
-            "https://labs.astral.sh/ohm/releases/$OHM_VERSION/install.sh"
-          printf '%s  %s\n' "$OHM_INSTALLER_SHA256" "$installer" | sha256sum --check
-          sh "$installer"
-      - name: Run shared-registry integration with Ohm
-        if: runner.os == 'Linux'
-        env:
-          RUSTUP_TOOLCHAIN: ohm-1.97.1-16
-          # This pinned compiler predates early metadata.
-          __CARGO_HEADSTART: "no"
-        run: |
-          testsuite="$(find "$CARGO_TARGET_DIR/debug/deps" -maxdepth 1 -type f -name 'testsuite-*' -perm -u+x -print -quit)"
-          if [[ -z "$testsuite" ]]; then
-            echo 'compiled Cargo integration test binary was not found' >&2
-            exit 1
-          fi
-          "$testsuite" \
-            build_dir::shared_registry_cache_preserves_cross_workspace_reuse_and_private_early_cutoff \
-            --exact --nocapture
-          "$testsuite" \
-            build_dir::shared_registry_cache_avoids_hashing_immutable_public_apis \
-            --exact --nocapture
-          "$testsuite" \
-            check::ohm_preserves_fresh_checks_while_holding_shared_workspace_locks \
-            --exact --nocapture
-          "$testsuite" \
-            check::ohm_locks_fingerprints_before_preserving_established_check_graphs \
-            --exact --nocapture
-          "$testsuite" \
-            check::ohm_skips_cold_ordinary_check_graphs_after_test_builds \
-            --exact --nocapture
-      - name: Install Ohm for Clippy worktree coverage
-        env:
-          OHM_VERSION: ohm-1.98.0-9
-          OHM_INSTALLER_SHA256: 573e00024783ab952f7c2d629f12f9e0ba61be96843f7e692dc056642a72affe
-        run: |
-          installer="$RUNNER_TEMP/ohm-clippy-installer.sh"
-          curl --proto '=https' --tlsv1.2 --fail --silent --show-error --location \
-            --output "$installer" \
-            "https://labs.astral.sh/ohm/releases/$OHM_VERSION/install.sh"
-          printf '%s  %s\n' "$OHM_INSTALLER_SHA256" "$installer" | shasum -a 256 --check
-          sh "$installer"
-      - name: Run profile and bundled Clippy worktree tests with Ohm
-        env:
-          RUSTUP_TOOLCHAIN: ohm-1.98.0-9
-          # This pinned compiler predates early metadata.
-          __CARGO_HEADSTART: "no"
-        run: |
-          toolchain_bin="$(dirname "$(rustup which rustc)")"
-          rustup_bin="$(dirname "$(command -v rustup)")"
-          # Exclude runner-provided native-tool shims from the trusted-cache fixture.
-          export PATH="$toolchain_bin:$rustup_bin:/usr/bin:/bin:/usr/sbin:/sbin"
-          rustc -Vv
-          clippy-driver -V
-          testsuite="$(find "$CARGO_TARGET_DIR/debug/deps" -maxdepth 1 -type f -name 'testsuite-*' -perm -u+x -print -quit)"
-          if [[ -z "$testsuite" ]]; then
-            echo 'compiled Cargo integration test binary was not found' >&2
-            exit 1
-          fi
-          # The stable-built testsuite marks these nightly tests ignored at compile time.
-          "$testsuite" profiles::ohm_default_debuginfo --include-ignored --nocapture
-          for test in \
-            worktree_import_requires_cloning \
-            bundled_clippy_isolation_defaults_follow_actual_snapshot_cloning \
-            bundled_clippy_preserves_ordinary_seeds_without_importing_lint_state \
-            clippy_isolation_overrides_are_inherited_and_child_flags_take_precedence \
-            forced_clippy_isolation_preserves_compiler_trust_rejections \
-            clippy_wrapper_scripts_still_deny_the_whole_seed; do
-            "$testsuite" "ohm_worktree::$test" --exact --include-ignored --nocapture
-          done
+          set -euo pipefail
           if [[ "$RUNNER_OS" == Linux ]]; then
-            "$testsuite" ohm_linker::ohm_defaults_select_wild_and_allow_lld \
-              --exact --include-ignored --nocapture
-            "$testsuite" rustflags::ohm_defaults_reexpand_derive_after_native_input_changes \
-              --exact --nocapture
+            test "$(findmnt -n -T /cache -o FSTYPE)" = ext4
+            s=$(sudo mktemp -d "/cache/ohm-rc22-markers-$GITHUB_RUN_ID-$GITHUB_JOB-XXXXXXXX")
+            sudo chown "$(id -u):$(id -g)" "$s"
+            fs=$(findmnt -n -T "$s" -o FSTYPE,SOURCE)
+            sudo apt-get -qq update
+            sudo apt-get -qq install -y libsecret-1-dev
+          else
+            s=$(mktemp -d "$RUNNER_TEMP/ohm-rc22-markers-XXXXXXXX")
+            device=$(df -P "$s" | awk 'END {print $1}')
+            fs=$(diskutil info -plist "$device" | python3 -c 'import plistlib,sys; print(plistlib.load(sys.stdin.buffer)["FilesystemType"])')
+            test "$fs" = apfs
           fi
-      - name: Remove this job's Linux test directory
-        if: always() && steps.linux_scratch.outputs.path != ''
+          mkdir "$s/tmp" "$s/cargo-tests"
+          cp /bin/true "$s/probe"; "$s/probe"
+          echo "QA_STORAGE=$fs" >> "$GITHUB_ENV"
+          echo "TMPDIR=$s/tmp" >> "$GITHUB_ENV"
+          echo "CARGO_TARGET_DIR=$s/cargo-tests" >> "$GITHUB_ENV"
+      - name: Install the upstream stable toolchain
+        run: rustup toolchain install 1.99.0 --profile minimal
+      - name: Run the three exact physical test cases
         env:
-          SCRATCH: ${{ steps.linux_scratch.outputs.path }}
+          ROLE: ${{ matrix.role }}
         run: |
-          test "$(dirname -- "$SCRATCH")" = /cache
-          [[ "$(basename -- "$SCRATCH")" == "ohm-cargo-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT-"???????? ]]
-          sudo rm -rf --one-file-system -- "$SCRATCH"
-
-  workspace-tests:
-    name: Workspace tests
-    runs-on: namespace-profile-ubuntu-24-04-16
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - name: Install Rust
-        run: rustup toolchain install "$RUST_VERSION" --profile minimal
-      - name: Run workspace tests
-        run: cargo +"$RUST_VERSION" test --workspace --exclude cargo --exclude benchsuite --exclude resolver-tests
-
-  resolver:
-    name: Resolver tests
-    runs-on: namespace-profile-ubuntu-24-04-16
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - name: Install Rust
-        run: rustup toolchain install "$RUST_VERSION" --profile minimal
-      - name: Run resolver tests
-        run: cargo +"$RUST_VERSION" test -p resolver-tests
-
-  schema:
-    name: Schema tests
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - name: Install Rust
-        run: rustup toolchain install "$RUST_VERSION" --profile minimal
-      - name: Run schema tests
-        run: cargo +"$RUST_VERSION" test -p cargo-util-schemas --features unstable-schema
-
-  clippy-apfs-replay:
-    name: Clippy APFS replay
-    if: github.event_name == 'workflow_dispatch' && inputs.clippy_apfs_replay
-    runs-on: namespace-profile-macos-15
-    timeout-minutes: 45
-    env:
-      OHM_VERSION: ohm-1.98.0-9
-      OHM_INSTALLER_SHA256: 573e00024783ab952f7c2d629f12f9e0ba61be96843f7e692dc056642a72affe
-      CARGO_HOME: /private/tmp/codex-cargo-home
-      CARGO_TARGET_DIR: /private/tmp/codex-cargo-targets/cargo/clippy-seeding-ci/ohm
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
-        with:
-          python-version: '3.13'
-      - name: Install pinned Ohm
-        run: |
-          installer="$RUNNER_TEMP/ohm-clippy-installer.sh"
-          curl --proto '=https' --tlsv1.2 --fail --silent --show-error --location \
-            --output "$installer" \
-            "https://labs.astral.sh/ohm/releases/$OHM_VERSION/install.sh"
-          printf '%s  %s\n' "$OHM_INSTALLER_SHA256" "$installer" | shasum -a 256 --check
-          sh "$installer"
-      - name: Build production Cargo and prepare the Ruff fixture
-        run: |
-          mkdir -p "$RUNNER_TEMP/clippy-apfs-results"
-          git rev-parse HEAD > "$RUNNER_TEMP/clippy-apfs-results/source-commit.txt"
-          git rev-parse HEAD^{tree} > "$RUNNER_TEMP/clippy-apfs-results/source-tree.txt"
-          df -h /private/tmp
-          cargo +"$OHM_VERSION" build --locked --release -p cargo --features ohm-defaults -j 4
-          "$CARGO_TARGET_DIR/release/cargo" -Vv > "$RUNNER_TEMP/clippy-apfs-results/cargo-version.txt"
-          shasum -a 256 "$CARGO_TARGET_DIR/release/cargo" > "$RUNNER_TEMP/clippy-apfs-results/cargo-sha256.txt"
-          git init "$RUNNER_TEMP/ruff-fixture"
-          git -C "$RUNNER_TEMP/ruff-fixture" fetch --depth=2 https://github.com/astral-sh/ruff.git \
-            0ecff877901a0377ad966ffab528488ce872b50e
-          git -C "$RUNNER_TEMP/ruff-fixture" checkout --detach 0ecff877901a0377ad966ffab528488ce872b50e
-      - name: Run four paired APFS workflows
-        env:
-          # This pinned compiler predates early metadata.
-          __CARGO_HEADSTART: "no"
-        run: |
-          # The harness enables local macro/native-tool trust only for this pinned,
-          # trusted development fixture, using separate build storage in each arm.
-          python="$(command -v python3)"
-          export PATH="$HOME/.cargo/bin:/usr/bin:/bin:/usr/sbin:/sbin"
-          "$python" benches/clippy-seeding/run_apfs.py \
-            --cargo "$CARGO_TARGET_DIR/release/cargo" --ruff "$RUNNER_TEMP/ruff-fixture" \
-            --root /private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci \
-            --evidence "$RUNNER_TEMP/clippy-apfs-results/apfs" --jobs 4 \
-            --toolchain "$OHM_VERSION" --arms off1,on1,on2,off2,on3,off3,off4,on4 \
-            --require-quiet
-          "$python" benches/clippy-seeding/summarize.py "$RUNNER_TEMP/clippy-apfs-results/apfs" \
-            --arms off1,on1,on2,off2,on3,off3,off4,on4 \
-            > "$RUNNER_TEMP/clippy-apfs-results/summary.json"
-      - name: Preserve APFS receipts and logs
+          cp ci/rc22-marker-qa.py "$RUNNER_TEMP/run-rc22-marker-qa.py"
+          python3 -IBu "$RUNNER_TEMP/run-rc22-marker-qa.py" "$ROLE"
+      - name: Publish the original logs and source/ELF checksums
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: clippy-apfs-replay-${{ github.sha }}
-          path: ${{ runner.temp }}/clippy-apfs-results
-          if-no-files-found: error
-          retention-days: 30
+          name: rc22-both-markers-${{ matrix.host }}-${{ matrix.role }}
+          path: ${{ runner.temp }}/marker-receipts
+          if-no-files-found: warn
+          retention-days: 14
