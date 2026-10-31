@@ -167,10 +167,14 @@ pub(in crate::compiler) fn can_reuse_after_scripts(
     namespace: &Path,
     rustc_dep_info: &Path,
     rustc: &ProcessBuilder,
+    consumes_native_inputs: bool,
 ) -> bool {
     let Some(expected) = fingerprint.worktree_reuse_hash.lock().unwrap().clone() else {
         return false;
     };
+    if consumes_native_inputs && fingerprint.inherited_native_recheck() {
+        return false;
+    }
     if !namespace.join(OHM_WORKTREE_SEED_MARKER).is_file()
         || namespace
             .join(OHM_WORKTREE_SEED_DENY_MARKER)
