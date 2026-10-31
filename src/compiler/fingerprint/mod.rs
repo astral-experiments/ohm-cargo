@@ -2827,16 +2827,8 @@ fn calculate_normal(
             .hash(&mut config);
     }
     if super::unit_checks_relink_inputs(build_runner, unit) {
-        // Dep-info from an older or unwrapped compiler may omit assembler inputs.
-        let target = match unit.kind {
-            CompileKind::Host => build_runner.bcx.host_triple(),
-            CompileKind::Target(target) => target.rustc_target(),
-        };
-        if target.as_str() == "aarch64-apple-darwin" {
-            "ohm-declared-native-inputs-with-versioned-rechecks-v1".hash(&mut config);
-        } else {
-            "ohm-declared-native-inputs-v1".hash(&mut config);
-        }
+        // Previous Cargo versions discarded the original marker from cached dep-info.
+        "ohm-checked-native-inputs-v3".hash(&mut config);
     }
 
     let compile_kind = unit.kind.fingerprint_hash();

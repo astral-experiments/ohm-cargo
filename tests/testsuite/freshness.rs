@@ -5534,7 +5534,7 @@ pub(super) fn relink_only_wrapper() -> PathBuf {
                     let mut output = command.output().expect("rustc should run");
                     // Model rustc's link-only marker on a dependency of an otherwise fresh binary.
                     if output.status.success() && crate_name(args) == Some("dep")
-                        && env::var_os("RELINK_WRAPPER_NATIVE_RECHECK").is_some()
+                        && let Ok(marker) = env::var("RELINK_WRAPPER_NATIVE_RECHECK")
                     {
                         let out = args.windows(2).find(|pair| pair[0] == "--out-dir").unwrap();
                         let file = fs::read_dir(&out[1]).unwrap().map(|e| e.unwrap().path())
@@ -5545,7 +5545,6 @@ pub(super) fn relink_only_wrapper() -> PathBuf {
                         let (_, annotations) = raw.split_once(&format!("\n\n{input}:\n")).unwrap();
                         let prefix = raw.lines().next().filter(|line| line.starts_with('#'))
                             .map(|line| format!("{line}\n")).unwrap_or_default();
-                        let marker = "/dev/null/ohm-recheck-dependent-links-v2";
                         fs::write(&file, format!("{prefix}libdep.rlib: {input} {marker}\n\n{rule}.d: {input}\n\n{input}:\n{marker}:\n{annotations}")).unwrap();
                     }
                     if let Some(control) = &control {
@@ -5737,6 +5736,17 @@ pub(super) fn relink_only_wrapper() -> PathBuf {
 #[cfg(unix)]
 #[cargo_test]
 fn native_recheck_reuses_codegen_until_the_root_changes() {
+    check_native_relink("/dev/null/ohm-recheck-dependent-links-v2");
+}
+
+#[cfg(unix)]
+#[cargo_test]
+fn legacy_native_recheck_reuses_codegen_until_the_root_changes() {
+    check_native_relink("/dev/null/ohm-recheck-dependent-links");
+}
+
+#[cfg(unix)]
+fn check_native_relink(marker: &str) {
     let wrapper = relink_only_wrapper();
     let p = project()
         .file(
@@ -5763,7 +5773,7 @@ fn native_recheck_reuses_codegen_until_the_root_changes() {
                 "RELINK_WRAPPER_COMPILER",
                 std::env::var_os("RUSTC").unwrap_or_else(|| "rustc".into()),
             )
-            .env("RELINK_WRAPPER_NATIVE_RECHECK", "1")
+            .env("RELINK_WRAPPER_NATIVE_RECHECK", marker)
             .env("RELINK_WRAPPER_LOG", &log)
             .run();
         fs::read_to_string(&log).unwrap()
