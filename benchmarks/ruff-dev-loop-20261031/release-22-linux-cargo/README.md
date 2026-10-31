@@ -12,14 +12,17 @@ The packaged Cargo reported a deleted type error on two successful checks of rep
 
 The Ruff command was `cargo +ohm check -p ty_project --tests --locked --offline -j8 --message-format=json`. The run covered the historical Ruff edit, invalid source, repair, untouched repeat, same-path Cargo upgrade and independent empty builds. Every successful check emitted the same 303-unit graph. The first upgrade rebuilt all 303 units. Across eight visits, the downstream type client emitted identical metadata for the valid input and correctly rejected the wrong input each time. Four complete `ron` metadata files differed. The packaged compiler listed them identically, and renumbering the anonymous lifetime definitions reconstructed each entire file in both directions. [Ruff revision](https://github.com/astral-sh/ruff/commit/93526150df078af7dd8fc4226cdcc469539d2001) · [Historical edit](https://github.com/astral-sh/ruff/commit/32c5cd5daba51d9c3da691c5b43afa6a7a4bb731) · [Per-command observations and hashes](observations.json)
 
+Plain `cargo +ohm check -p ty_project --locked --offline -j4 --message-format=json` reproduced the same error. Its graph contained 275 units and excluded `ron`. On packaged Cargo the repair and the unchanged check both exited 0 with the deleted error at line 1240. Corrected Cargo and both empty builds reported the live warning at line 1243. The second archive contains stdout and stderr for all 16 calls, the exact command, compiler revisions, source hashes and six two-crate replays. [Plain-check transcripts](plain-check.tar.xz)
+
 ## Two-crate reproduction
 
 With the toolchain under test installed as `+ohm`, run this command from the directory containing the script. It uses two local crates, ordinary Cargo defaults, separate target and build directories, and a fresh offline Cargo home.
 
 ```sh
 python3 quick_repro.py "$(mktemp -d)"
+python3 quick_repro.py --plain "$(mktemp -d)"
 ```
 
-The `invalid` row should exit 101 with `E0308`. The `repair`, `repeat`, and `same-interface-edit` rows should exit 0 with the same `dead_code` warning as `empty`. On the packaged Cargo those three successful commands printed `E0308`. The script keeps the raw Cargo output and the compiler versions in the directory it prints. [Reproducer](quick_repro.py)
+The first command checks test targets. The second runs plain `cargo check`. On both, the `invalid` row should exit 101 with `E0308`. The `repair`, `repeat`, and `same-interface-edit` rows should exit 0 with the same `dead_code` warning as `empty`. On the packaged Cargo those three successful commands printed `E0308`. Stock Cargo 1.99.0 and corrected Cargo each printed the expected warning with the same packaged rustc. The script keeps the raw Cargo output and compiler versions in the directory it prints. [Reproducer](quick_repro.py)
 
 The review archive contains stdout and stderr for all 13 actual Ruff commands, the positive and negative type-client diagnostics, the relevant collector syscalls, and both two-crate results. The scratch prefix and registry mirror name are normalized in those streams. The observations file records the SHA-256 hashes of the original Ruff stdout, release artifact and both Cargo binaries. [Review archive](release-observations.tar.xz)

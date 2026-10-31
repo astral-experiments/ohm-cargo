@@ -1,17 +1,21 @@
 """Run a real two-crate Cargo error/repair cycle with the currently selected +ohm toolchain."""
 
+import argparse
 import json
 import os
 from pathlib import Path
 import subprocess
-import sys
 import tempfile
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("directory", nargs="?", type=Path)
+    parser.add_argument("--plain", action="store_true", help="run cargo check without --tests")
+    args = parser.parse_args()
     work = (
-        Path(sys.argv[1]).resolve()
-        if len(sys.argv) == 2
+        args.directory.resolve()
+        if args.directory is not None
         else Path(tempfile.mkdtemp(prefix="ohm-repair-"))
     )
     work.mkdir(mode=0o700, parents=True, exist_ok=True)
@@ -45,7 +49,10 @@ def main():
         CARGO_TERM_COLOR="never",
         RUSTUP_AUTO_INSTALL="0",
     )
-    cmd = ["cargo", "+ohm", "check", "--offline", "--tests", "--message-format=json"]
+    cmd = ["cargo", "+ohm", "check", "--offline"]
+    if not args.plain:
+        cmd.append("--tests")
+    cmd.append("--message-format=json")
     version = subprocess.check_output(
         ["cargo", "+ohm", "-vV"], cwd=project, env=env, text=True
     )
@@ -116,7 +123,7 @@ def main():
         raise RuntimeError("positive or negative control failed")
     (work / "repro.json").write_text(
         json.dumps(
-            {"cargo": version, "rustc": rustc, "visits": visits},
+            {"cargo": version, "rustc": rustc, "command": cmd, "visits": visits},
             sort_keys=True,
             indent=2,
         )
