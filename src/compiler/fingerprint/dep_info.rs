@@ -604,16 +604,10 @@ pub fn parse_rustc_dep_info(rustc_dep_info: &Path) -> CargoResult<RustcDepInfo> 
     let rules = rustc_input_rules(contents, rustc_dep_info);
     let has_input_rules = rules.is_some();
     let mut found_deps = has_input_rules;
-    let data = if let Some((mut inputs, targets, annotations)) = rules {
-        if has_link_only_marker(&inputs, targets, rustc_dep_info) {
-            if inputs.last() == Some(&RECHECK_DEPENDENT_LINKS) {
-                // As on the released Cargo, old drivers rely on declared native inputs.
-                inputs.pop();
-            } else {
-                // Keep the versioned marker on disk for readers that predate the trailer.
-                ret.recheck_dependent_links = true;
-            }
-        }
+    let data = if let Some((inputs, targets, annotations)) = rules {
+        // Both compiler markers require downstream links to recheck their inputs.
+        // Keep the path on disk so older readers rebuild on the missing file.
+        ret.recheck_dependent_links = has_link_only_marker(&inputs, targets, rustc_dep_info);
         for input in inputs {
             ret.files.insert(input.replace("\\ ", " ").into(), None);
         }
@@ -1123,11 +1117,9 @@ mod encoded_dep_info {
             }
             std::fs::write(&raw, data).unwrap();
             let parsed = parse_rustc_dep_info(&raw).unwrap();
-            let recheck = synthetic && marker == v2;
-            let keep_path = !synthetic || recheck;
             assert!(parsed.files.contains_key(Path::new("src.rs")));
-            assert_eq!(parsed.recheck_dependent_links, recheck);
-            assert_eq!(parsed.files.contains_key(Path::new(marker)), keep_path);
+            assert_eq!(parsed.recheck_dependent_links, synthetic);
+            assert!(parsed.files.contains_key(Path::new(marker)));
             translate_dep_info(
                 &raw,
                 &record,
@@ -1141,15 +1133,14 @@ mod encoded_dep_info {
             )
             .unwrap();
             let info = parse_dep_info(&root, &root, &record).unwrap().unwrap();
-            assert_eq!(info.recheck_dependent_links, recheck);
+            assert_eq!(info.recheck_dependent_links, synthetic);
             assert_eq!(info.files.contains_key(Path::new(marker)), !synthetic);
-            assert_eq!(
+            assert!(
                 dep_info_paths(&root, &root, &record)
                     .unwrap()
-                    .any(|p| p == Path::new(marker)),
-                keep_path,
+                    .any(|p| p == Path::new(marker))
             );
-            if recheck {
+            if synthetic {
                 let mut bytes = std::fs::read(&record).unwrap();
                 // An older record with no link marker trailer still tracks the missing path.
                 let end = bytes.len() - 40;
