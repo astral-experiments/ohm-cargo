@@ -1,0 +1,110 @@
+{
+  "candidate": "761ea115605c34f11a1cd29afd68812c1e1359dd",
+  "tree": "19c379477ec24be16c82b952dc2e892c0563e2c7",
+  "parents": {
+    "strict": "98d431a99779ccfbcfe42dfa74dd541de3a92d05",
+    "three_hotfixes": "b76dc8006155d48a8cd7d6c5543acb9c18e2ce4b"
+  },
+  "excluded_signed_policy_base": "2d44bd4aa68b9ba32cacb5a384ecc18fa5e7553c",
+  "raw_deltas": {
+    "r294-to-hotfixes": {
+      "sha256": "98ba5a988d9a747a326f3a8154404a7b33b8e41bc88c8f8d03f8cf85fb466f92",
+      "bytes": 56881,
+      "stable_patch_id": "8de6f690c053f1f001f66e6667659932bdb57090",
+      "raw": [
+        ":100644 100644 278e35a2ae93880111b1e14e8355dbddf32d6448 d499bc8f478ae88c224af1e3e5e40722c47c13c2 M\tCargo.lock",
+        ":100644 100644 4a2ac33a81ce95897c77b471df24a9aec454f69e edd0e367f879b0f0ba0c24d17e968a82c4404092 M\tCargo.toml",
+        ":100644 100644 52841bd128e039592959161ef09aa330857a12dc 2dba7c9be0efa6817a3d4107bd8b23a9e535afb9 M\tsrc/compiler/fingerprint/dirty_reason.rs",
+        ":100644 100644 fe8d549475f685ce9ac6da03961307da05e26bc7 53a0ffb2242067fe43a705ed90b1dcaaadba0371 M\tsrc/compiler/fingerprint/mod.rs",
+        ":100644 100644 522809b8534c31cf76188b5b231d53177720a191 d1629d59e1c98b97e4c7a264b76464badbb7a6fb M\tsrc/ops/cargo_report/rebuilds.rs",
+        ":100644 100644 13b9dcf44012a7940cf5b90f609d44ff897cb6f3 d8427e0b34f18072f511c94ee900dde6367a5aaa M\tsrc/workspace/build_cache_gc/mod.rs",
+        ":000000 100644 0000000000000000000000000000000000000000 b92843c676c436de64312e7c501bf80e573bd271 A\tsrc/workspace/build_cache_gc/mount_path.rs",
+        ":100644 100644 248dea32fc259e7776f8fb9bc08568cefcf933a0 ebfe95192210a391112afb3e2782e3d284c66c75 M\tsrc/workspace/build_cache_gc/worktrees/at.rs",
+        ":100644 100644 15e70c318293649749ec51b8d03b2c9f7b9d4d8a 6f45e909f9866bee46e8a63e3edb54cdeebfcabc M\tsrc/workspace/build_cache_gc/worktrees/idle/context.rs",
+        ":100644 100644 efb251ed7eff1c948b19cdbde1bdd9306f06ed13 5f6fa424b6ca6570abac40ae64f0b93bf9412fa7 M\tsrc/workspace/build_cache_gc/worktrees/idle/mod.rs",
+        ":100644 100644 1c5200031ed0cc16df8adcdc9971b97cfa7fba7b e09db4e125ddea10a58583c70fdf42f87b3fd79a M\tsrc/workspace/build_cache_gc/worktrees/mod.rs",
+        ":100644 100644 19fab2474f0a0e6ac7aa0c6f0c15d60f842ef36a 8269a9fc6162bd534890f657848128fd9887b91e M\tsrc/workspace/build_cache_gc/worktrees/mounts.rs",
+        ":100644 100644 6655ab77234acdc0f2ae43b8c697166df5f51cf3 3fb3a9712900edd6ab714637ff6b2270caf02765 M\ttests/testsuite/freshness.rs"
+      ]
+    },
+    "strict-to-candidate": {
+      "sha256": "d8b801ec99a89ef066e597341e847bd0342c08260b5e0bbf986ea2568f1f7fb4",
+      "bytes": 56881,
+      "stable_patch_id": "8de6f690c053f1f001f66e6667659932bdb57090",
+      "raw": [
+        ":100644 100644 278e35a2ae93880111b1e14e8355dbddf32d6448 d499bc8f478ae88c224af1e3e5e40722c47c13c2 M\tCargo.lock",
+        ":100644 100644 4a2ac33a81ce95897c77b471df24a9aec454f69e edd0e367f879b0f0ba0c24d17e968a82c4404092 M\tCargo.toml",
+        ":100644 100644 52841bd128e039592959161ef09aa330857a12dc 2dba7c9be0efa6817a3d4107bd8b23a9e535afb9 M\tsrc/compiler/fingerprint/dirty_reason.rs",
+        ":100644 100644 f12af6b2f8e8f2dedc24050745395debf188a5c5 31f76da54e6394fcb999ff9eda8848a5e53c0ade M\tsrc/compiler/fingerprint/mod.rs",
+        ":100644 100644 522809b8534c31cf76188b5b231d53177720a191 d1629d59e1c98b97e4c7a264b76464badbb7a6fb M\tsrc/ops/cargo_report/rebuilds.rs",
+        ":100644 100644 13b9dcf44012a7940cf5b90f609d44ff897cb6f3 d8427e0b34f18072f511c94ee900dde6367a5aaa M\tsrc/workspace/build_cache_gc/mod.rs",
+        ":000000 100644 0000000000000000000000000000000000000000 b92843c676c436de64312e7c501bf80e573bd271 A\tsrc/workspace/build_cache_gc/mount_path.rs",
+        ":100644 100644 248dea32fc259e7776f8fb9bc08568cefcf933a0 ebfe95192210a391112afb3e2782e3d284c66c75 M\tsrc/workspace/build_cache_gc/worktrees/at.rs",
+        ":100644 100644 15e70c318293649749ec51b8d03b2c9f7b9d4d8a 6f45e909f9866bee46e8a63e3edb54cdeebfcabc M\tsrc/workspace/build_cache_gc/worktrees/idle/context.rs",
+        ":100644 100644 efb251ed7eff1c948b19cdbde1bdd9306f06ed13 5f6fa424b6ca6570abac40ae64f0b93bf9412fa7 M\tsrc/workspace/build_cache_gc/worktrees/idle/mod.rs",
+        ":100644 100644 1c5200031ed0cc16df8adcdc9971b97cfa7fba7b e09db4e125ddea10a58583c70fdf42f87b3fd79a M\tsrc/workspace/build_cache_gc/worktrees/mod.rs",
+        ":100644 100644 19fab2474f0a0e6ac7aa0c6f0c15d60f842ef36a 8269a9fc6162bd534890f657848128fd9887b91e M\tsrc/workspace/build_cache_gc/worktrees/mounts.rs",
+        ":100644 100644 620074c42aa6aaea68c1d5e87928bc1626844e1b d75d7ed6de98b5168b370a2fd321be73d2a2ce93 M\ttests/testsuite/freshness.rs"
+      ]
+    },
+    "r294-to-strict": {
+      "sha256": "457dcf730c162530c0ee2c3513ca6b43cceb149c650fe98d77af9178cdc783fa",
+      "bytes": 25370,
+      "stable_patch_id": "c154f62b6f4c90eb95189468a247fda0acb1fe90",
+      "raw": [
+        ":100644 100644 33b6eb14419368f15f24def33fbeb88317e9afcb 1635103c176484103ba253b8c2aa776eaad70020 M\tsrc/compiler/fingerprint/dep_info.rs",
+        ":100644 100644 fe8d549475f685ce9ac6da03961307da05e26bc7 f12af6b2f8e8f2dedc24050745395debf188a5c5 M\tsrc/compiler/fingerprint/mod.rs",
+        ":100644 100644 304fa99bf8d0f6e6466768c5e4f19d6bacf63680 02fe1630be66236d208dabc6346b8a94de958e02 M\tsrc/compiler/mod.rs",
+        ":100644 100644 6655ab77234acdc0f2ae43b8c697166df5f51cf3 620074c42aa6aaea68c1d5e87928bc1626844e1b M\ttests/testsuite/freshness.rs"
+      ]
+    },
+    "hotfixes-to-candidate": {
+      "sha256": "db127bdda9ed2bb78d9f2a16c2b69a817258f56b6b5d4ab11b011a76651012a6",
+      "bytes": 25370,
+      "stable_patch_id": "c154f62b6f4c90eb95189468a247fda0acb1fe90",
+      "raw": [
+        ":100644 100644 33b6eb14419368f15f24def33fbeb88317e9afcb 1635103c176484103ba253b8c2aa776eaad70020 M\tsrc/compiler/fingerprint/dep_info.rs",
+        ":100644 100644 53a0ffb2242067fe43a705ed90b1dcaaadba0371 31f76da54e6394fcb999ff9eda8848a5e53c0ade M\tsrc/compiler/fingerprint/mod.rs",
+        ":100644 100644 304fa99bf8d0f6e6466768c5e4f19d6bacf63680 02fe1630be66236d208dabc6346b8a94de958e02 M\tsrc/compiler/mod.rs",
+        ":100644 100644 3fb3a9712900edd6ab714637ff6b2270caf02765 d75d7ed6de98b5168b370a2fd321be73d2a2ce93 M\ttests/testsuite/freshness.rs"
+      ]
+    }
+  },
+  "independent_reciprocal_git_apply_tree": "19c379477ec24be16c82b952dc2e892c0563e2c7",
+  "intersecting_files": [
+    "src/compiler/fingerprint/mod.rs",
+    "tests/testsuite/freshness.rs"
+  ],
+  "fingerprints": {
+    "immediate-release-parent": {
+      "sha": "7277e6cdaba44c43294a07c0661fc8e69fd8e3e7",
+      "tree": "7efe7adf79d91264b1276b0281253023f9b58749",
+      "tag": "ohm-checked-native-inputs-v1"
+    },
+    "strict-291": {
+      "sha": "84af87848a5a952ba61ae6a2cc5b22da24130200",
+      "tree": "1eb54df50548dd825811369d79bfb50c4ef77745",
+      "tag": "ohm-checked-native-inputs-v2"
+    },
+    "strict-292": {
+      "sha": "98d431a99779ccfbcfe42dfa74dd541de3a92d05",
+      "tree": "03faa2cde3ff0166007d5243b7e4a0642eed0d51",
+      "tag": "ohm-checked-native-inputs-v2"
+    },
+    "signed-294": {
+      "sha": "2d44bd4aa68b9ba32cacb5a384ecc18fa5e7553c",
+      "tree": "bc9fe7b15f4d1e9b935f8624f8b004ce0a7d2c66",
+      "tag": "ohm-declared-native-inputs-v1"
+    },
+    "hotfixes": {
+      "sha": "b76dc8006155d48a8cd7d6c5543acb9c18e2ce4b",
+      "tree": "c8d0e89c4226add0ae40b6604025f5e7b04489f5",
+      "tag": "ohm-declared-native-inputs-v1"
+    },
+    "candidate": {
+      "sha": "761ea115605c34f11a1cd29afd68812c1e1359dd",
+      "tree": "19c379477ec24be16c82b952dc2e892c0563e2c7",
+      "tag": "ohm-checked-native-inputs-v2"
+    }
+  }
+}

@@ -1,0 +1,437 @@
+{
+  "product": "761ea115605c34f11a1cd29afd68812c1e1359dd",
+  "product_tree": "19c379477ec24be16c82b952dc2e892c0563e2c7",
+  "subject_parents": [
+    "98d431a99779ccfbcfe42dfa74dd541de3a92d05",
+    "b76dc8006155d48a8cd7d6c5543acb9c18e2ce4b"
+  ],
+  "qa": "d7f0af36add4ef537d9e8332595ee5a7fa03f751",
+  "workflow_blob": "e888e0cbf25b1aa66297dbbbc79e95c421fde37a",
+  "run": 41151353468,
+  "logs_sha256": "3c2f6d17dc74a4a48f6d25de5708476f47492313c5a196014093979e9bda6ce7",
+  "normal_jobs": {
+    "Rustfmt": {
+      "run": 41151353468,
+      "job": 124388378574,
+      "step": "Check formatting",
+      "conclusion": "success",
+      "runner": "GitHub Actions 1073214191",
+      "passed": 0,
+      "ignored": 0,
+      "harnesses": 0,
+      "nested_helper_runs": 0,
+      "step_log_sha256": "4cf9c56ecc89b743aa8e6767b7a4576eb439617267e6b66aefb544f2543c7f31"
+    },
+    "Resolver tests": {
+      "run": 41151353468,
+      "job": 124388378714,
+      "step": "Run resolver tests",
+      "conclusion": "success",
+      "runner": "nsc-runner-gr1526d49pbpe",
+      "passed": 93,
+      "ignored": 0,
+      "harnesses": 6,
+      "nested_helper_runs": 0,
+      "step_log_sha256": "d88bdab85936fa566336c3bed99b1247863680d7362455b88600352ed0f4333f"
+    },
+    "Workspace tests": {
+      "run": 41151353468,
+      "job": 124388378719,
+      "step": "Run workspace tests",
+      "conclusion": "success",
+      "runner": "nsc-runner-4qo25fncb21ms",
+      "passed": 116,
+      "ignored": 3,
+      "harnesses": 48,
+      "nested_helper_runs": 7,
+      "step_log_sha256": "2387cc168c010792a9e4fcab3a90b3afbeb80319156f7c00f98c96b83ca13d36"
+    },
+    "Clippy (depot-ubuntu-24.04-8)": {
+      "run": 41151353468,
+      "job": 124388378811,
+      "step": "Check lints",
+      "conclusion": "success",
+      "runner": "nsc-runner-ril4g3tvfdada",
+      "passed": 0,
+      "ignored": 0,
+      "harnesses": 0,
+      "nested_helper_runs": 0,
+      "step_log_sha256": "ee94e5fc1700b2b90865a08edb5f74453c452e59ae3d42473c2727225eb6c8fb"
+    },
+    "Schema tests": {
+      "run": 41151353468,
+      "job": 124388378815,
+      "step": "Run schema tests",
+      "conclusion": "success",
+      "runner": "GitHub Actions 1073214192",
+      "passed": 17,
+      "ignored": 0,
+      "harnesses": 2,
+      "nested_helper_runs": 0,
+      "step_log_sha256": "ea4ee71a965688fd5059823220ae1799282914202292b2e303e49e2bdcf5d794"
+    },
+    "Clippy (depot-macos-15)": {
+      "run": 41151353468,
+      "job": 124388378882,
+      "step": "Check lints",
+      "conclusion": "success",
+      "runner": "nsc-runner-h935tluaj98d2",
+      "passed": 0,
+      "ignored": 0,
+      "harnesses": 0,
+      "nested_helper_runs": 0,
+      "step_log_sha256": "9ba70f9429db2e05099653be0e695471eb14e7acb4c3fbe4191b725184b9f2cc"
+    }
+  },
+  "native_full_jobs": {
+    "Linux": {
+      "run": 41151353468,
+      "job": 124388378735,
+      "qa": "d7f0af36add4ef537d9e8332595ee5a7fa03f751",
+      "source": "761ea115605c34f11a1cd29afd68812c1e1359dd",
+      "source_tree": "19c379477ec24be16c82b952dc2e892c0563e2c7",
+      "platform": "Linux",
+      "conclusion": "success",
+      "runner": "nsc-runner-0q27cabeicji4",
+      "logs_zip_sha256": "3c2f6d17dc74a4a48f6d25de5708476f47492313c5a196014093979e9bda6ce7",
+      "steps": [
+        [
+          "Set up job",
+          "success"
+        ],
+        [
+          "Set up runner",
+          "success"
+        ],
+        [
+          "Run actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd",
+          "success"
+        ],
+        [
+          "Verify the combined Cargo commit and tree",
+          "success"
+        ],
+        [
+          "Verify native Linux fixture and integration storage",
+          "success"
+        ],
+        [
+          "Install Rust",
+          "success"
+        ],
+        [
+          "Verify native macOS fixture and integration storage",
+          "skipped"
+        ],
+        [
+          "Install system dependencies",
+          "success"
+        ],
+        [
+          "Run Cargo unit and integration tests",
+          "success"
+        ],
+        [
+          "Install Ohm for shared-registry integration coverage",
+          "success"
+        ],
+        [
+          "Run shared-registry integration with Ohm",
+          "success"
+        ],
+        [
+          "Install Ohm for Clippy worktree coverage",
+          "success"
+        ],
+        [
+          "Run profile and bundled Clippy worktree tests with Ohm",
+          "success"
+        ],
+        [
+          "Verify both pinned Ohm profile tests against their compiled names",
+          "success"
+        ],
+        [
+          "Record final native source, testsuite and storage",
+          "success"
+        ],
+        [
+          "Retain native source, storage and profile transcripts",
+          "success"
+        ],
+        [
+          "Post Run actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd",
+          "success"
+        ],
+        [
+          "Complete job",
+          "success"
+        ]
+      ],
+      "profile_transcript_sha256": {
+        "profile_settings::ohm_default_debuginfo": "aeb366865eec7bcf6900fcd92d5cd2e8a717fe6d487124ed72ea7a90ec2250f1",
+        "profile_settings::ohm_default_debuginfo_respects_overrides": "bde639b2254f63a0b0c5de30a46d902f5acafaab7738860658c13b2b0d6f5a88"
+      },
+      "artifact_sha256": "1c5219bc3977f24c08167f05113c009e775e1444fbe45d4db60ac186644288e0",
+      "harness_sha256": "75668062c4cab2a21e1811cb4d865225c35dd36ac62c2642343bc7de1d39e2a1",
+      "storage_before": [
+        "Using a job-private executable tmpfs",
+        "tmpfs          51539607552     0 51539607552       0% /home/runner/work/_temp/cargo-tests",
+        "tmpfs          51539607552     0 51539607552       0% /home/runner/work/_temp/cargo-tests",
+        "tmpfs          51539607552     0 51539607552       0% /home/runner/work/_temp/cargo-tests"
+      ],
+      "storage_after": [
+        "Filesystem     1024-blocks    Used Available Capacity Mounted on",
+        "overlay          297322176 5853484 291452308       2% /",
+        "Filesystem     1024-blocks     Used Available Capacity Mounted on",
+        "tmpfs             50331648 15929896  34401752      32% /home/runner/work/_temp/cargo-tests",
+        "Filesystem     1024-blocks     Used Available Capacity Mounted on",
+        "tmpfs             50331648 15929896  34401752      32% /home/runner/work/_temp/cargo-tests"
+      ],
+      "harnesses": {
+        "lib": {
+          "result": "ok",
+          "passed": 413,
+          "failed": 0,
+          "ignored": 0,
+          "measured": 0,
+          "filtered": 0
+        },
+        "cli": {
+          "result": "ok",
+          "passed": 5,
+          "failed": 0,
+          "ignored": 0,
+          "measured": 0,
+          "filtered": 0
+        },
+        "bench": {
+          "result": "ok",
+          "passed": 0,
+          "failed": 0,
+          "ignored": 9,
+          "measured": 0,
+          "filtered": 0
+        },
+        "integration": {
+          "result": "ok",
+          "passed": 4406,
+          "failed": 0,
+          "ignored": 423,
+          "measured": 0,
+          "filtered": 0
+        },
+        "doc": {
+          "result": "ok",
+          "passed": 3,
+          "failed": 0,
+          "ignored": 1,
+          "measured": 0,
+          "filtered": 0
+        }
+      },
+      "standard_total_passed": 4827,
+      "standard_total_ignored": 433,
+      "actual_gates": {
+        "clippy": [
+          "ohm_linker::ohm_defaults_select_wild_and_allow_lld",
+          "ohm_worktree::bundled_clippy_isolation_defaults_follow_actual_snapshot_cloning",
+          "ohm_worktree::bundled_clippy_preserves_ordinary_seeds_without_importing_lint_state",
+          "ohm_worktree::clippy_isolation_overrides_are_inherited_and_child_flags_take_precedence",
+          "ohm_worktree::clippy_wrapper_scripts_still_deny_the_whole_seed",
+          "ohm_worktree::forced_clippy_isolation_preserves_compiler_trust_rejections",
+          "ohm_worktree::worktree_import_requires_cloning",
+          "rustflags::ohm_defaults_reexpand_derive_after_native_input_changes"
+        ],
+        "profiles": [
+          "profile_settings::ohm_default_debuginfo",
+          "profile_settings::ohm_default_debuginfo_respects_overrides"
+        ],
+        "shared": [
+          "build_dir::shared_registry_cache_avoids_hashing_immutable_public_apis",
+          "build_dir::shared_registry_cache_preserves_cross_workspace_reuse_and_private_early_cutoff",
+          "check::ohm_locks_fingerprints_before_preserving_established_check_graphs",
+          "check::ohm_preserves_fresh_checks_while_holding_shared_workspace_locks",
+          "check::ohm_skips_cold_ordinary_check_graphs_after_test_builds"
+        ]
+      },
+      "hotfix_controls": [
+        "freshness::early_cutoff_rechecks_a_repaired_test_after_failure",
+        "ohm_build_gc::gc_protects_targets_while_a_build_resolves_its_context",
+        "ohm_build_gc::running_test_retains_lease_after_its_cargo_parent_exits",
+        "workspace::build_cache_gc::tests::shared_cleanup_preserves_a_nested_mount_in_active_and_retired_trees",
+        "workspace::build_cache_gc::worktrees::at::tests::private_directory_and_entry_lookup_refuse_a_nested_mount",
+        "workspace::build_cache_gc::mount_path::tests::renamed_parent_and_final_symlink",
+        "freshness::native_recheck_reuses_codegen_until_the_root_changes"
+      ],
+      "verdict_inventory_sha256": "921f2ee29e139bd9fd8e33218226987d7db0518bb2a9523fca5eb72d0e709eed"
+    },
+    "macOS": {
+      "run": 41151353468,
+      "job": 124388378717,
+      "qa": "d7f0af36add4ef537d9e8332595ee5a7fa03f751",
+      "source": "761ea115605c34f11a1cd29afd68812c1e1359dd",
+      "source_tree": "19c379477ec24be16c82b952dc2e892c0563e2c7",
+      "platform": "macOS",
+      "conclusion": "success",
+      "runner": "nsc-runner-j2uoug6i2mfhu",
+      "logs_zip_sha256": "3c2f6d17dc74a4a48f6d25de5708476f47492313c5a196014093979e9bda6ce7",
+      "steps": [
+        [
+          "Set up job",
+          "success"
+        ],
+        [
+          "Run actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd",
+          "success"
+        ],
+        [
+          "Verify the combined Cargo commit and tree",
+          "success"
+        ],
+        [
+          "Verify native Linux fixture and integration storage",
+          "skipped"
+        ],
+        [
+          "Install Rust",
+          "success"
+        ],
+        [
+          "Verify native macOS fixture and integration storage",
+          "success"
+        ],
+        [
+          "Install system dependencies",
+          "skipped"
+        ],
+        [
+          "Run Cargo unit and integration tests",
+          "success"
+        ],
+        [
+          "Install Ohm for shared-registry integration coverage",
+          "skipped"
+        ],
+        [
+          "Run shared-registry integration with Ohm",
+          "skipped"
+        ],
+        [
+          "Install Ohm for Clippy worktree coverage",
+          "success"
+        ],
+        [
+          "Run profile and bundled Clippy worktree tests with Ohm",
+          "success"
+        ],
+        [
+          "Verify both pinned Ohm profile tests against their compiled names",
+          "success"
+        ],
+        [
+          "Record final native source, testsuite and storage",
+          "success"
+        ],
+        [
+          "Retain native source, storage and profile transcripts",
+          "success"
+        ],
+        [
+          "Post Run actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd",
+          "success"
+        ],
+        [
+          "Complete job",
+          "success"
+        ]
+      ],
+      "profile_transcript_sha256": {
+        "profile_settings::ohm_default_debuginfo": "cf469f9ed377cdc062be1d0421c31b57d83e48c57181114fbbd100599ca762f3",
+        "profile_settings::ohm_default_debuginfo_respects_overrides": "138dcd118d7f12720446af735ce247dd3ab0d9a69a2519636391c20da719a3ad"
+      },
+      "artifact_sha256": "e1178928059c7a07a10e32040b41365a049179410e4f181419e552a7f6962069",
+      "harness_sha256": "9d735617593bd3c7b8fcaf037f577f64c93a17eb6b9c5cef59ed02aaa510a9d1",
+      "storage_before": [
+        "std::env::temp_dir()=/var/folders/1m/wsmgmjkx6k59p3sx1z3wpn9w0000gn/T/",
+        "disk5s5 apfs",
+        "/dev/disk5s5   548261928 343457084 185744812    65%    /System/Volumes/Data",
+        "disk5s5 apfs",
+        "/dev/disk5s5   548261928 343457020 185744876    65%    /System/Volumes/Data"
+      ],
+      "storage_after": [
+        "Filesystem   1024-blocks      Used Available Capacity  Mounted on",
+        "/dev/disk5s5   548261928 351185420 178016476    67%    /System/Volumes/Data",
+        "Filesystem   1024-blocks      Used Available Capacity  Mounted on",
+        "/dev/disk5s5   548261928 351185420 178016476    67%    /System/Volumes/Data",
+        "Filesystem   1024-blocks      Used Available Capacity  Mounted on",
+        "/dev/disk5s5   548261928 351185420 178016476    67%    /System/Volumes/Data"
+      ],
+      "harnesses": {
+        "lib": {
+          "result": "ok",
+          "passed": 404,
+          "failed": 0,
+          "ignored": 0,
+          "measured": 0,
+          "filtered": 0
+        },
+        "cli": {
+          "result": "ok",
+          "passed": 5,
+          "failed": 0,
+          "ignored": 0,
+          "measured": 0,
+          "filtered": 0
+        },
+        "bench": {
+          "result": "ok",
+          "passed": 0,
+          "failed": 0,
+          "ignored": 8,
+          "measured": 0,
+          "filtered": 0
+        },
+        "integration": {
+          "result": "ok",
+          "passed": 4387,
+          "failed": 0,
+          "ignored": 421,
+          "measured": 0,
+          "filtered": 0
+        },
+        "doc": {
+          "result": "ok",
+          "passed": 3,
+          "failed": 0,
+          "ignored": 1,
+          "measured": 0,
+          "filtered": 0
+        }
+      },
+      "standard_total_passed": 4799,
+      "standard_total_ignored": 430,
+      "actual_gates": {
+        "clippy": [
+          "ohm_worktree::bundled_clippy_isolation_defaults_follow_actual_snapshot_cloning",
+          "ohm_worktree::bundled_clippy_preserves_ordinary_seeds_without_importing_lint_state",
+          "ohm_worktree::clippy_isolation_overrides_are_inherited_and_child_flags_take_precedence",
+          "ohm_worktree::clippy_wrapper_scripts_still_deny_the_whole_seed",
+          "ohm_worktree::forced_clippy_isolation_preserves_compiler_trust_rejections",
+          "ohm_worktree::worktree_import_requires_cloning"
+        ],
+        "profiles": [
+          "profile_settings::ohm_default_debuginfo",
+          "profile_settings::ohm_default_debuginfo_respects_overrides"
+        ]
+      },
+      "hotfix_controls": [
+        "freshness::early_cutoff_rechecks_a_repaired_test_after_failure",
+        "ohm_build_gc::gc_protects_targets_while_a_build_resolves_its_context",
+        "ohm_build_gc::running_test_retains_lease_after_its_cargo_parent_exits",
+        "freshness::native_recheck_reuses_codegen_until_the_root_changes"
+      ],
+      "verdict_inventory_sha256": "98291e1b1be095f6043ec7f9368113dab75fadcf31e05bc0abfcd98dd507330a"
+    }
+  }
+}
