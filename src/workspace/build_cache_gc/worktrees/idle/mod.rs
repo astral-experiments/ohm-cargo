@@ -3,7 +3,7 @@
 use std::ffi::OsStr;
 use std::fs;
 use std::io::{self, Read as _};
-use std::os::unix::fs::{DirEntryExt as _, MetadataExt as _, OpenOptionsExt as _};
+use std::os::unix::fs::MetadataExt as _;
 use std::path::{Path, PathBuf};
 
 use super::collector::target_guard;
@@ -83,12 +83,25 @@ pub(super) fn collect(
 struct Entry {
     path: PathBuf,
     inode: u64,
+    device: u64,
     parent: usize,
     directory: bool,
     removable: bool,
 }
 
 impl Entry {
+    /// Capture the identity that a later no-follow stat will report, even on overlayfs.
+    fn child_metadata(
+        child: &fs::DirEntry,
+        summary: &mut Summary<'_>,
+    ) -> CargoResult<Option<fs::Metadata>> {
+        match child.metadata() {
+            Ok(meta) => Ok(Some(meta)),
+            Err(error) if error.kind() == io::ErrorKind::NotFound => Ok(None),
+            Err(error) => summary.path_error(&child.path(), error.into()),
+        }
+    }
+
     fn metadata(&self, device: u64) -> CargoResult<Option<fs::Metadata>> {
         match fs::symlink_metadata(&self.path) {
             Ok(m) => Ok((m.ino() == self.inode
@@ -128,7 +141,11 @@ impl Entry {
         summary: &mut Summary<'_>,
     ) -> CargoResult<bool> {
         let name = self.path.file_name().unwrap();
-        let Some(len) = at::entry_len(parent, name, device, self.inode, self.directory)? else {
+        if self.device != device && (self.directory || !cfg!(target_os = "linux")) {
+            return Ok(false);
+        }
+        let Some(len) = at::entry_len(parent, name, self.device, self.inode, self.directory)?
+        else {
             return Ok(false);
         };
         if !dry_run {
@@ -152,13 +169,14 @@ impl Entry {
 }
 
 struct Plan {
+    target: PathBuf,
     entries: Vec<Entry>,
     profiles: Vec<usize>,
     device: u64,
 }
 
 impl Plan {
-    fn at(path: &Path) -> CargoResult<Self> {
+    fn at(target: &Path, path: &Path) -> CargoResult<Self> {
         let metadata = fs::symlink_metadata(path)?;
         anyhow::ensure!(
             metadata.is_dir(),
@@ -166,9 +184,11 @@ impl Plan {
             path.display()
         );
         Ok(Self {
+            target: target.to_owned(),
             entries: vec![Entry {
                 path: path.to_owned(),
                 inode: metadata.ino(),
+                device: metadata.dev(),
                 parent: 0,
                 directory: true,
                 removable: false,
@@ -185,7 +205,7 @@ impl Plan {
         mounts: &Mounts,
         summary: &mut Summary<'_>,
     ) -> CargoResult<Self> {
-        let mut plan = Self::at(root)?;
+        let mut plan = Self::at(root, root)?;
         let keep: HashSet<&Path> = shared_roots
             .iter()
             .map(PathBuf::as_path)
@@ -216,7 +236,11 @@ impl Plan {
                 summary.tick();
                 let path = child.path();
                 let name = child.file_name();
-                let kind = child.file_type()?;
+                let Some(meta) = Entry::child_metadata(&child, summary)? else {
+                    plan.preserve(parent);
+                    continue;
+                };
+                let kind = meta.file_type();
                 let profile = kind.is_dir()
                     && (parent == 0 || cross_target)
                     && PROFILE_LOCKS.iter().any(|lock| regular(&path.join(lock)));
@@ -240,7 +264,8 @@ impl Plan {
                 let index = plan.entries.len();
                 plan.entries.push(Entry {
                     path,
-                    inode: child.ino(),
+                    inode: meta.ino(),
+                    device: meta.dev(),
                     parent,
                     directory: kind.is_dir(),
                     removable: !profile && !container,
@@ -309,10 +334,7 @@ impl Plan {
             return Ok(false);
         }
         let opened = if index == 0 {
-            fs::OpenOptions::new()
-                .read(true)
-                .custom_flags(libc::O_DIRECTORY | libc::O_NOFOLLOW)
-                .open(&entry.path)
+            at::target_directory(&self.target, &entry.path)
         } else {
             at::open_dir(
                 checked[&entry.parent].as_ref().unwrap(),
@@ -332,7 +354,7 @@ impl Plan {
                 if matches!(
                     e.kind(),
                     io::ErrorKind::NotFound | io::ErrorKind::NotADirectory
-                ) || e.raw_os_error() == Some(libc::ELOOP) =>
+                ) || matches!(e.raw_os_error(), Some(libc::ELOOP | libc::EXDEV)) =>
             {
                 None
             }
@@ -476,6 +498,8 @@ mod tests {
         fs::create_dir(&debug)?;
         fs::create_dir(&release)?;
         fs::File::create_new(debug.join(".cargo-lock"))?;
+        let output = debug.join("existing-output");
+        fs::write(&output, b"debug")?;
         fs::write(release.join("initial-output"), b"release")?;
         let mounts = Mounts::read(root)?;
         let mut summary = Summary::default();
@@ -503,6 +527,14 @@ mod tests {
             );
             assert!(summary.blocking_locks.contains(&path));
         }
+        drop(held);
+        let mut checked = HashMap::default();
+        let _locks = plan
+            .lock_profiles(false, &mounts, &mut checked, &mut summary)?
+            .expect("released profile lock");
+        assert!(plan.remove_batch(&plan.entries, false, &mounts, &mut checked, &mut summary)?);
+        assert!(!output.try_exists()?);
+        assert_eq!(fs::read(release.join("initial-output"))?, b"release");
         Ok(())
     }
 }

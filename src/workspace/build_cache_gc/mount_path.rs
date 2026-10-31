@@ -9,7 +9,7 @@ use {
     std::{fs::File, os::fd::AsRawFd},
 };
 
-/// A shared-cache entry reached from its configured root without crossing a Linux mount.
+/// A cache entry reached from its configured root without crossing a Linux mount.
 pub(super) struct MountPath {
     path: PathBuf,
     #[cfg(target_os = "linux")]
@@ -53,13 +53,7 @@ impl MountPath {
         let file = if name.as_os_str().is_empty() {
             self.file.try_clone()?
         } else {
-            let flags = OFlags::PATH | OFlags::NOFOLLOW | OFlags::CLOEXEC;
-            let resolve = ResolveFlags::BENEATH | ResolveFlags::NO_XDEV | ResolveFlags::NO_SYMLINKS;
-            match rustix::fs::openat2(&self.file, &name, flags, Mode::empty(), resolve) {
-                Ok(fd) => fd.into(),
-                Err(rustix::io::Errno::NOSYS) => self.open_before_openat2(&name, flags)?,
-                Err(error) => return Err(error.into()),
-            }
+            Self::open_beneath(&self.file, &name, OFlags::PATH)?
         };
         let mut path = self.path.clone();
         if !name.as_os_str().is_empty() {
@@ -74,8 +68,21 @@ impl MountPath {
         })
     }
 
+    /// Open a nonempty relative path without entering nested mounts or following symlinks.
+    /// For a final O_PATH lookup, the symlink itself is an allowed entry.
     #[cfg(target_os = "linux")]
-    fn open_before_openat2(&self, name: &Path, flags: OFlags) -> io::Result<File> {
+    pub(super) fn open_beneath(root: &File, name: &Path, access: OFlags) -> io::Result<File> {
+        let flags = access | OFlags::NOFOLLOW | OFlags::CLOEXEC;
+        let resolve = ResolveFlags::BENEATH | ResolveFlags::NO_XDEV | ResolveFlags::NO_SYMLINKS;
+        match rustix::fs::openat2(root, name, flags, Mode::empty(), resolve) {
+            Ok(fd) => Ok(fd.into()),
+            Err(rustix::io::Errno::NOSYS) => Self::open_before_openat2(root, name, flags),
+            Err(error) => Err(error.into()),
+        }
+    }
+
+    #[cfg(target_os = "linux")]
+    fn open_before_openat2(root: &File, name: &Path, flags: OFlags) -> io::Result<File> {
         fn mount_id(file: &File) -> io::Result<u64> {
             let info = std::fs::read_to_string(format!("/proc/self/fdinfo/{}", file.as_raw_fd()))?;
             info.lines()
@@ -83,10 +90,18 @@ impl MountPath {
                 .and_then(|id| id.trim().parse().ok())
                 .ok_or(io::ErrorKind::Unsupported.into())
         }
-        let expected = mount_id(&self.file)?;
-        let mut parent = self.file.try_clone()?;
-        for component in name.iter() {
-            // O_PATH | O_NOFOLLOW pins a symlink itself. openat on that FD fails with ENOTDIR.
+        let expected = mount_id(root)?;
+        let mut parent = root.try_clone()?;
+        let mut components = name.components().peekable();
+        while let Some(component) = components.next() {
+            let Component::Normal(component) = component else {
+                return Err(io::ErrorKind::InvalidInput.into());
+            };
+            let flags = if components.peek().is_none() {
+                flags
+            } else {
+                OFlags::PATH | OFlags::DIRECTORY | OFlags::NOFOLLOW | OFlags::CLOEXEC
+            };
             parent = rustix::fs::openat(&parent, component, flags, Mode::empty())?.into();
             if mount_id(&parent)? != expected {
                 return Err(rustix::io::Errno::XDEV.into());
