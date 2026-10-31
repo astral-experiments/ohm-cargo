@@ -1,0 +1,13 @@
+
+running 1 test
+running `/home/runner/work/_temp/cargo-tests/debug/cargo build --profile dev --unit-graph -Zunstable-options -Zohm-defaults=yes`
+running `/home/runner/work/_temp/cargo-tests/debug/cargo build --profile test --unit-graph -Zunstable-options -Zohm-defaults=yes`
+running `/home/runner/work/_temp/cargo-tests/debug/cargo build --profile custom --unit-graph -Zunstable-options -Zohm-defaults=yes`
+running `/home/runner/work/_temp/cargo-tests/debug/cargo build --profile release --unit-graph -Zunstable-options -Zohm-defaults=yes`
+running `/home/runner/work/_temp/cargo-tests/debug/cargo build --profile dev --unit-graph -Zunstable-options -Zohm-defaults=no`
+running `/home/runner/work/_temp/cargo-tests/debug/cargo build --profile test --unit-graph -Zunstable-options -Zohm-defaults=no`
+running `/home/runner/work/_temp/cargo-tests/debug/cargo build --profile custom --unit-graph -Zunstable-options -Zohm-defaults=no`
+running `/home/runner/work/_temp/cargo-tests/debug/cargo build --profile release --unit-graph -Zunstable-options -Zohm-defaults=no`
+test profile_settings::ohm_default_debuginfo ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 4827 filtered out; finished in 0.26s

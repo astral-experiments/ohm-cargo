@@ -1,0 +1,335 @@
+{
+  "product": "7b29b877b14874055e794e22d19cae2f35cfcab1",
+  "product_tree": "1bc63ca9a32b171ffc2a8484928c47da1210b929",
+  "final_run": 41147382852,
+  "unmodified_product_steps": [
+    "Install Rust",
+    "Install system dependencies",
+    "Run Cargo unit and integration tests",
+    "Install Ohm for shared-registry integration coverage",
+    "Run shared-registry integration with Ohm",
+    "Install Ohm for Clippy worktree coverage",
+    "Run profile and bundled Clippy worktree tests with Ohm"
+  ],
+  "earlier_worker_disk_failures": [
+    {
+      "run": 41144372208,
+      "job": 124365881138,
+      "conclusion": "failure",
+      "worker_annotation": "System.IO.IOException: No space left on device : '/home/runner/actions-runner/cached/2.338.2/_diag/Worker_20261030-232525-utc.log'"
+    },
+    {
+      "run": 41144758002,
+      "job": 124367166370,
+      "conclusion": "failure",
+      "worker_annotation": "System.IO.IOException: No space left on device : '/home/runner/actions-runner/cached/2.338.2/_diag/Worker_20261030-232929-utc.log'"
+    }
+  ],
+  "qa_runs": [
+    {
+      "run": 41146447980,
+      "job": 124372563394,
+      "qa": "7cebda14adbc66b92f8758cf480be0b1ac63ad9f",
+      "conclusion": "failure",
+      "workflow_sha256": "7fd44848c1267832329deb579db6cf6ec12bb5e21e942e9c0ff0b572a666d352",
+      "log_zip_sha256": "31369b8d035baa663f0e6c1ebf4878b0798440182dad02b592df29c8deacd80a",
+      "storage_zip_sha256": "073a76829b6669f5469198ccb022e50345a979c77617c19841b2b6cabef54e77",
+      "cargo_harnesses": [
+        {
+          "result": "ok",
+          "passed": 410,
+          "failed": 0,
+          "ignored": 0,
+          "measured": 0,
+          "filtered": 0
+        },
+        {
+          "result": "ok",
+          "passed": 5,
+          "failed": 0,
+          "ignored": 0,
+          "measured": 0,
+          "filtered": 0
+        },
+        {
+          "result": "ok",
+          "passed": 0,
+          "failed": 0,
+          "ignored": 9,
+          "measured": 0,
+          "filtered": 0
+        },
+        {
+          "result": "FAILED",
+          "passed": 4383,
+          "failed": 22,
+          "ignored": 423,
+          "measured": 0,
+          "filtered": 0
+        }
+      ],
+      "cargo_failed_names": [
+        "ohm_build_gc::build_and_check_enroll_primary_and_existing_worktrees_for_gc",
+        "ohm_build_gc::builds_leave_retired_state_until_explicit_gc",
+        "ohm_build_gc::discovers_legacy_caches_without_writing_during_preview",
+        "ohm_build_gc::gc_accepts_legacy_default_targets_but_preserves_ambiguous_external_directories",
+        "ohm_build_gc::gc_cleans_both_workspaces_that_share_an_external_target",
+        "ohm_build_gc::gc_cleans_idle_targets_on_the_current_release_and_rebuilds_on_demand",
+        "ohm_build_gc::gc_discovers_private_contexts_outside_worktrees_and_respects_explicit_roots",
+        "ohm_build_gc::gc_discovers_roots_when_the_root_registry_is_invalid",
+        "ohm_build_gc::gc_finishes_healthy_roots_before_reporting_errors",
+        "ohm_build_gc::gc_reports_inaccessible_paths_and_cleans_their_siblings",
+        "ohm_build_gc::gc_skips_busy_private_targets_and_cleans_other_worktrees",
+        "ohm_build_gc::gc_uses_shared_target_activity_and_preserves_colocated_shared_caches",
+        "ohm_build_gc::idle_target_preserves_nested_workspaces_and_targets_from_other_cargo_homes",
+        "ohm_build_gc::inaccessible_context_lock_preserves_only_its_context",
+        "ohm_build_gc::max_age_applies_to_targets_contexts_dependencies_and_thinlto",
+        "ohm_build_gc::preview_and_cleanup_report_the_same_payload_sizes_and_respect_quiet",
+        "ohm_build_gc::running_test_retains_lease_after_its_cargo_parent_exits",
+        "ohm_build_gc::thinlto_compiler_uses_the_registered_context_and_waits_for_manual_gc",
+        "ohm_build_gc::thinlto_gc_reports_objects_without_invalidating_warm_builds",
+        "ohm_build_gc::zero_max_age_preserves_future_usage_and_active_leases",
+        "ohm_gc_exports::idle_target_cleanup_preserves_external_directory_exports_and_legacy_pins",
+        "ohm_gc_exports::obsolete_context_cleanup_preserves_nested_projects"
+      ],
+      "actual_gated_names": {}
+    },
+    {
+      "run": 41146980155,
+      "job": 124374260868,
+      "qa": "745b8368bc258088c31dccb0928e20f5a146886c",
+      "conclusion": "success",
+      "workflow_sha256": "151d4dc80a17fb32a09796b1224c6efd20e582d815221d2a38d9b67186e82b25",
+      "log_zip_sha256": "420d459ce9873bb950c6cec7d1f38315379be1afe1900e3162a268ddfbb3d128",
+      "storage_zip_sha256": "5815be57d3350f8a916415d3c840ee618757d0049f046cf01aef6a2a29a142aa",
+      "cargo_harnesses": [
+        {
+          "result": "ok",
+          "passed": 410,
+          "failed": 0,
+          "ignored": 0,
+          "measured": 0,
+          "filtered": 0
+        },
+        {
+          "result": "ok",
+          "passed": 5,
+          "failed": 0,
+          "ignored": 0,
+          "measured": 0,
+          "filtered": 0
+        },
+        {
+          "result": "ok",
+          "passed": 0,
+          "failed": 0,
+          "ignored": 9,
+          "measured": 0,
+          "filtered": 0
+        },
+        {
+          "result": "ok",
+          "passed": 4405,
+          "failed": 0,
+          "ignored": 423,
+          "measured": 0,
+          "filtered": 0
+        },
+        {
+          "result": "ok",
+          "passed": 3,
+          "failed": 0,
+          "ignored": 1,
+          "measured": 0,
+          "filtered": 0
+        }
+      ],
+      "cargo_failed_names": [],
+      "actual_gated_names": {
+        "shared": [
+          "build_dir::shared_registry_cache_avoids_hashing_immutable_public_apis",
+          "build_dir::shared_registry_cache_preserves_cross_workspace_reuse_and_private_early_cutoff",
+          "check::ohm_locks_fingerprints_before_preserving_established_check_graphs",
+          "check::ohm_preserves_fresh_checks_while_holding_shared_workspace_locks",
+          "check::ohm_skips_cold_ordinary_check_graphs_after_test_builds"
+        ],
+        "clippy": [
+          "ohm_linker::ohm_defaults_select_wild_and_allow_lld",
+          "ohm_worktree::bundled_clippy_isolation_defaults_follow_actual_snapshot_cloning",
+          "ohm_worktree::bundled_clippy_preserves_ordinary_seeds_without_importing_lint_state",
+          "ohm_worktree::clippy_isolation_overrides_are_inherited_and_child_flags_take_precedence",
+          "ohm_worktree::clippy_wrapper_scripts_still_deny_the_whole_seed",
+          "ohm_worktree::forced_clippy_isolation_preserves_compiler_trust_rejections",
+          "ohm_worktree::worktree_import_requires_cloning",
+          "rustflags::ohm_defaults_reexpand_derive_after_native_input_changes"
+        ]
+      }
+    },
+    {
+      "run": 41147382852,
+      "job": 124375551129,
+      "qa": "aaa2e8d49f0973b06d630eb499ce55cef2220fd1",
+      "conclusion": "success",
+      "workflow_sha256": "f571ae16135b64f64d8e66fa7d85c3e480f21ac5d73027b7a060d0cf6fb9749e",
+      "log_zip_sha256": "7933939337d33da371fcf35f06ed8081b93b1ade21a9e00d4a2b9c7a0569a7f1",
+      "storage_zip_sha256": "766d52cd1b99b2606dd0f80f18bac2b950d2d71363cb4821388aca8d807f53a1",
+      "cargo_harnesses": [
+        {
+          "result": "ok",
+          "passed": 410,
+          "failed": 0,
+          "ignored": 0,
+          "measured": 0,
+          "filtered": 0
+        },
+        {
+          "result": "ok",
+          "passed": 5,
+          "failed": 0,
+          "ignored": 0,
+          "measured": 0,
+          "filtered": 0
+        },
+        {
+          "result": "ok",
+          "passed": 0,
+          "failed": 0,
+          "ignored": 9,
+          "measured": 0,
+          "filtered": 0
+        },
+        {
+          "result": "ok",
+          "passed": 4405,
+          "failed": 0,
+          "ignored": 423,
+          "measured": 0,
+          "filtered": 0
+        },
+        {
+          "result": "ok",
+          "passed": 3,
+          "failed": 0,
+          "ignored": 1,
+          "measured": 0,
+          "filtered": 0
+        }
+      ],
+      "cargo_failed_names": [],
+      "actual_gated_names": {
+        "shared": [
+          "build_dir::shared_registry_cache_avoids_hashing_immutable_public_apis",
+          "build_dir::shared_registry_cache_preserves_cross_workspace_reuse_and_private_early_cutoff",
+          "check::ohm_locks_fingerprints_before_preserving_established_check_graphs",
+          "check::ohm_preserves_fresh_checks_while_holding_shared_workspace_locks",
+          "check::ohm_skips_cold_ordinary_check_graphs_after_test_builds"
+        ],
+        "clippy": [
+          "ohm_linker::ohm_defaults_select_wild_and_allow_lld",
+          "ohm_worktree::bundled_clippy_isolation_defaults_follow_actual_snapshot_cloning",
+          "ohm_worktree::bundled_clippy_preserves_ordinary_seeds_without_importing_lint_state",
+          "ohm_worktree::clippy_isolation_overrides_are_inherited_and_child_flags_take_precedence",
+          "ohm_worktree::clippy_wrapper_scripts_still_deny_the_whole_seed",
+          "ohm_worktree::forced_clippy_isolation_preserves_compiler_trust_rejections",
+          "ohm_worktree::worktree_import_requires_cloning",
+          "rustflags::ohm_defaults_reexpand_derive_after_native_input_changes"
+        ],
+        "profile": [
+          "profile_settings::ohm_default_debuginfo",
+          "profile_settings::ohm_default_debuginfo_respects_overrides"
+        ]
+      }
+    }
+  ],
+  "audit_time_utc": "2026-10-30 23:57",
+  "comparison_branches": {
+    "ohm-1.98.1": {
+      "source": "5819763564a25251b83e168217c619ee1f943293",
+      "workflow_blob": "e69060a74f4d48e361d12f56e3014011789eb3b3",
+      "filter": [],
+      "modules": [
+        "mod profiles;"
+      ],
+      "defined_ohm_profile_tests": []
+    },
+    "ohm-1.99.0": {
+      "source": "ec7a03b6b50c0ed2d9582c7e40d92a26a230c491",
+      "workflow_blob": "54ed3b5cda6b3bf0038ffa91369ca11148b80686",
+      "filter": [],
+      "modules": [
+        "mod profile_settings;"
+      ],
+      "defined_ohm_profile_tests": []
+    },
+    "263": {
+      "source": "7caf39914da1e28a67744ecbc963a5f26361474d",
+      "workflow_blob": "6259fbdaed240f1b65e0106c115a6df98909b574",
+      "filter": [
+        "\"$testsuite\" profiles::ohm_default_debuginfo --include-ignored --nocapture"
+      ],
+      "modules": [
+        "mod profile_settings;"
+      ]
+    },
+    "293": {
+      "source": "735e1528ed741015c57676dccf05dbdc0ff7bed1",
+      "workflow_blob": "6259fbdaed240f1b65e0106c115a6df98909b574",
+      "filter": [
+        "\"$testsuite\" profiles::ohm_default_debuginfo --include-ignored --nocapture"
+      ],
+      "modules": [
+        "mod profile_settings;"
+      ]
+    },
+    "294": {
+      "source": "2d44bd4aa68b9ba32cacb5a384ecc18fa5e7553c",
+      "workflow_blob": "6259fbdaed240f1b65e0106c115a6df98909b574",
+      "filter": [
+        "\"$testsuite\" profiles::ohm_default_debuginfo --include-ignored --nocapture"
+      ],
+      "modules": [
+        "mod profile_settings;"
+      ]
+    },
+    "296": {
+      "source": "709b058bb6b7da657ba05895bae5608490294beb",
+      "workflow_blob": "50558b6c645f49ac75458dd07dc8f74e443a733f",
+      "filter": [],
+      "modules": [
+        "mod profile_settings;"
+      ],
+      "defined_ohm_profile_tests": []
+    },
+    "305": {
+      "source": "7b29b877b14874055e794e22d19cae2f35cfcab1",
+      "workflow_blob": "6259fbdaed240f1b65e0106c115a6df98909b574",
+      "filter": [
+        "\"$testsuite\" profiles::ohm_default_debuginfo --include-ignored --nocapture"
+      ],
+      "modules": [
+        "mod profile_settings;"
+      ]
+    },
+    "306": {
+      "source": "c7f394c8c9aaef1272c621ff11d77dcf569ed94b",
+      "workflow_blob": "6259fbdaed240f1b65e0106c115a6df98909b574",
+      "filter": [
+        "\"$testsuite\" profiles::ohm_default_debuginfo --include-ignored --nocapture"
+      ],
+      "modules": [
+        "mod profile_settings;"
+      ]
+    }
+  },
+  "offline_files": {
+    "ohm_default_debuginfo.txt": "44ee589753c668da66566121381dc2aef1d066dac207d2b60015feeb32af8b62",
+    "ohm_default_debuginfo_respects_overrides.txt": "fb8e4fe1f69dd48f70bb8199c00a2e7f7ed3f7cb1bcc4fa3dcc51661be2c75db",
+    "open-pr-gate-audit.tsv": "96d6e6c9c487be831f66633c3f5295cadea81c334b7b2f2a443186ecd48c00c7",
+    "storage.txt": "3b1c766021f79333b595c0cfffe46f11b233e9623933b7c25c3d51f5e2590700",
+    "verdicts.tsv.gz": "40fd6d28a5386aca80fb90a451b77b2a01dcdf4497b699eec76947ff9a90d813"
+  },
+  "original_profile_stdout_sha256": {
+    "ohm_default_debuginfo.txt": "b277dbeb41e58a66223549a8045f055013c71c9b1a5d3ad036e760a7f54287b7",
+    "ohm_default_debuginfo_respects_overrides.txt": "1ddb3c965be5c5a580749f1cae060e3d638fbf5b5c001bd4ab37d00f3aae7fe7"
+  }
+}

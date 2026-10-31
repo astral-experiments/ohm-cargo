@@ -1,0 +1,50 @@
+7b29b877b14874055e794e22d19cae2f35cfcab1
+1bc63ca9a32b171ffc2a8484928c47da1210b929
+Linux t5p9vvgpuuki8 7.1.4 #1 SMP PREEMPT_DYNAMIC Tue Aug 18 07:42:21 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
+Filesystem     Type     Size  Used Avail Use% Mounted on
+overlay        overlay  284G  333M  284G   1% /
+shm            tmpfs     32G     0   32G   0% /dev/shm
+/dev tmpfs rw,nosuid,size=65536k,mode=755
+/gitmirror ext4 rw,relatime
+/cache ext4 rw,relatime
+/dev/shm tmpfs rw,nosuid,nodev,noexec,relatime,size=33554432k
+/nsc/bin ext4 ro,relatime
+/nsc/powertoys ext4 ro,relatime
+/opt/hostedactioncache ext4 rw,relatime
+/opt/hostedtoolcache ext4 rw,relatime
+/vendor/docker ext4 ro,relatime
+/etc/homebrew/curlrc ext4 ro,relatime
+/run/secrets tmpfs rw,relatime
+/opt/namespace/mounted_prejob.sh ext4 ro,relatime
+/home/runner/entry.sh ext4 ro,relatime
+/run/ssh tmpfs rw,relatime
+/run/docker.sock ext4 rw,relatime
+/run/nsc tmpfs ro,relatime
+/home/runner/.docker/cli-plugins ext4 rw,relatime
+/usr/local/lib/docker/cli-plugins/docker-buildx ext4 ro,relatime
+/usr/local/lib/docker/cli-plugins/docker-compose ext4 ro,relatime
+/etc/resolv.conf ext4 rw,relatime
+/etc/hosts ext4 rw,relatime
+/etc/hostname ext4 rw,relatime
+/proc/acpi tmpfs ro,relatime,size=4k,nr_inodes=1
+/proc/kcore tmpfs rw,nosuid,size=65536k,mode=755
+/proc/keys tmpfs rw,nosuid,size=65536k,mode=755
+/proc/timer_list tmpfs rw,nosuid,size=65536k,mode=755
+/sys/firmware tmpfs ro,relatime,size=4k,nr_inodes=1
+MemAvailable_kib=64820280
+mount: /home/runner/work/_temp/cargo-tests: mount failed: No such file or directory.
+Using a job-private executable tmpfs
+TARGET                              FSTYPE OPTIONS
+/home/runner/work/_temp/cargo-tests tmpfs  rw,nosuid,nodev,relatime,size=50331648k,mode=700
+Filesystem        1-blocks  Used   Available Capacity Mounted on
+tmpfs          51539607552     0 51539607552       0% /home/runner/work/_temp/cargo-tests
+tmpfs          51539607552     0 51539607552       0% /home/runner/work/_temp/cargo-tests
+tmpfs          51539607552     0 51539607552       0% /home/runner/work/_temp/cargo-tests
+
+7b29b877b14874055e794e22d19cae2f35cfcab1
+1bc63ca9a32b171ffc2a8484928c47da1210b929
+Filesystem     Type     Size  Used Avail Use% Mounted on
+overlay        overlay  284G  5.6G  278G   2% /
+shm            tmpfs     32G     0   32G   0% /dev/shm
+Filesystem     Type   Size  Used Avail Use% Mounted on
+tmpfs          tmpfs   48G   16G   33G  32% /home/runner/work/_temp/cargo-tests
