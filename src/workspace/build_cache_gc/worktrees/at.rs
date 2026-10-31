@@ -6,7 +6,11 @@ use std::io;
 use std::mem::MaybeUninit;
 use std::os::fd::{AsRawFd as _, FromRawFd as _};
 use std::os::unix::ffi::OsStrExt as _;
-use std::os::unix::fs::MetadataExt as _;
+use std::os::unix::fs::{MetadataExt as _, OpenOptionsExt as _};
+use std::path::Path;
+
+#[cfg(target_os = "linux")]
+use {crate::workspace::build_cache_gc::MountPath, rustix::fs::OFlags};
 
 use crate::CargoResult;
 use crate::workspace::build_cache_gc::{CollectorLock, try_lock_opened};
@@ -44,7 +48,34 @@ pub(super) fn open(
     Ok(unsafe { File::from_raw_fd(fd) })
 }
 
+/// Open a readable directory in the configured target without crossing a Linux mount.
+pub(super) fn target_directory(target: &Path, path: &Path) -> io::Result<File> {
+    let mut options = File::options();
+    options
+        .read(true)
+        .custom_flags(libc::O_DIRECTORY | libc::O_NOFOLLOW);
+    #[cfg(target_os = "linux")]
+    if path != target {
+        let relative = path
+            .strip_prefix(target)
+            .map_err(|_| io::ErrorKind::InvalidInput)?;
+        return open_dir(&options.open(target)?, relative.as_os_str());
+    }
+    #[cfg(not(target_os = "linux"))]
+    let _ = target;
+    options.open(path)
+}
+
 pub(super) fn open_dir(parent: &File, name: &OsStr) -> io::Result<File> {
+    #[cfg(target_os = "linux")]
+    {
+        MountPath::open_beneath(
+            parent,
+            Path::new(name),
+            OFlags::RDONLY | OFlags::DIRECTORY | OFlags::NONBLOCK,
+        )
+    }
+    #[cfg(not(target_os = "linux"))]
     open(parent, name, libc::O_RDONLY | libc::O_DIRECTORY, 0)
 }
 
@@ -86,10 +117,20 @@ pub(super) fn entry_len(
     inode: u64,
     directory: bool,
 ) -> io::Result<Option<u64>> {
-    let stat = match stat(dir, name) {
+    #[cfg(target_os = "linux")]
+    let observed = MountPath::open_beneath(dir, Path::new(name), OFlags::PATH)
+        .and_then(|file| rustix::fs::fstat(&file).map_err(io::Error::from));
+    #[cfg(not(target_os = "linux"))]
+    let observed = stat(dir, name);
+    let stat = match observed {
         Ok(stat) => stat,
-        Err(e) if e.kind() == io::ErrorKind::NotFound => return Ok(None),
-        Err(e) => return Err(e),
+        Err(error)
+            if error.kind() == io::ErrorKind::NotFound
+                || error.raw_os_error() == Some(libc::EXDEV) =>
+        {
+            return Ok(None);
+        }
+        Err(error) => return Err(error),
     };
     let kind = stat.st_mode & libc::S_IFMT;
     let same_kind = if directory {
@@ -139,6 +180,28 @@ mod tests {
     use super::*;
     use std::fs;
     use std::os::unix::fs::symlink;
+
+    #[cfg(target_os = "linux")]
+    #[test]
+    fn private_directory_and_entry_lookup_refuse_a_nested_mount() -> CargoResult<()> {
+        let root = File::open("/")?;
+        let proc = fs::symlink_metadata("/proc")?;
+        assert_eq!(
+            open_dir(&root, "proc".as_ref()).unwrap_err().raw_os_error(),
+            Some(libc::EXDEV)
+        );
+        assert_eq!(
+            target_directory(Path::new("/"), Path::new("/proc/sys"))
+                .unwrap_err()
+                .raw_os_error(),
+            Some(libc::EXDEV)
+        );
+        assert_eq!(
+            entry_len(&root, "proc".as_ref(), proc.dev(), proc.ino(), true)?,
+            None
+        );
+        Ok(())
+    }
 
     #[test]
     fn replacing_a_parent_cannot_redirect_unlink_or_lock_creation() -> CargoResult<()> {
