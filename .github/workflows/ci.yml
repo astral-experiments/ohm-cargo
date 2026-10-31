@@ -1,44 +1,43 @@
-name: Cargo source qualification
+name: Cargo runner scratch qualification
 on: workflow_dispatch
 permissions:
   contents: read
 jobs:
-  gc:
-    name: GC control and candidate (${{ matrix.runner }})
-    runs-on: ${{ matrix.runner }}
+  scratch:
     strategy:
       fail-fast: false
       matrix:
         runner: [namespace-profile-ubuntu-24-04-16, ubuntu-24.04]
-    env:
-      CARGO_PROFILE_DEV_DEBUG: 1
-      CARGO_PROFILE_TEST_DEBUG: 1
-      CARGO_INCREMENTAL: 0
-      CARGO_PUBLIC_NETWORK_TESTS: 1
+    runs-on: ${{ matrix.runner }}
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-        with:
-          path: diagnostics
-          persist-credentials: false
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-        with:
-          ref: 2d44bd4aa68b9ba32cacb5a384ecc18fa5e7553c
-          path: baseline
-          persist-credentials: false
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-        with:
-          ref: 3871cbf823b811d3d5d9f59b87fb9df8d6cb9148
-          path: candidate
-          persist-credentials: false
-      - name: Install dependencies
+      - name: Find a local filesystem for the full Linux test suite
+        shell: bash
         run: |
-          rustup toolchain install 1.99.0 --profile minimal
-          sudo apt-get update && sudo apt-get install -y libsecret-1-dev
-      - name: Compare control and candidate
-        run: python3 -B diagnostics/ci/ohm-22-gc-qualification.py
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
-        if: always()
-        with:
-          name: gc-${{ matrix.runner }}
-          path: ${{ runner.temp }}/ohm-22-gc-qualification-logs/*.log
-          retention-days: 7
+          set -eu
+          for path in "$RUNNER_TEMP" /tmp /mnt /dev/shm /var/tmp /cache; do
+            if test -d "$path"; then
+              printf 'QA-FILESYSTEM %s ' "$path"
+              findmnt --bytes -T "$path" -n -o TARGET,FSTYPE,SIZE,AVAIL
+            fi
+          done
+          findmnt --bytes -rn -t ext4,xfs,btrfs -o TARGET,FSTYPE,SIZE,AVAIL | awk '$1 == "/" || $1 ~ /^\/(mnt|home\/runner|cache|work|tmp|var\/tmp)(\/|$)/ {print "QA-LOCAL", $0}'
+          if test "${{ matrix.runner }}" = namespace-profile-ubuntu-24-04-16; then
+            scratch="$RUNNER_TEMP/ohm-cargo-ext4-probe"
+            mkdir -p "$scratch/fs"
+            truncate --size=64M "$scratch/test.img"
+            mkfs.ext4 -q -F "$scratch/test.img"
+            if sudo -n mount -o loop,nosuid,nodev "$scratch/test.img" "$scratch/fs" 2>"$scratch/mount.err"; then
+              trap 'sudo -n umount "$scratch/fs"' EXIT
+              sudo -n chown "$(id -u):$(id -g)" "$scratch/fs"
+              cp /bin/true "$scratch/fs/check"
+              "$scratch/fs/check"
+              test "$(stat -c %d "$scratch/fs")" = "$(stat -c %d "$scratch/fs/check")"
+              echo "QA-LOOP ext4 mounted with stable device IDs and executable files"
+            else
+              printf 'QA-LOOP unavailable: '; head -c 500 "$scratch/mount.err"; printf '\n'
+            fi
+          else
+            for path in /usr/local/lib/android /usr/local/.ghcup /opt/ghc /usr/share/dotnet; do
+              if test -d "$path"; then printf 'QA-IMAGE-TOOLS '; du -sx --block-size=1 "$path"; fi
+            done
+          fi
