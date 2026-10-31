@@ -49,8 +49,7 @@ jobs:
 
   cargo-tests:
     name: Cargo tests (${{ matrix.os }})
-    # GC checks mount boundaries. The Ubuntu VM provides ext4 for the Linux fixtures.
-    runs-on: ${{ matrix.os == 'depot-macos-15' && 'namespace-profile-macos-15' || 'ubuntu-24.04' }}
+    runs-on: ${{ matrix.os == 'depot-macos-15' && 'namespace-profile-macos-15' || 'namespace-profile-ubuntu-24-04-16' }}
     env:
       CARGO_PROFILE_DEV_DEBUG: 1
       CARGO_PROFILE_TEST_DEBUG: 1
@@ -76,6 +75,21 @@ jobs:
       - name: Install system dependencies
         if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y gcc-multilib libsecret-1-0 libsecret-1-dev
+      - name: Prepare a private ext4 directory for the Linux tests
+        if: runner.os == 'Linux'
+        id: linux_scratch
+        run: |
+          # GC checks mount boundaries. The runner's root overlay can report
+          # different device numbers for files and their parent directory.
+          test "$(findmnt -n -T /cache -o FSTYPE)" = ext4
+          scratch="$(sudo mktemp -d "/cache/ohm-cargo-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT-XXXXXXXX")"
+          echo "path=$scratch" >> "$GITHUB_OUTPUT"
+          sudo chown "$(id -u):$(id -g)" "$scratch"
+          mkdir "$scratch/tmp"
+          cp /bin/true "$scratch/check-exec"
+          "$scratch/check-exec"
+          echo "TMPDIR=$scratch/tmp" >> "$GITHUB_ENV"
+          echo "CARGO_TARGET_DIR=$scratch/cargo-tests" >> "$GITHUB_ENV"
       - name: Run Cargo unit and integration tests
         run: cargo +"$RUST_VERSION" test -p cargo
       - name: Install Ohm for shared-registry integration coverage
@@ -162,6 +176,14 @@ jobs:
             "$testsuite" rustflags::ohm_defaults_reexpand_derive_after_native_input_changes \
               --exact --nocapture
           fi
+      - name: Remove this job's Linux test directory
+        if: always() && steps.linux_scratch.outputs.path != ''
+        env:
+          SCRATCH: ${{ steps.linux_scratch.outputs.path }}
+        run: |
+          test "$(dirname -- "$SCRATCH")" = /cache
+          [[ "$(basename -- "$SCRATCH")" == "ohm-cargo-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT-"???????? ]]
+          sudo rm -rf --one-file-system -- "$SCRATCH"
 
   workspace-tests:
     name: Workspace tests
