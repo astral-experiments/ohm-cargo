@@ -53,7 +53,7 @@ jobs:
         printf 'std::env::temp_dir()=%s\n' "$fixture"
         for directory in "$RUNNER_TEMP/cargo-tests" "$fixture"; do
           device=$(df -Pk "$directory" | awk 'NR==2 {print $1}')
-          diskutil info -plist "$device" | python3 -c 'import plistlib,sys; d=plistlib.load(sys.stdin.buffer); t=d.get("FilesystemType", ""); print(d["DeviceIdentifier"], t); assert t.lower()=="apfs", d.get("FilesystemName")'
+          diskutil info -plist "$device" | python3 -c 'import plistlib,sys; d=plistlib.loads(sys.stdin.buffer.read()); t=d.get("FilesystemType", ""); print(d["DeviceIdentifier"], t); assert t.lower()=="apfs", d.get("FilesystemName")'
           df -Pk "$directory"
         done
         printf '%s\n' "$fixture" > "$receipt/fixture-path"
