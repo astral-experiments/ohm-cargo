@@ -702,18 +702,25 @@ fn rustc_input_rules<'a>(contents: &'a str, output: &Path) -> Option<(Vec<&'a st
     None
 }
 
-const RECHECK_DEPENDENT_LINKS: &str = "/dev/null/ohm-recheck-dependent-links";
+const RECHECK_MARKERS: [&str; 2] = [
+    "/dev/null/ohm-recheck-dependent-links",
+    "/dev/null/ohm-recheck-dependent-links-v2",
+];
 
 /// Rustc omits its advisory link marker from the depfile's own rule. Real
 /// dependencies occur in both lists, even if they happen to use the marker's name.
 fn has_link_only_marker(inputs: &[&str], targets: &str, output: &Path) -> bool {
-    let Some((&RECHECK_DEPENDENT_LINKS, ordinary)) = inputs.split_last() else {
+    let Some((marker, ordinary)) = inputs.split_last() else {
         return false;
     };
     if !cfg!(unix)
-        || ordinary
-            .iter()
-            .any(|p| p.contains(['\n', '\r']) || Path::new(p) == Path::new(RECHECK_DEPENDENT_LINKS))
+        || !RECHECK_MARKERS.contains(marker)
+        || ordinary.iter().any(|p| {
+            p.contains(['\n', '\r'])
+                || RECHECK_MARKERS
+                    .iter()
+                    .any(|name| Path::new(p) == Path::new(name))
+        })
     {
         return false;
     }
@@ -1024,7 +1031,7 @@ mod encoded_dep_info {
             .unwrap()
             .replace(' ', "\\ ")
             .replace(':', "\\:");
-        let marker = RECHECK_DEPENDENT_LINKS;
+        let [marker, versioned] = RECHECK_MARKERS;
         let rebuild = "/dev/null/ohm-untracked-relink-inputs";
         for (ordinary, last, marked, tracked) in [
             ("src.rs".to_owned(), marker, true, false),
@@ -1033,6 +1040,17 @@ mod encoded_dep_info {
             (
                 "src.rs /dev//null/./ohm-recheck-dependent-links".to_owned(),
                 marker,
+                true,
+                true,
+            ),
+            ("src.rs".to_owned(), versioned, true, false),
+            (format!("src.rs {versioned}"), versioned, false, true),
+            (format!("src.rs {versioned}"), versioned, true, true),
+            (format!("src.rs {marker}"), versioned, true, true),
+            (format!("src.rs {versioned}"), marker, true, true),
+            (
+                format!("src.rs {}", versioned.replace("/null/", "//null/./")),
+                versioned,
                 true,
                 true,
             ),
