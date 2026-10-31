@@ -1,0 +1,479 @@
+{
+  "product": "b76dc8006155d48a8cd7d6c5543acb9c18e2ce4b",
+  "product_tree": "c8d0e89c4226add0ae40b6604025f5e7b04489f5",
+  "subject_parents": [
+    "f1f1cde375c2562e4a39d12f8835092a106a4fb8",
+    "7b29b877b14874055e794e22d19cae2f35cfcab1"
+  ],
+  "replay_workflow_blob": "f045d5413d98e525491ce7f87971b2c9cd62ac9e",
+  "unmodified_product_job_steps": {
+    "rustfmt": [
+      "Install Rust",
+      "Check formatting"
+    ],
+    "clippy": [
+      "Install Rust",
+      "Check lints"
+    ],
+    "cargo-tests": [
+      "Install Rust",
+      "Install system dependencies",
+      "Run Cargo unit and integration tests",
+      "Install Ohm for shared-registry integration coverage",
+      "Run shared-registry integration with Ohm",
+      "Install Ohm for Clippy worktree coverage",
+      "Run profile and bundled Clippy worktree tests with Ohm"
+    ],
+    "workspace-tests": [
+      "Install Rust",
+      "Run workspace tests"
+    ],
+    "resolver": [
+      "Install Rust",
+      "Run resolver tests"
+    ],
+    "schema": [
+      "Install Rust",
+      "Run schema tests"
+    ]
+  },
+  "normal_jobs": {
+    "Clippy (depot-ubuntu-24.04-8)": {
+      "run": 41149697784,
+      "job": 124383016268,
+      "runner": "nsc-runner-tb5lak4ktkpbo",
+      "step": "Check lints",
+      "conclusion": "success",
+      "passed": 0,
+      "ignored": 0,
+      "harnesses": 0,
+      "nested_child_process_checks": 0,
+      "step_log_sha256": "641652ed22a271637efe503433e47b9ac2e1dc096913aa8c5d5fea80ac17df10"
+    },
+    "Workspace tests": {
+      "run": 41149697784,
+      "job": 124383016445,
+      "runner": "nsc-runner-he7o58vj3e5hc",
+      "step": "Run workspace tests",
+      "conclusion": "success",
+      "passed": 116,
+      "ignored": 3,
+      "harnesses": 48,
+      "nested_child_process_checks": 7,
+      "step_log_sha256": "9a96ddeeb3c577a72f967380d2291a58fc593a389c30afb342b5292d947daa79"
+    },
+    "Rustfmt": {
+      "run": 41149697784,
+      "job": 124383016505,
+      "runner": "GitHub Actions 1073205806",
+      "step": "Check formatting",
+      "conclusion": "success",
+      "passed": 0,
+      "ignored": 0,
+      "harnesses": 0,
+      "nested_child_process_checks": 0,
+      "step_log_sha256": "0f3f1a74fff156488d9530f5ce3e43ef49615b4eca5eac9fa116ea0c33f5ceb1"
+    },
+    "Resolver tests": {
+      "run": 41149697784,
+      "job": 124383016579,
+      "runner": "nsc-runner-281ejvh8aho4u",
+      "step": "Run resolver tests",
+      "conclusion": "success",
+      "passed": 93,
+      "ignored": 0,
+      "harnesses": 6,
+      "nested_child_process_checks": 0,
+      "step_log_sha256": "bd64bdbc4272dee5092e50a902c82210316e2d298ea4aba8a43e957177d61d9f"
+    },
+    "Clippy (depot-macos-15)": {
+      "run": 41149697784,
+      "job": 124383016598,
+      "runner": "nsc-runner-i2ek8n9nl8vp8",
+      "step": "Check lints",
+      "conclusion": "success",
+      "passed": 0,
+      "ignored": 0,
+      "harnesses": 0,
+      "nested_child_process_checks": 0,
+      "step_log_sha256": "bafd0d115e4c74c3d418b810c29921d5788d0f2abbb585d3475cb0f8d111eec5"
+    },
+    "Schema tests": {
+      "run": 41149697784,
+      "job": 124383016605,
+      "runner": "GitHub Actions 1073205807",
+      "step": "Run schema tests",
+      "conclusion": "success",
+      "passed": 17,
+      "ignored": 0,
+      "harnesses": 2,
+      "nested_child_process_checks": 0,
+      "step_log_sha256": "668cc4512f33731e2a4219f04ed7b086ccf315f7734d18a15aa9d756ebcb5156"
+    }
+  },
+  "earlier_mac_observer_failures": [
+    {
+      "run": 41149697784,
+      "job": 124383016497,
+      "qa": "7b6ba7c176782d7813b029f3afb386157e6e7161",
+      "failed_step": "Verify native macOS fixture and integration storage",
+      "core_product_test": "skipped",
+      "error": "/Users/runner/work/_temp/6ae2659c-6a1e-4a96-a170-7869e6f62b26.sh: line 7: TMPDIR: unbound variable",
+      "job_log_sha256": "fe010e5b8eb5ecfa954a49adf475898ba5677cc7fdc5059561fd6c5fa9ab0b3d"
+    },
+    {
+      "run": 41149865493,
+      "job": 124383570348,
+      "qa": "8f624d3d8bc68f71b1e52a7ff2ccf522fdbf9f5a",
+      "failed_step": "Verify native macOS fixture and integration storage",
+      "core_product_test": "skipped",
+      "error": "io.UnsupportedOperation: File or stream is not seekable.",
+      "job_log_sha256": "00c40f34dcbe98cb3c72d0461af4214ad7db210a2de286d533d75b1e4206177e"
+    }
+  ],
+  "native_full_jobs": {
+    "Linux": {
+      "run": 41149697784,
+      "job": 124383016552,
+      "qa": "7b6ba7c176782d7813b029f3afb386157e6e7161",
+      "source": "b76dc8006155d48a8cd7d6c5543acb9c18e2ce4b",
+      "source_tree": "c8d0e89c4226add0ae40b6604025f5e7b04489f5",
+      "platform": "Linux",
+      "conclusion": "success",
+      "runner": "nsc-runner-36bgmt3f0fkmg",
+      "logs_zip_sha256": "4c56da55a57baf198a494e0b7a6ca07824a596cdd20ebc606ef74f9ce9e4df65",
+      "steps": [
+        [
+          "Set up job",
+          "success"
+        ],
+        [
+          "Set up runner",
+          "success"
+        ],
+        [
+          "Run actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd",
+          "success"
+        ],
+        [
+          "Verify the combined Cargo commit and tree",
+          "success"
+        ],
+        [
+          "Verify native Linux fixture and integration storage",
+          "success"
+        ],
+        [
+          "Verify native macOS fixture and integration storage",
+          "skipped"
+        ],
+        [
+          "Install Rust",
+          "success"
+        ],
+        [
+          "Install system dependencies",
+          "success"
+        ],
+        [
+          "Run Cargo unit and integration tests",
+          "success"
+        ],
+        [
+          "Install Ohm for shared-registry integration coverage",
+          "success"
+        ],
+        [
+          "Run shared-registry integration with Ohm",
+          "success"
+        ],
+        [
+          "Install Ohm for Clippy worktree coverage",
+          "success"
+        ],
+        [
+          "Run profile and bundled Clippy worktree tests with Ohm",
+          "success"
+        ],
+        [
+          "Verify both pinned Ohm profile tests against their compiled names",
+          "success"
+        ],
+        [
+          "Record final native source, testsuite and storage",
+          "success"
+        ],
+        [
+          "Retain native source, storage and profile transcripts",
+          "success"
+        ],
+        [
+          "Post Run actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd",
+          "success"
+        ],
+        [
+          "Complete job",
+          "success"
+        ]
+      ],
+      "profile_transcript_sha256": {
+        "profile_settings::ohm_default_debuginfo": "3ea070717ee442022f55c7c597b4f79e05706214eb7592c52cbe4824fb3d5486",
+        "profile_settings::ohm_default_debuginfo_respects_overrides": "89c9c4a6e644eab4e9f15b98eb3a22dc82990194ab5707467338277b16100006"
+      },
+      "artifact_sha256": "dfee3a9bac1f06df00a31b19a4105bedf4afacc489cde13aec3953ba83626a4b",
+      "harness_sha256": "15224e145e00a16615f5a8d286e9ea03a3f8798d532f41cdf1303775ccebaa66",
+      "storage_before": [
+        "Using a job-private executable tmpfs",
+        "tmpfs          51539607552     0 51539607552       0% /home/runner/work/_temp/cargo-tests",
+        "tmpfs          51539607552     0 51539607552       0% /home/runner/work/_temp/cargo-tests",
+        "tmpfs          51539607552     0 51539607552       0% /home/runner/work/_temp/cargo-tests"
+      ],
+      "storage_after": [
+        "Filesystem     1024-blocks    Used Available Capacity Mounted on",
+        "overlay          297322176 5853448 291452344       2% /",
+        "Filesystem     1024-blocks     Used Available Capacity Mounted on",
+        "tmpfs             50331648 15916844  34414804      32% /home/runner/work/_temp/cargo-tests",
+        "Filesystem     1024-blocks     Used Available Capacity Mounted on",
+        "tmpfs             50331648 15916844  34414804      32% /home/runner/work/_temp/cargo-tests"
+      ],
+      "harnesses": {
+        "lib": {
+          "result": "ok",
+          "passed": 413,
+          "failed": 0,
+          "ignored": 0,
+          "measured": 0,
+          "filtered": 0
+        },
+        "cli": {
+          "result": "ok",
+          "passed": 5,
+          "failed": 0,
+          "ignored": 0,
+          "measured": 0,
+          "filtered": 0
+        },
+        "bench": {
+          "result": "ok",
+          "passed": 0,
+          "failed": 0,
+          "ignored": 9,
+          "measured": 0,
+          "filtered": 0
+        },
+        "integration": {
+          "result": "ok",
+          "passed": 4405,
+          "failed": 0,
+          "ignored": 423,
+          "measured": 0,
+          "filtered": 0
+        },
+        "doc": {
+          "result": "ok",
+          "passed": 3,
+          "failed": 0,
+          "ignored": 1,
+          "measured": 0,
+          "filtered": 0
+        }
+      },
+      "standard_total_passed": 4826,
+      "standard_total_ignored": 433,
+      "actual_gates": {
+        "clippy": [
+          "ohm_linker::ohm_defaults_select_wild_and_allow_lld",
+          "ohm_worktree::bundled_clippy_isolation_defaults_follow_actual_snapshot_cloning",
+          "ohm_worktree::bundled_clippy_preserves_ordinary_seeds_without_importing_lint_state",
+          "ohm_worktree::clippy_isolation_overrides_are_inherited_and_child_flags_take_precedence",
+          "ohm_worktree::clippy_wrapper_scripts_still_deny_the_whole_seed",
+          "ohm_worktree::forced_clippy_isolation_preserves_compiler_trust_rejections",
+          "ohm_worktree::worktree_import_requires_cloning",
+          "rustflags::ohm_defaults_reexpand_derive_after_native_input_changes"
+        ],
+        "profiles": [
+          "profile_settings::ohm_default_debuginfo",
+          "profile_settings::ohm_default_debuginfo_respects_overrides"
+        ],
+        "shared": [
+          "build_dir::shared_registry_cache_avoids_hashing_immutable_public_apis",
+          "build_dir::shared_registry_cache_preserves_cross_workspace_reuse_and_private_early_cutoff",
+          "check::ohm_locks_fingerprints_before_preserving_established_check_graphs",
+          "check::ohm_preserves_fresh_checks_while_holding_shared_workspace_locks",
+          "check::ohm_skips_cold_ordinary_check_graphs_after_test_builds"
+        ]
+      },
+      "hotfix_controls": [
+        "freshness::early_cutoff_rechecks_a_repaired_test_after_failure",
+        "ohm_build_gc::gc_protects_targets_while_a_build_resolves_its_context",
+        "ohm_build_gc::running_test_retains_lease_after_its_cargo_parent_exits",
+        "workspace::build_cache_gc::tests::shared_cleanup_preserves_a_nested_mount_in_active_and_retired_trees",
+        "workspace::build_cache_gc::worktrees::at::tests::private_directory_and_entry_lookup_refuse_a_nested_mount",
+        "workspace::build_cache_gc::mount_path::tests::renamed_parent_and_final_symlink"
+      ],
+      "verdict_inventory_sha256": "fb8ffc7fa41a4aa071128eb5b851fa12a887256c2cce9e4aa21612ce358cc40d"
+    },
+    "macOS": {
+      "run": 41150034552,
+      "job": 124384130271,
+      "qa": "6bc3ef816521ac903a3bdea5825d88a702c203d5",
+      "source": "b76dc8006155d48a8cd7d6c5543acb9c18e2ce4b",
+      "source_tree": "c8d0e89c4226add0ae40b6604025f5e7b04489f5",
+      "platform": "macOS",
+      "conclusion": "success",
+      "runner": "nsc-runner-ovig2hsbnapei",
+      "logs_zip_sha256": "55c952a8e8ed645a85985489bc985b1827d89932759d1905c3a310d706b7cdb1",
+      "steps": [
+        [
+          "Set up job",
+          "success"
+        ],
+        [
+          "Run actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd",
+          "success"
+        ],
+        [
+          "Verify the combined Cargo commit and tree",
+          "success"
+        ],
+        [
+          "Install Rust",
+          "success"
+        ],
+        [
+          "Verify native macOS fixture and integration storage",
+          "success"
+        ],
+        [
+          "Install system dependencies",
+          "skipped"
+        ],
+        [
+          "Run Cargo unit and integration tests",
+          "success"
+        ],
+        [
+          "Install Ohm for shared-registry integration coverage",
+          "skipped"
+        ],
+        [
+          "Run shared-registry integration with Ohm",
+          "skipped"
+        ],
+        [
+          "Install Ohm for Clippy worktree coverage",
+          "success"
+        ],
+        [
+          "Run profile and bundled Clippy worktree tests with Ohm",
+          "success"
+        ],
+        [
+          "Verify both pinned Ohm profile tests against their compiled names",
+          "success"
+        ],
+        [
+          "Record final native source, testsuite and storage",
+          "success"
+        ],
+        [
+          "Retain native source, storage and profile transcripts",
+          "success"
+        ],
+        [
+          "Post Run actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd",
+          "success"
+        ],
+        [
+          "Complete job",
+          "success"
+        ]
+      ],
+      "profile_transcript_sha256": {
+        "profile_settings::ohm_default_debuginfo": "88eece9c60532ba5267245138d02671621c32229c350aece5570f9c60a5e31b1",
+        "profile_settings::ohm_default_debuginfo_respects_overrides": "c95d4a93b9a6db6ad379f598700e2b088f4194b6f9e4e1132b00588bdd444167"
+      },
+      "artifact_sha256": "9d8dc620331749f70c83db9ceb60c53b375b4d72dd5b800b0a71c7394c1405d6",
+      "harness_sha256": "fb6a9ab1749599bb5cab22c1c26e2f0f88596aa8a243cdbbb29cbfedcda247fe",
+      "storage_before": [
+        "std::env::temp_dir()=/var/folders/1m/wsmgmjkx6k59p3sx1z3wpn9w0000gn/T/",
+        "disk5s5 apfs",
+        "/dev/disk5s5   548261928 343452304 185749592    65%    /System/Volumes/Data",
+        "disk5s5 apfs",
+        "/dev/disk5s5   548261928 343452304 185749592    65%    /System/Volumes/Data"
+      ],
+      "storage_after": [
+        "Filesystem   1024-blocks      Used Available Capacity  Mounted on",
+        "/dev/disk5s5   548261928 351104496 178097400    67%    /System/Volumes/Data",
+        "Filesystem   1024-blocks      Used Available Capacity  Mounted on",
+        "/dev/disk5s5   548261928 351104496 178097400    67%    /System/Volumes/Data",
+        "Filesystem   1024-blocks      Used Available Capacity  Mounted on",
+        "/dev/disk5s5   548261928 351104496 178097400    67%    /System/Volumes/Data"
+      ],
+      "harnesses": {
+        "lib": {
+          "result": "ok",
+          "passed": 404,
+          "failed": 0,
+          "ignored": 0,
+          "measured": 0,
+          "filtered": 0
+        },
+        "cli": {
+          "result": "ok",
+          "passed": 5,
+          "failed": 0,
+          "ignored": 0,
+          "measured": 0,
+          "filtered": 0
+        },
+        "bench": {
+          "result": "ok",
+          "passed": 0,
+          "failed": 0,
+          "ignored": 8,
+          "measured": 0,
+          "filtered": 0
+        },
+        "integration": {
+          "result": "ok",
+          "passed": 4386,
+          "failed": 0,
+          "ignored": 421,
+          "measured": 0,
+          "filtered": 0
+        },
+        "doc": {
+          "result": "ok",
+          "passed": 3,
+          "failed": 0,
+          "ignored": 1,
+          "measured": 0,
+          "filtered": 0
+        }
+      },
+      "standard_total_passed": 4798,
+      "standard_total_ignored": 430,
+      "actual_gates": {
+        "clippy": [
+          "ohm_worktree::bundled_clippy_isolation_defaults_follow_actual_snapshot_cloning",
+          "ohm_worktree::bundled_clippy_preserves_ordinary_seeds_without_importing_lint_state",
+          "ohm_worktree::clippy_isolation_overrides_are_inherited_and_child_flags_take_precedence",
+          "ohm_worktree::clippy_wrapper_scripts_still_deny_the_whole_seed",
+          "ohm_worktree::forced_clippy_isolation_preserves_compiler_trust_rejections",
+          "ohm_worktree::worktree_import_requires_cloning"
+        ],
+        "profiles": [
+          "profile_settings::ohm_default_debuginfo",
+          "profile_settings::ohm_default_debuginfo_respects_overrides"
+        ]
+      },
+      "hotfix_controls": [
+        "freshness::early_cutoff_rechecks_a_repaired_test_after_failure",
+        "ohm_build_gc::gc_protects_targets_while_a_build_resolves_its_context",
+        "ohm_build_gc::running_test_retains_lease_after_its_cargo_parent_exits"
+      ],
+      "verdict_inventory_sha256": "f04973dcf27fd0c7b606712d722f82ad4dc5f9fe37e09453181c84ee310aa3f2"
+    }
+  }
+}

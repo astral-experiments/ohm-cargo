@@ -121,6 +121,13 @@ jobs:
         printf 'TMPDIR=%s\n' "$fixture" >> "$GITHUB_ENV"
         printf '%s\n' "$fixture" > "$receipt/fixture-path"
       if: runner.os == 'Linux'
+    - name: Install Rust
+      run: |
+        # Keep compiled-in test scratch paths outside this repository and any
+        # `target` component, for Git discovery and automatic shared-build admission.
+        echo "CARGO_TARGET_DIR=$RUNNER_TEMP/cargo-tests" >> "$GITHUB_ENV"
+        rustup toolchain install "$RUST_VERSION" --profile minimal --component rustfmt
+        rustup target add --toolchain "$RUST_VERSION" "${{ matrix.other }}" wasm32-unknown-unknown
     - name: Verify native macOS fixture and integration storage
       if: runner.os == 'macOS'
       run: |
@@ -130,19 +137,17 @@ jobs:
         exec > >(tee "$receipt/storage-before.txt") 2>&1
         git rev-parse HEAD HEAD^{tree}
         uname -a
-        for directory in "$RUNNER_TEMP/cargo-tests" "$TMPDIR"; do
+        printf '%s\n' 'fn main() { println!("{}", std::env::temp_dir().display()); }' > "$receipt/query-temp.rs"
+        rustc +"$RUST_VERSION" "$receipt/query-temp.rs" -o "$RUNNER_TEMP/query-native-temp"
+        fixture=$("$RUNNER_TEMP/query-native-temp")
+        test -d "$fixture"
+        printf 'std::env::temp_dir()=%s\n' "$fixture"
+        for directory in "$RUNNER_TEMP/cargo-tests" "$fixture"; do
           device=$(df -Pk "$directory" | awk 'NR==2 {print $1}')
-          diskutil info -plist "$device" | python3 -c 'import plistlib,sys; d=plistlib.load(sys.stdin.buffer); t=d.get("FilesystemType", ""); print(d["DeviceIdentifier"], t); assert t.lower()=="apfs", d.get("FilesystemName")'
+          diskutil info -plist "$device" | python3 -c 'import plistlib,sys; d=plistlib.loads(sys.stdin.buffer.read()); t=d.get("FilesystemType", ""); print(d["DeviceIdentifier"], t); assert t.lower()=="apfs", d.get("FilesystemName")'
           df -Pk "$directory"
         done
-        printf '%s\n' "$TMPDIR" > "$receipt/fixture-path"
-    - name: Install Rust
-      run: |
-        # Keep compiled-in test scratch paths outside this repository and any
-        # `target` component, for Git discovery and automatic shared-build admission.
-        echo "CARGO_TARGET_DIR=$RUNNER_TEMP/cargo-tests" >> "$GITHUB_ENV"
-        rustup toolchain install "$RUST_VERSION" --profile minimal --component rustfmt
-        rustup target add --toolchain "$RUST_VERSION" "${{ matrix.other }}" wasm32-unknown-unknown
+        printf '%s\n' "$fixture" > "$receipt/fixture-path"
     - name: Install system dependencies
       if: runner.os == 'Linux'
       run: sudo apt-get update && sudo apt-get install -y gcc-multilib libsecret-1-0 libsecret-1-dev
