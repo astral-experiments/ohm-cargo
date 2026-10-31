@@ -5,6 +5,7 @@ use super::*;
 /// A foreign boundary keeps its enclosing obsolete context intact.
 impl Plan {
     fn context(
+        target: &Path,
         path: &Path,
         mounts: &Mounts,
         summary: &mut Summary<'_>,
@@ -12,7 +13,7 @@ impl Plan {
         if mounts.blocked(path, true, summary) {
             return Ok(None);
         }
-        let mut plan = match Self::at(path) {
+        let mut plan = match Self::at(target, path) {
             Ok(plan) => plan,
             Err(error)
                 if error
@@ -44,7 +45,10 @@ impl Plan {
                 if parent == 0 && child.file_name() == provenance::MARKER {
                     continue;
                 }
-                let kind = child.file_type()?;
+                let Some(meta) = Entry::child_metadata(&child, summary)? else {
+                    return Ok(None);
+                };
+                let kind = meta.file_type();
                 let path = child.path();
                 if mounts.blocked(&path, false, summary)
                     || !(kind.is_file() || kind.is_dir() || kind.is_symlink())
@@ -54,7 +58,8 @@ impl Plan {
                 let index = plan.entries.len();
                 plan.entries.push(Entry {
                     path,
-                    inode: child.ino(),
+                    inode: meta.ino(),
+                    device: meta.dev(),
                     parent,
                     directory: kind.is_dir(),
                     removable: true,
@@ -94,7 +99,8 @@ pub(in crate::workspace::build_cache_gc::worktrees) fn collect_context(
         return Ok(());
     }
     drop(guard);
-    let Some(plan) = Plan::context(path, &Mounts::read(&owner.target)?, summary)? else {
+    let Some(plan) = Plan::context(&owner.target, path, &Mounts::read(&owner.target)?, summary)?
+    else {
         return Ok(());
     };
     if plan.device != fs::symlink_metadata(&owner.target)?.dev() {
@@ -130,22 +136,19 @@ pub(in crate::workspace::build_cache_gc::worktrees) fn collect_context(
         && plan.same_context()
         && !Mounts::read(&owner.target)?.blocked(path, true, summary)
     {
-        finish_context(path, plan.device, plan.entries[0].inode)?;
+        finish_context(&owner.target, path, plan.device, plan.entries[0].inode)?;
     }
     Ok(())
 }
 
 /// Keep the compiler proof until all payload is gone, so interrupted passes remain discoverable.
-fn finish_context(path: &Path, device: u64, inode: u64) -> CargoResult<()> {
+fn finish_context(target: &Path, path: &Path, device: u64, inode: u64) -> CargoResult<()> {
     if fs::read_dir(path)?
         .any(|entry| !entry.is_ok_and(|entry| entry.file_name() == provenance::MARKER))
     {
         return Ok(());
     }
-    let parent = fs::OpenOptions::new()
-        .read(true)
-        .custom_flags(libc::O_DIRECTORY | libc::O_NOFOLLOW)
-        .open(path.parent().unwrap())?;
+    let parent = at::target_directory(target, path.parent().unwrap())?;
     let name = path.file_name().unwrap();
     let directory = at::open_dir(&parent, name)?;
     let metadata = directory.metadata()?;
