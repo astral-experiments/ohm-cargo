@@ -109,17 +109,6 @@ fn uninstall_pkgid(
         None => bail!("package `{}` is not installed", pkgid),
     };
 
-    let dst = root.join("bin").into_path_unlocked();
-    for bin in &installed {
-        let bin = dst.join(bin);
-        if !bin.exists() {
-            bail!(
-                "corrupt metadata, `{}` does not exist when it should",
-                bin.display()
-            )
-        }
-    }
-
     let bins = bins
         .iter()
         .map(|s| {
@@ -138,6 +127,17 @@ fn uninstall_pkgid(
     }
 
     let to_remove = { if bins.is_empty() { installed } else { bins } };
+
+    let dst = root.join("bin").into_path_unlocked();
+    for bin in &to_remove {
+        let bin = dst.join(bin);
+        if !bin.exists() {
+            bail!(
+                "corrupt metadata, `{}` does not exist when it should",
+                bin.display()
+            )
+        }
+    }
 
     for bin in to_remove {
         let bin_path = dst.join(&bin);

@@ -1317,6 +1317,9 @@ fn uninstall_piecemeal() {
     assert_has_installed_exe(paths::cargo_home(), "foo");
     assert_has_installed_exe(paths::cargo_home(), "bar");
 
+    let foo = cargo_home().join("bin").join(exe("foo"));
+    let moved = foo.with_file_name("moved-foo");
+    fs::rename(&foo, &moved).unwrap();
     cargo_process("uninstall foo --bin=bar")
         .with_stderr_data(str![[r#"
 [REMOVING] [ROOT]/home/.cargo/bin/bar[EXE]
@@ -1324,6 +1327,7 @@ fn uninstall_piecemeal() {
 "#]])
         .run();
 
+    fs::rename(moved, foo).unwrap();
     assert_has_installed_exe(paths::cargo_home(), "foo");
     assert_has_not_installed_exe(paths::cargo_home(), "bar");
 
