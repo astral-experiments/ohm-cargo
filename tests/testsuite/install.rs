@@ -1387,6 +1387,24 @@ fn install_repairs_missing_binary_from_multi_binary_package() {
 }
 
 #[cargo_test]
+fn full_install_rebuilds_siblings_with_different_features() {
+    let program = r#"fn main() { println!("{}", cfg!(feature = "extra")); }"#;
+    Package::new("foo", "1.0.0")
+        .feature("extra", &[])
+        .file("src/bin/first.rs", program)
+        .file("src/bin/second.rs", program)
+        .publish();
+    cargo_process("install foo --features extra").run();
+    cargo_process("install foo --bin first").run();
+    cargo_process("install foo").run();
+
+    let second = cargo_home().join("bin").join(exe("second"));
+    let output = std::process::Command::new(second).output().unwrap();
+    assert!(output.status.success());
+    assert_eq!(output.stdout, b"false\n");
+}
+
+#[cargo_test]
 fn skips_unchanged_install_with_feature_disabled_binaries() {
     let p = git::repo(&paths::root().join("foo"))
         .file(
