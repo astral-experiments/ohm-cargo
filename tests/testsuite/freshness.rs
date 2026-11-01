@@ -62,6 +62,48 @@ fn new_clippy_config_invalidates_a_fresh_check() {
     check().run();
 }
 
+#[cargo_test(
+    requires = "clippy-driver",
+    reason = "exercises Clippy config dep-info"
+)]
+#[cfg(unix)]
+fn clippy_tracks_edits_to_a_non_unicode_config_path() {
+    use std::os::unix::ffi::OsStrExt as _;
+
+    let p = project()
+        .file(
+            "src/lib.rs",
+            "pub fn f(a: u8, b: u8, c: u8, d: u8) -> u8 { a ^ b ^ c ^ d }",
+        )
+        .file("rules-\u{fffd}.toml", "too-many-arguments-threshold = 5")
+        .build();
+    let config = p.root().join(OsStr::from_bytes(b"rules-\xff.toml"));
+    if let Err(error) = fs::write(&config, "too-many-arguments-threshold = 5") {
+        // Some filesystems reject non-Unicode names before Clippy can open them.
+        assert_eq!(error.raw_os_error(), Some(libc::EILSEQ), "{error}");
+        return;
+    }
+    std::os::unix::fs::symlink(&config, p.root().join("clippy.toml")).unwrap();
+    let driver = PathBuf::from(paths::sysroot())
+        .join("bin/clippy-driver")
+        .with_extension(std::env::consts::EXE_EXTENSION);
+    let check = || {
+        let mut cmd = p.cargo("check --lib");
+        cmd.env("RUSTC_WORKSPACE_WRAPPER", &driver).env(
+            "CLIPPY_ARGS",
+            "-Dclippy::too_many_arguments__CLIPPY_HACKERY__",
+        );
+        cmd
+    };
+
+    check().run();
+    fs::write(&config, "too-many-arguments-threshold = 3").unwrap();
+    check()
+        .with_status(101)
+        .with_stderr_contains("[..]too many arguments[..]")
+        .run();
+}
+
 #[cargo_test]
 fn shared_build_directory_distinguishes_workspace_sources() {
     let shared = paths::root().join("shared");
