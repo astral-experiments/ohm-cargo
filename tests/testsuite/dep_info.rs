@@ -149,6 +149,36 @@ fn dep_path_inside_target_has_correct_path() {
     }
 }
 
+#[cargo_test]
+fn external_dep_info_can_quote_percent_targets() {
+    let p = project()
+        .file(
+            "Cargo.toml",
+            &format!(
+                "{}\n[lib]\ncrate-type = [\"rlib\", \"staticlib\"]\n",
+                basic_manifest("foo", "0.0.1")
+            ),
+        )
+        .file("src/lib.rs", "")
+        .build();
+    let target = p.root().join("cache%dir");
+    for (setting, spelling) in [
+        (false, "cache%dir"),
+        (true, r"cache\%dir"),
+        (false, "cache%dir"),
+    ] {
+        p.cargo("build")
+            .env("CARGO_TARGET_DIR", &target)
+            .env("CARGO_BUILD_DEP_INFO_ESCAPE_PERCENT", setting.to_string())
+            .run();
+        let rule = std::fs::read_to_string(target.join("debug/libfoo.d")).unwrap();
+        assert!(
+            rule.split_once(": ").unwrap().0.contains(spelling),
+            "{rule}"
+        );
+    }
+}
+
 #[cfg(unix)]
 #[cargo_test]
 fn external_dep_info_quotes_make_prerequisites() {

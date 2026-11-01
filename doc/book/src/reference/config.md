@@ -77,6 +77,7 @@ rustflags = ["…", "…"]        # custom flags to pass to all compiler invocat
 rustdocflags = ["…", "…"]     # custom flags to pass to rustdoc
 incremental = true            # whether or not to enable incremental compilation
 dep-info-basedir = "…"        # path for the base directory for targets in depfiles
+dep-info-escape-percent = false # escape literal percent signs in GNU Make targets
 
 [credential-alias]
 # Provides a way to define aliases for credential providers.
@@ -663,6 +664,16 @@ relative paths.
 The setting itself is a config-relative path. So, for example, a value of
 `"."` would strip all paths starting with the parent directory of the `.cargo`
 directory.
+
+#### `build.dep-info-escape-percent`
+* Type: boolean
+* Default: `false`
+* Environment: `CARGO_BUILD_DEP_INFO_ESCAPE_PERCENT`
+
+Set this to `true` when GNU Make includes a dep-info file for an artifact whose
+path contains a literal `%`. GNU Make requires a backslash before a literal
+percent sign in a rule target. Ninja's direct depfile reader expects the
+original filename, which is the default spelling.
 
 #### `build.pipelining`
 

@@ -11,7 +11,11 @@ use cargo_util::paths;
 use tracing::debug;
 
 /// Makes a path relative to the configured base and quotes it for its part of a Make rule.
-fn render_filename(path: &Path, basedir: Option<&Path>, is_target: bool) -> CargoResult<PathBuf> {
+fn render_filename(
+    path: &Path,
+    basedir: Option<&Path>,
+    extra_separator: Option<u8>,
+) -> CargoResult<PathBuf> {
     let normalized;
     let path = if let Some(basedir) = basedir {
         normalized = normalize_path(path);
@@ -23,7 +27,7 @@ fn render_filename(path: &Path, basedir: Option<&Path>, is_target: bool) -> Carg
     let needs_backslash = |byte| {
         matches!(byte, b' ' | b'\t' | b'#')
             || (cfg!(unix) && byte == b':')
-            || (!is_target && byte == b'|')
+            || Some(byte) == extra_separator
     };
     if !bytes
         .iter()
@@ -46,14 +50,30 @@ fn render_filename(path: &Path, basedir: Option<&Path>, is_target: bool) -> Carg
     paths::bytes2path(&escaped)
 }
 
+/// Splits a Cargo-written rule before the separator, preserving its exact native bytes.
+fn rule_parts(rule: &[u8]) -> Option<(&[u8], &[u8])> {
+    // A space in a target is escaped, so the first ": " or ":\n" ends the target.
+    rule.windows(2)
+        .position(|pair| matches!(pair, b": " | b":\n"))
+        .map(|end| rule.split_at(end))
+}
+
 /// Compares prerequisites containing native bytes or a tab that the legacy parser splits.
 fn same_literal_prerequisites(previous: &[u8], prerequisites: &[u8]) -> bool {
-    // Spaces in the target are escaped, so the first ": " or ":\n" ends the target.
     (std::str::from_utf8(previous).is_err() || prerequisites.contains(&b'\t'))
-        && previous
-            .windows(2)
-            .position(|pair| matches!(pair, b": " | b":\n"))
-            .is_some_and(|end| &previous[end..] == prerequisites)
+        && rule_parts(previous).is_some_and(|(_, deps)| deps == prerequisites)
+}
+
+/// Checks the target spelling before retaining a sibling crate type's percent-containing target.
+fn shared_target_spelling_matches(depfile: &Path, target: &Path) -> bool {
+    let Ok(previous) = paths::read_bytes(depfile) else {
+        return false;
+    };
+    let Some((previous_target, _)) = rule_parts(&previous) else {
+        return false;
+    };
+    paths::bytes2path(previous_target)
+        .is_ok_and(|previous| previous.with_extension("d") == target.with_extension("d"))
 }
 
 /// Collects all dependencies of the `unit` for the output dep info file.
@@ -194,15 +214,18 @@ pub fn output_depinfo(
     // A stable sort preserves the first spelling of equivalent paths.
     deps.sort();
     deps.dedup();
-    let basedir = bcx
-        .gctx
-        .build_config()?
+    let config = bcx.gctx.build_config()?;
+    let target_separator = config
+        .dep_info_escape_percent
+        .unwrap_or(false)
+        .then_some(b'%');
+    let basedir = config
         .dep_info_basedir
         .as_ref()
         .map(|value| normalize_path(&value.resolve_path(bcx.gctx)));
     let deps = deps
         .iter()
-        .map(|f| render_filename(f, basedir.as_deref(), false))
+        .map(|f| render_filename(f, basedir.as_deref(), Some(b'|')))
         .collect::<CargoResult<Vec<_>>>()?;
 
     // Preserve the legacy target selection for crate types sharing a dep-info path.
@@ -210,7 +233,7 @@ pub fn output_depinfo(
     for link_dst in outputs {
         let output_path = link_dst.with_extension("d");
         if success {
-            let target = render_filename(link_dst, basedir.as_deref(), true)?;
+            let target = render_filename(link_dst, basedir.as_deref(), target_separator)?;
             let mut contents = paths::path2bytes(&target)?.to_vec();
             let target_len = contents.len();
             contents.push(b':');
@@ -225,15 +248,18 @@ pub fn output_depinfo(
                 if paths::read_bytes(&output_path).is_ok_and(|previous| previous == contents) {
                     continue;
                 }
-            } else if fingerprint::parse_rustc_dep_info(&output_path).is_ok_and(|previous| {
-                previous
-                    .files
-                    .iter()
-                    .map(|(path, _checksum)| path)
-                    .eq(&deps)
-            }) || paths::read_bytes(&output_path).is_ok_and(|previous| {
-                same_literal_prerequisites(&previous, &contents[target_len..])
-            }) {
+            } else if (!contents[..target_len].contains(&b'%')
+                || shared_target_spelling_matches(&output_path, &target))
+                && (fingerprint::parse_rustc_dep_info(&output_path).is_ok_and(|previous| {
+                    previous
+                        .files
+                        .iter()
+                        .map(|(path, _checksum)| path)
+                        .eq(&deps)
+                }) || paths::read_bytes(&output_path).is_ok_and(|previous| {
+                    same_literal_prerequisites(&previous, &contents[target_len..])
+                }))
+            {
                 // A shared depfile can retain an earlier output's target.
                 continue;
             }
