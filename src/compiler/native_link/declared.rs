@@ -154,6 +154,85 @@ fn library_filename(path: &Path) -> Option<&str> {
     .then_some(name)
 }
 
+/// GNU dependency files omit failed lookups inside scripts. Admit a library
+/// group only when each operand was opened by its absolute name or its possible
+/// providers were already part of the driver's pre-link snapshot.
+#[cfg(target_os = "linux")]
+fn gnu_script_covered(
+    mut script: &str,
+    files: &BTreeSet<PathBuf>,
+    filenames: &BTreeSet<String>,
+    parent_is_searched: bool,
+) -> Option<()> {
+    while let Some(comment) = script.trim_start().strip_prefix("/*") {
+        script = comment.split_once("*/")?.1;
+    }
+    let script = script.replace('(', " ( ").replace(')', " ) ");
+    let mut words = script.split_ascii_whitespace();
+    let mut command = words.next()?;
+    if command == "OUTPUT_FORMAT" {
+        if !words.by_ref().take(3).eq(["(", "elf64-x86-64", ")"]) {
+            return None;
+        }
+        command = words.next()?;
+    }
+    if !matches!(command, "GROUP" | "INPUT") || words.next()? != "(" {
+        return None;
+    }
+    let mut depth = 1;
+    while let Some(word) = words.next() {
+        match word {
+            ")" => {
+                depth -= 1;
+                if depth == 0 {
+                    return words.next().is_none().then_some(());
+                }
+            }
+            "AS_NEEDED" if words.next()? == "(" => depth += 1,
+            word if Path::new(word).is_absolute() && files.contains(Path::new(word)) => {}
+            word if parent_is_searched && filenames.contains(word) => {}
+            word if parent_is_searched && word.starts_with("-l") => {
+                let name = &word[2..];
+                if !filenames.contains(&format!("lib{name}.so"))
+                    || !filenames.contains(&format!("lib{name}.a"))
+                {
+                    return None;
+                }
+            }
+            _ => return None,
+        }
+    }
+    None
+}
+
+/// Reject thin archives and implicit scripts whose search cannot be replayed.
+#[cfg(target_os = "linux")]
+fn gnu_input_covered(
+    path: &Path,
+    report: &Report,
+    roots: &BTreeSet<PathBuf>,
+    filenames: &BTreeSet<String>,
+) -> Option<()> {
+    use std::io::Seek;
+
+    let target = path.canonicalize().ok()?;
+    let mut file = cargo_util::paths::open_regular(&target).ok()?;
+    let mut magic = [0; 8];
+    file.read_exact(&mut magic).ok()?;
+    if magic.starts_with(b"\x7fELF") || &magic == b"!<arch>\n" {
+        return Some(());
+    }
+    let mut script = String::new();
+    file.rewind().ok()?;
+    file.take(8193).read_to_string(&mut script).ok()?;
+    if script.len() > 8192 {
+        return None;
+    }
+    // Linkers may use the resolved script's directory for a relative operand.
+    let parent_is_searched = roots.contains(path.parent()?) && roots.contains(target.parent()?);
+    gnu_script_covered(&script, &report.files, filenames, parent_is_searched)
+}
+
 fn tool_candidates(inputs: &mut Inputs, dir: &Path) -> Option<()> {
     for name in ["ld", "ld.bfd", "ld.lld", "ld.gold", "collect2"] {
         observe(inputs, dir.join(name))?;
@@ -263,7 +342,9 @@ fn action(
                     return None;
                 }
                 tool_roots.insert(p.to_owned());
-            } else if arg.starts_with("-F")
+            } else if (cfg!(target_os = "linux")
+                && (arg.starts_with("--sysroot") || arg.starts_with("-isysroot")))
+                || arg.starts_with("-F")
                 || arg == "-framework"
                 || arg == "-Xlinker"
                 || arg.starts_with("-T")
@@ -301,16 +382,29 @@ fn action(
     }
     // GNU dependency files list successful opens but omit failed searches.
     // Track every eligible name in every -L directory, including absent directories.
-    let mut filenames: BTreeSet<_> = report
-        .files
-        .iter()
-        .filter_map(|p| library_filename(p).map(str::to_owned))
-        .collect();
+    let mut filenames = BTreeSet::new();
     for name in &names {
         for suffix in ["a", "so", "dylib", "tbd"] {
             filenames.insert(format!("lib{name}.{suffix}"));
         }
     }
+    #[cfg(target_os = "linux")]
+    {
+        // GCC's libgcc_s.so group also searches for libgcc_s.so.1 and -lgcc.
+        // Include these from the first link, before we have a dependency file.
+        filenames.extend(["libgcc_s.so.1", "libgcc.so", "libgcc.a"].map(str::to_owned));
+        roots.insert(cwd);
+        for path in &report.files {
+            gnu_input_covered(path, report, &roots, &filenames)?;
+        }
+        inputs.action.push("checked GNU script inputs v2".into());
+    }
+    filenames.extend(
+        report
+            .files
+            .iter()
+            .filter_map(|p| library_filename(p).map(str::to_owned)),
+    );
     #[cfg(target_os = "macos")]
     {
         let sdk = PathBuf::from(env::var_os("SDKROOT")?);
@@ -472,4 +566,34 @@ pub(super) fn checked(
         }
     }
     Some(result)
+}
+
+#[cfg(all(test, target_os = "linux"))]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn gnu_scripts_cannot_introduce_unobserved_library_searches() {
+        let files = [PathBuf::from("/lib/libc.so.6"), PathBuf::from("/lib/ld.so")]
+            .into_iter()
+            .collect();
+        let names = ["libgcc_s.so.1", "libgcc.so", "libgcc.a"]
+            .map(String::from)
+            .into();
+        let covered = |script, parent| gnu_script_covered(script, &files, &names, parent).is_some();
+
+        assert!(covered(
+            "/* GNU ld script */ GROUP(libgcc_s.so.1 -lgcc)",
+            true
+        ));
+        assert!(covered(
+            "OUTPUT_FORMAT(elf64-x86-64) GROUP(/lib/libc.so.6 AS_NEEDED(/lib/ld.so))",
+            false
+        ));
+        assert!(!covered("GROUP(libgcc_s.so.1 -lgcc)", false));
+        assert!(!covered("GROUP(/lib/libc.so.6 -lohm_private)", true));
+        assert!(!covered("GROUP(/lib/missing.so)", true));
+        assert!(!covered("SEARCH_DIR(/new) INPUT(-lgcc)", true));
+        assert!(!covered("INPUT(-lgcc) INCLUDE unknown.ld", true));
+    }
 }
