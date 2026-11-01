@@ -1,6 +1,6 @@
 use std::collections::{BTreeMap, BTreeSet, btree_map};
 use std::env;
-use std::io::SeekFrom;
+use std::io;
 use std::io::prelude::*;
 use std::path::{Path, PathBuf};
 use std::rc::Rc;
@@ -393,12 +393,7 @@ impl CrateListingV1 {
     }
 
     fn save(&self, lock: &FileLock) -> CargoResult<()> {
-        let mut file = lock.file();
-        file.seek(SeekFrom::Start(0))?;
-        file.set_len(0)?;
-        let data = toml::to_string_pretty(self)?;
-        file.write_all(data.as_bytes())?;
-        Ok(())
+        write_receipt(lock, toml::to_string_pretty(self)?.as_bytes())
     }
 }
 
@@ -513,13 +508,46 @@ impl CrateListingV2 {
     }
 
     fn save(&self, lock: &FileLock) -> CargoResult<()> {
-        let mut file = lock.file();
-        file.seek(SeekFrom::Start(0))?;
-        file.set_len(0)?;
-        let data = serde_json::to_string(self)?;
-        file.write_all(data.as_bytes())?;
-        Ok(())
+        write_receipt(lock, &serde_json::to_vec(self)?)
     }
+}
+
+/// Writes through the existing lock so older Cargo processes waiting on this inode stay serialized.
+fn write_receipt(lock: &FileLock, data: &[u8]) -> CargoResult<()> {
+    let mut file = lock.file();
+    let mut original = Vec::new();
+    file.rewind()?;
+    file.read_to_end(&mut original)?;
+    let overlap = original.len().min(data.len());
+    let mut replacing_prefix = false;
+    let update = (|| -> io::Result<()> {
+        // Reserve any additional space before touching existing ownership records.
+        file.write_all(&data[overlap..])?;
+        file.rewind()?;
+        replacing_prefix = true;
+        file.write_all(&data[..overlap])?;
+        if data.len() < original.len() {
+            file.set_len(data.len() as u64)?;
+        }
+        Ok(())
+    })();
+    if let Err(error) = update {
+        let restore = (|| -> io::Result<()> {
+            if replacing_prefix {
+                // A short write may have changed just the bytes below a file size limit.
+                let written = file.stream_position()? as usize;
+                file.rewind()?;
+                file.write_all(&original[..written])?;
+            }
+            if file.metadata()?.len() > original.len() as u64 {
+                file.set_len(original.len() as u64)?;
+            }
+            Ok(())
+        })();
+        restore.with_context(|| format!("failed to restore the receipt after {error}"))?;
+        return Err(error.into());
+    }
+    Ok(())
 }
 
 impl InstallInfo {

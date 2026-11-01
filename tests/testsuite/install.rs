@@ -3362,3 +3362,39 @@ foo v1.0.0:
 "#]])
         .run();
 }
+
+/// Replaces an installed receipt with the same bytes and kernel-enforced write restrictions.
+#[cfg(target_os = "linux")]
+fn seal_receipt(path: &Path, flags: rustix::fs::SealFlags) -> (fs::File, Vec<u8>) {
+    use rustix::fs::{MemfdFlags, fcntl_add_seals, memfd_create};
+    use std::os::fd::AsRawFd;
+
+    let original = fs::read(path).unwrap();
+    let mut file =
+        fs::File::from(memfd_create("cargo-receipt", MemfdFlags::ALLOW_SEALING).unwrap());
+    file.write_all(&original).unwrap();
+    fcntl_add_seals(&file, flags).unwrap();
+    fs::remove_file(path).unwrap();
+    std::os::unix::fs::symlink(format!("/proc/self/fd/{}", file.as_raw_fd()), path).unwrap();
+    (file, original)
+}
+
+#[cfg(target_os = "linux")]
+#[cargo_test]
+fn failed_receipt_rewrite_preserves_existing_install() {
+    pkg("keeper", "1.0.0");
+    pkg("additional", "1.0.0");
+    cargo_process("install keeper").run();
+    for name in [".crates.toml", ".crates2.json"] {
+        let path = cargo_home().join(name);
+        let (_file, original) = seal_receipt(&path, rustix::fs::SealFlags::GROW);
+        cargo_process("install additional")
+            .with_status(101)
+            .with_stderr_contains("[ERROR] failed to write crate metadata at [..]")
+            .run();
+        assert_eq!(fs::read(&path).unwrap(), original);
+        fs::remove_file(&path).unwrap();
+        fs::write(&path, original).unwrap();
+    }
+    cargo_process("uninstall keeper").run();
+}
