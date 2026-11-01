@@ -567,7 +567,7 @@ impl<'gctx> InstallablePackage<'gctx> {
                     .warn(format!("failed to remove orphan: {:?}", e))?;
             }
 
-            if let Err(err) = tracker.save_with_v1_commit(|| installed.success()) {
+            if !dry_run && let Err(err) = tracker.save_with_v1_commit(|| installed.success()) {
                 return Err(match replace_result {
                     Ok(()) => err,
                     Err(replace_err) => replace_err.context(err),
