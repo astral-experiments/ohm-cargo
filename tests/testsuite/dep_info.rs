@@ -208,6 +208,11 @@ fn external_dep_info_quotes_make_prerequisites() {
             "{word:?}: {depfile}"
         );
     }
+    let marker = "/dev/null/ohm-ambiguous-gcc-path";
+    assert!(
+        depfile.ends_with(&format!(" | {marker}\n{marker}:\n")),
+        "{depfile}"
+    );
 }
 
 #[cfg(unix)]
