@@ -628,10 +628,12 @@ pub(super) fn checked(
                 return Some(result);
             }
             report.missing.retain(|p| !p.starts_with(temp));
-            if inputs.snapshot().ok() == Some(before)
-                && !report.files.iter().any(|p| changed_after(p, start))
-                && let Some(complete) = action(driver, args, output, temp, &watched, &report)
+            // The driver queries can run after the real link. Check for concurrent
+            // changes after capturing the complete key that we would publish.
+            if let Some(complete) = action(driver, args, output, temp, &watched, &report)
                 && let Ok(snapshot) = complete.snapshot()
+                && inputs.snapshot().ok() == Some(before)
+                && !report.files.iter().any(|p| changed_after(p, start))
                 && cargo_util::paths::read_regular_bounded(output, 128 * 1024 * 1024)
                     .ok()
                     .is_some_and(|product| {
