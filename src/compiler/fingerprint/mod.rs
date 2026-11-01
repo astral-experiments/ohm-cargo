@@ -2746,9 +2746,16 @@ fn hash_clippy_config(
                 file,
             ))
         });
-        if candidates.iter().flatten().any(|(_, file)| *file) {
-            // The driver tracks the selected file's contents in dep-info. Cargo also
-            // needs its identity and the second candidate that can change diagnostics.
+        if let Some((path, _)) = candidates.iter().flatten().find(|(_, file)| *file) {
+            let selected = bcx.ws.root().join(path);
+            if selected.to_str().is_none() {
+                // A lossy path in rustc's dep-info can name a different, unchanged file.
+                cargo_util::Sha256::new()
+                    .update_path(&selected)?
+                    .finish()
+                    .hash(config);
+            }
+            // Include the second candidate that can change duplicate-config diagnostics.
             candidates.hash(config);
             break;
         }
