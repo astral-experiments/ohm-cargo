@@ -17,6 +17,10 @@ struct RustdocFingerprintJson {
     /// `rustc -vV` verbose version output.
     pub rustc_vv: String,
 
+    /// Compiler working directory used for the last successful merge, relative to the workspace.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    merge_cwd: Option<PathBuf>,
+
     /// Relative paths to cross crate info JSON files from previous `cargo doc` invocations.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub doc_parts: Vec<PathBuf>,
@@ -39,6 +43,10 @@ pub struct RustdocFingerprint {
     path: PathBuf,
     /// `rustc -vV` verbose version output for the current session.
     rustc_vv: String,
+    /// Working directory for the final Rustdoc process.
+    pub(crate) merge_cwd: PathBuf,
+    /// Relocatable identity for the merge directory in the on-disk fingerprint.
+    merge_cwd_key: PathBuf,
     /// Absolute paths to new cross crate info JSON files generated in the current session.
     doc_parts: Vec<PathBuf>,
     /// The fingerprint file on disk.
@@ -72,6 +80,7 @@ impl RustdocFingerprint {
         }
         let new_fingerprint = RustdocFingerprintJson {
             rustc_vv: build_runner.bcx.rustc().verbose_version.clone(),
+            merge_cwd: None,
             doc_parts: Vec::new(),
         };
 
@@ -91,7 +100,19 @@ impl RustdocFingerprint {
         let path = fingerprint_path(build_runner, kind);
         let rustc_vv = build_runner.bcx.rustc().verbose_version.clone();
         let on_disk = load_on_disk(&path);
+        let ws = build_runner.bcx.ws;
+        let roots = &build_runner.bcx.roots;
+        let merge_cwd = roots
+            .iter()
+            .find(|unit| unit.kind == kind && unit.mode.is_doc())
+            .or_else(|| roots.first())
+            .map(|unit| crate::util::path_args(ws, unit).1)
+            .unwrap_or_else(|| ws.root().to_owned());
+        let merge_cwd_key =
+            pathdiff::diff_paths(&merge_cwd, ws.root()).unwrap_or_else(|| merge_cwd.clone());
         Self {
+            merge_cwd,
+            merge_cwd_key,
             path,
             rustc_vv,
             doc_parts,
@@ -146,6 +167,7 @@ impl RustdocFingerprint {
         // Persist with relative paths to the directory where fingerprint file is at.
         let json = RustdocFingerprintJson {
             rustc_vv: self.rustc_vv.clone(),
+            merge_cwd: Some(self.merge_cwd_key.clone()),
             doc_parts: doc_parts
                 .iter()
                 .map(|p| p.strip_prefix(base).unwrap_or(p).to_owned())
@@ -166,7 +188,9 @@ impl RustdocFingerprint {
             return true;
         };
 
-        if self.rustc_vv != on_disk.rustc_vv {
+        if self.rustc_vv != on_disk.rustc_vv
+            || on_disk.merge_cwd.as_ref() != Some(&self.merge_cwd_key)
+        {
             return true;
         }
 
