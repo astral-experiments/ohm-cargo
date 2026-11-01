@@ -724,7 +724,9 @@ fn create_bcx_with_registry_reuse<'a, 'gctx>(
             &target_data,
             &profiles,
             interner,
-            reuse_built_registry_dependencies
+            // Only cargo check validates promoted build units before executing the graph.
+            matches!(build_config.intent, UserIntent::Check { .. })
+                && reuse_built_registry_dependencies
                 && gctx.cli_unstable().ohm_reuse_built_deps()
                 && !gctx.extra_verbose()
                 && !build_config.unit_graph
