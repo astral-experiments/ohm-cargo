@@ -182,8 +182,8 @@ impl<'a, 'gctx> BuildContext<'a, 'gctx> {
         if unit.is_std || !unit.pkg.package_id().source_id().is_path() {
             return None;
         }
-        let source = unit.pkg.root();
-        Some(pathdiff::diff_paths(source, build_dir).unwrap_or_else(|| source.to_owned()))
+        let source = self.ws.canonical_build_path(unit.pkg.root());
+        Some(pathdiff::diff_paths(&source, build_dir).unwrap_or(source))
     }
 
     /// Gets the number of jobs specified for this build.
