@@ -105,6 +105,31 @@ fn clippy_tracks_edits_to_a_non_unicode_config_path() {
 }
 
 #[cargo_test]
+fn nested_workspaces_can_share_the_inner_target_directory() {
+    let [outer, inner] = [("outer", "left"), ("outer/nested", "right")].map(|(dir, name)| {
+        project()
+            .at(dir)
+            .file("Cargo.toml", &basic_manifest("peer", "0.1.0"))
+            .file(
+                "src/main.rs",
+                &format!("fn main() {{ println!(\"{name}\"); }}"),
+            )
+            .build()
+    });
+    let shared = inner.root().join("target");
+    for setting in ["CARGO_TARGET_DIR", "CARGO_BUILD_BUILD_DIR"] {
+        for (project, expected) in [(&outer, "left"), (&inner, "right"), (&outer, "left")] {
+            project
+                .cargo("-Zohm-defaults=no run --quiet")
+                .masquerade_as_nightly_cargo(&["ohm-defaults"])
+                .env(setting, &shared)
+                .with_stdout_data(format!("{expected}\n"))
+                .run();
+        }
+    }
+}
+
+#[cargo_test]
 fn shared_build_directory_distinguishes_workspace_sources() {
     let shared = paths::root().join("shared");
     let [first, second] = ["first", "second"].map(|name| {
@@ -137,22 +162,37 @@ fn shared_build_directory_distinguishes_workspace_sources() {
             project.symlink(&shared, "build-cache");
         }
     }
-    for (project, expected) in [(&first, "first"), (&second, "second"), (&first, "first")] {
-        #[cfg(unix)]
-        let shared = project.root().join("build-cache");
-        project
-            .cargo("-Zohm-defaults=no run --quiet")
-            .masquerade_as_nightly_cargo(&["ohm-defaults"])
-            .env("CARGO_BUILD_BUILD_DIR", &shared)
-            .env("CARGO_TARGET_DIR", project.root().join("target"))
-            .with_stdout_data(format!("{expected}\n"))
-            .run();
+    for (shared_target, defaults) in [
+        (false, "-Zohm-defaults=no"),
+        (false, ""),
+        (true, "-Zohm-defaults=no"),
+        (true, ""),
+    ] {
+        for (project, expected) in [(&first, "first"), (&second, "second"), (&first, "first")] {
+            #[cfg(unix)]
+            let shared = project.root().join("build-cache");
+            let mut run = project.cargo(&format!("{defaults} run --quiet"));
+            run.masquerade_as_nightly_cargo(&["ohm-defaults"]);
+            if shared_target {
+                run.env("CARGO_TARGET_DIR", &shared);
+            } else {
+                run.env("CARGO_BUILD_BUILD_DIR", &shared)
+                    .env("CARGO_TARGET_DIR", project.root().join("target"));
+            }
+            run.with_stdout_data(format!("{expected}\n")).run();
+        }
     }
     second
         .process(&second.bin("demo"))
         .with_stdout_data("second\n")
         .run();
     assert!(shared.join("debug/.fingerprint").is_dir());
+    first
+        .cargo("-Zohm-defaults=no clean")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("CARGO_TARGET_DIR", &shared)
+        .run();
+    assert!(!shared.join("debug").exists());
 }
 
 #[cargo_test]

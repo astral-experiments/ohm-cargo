@@ -2955,9 +2955,12 @@ fn calculate_normal(
         rustc: util::hash_u64(&build_runner.bcx.rustc().verbose_version),
         target: util::hash_u64(&unit.target),
         profile: profile_hash,
-        // Note that .0 is hashed here, not .1 which is the cwd. That doesn't
-        // actually affect the output artifact so there's no need to hash it.
-        path: util::hash_u64(path_args(build_runner.bcx.ws, unit).0),
+        // Some targets cannot carry a hash in their file name. Rebuild when another
+        // path package last wrote that artifact in the shared build directory.
+        path: match build_runner.bcx.shared_build_source(unit) {
+            Some(source) => util::hash_u64((source, path_args(build_runner.bcx.ws, unit).0)),
+            None => util::hash_u64(path_args(build_runner.bcx.ws, unit).0),
+        },
         features: format!("{:?}", unit.features),
         declared_features: format!("{declared_features:?}"),
         deps,
