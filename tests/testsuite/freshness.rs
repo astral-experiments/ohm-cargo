@@ -150,6 +150,37 @@ fn moved_checkout_reads_its_own_resources() {
 }
 
 #[cargo_test]
+fn moved_target_rebuilds_an_embedded_output_directory() {
+    let p = project()
+        .file(
+            "build.rs",
+            r#"
+            fn main() {
+                let dir = std::path::PathBuf::from(std::env::var_os("OUT_DIR").unwrap());
+                std::fs::write(dir.join("value"), "generated").unwrap();
+                println!("cargo::rerun-if-changed=build.rs");
+            }
+        "#,
+        )
+        .file(
+            "src/main.rs",
+            r#"
+            fn main() {
+                let expected = include_str!(concat!(env!("OUT_DIR"), "/value"));
+                let file = std::path::Path::new(env!("OUT_DIR")).join("value");
+                assert_eq!(std::fs::read_to_string(file).unwrap(), expected);
+            }
+        "#,
+        )
+        .build();
+
+    p.cargo("run --quiet").run();
+    let moved = p.root().join("moved");
+    fs::rename(p.root().join("target"), &moved).unwrap();
+    p.cargo("run --quiet").env("CARGO_TARGET_DIR", &moved).run();
+}
+
+#[cargo_test]
 fn compiler_out_dir_follows_the_target_directory_alias() {
     if !cargo_test_support::symlink_supported() {
         return;
@@ -2705,6 +2736,12 @@ fn move_target_directory_with_path_deps() {
     let new_target = p.root().join("target2");
     fs::rename(p.root().join("target"), &new_target).unwrap();
 
+    // The dependency uses OUT_DIR to include generated source. Rustc reports the
+    // same env dependency when a crate embeds that path in a runtime value.
+    p.cargo("build")
+        .env("CARGO_TARGET_DIR", &new_target)
+        .with_stderr_contains("[COMPILING] a v0.5.0 [..]")
+        .run();
     p.cargo("build")
         .env("CARGO_TARGET_DIR", &new_target)
         .with_stderr_data(str![[r#"

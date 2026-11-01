@@ -1310,6 +1310,7 @@ fn rustc(
 
     let root_output = build_runner.files().host_dest().map(|v| v.to_path_buf());
     let build_dir = build_runner.files().build_root(unit);
+    let compiler_out_dir = build_runner.compiler_out_dir(unit);
     let shared_registry_root = build_runner
         .bcx
         .ws
@@ -2079,6 +2080,7 @@ fn rustc(
                 is_local,
                 &env_config,
                 worktree_seed_namespace.as_deref(),
+                compiler_out_dir.as_deref(),
             )
             .with_context(|| {
                 internal(format!(
@@ -2785,6 +2787,7 @@ fn rustdoc(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<W
     let rustdoc_dep_info_loc = rustdoc_dep_info_loc(build_runner, unit);
     let dep_info_loc = fingerprint::dep_info_loc(build_runner, unit);
     let build_dir = build_runner.files().build_root(unit);
+    let compiler_out_dir = build_runner.compiler_out_dir(unit);
     let manifest_path = unit.pkg.manifest_path().to_path_buf();
     let cwd = rustdoc
         .get_cwd()
@@ -2905,6 +2908,7 @@ fn rustdoc(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<W
                 is_local,
                 &env_config,
                 worktree_seed_namespace.as_deref(),
+                compiler_out_dir.as_deref(),
             )
             .with_context(|| {
                 internal(format_args!(
@@ -3463,14 +3467,8 @@ fn build_deps_args(
     let mut unstable_opts = false;
 
     // Add `OUT_DIR` environment variables for build scripts
-    let first_custom_build_dep = deps.iter().find(|dep| dep.unit.mode.is_run_custom_build());
-    if let Some(dep) = first_custom_build_dep {
-        let out_dir = if bcx.gctx.cli_unstable().build_dir_new_layout {
-            build_runner.files().out_dir_new_layout(&dep.unit)
-        } else {
-            build_runner.files().build_script_out_dir(&dep.unit)
-        };
-        cmd.env("OUT_DIR", &out_dir);
+    if let Some(out_dir) = build_runner.compiler_out_dir(unit) {
+        cmd.env("OUT_DIR", out_dir);
     }
 
     // Adding output directory for each build script

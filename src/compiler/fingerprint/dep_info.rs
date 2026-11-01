@@ -397,6 +397,7 @@ pub fn translate_dep_info(
     allow_package: bool,
     env_config: &Arc<HashMap<String, OsString>>,
     worktree_seed_namespace: Option<&Path>,
+    compiler_out_dir: Option<&Path>,
 ) -> CargoResult<bool> {
     let mut depinfo = parse_rustc_dep_info(rustc_dep_info)?;
     if !depinfo.raw_checksum_paths {
@@ -465,11 +466,8 @@ pub fn translate_dep_info(
     // vars defined by the build script will always be the same unless the build
     // script itself reruns, in which case the crate will rerun anyway.
     //
-    // For things like `OUT_DIR` it's a bit sketchy for now. Most of the time
-    // that's used for code generation but this is technically buggy where if
-    // you write a binary that does `println!("{}", env!("OUT_DIR"))` we won't
-    // recompile that if you move the target directory. Hopefully that's not too
-    // bad of an issue for now...
+    // OUT_DIR can also become part of the program itself. Keep the path that rustc
+    // observed so moving the build directory invalidates an embedded old path.
     //
     // This also includes `CARGO` since if the code is explicitly wanting to
     // know that path, it should be rebuilt if it changes. The CARGO path is
@@ -477,14 +475,15 @@ pub fn translate_dep_info(
     //
     // For cargo#13280, We trace env vars that are defined in the `[env]` config table.
     on_disk_info.env.retain(|(key, value)| {
-        // Track manifest paths rustc actually read. A different value supplied by a build
+        // Track Cargo paths rustc actually read. A different value supplied by a build
         // script is already tracked with the rest of that script's output.
-        let manifest_input = match key.as_str() {
+        let cargo_input = match key.as_str() {
+            "OUT_DIR" => compiler_out_dir,
             "CARGO_MANIFEST_DIR" => Some(original_pkg_root),
             "CARGO_MANIFEST_PATH" => Some(manifest_path),
             _ => None,
         };
-        if let Some(path) = manifest_input {
+        if let Some(path) = cargo_input {
             return value.as_deref().map(Path::new) == Some(path);
         }
         ManifestMetadata::should_track(key)
@@ -1209,6 +1208,7 @@ mod encoded_dep_info {
                 true,
                 &Arc::default(),
                 None,
+                None,
             )
             .unwrap();
             let info = parse_dep_info(&root, &root, &record).unwrap().unwrap();
@@ -1351,6 +1351,7 @@ mod encoded_dep_info {
                 allow_package,
                 &Arc::new(HashMap::default()),
                 None,
+                None,
             )
             .unwrap();
             let info = EncodedDepInfo::parse(&std::fs::read(&encoded).unwrap()).unwrap();
@@ -1412,6 +1413,7 @@ mod encoded_dep_info {
                 true,
                 &env,
                 seeded.then_some(namespace.as_path()),
+                None,
             )
             .unwrap();
             let info = EncodedDepInfo::parse(&std::fs::read(&cargo_dep_info).unwrap()).unwrap();

@@ -1801,6 +1801,7 @@ impl LocalFingerprint {
         pkg: &Package,
         build_root: &Path,
         cargo_exe: &Path,
+        compiler_out_dir: Option<&Path>,
         gctx: &GlobalContext,
         checksum_parallelism: ChecksumParallelism<'_>,
         observes_foreign_span: &mut bool,
@@ -1832,6 +1833,10 @@ impl LocalFingerprint {
                         Some(pkg.root().as_os_str())
                     } else if key == "CARGO_MANIFEST_PATH" {
                         Some(pkg.manifest_path().as_os_str())
+                    } else if key == "OUT_DIR"
+                        && let Some(dir) = compiler_out_dir
+                    {
+                        Some(dir.as_os_str())
                     } else if key == CARGO_ENV {
                         Some(cargo_exe.as_os_str())
                     } else {
@@ -2265,6 +2270,7 @@ impl Fingerprint {
         pkg: &Package,
         build_root: &Path,
         cargo_exe: &Path,
+        compiler_out_dir: Option<&Path>,
         gctx: &GlobalContext,
         checksum_parallelism: ChecksumParallelism<'_>,
     ) -> CargoResult<()> {
@@ -2316,6 +2322,7 @@ impl Fingerprint {
                 pkg,
                 build_root,
                 cargo_exe,
+                compiler_out_dir,
                 gctx,
                 checksum_parallelism,
                 &mut self.observes_foreign_span,
@@ -2613,12 +2620,13 @@ fn calculate(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
     if let Some(s) = build_runner.fingerprints.get(unit) {
         return Ok(Arc::clone(s));
     }
+    let compiler_out_dir = build_runner.compiler_out_dir(unit);
     let mut fingerprint = if unit.mode.is_run_custom_build() {
         calculate_run_custom_build(build_runner, unit)?
     } else if unit.mode.is_doc_test() {
         panic!("doc tests do not fingerprint");
     } else {
-        calculate_normal(build_runner, unit)?
+        calculate_normal(build_runner, unit, compiler_out_dir.as_deref())?
     };
 
     // After we built the initial `Fingerprint` be sure to update the
@@ -2631,6 +2639,7 @@ fn calculate(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
         &unit.pkg,
         &build_root,
         cargo_exe,
+        compiler_out_dir.as_deref(),
         build_runner.bcx.gctx,
         ChecksumParallelism {
             #[cfg(unix)]
@@ -2810,6 +2819,7 @@ fn hash_clippy_config(
 fn calculate_normal(
     build_runner: &mut BuildRunner<'_, '_>,
     unit: &Unit,
+    compiler_out_dir: Option<&Path>,
 ) -> CargoResult<Fingerprint> {
     let deps = {
         // Recursively calculate the fingerprint for all of our dependencies.
@@ -2878,13 +2888,12 @@ fn calculate_normal(
     if is_any_doc_gen && !rustdoc_depinfo_enabled {
         unit.pkg.manifest_path().hash(&mut config);
     }
-    if build_runner
-        .unit_deps(unit)
-        .iter()
-        .any(|dep| dep.unit.mode.is_run_custom_build())
-    {
-        // Older compiler invocations could embed a symlinked OUT_DIR.
-        "ohm-physical-out-dir-v1".hash(&mut config);
+    if let Some(out_dir) = compiler_out_dir {
+        // Previous dep-info discarded Cargo's OUT_DIR even when rustc observed it.
+        "ohm-observed-out-dir-v2".hash(&mut config);
+        if is_any_doc_gen && !rustdoc_depinfo_enabled {
+            out_dir.hash(&mut config);
+        }
     }
     hash_clippy_config(build_runner, unit, &mut config)?;
     let linker = if unit.target.for_host() && !build_runner.bcx.gctx.target_applies_to_host()? {
