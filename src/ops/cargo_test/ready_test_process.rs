@@ -1,18 +1,21 @@
 //! Cancellation and terminal job control for an early test process group.
 //!
 //! A terminal test owns the foreground while it runs. A small relay in that
-//! group forwards terminal signals to Cargo's original job, including compilers.
+//! group forwards cancellation to Cargo's original job and participates in tty stops.
 //! The relay ends with the test; it never survives the Cargo invocation.
 
 use crate::util::CargoResult;
-use std::process::{Child, Command};
+use std::process::{Child, Command, ExitStatus};
 use std::sync::atomic::{AtomicBool, AtomicI32, Ordering};
 
 #[cfg(unix)]
 use std::{
     fs::File,
     io::{IsTerminal, Read, Write},
-    os::{fd::AsRawFd, unix::process::CommandExt},
+    os::{
+        fd::AsRawFd,
+        unix::process::{CommandExt, ExitStatusExt},
+    },
     process::Stdio,
     sync::Arc,
 };
@@ -51,13 +54,7 @@ extern "C" fn forward_signal(signal: i32) {
     // happen in check(), on the same thread as process-group setup and cleanup.
     unsafe {
         match signal {
-            libc::SIGCONT => {
-                JOB_CONTROL.store(signal, Ordering::SeqCst);
-            }
-            libc::SIGTSTP | libc::SIGTTIN | libc::SIGTTOU => {
-                if group > 0 {
-                    libc::kill(-group, libc::SIGSTOP);
-                }
+            libc::SIGCONT | libc::SIGTSTP | libc::SIGTTIN | libc::SIGTTOU => {
                 JOB_CONTROL.store(signal, Ordering::SeqCst);
             }
             _ => {
@@ -126,9 +123,10 @@ impl Signals {
         }
     }
 
-    /// Defer termination until a just-spawned child is registered, closing the
-    /// spawn/handler race before restoring Cargo's original default disposition.
-    pub(super) fn check(&self) {
+    /// Defer cancellation until spawn is registered and synchronize tty ownership
+    /// with the kernel's stop notification for the active test group.
+    #[cfg_attr(not(unix), allow(unused_variables, unused_mut))]
+    pub(super) fn check(&self, mut active: Option<&mut ProcessGroup>) {
         #[cfg(unix)]
         loop {
             let group = ACTIVE_GROUP.load(Ordering::SeqCst);
@@ -147,16 +145,21 @@ impl Signals {
                 }
                 std::process::exit(128 + signal);
             }
-            match JOB_CONTROL.swap(0, Ordering::SeqCst) {
-                0 => break,
+            let requested = JOB_CONTROL.swap(0, Ordering::SeqCst);
+            let stopped = requested == 0
+                && self.terminal.is_some()
+                && active
+                    .as_deref_mut()
+                    .is_some_and(|job| job.observe_stops(false));
+            match requested {
+                0 if !stopped => break,
                 libc::SIGCONT => {
-                    if group > 0 {
-                        // `fg` grants the terminal to Cargo; `bg` does not.
-                        // Restore foreground ownership before resuming readers.
-                        if let Some(terminal) = &self.terminal {
-                            let _ = terminal.handoff(group);
-                        }
-                        unsafe { libc::kill(-group, libc::SIGCONT) };
+                    // A late notification for our own resume must not wake a
+                    // background reader a second time after SIGTTIN stops it.
+                    if let Some(terminal) = &self.terminal
+                        && terminal.foreground() != unsafe { libc::getpgrp() }
+                    {
+                        continue;
                     }
                 }
                 _ => {
@@ -164,15 +167,245 @@ impl Signals {
                         // Include a child registered after the signal arrived.
                         unsafe { libc::kill(-group, libc::SIGSTOP) };
                         if let Some(terminal) = &self.terminal {
+                            // A pending SIGSTOP still lets a reader consume the shell's input.
+                            if let Some(job) = active.as_deref_mut() {
+                                job.observe_stops(true);
+                            }
+                            wait_for_readers(group);
+                            if INTERRUPTED.load(Ordering::SeqCst) != 0 {
+                                continue;
+                            }
                             terminal.restore(group);
                         }
                     }
-                    // The relay signalled the other original job members.
-                    // Stop Cargo so the parent shell sees a stopped job, then
-                    // process its SIGCONT before returning to the scheduler.
-                    unsafe { libc::kill(libc::getpid(), libc::SIGSTOP) };
+                    // A terminal job owns its process group. Include compiling
+                    // children in the shell stop, then suspend this scheduler thread.
+                    // Headless Cargo can share its caller's group.
+                    unsafe {
+                        if self.terminal.is_some() {
+                            signal_members(libc::getpgrp(), libc::SIGTSTP);
+                        }
+                        libc::raise(libc::SIGSTOP);
+                        if self.terminal.is_some() {
+                            signal_members(libc::getpgrp(), libc::SIGCONT);
+                        }
+                    }
+                    // Returning from suspension means the shell has continued Cargo.
+                    JOB_CONTROL.store(0, Ordering::SeqCst);
                 }
             }
+            if group > 0 {
+                // `fg` grants the terminal to Cargo; `bg` does not.
+                if let Some(terminal) = &self.terminal {
+                    let _ = terminal.handoff(group);
+                }
+                if let Some(job) = active.as_deref_mut() {
+                    for child in job.test.iter_mut().chain(job.relay.iter_mut()) {
+                        child.stopped = None;
+                    }
+                }
+                signal_members(group, libc::SIGCONT);
+            }
+        }
+    }
+}
+
+/// Resume the relay before readers can stop it again with SIGTTIN. Delivering
+/// stop/continue to each existing process also keeps a concurrent compiler fork
+/// from inheriting a process-group stop after its parent has already resumed.
+#[cfg(unix)]
+fn signal_members(group: i32, signal: i32) {
+    let Some(members) = group_members(group) else {
+        // If membership is unavailable, keep signaling just the owned group.
+        unsafe { libc::kill(-group, signal) };
+        return;
+    };
+    let this = unsafe { libc::getpid() };
+    for pid in std::iter::once(group).chain(members.into_iter().filter(|&pid| pid != group)) {
+        if pid > 0 && pid != this && unsafe { libc::getpgid(pid) } == group {
+            unsafe { libc::kill(pid, signal) };
+        }
+    }
+}
+
+/// A grandchild can be blocked in read(2) even after both direct children stop.
+/// Let every reader leave that syscall before the shell can accept the next command.
+#[cfg(unix)]
+fn wait_for_readers(group: i32) {
+    while INTERRUPTED.load(Ordering::SeqCst) == 0
+        && group_members(group).is_some_and(|pids| {
+            pids.into_iter()
+                .any(|pid| process_stopped(pid) == Some(false))
+        })
+    {
+        // Include any descendants that joined the group during the first stop.
+        unsafe { libc::kill(-group, libc::SIGSTOP) };
+        std::thread::sleep(std::time::Duration::from_millis(1));
+    }
+}
+
+#[cfg(target_os = "linux")]
+fn process_stopped(pid: i32) -> Option<bool> {
+    // A libtest reader may run on a different thread from the process leader.
+    let tasks = std::fs::read_dir(format!("/proc/{pid}/task")).ok()?;
+    for task in tasks.flatten() {
+        if let Ok(stat) = std::fs::read(task.path().join("stat"))
+            && let Some(&state) = stat.rsplit(|&byte| byte == b')').next()?.get(1)
+            && !matches!(state, b'T' | b't' | b'Z' | b'X')
+        {
+            return Some(false);
+        }
+    }
+    Some(true)
+}
+
+#[cfg(target_vendor = "apple")]
+fn process_stopped(pid: i32) -> Option<bool> {
+    let mut info = std::mem::MaybeUninit::<libc::proc_bsdinfo>::uninit();
+    let size = std::mem::size_of_val(&info) as i32;
+    // SAFETY: only read the result after libproc fills the entire structure.
+    unsafe {
+        let bytes = libc::proc_pidinfo(
+            pid,
+            libc::PROC_PIDTBSDINFO,
+            0,
+            info.as_mut_ptr().cast(),
+            size,
+        );
+        (bytes == size).then(|| matches!(info.assume_init().pbi_status, libc::SSTOP | libc::SZOMB))
+    }
+}
+
+#[cfg(all(unix, not(any(target_os = "linux", target_vendor = "apple"))))]
+fn process_stopped(pid: i32) -> Option<bool> {
+    let output = Command::new("ps")
+        .args(["-p", &pid.to_string(), "-o", "stat="])
+        .output()
+        .ok()?;
+    let state = std::str::from_utf8(&output.stdout)
+        .ok()?
+        .trim_start()
+        .as_bytes()
+        .first()?;
+    Some(matches!(state, b'T' | b'Z' | b'X'))
+}
+
+/// Snapshot job membership before any reader is resumed.
+#[cfg(target_os = "linux")]
+fn group_members(group: i32) -> Option<Vec<i32>> {
+    Some(
+        std::fs::read_dir("/proc")
+            .ok()?
+            .flatten()
+            .filter_map(|entry| {
+                let pid: i32 = entry.file_name().to_str()?.parse().ok()?;
+                (unsafe { libc::getpgid(pid) } == group).then_some(pid)
+            })
+            .collect(),
+    )
+}
+
+#[cfg(target_vendor = "apple")]
+fn group_members(group: i32) -> Option<Vec<i32>> {
+    let mut pids = vec![0; 16];
+    loop {
+        let bytes = std::mem::size_of_val(pids.as_slice()).try_into().ok()?;
+        // SAFETY: libproc writes at most `bytes` into the provided pid buffer.
+        let count = unsafe { libc::proc_listpgrppids(group, pids.as_mut_ptr().cast(), bytes) };
+        let count = usize::try_from(count).ok()?;
+        if count < pids.len() {
+            pids.truncate(count);
+            return Some(pids);
+        }
+        pids.resize(pids.len().checked_mul(2)?, 0);
+    }
+}
+
+#[cfg(all(unix, not(any(target_os = "linux", target_vendor = "apple"))))]
+fn group_members(group: i32) -> Option<Vec<i32>> {
+    let output = Command::new("ps")
+        .args(["-A", "-o", "pid=", "-o", "pgid="])
+        .output()
+        .ok()?;
+    if !output.status.success() {
+        return None;
+    }
+    Some(
+        std::str::from_utf8(&output.stdout)
+            .ok()?
+            .lines()
+            .filter_map(|line| {
+                let mut fields = line.split_whitespace();
+                let pid = fields.next()?.parse().ok()?;
+                (fields.next()?.parse::<i32>().ok()? == group).then_some(pid)
+            })
+            .collect(),
+    )
+}
+
+/// A terminal stop and a test exit are reported by the same Unix wait operation.
+/// Keep any observed exit status for the ordinary completion path.
+struct JobChild {
+    child: Child,
+    status: Option<ExitStatus>,
+    #[cfg(unix)]
+    stopped: Option<i32>,
+}
+
+impl JobChild {
+    fn new(child: Child) -> Self {
+        Self {
+            child,
+            status: None,
+            #[cfg(unix)]
+            stopped: None,
+        }
+    }
+
+    /// Observe a stop without losing an exit that wins the race with SIGSTOP.
+    #[cfg(unix)]
+    fn observe_stop(&mut self, group: i32, wait: bool) -> Option<i32> {
+        if self.stopped.is_some() {
+            return self.stopped;
+        }
+        if self.status.is_some() {
+            return None;
+        }
+        // A test can leave its assigned group. Only wait for a stop we sent.
+        if wait && unsafe { libc::getpgid(self.child.id() as _) } != group {
+            return None;
+        }
+        let options = libc::WUNTRACED | if wait { 0 } else { libc::WNOHANG };
+        let mut status = 0;
+        loop {
+            // SAFETY: wait for this child only, with initialized status storage.
+            let result = unsafe { libc::waitpid(self.child.id() as _, &mut status, options) };
+            if result > 0 {
+                if libc::WIFSTOPPED(status) {
+                    self.stopped = Some(libc::WSTOPSIG(status));
+                    return self.stopped;
+                }
+                self.status = Some(ExitStatus::from_raw(status));
+                return None;
+            }
+            if result == 0 || errno::errno().0 != libc::EINTR {
+                return None;
+            }
+        }
+    }
+
+    fn try_wait(&mut self) -> std::io::Result<Option<ExitStatus>> {
+        if self.status.is_none() {
+            self.status = self.child.try_wait()?;
+        }
+        Ok(self.status)
+    }
+
+    /// A child whose status we already consumed no longer owns its PID.
+    fn cancel(&mut self) {
+        if self.status.is_none() {
+            let _ = self.child.kill();
+            let _ = self.child.wait();
         }
     }
 }
@@ -197,8 +430,9 @@ impl Drop for Signals {
 /// terminal and relay are restored even when spawning the test itself fails.
 pub(super) struct ProcessGroup {
     id: i32,
+    test: Option<JobChild>,
     #[cfg(unix)]
-    relay: Option<Child>,
+    relay: Option<JobChild>,
     #[cfg(unix)]
     terminal: Option<Arc<Terminal>>,
 }
@@ -207,9 +441,10 @@ impl ProcessGroup {
     /// Spawn the test in its owned group; restore the terminal and reap the relay
     /// if startup fails.
     #[cfg_attr(not(unix), allow(unused_variables))]
-    pub(super) fn spawn(signals: &Signals, command: &mut Command) -> CargoResult<(Child, Self)> {
+    pub(super) fn spawn(signals: &Signals, command: &mut Command) -> CargoResult<Self> {
         let mut group = Self {
             id: 0,
+            test: None,
             #[cfg(unix)]
             relay: None,
             #[cfg(unix)]
@@ -228,9 +463,9 @@ impl ProcessGroup {
                 .process_group(0)
                 .spawn()?;
             group.id = child.id() as i32;
-            group.relay = Some(child);
+            group.relay = Some(JobChild::new(child));
             ACTIVE_GROUP.store(group.id, Ordering::SeqCst);
-            let stdout = group.relay.as_mut().unwrap().stdout.as_mut().unwrap();
+            let stdout = group.relay.as_mut().unwrap().child.stdout.as_mut().unwrap();
             // A bounded handshake also gives library embedders whose executable
             // does not implement our internal relay command a safe fallback.
             let mut poll = libc::pollfd {
@@ -246,7 +481,7 @@ impl ProcessGroup {
             let mut ready = [0];
             stdout.read_exact(&mut ready)?;
             anyhow::ensure!(ready == [b'R'], "invalid relay handshake");
-            signals.check();
+            signals.check(None);
             // Only hand off a terminal we own. Background launches stay in the
             // background and retain ordinary SIGTTIN / `fg` behavior.
             terminal.handoff(group.id)?;
@@ -258,21 +493,47 @@ impl ProcessGroup {
             group.id = child.id() as i32;
         }
         ACTIVE_GROUP.store(group.id, Ordering::SeqCst);
-        Ok((child, group))
+        group.test = Some(JobChild::new(child));
+        Ok(group)
+    }
+
+    /// The relay also stops when a test ignores a terminal signal. Observe both
+    /// children so a delayed signal cannot stop the compiling side after `fg`.
+    #[cfg(unix)]
+    fn observe_stops(&mut self, wait: bool) -> bool {
+        let test = self
+            .test
+            .as_mut()
+            .and_then(|child| child.observe_stop(self.id, wait));
+        let relay = self
+            .relay
+            .as_mut()
+            .and_then(|child| child.observe_stop(self.id, wait));
+        // A separately paused relay can still forward Ctrl-C at teardown.
+        test.is_some() || matches!(relay, Some(libc::SIGTSTP | libc::SIGTTIN | libc::SIGTTOU))
+    }
+
+    pub(super) fn try_wait(&mut self) -> CargoResult<Option<ExitStatus>> {
+        let Some(status) = self.test.as_mut().unwrap().try_wait()? else {
+            return Ok(None);
+        };
+        Ok(self.finish()?.then_some(status))
     }
 
     /// After the test exits, give the relay time to forward any terminal signal.
     /// The scheduler continues servicing job control while the relay exits.
-    pub(super) fn finish(&mut self) -> CargoResult<bool> {
+    fn finish(&mut self) -> CargoResult<bool> {
         #[cfg(unix)]
         if let Some(relay) = &mut self.relay {
-            if let Some(mut input) = relay.stdin.take() {
+            if let Some(mut input) = relay.child.stdin.take() {
                 if let Some(terminal) = &self.terminal {
                     terminal.restore(self.id);
                 }
                 // SAFETY: resume only our relay. A stopped relay may still
                 // have the same Ctrl-C pending that just terminated the test.
-                unsafe { libc::kill(self.id, libc::SIGCONT) };
+                if relay.status.is_none() {
+                    unsafe { libc::kill(self.id, libc::SIGCONT) };
+                }
                 if let Err(error) = input.write_all(b"F")
                     && error.kind() != std::io::ErrorKind::BrokenPipe
                 {
@@ -287,11 +548,14 @@ impl ProcessGroup {
         Ok(true)
     }
 
-    pub(super) fn cancel(&self) {
+    pub(super) fn cancel(&mut self) {
         #[cfg(unix)]
         if self.id > 0 {
             // SAFETY: this group belongs to the current early test and relay.
             unsafe { libc::kill(-self.id, libc::SIGKILL) };
+        }
+        if let Some(test) = &mut self.test {
+            test.cancel();
         }
     }
 }
@@ -307,8 +571,7 @@ impl Drop for ProcessGroup {
             }
             if let Some(relay) = &mut self.relay {
                 // Startup or teardown failed before the relay finished.
-                let _ = relay.kill();
-                let _ = relay.wait();
+                relay.cancel();
             }
         }
     }
@@ -439,10 +702,9 @@ pub fn run_ready_test_relay() -> bool {
         .unwrap_or_else(|| std::process::exit(1));
     RELAY_PARENT_GROUP.store(parent_group, Ordering::SeqCst);
     let action = signal_action(relay_signal);
-    for signal in SIGNALS
-        .into_iter()
-        .filter(|signal| *signal != libc::SIGCONT)
-    {
+    // Leave tty stop signals at their default disposition. Cargo observes this
+    // child's stop before suspending the original job, even if the test ignores it.
+    for signal in [libc::SIGINT, libc::SIGTERM, libc::SIGHUP, libc::SIGQUIT] {
         // SAFETY: install our callback before acknowledging readiness.
         if unsafe { libc::sigaction(signal, &action, std::ptr::null_mut()) } != 0 {
             std::process::exit(1);
