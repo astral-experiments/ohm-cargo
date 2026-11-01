@@ -2796,6 +2796,13 @@ fn rustdoc(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<W
     let worktree_seed_namespace = unit_worktree_seed_namespace(build_runner, unit);
     let env_config = Arc::clone(build_runner.bcx.gctx.env_config()?);
     let rustdoc_depinfo_enabled = build_runner.bcx.gctx.cli_unstable().rustdoc_depinfo;
+    let snapshot_arguments = is_json_output
+        && rustdoc_depinfo_enabled
+        && build_runner
+            .bcx
+            .argfile_hashes
+            .get(unit)
+            .is_some_and(|inputs| inputs.untracked);
 
     let mut output_options = OutputOptions::for_dirty(build_runner, unit);
     let script_metadatas = build_runner.find_build_script_metadatas(unit);
@@ -2864,6 +2871,12 @@ fn rustdoc(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<W
                 debug!("removing pre-existing doc directory {:?}", crate_dir);
                 paths::remove_dir_all(&crate_dir)?;
             }
+        };
+        // Producers may be started by build scripts. Read streams only once the doc job runs.
+        let _argument_files = if snapshot_arguments {
+            crate::util::argfiles::snapshot_for_replay(&mut rustdoc)?
+        } else {
+            Vec::new()
         };
         state.running(&rustdoc);
         let timestamp = paths::set_invocation_time(&fingerprint_dir)?;
