@@ -1649,6 +1649,8 @@ enum LocalFingerprint {
     RerunIfChanged {
         output: PathBuf,
         paths: Vec<PathBuf>,
+        #[serde(default, skip_serializing_if = "WatchedSymlinks::is_empty")]
+        symlinks: WatchedSymlinks,
     },
 
     /// This represents a single `rerun-if-env-changed` annotation printed by a
@@ -1656,6 +1658,26 @@ enum LocalFingerprint {
     /// filesystem dependence here, and if the values are changed the hash will
     /// change forcing a recompile.
     RerunIfEnvChanged { var: String, val: BuildEnvValue },
+}
+
+/// A digest of unresolved names, or a provisional observation from a new watch.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+struct WatchedSymlinks(Option<u64>);
+
+impl WatchedSymlinks {
+    fn is_empty(&self) -> bool {
+        self.0.is_none()
+    }
+}
+
+impl Hash for WatchedSymlinks {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        // Preserve existing fingerprints for inputs with no unresolved links.
+        if let Some(digest) = self.0 {
+            "watched symlinks".hash(state);
+            digest.hash(state);
+        }
+    }
 }
 
 /// A build script can observe native environment bytes that are not UTF-8.
@@ -1846,7 +1868,7 @@ impl LocalFingerprint {
 
             // We need to verify that no paths listed in `paths` are newer than
             // the `output` path itself, or the last time the build script ran.
-            LocalFingerprint::RerunIfChanged { output, paths } => Ok(find_stale_file(
+            LocalFingerprint::RerunIfChanged { output, paths, .. } => Ok(find_stale_file(
                 mtime_cache,
                 checksum_cache,
                 &build_root.join(output),
@@ -2120,10 +2142,12 @@ impl Fingerprint {
                     LocalFingerprint::RerunIfChanged {
                         output: a_out,
                         paths: a_paths,
+                        symlinks: a_symlinks,
                     },
                     LocalFingerprint::RerunIfChanged {
                         output: b_out,
                         paths: b_paths,
+                        symlinks: b_symlinks,
                     },
                 ) => {
                     if a_out != b_out {
@@ -2137,6 +2161,13 @@ impl Fingerprint {
                             old: b_paths.clone(),
                             new: a_paths.clone(),
                         };
+                    }
+                    if a_symlinks != b_symlinks {
+                        let status = self.fs_status.lock().unwrap();
+                        if matches!(*status, FsStatus::StaleItem(_)) {
+                            return DirtyReason::FsStatusOutdated(status.clone());
+                        }
+                        return DirtyReason::WatchedSymlinksChanged;
                     }
                 }
                 (
@@ -3100,6 +3131,27 @@ fn build_script_local_fingerprints(
     // longstanding bug, in Cargo. Recent refactorings just made it painfully
     // obvious.
     let pkg_root = unit.pkg.root().to_path_buf();
+    let immutable = immutable_cargo_dirs().unwrap_or_default();
+    // Snapshot known inputs before executing the script. A link that disappears
+    // during a build must still invalidate its output on the next invocation.
+    let watched = build_runner.build_explicit_deps[unit]
+        .rerun_if_changed
+        .iter()
+        .map(|path| {
+            let state = build_runner
+                .watched_link_states
+                .entry(pkg_root.join(path))
+                .or_insert_with_key(|full_path| {
+                    let (mtime, state) = scan_watched_path(full_path, &immutable, |_| {})?;
+                    build_runner
+                        .mtime_cache
+                        .entry(full_path.clone())
+                        .or_insert(mtime);
+                    state
+                });
+            (path.clone(), *state)
+        })
+        .collect::<HashMap<_, _>>();
     let build_dir = build_runner.files().build_root(unit);
     let env_config = Arc::clone(build_runner.bcx.gctx.env_config()?);
     let calculate =
@@ -3136,6 +3188,8 @@ fn build_script_local_fingerprints(
                 &build_dir,
                 &pkg_root,
                 &env_config,
+                &watched,
+                &immutable,
             )))
         };
 
@@ -3172,6 +3226,8 @@ fn local_fingerprints_deps(
     build_root: &Path,
     pkg_root: &Path,
     env_config: &Arc<HashMap<String, OsString>>,
+    watched: &HashMap<PathBuf, Option<u64>>,
+    immutable: &[PathBuf],
 ) -> Vec<LocalFingerprint> {
     debug!("new local fingerprints deps {:?}", pkg_root);
     let mut local = Vec::new();
@@ -3190,7 +3246,30 @@ fn local_fingerprints_deps(
             .iter()
             .map(|p| p.strip_prefix(pkg_root).unwrap_or(p).to_path_buf())
             .collect();
-        local.push(LocalFingerprint::RerunIfChanged { output, paths });
+        let mut unresolved = Vec::new();
+        let mut provisional = false;
+        let started = std::cell::LazyCell::new(|| paths::mtime(&deps.build_script_output).ok());
+        for (index, path) in deps.rerun_if_changed.iter().enumerate() {
+            let state = watched.get(path).copied().unwrap_or_else(|| {
+                // A newly declared directory was unknown before the script ran.
+                // Verify it on the next invocation if a link may have changed in flight.
+                scan_watched_path(&pkg_root.join(path), immutable, |link| {
+                    provisional = provisional
+                        || started.is_none_or(|start| !stable_link_before(link, pkg_root, start));
+                })
+                .and_then(|(_, state)| state)
+            });
+            if let Some(state) = state {
+                unresolved.push((index, state));
+            }
+        }
+        let digest = (provisional || !unresolved.is_empty())
+            .then(|| crate::util::hex::hash_u64((provisional, unresolved)));
+        local.push(LocalFingerprint::RerunIfChanged {
+            output,
+            paths,
+            symlinks: WatchedSymlinks(digest),
+        });
     }
 
     local.extend(
@@ -3200,6 +3279,63 @@ fn local_fingerprints_deps(
     );
 
     local
+}
+
+/// Hash only relative unresolved names so a moved workspace keeps its fingerprint.
+fn scan_watched_path(
+    path: &Path,
+    immutable: &[PathBuf],
+    mut observe_link: impl FnMut(&Path),
+) -> Option<(FileTime, Option<u64>)> {
+    if immutable.iter().any(|dir| path.starts_with(dir)) {
+        return None;
+    }
+    let mut unresolved = Vec::new();
+    let mtime = paths::mtime_recursive_with_symlinks(path, |link, resolved| {
+        observe_link(link);
+        if !resolved {
+            unresolved.push(link.strip_prefix(path).unwrap().to_owned());
+        }
+    })
+    .ok()?;
+    unresolved.sort_unstable();
+    let state = (!unresolved.is_empty()).then(|| crate::util::hex::hash_u64(unresolved));
+    Some((mtime, state))
+}
+
+/// Prove a newly reported link and its lookup directories predate the script.
+/// Complex chains and paths outside the package get one conservative verification.
+fn stable_link_before(link: &Path, root: &Path, start: FileTime) -> bool {
+    let (Some(parent), Ok(target)) = (link.parent(), fs::read_link(link)) else {
+        return false;
+    };
+    let target = parent.join(target);
+    if !target.starts_with(root)
+        || !paths::normalize_path(&target).starts_with(root)
+        || !link.starts_with(root)
+        || !fs::symlink_metadata(link)
+            .is_ok_and(|m| FileTime::from_last_modification_time(&m) < start)
+    {
+        return false;
+    }
+    match fs::symlink_metadata(&target) {
+        Ok(meta) if meta.is_symlink() || FileTime::from_last_modification_time(&meta) >= start => {
+            return false;
+        }
+        Err(err) if err.kind() != io::ErrorKind::NotFound => return false,
+        _ => {}
+    }
+    [link, target.as_path()].into_iter().all(|path| {
+        path.ancestors()
+            .skip(1)
+            .take_while(|dir| dir.starts_with(root))
+            .all(|dir| {
+                paths::normalize_path(dir).starts_with(root)
+                    && fs::symlink_metadata(dir).is_ok_and(|meta| {
+                        meta.is_dir() && FileTime::from_last_modification_time(&meta) < start
+                    })
+            })
+    })
 }
 
 /// Writes the short fingerprint hash value to `<loc>`
@@ -3397,6 +3533,12 @@ struct ChecksumParallelism<'a> {
 const MIN_PARALLEL_CHECKSUM_FILES: usize = 128;
 type PrefetchedChecksums = std::vec::IntoIter<Option<Result<Checksum, StaleItem>>>;
 
+/// Sources in Cargo's registry and Git caches are treated as immutable.
+fn immutable_cargo_dirs() -> Option<Vec<PathBuf>> {
+    let home = home::cargo_home().ok()?;
+    Some(vec![home.join("git"), home.join("registry")])
+}
+
 /// Retains serial observations for mtime checks and post-script revalidation.
 fn find_stale_file<I, P>(
     mtime_cache: &mut HashMap<PathBuf, FileTime>,
@@ -3441,15 +3583,7 @@ where
         }
     };
 
-    let skippable_dirs = if let Ok(cargo_home) = home::cargo_home() {
-        let skippable_dirs: Vec<_> = ["git", "registry"]
-            .into_iter()
-            .map(|subfolder| cargo_home.join(subfolder))
-            .collect();
-        Some(skippable_dirs)
-    } else {
-        None
-    };
+    let skippable_dirs = immutable_cargo_dirs();
     let paths = paths.into_iter();
     let (paths, mut prefetched) = if cfg!(unix)
         && use_checksums

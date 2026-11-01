@@ -355,6 +355,14 @@ pub fn mtime(path: &Path) -> Result<FileTime> {
 /// Returns the maximum mtime of the given path, recursing into
 /// subdirectories, and following symlinks.
 pub fn mtime_recursive(path: &Path) -> Result<FileTime> {
+    mtime_recursive_with_symlinks(path, |_, _| {})
+}
+
+/// Return the recursive mtime and report whether each symlink resolved.
+pub fn mtime_recursive_with_symlinks(
+    path: &Path,
+    mut symlink: impl FnMut(&Path, bool),
+) -> Result<FileTime> {
     let entry = symlink_metadata(path)?;
     let entry_mtime = FileTime::from_last_modification_time(&entry);
     let meta = if entry.is_symlink() {
@@ -369,16 +377,20 @@ pub fn mtime_recursive(path: &Path) -> Result<FileTime> {
     let max_meta = walkdir::WalkDir::new(path)
         .follow_links(true)
         .into_iter()
-        .filter_map(|e| match e {
-            Ok(e) => Some(e),
-            Err(e) => {
-                // Ignore errors while walking. If Cargo can't access it, the
-                // build script probably can't access it, either.
-                tracing::debug!("failed to determine mtime while walking directory: {}", e);
-                None
-            }
-        })
-        .filter_map(|e| {
+        .filter_map(|entry| {
+            let e = match entry {
+                Ok(entry) => entry,
+                Err(err) => {
+                    if let Some(path) = err.path()
+                        && err.io_error().is_some()
+                        && path.is_symlink()
+                    {
+                        symlink(path, false);
+                    }
+                    tracing::debug!("failed to determine mtime while walking directory: {err}");
+                    return None;
+                }
+            };
             if e.path_is_symlink() {
                 // Use the mtime of both the symlink and its target, to
                 // handle the case where the symlink is modified to a
@@ -401,6 +413,7 @@ pub fn mtime_recursive(path: &Path) -> Result<FileTime> {
                 // Walkdir follows symlinks.
                 match e.metadata() {
                     Ok(target_meta) => {
+                        symlink(e.path(), true);
                         let target_mtime = FileTime::from_last_modification_time(&target_meta);
                         Some(sym_mtime.max(target_mtime))
                     }
@@ -413,6 +426,7 @@ pub fn mtime_recursive(path: &Path) -> Result<FileTime> {
                             e.path().display(),
                             err
                         );
+                        symlink(e.path(), false);
                         Some(sym_mtime)
                     }
                 }

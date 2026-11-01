@@ -6174,6 +6174,53 @@ fn rerun_if_file_symlink_is_retargeted() {
 }
 
 #[cargo_test]
+fn rerun_if_directory_symlink_target_disappears() {
+    if !symlink_supported() {
+        return;
+    }
+    let p = project()
+        .file(
+            "src/main.rs",
+            r#"fn main() { println!("{}", env!("VALUE")); }"#,
+        )
+        .file(
+            "build.rs",
+            r#"
+            fn main() {
+                println!("cargo::rerun-if-changed=watched");
+                let value = std::fs::read_to_string("watched/link")
+                    .unwrap_or_else(|_| "missing".to_owned());
+                if std::fs::remove_file("remove-after-read").is_ok() {
+                    std::fs::rename("external", "saved").unwrap();
+                }
+                println!("cargo::rustc-env=VALUE={value}");
+                let mut runs = std::fs::read_to_string("runs").unwrap_or_default();
+                runs.push('x');
+                std::fs::write("runs", runs).unwrap();
+            }
+        "#,
+        )
+        .file("watched/regular", "")
+        .file("external", "found")
+        .file("remove-after-read", "")
+        .build();
+    p.symlink("external", "watched/link");
+    p.cargo("run --quiet").with_stdout_data("found\n").run();
+    for _ in 0..2 {
+        p.cargo("run --quiet").with_stdout_data("missing\n").run();
+    }
+    fs::rename(p.root().join("saved"), p.root().join("external")).unwrap();
+    for _ in 0..2 {
+        p.cargo("run --quiet").with_stdout_data("found\n").run();
+    }
+    fs::remove_file(p.root().join("external")).unwrap();
+    for _ in 0..2 {
+        p.cargo("run --quiet").with_stdout_data("missing\n").run();
+    }
+    assert_eq!(fs::read_to_string(p.root().join("runs")).unwrap(), "xxxx");
+}
+
+#[cargo_test]
 fn rerun_if_directory() {
     if !symlink_supported() {
         return;
