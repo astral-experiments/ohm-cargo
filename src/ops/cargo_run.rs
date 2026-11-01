@@ -94,6 +94,9 @@ pub fn run(
     let mut options = options.clone();
     options.build_config.capture_runner_outputs = true;
     let compile = ops::compile(ws, &options)?;
+    if options.build_config.unit_graph {
+        return Ok(());
+    }
     assert_eq!(compile.binaries.len(), 1);
     let UnitOutput {
         unit,
