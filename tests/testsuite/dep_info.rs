@@ -151,6 +151,37 @@ fn dep_path_inside_target_has_correct_path() {
 
 #[cfg(unix)]
 #[cargo_test]
+fn external_dep_info_quotes_make_prerequisites() {
+    let names = ["a#b", "a$b", "a:b", "a|b", "a\tb", r"a\#b"];
+    let p = project()
+        .file("src/main.rs", "fn main() {}")
+        .file("watched", &names.join("\n"))
+        .file(
+            "build.rs",
+            r#"fn main() {
+                for name in include_str!("watched").lines() {
+                    println!("cargo::rerun-if-changed={name}");
+                }
+            }"#,
+        )
+        .build();
+    for name in names {
+        std::fs::write(p.root().join(name), "").unwrap();
+    }
+    p.cargo("build")
+        .env("CARGO_BUILD_DEP_INFO_BASEDIR", p.root())
+        .run();
+    let depfile = p.read_file("target/debug/foo.d");
+    for word in [r"a\#b", "a$$b", r"a\:b", r"a\|b", "a\\\tb", r"a\\\#b"] {
+        assert!(
+            depfile.contains(&format!(" {word} ")),
+            "{word:?}: {depfile}"
+        );
+    }
+}
+
+#[cfg(unix)]
+#[cargo_test]
 fn native_workspace_path_in_external_dep_info() {
     use std::ffi::OsStr;
     use std::os::unix::ffi::OsStrExt;
