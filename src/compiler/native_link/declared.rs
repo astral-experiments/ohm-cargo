@@ -161,8 +161,12 @@ fn driver_object_covered(driver: &OsStr, args: &[OsString], path: &Path) -> Opti
         .arg(format!("-print-file-name={name}"))
         .output()
         .ok()?;
-    let selected = std::str::from_utf8(&out.stdout).ok()?.strip_suffix('\n')?;
-    (out.status.success() && Path::new(selected) == path).then_some(())
+    let selected = Path::new(std::str::from_utf8(&out.stdout).ok()?.strip_suffix('\n')?);
+    if !out.status.success() || !selected.is_absolute() {
+        return None;
+    }
+    // LLD resolves the `..` components in startup paths returned by GCC.
+    (selected == path || selected.canonicalize().ok()? == path.canonicalize().ok()?).then_some(())
 }
 
 /// A driver prefix can also supply specs and executable plugins, whose own
@@ -688,7 +692,8 @@ mod tests {
         let low = dir.path().join("low");
         fs::create_dir(&high).unwrap();
         fs::create_dir(&low).unwrap();
-        let args = [&high, &low].map(|p| OsString::from(format!("-B{}/", p.display())));
+        let low_prefix = high.join("../low");
+        let args = [&high, &low_prefix].map(|p| OsString::from(format!("-B{}/", p.display())));
         let high = high.join("ohm-startup.o");
         let low = low.join("ohm-startup.o");
         let cc = OsStr::new("cc");
