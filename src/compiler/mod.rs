@@ -909,17 +909,15 @@ fn prepare_rustdoc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResu
     if build_runner.bcx.gctx.cli_unstable().rustdoc_depinfo {
         // html-static-files is required for keeping the shared styling resources
         // html-non-static-files is required for keeping the original rustdoc emission
-        let mut arg = if wants_json_output {
-            OsString::from("--emit=dep-info=")
-        } else if build_runner.bcx.gctx.cli_unstable().rustdoc_mergeable_info {
-            // toolchain resources are written at the end, at the same time as merging
-            OsString::from("--emit=html-non-static-files,dep-info=")
-        } else {
-            // if not using mergeable CCI, everything is written every time
-            OsString::from("--emit=html-static-files,html-non-static-files,dep-info=")
-        };
-        arg.push(rustdoc_dep_info_loc(build_runner, unit));
-        rustdoc.arg(arg);
+        if !wants_json_output {
+            let mut emit = if build_runner.bcx.gctx.cli_unstable().rustdoc_mergeable_info {
+                OsString::from("--emit=html-non-static-files,dep-info=")
+            } else {
+                OsString::from("--emit=html-static-files,html-non-static-files,dep-info=")
+            };
+            emit.push(rustdoc_dep_info_loc(build_runner, unit));
+            rustdoc.arg(emit);
+        }
 
         if build_runner.bcx.gctx.cli_unstable().checksum_freshness {
             rustdoc.arg("-Z").arg("checksum-hash-algorithm=blake3");
@@ -1097,21 +1095,19 @@ fn rustdoc(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<W
         state.running(&rustdoc);
         let timestamp = paths::set_invocation_time(&fingerprint_dir)?;
 
-        let result = rustdoc
-            .exec_with_streaming(
-                &mut |line| on_stdout_line(state, line, package_id, &target),
-                &mut |line| {
-                    on_stderr_line(
-                        state,
-                        line,
-                        package_id,
-                        &manifest,
-                        &target,
-                        &mut output_options,
-                    )
-                },
-                false,
+        let mut stdout = |line: &str| on_stdout_line(state, line, package_id, &target);
+        let mut stderr = |line: &str| {
+            on_stderr_line(
+                state,
+                line,
+                package_id,
+                &manifest,
+                &target,
+                &mut output_options,
             )
+        };
+        let result = rustdoc
+            .exec_with_streaming(&mut stdout, &mut stderr, false)
             .map_err(verbose_if_simple_exit_code)
             .with_context(|| format!("could not document `{}`", name));
 
@@ -1121,6 +1117,33 @@ fn rustdoc(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<W
             }
 
             return Err(e);
+        }
+
+        if is_json_output && rustdoc_depinfo_enabled {
+            // An explicit --emit disables rustdoc's default JSON output. Collect
+            // dependencies in a separate pass, reporting its diagnostics on failure.
+            let mut dep_info = rustdoc.clone();
+            let mut emit = OsString::from("--emit=dep-info=");
+            emit.push(&rustdoc_dep_info_loc);
+            dep_info.arg(emit);
+            state.running(&dep_info);
+            let output = dep_info.output()?;
+            if !output.status.success() {
+                for line in String::from_utf8_lossy(&output.stdout).lines() {
+                    stdout(line)?;
+                }
+                for line in String::from_utf8_lossy(&output.stderr).lines() {
+                    stderr(line)?;
+                }
+                let error = ProcessError::new(
+                    &format!("process didn't exit successfully: {dep_info}"),
+                    Some(output.status),
+                    None,
+                );
+                return Err(verbose_if_simple_exit_code(error.into())).with_context(|| {
+                    format!("could not collect rustdoc dependencies for `{name}`")
+                });
+            }
         }
 
         if rustdoc_depinfo_enabled && rustdoc_dep_info_loc.exists() {

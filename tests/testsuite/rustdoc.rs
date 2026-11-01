@@ -38,6 +38,38 @@ See https://github.com/rust-lang/cargo/issues/12103 for more information about t
         .run();
 }
 
+#[cargo_test(nightly, reason = "JSON output and rustdoc dep-info are unstable")]
+fn rustdoc_json_with_dep_info() {
+    let p = project()
+        .file("src/lib.rs", r#"#![doc = include_str!("../notes.txt")]"#)
+        .file("notes.txt", "first version")
+        .build();
+    let cmd = "rustdoc -Zunstable-options -Zrustdoc-depinfo --output-format=json";
+    let output = p.build_dir().join("doc/foo.json");
+    p.cargo(cmd)
+        .masquerade_as_nightly_cargo(&["rustdoc-depinfo", "rustdoc-output-format"])
+        .run();
+    assert!(
+        std::fs::read_to_string(&output)
+            .unwrap()
+            .contains("first version")
+    );
+    p.change_file("notes.txt", "updated notes");
+    p.cargo(cmd)
+        .masquerade_as_nightly_cargo(&["rustdoc-depinfo", "rustdoc-output-format"])
+        .run();
+    assert!(
+        std::fs::read_to_string(&output)
+            .unwrap()
+            .contains("updated notes")
+    );
+    std::fs::remove_file(&output).unwrap();
+    p.cargo(cmd)
+        .masquerade_as_nightly_cargo(&["rustdoc-depinfo", "rustdoc-output-format"])
+        .run();
+    assert!(output.is_file());
+}
+
 #[cargo_test(nightly, reason = "--output-format is unstable")]
 fn rustdoc_simple_json() {
     let p = project().file("src/lib.rs", "").build();
