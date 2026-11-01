@@ -201,6 +201,7 @@ pub struct CargoBuildConfig {
     // deprecated, but preserved for compatibility
     pub pipelining: Option<bool>,
     pub dep_info_basedir: Option<ConfigRelativePath>,
+    pub dep_info_escape_percent: Option<bool>,
     pub target_dir: Option<ConfigRelativePath>,
     pub build_dir: Option<ConfigRelativePath>,
     pub incremental: Option<bool>,
