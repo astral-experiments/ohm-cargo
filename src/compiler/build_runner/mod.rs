@@ -2288,6 +2288,19 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         &self.bcx.unit_graph[unit]
     }
 
+    /// Returns the build script output directory that Cargo supplies to this compiler invocation.
+    pub(crate) fn compiler_out_dir(&self, unit: &Unit) -> Option<PathBuf> {
+        let script = self
+            .unit_deps(unit)
+            .iter()
+            .find(|dep| dep.unit.mode.is_run_custom_build())?;
+        Some(if self.bcx.gctx.cli_unstable().build_dir_new_layout {
+            self.files().out_dir_new_layout(&script.unit)
+        } else {
+            self.files().build_script_out_dir(&script.unit)
+        })
+    }
+
     /// Returns the `RunCustomBuild` Units associated with the given Unit.
     ///
     /// If the package does not have a build script, this returns None.
