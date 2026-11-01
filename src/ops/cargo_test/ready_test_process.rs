@@ -510,7 +510,14 @@ impl ProcessGroup {
             .as_mut()
             .and_then(|child| child.observe_stop(self.id, wait));
         // A separately paused relay can still forward Ctrl-C at teardown.
-        test.is_some() || matches!(relay, Some(libc::SIGTSTP | libc::SIGTTIN | libc::SIGTTOU))
+        let stopped =
+            test.is_some() || matches!(relay, Some(libc::SIGTSTP | libc::SIGTTIN | libc::SIGTTOU));
+        // A surviving reader can stop the relay after the test has already exited.
+        stopped
+            && self
+                .test
+                .as_mut()
+                .is_some_and(|test| !matches!(test.try_wait(), Ok(Some(_))))
     }
 
     pub(super) fn try_wait(&mut self) -> CargoResult<Option<ExitStatus>> {
@@ -525,20 +532,23 @@ impl ProcessGroup {
     fn finish(&mut self) -> CargoResult<bool> {
         #[cfg(unix)]
         if let Some(relay) = &mut self.relay {
-            if let Some(mut input) = relay.child.stdin.take() {
-                if let Some(terminal) = &self.terminal {
-                    terminal.restore(self.id);
-                }
-                // SAFETY: resume only our relay. A stopped relay may still
-                // have the same Ctrl-C pending that just terminated the test.
-                if relay.status.is_none() {
-                    unsafe { libc::kill(self.id, libc::SIGCONT) };
-                }
-                if let Err(error) = input.write_all(b"F")
-                    && error.kind() != std::io::ErrorKind::BrokenPipe
-                {
-                    return Err(error.into());
-                }
+            let input = relay.child.stdin.take();
+            if input.is_some()
+                && let Some(terminal) = &self.terminal
+            {
+                terminal.restore(self.id);
+            }
+            // A reader can stop the relay again after the initial resume. Let it
+            // forward pending Ctrl-C and consume the finish command in either case.
+            if (relay.stopped.take().is_some() || input.is_some()) && relay.status.is_none() {
+                // SAFETY: resume only the owned relay.
+                unsafe { libc::kill(self.id, libc::SIGCONT) };
+            }
+            if let Some(mut input) = input
+                && let Err(error) = input.write_all(b"F")
+                && error.kind() != std::io::ErrorKind::BrokenPipe
+            {
+                return Err(error.into());
             }
             if relay.try_wait()?.is_none() {
                 return Ok(false);
@@ -728,4 +738,49 @@ pub fn run_ready_test_relay() -> bool {
     // EOF without a finish command means Cargo disappeared. Cancel its tests.
     unsafe { libc::kill(0, libc::SIGKILL) };
     true
+}
+
+#[cfg(all(test, unix))]
+#[test]
+fn a_stopped_relay_finishes_after_its_test_exits() {
+    let mut command = Command::new("sh");
+    command.args(["-c", "kill -TTIN $$; cat >/dev/null; kill -TTIN $$"]);
+    command.stdin(Stdio::piped()).process_group(0);
+    // SAFETY: restore the default disposition in the child before executing sh.
+    unsafe {
+        command.pre_exec(|| {
+            libc::signal(libc::SIGTTIN, libc::SIG_DFL);
+            Ok(())
+        });
+    }
+    let relay = command.spawn().unwrap();
+    let id = relay.id() as i32;
+    let test = Command::new("sh")
+        .args(["-c", "exit 7"])
+        .process_group(id)
+        .spawn()
+        .unwrap();
+    let mut group = ProcessGroup {
+        id,
+        test: Some(JobChild::new(test)),
+        relay: Some(JobChild::new(relay)),
+        terminal: None,
+    };
+
+    assert!(!group.observe_stops(true));
+    assert!(group.try_wait().unwrap().is_none());
+    // The reader stops the relay again after Cargo has sent its finish command.
+    assert!(!group.observe_stops(true));
+    let deadline = std::time::Instant::now() + std::time::Duration::from_secs(5);
+    loop {
+        if let Some(status) = group.try_wait().unwrap() {
+            assert_eq!(status.code(), Some(7));
+            break;
+        }
+        assert!(
+            std::time::Instant::now() < deadline,
+            "the relay stayed stopped"
+        );
+        std::thread::sleep(std::time::Duration::from_millis(1));
+    }
 }
