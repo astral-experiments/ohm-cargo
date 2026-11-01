@@ -78,7 +78,11 @@ fn clippy_tracks_edits_to_a_non_unicode_config_path() {
         .file("rules-\u{fffd}.toml", "too-many-arguments-threshold = 5")
         .build();
     let config = p.root().join(OsStr::from_bytes(b"rules-\xff.toml"));
-    fs::write(&config, "too-many-arguments-threshold = 5").unwrap();
+    if let Err(error) = fs::write(&config, "too-many-arguments-threshold = 5") {
+        // Some filesystems reject non-Unicode names before Clippy can open them.
+        assert_eq!(error.raw_os_error(), Some(libc::EILSEQ), "{error}");
+        return;
+    }
     std::os::unix::fs::symlink(&config, p.root().join("clippy.toml")).unwrap();
     let driver = PathBuf::from(paths::sysroot())
         .join("bin/clippy-driver")
