@@ -246,6 +246,8 @@ impl DepKindSet {
 pub(super) struct ArgfileFingerprint {
     pub(super) hash: u64,
     pub(super) untracked: bool,
+    /// Shared with the final HTML merge when configured arguments include a stream.
+    pub(super) merge_argfiles: Option<crate::util::argfiles::SharedRustdocArgFiles>,
 }
 
 /// Resolves file-backed arguments and identifies the documentation each unit produces.
@@ -287,6 +289,11 @@ fn compiler_inputs(
                 ArgfileFingerprint {
                     hash,
                     untracked: expanded.is_none(),
+                    merge_argfiles: (expanded.is_none()
+                        && unit.mode.is_doc()
+                        && ws.gctx().cli_unstable().rustdoc_mergeable_info
+                        && configured.iter().any(|arg| arg.starts_with('@')))
+                    .then(Default::default),
                 },
             );
             expanded

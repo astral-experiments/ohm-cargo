@@ -14,6 +14,28 @@ use crate::utils::cross_compile::disabled as cross_compile_disabled;
     reason = "JSON documentation and rustdoc dep-info are unstable"
 )]
 fn json_depinfo_reads_a_streaming_argument_file_once() {
+    check_stream_replay(
+        "rustdoc -Zunstable-options -Zrustdoc-depinfo --output-format=json -- @arguments",
+        &["unstable-options", "rustdoc-depinfo"],
+        "",
+        "doc/foo.json",
+    );
+}
+
+#[cfg(unix)]
+#[cargo_test(nightly, reason = "Rustdoc merging is unstable")]
+fn html_merge_replays_configured_stream_arguments() {
+    check_stream_replay(
+        "rustdoc -Zrustdoc-mergeable-info --lib",
+        &["rustdoc-mergeable-info"],
+        "@arguments",
+        "doc/foo/fn.observed.html",
+    );
+}
+
+/// Supplies one writer and rejects any secondary Rustdoc pass that would reopen the FIFO.
+#[cfg(unix)]
+fn check_stream_replay(command: &str, features: &[&str], configured: &str, output: &str) {
     use std::os::unix::fs::PermissionsExt as _;
 
     let p = project()
@@ -22,7 +44,7 @@ fn json_depinfo_reads_a_streaming_argument_file_once() {
             "rustdoc-wrapper",
             r#"#!/bin/sh
 for arg in "$@"; do
-    case "$arg" in --emit=dep-info=*) replay=yes;; esac
+    case "$arg" in --emit=dep-info=*|--read-doc-meta-dir=*) replay=yes;; esac
 done
 if test "$replay" = yes; then
     for arg in "$@"; do
@@ -44,12 +66,13 @@ exec rustdoc "$@"
             .success()
     );
     let writer = std::thread::spawn(move || std::fs::write(fifo, "--cfg\nstreamed\n"));
-    p.cargo("rustdoc -Zunstable-options -Zrustdoc-depinfo --output-format=json -- @arguments")
-        .masquerade_as_nightly_cargo(&["unstable-options", "rustdoc-depinfo"])
+    p.cargo(command)
+        .masquerade_as_nightly_cargo(features)
+        .env("RUSTDOCFLAGS", configured)
         .env("RUSTDOC", wrapper)
         .run();
     writer.join().unwrap().unwrap();
-    assert!(p.build_dir().join("doc/foo.json").is_file());
+    assert!(p.build_dir().join(output).is_file());
 }
 
 #[cargo_test(nightly, reason = "rustdoc JSON output and dep-info are unstable")]

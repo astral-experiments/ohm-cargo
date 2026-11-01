@@ -2796,6 +2796,11 @@ fn rustdoc(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<W
     let worktree_seed_namespace = unit_worktree_seed_namespace(build_runner, unit);
     let env_config = Arc::clone(build_runner.bcx.gctx.env_config()?);
     let rustdoc_depinfo_enabled = build_runner.bcx.gctx.cli_unstable().rustdoc_depinfo;
+    let merge_argfiles = build_runner
+        .bcx
+        .argfile_hashes
+        .get(unit)
+        .and_then(|inputs| inputs.merge_argfiles.clone());
     let snapshot_arguments = is_json_output
         && rustdoc_depinfo_enabled
         && build_runner
@@ -2873,10 +2878,16 @@ fn rustdoc(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<W
             }
         };
         // Producers may be started by build scripts. Read streams only once the doc job runs.
-        let _argument_files = if snapshot_arguments {
-            crate::util::argfiles::snapshot_for_replay(&mut rustdoc)?
+        let _argument_files = if snapshot_arguments || merge_argfiles.is_some() {
+            let files = crate::util::argfiles::snapshot_for_replay(&mut rustdoc)?;
+            if let Some(slot) = merge_argfiles {
+                slot.get_or_init(|| files);
+                None
+            } else {
+                Some(files)
+            }
         } else {
-            Vec::new()
+            None
         };
         state.running(&rustdoc);
         let timestamp = paths::set_invocation_time(&fingerprint_dir)?;
