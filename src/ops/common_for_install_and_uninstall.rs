@@ -174,7 +174,7 @@ impl InstallTracker {
     ) -> CargoResult<(Freshness, BTreeMap<String, Option<PackageId>>)> {
         let exes = exe_names(pkg, &opts.filter);
         // Check if any tracked exe's are already installed.
-        let duplicates = self.find_duplicates(dst, &exes);
+        let duplicates = find_duplicates(dst, &exes, Some(self))?;
         if force || duplicates.is_empty() {
             return Ok((Freshness::Dirty(DirtyReason::Forced), duplicates));
         }
@@ -227,7 +227,9 @@ impl InstallTracker {
                     && precise_equal
                     && info.is_up_to_date(opts, target, &exes)
             };
-            if matching_duplicates.iter().all(is_up_to_date) {
+            if matching_duplicates.iter().all(is_up_to_date)
+                && duplicates.keys().all(|name| dst.join(name).is_file())
+            {
                 Ok((Freshness::Fresh, duplicates))
             } else {
                 Ok((Freshness::Dirty(DirtyReason::Forced), duplicates))
@@ -246,28 +248,6 @@ impl InstallTracker {
             msg.push_str("Add --force to overwrite");
             bail!("{}", msg);
         }
-    }
-
-    /// Check if any executables are already installed.
-    ///
-    /// Returns a map of duplicates, the key is the executable name and the
-    /// value is the `PackageId` that is already installed. The `PackageId` is
-    /// None if it is an untracked executable.
-    fn find_duplicates(
-        &self,
-        dst: &Path,
-        exes: &BTreeSet<String>,
-    ) -> BTreeMap<String, Option<PackageId>> {
-        exes.iter()
-            .filter_map(|name| {
-                if !dst.join(&name).exists() {
-                    None
-                } else {
-                    let p = self.v2.package_for_bin(name);
-                    Some((name.clone(), p))
-                }
-            })
-            .collect()
     }
 
     /// Mark that a package was installed.
@@ -844,6 +824,29 @@ where
         (Some(i), None) => Ok(Some(i)),
         (None, _) => Ok(None),
     }
+}
+
+/// Finds existing executable entries and their owners when install tracking is enabled.
+pub(super) fn find_duplicates(
+    dst: &Path,
+    exes: &BTreeSet<String>,
+    tracker: Option<&InstallTracker>,
+) -> CargoResult<BTreeMap<String, Option<PackageId>>> {
+    let mut duplicates = BTreeMap::new();
+    for name in exes {
+        let path = dst.join(name);
+        match path.symlink_metadata() {
+            Ok(_) => {
+                let owner = tracker.and_then(|tracker| tracker.v2.package_for_bin(name));
+                duplicates.insert(name.clone(), owner);
+            }
+            Err(err) if err.kind() == io::ErrorKind::NotFound => {}
+            Err(err) => {
+                return Err(err).with_context(|| format!("failed to inspect `{}`", path.display()));
+            }
+        }
+    }
+    Ok(duplicates)
 }
 
 /// Helper to convert features to a `BTreeSet`.

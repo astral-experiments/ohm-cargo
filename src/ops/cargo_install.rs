@@ -310,13 +310,7 @@ impl<'gctx> InstallablePackage<'gctx> {
     }
 
     fn no_track_duplicates(&self, dst: &Path) -> CargoResult<BTreeMap<String, Option<PackageId>>> {
-        // Helper for --no-track flag to make sure it doesn't overwrite anything.
-        let duplicates: BTreeMap<String, Option<PackageId>> =
-            exe_names(&self.pkg, &self.opts.filter)
-                .into_iter()
-                .filter(|name| dst.join(name).exists())
-                .map(|name| (name, None))
-                .collect();
+        let duplicates = find_duplicates(dst, &exe_names(&self.pkg, &self.opts.filter), None)?;
         if !self.force && !duplicates.is_empty() {
             let mut msg: Vec<String> = duplicates
                 .iter()
