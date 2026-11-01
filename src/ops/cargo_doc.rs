@@ -146,12 +146,12 @@ fn merge_cross_crate_info(ws: &Workspace<'_>, compilation: &Compilation<'_>) -> 
                 .arg("-Zunstable-options");
             cmd.arg("--edition=2015"); // to suppress edition unspecified warning
             let configured = &compilation.rustdocflags[kind];
-            if let Some(files) = fingerprint
+            if let Some(args) = fingerprint
                 .merge_argfiles
                 .as_ref()
                 .and_then(|slot| slot.get())
             {
-                cmd.args(&files.configured_args(configured));
+                cmd.args(&args.files.configured_args(configured));
             } else {
                 cmd.args(configured);
             }

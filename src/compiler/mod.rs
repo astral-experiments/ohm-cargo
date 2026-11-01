@@ -2273,7 +2273,21 @@ fn link_targets(
 ) -> CargoResult<Work> {
     let bcx = build_runner.bcx;
     let outputs = build_runner.outputs(unit)?;
-    if !bcx.build_config.emit_json() && outputs.iter().all(|output| output.hardlink.is_none()) {
+    let other_doc_outputs = bcx
+        .deferred_doc_args(unit)
+        .filter(|_| !bcx.build_config.intent.wants_doc_json_output())
+        .map(|slot| {
+            let planned = bcx.wants_doc_json(unit);
+            (
+                slot.clone(),
+                planned,
+                Arc::new(build_runner.files().doc_outputs(unit, bcx, !planned)),
+            )
+        });
+    if other_doc_outputs.is_none()
+        && !bcx.build_config.emit_json()
+        && outputs.iter().all(|output| output.hardlink.is_none())
+    {
         return Ok(Work::noop());
     }
     let export_dir = build_runner.files().export_dir();
@@ -2307,6 +2321,13 @@ fn link_targets(
     }
 
     Ok(Work::new(move |state| {
+        let outputs = if let Some((slot, planned, alternate)) = other_doc_outputs
+            && slot.get().is_some_and(|args| args.json != planned)
+        {
+            alternate
+        } else {
+            outputs
+        };
         // If we're a "root crate", e.g., the target of this compilation, then we
         // hard link our outputs out of the `deps` directory into the directory
         // above. This means that `cargo build` will produce binaries in
@@ -2631,11 +2652,14 @@ fn prepare_rustc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
 /// This builds a static view of the invocation. Flags depending on the
 /// completion of other units will be added later in runtime, such as flags
 /// from build scripts.
-fn prepare_rustdoc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<ProcessBuilder> {
+fn prepare_rustdoc(
+    build_runner: &BuildRunner<'_, '_>,
+    unit: &Unit,
+    wants_json_output: bool,
+) -> CargoResult<ProcessBuilder> {
     let bcx = build_runner.bcx;
     // script_metadata is not needed here, it is only for tests.
     let mut rustdoc = build_runner.compilation.rustdoc_process(unit, None)?;
-    let wants_json_output = build_runner.bcx.wants_doc_json(unit);
     if unit_uses_ohm_worktree_seeds(build_runner, unit) {
         rustdoc.arg(OHM_WORKTREE_SEED_RUSTFLAG);
     }
@@ -2764,11 +2788,16 @@ fn prepare_rustdoc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResu
 
 /// Creates a unit of work invoking `rustdoc` for documenting the `unit`.
 fn rustdoc(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<Work> {
-    let mut rustdoc = prepare_rustdoc(build_runner, unit)?;
-
     let crate_name = unit.target.crate_name();
-    let is_json_output = build_runner.bcx.wants_doc_json(unit);
-    let doc_marker = fingerprint::doc_output_marker(build_runner, unit);
+    let planned_json = build_runner.bcx.wants_doc_json(unit);
+    let native_json = build_runner.bcx.build_config.intent.wants_doc_json_output();
+    let deferred = build_runner.bcx.deferred_doc_args(unit).cloned();
+    let mut rustdoc = prepare_rustdoc(build_runner, unit, planned_json)?;
+    let alternate = (deferred.is_some() && !native_json)
+        .then(|| prepare_rustdoc(build_runner, unit, !planned_json))
+        .transpose()?;
+    let doc_marker =
+        fingerprint::doc_output_marker(build_runner, unit, planned_json && alternate.is_none());
     let doc_dir = build_runner.files().output_dir(unit);
     // Create the documentation directory ahead of time as rustdoc currently has
     // a bug where concurrent invocations will race to create this directory if
@@ -2796,19 +2825,6 @@ fn rustdoc(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<W
     let worktree_seed_namespace = unit_worktree_seed_namespace(build_runner, unit);
     let env_config = Arc::clone(build_runner.bcx.gctx.env_config()?);
     let rustdoc_depinfo_enabled = build_runner.bcx.gctx.cli_unstable().rustdoc_depinfo;
-    let merge_argfiles = build_runner
-        .bcx
-        .argfile_hashes
-        .get(unit)
-        .and_then(|inputs| inputs.merge_argfiles.clone());
-    let snapshot_arguments = is_json_output
-        && rustdoc_depinfo_enabled
-        && build_runner
-            .bcx
-            .argfile_hashes
-            .get(unit)
-            .is_some_and(|inputs| inputs.untracked);
-
     let mut output_options = OutputOptions::for_dirty(build_runner, unit);
     let script_metadatas = build_runner.find_build_script_metadatas(unit);
     let scrape_outputs = if should_include_scrape_units(build_runner.bcx, unit) {
@@ -2847,6 +2863,23 @@ fn rustdoc(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<W
     }
 
     Ok(Work::new(move |state| {
+        // A producer may be started by a build script. Resolve its flags after dependencies finish.
+        let is_json_output = if let Some(slot) = deferred {
+            let (files, expanded) = crate::util::argfiles::snapshot_for_replay(&rustdoc)?;
+            let json = native_json
+                || expanded.as_ref().map_or(planned_json, |args| {
+                    rustdoc::forwarded_json(args.iter().map(String::as_str))
+                });
+            if json != planned_json {
+                rustdoc = alternate.expect("a deferred Rustdoc format has both commands");
+            }
+            files.apply(&mut rustdoc)?;
+            slot.set(build_context::ResolvedDocArgs { files, json })
+                .expect("a Rustdoc unit runs once per build");
+            json
+        } else {
+            planned_json
+        };
         output_options.prepare_for_compiler();
 
         add_custom_flags(
@@ -2876,18 +2909,6 @@ fn rustdoc(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<W
                 debug!("removing pre-existing doc directory {:?}", crate_dir);
                 paths::remove_dir_all(&crate_dir)?;
             }
-        };
-        // Producers may be started by build scripts. Read streams only once the doc job runs.
-        let _argument_files = if snapshot_arguments || merge_argfiles.is_some() {
-            let files = crate::util::argfiles::snapshot_for_replay(&mut rustdoc)?;
-            if let Some(slot) = merge_argfiles {
-                slot.get_or_init(|| files);
-                None
-            } else {
-                Some(files)
-            }
-        } else {
-            None
         };
         state.running(&rustdoc);
         let timestamp = paths::set_invocation_time(&fingerprint_dir)?;
@@ -2970,7 +2991,8 @@ fn rustdoc(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<W
 
         // A subsequent HTML invocation removes this marker when it replaces the crate directory.
         // Other rustdoc output modes (such as coverage) can succeed without writing an index.
-        if let Some(marker) = doc_marker
+        if !is_json_output
+            && let Some(marker) = doc_marker
             && doc_dir.join(&crate_name).join("index.html").is_file()
         {
             paths::write(&marker, b"")?;

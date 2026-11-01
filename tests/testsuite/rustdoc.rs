@@ -19,6 +19,7 @@ fn json_depinfo_reads_a_streaming_argument_file_once() {
         &["unstable-options", "rustdoc-depinfo"],
         "",
         "doc/foo.json",
+        "--cfg\nstreamed\n",
     );
 }
 
@@ -30,12 +31,34 @@ fn html_merge_replays_configured_stream_arguments() {
         &["rustdoc-mergeable-info"],
         "@arguments",
         "doc/foo/fn.observed.html",
+        "--cfg\nstreamed\n",
+    );
+}
+
+#[cfg(unix)]
+#[cargo_test(
+    nightly,
+    reason = "JSON documentation and Rustdoc dep-info are unstable"
+)]
+fn a_stream_can_select_the_rustdoc_output_format() {
+    check_stream_replay(
+        "rustdoc -Zrustdoc-depinfo --lib -- @arguments",
+        &["rustdoc-depinfo"],
+        "",
+        "doc/foo.json",
+        "-Zunstable-options\n--output-format=json\n",
     );
 }
 
 /// Supplies one writer and rejects any secondary Rustdoc pass that would reopen the FIFO.
 #[cfg(unix)]
-fn check_stream_replay(command: &str, features: &[&str], configured: &str, output: &str) {
+fn check_stream_replay(
+    command: &str,
+    features: &[&str],
+    configured: &str,
+    output: &str,
+    payload: &'static str,
+) {
     use std::os::unix::fs::PermissionsExt as _;
 
     let p = project()
@@ -65,7 +88,7 @@ exec rustdoc "$@"
             .unwrap()
             .success()
     );
-    let writer = std::thread::spawn(move || std::fs::write(fifo, "--cfg\nstreamed\n"));
+    let writer = std::thread::spawn(move || std::fs::write(fifo, payload));
     p.cargo(command)
         .masquerade_as_nightly_cargo(features)
         .env("RUSTDOCFLAGS", configured)
