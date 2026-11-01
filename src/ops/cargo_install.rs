@@ -571,6 +571,8 @@ impl<'gctx> InstallablePackage<'gctx> {
                 Err(err) => replace_result.with_context(|| err)?,
                 Ok(_) => replace_result?,
             }
+        } else {
+            replace_result?;
         }
 
         // Reaching here means all actions have succeeded. Clean up.
