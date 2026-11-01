@@ -292,21 +292,29 @@ impl InstallTracker {
 
     /// Commits the installed binaries once v1, the authoritative ownership list, is saved.
     pub(super) fn save_with_v1_commit(&self, commit: impl FnOnce()) -> CargoResult<()> {
+        self.save_v1()?;
+        commit();
+        self.save_v2()
+    }
+
+    /// Persists the ownership list used by every supported Cargo version.
+    fn save_v1(&self) -> CargoResult<()> {
         self.v1.save(&self.v1_lock).with_context(|| {
             format!(
                 "failed to write crate metadata at `{}`",
                 self.v1_lock.path().to_string_lossy()
             )
-        })?;
+        })
+    }
 
-        commit();
+    /// Persists the additional options tracked for each installation.
+    fn save_v2(&self) -> CargoResult<()> {
         self.v2.save(&self.v2_lock).with_context(|| {
             format!(
                 "failed to write crate metadata at `{}`",
                 self.v2_lock.path().to_string_lossy()
             )
-        })?;
-        Ok(())
+        })
     }
 
     /// Iterator of all installed binaries.
@@ -328,18 +336,50 @@ impl InstallTracker {
         self.v2.remove(pkg_id, bins);
     }
 
-    /// Remove a bin after it successfully had been removed in disk and then save the tracker at last.
+    /// Keeps a recoverable copy until the authoritative ownership list records the removal.
     pub fn remove_bin_then_save(
         &mut self,
         pkg_id: PackageId,
         bin: &str,
         bin_path: &PathBuf,
     ) -> CargoResult<()> {
-        paths::remove_file(bin_path)?;
+        let kind = paths::symlink_metadata(bin_path)?.file_type();
+        if kind.is_dir() {
+            bail!(
+                "cannot uninstall directory `{}` as a binary",
+                bin_path.display()
+            );
+        }
+        let backup = tempfile::NamedTempFile::new_in(bin_path.parent().unwrap())?.into_temp_path();
+        if kind.is_file() {
+            paths::link_or_copy(bin_path, &backup)?;
+            paths::remove_file(bin_path)?;
+        } else {
+            // Move the directory entry itself, preserving a symlink's target or a special file.
+            paths::remove_file(&backup)?;
+            std::fs::rename(bin_path, &backup)
+                .with_context(|| format!("failed to remove file `{}`", bin_path.display()))?;
+        }
         self.v1.remove_bin(pkg_id, bin);
+        if let Err(error) = self.save_v1() {
+            self.v1.v1.entry(pkg_id).or_default().insert(bin.to_owned());
+            if let Err(mut restore) = backup.persist_noclobber(bin_path) {
+                restore.path.disable_cleanup(true);
+                return Err(error).with_context(|| {
+                    format!(
+                        "could not restore `{}` from `{}`: {}",
+                        bin_path.display(),
+                        restore.path.display(),
+                        restore.error
+                    )
+                });
+            }
+            return Err(error);
+        }
         self.v2.remove_bin(pkg_id, bin);
-        self.save()?;
-        Ok(())
+        let result = self.save_v2();
+        paths::remove_file(&backup)?;
+        result
     }
 }
 
