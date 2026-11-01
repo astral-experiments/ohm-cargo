@@ -1114,7 +1114,8 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
     /// New features should consider using this so we can avoid their migrations.
     pub fn out_dir_new_layout(&self, unit: &Unit) -> PathBuf {
         let dir = self.pkg_dir(unit);
-        self.layout(unit.kind).build_dir().out_force_new_layout(dir)
+        let out = self.layout(unit.kind).build_dir().out_force_new_layout(dir);
+        self.ws.canonical_build_path(&out)
     }
 
     /// Directory where the fingerprint for the given unit should go.
@@ -1274,7 +1275,9 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
     /// Returns the "`OUT_DIR`" directory for running a build script.
     /// `/path/to/target/{debug,release}/build/PKG-HASH/out`
     pub fn build_script_out_dir(&self, unit: &Unit) -> PathBuf {
-        self.build_script_run_dir(unit).join("out")
+        // Both rustc and the script can retain OUT_DIR after a target-directory alias is removed.
+        self.ws
+            .canonical_build_path(&self.build_script_run_dir(unit).join("out"))
     }
 
     /// Returns the path to the executable binary for the given bin target.

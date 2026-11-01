@@ -2876,6 +2876,14 @@ fn calculate_normal(
 
     let profile_hash = unit_profile_hash(build_runner, unit);
     let mut config = StableHasher::new();
+    if build_runner
+        .unit_deps(unit)
+        .iter()
+        .any(|dep| dep.unit.mode.is_run_custom_build())
+    {
+        // Older compiler invocations could embed a symlinked OUT_DIR.
+        "ohm-physical-out-dir-v1".hash(&mut config);
+    }
     hash_clippy_config(build_runner, unit, &mut config)?;
     let linker = if unit.target.for_host() && !build_runner.bcx.gctx.target_applies_to_host()? {
         build_runner.compilation.host_linker()
@@ -3071,6 +3079,8 @@ See https://doc.rust-lang.org/cargo/reference/build-scripts.html#rerun-if-change
         outputs: if overridden { Vec::new() } else { vec![output] },
         rustflags,
         script_result: Mutex::new(script_result),
+        // Regenerate script output that may retain an old directory alias.
+        config: util::hash_u64("ohm-physical-out-dir-v1"),
         index: build_runner.bcx.unit_to_index[unit],
 
         // Most of the other info is blank here as we don't really include it
