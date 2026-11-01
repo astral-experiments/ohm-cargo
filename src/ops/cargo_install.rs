@@ -30,7 +30,7 @@ struct Transaction {
 }
 
 impl Transaction {
-    fn success(mut self) {
+    fn success(&mut self) {
         self.bins.clear();
     }
 }
@@ -569,7 +569,11 @@ impl<'gctx> InstallablePackage<'gctx> {
 
             match tracker.save() {
                 Err(err) => replace_result.with_context(|| err)?,
-                Ok(_) => replace_result?,
+                Ok(()) => {
+                    // The saved receipts now own any newly installed binaries.
+                    installed.success();
+                    replace_result?;
+                }
             }
         } else {
             replace_result?;

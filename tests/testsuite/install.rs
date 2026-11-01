@@ -3306,3 +3306,22 @@ fn no_track_replacement_failure() {
         .run();
     assert!(dst.is_dir());
 }
+
+#[cargo_test]
+fn partial_replacement_keeps_recorded_bins() {
+    Package::new("kit", "1.0.0")
+        .file("src/bin/alpha.rs", "fn main() {}")
+        .file("src/bin/zulu.rs", "fn main() {}")
+        .publish();
+    let blocked = cargo_home().join("bin").join(exe("zulu"));
+    fs::create_dir_all(&blocked).unwrap();
+
+    cargo_process("install kit --force")
+        .with_status(101)
+        .with_stderr_contains("[ERROR] failed to move [..]")
+        .run();
+    assert_has_installed_exe(cargo_home(), "alpha");
+    cargo_process("uninstall kit").run();
+    assert_has_not_installed_exe(cargo_home(), "alpha");
+    assert!(blocked.is_dir());
+}
