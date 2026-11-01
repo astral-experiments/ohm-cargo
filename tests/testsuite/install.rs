@@ -1348,6 +1348,20 @@ fn uninstall_piecemeal() {
         .run();
 }
 
+#[cfg(unix)]
+#[cargo_test]
+fn uninstall_dangling_symlink() {
+    let p = project().file("src/main.rs", "fn main() {}").build();
+    cargo_process("install --path").arg(p.root()).run();
+
+    let bin = cargo_home().join("bin/foo");
+    fs::remove_file(&bin).unwrap();
+    std::os::unix::fs::symlink("missing", &bin).unwrap();
+
+    cargo_process("uninstall foo").run();
+    assert!(!bin.is_symlink());
+}
+
 #[cargo_test]
 fn subcommand_works_out_of_the_box() {
     Package::new("cargo-foo", "1.0.0")
