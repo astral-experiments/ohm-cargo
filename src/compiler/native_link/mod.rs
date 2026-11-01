@@ -1,7 +1,11 @@
 //! A successful native link can be reused only after the platform resolver has
 //! accounted for the inputs of the real linker. An incomplete plan is a miss.
+#[cfg(target_os = "macos")]
 mod apple;
+pub(super) mod declared;
+#[cfg(target_os = "macos")]
 mod generation;
+#[cfg(target_os = "macos")]
 mod namespace;
 mod relay;
 pub(super) use relay::run_if_driver;
@@ -66,6 +70,7 @@ fn hash_file(path: &Path, no_follow: bool) -> io::Result<(Hash, Metadata)> {
     if !before.is_file() {
         return Err(invalid("expected a regular file"));
     }
+    #[cfg(target_os = "macos")]
     if !no_follow
         && let Some(version) = generation::data_version(&file, &before)
         && stamp(&fs::metadata(path)?) == stamp(&before)

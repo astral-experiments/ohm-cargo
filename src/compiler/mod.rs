@@ -43,9 +43,21 @@ pub(crate) mod layout;
 mod links;
 mod locking;
 mod lto;
-#[cfg(all(feature = "ohm-defaults", target_os = "macos", target_arch = "aarch64"))]
+#[cfg(all(
+    feature = "ohm-defaults",
+    any(
+        all(target_os = "macos", target_arch = "aarch64"),
+        all(target_os = "linux", target_env = "gnu", target_arch = "x86_64")
+    )
+))]
 mod native_link;
-#[cfg(all(feature = "ohm-defaults", target_os = "macos", target_arch = "aarch64"))]
+#[cfg(all(
+    feature = "ohm-defaults",
+    any(
+        all(target_os = "macos", target_arch = "aarch64"),
+        all(target_os = "linux", target_env = "gnu", target_arch = "x86_64")
+    )
+))]
 pub mod native_link_driver;
 mod ohm_deferred_dev_deps;
 mod ohm_early_tests;
@@ -1228,6 +1240,34 @@ fn rustc(
     let current_id = unit.pkg.package_id();
     let manifest = ManifestErrorContext::new(build_runner, unit);
     let build_scripts = build_runner.build_scripts.get(unit).cloned();
+    #[cfg(all(
+        feature = "ohm-defaults",
+        any(
+            all(target_os = "macos", target_arch = "aarch64"),
+            all(target_os = "linux", target_env = "gnu", target_arch = "x86_64")
+        )
+    ))]
+    let declared_link = relink_cache.as_ref().and_then(|_| {
+        let scripts = build_scripts.as_ref()?;
+        let linker = native_link_driver::declared_driver(build_runner, unit)?;
+        let roots = scripts
+            .to_link
+            .iter()
+            .map(|(id, metadata)| {
+                Some((
+                    *metadata,
+                    build_runner
+                        .bcx
+                        .packages
+                        .get_one(*id)
+                        .ok()?
+                        .root()
+                        .to_owned(),
+                ))
+            })
+            .collect::<Option<Vec<_>>>()?;
+        Some((linker, roots))
+    });
 
     // If we are a binary and the package also contains a library, then we
     // don't pass the `-l` flags.
@@ -1560,8 +1600,33 @@ fn rustc(
         #[cfg(all(feature = "ohm-defaults", target_os = "macos", target_arch = "aarch64"))]
         let before_script_args = rustc.get_args().count();
         let mut build_script_overrides_loader = false;
+        #[cfg(all(
+            feature = "ohm-defaults",
+            any(
+                all(target_os = "macos", target_arch = "aarch64"),
+                all(target_os = "linux", target_env = "gnu", target_arch = "x86_64")
+            )
+        ))]
+        let mut declared_inputs = None;
         if let Some(build_scripts) = build_scripts {
             let script_outputs = build_script_outputs.lock().unwrap();
+            #[cfg(all(
+                feature = "ohm-defaults",
+                any(
+                    all(target_os = "macos", target_arch = "aarch64"),
+                    all(target_os = "linux", target_env = "gnu", target_arch = "x86_64")
+                )
+            ))]
+            if let Some((linker, roots)) = &declared_link {
+                declared_inputs = native_link_driver::declarations(
+                    linker,
+                    roots.iter().map(|(key, root)| {
+                        script_outputs
+                            .get(*key)
+                            .map(|output| (root.as_path(), output))
+                    }),
+                );
+            }
             add_native_deps(
                 &mut rustc,
                 &script_outputs,
@@ -1645,6 +1710,20 @@ fn rustc(
             })
         {
             native_link_driver::install(&mut rustc, cache);
+        }
+        #[cfg(all(
+            feature = "ohm-defaults",
+            any(
+                all(target_os = "macos", target_arch = "aarch64"),
+                all(target_os = "linux", target_env = "gnu", target_arch = "x86_64")
+            )
+        ))]
+        if let (Some(inputs), Some(cache), Some(fp)) =
+            (declared_inputs, &relink_cache, &fingerprint)
+            && check_relink_inputs
+            && fp.needs_native_link_driver()
+        {
+            native_link_driver::install_declared(&mut rustc, cache, &inputs);
         }
         let link_only = if let Some(cache) = &relink_cache {
             let mut link_only = rustc.clone();

@@ -1028,23 +1028,7 @@ impl Prepared {
                     .any(|w| w[0] == "-L" && Path::new(&w[1]) == p))
             .then_some(());
         }
-        let (input, versions) = line
-            .strip_prefix("ld: warning: object file (")?
-            .split_once(")) was built for newer 'macOS' version (")?;
-        let (archive, which) = input.rsplit_once('[')?;
-        let (index, member) = which.split_once("](")?;
-        if index.is_empty() || !index.bytes().all(|b| b.is_ascii_digit()) || !safe_library(member) {
-            return None;
-        }
-        let (built, target) = versions
-            .strip_suffix(')')?
-            .split_once(") than being linked (")?;
-        let built = parse_macos_version(built)?;
-        let target = parse_macos_version(target)?;
-        if built <= target || target != parse_macos_version(self.expected.get(9)?)? {
-            return None;
-        }
-        let path = Path::new(archive);
+        let (path, member, built) = Self::archive_version_warning(line, self.expected.get(9)?)?;
         let requested_archive = path.extension() == Some(OsStr::new("a"))
             && self.roots.contains(path.parent()?)
             && path
@@ -1060,6 +1044,39 @@ impl Prepared {
         {
             return None;
         }
+        Self::record_warned_member(archives, path, member, built)
+    }
+
+    fn archive_version_warning<'a>(
+        line: &'a str,
+        expected: &str,
+    ) -> Option<(&'a Path, &'a str, u32)> {
+        let (input, versions) = line
+            .strip_prefix("ld: warning: object file (")?
+            .split_once(")) was built for newer 'macOS' version (")?;
+        let (archive, which) = input.rsplit_once('[')?;
+        let (index, member) = which.split_once("](")?;
+        if index.is_empty() || !index.bytes().all(|b| b.is_ascii_digit()) || !safe_library(member) {
+            return None;
+        }
+        let (built, target) = versions
+            .strip_suffix(')')?
+            .split_once(") than being linked (")?;
+        let built = parse_macos_version(built)?;
+        let target = parse_macos_version(target)?;
+        if built <= target || target != parse_macos_version(expected)? {
+            return None;
+        }
+        let path = Path::new(archive);
+        Some((path, member, built))
+    }
+
+    fn record_warned_member<'a>(
+        archives: &mut BTreeMap<&'a Path, BTreeMap<&'a str, u32>>,
+        path: &'a Path,
+        member: &'a str,
+        built: u32,
+    ) -> Option<()> {
         if archives
             .entry(path)
             .or_default()
@@ -1108,6 +1125,31 @@ impl Prepared {
             }
         }
         (found.len() == expected.len()).then_some(())
+    }
+
+    pub(super) fn declared_warnings(
+        stderr: &[u8],
+        args: &[OsString],
+        watched: &BTreeSet<PathBuf>,
+    ) -> Option<()> {
+        if stderr.len() > super::MAX_STDERR || !stderr.ends_with(b"\n") {
+            return None;
+        }
+        let target = args
+            .iter()
+            .find_map(|a| a.to_str()?.strip_prefix("-mmacosx-version-min="))?;
+        let mut archives = BTreeMap::new();
+        for line in std::str::from_utf8(stderr).ok()?.split_terminator('\n') {
+            let (p, member, built) = Self::archive_version_warning(line, target)?;
+            if !watched.contains(p) {
+                return None;
+            }
+            Self::record_warned_member(&mut archives, p, member, built)?;
+        }
+        for (p, members) in archives {
+            Self::check_warned_members(p, members)?;
+        }
+        Some(())
     }
 
     pub(super) fn report_args(&self, path: &Path) -> Vec<OsString> {

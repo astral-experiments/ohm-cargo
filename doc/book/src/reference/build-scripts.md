@@ -409,6 +409,11 @@ filesystem last-modified "mtime" timestamp to determine if the file has
 changed. It compares against an internal cached timestamp of when the build
 script last ran.
 
+If you use a custom linker, emit `cargo::rerun-if-changed` for each private
+configuration file or other input it reads. For example, if the driver reads
+`native/link-mode` to select an archive, declare that file as well as the
+archive. Cargo cannot discover those inputs from the driver command line.
+
 If the path points to a directory, it will scan the entire directory for
 any modifications.
 
