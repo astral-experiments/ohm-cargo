@@ -5,16 +5,21 @@ use std::path::{Path, PathBuf};
 use crate::util::CargoResult;
 use crate::workspace::build_cache_gc::Summary;
 
-pub(super) struct Mounts(Vec<PathBuf>);
+pub(in crate::workspace::build_cache_gc) struct Mounts(Vec<PathBuf>);
 
 impl Mounts {
+    #[cfg(all(test, target_os = "linux"))]
+    pub(in crate::workspace::build_cache_gc) fn for_test(paths: Vec<PathBuf>) -> Self {
+        Self(paths)
+    }
+
     /// The target can itself be a mount. Only its nested mountpoints are foreign.
-    pub(super) fn read(root: &Path) -> CargoResult<Self> {
+    pub(in crate::workspace::build_cache_gc) fn read(root: &Path) -> CargoResult<Self> {
         #[cfg(target_os = "linux")]
         {
             use anyhow::Context as _;
             let table = std::fs::read("/proc/self/mountinfo")
-                .context("could not check for nested mounts in the private target")?;
+                .context("could not check for nested mounts in the build directory")?;
             Self::from_mountinfo(root, &table)
         }
         #[cfg(not(target_os = "linux"))]
@@ -25,7 +30,12 @@ impl Mounts {
     }
 
     /// Refuse to enter a mount or detach a tree containing one.
-    pub(super) fn blocked(&self, path: &Path, recursive: bool, summary: &mut Summary<'_>) -> bool {
+    pub(in crate::workspace::build_cache_gc) fn blocked(
+        &self,
+        path: &Path,
+        recursive: bool,
+        summary: &mut Summary<'_>,
+    ) -> bool {
         let Some(mount) = self.boundary(path, recursive) else {
             return false;
         };
