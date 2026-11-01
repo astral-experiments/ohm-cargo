@@ -1213,16 +1213,6 @@ fn rustc(
             .clone();
         (completion, name)
     });
-    if let Some(cache) = &relink_cache {
-        // Preserve the codegen objects referenced by the cached `.rlink`, and
-        // keep them outside the dependency search directory while completing
-        // the initial link.
-        rustc.arg("-Z").arg("emit-rlink");
-        let mut temps_dir = OsString::from("temps-dir=");
-        temps_dir.push(&cache.objects);
-        rustc.arg("-Z").arg(temps_dir);
-    }
-
     // Prepare the native lib state (extra `-L` and `-l` flags).
     let build_script_outputs = Arc::clone(&build_runner.build_script_outputs);
     let current_id = unit.pkg.package_id();
@@ -1363,6 +1353,21 @@ fn rustc(
             .is_some_and(|fingerprint| fingerprint.is_early_cutoff_candidate());
 
     return Ok(Work::new(move |state| {
+        // A build dependency's first native-link marker arrives after scheduling.
+        // Retain a build script's objects only when a dependency requested a recheck.
+        let relink_cache = relink_cache.filter(|_| {
+            !target.is_custom_build()
+                || fingerprint
+                    .as_ref()
+                    .is_some_and(|fp| fp.needs_native_link_driver())
+        });
+        if let Some(cache) = &relink_cache {
+            rustc.arg("-Z").arg("emit-rlink");
+            let mut temps_dir = OsString::from("temps-dir=");
+            temps_dir.push(&cache.objects);
+            rustc.arg("-Z").arg(temps_dir);
+        }
+
         // Build-script outputs are only authoritative after their jobs finish.
         // An unused Rust extern can still be consumed through native linking.
         let record_dev_unused = record_dev_unused

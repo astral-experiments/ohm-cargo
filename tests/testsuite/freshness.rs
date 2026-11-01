@@ -5746,6 +5746,56 @@ fn legacy_native_recheck_reuses_codegen_until_the_root_changes() {
 }
 
 #[cfg(unix)]
+#[cargo_test]
+fn a_native_recheck_relinks_a_build_script_from_its_objects() {
+    let wrapper = relink_only_wrapper();
+    let p = project()
+        .file(
+            "Cargo.toml",
+            &format!(
+                "{}\n[build-dependencies]\ndep = {{ path = 'dep' }}",
+                basic_manifest("consumer", "0.1.0")
+            ),
+        )
+        .file("dep/Cargo.toml", &basic_manifest("dep", "0.1.0"))
+        .file("dep/src/lib.rs", "pub fn value() -> u32 { 17 }")
+        .file(
+            "build.rs",
+            r#"fn main() {
+                println!("cargo:rerun-if-changed=build.rs");
+                println!("cargo:rustc-env=VALUE={}", dep::value());
+            }"#,
+        )
+        .file("src/lib.rs", r#"pub const VALUE: &str = env!("VALUE");"#)
+        .build();
+    let log = p.root().join("compiler.log");
+    let check = || {
+        fs::write(&log, "").unwrap();
+        p.cargo("-Zohm-defaults check")
+            .masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("RUSTC", &wrapper)
+            .env(
+                "RELINK_WRAPPER_NATIVE_RECHECK",
+                "/dev/null/ohm-recheck-dependent-links",
+            )
+            .env("RELINK_WRAPPER_LOG", &log)
+            .env(
+                "RELINK_WRAPPER_COMPILER",
+                std::env::var_os("RUSTC").unwrap_or_else(|| "rustc".into()),
+            )
+            .run();
+        fs::read_to_string(&log).unwrap()
+    };
+    check();
+    let repeat = check();
+    let script: Vec<_> = repeat
+        .lines()
+        .filter(|line| line.ends_with(":build_script_build"))
+        .collect();
+    assert_eq!(script, ["link:build_script_build"]);
+}
+
+#[cfg(unix)]
 fn check_native_relink(marker: &str) {
     let wrapper = relink_only_wrapper();
     let p = project()

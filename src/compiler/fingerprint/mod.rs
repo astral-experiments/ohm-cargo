@@ -711,14 +711,13 @@ const RECHECK_DEPENDENT_LINKS: &str = "/dev/null/ohm-recheck-dependent-links";
 
 /// Returns whether this unit can be split into codegen and reusable link steps.
 ///
-/// The first prototype is intentionally limited to executable build and test
-/// units. Other linkable crate types have more complicated downstream artifact
-/// semantics and are left to future work. Terminal test executables still
-/// consume their dependencies' public hashes without producing one themselves.
+/// Binaries and test executables can retain their codegen objects. A local build
+/// script retains them only when a dependency asks for a native-link recheck.
 pub fn unit_can_use_relink_only(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
     !unit.artifact.is_true()
         && (unit.mode == CompileMode::Test
-            || (unit.mode == CompileMode::Build && unit.target.is_bin()))
+            || (unit.mode == CompileMode::Build
+                && (unit.target.is_bin() || (unit.is_local() && unit.target.is_custom_build()))))
         && matches!(
             build_runner.lto[unit],
             super::lto::Lto::Off | super::lto::Lto::OnlyObject
