@@ -1802,7 +1802,6 @@ impl LocalFingerprint {
         build_root: &Path,
         cargo_exe: &Path,
         gctx: &GlobalContext,
-        worktree_seed: bool,
         checksum_parallelism: ChecksumParallelism<'_>,
         observes_foreign_span: &mut bool,
         recheck_dependent_links: &mut bool,
@@ -1829,9 +1828,9 @@ impl LocalFingerprint {
                     let manifest_value = pkg.manifest().metadata().env_var(key);
                     let current = if let Some(value) = manifest_value.as_deref() {
                         Some(OsStr::new(value))
-                    } else if worktree_seed && key == "CARGO_MANIFEST_DIR" {
+                    } else if key == "CARGO_MANIFEST_DIR" {
                         Some(pkg.root().as_os_str())
-                    } else if worktree_seed && key == "CARGO_MANIFEST_PATH" {
+                    } else if key == "CARGO_MANIFEST_PATH" {
                         Some(pkg.manifest_path().as_os_str())
                     } else if key == CARGO_ENV {
                         Some(cargo_exe.as_os_str())
@@ -2310,7 +2309,6 @@ impl Fingerprint {
         // Check local inputs before dependencies. If dependency checking
         // returned first, a simultaneous local source change could be masked
         // as dependency-only and incorrectly become eligible for early cutoff.
-        let worktree_seed = self.ohm_worktree_namespace.is_some();
         for local in self.local.get_mut().unwrap().iter() {
             if let Some(item) = local.find_stale_item(
                 mtime_cache,
@@ -2319,7 +2317,6 @@ impl Fingerprint {
                 build_root,
                 cargo_exe,
                 gctx,
-                worktree_seed,
                 checksum_parallelism,
                 &mut self.observes_foreign_span,
                 self.recheck_dependent_links.get_mut(),
@@ -2876,6 +2873,11 @@ fn calculate_normal(
 
     let profile_hash = unit_profile_hash(build_runner, unit);
     let mut config = StableHasher::new();
+    // Previous dep-info omitted Cargo's manifest paths outside worktree seeds.
+    "ohm-observed-manifest-path-v1".hash(&mut config);
+    if is_any_doc_gen && !rustdoc_depinfo_enabled {
+        unit.pkg.manifest_path().hash(&mut config);
+    }
     if build_runner
         .unit_deps(unit)
         .iter()
@@ -3081,6 +3083,12 @@ See https://doc.rust-lang.org/cargo/reference/build-scripts.html#rerun-if-change
         script_result: Mutex::new(script_result),
         // Regenerate script output that may retain an old directory alias.
         config: util::hash_u64("ohm-physical-out-dir-v1"),
+        // A build script runs in its package and can pass that absolute path to the compiler.
+        path: if overridden {
+            0
+        } else {
+            util::hash_u64(unit.pkg.manifest_path())
+        },
         index: build_runner.bcx.unit_to_index[unit],
 
         // Most of the other info is blank here as we don't really include it

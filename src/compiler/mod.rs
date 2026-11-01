@@ -1321,7 +1321,7 @@ fn rustc(
                 .configured_build_dir()
                 .into_path_unlocked()
         });
-    let pkg_root = unit.pkg.root().to_path_buf();
+    let manifest_path = unit.pkg.manifest_path().to_path_buf();
     let cwd = rustc
         .get_cwd()
         .unwrap_or_else(|| build_runner.bcx.gctx.cwd())
@@ -1685,7 +1685,7 @@ fn rustc(
             && !observes_foreign_span
             && fingerprint::can_reuse_after_scripts(
                 fingerprint,
-                &pkg_root,
+                manifest_path.parent().unwrap(),
                 &build_dir,
                 namespace,
                 &rustc_dep_info_loc,
@@ -2072,7 +2072,7 @@ fn rustc(
                 &rustc_dep_info_loc,
                 &dep_info_loc,
                 &cwd,
-                &pkg_root,
+                &manifest_path,
                 &build_dir,
                 &rustc,
                 // Do not track source files in the fingerprint for registry dependencies.
@@ -2785,7 +2785,7 @@ fn rustdoc(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<W
     let rustdoc_dep_info_loc = rustdoc_dep_info_loc(build_runner, unit);
     let dep_info_loc = fingerprint::dep_info_loc(build_runner, unit);
     let build_dir = build_runner.files().build_root(unit);
-    let pkg_root = unit.pkg.root().to_path_buf();
+    let manifest_path = unit.pkg.manifest_path().to_path_buf();
     let cwd = rustdoc
         .get_cwd()
         .unwrap_or_else(|| build_runner.bcx.gctx.cwd())
@@ -2898,7 +2898,7 @@ fn rustdoc(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<W
                 &rustdoc_dep_info_loc,
                 &dep_info_loc,
                 &cwd,
-                &pkg_root,
+                &manifest_path,
                 &build_dir,
                 &rustdoc,
                 // Should we track source file for doc gen?

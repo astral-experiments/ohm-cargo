@@ -5836,6 +5836,12 @@ fn _rename_with_link_search_path(cross: bool, expected: impl IntoData) {
         thread::sleep(slow_cpu_multiplier(100));
     }
 
+    // The build script copies a native library from its package directory. Run it
+    // at the new location before checking that the next invocation stays fresh.
+    p2.cargo(&format!("run{}", target_arg))
+        .cwd(&new)
+        .with_stderr_contains("[COMPILING] bar v0.5.0 ([ROOT]/bar2)")
+        .run();
     p2.cargo(&format!("run{}", target_arg))
         .cwd(&new)
         .with_stderr_data(expected)

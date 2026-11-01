@@ -365,8 +365,7 @@ impl EncodedDepInfo {
 /// learn about the all files which a crate depends on. This is then
 /// re-serialized into the `cargo_dep_info` path in a Cargo-specific format.
 ///
-/// The `pkg_root` argument here is the absolute path to the directory
-/// containing `Cargo.toml` for this crate that was compiled. The paths listed
+/// The `manifest_path` argument is the absolute path to the compiled crate's manifest. The paths listed
 /// in the rustc dep-info file may or may not be absolute but we'll want to
 /// consider all of them relative to the `root` specified.
 ///
@@ -386,13 +385,13 @@ impl EncodedDepInfo {
 /// The `env_config` argument is a set of environment variables that are
 /// defined in `[env]` table of the `config.toml`.
 ///
-/// `worktree_seed_namespace` preserves lexical source paths and manifest-path
-/// environment inputs when preparing mutable artifacts for another checkout.
+/// `worktree_seed_namespace` preserves lexical source paths when preparing mutable
+/// artifacts for another checkout.
 pub fn translate_dep_info(
     rustc_dep_info: &Path,
     cargo_dep_info: &Path,
     rustc_cwd: &Path,
-    pkg_root: &Path,
+    manifest_path: &Path,
     build_root: &Path,
     rustc_cmd: &ProcessBuilder,
     allow_package: bool,
@@ -416,8 +415,8 @@ pub fn translate_dep_info(
     let allow_package = allow_package || observer;
 
     let build_root = crate::util::try_canonicalize(build_root)?;
-    let original_pkg_root = pkg_root;
-    let pkg_root = crate::util::try_canonicalize(pkg_root)?;
+    let original_pkg_root = manifest_path.parent().unwrap();
+    let pkg_root = crate::util::try_canonicalize(original_pkg_root)?;
     let mut on_disk_info = EncodedDepInfo::default();
     on_disk_info.env = depinfo.env;
 
@@ -477,10 +476,18 @@ pub fn translate_dep_info(
     // not tracked elsewhere in the fingerprint.
     //
     // For cargo#13280, We trace env vars that are defined in the `[env]` config table.
-    on_disk_info.env.retain(|(key, _)| {
+    on_disk_info.env.retain(|(key, value)| {
+        // Track manifest paths rustc actually read. A different value supplied by a build
+        // script is already tracked with the rest of that script's output.
+        let manifest_input = match key.as_str() {
+            "CARGO_MANIFEST_DIR" => Some(original_pkg_root),
+            "CARGO_MANIFEST_PATH" => Some(manifest_path),
+            _ => None,
+        };
+        if let Some(path) = manifest_input {
+            return value.as_deref().map(Path::new) == Some(path);
+        }
         ManifestMetadata::should_track(key)
-            || (worktree_seed_namespace.is_some()
-                && matches!(key.as_str(), "CARGO_MANIFEST_DIR" | "CARGO_MANIFEST_PATH"))
             || env_config.contains_key(key)
             || !rustc_cmd.get_envs().contains_key(key)
             || key == CARGO_ENV
@@ -1196,7 +1203,7 @@ mod encoded_dep_info {
                 &raw,
                 &record,
                 &root,
-                &root,
+                &root.join("Cargo.toml"),
                 &root,
                 &ProcessBuilder::new("rustc"),
                 true,
@@ -1338,7 +1345,7 @@ mod encoded_dep_info {
                 &raw,
                 &encoded,
                 &root,
-                &root,
+                &root.join("Cargo.toml"),
                 &target,
                 &ProcessBuilder::new("rustc"),
                 allow_package,
@@ -1378,7 +1385,7 @@ mod encoded_dep_info {
         std::fs::write(
             &rustc_dep_info,
             format!(
-                "result: app/src/../../shared.txt {}\n# env-dep:CARGO_MANIFEST_DIR={}\n",
+                "result: app/src/../../shared.txt {}\n# env-dep:CARGO_MANIFEST_DIR={}\n# env-dep:CARGO_MANIFEST_PATH=fixed.toml\n",
                 literal.display().to_string().replace(' ', "\\ "),
                 package.display()
             ),
@@ -1386,14 +1393,20 @@ mod encoded_dep_info {
         .unwrap();
         let mut rustc = ProcessBuilder::new("rustc");
         rustc.env("CARGO_MANIFEST_DIR", &package);
-        let env = Arc::new(HashMap::default());
+        rustc.env("CARGO_MANIFEST_PATH", "fixed.toml");
+        let mut env = HashMap::default();
+        env.insert(
+            "CARGO_MANIFEST_PATH".to_owned(),
+            OsString::from("configured"),
+        );
+        let env = Arc::new(env);
 
         for seeded in [false, true] {
             translate_dep_info(
                 &rustc_dep_info,
                 &cargo_dep_info,
                 &root,
-                &package,
+                &package.join("Cargo.toml"),
                 &root,
                 &rustc,
                 true,
@@ -1402,6 +1415,7 @@ mod encoded_dep_info {
             )
             .unwrap();
             let info = EncodedDepInfo::parse(&std::fs::read(&cargo_dep_info).unwrap()).unwrap();
+            assert_eq!(info.env.len(), 1);
             if seeded {
                 assert!(info.files.contains(&(
                     DepInfoPathType::PackageRootRelative,
@@ -1413,16 +1427,13 @@ mod encoded_dep_info {
                     literal.clone(),
                     None,
                 )));
-                assert_eq!(info.env.len(), 1);
             } else {
-                // The original translation still canonicalizes source paths
-                // and filters Cargo's injected manifest environment.
+                // Ordinary translation still canonicalizes source paths.
                 assert!(info.files.contains(&(
                     DepInfoPathType::BuildRootRelative,
                     PathBuf::from("shared.txt"),
                     None,
                 )));
-                assert!(info.env.is_empty());
             }
         }
     }
