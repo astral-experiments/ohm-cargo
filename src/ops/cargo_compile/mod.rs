@@ -242,6 +242,22 @@ fn compile_ws<'a>(
         unit_graph::emit_serialized_unit_graph(&bcx.roots, &bcx.unit_graph, ws.gctx())?;
         return Compilation::new(&bcx);
     }
+    // Profiles have separate build locks but publish HTML to the same target/doc directory.
+    // Serialize its writers before checking the per-crate markers or replacing any pages.
+    let _doc_lock = if bcx.build_config.intent.is_doc()
+        && !bcx.build_config.intent.wants_doc_json_output()
+        && !bcx.build_config.dry_run
+    {
+        let root = ws.target_dir();
+        cargo_util::paths::create_dir_all_excluded_from_backups_atomic(root.as_path_unlocked())?;
+        Some(root.open_rw_exclusive_create(
+            ".cargo-doc-lock",
+            ws.gctx(),
+            "documentation directory",
+        )?)
+    } else {
+        None
+    };
     crate::workspace::gc::auto_gc(bcx.gctx);
     let build_runner = BuildRunner::new_with_checksum_reservations(&bcx, reserve_checksum_slots)?;
     if options.build_config.dry_run {
