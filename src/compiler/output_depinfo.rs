@@ -24,6 +24,7 @@ fn render_filename(
         path
     };
     let bytes = paths::path2bytes(path)?;
+    let prerequisite = extra_separator == Some(b'|');
     let needs_backslash = |byte| {
         matches!(byte, b' ' | b'\t' | b'#')
             || (cfg!(unix) && byte == b':')
@@ -31,14 +32,17 @@ fn render_filename(
     };
     if !bytes
         .iter()
-        .any(|&byte| byte == b'$' || needs_backslash(byte))
+        .any(|&byte| byte == b'$' || needs_backslash(byte) || (prerequisite && byte == b';'))
     {
         return Ok(path.to_owned());
     }
     let mut escaped = Vec::with_capacity(bytes.len());
     let mut backslashes = 0;
     for &byte in bytes {
-        if needs_backslash(byte) {
+        if prerequisite && byte == b';' {
+            // Make unquotes a recipe separator twice, consuming 4N+3 backslashes.
+            escaped.extend(std::iter::repeat_n(b'\\', 3 * (backslashes + 1)));
+        } else if needs_backslash(byte) {
             // Make consumes pairs of backslashes before a quoted separator.
             escaped.extend(std::iter::repeat_n(b'\\', backslashes + 1));
         } else if byte == b'$' {
@@ -65,14 +69,13 @@ fn same_literal_prerequisites(previous: &[u8], prerequisites: &[u8]) -> bool {
 
 /// Detects a rendered prerequisite that a GCC depfile reader can interpret as a different file.
 fn ambiguous_gcc_prerequisite(path: &[u8]) -> bool {
-    path.ends_with(br"\")
-        || path.ends_with(br"\:")
+    path.ends_with(br"\:")
         || path.iter().enumerate().any(|(i, &byte)| match byte {
-            b'\t' | b'|' => true,
+            b'\t' | b'|' | b';' => true,
             b'#' | b':' => path[..i].ends_with(br"\\"),
             b'$' => path[..i].ends_with(br"\"),
             // Ninja 1.11 splits these unquoted bytes between filenames.
-            byte if byte.is_ascii_control() || br#""&'*;<>?^`"#.contains(&byte) => {
+            byte if byte.is_ascii_control() || br#""&'*<>?^`"#.contains(&byte) => {
                 !path[..i].ends_with(br"\")
             }
             _ => false,
@@ -253,15 +256,38 @@ pub fn output_depinfo(
             let target_len = contents.len();
             contents.push(b':');
             let mut recheck_gcc = false;
+            let mut recheck_make = false;
+            let mut saw_equals = false;
             for dep in &deps {
-                let bytes = paths::path2bytes(dep)?;
+                let mut bytes = paths::path2bytes(dep)?;
+                if bytes.ends_with(br"\") {
+                    // A trailing backslash can quote the next word or the newline.
+                    recheck_make = true;
+                    continue;
+                }
                 recheck_gcc |= ambiguous_gcc_prerequisite(bytes);
+                let first = contents.len() == target_len + 1;
                 contents.push(b' ');
+                if !saw_equals && let Some(equal) = bytes.iter().position(|&b| b == b'=') {
+                    saw_equals = true;
+                    if first {
+                        // The empty automatic variable prevents a target-specific assignment.
+                        // GCC-style depfile readers skip both characters.
+                        contents.extend_from_slice(b"$< ");
+                    }
+                    // Make unquotes preceding backslashes only up to the first equals sign.
+                    let (prefix, rest) = bytes.split_at(equal);
+                    let slashes = prefix.iter().rev().take_while(|&&b| b == b'\\').count();
+                    contents.extend_from_slice(prefix);
+                    contents.extend(std::iter::repeat_n(b'\\', slashes));
+                    recheck_gcc |= slashes != 0;
+                    bytes = rest;
+                }
                 contents.extend_from_slice(bytes);
             }
-            if recheck_gcc {
-                // Make ignores the age of an order-only prerequisite. A flat depfile
-                // reader rechecks the build because a non-directory cannot have children.
+            if recheck_gcc || recheck_make {
+                // Make ignores the age of an order-only prerequisite. Use an ordinary
+                // prerequisite when Make also needs to recheck the build.
                 let marker = if cfg!(unix) {
                     PathBuf::from("/dev/null/ohm-ambiguous-gcc-path")
                 } else {
@@ -269,7 +295,7 @@ pub fn output_depinfo(
                 };
                 let prerequisite = render_filename(&marker, None, Some(b'|'))?;
                 let marker_target = render_filename(&marker, None, Some(b'%'))?;
-                contents.extend_from_slice(b" | ");
+                contents.extend_from_slice(if recheck_make { b" " } else { b" | " });
                 contents.extend_from_slice(paths::path2bytes(&prerequisite)?);
                 contents.push(b'\n');
                 contents.extend_from_slice(paths::path2bytes(&marker_target)?);
@@ -286,7 +312,7 @@ pub fn output_depinfo(
                 || shared_target_spelling_matches(&output_path, &target))
                 && (paths::read_bytes(&output_path).is_ok_and(|previous| {
                     same_literal_prerequisites(&previous, &contents[target_len..])
-                }) || (!recheck_gcc
+                }) || (!(recheck_gcc || recheck_make || saw_equals)
                     && fingerprint::parse_rustc_dep_info(&output_path).is_ok_and(|previous| {
                         previous
                             .files

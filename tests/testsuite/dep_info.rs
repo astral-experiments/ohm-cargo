@@ -217,6 +217,39 @@ fn external_dep_info_quotes_make_prerequisites() {
 
 #[cfg(unix)]
 #[cargo_test]
+fn external_dep_info_separates_make_rule_syntax() {
+    let names = ["a=b", "b;c", r"c\", r"d\=e"];
+    let p = project()
+        .file("src/main.rs", "fn main() {}")
+        .file("watched", &names.join("\n"))
+        .file(
+            "build.rs",
+            r#"fn main() {
+            for name in include_str!("watched").lines() {
+                println!("cargo::rerun-if-changed={name}");
+            }
+        }"#,
+        )
+        .build();
+    for name in names {
+        std::fs::write(p.root().join(name), "").unwrap();
+    }
+    p.cargo("build")
+        .env("CARGO_BUILD_DEP_INFO_BASEDIR", p.root())
+        .run();
+    let rule = p.read_file("target/debug/foo.d");
+    assert!(
+        rule.starts_with(r"target/debug/foo: $< a=b b\\\;c "),
+        "{rule}"
+    );
+    assert!(rule.contains(r" d\=e "), "{rule}");
+    let marker = "/dev/null/ohm-ambiguous-gcc-path";
+    assert!(rule.contains(&format!(" {marker}\n{marker}:\n")), "{rule}");
+    assert!(!rule.contains(" | "), "{rule}");
+}
+
+#[cfg(unix)]
+#[cargo_test]
 fn native_workspace_path_in_external_dep_info() {
     use std::ffi::OsStr;
     use std::os::unix::ffi::OsStrExt;
