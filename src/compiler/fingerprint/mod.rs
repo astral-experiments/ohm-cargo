@@ -2728,7 +2728,10 @@ fn hash_clippy_config(
         .get("CLIPPY_CONF_DIR")
         .map(OsString::as_os_str)
         .or_else(|| bcx.gctx.get_env_os("CLIPPY_CONF_DIR"));
-    let start = configured.map_or_else(|| root.to_owned(), |path| root.join(path));
+    let start = configured.map_or_else(
+        || root.to_owned(),
+        |path| path_args(bcx.ws, unit).1.join(path),
+    );
     let Ok(start) = start.canonicalize() else {
         "missing-clippy-config-directory".hash(config);
         return Ok(());

@@ -28,7 +28,13 @@ use super::death;
 fn new_clippy_config_invalidates_a_fresh_check() {
     let p = project()
         .file(
-            "src/lib.rs",
+            "Cargo.toml",
+            "[workspace]\nmembers = ['member']\nresolver = '2'\n",
+        )
+        .file("member/Cargo.toml", &basic_lib_manifest("member"))
+        .file("settings/.keep", "")
+        .file(
+            "member/src/lib.rs",
             "pub fn f(a: u8, b: u8, c: u8, d: u8) -> u8 { a ^ b ^ c ^ d }",
         )
         .build();
@@ -36,21 +42,23 @@ fn new_clippy_config_invalidates_a_fresh_check() {
         .join("bin/clippy-driver")
         .with_extension(std::env::consts::EXE_EXTENSION);
     let check = || {
-        let mut cmd = p.cargo("check --lib");
-        cmd.env("RUSTC_WORKSPACE_WRAPPER", &driver).env(
-            "CLIPPY_ARGS",
-            "-Dclippy::too_many_arguments__CLIPPY_HACKERY__",
-        );
+        let mut cmd = p.cargo("check -p member --lib");
+        cmd.env("RUSTC_WORKSPACE_WRAPPER", &driver)
+            .env("CLIPPY_CONF_DIR", "settings")
+            .env(
+                "CLIPPY_ARGS",
+                "-Dclippy::too_many_arguments__CLIPPY_HACKERY__",
+            );
         cmd
     };
 
     check().run();
-    p.change_file("clippy.toml", "too-many-arguments-threshold = 3");
+    p.change_file("settings/clippy.toml", "too-many-arguments-threshold = 3");
     check()
         .with_status(101)
         .with_stderr_contains("[..]too many arguments[..]")
         .run();
-    p.change_file(".clippy.toml", "too-many-arguments-threshold = 5");
+    p.change_file("settings/.clippy.toml", "too-many-arguments-threshold = 5");
     check().run();
 }
 
