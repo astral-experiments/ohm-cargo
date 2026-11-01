@@ -50,8 +50,18 @@ fn check_dependencies_keep_one_type_across_a_documented_diamond() {
         "#)
         .build();
 
-    let output = p.cargo("-Zohm-defaults=no -Zohm-reuse-built-deps -Zohm-shared-stages doc --no-deps --message-format=json")
-        .masquerade_as_nightly_cargo(&["ohm-defaults", "ohm-reuse-built-deps", "ohm-shared-stages"])
+    let cargo = |command: &str| {
+        let mut cargo = p.cargo(&format!(
+            "-Zohm-defaults=no -Zohm-reuse-built-deps -Zohm-shared-stages {command}"
+        ));
+        cargo.masquerade_as_nightly_cargo(&[
+            "ohm-defaults",
+            "ohm-reuse-built-deps",
+            "ohm-shared-stages",
+        ]);
+        cargo
+    };
+    let output = cargo("doc --no-deps --message-format=json")
         .exec_with_output()
         .unwrap();
     let leaf_outputs: Vec<_> = str::from_utf8(&output.stdout)
@@ -68,7 +78,7 @@ fn check_dependencies_keep_one_type_across_a_documented_diamond() {
     assert!(files[0].as_str().unwrap().ends_with(".rmeta"));
     let html = fs::read_to_string(p.root().join("target/doc/facade/struct.Point.html")).unwrap();
     assert!(html.contains("A shared coordinate."));
-    p.cargo("test --doc").run();
+    cargo("test --doc").run();
 }
 
 #[cargo_test]
