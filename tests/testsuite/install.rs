@@ -3009,6 +3009,7 @@ fn dry_run() {
 "#]])
         .run();
     assert_has_not_installed_exe(paths::cargo_home(), "foo");
+    cargo_process("install --list").with_stdout_data("").run();
 }
 
 #[cargo_test]
@@ -3088,6 +3089,9 @@ fn dry_run_upgrade() {
     assert_has_installed_exe(paths::cargo_home(), "foo");
 
     pkg("foo", "0.0.2");
+    let v1 = cargo_home().join(".crates.toml");
+    let v2 = cargo_home().join(".crates2.json");
+    let receipts = (fs::read(&v1).unwrap(), fs::read(&v2).unwrap());
     cargo_process("-Z unstable-options install --dry-run foo")
         .masquerade_as_nightly_cargo(&["install::dry-run"])
         .with_stderr_data(str![[r#"
@@ -3102,6 +3106,7 @@ fn dry_run_upgrade() {
 "#]])
         .run();
     assert_has_installed_exe(paths::cargo_home(), "foo");
+    assert_eq!(receipts, (fs::read(v1).unwrap(), fs::read(v2).unwrap()));
 }
 
 #[cargo_test]
