@@ -20,6 +20,68 @@ struct RustdocFingerprint {
 }
 
 #[cargo_test]
+fn check_dependencies_keep_one_type_across_a_documented_diamond() {
+    let p = project()
+        .file(
+            "Cargo.toml",
+            &format!(
+                "{}\n[workspace]\nmembers = ['leaf', 'middle']\n[dependencies]\nleaf.path = 'leaf'\nmiddle.path = 'middle'\n",
+                basic_manifest("facade", "1.0.0")
+            ),
+        )
+        .file("leaf/Cargo.toml", &basic_manifest("leaf", "1.0.0"))
+        .file("leaf/src/lib.rs", "/// A shared coordinate.\npub struct Point(pub u32);")
+        .file(
+            "middle/Cargo.toml",
+            &format!("{}\n[dependencies]\nleaf.path = '../leaf'\n", basic_manifest("middle", "1.0.0")),
+        )
+        .file("middle/src/lib.rs", "extern crate leaf; pub fn identity(p: leaf::Point) -> leaf::Point { p }")
+        .file("src/lib.rs", r#"
+            extern crate leaf;
+            extern crate middle;
+            #[doc(inline)]
+            pub use leaf::Point;
+            /// Returns the same coordinate through the other dependency.
+            ///
+            /// ```
+            /// assert_eq!(facade::round_trip(facade::Point(17)).0, 17);
+            /// ```
+            pub fn round_trip(p: Point) -> Point { middle::identity(p) }
+        "#)
+        .build();
+
+    let cargo = |command: &str| {
+        let mut cargo = p.cargo(&format!(
+            "-Zohm-defaults=no -Zohm-reuse-built-deps -Zohm-shared-stages {command}"
+        ));
+        cargo.masquerade_as_nightly_cargo(&[
+            "ohm-defaults",
+            "ohm-reuse-built-deps",
+            "ohm-shared-stages",
+        ]);
+        cargo
+    };
+    let output = cargo("doc --no-deps --message-format=json")
+        .exec_with_output()
+        .unwrap();
+    let leaf_outputs: Vec<_> = str::from_utf8(&output.stdout)
+        .unwrap()
+        .lines()
+        .map(|line| serde_json::from_str::<serde_json::Value>(line).unwrap())
+        .filter(|message| {
+            message["reason"] == "compiler-artifact" && message["target"]["name"] == "leaf"
+        })
+        .collect();
+    assert_eq!(leaf_outputs.len(), 1);
+    let files = leaf_outputs[0]["filenames"].as_array().unwrap();
+    assert_eq!(files.len(), 1);
+    assert!(files[0].as_str().unwrap().ends_with(".rmeta"));
+    let html = fs::read_to_string(p.root().join("target/doc/facade/struct.Point.html")).unwrap();
+    assert!(html.contains("A shared coordinate."));
+    cargo("test --doc").run();
+}
+
+#[cargo_test]
 fn simple() {
     let p = project()
         .file(
