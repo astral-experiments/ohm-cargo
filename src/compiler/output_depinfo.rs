@@ -58,10 +58,25 @@ fn rule_parts(rule: &[u8]) -> Option<(&[u8], &[u8])> {
         .map(|end| rule.split_at(end))
 }
 
-/// Compares prerequisites containing native bytes or a tab that the legacy parser splits.
+/// Compares all rendered prerequisites, including an order-only recheck rule.
 fn same_literal_prerequisites(previous: &[u8], prerequisites: &[u8]) -> bool {
-    (std::str::from_utf8(previous).is_err() || prerequisites.contains(&b'\t'))
-        && rule_parts(previous).is_some_and(|(_, deps)| deps == prerequisites)
+    rule_parts(previous).is_some_and(|(_, deps)| deps == prerequisites)
+}
+
+/// Detects a rendered prerequisite that a GCC depfile reader can interpret as a different file.
+fn ambiguous_gcc_prerequisite(path: &[u8]) -> bool {
+    path.ends_with(br"\")
+        || path.ends_with(br"\:")
+        || path.iter().enumerate().any(|(i, &byte)| match byte {
+            b'\t' | b'|' => true,
+            b'#' | b':' => path[..i].ends_with(br"\\"),
+            b'$' => path[..i].ends_with(br"\"),
+            // Ninja 1.11 splits these unquoted bytes between filenames.
+            byte if byte.is_ascii_control() || br#""&'*;<>?^`"#.contains(&byte) => {
+                !path[..i].ends_with(br"\")
+            }
+            _ => false,
+        })
 }
 
 /// Checks the target spelling before retaining a sibling crate type's percent-containing target.
@@ -237,9 +252,28 @@ pub fn output_depinfo(
             let mut contents = paths::path2bytes(&target)?.to_vec();
             let target_len = contents.len();
             contents.push(b':');
+            let mut recheck_gcc = false;
             for dep in &deps {
+                let bytes = paths::path2bytes(dep)?;
+                recheck_gcc |= ambiguous_gcc_prerequisite(bytes);
                 contents.push(b' ');
-                contents.extend_from_slice(paths::path2bytes(dep)?);
+                contents.extend_from_slice(bytes);
+            }
+            if recheck_gcc {
+                // Make ignores the age of an order-only prerequisite. A flat depfile
+                // reader rechecks the build because a non-directory cannot have children.
+                let marker = if cfg!(unix) {
+                    PathBuf::from("/dev/null/ohm-ambiguous-gcc-path")
+                } else {
+                    output_path.join("ohm-ambiguous-gcc-path")
+                };
+                let prerequisite = render_filename(&marker, None, Some(b'|'))?;
+                let marker_target = render_filename(&marker, None, Some(b'%'))?;
+                contents.extend_from_slice(b" | ");
+                contents.extend_from_slice(paths::path2bytes(&prerequisite)?);
+                contents.push(b'\n');
+                contents.extend_from_slice(paths::path2bytes(&marker_target)?);
+                contents.push(b':');
             }
             contents.push(b'\n');
 
@@ -250,15 +284,16 @@ pub fn output_depinfo(
                 }
             } else if (!contents[..target_len].contains(&b'%')
                 || shared_target_spelling_matches(&output_path, &target))
-                && (fingerprint::parse_rustc_dep_info(&output_path).is_ok_and(|previous| {
-                    previous
-                        .files
-                        .iter()
-                        .map(|(path, _checksum)| path)
-                        .eq(&deps)
-                }) || paths::read_bytes(&output_path).is_ok_and(|previous| {
+                && (paths::read_bytes(&output_path).is_ok_and(|previous| {
                     same_literal_prerequisites(&previous, &contents[target_len..])
-                }))
+                }) || (!recheck_gcc
+                    && fingerprint::parse_rustc_dep_info(&output_path).is_ok_and(|previous| {
+                        previous
+                            .files
+                            .iter()
+                            .map(|(path, _checksum)| path)
+                            .eq(&deps)
+                    })))
             {
                 // A shared depfile can retain an earlier output's target.
                 continue;
