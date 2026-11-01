@@ -158,6 +158,36 @@ fn doc_twice() {
 }
 
 #[cargo_test]
+fn doc_switches_back_to_previous_profile() {
+    let p = project()
+        .file(
+            "build.rs",
+            r#"
+            fn main() {
+                println!("cargo::rustc-env=DOC_OPT=OPT_{}", std::env::var("OPT_LEVEL").unwrap());
+            }
+        "#,
+        )
+        .file(
+            "src/lib.rs",
+            r#"#[doc = env!("DOC_OPT")] pub fn inspect() {}"#,
+        )
+        .build();
+
+    for (command, expected) in [
+        ("doc", "OPT_0"),
+        ("doc --release", "OPT_3"),
+        ("doc", "OPT_0"),
+    ] {
+        p.cargo(command).run();
+        assert!(
+            p.read_file("target/doc/foo/fn.inspect.html")
+                .contains(expected)
+        );
+    }
+}
+
+#[cargo_test]
 fn doc_deps() {
     let p = project()
         .file(

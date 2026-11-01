@@ -2768,6 +2768,7 @@ fn rustdoc(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<W
 
     let crate_name = unit.target.crate_name();
     let is_json_output = build_runner.bcx.build_config.intent.wants_doc_json_output();
+    let doc_marker = fingerprint::doc_output_marker(build_runner, unit);
     let doc_dir = build_runner.files().output_dir(unit);
     // Create the documentation directory ahead of time as rustdoc currently has
     // a bug where concurrent invocations will race to create this directory if
@@ -2916,6 +2917,13 @@ fn rustdoc(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<W
             paths::set_file_time_no_err(dep_info_loc, timestamp);
         }
 
+        // A subsequent HTML invocation removes this marker when it replaces the crate directory.
+        // Other rustdoc output modes (such as coverage) can succeed without writing an index.
+        if let Some(marker) = doc_marker
+            && doc_dir.join(&crate_name).join("index.html").is_file()
+        {
+            paths::write(&marker, b"")?;
+        }
         Ok(())
     }))
 }
