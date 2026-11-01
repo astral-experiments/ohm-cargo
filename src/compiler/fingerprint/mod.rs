@@ -1662,7 +1662,7 @@ enum LocalFingerprint {
 }
 
 /// Use a precalculated component so older Cargo versions can read back its hash.
-const WATCHED_INPUT_STATE: &str = "watched input state v1 ";
+const WATCHED_INPUT_STATE: &str = "watched input state v2 ";
 
 /// The symlink-only digest written by older versions of Cargo.
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
@@ -3146,6 +3146,10 @@ fn build_script_local_fingerprints(
     // obvious.
     let pkg_root = unit.pkg.root().to_path_buf();
     let immutable = immutable_cargo_dirs().unwrap_or_default();
+    let mut resolver = WatchedPathResolver {
+        package_root: pkg_root.clone(),
+        ..Default::default()
+    };
     // Snapshot known inputs before executing the script. A link that disappears
     // during a build must still invalidate its output on the next invocation.
     let watched = build_runner.build_explicit_deps[unit]
@@ -3156,7 +3160,8 @@ fn build_script_local_fingerprints(
                 .watched_input_states
                 .entry(pkg_root.join(path))
                 .or_insert_with_key(|full_path| {
-                    let (mtime, state) = scan_watched_path(full_path, &immutable, |_| {});
+                    let (mtime, state) =
+                        scan_watched_path(full_path, &immutable, &mut resolver, |_| {});
                     if let Some(mtime) = mtime {
                         build_runner
                             .mtime_cache
@@ -3206,6 +3211,7 @@ fn build_script_local_fingerprints(
                 &env_config,
                 &watched,
                 &immutable,
+                &mut resolver,
             )))
         };
 
@@ -3244,6 +3250,7 @@ fn local_fingerprints_deps(
     env_config: &Arc<HashMap<String, OsString>>,
     watched: &HashMap<PathBuf, Option<u64>>,
     immutable: &[PathBuf],
+    resolver: &mut WatchedPathResolver,
 ) -> Vec<LocalFingerprint> {
     debug!("new local fingerprints deps {:?}", pkg_root);
     let mut local = Vec::new();
@@ -3269,7 +3276,7 @@ fn local_fingerprints_deps(
             let state = watched.get(path).copied().unwrap_or_else(|| {
                 // A newly declared input was unknown before the script ran.
                 let full = pkg_root.join(path);
-                let (mtime, state) = scan_watched_path(&full, immutable, |link| {
+                let (mtime, state) = scan_watched_path(&full, immutable, resolver, |link| {
                     provisional = provisional
                         || started.is_none_or(|start| !stable_link_before(link, pkg_root, start));
                 });
@@ -3306,22 +3313,75 @@ fn local_fingerprints_deps(
     local
 }
 
-/// Hash only relative unresolved names so a moved workspace keeps its fingerprint.
+/// Resolve shared directory prefixes once when a build script lists many adjacent files.
+#[derive(Default)]
+struct WatchedPathResolver {
+    package_root: PathBuf,
+    canonical_root: Option<PathBuf>,
+    directories: HashMap<PathBuf, PathBuf>,
+}
+
+impl WatchedPathResolver {
+    /// Return the target relative to the package when lookup crosses a symlink.
+    fn alias(&mut self, path: &Path, symlink: bool) -> io::Result<Option<PathBuf>> {
+        let target =
+            if !symlink && let (Some(parent), Some(name)) = (path.parent(), path.file_name()) {
+                let directory = match self.directories.entry(parent.to_owned()) {
+                    Entry::Occupied(entry) => entry.into_mut(),
+                    Entry::Vacant(entry) => entry.insert(fs::canonicalize(parent)?),
+                };
+                directory.join(name)
+            } else {
+                fs::canonicalize(path)?
+            };
+        let root = self.canonical_root.get_or_insert_with(|| {
+            fs::canonicalize(&self.package_root).unwrap_or_else(|_| self.package_root.clone())
+        });
+        let nominal = path
+            .strip_prefix(&self.package_root)
+            .map(|relative| root.join(relative))
+            .unwrap_or_else(|_| path.to_owned());
+        if target == paths::normalize_path(&nominal) {
+            return Ok(None);
+        }
+        Ok(Some(pathdiff::diff_paths(&target, root).unwrap_or(target)))
+    }
+}
+
+/// Keep watched resolution state relative to the package and to the declared input.
 fn scan_watched_path(
     path: &Path,
     immutable: &[PathBuf],
+    resolver: &mut WatchedPathResolver,
     mut observe_link: impl FnMut(&Path),
 ) -> (Option<FileTime>, Option<u64>) {
     if immutable.iter().any(|dir| path.starts_with(dir)) {
         return (None, None);
     }
     let mut unresolved = Vec::new();
-    let result = paths::mtime_recursive_with_symlinks(path, |link, resolved| {
-        observe_link(link);
+    let mut aliases = Vec::new();
+    let mut record = |entry: &Path, symlink: bool, resolved: bool| {
+        let relative = entry.strip_prefix(path).unwrap();
         if !resolved {
-            unresolved.push(link.strip_prefix(path).unwrap().to_owned());
+            unresolved.push(relative.to_owned());
+            return;
         }
+        match resolver.alias(entry, symlink) {
+            Ok(Some(target)) => aliases.push(crate::util::hex::hash_u64((relative, target))),
+            Ok(None) => {}
+            Err(_) => unresolved.push(relative.to_owned()),
+        }
+    };
+    let mut root_was_link = false;
+    let result = paths::mtime_recursive_with_symlinks(path, |link, resolved| {
+        root_was_link |= link == path;
+        observe_link(link);
+        record(link, true, resolved);
     });
+    if result.is_ok() && !root_was_link {
+        // Even a regular leaf can be reached through a directory symlink.
+        record(path, false, true);
+    }
     let mtime = match result {
         Ok(mtime) => Some(mtime),
         Err(err)
@@ -3339,7 +3399,9 @@ fn scan_watched_path(
         Err(_) => return (None, None),
     };
     unresolved.sort_unstable();
-    let state = (!unresolved.is_empty()).then(|| crate::util::hex::hash_u64(unresolved));
+    aliases.sort_unstable();
+    let state = (!unresolved.is_empty() || !aliases.is_empty())
+        .then(|| crate::util::hex::hash_u64((unresolved, aliases)));
     (mtime, state)
 }
 
