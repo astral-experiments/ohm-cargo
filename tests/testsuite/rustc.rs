@@ -9,6 +9,62 @@ use cargo_test_support::str;
 use cargo_test_support::target_spec_json;
 
 #[cargo_test]
+fn changed_rustflags_argument_file_updates_cfg_dependencies() {
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+            [package]
+            name = "foo"
+            version = "0.1.0"
+            edition = "2024"
+            [target.'cfg(second_build)'.dependencies]
+            dep = { path = "dep" }
+        "#,
+        )
+        .file(
+            "src/main.rs",
+            r#"fn main() {
+            #[cfg(second_build)] print!("{}", dep::VALUE);
+            #[cfg(not(second_build))] print!("first");
+        }"#,
+        )
+        .file("dep/Cargo.toml", &basic_manifest("dep", "0.1.0"))
+        .file("dep/src/lib.rs", r#"pub const VALUE: &str = "second";"#)
+        .file("compiler.args", "")
+        .build();
+    let flags = format!("@{}", p.root().join("compiler.args").display());
+    p.cargo("run --quiet")
+        .env("RUSTFLAGS", &flags)
+        .with_stdout_data(str!["first"])
+        .run();
+    p.change_file("compiler.args", "--cfg\nsecond_build\n");
+    p.cargo("run --quiet")
+        .env("RUSTFLAGS", &flags)
+        .with_stdout_data(str!["second"])
+        .run();
+}
+
+#[cargo_test]
+fn changed_compiler_argument_file_rebuilds_the_executable() {
+    let p = project()
+        .file(
+            "src/main.rs",
+            r#"fn main() { print!("{}", cfg!(second_build)); }"#,
+        )
+        .file("compiler.args", "")
+        .build();
+    let cmd = "rustc --bin foo -- @compiler.args";
+    p.cargo(cmd).run();
+    p.process(p.bin("foo"))
+        .with_stdout_data(str!["false"])
+        .run();
+    p.change_file("compiler.args", "--cfg\nsecond_build\n");
+    p.cargo(cmd).run();
+    p.process(p.bin("foo")).with_stdout_data(str!["true"]).run();
+}
+
+#[cargo_test]
 fn build_lib_for_foo() {
     let p = project()
         .file("src/main.rs", "fn main() {}")
