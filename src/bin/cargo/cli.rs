@@ -52,14 +52,16 @@ fn main_with_matches(gctx: &mut GlobalContext, args: clap::ArgMatches) -> CliRes
         gctx.reload_cwd()?;
     }
 
-    let (expanded_args, global_args) = expand_aliases(gctx, args, vec![])?;
+    let mut global_args = GlobalArgs::default();
+    let expanded_args = expand_aliases(gctx, args, vec![], &mut global_args)?;
 
-    let is_verbose = expanded_args.verbose() > 0;
+    let is_verbose = global_args.verbose > 0 || expanded_args.verbose() > 0;
 
-    if global_values(&expanded_args, "unstable-features")
-        .next()
-        .map(String::as_str)
-        == Some("help")
+    if global_args
+        .unstable_flags
+        .first()
+        .or_else(|| global_values(&expanded_args, "unstable-features").next())
+        .is_some_and(|flag| flag == "help")
     {
         // Don't let config errors get in the way of parsing arguments
         let _ = configure_gctx(gctx, &expanded_args, None, global_args, None);
@@ -282,7 +284,8 @@ fn expand_aliases(
     gctx: &mut GlobalContext,
     args: ArgMatches,
     mut already_expanded: Vec<String>,
-) -> Result<(ArgMatches, GlobalArgs), CliError> {
+    global_args: &mut GlobalArgs,
+) -> Result<ArgMatches, CliError> {
     if let Some((cmd, sub_args)) = args.subcommand() {
         let exec = commands::builtin_exec(cmd);
         let aliased_cmd = super::aliased_command(gctx, cmd);
@@ -339,7 +342,7 @@ To pass the arguments to the subcommand, remove `--`",
                 }
                 if commands::run::is_manifest_command(cmd) {
                     if gctx.cli_unstable().script {
-                        return Ok((args, GlobalArgs::default()));
+                        return Ok(args);
                     } else {
                         gctx.shell().print_report(
                             &[
@@ -371,7 +374,7 @@ To pass the arguments to the subcommand, remove `--`",
                 // capture those global options now.
                 // Note that an alias to an external command will not receive
                 // these arguments. That may be confusing, but such is life.
-                let global_args = GlobalArgs::new(&args);
+                global_args.extend(&args);
                 let new_args = cli(gctx).no_binary_name(true).try_get_matches_from(alias)?;
 
                 let Some(new_cmd) = new_args.subcommand_name() else {
@@ -393,14 +396,13 @@ To pass the arguments to the subcommand, remove `--`",
                     .into());
                 }
 
-                let (expanded_args, _) = expand_aliases(gctx, new_args, already_expanded)?;
-                return Ok((expanded_args, global_args));
+                return expand_aliases(gctx, new_args, already_expanded, global_args);
             }
             (None, Err(e)) => return Err(e.into()),
         }
     };
 
-    Ok((args, GlobalArgs::default()))
+    Ok(args)
 }
 
 #[tracing::instrument(skip_all)]
@@ -540,17 +542,20 @@ struct GlobalArgs {
 }
 
 impl GlobalArgs {
-    fn new(args: &ArgMatches) -> GlobalArgs {
-        GlobalArgs {
-            verbose: args.verbose(),
-            quiet: args.flag("quiet"),
-            color: args.get_one::<String>("color").cloned(),
-            frozen: args.flag("frozen"),
-            locked: args.flag("locked"),
-            offline: args.flag("offline"),
-            unstable_flags: global_values(args, "unstable-features").cloned().collect(),
-            config_args: global_values(args, "config").cloned().collect(),
+    /// Keeps the options preceding this alias before expanding its command.
+    fn extend(&mut self, args: &ArgMatches) {
+        self.verbose += args.verbose();
+        self.quiet |= args.flag("quiet");
+        if let Some(color) = args.get_one::<String>("color") {
+            self.color = Some(color.clone());
         }
+        self.frozen |= args.flag("frozen");
+        self.locked |= args.flag("locked");
+        self.offline |= args.flag("offline");
+        self.unstable_flags
+            .extend(global_values(args, "unstable-features").cloned());
+        self.config_args
+            .extend(global_values(args, "config").cloned());
     }
 }
 
