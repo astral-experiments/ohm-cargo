@@ -3293,3 +3293,16 @@ im_a_teapot = "deny"
 "#]])
         .run();
 }
+
+#[cargo_test]
+fn no_track_replacement_failure() {
+    pkg("foo", "1.0.0");
+    let dst = cargo_home().join("bin").join(exe("foo"));
+    fs::create_dir_all(&dst).unwrap();
+
+    cargo_process("install foo --force --no-track")
+        .with_status(101)
+        .with_stderr_contains("[ERROR] failed to move [..]")
+        .run();
+    assert!(dst.is_dir());
+}
