@@ -524,6 +524,9 @@ fn format_dirty_reason(
             let new = new.len();
             format!("rerun-if-changed paths changed: {old} path(s) -> {new} path(s)",)
         }
+        DirtyReason::PreviousBuildIncomplete => {
+            "previous build has no matching fingerprint".to_string()
+        }
         DirtyReason::NothingObvious => "nothing obvious".to_string(),
         DirtyReason::Forced => "forced rebuild".to_string(),
         DirtyReason::FreshBuild => "fresh build".to_string(),
