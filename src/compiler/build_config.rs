@@ -44,6 +44,8 @@ pub struct BuildConfig {
     /// Named `export_dir` to avoid confusion with
     /// `CompilationFiles::artifact_dir`.
     pub export_dir: Option<PathBuf>,
+    /// Retain the exact outputs selected by `cargo run` while a target runner opens them.
+    pub(crate) capture_runner_outputs: bool,
     /// `true` to output a future incompatibility report at the end of the build
     pub future_incompat_report: bool,
     /// Output timing report at the end of the build
@@ -129,6 +131,7 @@ impl BuildConfig {
             primary_unit_rustc: None,
             rustfix_diagnostic_server: Rc::new(RefCell::new(None)),
             export_dir: None,
+            capture_runner_outputs: false,
             future_incompat_report: false,
             timing_report: false,
             sbom,

@@ -1010,6 +1010,9 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
 
             super::output_depinfo(&self, unit, &mut dep_info_cache)?;
         }
+        if self.bcx.build_config.capture_runner_outputs {
+            self.capture_runner_outputs()?;
+        }
 
         Ok(self.compilation)
     }
@@ -1167,6 +1170,98 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             }
         }
         Ok(serde_json::to_string(&ancestors)?)
+    }
+
+    /// Capture the executable and its companion files before releasing the build locks.
+    fn capture_runner_outputs(&mut self) -> CargoResult<()> {
+        let [binary] = self.compilation.binaries.as_slice() else {
+            return Ok(());
+        };
+        if self.compilation.target_runner(binary.unit.kind).is_none() {
+            return Ok(());
+        }
+        let root = binary.path.parent().unwrap().join(".cargo-run");
+        paths::create_dir_all(&root)?;
+        if !std::fs::symlink_metadata(&root)?.is_dir() {
+            bail!(
+                "runner snapshot directory is not a directory: {}",
+                root.display()
+            );
+        }
+        let can_lock = !super::layout::shared_registry_directory_is_nfs(&root)?;
+        if can_lock {
+            Self::reclaim_runner_snapshots(&root)?;
+        }
+        let dir = tempfile::Builder::new()
+            .prefix(&format!("run-{}-", std::process::id()))
+            .tempdir_in(root)?;
+        let pending = tempfile::NamedTempFile::new_in(dir.path())?;
+        // Publish the lease only after locking it. On filesystems without advisory
+        // locks, cargo clean can still reclaim snapshots.
+        let lease = if can_lock && crate::util::flock::lock_exclusive(pending.as_file()).is_ok() {
+            pending.persist(dir.path().join(".cargo-runner-snapshot-v1.lock"))?
+        } else {
+            pending.into_file()
+        };
+        for output in self.outputs(&binary.unit)?.iter() {
+            let src = output.bin_dst();
+            if src != &binary.path && !src.try_exists()? {
+                continue;
+            }
+            // Debug bundles are directories. Retain their contents alongside any
+            // auxiliary files a multi-file target needs to execute.
+            for entry in walkdir::WalkDir::new(src).follow_links(true) {
+                let entry = entry?;
+                let relative = entry.path().strip_prefix(src.parent().unwrap())?;
+                let dst = dir.path().join(relative);
+                if entry.file_type().is_dir() {
+                    paths::create_dir_all(&dst)?;
+                } else {
+                    paths::copy(entry.path(), dst)?;
+                }
+            }
+        }
+        self.compilation.binaries[0].path = dir.path().join(binary.path.file_name().unwrap());
+        self.compilation.runner_snapshot = Some((dir, Arc::new(lease)));
+        Ok(())
+    }
+
+    /// Reclaim completed invocations without touching snapshots still in use by a runner.
+    fn reclaim_runner_snapshots(root: &Path) -> CargoResult<()> {
+        // A successful Unix exec leaves the directory behind. Only remove snapshots
+        // whose runner has released the lock published inside them.
+        for entry in std::fs::read_dir(root)?.flatten() {
+            let name = entry.file_name();
+            let Some(pid) = name
+                .to_str()
+                .and_then(|n| n.strip_prefix("run-"))
+                .and_then(|n| n.split_once('-'))
+                .and_then(|(pid, _)| pid.parse::<i32>().ok())
+                .filter(|pid| *pid > 0)
+            else {
+                continue;
+            };
+            // A runner may close inherited descriptors before reading its executable.
+            // SAFETY: signal zero only checks whether this positive process ID exists.
+            #[cfg(unix)]
+            if unsafe { libc::kill(pid, 0) } == 0
+                || std::io::Error::last_os_error().raw_os_error() != Some(libc::ESRCH)
+            {
+                continue;
+            }
+            #[cfg(not(unix))]
+            let _ = pid;
+            let marker = entry.path().join(".cargo-runner-snapshot-v1.lock");
+            if entry.file_type().is_ok_and(|ty| ty.is_dir())
+                && std::fs::symlink_metadata(&marker)
+                    .is_ok_and(|meta| meta.is_file() && meta.len() == 0)
+                && let Ok(lease) = File::open(marker)
+                && crate::util::flock::try_lock_exclusive(&lease).is_ok()
+            {
+                let _ = std::fs::remove_dir_all(entry.path());
+            }
+        }
+        Ok(())
     }
 
     fn collect_tests_and_executables(&mut self, unit: &Unit) -> CargoResult<()> {

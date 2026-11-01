@@ -83,6 +83,8 @@ pub struct Compilation<'gctx> {
 
     /// An array of all binaries created.
     pub binaries: Vec<UnitOutput>,
+    /// Owns the runner's snapshot and its inherited cleanup lock.
+    pub(super) runner_snapshot: Option<(tempfile::TempDir, Arc<std::fs::File>)>,
 
     /// An array of all cdylibs created.
     pub cdylibs: Vec<UnitOutput>,
@@ -216,6 +218,7 @@ impl<'gctx> Compilation<'gctx> {
             sysroot_target_libdir,
             tests: Vec::new(),
             binaries: Vec::new(),
+            runner_snapshot: None,
             cdylibs: Vec::new(),
             root_crate_names: Vec::new(),
             extra_env: HashMap::default(),
@@ -401,6 +404,10 @@ impl<'gctx> Compilation<'gctx> {
         };
         let tool_kind = ToolKind::TargetProcess;
         let mut builder = self.fill_env(builder, pkg, script_metas, kind, tool_kind)?;
+        #[cfg(unix)]
+        if let Some((_, lease)) = &self.runner_snapshot {
+            builder.inherit_file(Arc::clone(lease));
+        }
 
         if let Some(client) = self.gctx.jobserver_from_env() {
             builder.inherit_jobserver(client);
