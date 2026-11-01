@@ -19,6 +19,29 @@ struct RustdocFingerprint {
     rustc_vv: String,
 }
 
+#[cargo_test(
+    nightly,
+    reason = "rustdoc-mergeable-info and index pages are unstable"
+)]
+fn merged_index_uses_the_compiler_working_directory() {
+    let p = project()
+        .file("src/lib.rs", "pub fn documented() {}")
+        .file("header.html", "<meta name='merge-workspace-header'>")
+        .file("src/header.html", "<meta name='merge-invocation-header'>")
+        .build();
+    p.cargo("doc -Zrustdoc-mergeable-info")
+        .cwd(p.root().join("src"))
+        .masquerade_as_nightly_cargo(&["rustdoc-mergeable-info"])
+        .env(
+            "RUSTDOCFLAGS",
+            "-Zunstable-options --enable-index-page --html-in-header header.html",
+        )
+        .run();
+    let index = std::fs::read_to_string(p.build_dir().join("doc/index.html")).unwrap();
+    assert!(index.contains("merge-workspace-header"));
+    assert!(!index.contains("merge-invocation-header"));
+}
+
 #[cargo_test]
 fn check_dependencies_keep_one_type_across_a_documented_diamond() {
     let p = project()
@@ -3368,6 +3391,7 @@ fn mergeable_info_with_deps() {
     "debug/build/dep-[HASH]/out/dep.json",
     "debug/build/foo-[HASH]/out/foo.json"
   ],
+  "merge_cwd": "",
   "rustc_vv": "{...}"
 }
 "#]]
@@ -3451,6 +3475,7 @@ fn mergeable_info_no_deps() {
   "doc_parts_by_unit": [
     "debug/build/foo-[HASH]/out/foo.json"
   ],
+  "merge_cwd": "",
   "rustc_vv": "{...}"
 }
 "#]]
@@ -3527,6 +3552,7 @@ fn mergeable_info_workspace() {
     "debug/build/dep-[HASH]/out/dep.json",
     "debug/build/foo-[HASH]/out/foo.json"
   ],
+  "merge_cwd": "",
   "rustc_vv": "{...}"
 }
 "#]]
@@ -3592,6 +3618,7 @@ fn mergeable_info_multi_targets() {
   "doc_parts_by_unit": [
     "debug/build/foo-[HASH]/out/foo.json"
   ],
+  "merge_cwd": "",
   "rustc_vv": "{...}"
 }
 "#]]
@@ -3605,6 +3632,7 @@ fn mergeable_info_multi_targets() {
   "doc_parts_by_unit": [
     "debug/build/foo-[HASH]/out/foo.json"
   ],
+  "merge_cwd": "",
   "rustc_vv": "{...}"
 }
 "#]]
@@ -3652,6 +3680,7 @@ fn mergeable_info_rebuild_detection() {
   "doc_parts_by_unit": [
     "debug/build/foo-[HASH]/out/foo.json"
   ],
+  "merge_cwd": "",
   "rustc_vv": "{...}"
 }
 "#]]
@@ -3679,6 +3708,7 @@ fn mergeable_info_rebuild_detection() {
   "doc_parts_by_unit": [
     "debug/build/foo-[HASH]/out/foo.json"
   ],
+  "merge_cwd": "",
   "rustc_vv": "{...}"
 }
 "#]]
@@ -3740,6 +3770,7 @@ fn mergeable_info_rebuild_detection() {
   "doc_parts_by_unit": [
     "debug/build/foo-[HASH]/out/foo.json"
   ],
+  "merge_cwd": "",
   "rustc_vv": "{...}"
 }
 "#]]
@@ -3790,6 +3821,7 @@ fn mergeable_info_rebuild_with_depinfo() {
   "doc_parts_by_unit": [
     "debug/build/foo-[HASH]/out/foo.json"
   ],
+  "merge_cwd": "",
   "rustc_vv": "{...}"
 }
 "#]]
@@ -3817,6 +3849,7 @@ fn mergeable_info_rebuild_with_depinfo() {
   "doc_parts_by_unit": [
     "debug/build/foo-[HASH]/out/foo.json"
   ],
+  "merge_cwd": "",
   "rustc_vv": "{...}"
 }
 "#]]
@@ -3878,6 +3911,7 @@ fn mergeable_info_rebuild_with_depinfo() {
   "doc_parts_by_unit": [
     "debug/build/foo-[HASH]/out/foo.json"
   ],
+  "merge_cwd": "",
   "rustc_vv": "{...}"
 }
 "#]]
@@ -3946,6 +3980,7 @@ fn mergeable_info_additive() {
   "doc_parts_by_unit": [
     "debug/build/foo-[HASH]/out/foo.json"
   ],
+  "merge_cwd": "",
   "rustc_vv": "{...}"
 }
 "#]]
@@ -3983,6 +4018,7 @@ fn mergeable_info_additive() {
     "debug/build/dep-[HASH]/out/dep.json",
     "debug/build/foo-[HASH]/out/foo.json"
   ],
+  "merge_cwd": "",
   "rustc_vv": "{...}"
 }
 "#]]
@@ -4021,6 +4057,7 @@ fn mergeable_info_additive() {
     "debug/build/dep-[HASH]/out/dep.json",
     "debug/build/foo-[HASH]/out/foo.json"
   ],
+  "merge_cwd": "",
   "rustc_vv": "{...}"
 }
 "#]]
@@ -4097,6 +4134,7 @@ fn mergeable_info_dep_collision() {
   "doc_parts_by_unit": [
     "debug/build/dep-[HASH]/out/dep.json"
   ],
+  "merge_cwd": "../home/.cargo/registry/src/-[HASH]/dep-0.1.0",
   "rustc_vv": "{...}"
 }
 "#]]
@@ -4137,6 +4175,7 @@ fn mergeable_info_dep_collision() {
   "doc_parts_by_unit": [
     "debug/build/dep-[HASH]/out/dep.json"
   ],
+  "merge_cwd": "../home/.cargo/registry/src/-[HASH]/dep-0.2.0",
   "rustc_vv": "{...}"
 }
 "#]]

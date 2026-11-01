@@ -139,6 +139,7 @@ fn merge_cross_crate_info(ws: &Workspace<'_>, compilation: &Compilation<'_>) -> 
             if ws.gctx().extra_verbose() {
                 cmd.display_env_vars();
             }
+            cmd.cwd(&fingerprint.merge_cwd);
             cmd.retry_with_argfile(true);
             cmd.arg("-o")
                 .arg(rustdoc_artifact_dir.as_path_unlocked())
