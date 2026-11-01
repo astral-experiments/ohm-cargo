@@ -3546,7 +3546,7 @@ pub(super) fn doc_output_marker(
     build_runner: &BuildRunner<'_, '_>,
     unit: &Unit,
 ) -> Option<PathBuf> {
-    if !unit.mode.is_doc() || build_runner.bcx.build_config.intent.wants_doc_json_output() {
+    if !unit.mode.is_doc() || build_runner.bcx.wants_doc_json(unit) {
         return None;
     }
     let files = build_runner.files();

@@ -2635,7 +2635,7 @@ fn prepare_rustdoc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResu
     let bcx = build_runner.bcx;
     // script_metadata is not needed here, it is only for tests.
     let mut rustdoc = build_runner.compilation.rustdoc_process(unit, None)?;
-    let wants_json_output = build_runner.bcx.build_config.intent.wants_doc_json_output();
+    let wants_json_output = build_runner.bcx.wants_doc_json(unit);
     if unit_uses_ohm_worktree_seeds(build_runner, unit) {
         rustdoc.arg(OHM_WORKTREE_SEED_RUSTFLAG);
     }
@@ -2767,7 +2767,7 @@ fn rustdoc(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<W
     let mut rustdoc = prepare_rustdoc(build_runner, unit)?;
 
     let crate_name = unit.target.crate_name();
-    let is_json_output = build_runner.bcx.build_config.intent.wants_doc_json_output();
+    let is_json_output = build_runner.bcx.wants_doc_json(unit);
     let doc_marker = fingerprint::doc_output_marker(build_runner, unit);
     let doc_dir = build_runner.files().output_dir(unit);
     // Create the documentation directory ahead of time as rustdoc currently has

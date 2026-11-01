@@ -1403,7 +1403,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                 vec![]
             }
             CompileMode::Doc => {
-                let wants_json_doc = bcx.build_config.intent.wants_doc_json_output();
+                let wants_json_doc = bcx.wants_doc_json(unit);
 
                 let path = if wants_json_doc {
                     // Always use 'new' layout for '--output-format=json'.
@@ -2582,7 +2582,7 @@ fn compute_metadata(
     // Full rustdoc JSON and mergeable cross-crate info are both named <crate>.json.
     // Give each format a separate output directory and freshness fingerprint.
     let doc_format = match unit.mode {
-        CompileMode::Doc if bcx.build_config.intent.wants_doc_json_output() => Some("rustdoc-json"),
+        CompileMode::Doc if bcx.wants_doc_json(unit) => Some("rustdoc-json"),
         CompileMode::Doc if bcx.gctx.cli_unstable().rustdoc_mergeable_info => {
             Some("rustdoc-mergeable-info")
         }

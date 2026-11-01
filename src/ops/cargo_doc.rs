@@ -9,7 +9,6 @@ use cargo_util::ProcessBuilder;
 use cargo_util_terminal::Verbosity;
 
 use std::ffi::OsString;
-use std::path::PathBuf;
 use std::str::FromStr;
 
 /// Format of rustdoc [`--output-format`][1].
@@ -58,46 +57,31 @@ pub struct DocOptions {
 pub fn doc(ws: &Workspace<'_>, options: &DocOptions) -> CargoResult<()> {
     let compilation = ops::compile(ws, &options.compile_opts)?;
 
-    let wants_json_doc = matches!(options.output_format, OutputFormat::Json);
-    if ws.gctx().cli_unstable().rustdoc_mergeable_info && !wants_json_doc {
+    if ws.gctx().cli_unstable().rustdoc_mergeable_info {
         merge_cross_crate_info(ws, &compilation)?;
     }
 
+    let mut output = compilation
+        .root_doc_paths
+        .iter()
+        .filter(|path| path.exists());
     if options.open_result {
-        let name = &compilation.root_crate_names.get(0).ok_or_else(|| {
+        let path = compilation.root_doc_paths.first().ok_or_else(|| {
             anyhow::anyhow!(
                 "cannot open specified crate's documentation: no documentation generated"
             )
         })?;
-        let kind = options.compile_opts.build_config.single_requested_kind()?;
-
-        let path = path_by_output_format(&compilation, &kind, &name, &options.output_format);
-
+        options.compile_opts.build_config.single_requested_kind()?;
         if path.exists() {
-            util::open::open(&path, ws.gctx())?;
+            util::open::open(path, ws.gctx())?;
         }
     } else if ws.gctx().shell().verbosity() == Verbosity::Verbose {
-        for name in &compilation.root_crate_names {
-            for kind in &options.compile_opts.build_config.requested_kinds {
-                let path =
-                    path_by_output_format(&compilation, &kind, &name, &options.output_format);
-                if path.exists() {
-                    let mut shell = ws.gctx().shell();
-                    let link = shell.err_file_hyperlink(&path);
-                    shell.status("Generated", format!("{link}{}{link:#}", path.display()))?;
-                }
-            }
+        for path in output {
+            let mut shell = ws.gctx().shell();
+            let link = shell.err_file_hyperlink(path);
+            shell.status("Generated", format!("{link}{}{link:#}", path.display()))?;
         }
     } else {
-        let mut output = compilation.root_crate_names.iter().flat_map(|name| {
-            options
-                .compile_opts
-                .build_config
-                .requested_kinds
-                .iter()
-                .map(|kind| path_by_output_format(&compilation, kind, name, &options.output_format))
-                .filter(|path| path.exists())
-        });
         if let Some(first_path) = output.next() {
             let remaining = output.count();
             let remaining = match remaining {
@@ -107,7 +91,7 @@ pub fn doc(ws: &Workspace<'_>, options: &DocOptions) -> CargoResult<()> {
             };
 
             let mut shell = ws.gctx().shell();
-            let link = shell.err_file_hyperlink(&first_path);
+            let link = shell.err_file_hyperlink(first_path);
             shell.status(
                 "Generated",
                 format!("{link}{}{link:#}{remaining}", first_path.display(),),
@@ -190,22 +174,4 @@ fn merge_cross_crate_info(ws: &Workspace<'_>, compilation: &Compilation<'_>) -> 
     )?;
 
     Ok(())
-}
-
-fn path_by_output_format(
-    compilation: &Compilation<'_>,
-    kind: &CompileKind,
-    name: &str,
-    output_format: &OutputFormat,
-) -> PathBuf {
-    if matches!(output_format, OutputFormat::Json) {
-        compilation.root_output[kind]
-            .with_file_name("doc")
-            .join(format!("{}.json", name))
-    } else {
-        compilation.root_output[kind]
-            .with_file_name("doc")
-            .join(name)
-            .join("index.html")
-    }
 }
