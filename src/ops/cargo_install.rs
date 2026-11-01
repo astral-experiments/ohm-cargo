@@ -567,20 +567,18 @@ impl<'gctx> InstallablePackage<'gctx> {
                     .warn(format!("failed to remove orphan: {:?}", e))?;
             }
 
-            match tracker.save() {
-                Err(err) => replace_result.with_context(|| err)?,
-                Ok(()) => {
-                    // The saved receipts now own any newly installed binaries.
-                    installed.success();
-                    replace_result?;
-                }
+            if let Err(err) = tracker.save_with_v1_commit(|| installed.success()) {
+                return Err(match replace_result {
+                    Ok(()) => err,
+                    Err(replace_err) => replace_err.context(err),
+                });
             }
+            replace_result?;
         } else {
             replace_result?;
+            installed.success();
         }
 
-        // Reaching here means all actions have succeeded. Clean up.
-        installed.success();
         if needs_cleanup {
             // Don't bother grabbing a lock as we're going to blow it all away
             // anyway.

@@ -287,6 +287,11 @@ impl InstallTracker {
 
     /// Save tracking information to disk.
     pub fn save(&self) -> CargoResult<()> {
+        self.save_with_v1_commit(|| {})
+    }
+
+    /// Commits the installed binaries once v1, the authoritative ownership list, is saved.
+    pub(super) fn save_with_v1_commit(&self, commit: impl FnOnce()) -> CargoResult<()> {
         self.v1.save(&self.v1_lock).with_context(|| {
             format!(
                 "failed to write crate metadata at `{}`",
@@ -294,6 +299,7 @@ impl InstallTracker {
             )
         })?;
 
+        commit();
         self.v2.save(&self.v2_lock).with_context(|| {
             format!(
                 "failed to write crate metadata at `{}`",
