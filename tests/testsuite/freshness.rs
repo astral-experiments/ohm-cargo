@@ -3548,25 +3548,11 @@ fn symlink_to_package() {
         )
         .symlink_dir("bar1", "bar")
         .build();
-    p.cargo("check")
-        .with_stderr_data(str![[r#"
-[LOCKING] 1 package to highest compatible version
-[CHECKING] bar v1.0.0 ([ROOT]/foo/bar)
-[CHECKING] foo v0.0.0 ([ROOT]/foo)
-[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
-
-"#]])
-        .run();
+    p.cargo("run --quiet").with_stdout_data("one\n").run();
     let bar_path = p.root().join("bar");
     cargo_util::paths::remove_file(&bar_path).unwrap();
     p.symlink("bar2", "bar");
-    // FIXME: This is not rebuilding when it should.
-    p.cargo("check")
-        .with_stderr_data(str![[r#"
-[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
-
-"#]])
-        .run();
+    p.cargo("run --quiet").with_stdout_data("two\n").run();
 }
 
 fn public_api_hash_wrapper() -> PathBuf {
