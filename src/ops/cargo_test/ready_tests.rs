@@ -10,7 +10,7 @@ use crate::util::data_structures::HashSet;
 use crate::util::{CargoResult, GlobalContext};
 use cargo_util::{ProcessBuilder, ProcessError};
 use std::collections::VecDeque;
-use std::process::{Child, ExitStatus};
+use std::process::ExitStatus;
 
 #[derive(Clone, Debug)]
 pub(crate) struct ReadyTestOptions {
@@ -114,9 +114,10 @@ impl ReadyTests {
     }
 
     fn tick(&mut self, gctx: &GlobalContext, compilation: &Compilation<'_>) -> CargoResult<()> {
-        self.signals.check();
+        self.signals
+            .check(self.active.as_mut().map(|active| &mut active.group));
         if let Some(active) = &mut self.active {
-            if let Some(status) = active.try_wait()? {
+            if let Some(status) = active.group.try_wait()? {
                 self.complete(status);
             }
         }
@@ -151,9 +152,8 @@ impl ReadyTests {
         gctx.shell()
             .verbose(|shell| shell.status("Running", &cmd))?;
         match ProcessGroup::spawn(&self.signals, &mut cmd.build_command()) {
-            Ok((child, group)) => {
+            Ok(group) => {
                 self.active = Some(ActiveTest {
-                    child,
                     cmd,
                     unit: output.unit,
                     reaped: false,
@@ -165,7 +165,8 @@ impl ReadyTests {
                 self.stopped = true;
             }
         }
-        self.signals.check();
+        self.signals
+            .check(self.active.as_mut().map(|active| &mut active.group));
         Ok(())
     }
 
@@ -192,14 +193,14 @@ impl ReadyTests {
         while let Some(active) = &mut self.active {
             // Keep servicing terminal suspend/resume after compilation ends.
             // A blocking wait would never resume a test stopped by Ctrl-Z.
-            self.signals.check();
-            if let Some(status) = active.try_wait()? {
+            self.signals.check(Some(&mut active.group));
+            if let Some(status) = active.group.try_wait()? {
                 self.complete(status);
             } else {
                 std::thread::sleep(std::time::Duration::from_millis(10));
             }
         }
-        self.signals.check();
+        self.signals.check(None);
         Ok(std::mem::take(&mut self.results))
     }
 
@@ -207,7 +208,7 @@ impl ReadyTests {
         self.stopped = true;
         self.pending.clear();
         self.active.take();
-        self.signals.check();
+        self.signals.check(None);
     }
 }
 
@@ -218,28 +219,16 @@ impl Drop for ReadyTests {
 }
 
 struct ActiveTest {
-    child: Child,
     cmd: ProcessBuilder,
     unit: Unit,
     reaped: bool,
     group: ProcessGroup,
 }
 
-impl ActiveTest {
-    fn try_wait(&mut self) -> CargoResult<Option<ExitStatus>> {
-        let Some(status) = self.child.try_wait()? else {
-            return Ok(None);
-        };
-        Ok(self.group.finish()?.then_some(status))
-    }
-}
-
 impl Drop for ActiveTest {
     fn drop(&mut self) {
         if !self.reaped {
             self.group.cancel();
-            let _ = self.child.kill();
-            let _ = self.child.wait();
         }
     }
 }

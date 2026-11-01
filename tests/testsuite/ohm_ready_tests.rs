@@ -114,7 +114,8 @@ fn fixture() -> Project {
                     let mut child = std::process::Command::new("sleep").arg("30").spawn().unwrap();
                     std::fs::write(control.join("descendant"), child.id().to_string()).unwrap();
                     std::fs::write(control.join("test-group"), unsafe { getpgrp() }.to_string()).unwrap();
-                    std::fs::write(control.join("active"), std::process::id().to_string()).unwrap();
+                    std::fs::write(control.join("active-tmp"), std::process::id().to_string()).unwrap();
+                    std::fs::rename(control.join("active-tmp"), control.join("active")).unwrap();
                     let mut input = String::new();
                     if mode == "terminal-pipeline" {
                         let deadline = std::time::Instant::now() + std::time::Duration::from_secs(15);
@@ -123,6 +124,19 @@ fn fixture() -> Project {
                             std::thread::sleep(std::time::Duration::from_millis(5));
                         }
                         input = std::fs::read_to_string(control.join("input")).unwrap();
+                    } else if mode == "terminal-descendant-input" {
+                        let stop = |name| std::env::var(name).unwrap().parse::<i32>().unwrap();
+                        // The reader inherits ignored Ctrl-Z. Only its background read
+                        // will request a tty stop after the shell resumes the job.
+                        unsafe { signal(stop("READY_TSTP"), 1); }
+                        let reader = std::process::Command::new("sh").arg("-c")
+                            .arg(": > \"$READY_CONTROL/reader-ready\"\nIFS= read -r line || exit 1\nprintf '%s\\n' \"$line\"")
+                            .stdout(std::process::Stdio::piped()).spawn().unwrap();
+                        unsafe { signal(stop("READY_TTIN"), 1); }
+                        std::fs::write(control.join("parent-ready"), "").unwrap();
+                        let output = reader.wait_with_output().unwrap();
+                        assert!(output.status.success());
+                        input = String::from_utf8(output.stdout).unwrap();
                     } else if mode == "terminal-redirected" {
                         use std::io::BufRead;
                         let tty = std::fs::File::open("/dev/tty").unwrap();
@@ -608,6 +622,8 @@ fn terminal_input_job_control_and_opt_out() {
         "input",
         "job-control",
         "job-control-finished-build",
+        "job-control-test-stops",
+        "job-control-descendant-input",
         "opt-out",
         "tostop",
         "pipeline",
@@ -623,12 +639,18 @@ fn terminal_input_job_control_and_opt_out() {
             &wrapper,
             if *case == "pipeline" {
                 "terminal-pipeline"
+            } else if *case == "job-control-descendant-input" {
+                "terminal-descendant-input"
             } else if enabled {
                 "terminal"
             } else {
                 "terminal-fallback"
             },
         );
+        if *case == "job-control-descendant-input" {
+            cmd.env("READY_TSTP", libc::SIGTSTP.to_string())
+                .env("READY_TTIN", libc::SIGTTIN.to_string());
+        }
         if *case == "opt-out" {
             cmd.arg("-Zohm-ready-tests=no");
         }
@@ -643,13 +665,29 @@ fn terminal_input_job_control_and_opt_out() {
         );
         terminal.start(&mut cmd, pipeline);
         terminal.marker("active");
+        if *case == "job-control-descendant-input" {
+            terminal.marker("parent-ready");
+            terminal.marker("reader-ready");
+        }
         assert_run(&p, if enabled { "during" } else { "after" });
-        if *case == "job-control-finished-build" {
+        if matches!(
+            *case,
+            "job-control-finished-build" | "job-control-test-stops"
+        ) {
             fs::write(p.root().join("control/release-build"), "yes").unwrap();
             terminal.expect("Finished");
         }
         if job_control {
-            terminal.send(b"\x1a"); // Real terminal Ctrl-Z, not kill(Cargo, ...).
+            if *case == "job-control-test-stops" {
+                let pid = fs::read_to_string(p.root().join("control/active")).unwrap();
+                // SAFETY: the fixture published its own PID and is waiting for input.
+                assert_eq!(
+                    unsafe { libc::kill(pid.trim().parse().unwrap(), libc::SIGSTOP) },
+                    0
+                );
+            } else {
+                terminal.send(b"\x1a");
+            }
             terminal.expect("Stopped");
             terminal.expect("READY-SHELL> ");
             terminal.send(b"bg\n");
