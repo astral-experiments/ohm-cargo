@@ -3398,3 +3398,24 @@ fn failed_receipt_rewrite_preserves_existing_install() {
     }
     cargo_process("uninstall keeper").run();
 }
+
+#[cfg(target_os = "linux")]
+#[cargo_test]
+fn uninstall_keeps_bin_on_ownership_write_failure() {
+    use rustix::fs::SealFlags;
+
+    pkg("foo", "1.0.0");
+    cargo_process("install foo").run();
+    let path = cargo_home().join(".crates.toml");
+    let (_file, original) = seal_receipt(&path, SealFlags::SHRINK | SealFlags::WRITE);
+    cargo_process("uninstall foo")
+        .with_status(101)
+        .with_stderr_contains("[ERROR] failed to write crate metadata at [..].crates.toml[..]")
+        .run();
+    assert_has_installed_exe(cargo_home(), "foo");
+    assert_eq!(fs::read(&path).unwrap(), original);
+    fs::remove_file(&path).unwrap();
+    fs::write(path, original).unwrap();
+    cargo_process("uninstall foo").run();
+    assert_has_not_installed_exe(cargo_home(), "foo");
+}
