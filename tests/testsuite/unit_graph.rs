@@ -20,6 +20,22 @@ See https://github.com/rust-lang/cargo/issues/8002 for more information about th
 }
 
 #[cargo_test]
+fn run_only_prints_the_graph() {
+    let p = project()
+        .file(
+            "src/main.rs",
+            r#"compile_error!("graph-only mode must not compile or run the binary");"#,
+        )
+        .build();
+    let graph = p
+        .cargo("run --unit-graph -Zunstable-options")
+        .masquerade_as_nightly_cargo(&["unit-graph"])
+        .run_json();
+    let root = graph["roots"][0].as_u64().unwrap() as usize;
+    assert_eq!(graph["units"][root]["target"]["name"], "foo");
+}
+
+#[cargo_test]
 fn simple() {
     Package::new("a", "1.0.0")
         .dep("b", "1.0")
