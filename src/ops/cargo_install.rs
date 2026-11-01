@@ -549,6 +549,9 @@ impl<'gctx> InstallablePackage<'gctx> {
                 &self.target,
                 &self.rustc.verbose_version,
             );
+            if replace_result.is_ok() {
+                tracker.record_target_selection(&self.pkg, &self.opts, &self.target, &built);
+            }
 
             if let Err(e) = remove_orphaned_bins(
                 &self.ws,
