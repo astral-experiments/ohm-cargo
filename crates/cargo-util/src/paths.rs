@@ -366,7 +366,12 @@ pub fn mtime_recursive_with_symlinks(
     let entry = symlink_metadata(path)?;
     let entry_mtime = FileTime::from_last_modification_time(&entry);
     let meta = if entry.is_symlink() {
-        metadata(path)?
+        let target = metadata(path)?;
+        if !target.is_dir() {
+            // Directory links are reported by the walk below.
+            symlink(path, true);
+        }
+        target
     } else {
         entry
     };

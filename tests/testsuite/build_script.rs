@@ -6174,6 +6174,37 @@ fn rerun_if_file_symlink_is_retargeted() {
 }
 
 #[cargo_test]
+fn rerun_if_intermediate_symlink_is_retargeted() {
+    if !symlink_supported() {
+        return;
+    }
+    let p = project()
+        .file(
+            "src/main.rs",
+            r#"fn main() { println!("{}", env!("VALUE")); }"#,
+        )
+        .file(
+            "build.rs",
+            r#"
+            fn main() {
+                println!("cargo::rerun-if-changed=selected");
+                let value = std::fs::read_to_string("selected").unwrap();
+                println!("cargo::rustc-env=VALUE={value}");
+            }
+        "#,
+        )
+        .file("one", "first")
+        .file("two", "second")
+        .build();
+    p.symlink("one", "route");
+    p.symlink("route", "selected");
+    p.cargo("run --quiet").with_stdout_data("first\n").run();
+    fs::remove_file(p.root().join("route")).unwrap();
+    p.symlink("two", "route");
+    p.cargo("run --quiet").with_stdout_data("second\n").run();
+}
+
+#[cargo_test]
 fn rerun_if_missing_input_reappears_with_an_old_mtime() {
     let p = project()
         .file(
