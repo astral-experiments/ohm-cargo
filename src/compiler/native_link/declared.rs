@@ -88,12 +88,23 @@ fn parse(path: &Path, output: &Path) -> Option<Report> {
 }
 
 #[cfg(target_os = "linux")]
-fn search_dirs(driver: &OsStr) -> Option<BTreeSet<PathBuf>> {
+fn search_dirs(driver: &OsStr, args: &[OsString]) -> Option<BTreeSet<PathBuf>> {
     // GCC and clang both expose their configured library directories. Linkers
     // may also search the target's ordinary system paths without a driver -L.
-    let out = command(driver, &["-print-search-dirs".into()])
-        .output()
-        .ok()?;
+    let mut query = command(driver, &[]);
+    for arg in args {
+        let flag = arg.to_str()?;
+        if let Some(prefix) = flag.strip_prefix("-B") {
+            // The driver also derives library and multilib directories from -B.
+            if !Path::new(prefix).is_absolute() {
+                return None;
+            }
+            query.arg(arg);
+        } else if matches!(flag, "-m32" | "-m64" | "-mx32") {
+            query.arg(arg);
+        }
+    }
+    let out = query.arg("-print-search-dirs").output().ok()?;
     if !out.status.success() {
         return None;
     }
@@ -482,11 +493,19 @@ pub(super) fn checked(
         return None;
     }
     let cache = Entry::open(&objects.join("declared-native")).ok()?;
+    #[allow(unused_mut)]
+    let mut seed = Report::default();
+    #[cfg(target_os = "linux")]
+    {
+        // A driver can choose different directories when a prefix appears.
+        seed.search = search_dirs(driver, args)?;
+    }
     let closure = cache.directory.join("inputs.json");
     let prior: Option<Report> =
         read_limited(&closure).and_then(|b| serde_json::from_slice(&b).ok());
     if let Some(inputs) = prior
         .as_ref()
+        .filter(|report| report.search == seed.search)
         .and_then(|r| action(driver, args, output, temp, &watched, r))
         && let Ok(snapshot) = inputs.snapshot()
         && let Some(stderr) = cache.reuse(snapshot.action, output).ok().flatten()
@@ -498,12 +517,6 @@ pub(super) fn checked(
         }));
     }
     cache.invalidate().ok()?;
-    #[allow(unused_mut)]
-    let mut seed = Report::default();
-    #[cfg(target_os = "linux")]
-    {
-        seed.search = search_dirs(driver)?;
-    }
     let inputs = action(driver, args, output, temp, &watched, &seed)?;
     let before = inputs.snapshot().ok()?;
     let start = SystemTime::now();
