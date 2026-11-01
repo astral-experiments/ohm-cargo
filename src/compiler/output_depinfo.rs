@@ -10,8 +10,8 @@ use crate::util::{CargoResult, internal};
 use cargo_util::paths;
 use tracing::debug;
 
-/// Makes paths relative to the configured base and escapes spaces in Make rules.
-fn render_filename(path: &Path, basedir: Option<&Path>) -> CargoResult<PathBuf> {
+/// Makes a path relative to the configured base and quotes it for its part of a Make rule.
+fn render_filename(path: &Path, basedir: Option<&Path>, is_target: bool) -> CargoResult<PathBuf> {
     let normalized;
     let path = if let Some(basedir) = basedir {
         normalized = normalize_path(path);
@@ -20,23 +20,36 @@ fn render_filename(path: &Path, basedir: Option<&Path>) -> CargoResult<PathBuf> 
         path
     };
     let bytes = paths::path2bytes(path)?;
-    if !bytes.contains(&b' ') {
+    let needs_backslash = |byte| {
+        matches!(byte, b' ' | b'\t' | b'#')
+            || (cfg!(unix) && byte == b':')
+            || (!is_target && byte == b'|')
+    };
+    if !bytes
+        .iter()
+        .any(|&byte| byte == b'$' || needs_backslash(byte))
+    {
         return Ok(path.to_owned());
     }
     let mut escaped = Vec::with_capacity(bytes.len());
+    let mut backslashes = 0;
     for &byte in bytes {
-        if byte == b' ' {
-            escaped.push(b'\\');
+        if needs_backslash(byte) {
+            // Make consumes pairs of backslashes before a quoted separator.
+            escaped.extend(std::iter::repeat_n(b'\\', backslashes + 1));
+        } else if byte == b'$' {
+            escaped.push(b'$');
         }
         escaped.push(byte);
+        backslashes = if byte == b'\\' { backslashes + 1 } else { 0 };
     }
     paths::bytes2path(&escaped)
 }
 
-/// Compares the prerequisites of a native depfile when the UTF-8 parser cannot read it.
-fn same_native_prerequisites(previous: &[u8], prerequisites: &[u8]) -> bool {
+/// Compares prerequisites containing native bytes or a tab that the legacy parser splits.
+fn same_literal_prerequisites(previous: &[u8], prerequisites: &[u8]) -> bool {
     // Spaces in the target are escaped, so the first ": " or ":\n" ends the target.
-    std::str::from_utf8(previous).is_err()
+    (std::str::from_utf8(previous).is_err() || prerequisites.contains(&b'\t'))
         && previous
             .windows(2)
             .position(|pair| matches!(pair, b": " | b":\n"))
@@ -189,7 +202,7 @@ pub fn output_depinfo(
         .map(|value| normalize_path(&value.resolve_path(bcx.gctx)));
     let deps = deps
         .iter()
-        .map(|f| render_filename(f, basedir.as_deref()))
+        .map(|f| render_filename(f, basedir.as_deref(), false))
         .collect::<CargoResult<Vec<_>>>()?;
 
     // Preserve the legacy target selection for crate types sharing a dep-info path.
@@ -197,7 +210,7 @@ pub fn output_depinfo(
     for link_dst in outputs {
         let output_path = link_dst.with_extension("d");
         if success {
-            let target = render_filename(link_dst, basedir.as_deref())?;
+            let target = render_filename(link_dst, basedir.as_deref(), true)?;
             let mut contents = paths::path2bytes(&target)?.to_vec();
             let target_len = contents.len();
             contents.push(b':');
@@ -212,19 +225,16 @@ pub fn output_depinfo(
                 if paths::read_bytes(&output_path).is_ok_and(|previous| previous == contents) {
                     continue;
                 }
-            } else if let Ok(previous) = fingerprint::parse_rustc_dep_info(&output_path) {
-                // The dependency-only comparison can retain an earlier output's target.
-                if previous
+            } else if fingerprint::parse_rustc_dep_info(&output_path).is_ok_and(|previous| {
+                previous
                     .files
                     .iter()
                     .map(|(path, _checksum)| path)
                     .eq(&deps)
-                {
-                    continue;
-                }
-            } else if paths::read_bytes(&output_path)
-                .is_ok_and(|previous| same_native_prerequisites(&previous, &contents[target_len..]))
-            {
+            }) || paths::read_bytes(&output_path).is_ok_and(|previous| {
+                same_literal_prerequisites(&previous, &contents[target_len..])
+            }) {
+                // A shared depfile can retain an earlier output's target.
                 continue;
             }
             paths::write(output_path, contents)?;
