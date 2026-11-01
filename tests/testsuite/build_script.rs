@@ -6174,6 +6174,32 @@ fn rerun_if_file_symlink_is_retargeted() {
 }
 
 #[cargo_test]
+fn rerun_if_missing_input_reappears_with_an_old_mtime() {
+    let p = project()
+        .file(
+            "src/main.rs",
+            r#"fn main() { println!("{}", env!("VALUE")); }"#,
+        )
+        .file(
+            "build.rs",
+            r#"
+            fn main() {
+                println!("cargo::rerun-if-changed=input");
+                let value = std::fs::read_to_string("input").unwrap_or_else(|_| "missing".into());
+                println!("cargo::rustc-env=VALUE={value}");
+            }
+        "#,
+        )
+        .file("input", "found")
+        .build();
+    p.cargo("run --quiet").with_stdout_data("found\n").run();
+    fs::rename(p.root().join("input"), p.root().join("saved")).unwrap();
+    p.cargo("run --quiet").with_stdout_data("missing\n").run();
+    fs::rename(p.root().join("saved"), p.root().join("input")).unwrap();
+    p.cargo("run --quiet").with_stdout_data("found\n").run();
+}
+
+#[cargo_test]
 fn rerun_if_directory_symlink_target_disappears() {
     if !symlink_supported() {
         return;

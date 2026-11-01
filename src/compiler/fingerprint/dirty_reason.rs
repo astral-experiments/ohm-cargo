@@ -49,7 +49,7 @@ pub enum DirtyReason {
         old: PathBuf,
         new: PathBuf,
     },
-    WatchedSymlinksChanged,
+    WatchedInputStateChanged,
     RerunIfChangedOutputPathsChanged {
         old: Vec<PathBuf>,
         new: Vec<PathBuf>,
@@ -217,8 +217,8 @@ impl DirtyReason {
             DirtyReason::RerunIfChangedOutputFileChanged { .. } => {
                 s.dirty_because(unit, "rerun-if-changed output file path changed")
             }
-            DirtyReason::WatchedSymlinksChanged => {
-                s.dirty_because(unit, "a watched symlink may have changed its target")
+            DirtyReason::WatchedInputStateChanged => {
+                s.dirty_because(unit, "the availability of a watched input may have changed")
             }
             DirtyReason::RerunIfChangedOutputPathsChanged { .. } => {
                 s.dirty_because(unit, "the rerun-if-changed instructions changed")

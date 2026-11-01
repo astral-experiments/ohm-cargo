@@ -363,7 +363,7 @@ pub struct BuildRunner<'a, 'gctx> {
     /// Cache of file mtimes to reduce filesystem hits.
     pub mtime_cache: HashMap<PathBuf, FileTime>,
     /// Resolution state of build-script inputs already scanned in this invocation.
-    pub watched_link_states: HashMap<PathBuf, Option<u64>>,
+    pub watched_input_states: HashMap<PathBuf, Option<u64>>,
     /// Cache of file checksums to reduce filesystem reads.
     pub checksum_cache: HashMap<PathBuf, Checksum>,
     /// A set used to track which units have been compiled.
@@ -563,7 +563,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             early_test_dependencies: HashMap::default(),
             deferred_dev_deps: super::ohm_deferred_dev_deps::State::default(),
             mtime_cache: HashMap::default(),
-            watched_link_states: HashMap::default(),
+            watched_input_states: HashMap::default(),
             checksum_cache: HashMap::default(),
             compiled: HashSet::default(),
             build_scripts: HashMap::default(),
