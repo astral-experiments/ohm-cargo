@@ -75,6 +75,9 @@ struct InstallInfo {
     /// Fingerprint of a complete install whose target selection skipped some executables.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     target_selection: Option<String>,
+    /// Fingerprint of the outputs built together when a package has multiple executables.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    built_outputs: Option<String>,
     /// Set of features explicitly enabled.
     features: BTreeSet<String>,
     all_features: bool,
@@ -95,10 +98,13 @@ struct InstallInfo {
 }
 
 /// Tracking information for the set of installed packages.
-#[derive(Default, Deserialize, Serialize)]
+#[derive(Clone, Default, Deserialize, Serialize)]
 pub struct CrateListingV1 {
     /// Map of installed package id to the set of binary names for that package.
     v1: BTreeMap<PackageId, BTreeSet<String>>,
+    /// Older Cargo writers drop this key, invalidating cached v2 build information.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    v2_build_state: Option<String>,
 }
 
 impl InstallTracker {
@@ -225,6 +231,7 @@ impl InstallTracker {
                 return Ok((Freshness::Dirty(DirtyReason::Forced), duplicates));
             }
             let exes = exe_names(pkg, &opts.filter);
+            let multiple = has_multiple_executables(pkg);
             let is_up_to_date = |dupe_pkg_id| {
                 let info = self
                     .v2
@@ -242,7 +249,7 @@ impl InstallTracker {
                 dupe_pkg_id.version() == pkg.version()
                     && dupe_pkg_id.source_id() == source_id
                     && precise_equal
-                    && info.is_up_to_date(opts, target, &exes, dst)
+                    && info.is_up_to_date(opts, target, &exes, dst, multiple)
             };
             if matching_duplicates.iter().all(is_up_to_date) {
                 Ok((Freshness::Fresh, duplicates))
@@ -294,8 +301,12 @@ impl InstallTracker {
             .get_mut(&pkg.package_id())
             .expect("installed package");
         let requested = exe_names(pkg, &opts.filter);
-        if &info.bins == built && requested != *built {
-            info.target_selection = Some(info.selection_fingerprint(opts, target, &requested));
+        if has_multiple_executables(pkg) {
+            info.built_outputs = Some(info.selection_fingerprint(opts, target, built, None));
+        }
+        if requested != *built {
+            info.target_selection =
+                Some(info.selection_fingerprint(opts, target, &requested, Some(&opts.filter)));
         }
     }
 
@@ -313,7 +324,11 @@ impl InstallTracker {
 
     /// Persists the ownership list used by every supported Cargo version.
     fn save_v1(&self) -> CargoResult<()> {
-        self.v1.save(&self.v1_lock).with_context(|| {
+        let v1 = CrateListingV1 {
+            v2_build_state: self.v2.build_state(),
+            ..self.v1.clone()
+        };
+        v1.save(&self.v1_lock).with_context(|| {
             format!(
                 "failed to write crate metadata at `{}`",
                 self.v1_lock.path().to_string_lossy()
@@ -452,12 +467,29 @@ impl CrateListingV1 {
 }
 
 impl CrateListingV2 {
+    /// Identifies the build information committed alongside the authoritative ownership list.
+    fn build_state(&self) -> Option<String> {
+        let builds: Vec<_> = self
+            .installs
+            .iter()
+            .filter(|(_, info)| info.built_outputs.is_some() || info.target_selection.is_some())
+            .map(|(id, info)| (id.to_string(), &info.built_outputs, &info.target_selection))
+            .collect();
+        (!builds.is_empty()).then(|| crate::util::hex::short_hash(&builds))
+    }
+
     /// Incorporate any changes from v1 into self.
     /// This handles the initial upgrade to v2, *and* handles the case
     /// where v2 is in use, and a v1 update is made, then v2 is used again.
     /// i.e., `cargo +new install foo ; cargo +old install bar ; cargo +new install bar`
     /// For now, v1 is the source of truth, so its values are trusted over v2.
     fn sync_v1(&mut self, v1: &CrateListingV1) {
+        if v1.v2_build_state != self.build_state() {
+            for info in self.installs.values_mut() {
+                info.built_outputs = None;
+                info.target_selection = None;
+            }
+        }
         // Make the `bins` entries the same.
         for (pkg_id, bins) in &v1.v1 {
             self.installs
@@ -512,6 +544,7 @@ impl CrateListingV2 {
         if let Some(info) = self.installs.get_mut(&pkg.package_id()) {
             info.bins.append(&mut bins.clone());
             info.target_selection = None;
+            info.built_outputs = None;
             info.version_req = version_req;
             info.features = feature_set(&opts.cli_features.features);
             info.all_features = opts.cli_features.all_features;
@@ -526,6 +559,7 @@ impl CrateListingV2 {
                     version_req,
                     bins: bins.clone(),
                     target_selection: None,
+                    built_outputs: None,
                     features: feature_set(&opts.cli_features.features),
                     all_features: opts.cli_features.all_features,
                     no_default_features: !opts.cli_features.uses_default_features,
@@ -612,6 +646,7 @@ impl InstallInfo {
             version_req: None,
             bins: set.clone(),
             target_selection: None,
+            built_outputs: None,
             features: BTreeSet::new(),
             all_features: false,
             no_default_features: false,
@@ -622,15 +657,16 @@ impl InstallInfo {
         }
     }
 
-    /// Binds skipped targets to their original flags and ownership, including across older writers.
+    /// Binds the outputs to their build settings and ownership. A filter also binds skipped targets to the original request.
     fn selection_fingerprint(
         &self,
         opts: &CompileOptions,
         target: &str,
         requested: &BTreeSet<String>,
+        filter: Option<&CompileFilter>,
     ) -> String {
         crate::util::hex::short_hash(&(
-            &opts.filter,
+            filter,
             &opts.cli_features,
             opts.build_config.requested_profile.as_str(),
             target,
@@ -648,17 +684,23 @@ impl InstallInfo {
         target: &str,
         exes: &BTreeSet<String>,
         dst: &Path,
+        multiple: bool,
     ) -> bool {
+        let built_together = match &self.built_outputs {
+            Some(previous) => *previous == self.selection_fingerprint(opts, target, exes, None),
+            // An older receipt can describe several installs made with different options.
+            None => !multiple && &self.bins == exes,
+        };
+        let present = |name: &String| dst.join(name).is_file();
         self.features == feature_set(&opts.cli_features.features)
             && self.all_features == opts.cli_features.all_features
             && self.no_default_features != opts.cli_features.uses_default_features
             && self.profile.as_str() == opts.build_config.requested_profile.as_str()
             && (self.target.is_none() || self.target.as_deref() == Some(target))
-            && (&self.bins == exes
-                || self.target_selection.as_ref().is_some_and(|selection| {
-                    selection == &self.selection_fingerprint(opts, target, exes)
-                }))
-            && self.bins.iter().all(|name| dst.join(name).is_file())
+            && ((built_together && exes.iter().all(present))
+                || (self.target_selection.as_ref().is_some_and(|previous| {
+                    *previous == self.selection_fingerprint(opts, target, exes, Some(&opts.filter))
+                }) && self.bins.iter().all(present)))
     }
 }
 
@@ -938,6 +980,15 @@ pub(super) fn find_duplicates(
 /// Helper to convert features to a `BTreeSet`.
 fn feature_set(features: &Rc<BTreeSet<FeatureValue>>) -> BTreeSet<String> {
     features.iter().map(|s| s.to_string()).collect()
+}
+
+/// Whether selective installs can leave this package owning executables built separately.
+fn has_multiple_executables(pkg: &Package) -> bool {
+    pkg.targets()
+        .iter()
+        .filter(|target| target.is_executable())
+        .nth(1)
+        .is_some()
 }
 
 /// Helper to get the executable names from a filter.
