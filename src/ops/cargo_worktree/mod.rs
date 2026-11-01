@@ -2,7 +2,7 @@
 
 use std::fs;
 use std::io;
-use std::path::{Path, PathBuf};
+use std::path::{Component, Path, PathBuf};
 
 use anyhow::{Context as _, bail, ensure};
 use cargo_util::ProcessBuilder;
@@ -43,7 +43,7 @@ pub fn worktree_add(gctx: &GlobalContext, opts: &WorktreeOptions) -> CargoResult
         .workdir()
         .context("cannot seed from a bare repository")?;
     let git_root = git_root.canonicalize()?;
-    let destination = donor.canonical_build_path(&opts.path);
+    let destination = new_storage_path(&opts.path, gctx.cwd())?;
     ensure_absent(&destination, "worktree destination")?;
     ensure!(
         !destination.starts_with(&git_root) && !git_root.starts_with(&destination),
@@ -52,10 +52,10 @@ pub fn worktree_add(gctx: &GlobalContext, opts: &WorktreeOptions) -> CargoResult
 
     let manifest = donor.root_manifest().canonicalize()?;
     let manifest = destination.join(manifest.strip_prefix(&git_root)?);
-    let target = opts.target_dir.as_ref().map_or_else(
-        || manifest.parent().unwrap().join("target"),
-        |path| donor.canonical_build_path(path),
-    );
+    let target = match &opts.target_dir {
+        Some(path) => new_storage_path(path, gctx.cwd())?,
+        None => manifest.parent().unwrap().join("target"),
+    };
     ensure_absent(&target, "destination target directory")?;
     for protected in [
         git_root.clone(),
@@ -63,7 +63,7 @@ pub fn worktree_add(gctx: &GlobalContext, opts: &WorktreeOptions) -> CargoResult
         donor.build_dir().into_path_unlocked(),
         donor.configured_build_dir().into_path_unlocked(),
     ] {
-        let protected = donor.canonical_build_path(&protected);
+        let protected = physical_storage_path(&protected, gctx.cwd())?;
         ensure!(
             !destination.starts_with(&protected) && !protected.starts_with(&destination),
             "worktree destination overlaps source storage: {}",
@@ -535,6 +535,35 @@ fn ensure_plain_descendants(root: &Path, path: &Path) -> CargoResult<()> {
         );
     }
     Ok(())
+}
+
+/// Resolves symlinks before applying each parent component, including after missing directories.
+fn physical_storage_path(path: &Path, cwd: &Path) -> CargoResult<PathBuf> {
+    let realpath = |path: &Path| {
+        path.canonicalize().map_or_else(
+            |_| gix::path::realpath_opts(path, cwd, gix::path::realpath::MAX_SYMLINKS),
+            Ok,
+        )
+    };
+    let mut physical = PathBuf::new();
+    for component in cwd.join(path).components() {
+        if component == Component::ParentDir {
+            physical = realpath(&physical)?;
+            physical.pop();
+        } else {
+            physical.push(component);
+        }
+    }
+    Ok(realpath(&physical)?)
+}
+
+/// Resolves the parent while preserving the final entry for the absence check.
+fn new_storage_path(path: &Path, cwd: &Path) -> CargoResult<PathBuf> {
+    let path = cwd.join(path);
+    match (path.parent(), path.file_name()) {
+        (Some(parent), Some(name)) => Ok(physical_storage_path(parent, cwd)?.join(name)),
+        _ => physical_storage_path(&path, cwd),
+    }
 }
 
 fn ensure_absent(path: &Path, description: &str) -> CargoResult<()> {
