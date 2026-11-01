@@ -213,7 +213,16 @@ impl<'a, 'gctx> BuildContext<'a, 'gctx> {
 
     /// Whether Cargo or the flags forwarded to this rustdoc unit requested JSON.
     pub(crate) fn wants_doc_json(&self, unit: &Unit) -> bool {
-        self.build_config.intent.wants_doc_json_output() || self.forwarded_json_docs.contains(unit)
+        self.build_config.intent.wants_doc_json_output()
+            || self
+                .deferred_doc_args(unit)
+                .and_then(|slot| slot.get())
+                .map_or_else(|| self.forwarded_json_docs.contains(unit), |args| args.json)
+    }
+
+    /// Returns the shared result only for documentation units whose argument files could not be planned.
+    pub(super) fn deferred_doc_args(&self, unit: &Unit) -> Option<&DeferredDocArgs> {
+        self.argfile_hashes.get(unit)?.doc_args.as_ref()
     }
 
     /// Extra compiler args for either `rustc` or `rustdoc`.
@@ -242,12 +251,20 @@ impl DepKindSet {
     }
 }
 
-/// Effective argument fingerprint and whether it includes a per-build fallback.
+/// Files and output format observed by the real Rustdoc job.
+#[derive(Debug)]
+pub(crate) struct ResolvedDocArgs {
+    pub(crate) files: crate::util::argfiles::RustdocArgFiles,
+    pub(crate) json: bool,
+}
+
+/// Publishes the result of reading volatile inputs to artifact collection and the final merge.
+pub(crate) type DeferredDocArgs = std::sync::Arc<std::sync::OnceLock<ResolvedDocArgs>>;
+
+/// Effective argument fingerprint and runtime state for an untracked documentation unit.
 pub(super) struct ArgfileFingerprint {
     pub(super) hash: u64,
-    pub(super) untracked: bool,
-    /// Shared with the final HTML merge when configured arguments include a stream.
-    pub(super) merge_argfiles: Option<crate::util::argfiles::SharedRustdocArgFiles>,
+    doc_args: Option<DeferredDocArgs>,
 }
 
 /// Resolves file-backed arguments and identifies the documentation each unit produces.
@@ -288,12 +305,10 @@ fn compiler_inputs(
                 unit.clone(),
                 ArgfileFingerprint {
                     hash,
-                    untracked: expanded.is_none(),
-                    merge_argfiles: (expanded.is_none()
+                    doc_args: (expanded.is_none()
                         && unit.mode.is_doc()
-                        && ws.gctx().cli_unstable().rustdoc_mergeable_info
-                        && configured.iter().any(|arg| arg.starts_with('@')))
-                    .then(Default::default),
+                        && !unit.skip_non_compile_time_dep)
+                        .then(Default::default),
                 },
             );
             expanded

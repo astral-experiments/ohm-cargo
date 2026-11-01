@@ -70,9 +70,6 @@ fn append_file(text: &str, shell: bool, expanded: &mut Vec<String>) -> Option<()
     Some(())
 }
 
-/// Shares argument files between the crate build and the final HTML merge.
-pub(crate) type SharedRustdocArgFiles = std::sync::Arc<std::sync::OnceLock<RustdocArgFiles>>;
-
 /// Files captured during the unit build and reused by subsequent Rustdoc passes.
 #[derive(Debug)]
 pub(crate) struct RustdocArgFiles {
@@ -80,6 +77,17 @@ pub(crate) struct RustdocArgFiles {
 }
 
 impl RustdocArgFiles {
+    /// Replaces the original argument-file paths in a prepared Rustdoc command.
+    pub(crate) fn apply(&self, cmd: &mut ProcessBuilder) -> crate::CargoResult<()> {
+        for (raw, replacement, _) in &self.copies {
+            anyhow::ensure!(
+                cmd.replace_arg(raw, replacement),
+                "could not replace Rustdoc argument {raw}"
+            );
+        }
+        Ok(())
+    }
+
     /// Replays only configured flags in the merge. They follow per-unit flags in the original command.
     pub(crate) fn configured_args(&self, flags: &[String]) -> Vec<OsString> {
         let mut copies = self.copies.iter().rev().peekable();
@@ -96,13 +104,15 @@ impl RustdocArgFiles {
     }
 }
 
-/// Snapshots inputs once when a Rustdoc command with untracked arguments must run twice.
-pub(crate) fn snapshot_for_replay(cmd: &mut ProcessBuilder) -> crate::CargoResult<RustdocArgFiles> {
+/// Captures argument files in driver order and returns the arguments they supplied.
+pub(crate) fn snapshot_for_replay(
+    cmd: &ProcessBuilder,
+) -> crate::CargoResult<(RustdocArgFiles, Option<Vec<String>>)> {
     let cwd = cmd.get_cwd().unwrap_or_else(|| Path::new("."));
     let mut copies = Vec::new();
     let mut snapshot_error = None;
     // Invalid or missing inputs must still reach Rustdoc for its own diagnostics.
-    let _ = expand_with(
+    let expanded = expand_with(
         cwd,
         cmd.get_args().map(|arg| arg.to_str().unwrap_or("")),
         |raw, path, shell, expanded| {
@@ -124,7 +134,7 @@ pub(crate) fn snapshot_for_replay(cmd: &mut ProcessBuilder) -> crate::CargoResul
                 Err(error) => {
                     snapshot_error = Some(
                         anyhow::Error::new(error)
-                            .context("could not save Rustdoc arguments for dependency collection"),
+                            .context("could not save Rustdoc arguments for replay"),
                     );
                     return None;
                 }
@@ -138,13 +148,7 @@ pub(crate) fn snapshot_for_replay(cmd: &mut ProcessBuilder) -> crate::CargoResul
     if let Some(error) = snapshot_error {
         return Err(error);
     }
-    for (raw, replacement, _) in &copies {
-        anyhow::ensure!(
-            cmd.replace_arg(raw, replacement),
-            "could not replace Rustdoc argument {raw}"
-        );
-    }
-    Ok(RustdocArgFiles { copies })
+    Ok((RustdocArgFiles { copies }, expanded))
 }
 
 /// Leaves non-file inputs unread so the compiler can consume them exactly once.

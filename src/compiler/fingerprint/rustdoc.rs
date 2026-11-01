@@ -52,7 +52,7 @@ pub struct RustdocFingerprint {
     /// Working directory for the final Rustdoc process.
     pub(crate) merge_cwd: PathBuf,
     /// Configured argument files captured by the merge root's Rustdoc job.
-    pub(crate) merge_argfiles: Option<crate::util::argfiles::SharedRustdocArgFiles>,
+    pub(crate) merge_argfiles: Option<crate::compiler::build_context::DeferredDocArgs>,
     /// Relocatable identity for the merge directory in the on-disk fingerprint.
     merge_cwd_key: PathBuf,
     /// Absolute paths to new cross crate info JSON files generated in the current session.
@@ -110,13 +110,26 @@ impl RustdocFingerprint {
         let on_disk = load_on_disk(&path);
         let ws = build_runner.bcx.ws;
         let roots = &build_runner.bcx.roots;
+        // A workspace can render JSON for one root and HTML for another. The
+        // final HTML merge needs flags captured by a unit that supplied doc parts.
+        let html = |unit: &&crate::compiler::Unit| {
+            unit.kind == kind && unit.mode.is_doc() && !build_runner.bcx.wants_doc_json(unit)
+        };
         let root = roots
             .iter()
-            .find(|unit| unit.kind == kind && unit.mode.is_doc())
+            .find(html)
+            .or_else(|| {
+                build_runner
+                    .bcx
+                    .unit_graph
+                    .keys()
+                    .filter(html)
+                    .min_by_key(|unit| unit.pkg.package_id())
+            })
             .or_else(|| roots.first());
         let merge_argfiles = root
-            .and_then(|unit| build_runner.bcx.argfile_hashes.get(unit))
-            .and_then(|inputs| inputs.merge_argfiles.clone());
+            .and_then(|unit| build_runner.bcx.deferred_doc_args(unit))
+            .cloned();
         let merge_cwd = root
             .map(|unit| crate::util::path_args(ws, unit).1)
             .unwrap_or_else(|| ws.root().to_owned());

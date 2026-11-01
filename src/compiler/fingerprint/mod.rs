@@ -2874,7 +2874,11 @@ fn calculate_normal(
         .filter(|output| !matches!(output.flavor, FileFlavor::DebugInfo | FileFlavor::Auxiliary))
         .map(|output| output.path.clone())
         .collect::<Vec<_>>();
-    outputs.extend(doc_output_marker(build_runner, unit));
+    outputs.extend(doc_output_marker(
+        build_runner,
+        unit,
+        build_runner.bcx.wants_doc_json(unit),
+    ));
     // Fill out a bunch more information that we'll be tracking typically
     // hashed to take up less space on disk as we just need to know when things
     // change.
@@ -3545,8 +3549,9 @@ pub fn prepare_init(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> Carg
 pub(super) fn doc_output_marker(
     build_runner: &BuildRunner<'_, '_>,
     unit: &Unit,
+    json: bool,
 ) -> Option<PathBuf> {
-    if !unit.mode.is_doc() || build_runner.bcx.wants_doc_json(unit) {
+    if !unit.mode.is_doc() || json {
         return None;
     }
     let files = build_runner.files();
