@@ -70,7 +70,7 @@ jobs:
           # Keep compiled-in test scratch paths outside this repository and any
           # `target` component, for Git discovery and automatic shared-build admission.
           echo "CARGO_TARGET_DIR=$RUNNER_TEMP/cargo-tests" >> "$GITHUB_ENV"
-          rustup toolchain install "$RUST_VERSION" --profile minimal --component rustfmt
+          rustup toolchain install "$RUST_VERSION" --profile minimal --component rustfmt --component clippy
           rustup target add --toolchain "$RUST_VERSION" "${{ matrix.other }}" wasm32-unknown-unknown
       - name: Install system dependencies
         if: runner.os == 'Linux'

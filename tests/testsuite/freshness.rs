@@ -21,6 +21,47 @@ use filetime::FileTime;
 
 use super::death;
 
+#[cargo_test(
+    requires = "clippy-driver",
+    reason = "exercises Clippy configuration discovery"
+)]
+fn new_clippy_config_invalidates_a_fresh_check() {
+    let p = project()
+        .file(
+            "Cargo.toml",
+            "[workspace]\nmembers = ['member']\nresolver = '2'\n",
+        )
+        .file("member/Cargo.toml", &basic_lib_manifest("member"))
+        .file("settings/.keep", "")
+        .file(
+            "member/src/lib.rs",
+            "pub fn f(a: u8, b: u8, c: u8, d: u8) -> u8 { a ^ b ^ c ^ d }",
+        )
+        .build();
+    let driver = PathBuf::from(paths::sysroot())
+        .join("bin/clippy-driver")
+        .with_extension(std::env::consts::EXE_EXTENSION);
+    let check = || {
+        let mut cmd = p.cargo("check -p member --lib");
+        cmd.env("RUSTC_WORKSPACE_WRAPPER", &driver)
+            .env("CLIPPY_CONF_DIR", "settings")
+            .env(
+                "CLIPPY_ARGS",
+                "-Dclippy::too_many_arguments__CLIPPY_HACKERY__",
+            );
+        cmd
+    };
+
+    check().run();
+    p.change_file("settings/clippy.toml", "too-many-arguments-threshold = 3");
+    check()
+        .with_status(101)
+        .with_stderr_contains("[..]too many arguments[..]")
+        .run();
+    p.change_file("settings/.clippy.toml", "too-many-arguments-threshold = 5");
+    check().run();
+}
+
 #[cargo_test]
 fn shared_build_directory_distinguishes_workspace_sources() {
     let shared = paths::root().join("shared");
