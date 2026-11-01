@@ -79,7 +79,7 @@ pub struct BuildContext<'a, 'gctx> {
     pub extra_compiler_args: HashMap<Unit, Vec<String>>,
 
     /// Effective flags for units whose compiler arguments reference files.
-    pub(super) argfile_hashes: HashMap<Unit, u64>,
+    pub(super) argfile_hashes: HashMap<Unit, ArgfileFingerprint>,
     /// Documentation units whose forwarded arguments select JSON output.
     forwarded_json_docs: HashSet<Unit>,
 
@@ -242,12 +242,18 @@ impl DepKindSet {
     }
 }
 
+/// Effective argument fingerprint and whether it includes a per-build fallback.
+pub(super) struct ArgfileFingerprint {
+    pub(super) hash: u64,
+    pub(super) untracked: bool,
+}
+
 /// Resolves file-backed arguments and identifies the documentation each unit produces.
 fn compiler_inputs(
     ws: &Workspace<'_>,
     units: &UnitGraph,
     extra: &HashMap<Unit, Vec<String>>,
-) -> (HashMap<Unit, u64>, HashSet<Unit>) {
+) -> (HashMap<Unit, ArgfileFingerprint>, HashSet<Unit>) {
     let mut hashes = HashMap::default();
     let mut json_docs = HashSet::default();
     let mut sources = HashMap::default();
@@ -276,7 +282,13 @@ fn compiler_inputs(
                 .as_ref()
                 .map(crate::util::hash_u64)
                 .unwrap_or_else(rand::random);
-            hashes.insert(unit.clone(), hash);
+            hashes.insert(
+                unit.clone(),
+                ArgfileFingerprint {
+                    hash,
+                    untracked: expanded.is_none(),
+                },
+            );
             expanded
         } else {
             None

@@ -8,6 +8,50 @@ use cargo_test_support::{basic_manifest, cross_compile, project};
 
 use crate::utils::cross_compile::disabled as cross_compile_disabled;
 
+#[cfg(unix)]
+#[cargo_test(
+    nightly,
+    reason = "JSON documentation and rustdoc dep-info are unstable"
+)]
+fn json_depinfo_reads_a_streaming_argument_file_once() {
+    use std::os::unix::fs::PermissionsExt as _;
+
+    let p = project()
+        .file("src/lib.rs", "/// Streamed.\npub fn observed() {}")
+        .file(
+            "rustdoc-wrapper",
+            r#"#!/bin/sh
+for arg in "$@"; do
+    case "$arg" in --emit=dep-info=*) replay=yes;; esac
+done
+if test "$replay" = yes; then
+    for arg in "$@"; do
+        case "$arg" in @*) test ! -p "${arg#@}" || exit 12;; esac
+    done
+fi
+exec rustdoc "$@"
+"#,
+        )
+        .build();
+    let wrapper = p.root().join("rustdoc-wrapper");
+    std::fs::set_permissions(&wrapper, std::fs::Permissions::from_mode(0o755)).unwrap();
+    let fifo = p.root().join("arguments");
+    assert!(
+        std::process::Command::new("mkfifo")
+            .arg(&fifo)
+            .status()
+            .unwrap()
+            .success()
+    );
+    let writer = std::thread::spawn(move || std::fs::write(fifo, "--cfg\nstreamed\n"));
+    p.cargo("rustdoc -Zunstable-options -Zrustdoc-depinfo --output-format=json -- @arguments")
+        .masquerade_as_nightly_cargo(&["unstable-options", "rustdoc-depinfo"])
+        .env("RUSTDOC", wrapper)
+        .run();
+    writer.join().unwrap().unwrap();
+    assert!(p.build_dir().join("doc/foo.json").is_file());
+}
+
 #[cargo_test(nightly, reason = "rustdoc JSON output and dep-info are unstable")]
 fn forwarded_json_tracks_the_generated_output() {
     let p = project()

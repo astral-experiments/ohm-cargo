@@ -2747,7 +2747,7 @@ pub(crate) fn unit_profile_hash(build_runner: &BuildRunner<'_, '_>, unit: &Unit)
             }),
     ));
     match build_runner.bcx.argfile_hashes.get(unit) {
-        Some(argfiles) => util::hash_u64((profile, argfiles)),
+        Some(argfiles) => util::hash_u64((profile, argfiles.hash)),
         None => profile,
     }
 }
