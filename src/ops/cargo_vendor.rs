@@ -6,6 +6,7 @@ use crate::sources::path::PathSource;
 use crate::util::cache_lock::CacheLockMode;
 use crate::util::{CargoResult, GlobalContext, try_canonicalize};
 use crate::workspace::SourceId;
+use crate::workspace::parser::normalize_path_string_sep;
 use crate::workspace::{GitReference, Package, Workspace};
 
 use anyhow::{Context as _, bail};
@@ -127,9 +128,8 @@ fn sync(
     let vendor_dir = vendor_dir.as_deref().unwrap_or(opts.destination);
     let vendor_dir_already_exists = vendor_dir.exists();
 
-    paths::create_dir_all(&vendor_dir)?;
     let mut to_remove = HashSet::default();
-    if !opts.no_delete {
+    if !opts.no_delete && vendor_dir_already_exists {
         for entry in vendor_dir.read_dir()? {
             let entry = entry?;
             if !entry
@@ -182,6 +182,17 @@ fn sync(
             checksums.insert(pkg, resolve.checksums().get(&pkg).cloned());
         }
     }
+
+    let directory = if ids.is_empty() || gctx.shell().verbosity() == Verbosity::Quiet {
+        None
+    } else {
+        let path = opts
+            .destination
+            .to_str()
+            .context("vendor destination is not valid UTF-8 and cannot be written to the source configuration")?;
+        Some(normalize_path_string_sep(path.to_owned()))
+    };
+    paths::create_dir_all(&vendor_dir)?;
 
     let mut versions = HashMap::default();
     for id in ids.keys() {
@@ -406,19 +417,16 @@ fn sync(
         config.insert(name, source);
     }
 
-    if !config.is_empty() {
+    if config.is_empty() {
+        if !vendor_dir_already_exists {
+            // Nothing to vendor. Remove the destination dir we've just created.
+            paths::remove_dir(vendor_dir)?;
+        }
+    } else if let Some(directory) = directory {
         config.insert(
             merged_source_name.to_string(),
-            VendorSource::Directory {
-                // Windows-flavour paths are valid here on Windows but Unix.
-                // This backslash normalization is for making output paths more
-                // cross-platform compatible.
-                directory: opts.destination.to_string_lossy().replace("\\", "/"),
-            },
+            VendorSource::Directory { directory },
         );
-    } else if !vendor_dir_already_exists {
-        // Nothing to vendor. Remove the destination dir we've just created.
-        paths::remove_dir(vendor_dir)?;
     }
 
     Ok(VendorConfig { source: config })
@@ -550,7 +558,7 @@ fn prepare_toml_for_vendor(
                     .into_os_string()
                     .into_string()
                     .map_err(|_err| anyhow::format_err!("non-UTF8 `package.build`"))?;
-                let path = crate::workspace::parser::normalize_path_string_sep(path);
+                let path = normalize_path_string_sep(path);
                 included_scripts.push(path);
             } else {
                 gctx.shell().warn(format!(
