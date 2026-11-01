@@ -472,33 +472,20 @@ impl Cache {
         cmd: &ProcessBuilder,
         extra_fingerprint: u64,
     ) -> CargoResult<(String, String)> {
-        let key = process_fingerprint(cmd, extra_fingerprint);
-        if let std::collections::hash_map::Entry::Vacant(e) = self.data.outputs.entry(key) {
-            debug!("rustc info cache miss");
-            debug!("running {}", cmd);
-            let output = cmd.output()?;
-            let stdout = String::from_utf8(output.stdout)
-                .map_err(|e| anyhow::anyhow!("{}: {:?}", e, e.as_bytes()))
-                .with_context(|| format!("`{}` didn't return utf8 output", cmd))?;
-            let stderr = String::from_utf8(output.stderr)
-                .map_err(|e| anyhow::anyhow!("{}: {:?}", e, e.as_bytes()))
-                .with_context(|| format!("`{}` didn't return utf8 output", cmd))?;
-            e.insert(Output {
-                success: output.status.success(),
-                status: if output.status.success() {
-                    String::new()
-                } else {
-                    cargo_util::exit_status_to_string(output.status)
-                },
-                code: output.status.code(),
-                stdout,
-                stderr,
-            });
-            self.dirty = true;
+        let uncached;
+        let output = if let Some(key) = process_fingerprint(cmd, extra_fingerprint) {
+            if let std::collections::hash_map::Entry::Vacant(e) = self.data.outputs.entry(key) {
+                debug!("rustc info cache miss");
+                e.insert(read_process_output(cmd)?);
+                self.dirty = true;
+            } else {
+                debug!("rustc info cache hit");
+            }
+            &self.data.outputs[&key]
         } else {
-            debug!("rustc info cache hit");
-        }
-        let output = &self.data.outputs[&key];
+            uncached = read_process_output(cmd)?;
+            &uncached
+        };
         if output.success {
             Ok((output.stdout.clone(), output.stderr.clone()))
         } else {
@@ -596,14 +583,47 @@ fn rustc_fingerprint(
     Ok(Hasher::finish(&hasher))
 }
 
-fn process_fingerprint(cmd: &ProcessBuilder, extra_fingerprint: u64) -> u64 {
+/// Runs a compiler information probe and captures both diagnostics and successful output.
+fn read_process_output(cmd: &ProcessBuilder) -> CargoResult<Output> {
+    debug!("running {}", cmd);
+    let output = cmd.output()?;
+    let stdout = String::from_utf8(output.stdout)
+        .map_err(|e| anyhow::anyhow!("{}: {:?}", e, e.as_bytes()))
+        .with_context(|| format!("`{}` didn't return utf8 output", cmd))?;
+    let stderr = String::from_utf8(output.stderr)
+        .map_err(|e| anyhow::anyhow!("{}: {:?}", e, e.as_bytes()))
+        .with_context(|| format!("`{}` didn't return utf8 output", cmd))?;
+    Ok(Output {
+        success: output.status.success(),
+        status: if output.status.success() {
+            String::new()
+        } else {
+            cargo_util::exit_status_to_string(output.status)
+        },
+        code: output.status.code(),
+        stdout,
+        stderr,
+    })
+}
+
+/// Returns no cache key when a probe's argument file cannot be snapshotted.
+fn process_fingerprint(cmd: &ProcessBuilder, extra_fingerprint: u64) -> Option<u64> {
     let mut hasher = StableHasher::new();
     extra_fingerprint.hash(&mut hasher);
-    cmd.get_args().for_each(|arg| arg.hash(&mut hasher));
+    let mut has_argfile = false;
+    for arg in cmd.get_args() {
+        arg.hash(&mut hasher);
+        has_argfile |= arg.as_encoded_bytes().starts_with(b"@");
+    }
+    if has_argfile {
+        let cwd = cmd.get_cwd().unwrap_or_else(|| Path::new("."));
+        let flags = cmd.get_args().filter_map(|arg| arg.to_str());
+        crate::util::argfiles::expand(cwd, flags, &mut Default::default())?.hash(&mut hasher);
+    }
     let mut env = cmd.get_envs().iter().collect::<Vec<_>>();
     env.sort_unstable();
     env.hash(&mut hasher);
-    Hasher::finish(&hasher)
+    Some(Hasher::finish(&hasher))
 }
 
 #[cfg(test)]

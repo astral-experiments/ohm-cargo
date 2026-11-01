@@ -2727,7 +2727,7 @@ fn calculate(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
 
 /// Hashes the profile and mode used by an existing compilation fingerprint.
 pub(crate) fn unit_profile_hash(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> u64 {
-    util::hash_u64((
+    let profile = util::hash_u64((
         &unit.profile,
         unit.mode,
         build_runner.bcx.extra_args_for(unit),
@@ -2745,7 +2745,11 @@ pub(crate) fn unit_profile_hash(build_runner: &BuildRunner<'_, '_>, unit: &Unit)
                     .ok()
                     .filter(|prefix| !prefix.is_empty())
             }),
-    ))
+    ));
+    match build_runner.bcx.argfile_hashes.get(unit) {
+        Some(argfiles) => util::hash_u64((profile, argfiles)),
+        None => profile,
+    }
 }
 
 /// Records which configuration Clippy will discover, including a newly shadowing file.

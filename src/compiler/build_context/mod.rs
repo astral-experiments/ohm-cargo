@@ -78,6 +78,9 @@ pub struct BuildContext<'a, 'gctx> {
     /// Extra compiler args for either `rustc` or `rustdoc`.
     pub extra_compiler_args: HashMap<Unit, Vec<String>>,
 
+    /// Effective flags for units whose compiler arguments reference files.
+    pub(super) argfile_hashes: HashMap<Unit, u64>,
+
     /// Package downloader.
     ///
     /// This holds ownership of the `Package` objects.
@@ -137,6 +140,8 @@ impl<'a, 'gctx> BuildContext<'a, 'gctx> {
             .chain(std::iter::once(CompileKind::Host))
             .collect();
 
+        let argfile_hashes = argfile_fingerprints(ws, &unit_graph, &extra_compiler_args);
+
         Ok(BuildContext {
             ws,
             build_dir: ws.canonical_build_path(ws.build_dir().as_path_unlocked()),
@@ -147,6 +152,7 @@ impl<'a, 'gctx> BuildContext<'a, 'gctx> {
             selected_dep_kinds,
             profiles,
             extra_compiler_args,
+            argfile_hashes,
             target_data,
             roots,
             test_check_candidates,
@@ -225,4 +231,42 @@ impl DepKindSet {
             DepKind::Development => self.dev,
         }
     }
+}
+
+/// Fingerprints the effective arguments of units that use response files.
+fn argfile_fingerprints(
+    ws: &Workspace<'_>,
+    units: &UnitGraph,
+    extra: &HashMap<Unit, Vec<String>>,
+) -> HashMap<Unit, u64> {
+    let mut result = HashMap::default();
+    let mut sources = HashMap::default();
+    for unit in units.keys() {
+        let doc = unit.mode.is_doc() || unit.mode.is_doc_scrape();
+        let configured = if doc {
+            &unit.rustdocflags
+        } else {
+            &unit.rustflags
+        };
+        let profile = (!doc).then_some(&unit.profile.rustflags);
+        let flags = profile
+            .into_iter()
+            .flatten()
+            .map(|flag| flag.as_str())
+            .chain(extra.get(unit).into_iter().flatten().map(String::as_str))
+            .chain(configured.iter().map(String::as_str));
+        if flags.clone().any(|arg| arg.starts_with('@')) {
+            // A missing or streaming file must be handled by the compiler itself.
+            // A new fingerprint also invalidates dependent artifacts in this build.
+            let hash = crate::util::argfiles::expand(
+                &crate::util::path_args(ws, unit).1,
+                flags,
+                &mut sources,
+            )
+            .map(crate::util::hash_u64)
+            .unwrap_or_else(rand::random);
+            result.insert(unit.clone(), hash);
+        }
+    }
+    result
 }
