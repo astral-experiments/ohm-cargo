@@ -105,6 +105,44 @@ fn clippy_tracks_edits_to_a_non_unicode_config_path() {
 }
 
 #[cargo_test]
+fn compiler_out_dir_follows_the_target_directory_alias() {
+    if !cargo_test_support::symlink_supported() {
+        return;
+    }
+    let p = project()
+        .file(
+            "build.rs",
+            r#"
+            fn main() {
+                let dir = std::path::PathBuf::from(std::env::var_os("OUT_DIR").unwrap());
+                std::fs::write(dir.join("generated"), "hello").unwrap();
+                println!("cargo::rerun-if-changed=build.rs");
+            }
+        "#,
+        )
+        .file(
+            "src/main.rs",
+            r#"
+            fn main() {
+                let file = std::path::Path::new(env!("OUT_DIR")).join("generated");
+                println!("{}", std::fs::read_to_string(file).unwrap());
+            }
+        "#,
+        )
+        .build();
+    let cache = p.root().join("cache");
+    fs::create_dir(&cache).unwrap();
+    for alias in ["first", "second"] {
+        p.symlink(&cache, alias);
+        p.cargo("run --quiet")
+            .env("CARGO_TARGET_DIR", p.root().join(alias))
+            .with_stdout_data("hello\n")
+            .run();
+        cargo_util::paths::remove_file(p.root().join(alias)).unwrap();
+    }
+}
+
+#[cargo_test]
 fn manifest_aliases_keep_their_own_build_script_output() {
     if !cargo_test_support::symlink_supported() {
         return;
