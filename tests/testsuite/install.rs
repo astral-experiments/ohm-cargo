@@ -3325,3 +3325,35 @@ fn partial_replacement_keeps_recorded_bins() {
     assert_has_not_installed_exe(cargo_home(), "alpha");
     assert!(blocked.is_dir());
 }
+
+#[cfg(target_os = "linux")]
+#[cargo_test]
+fn install_receipt_write_failure() {
+    use rustix::fs::{MemfdFlags, SealFlags, fcntl_add_seals, memfd_create};
+    use std::os::fd::AsRawFd;
+
+    pkg("foo", "1.0.0");
+    // Open and lock normally, then fail only when Cargo tries to save the receipt.
+    let mut receipt =
+        fs::File::from(memfd_create("install-receipt", MemfdFlags::ALLOW_SEALING).unwrap());
+    receipt.write_all(br#"{"installs":{}}"#).unwrap();
+    fcntl_add_seals(&receipt, SealFlags::WRITE).unwrap();
+    std::os::unix::fs::symlink(
+        format!("/proc/self/fd/{}", receipt.as_raw_fd()),
+        cargo_home().join(".crates2.json"),
+    )
+    .unwrap();
+
+    cargo_process("install foo")
+        .with_status(101)
+        .with_stderr_contains("[ERROR] failed to write crate metadata at [..].crates2.json[..]")
+        .run();
+    assert_has_installed_exe(cargo_home(), "foo");
+    cargo_process("install --list")
+        .with_stdout_data(str![[r#"
+foo v1.0.0:
+    foo[EXE]
+
+"#]])
+        .run();
+}
