@@ -1387,6 +1387,42 @@ fn install_repairs_missing_binary_from_multi_binary_package() {
 }
 
 #[cargo_test]
+fn skips_unchanged_install_with_feature_disabled_binaries() {
+    let p = git::repo(&paths::root().join("foo"))
+        .file(
+            "Cargo.toml",
+            r#"
+            [package]
+            name = "foo"
+            version = "0.1.0"
+            edition = "2024"
+            [features]
+            extra = []
+            [[bin]]
+            name = "optional"
+            path = "optional.rs"
+            required-features = ["extra"]
+        "#,
+        )
+        .file("src/main.rs", "fn main() {}")
+        .file("optional.rs", "fn main() {}")
+        .build();
+    cargo_process("install --git")
+        .arg(p.url().to_string())
+        .run();
+    assert_has_installed_exe(cargo_home(), "foo");
+    cargo_process("install --git")
+        .arg(p.url().to_string())
+        .with_stderr_data(str![[r#"
+[UPDATING] git repository `[ROOTURL]/foo`
+[IGNORED] package `foo v0.1.0 ([ROOTURL]/foo#[..])` is already installed, use --force to override
+[WARNING] be sure to add `[ROOT]/home/.cargo/bin` to your PATH to be able to run the installed binaries
+
+"#]])
+        .run();
+}
+
+#[cargo_test]
 fn skips_conflicts_for_feature_disabled_binaries() {
     let p = project()
         .file(

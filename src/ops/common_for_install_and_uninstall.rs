@@ -72,6 +72,9 @@ struct InstallInfo {
     version_req: Option<String>,
     /// Set of binary names installed.
     bins: BTreeSet<String>,
+    /// Fingerprint of a complete install whose target selection skipped some executables.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    target_selection: Option<String>,
     /// Set of features explicitly enabled.
     features: BTreeSet<String>,
     all_features: bool,
@@ -239,11 +242,9 @@ impl InstallTracker {
                 dupe_pkg_id.version() == pkg.version()
                     && dupe_pkg_id.source_id() == source_id
                     && precise_equal
-                    && info.is_up_to_date(opts, target, &exes)
+                    && info.is_up_to_date(opts, target, &exes, dst)
             };
-            if matching_duplicates.iter().all(is_up_to_date)
-                && exes.iter().all(|name| dst.join(name).is_file())
-            {
+            if matching_duplicates.iter().all(is_up_to_date) {
                 Ok((Freshness::Fresh, duplicates))
             } else {
                 Ok((Freshness::Dirty(DirtyReason::Forced), duplicates))
@@ -277,6 +278,25 @@ impl InstallTracker {
         self.v2
             .mark_installed(package, bins, version_req, opts, target, rustc);
         self.v1.mark_installed(package, bins);
+    }
+
+    /// Remembers the compiler's target selection after every built executable was installed.
+    pub(super) fn record_target_selection(
+        &mut self,
+        pkg: &Package,
+        opts: &CompileOptions,
+        target: &str,
+        built: &BTreeSet<String>,
+    ) {
+        let info = self
+            .v2
+            .installs
+            .get_mut(&pkg.package_id())
+            .expect("installed package");
+        let requested = exe_names(pkg, &opts.filter);
+        if &info.bins == built && requested != *built {
+            info.target_selection = Some(info.selection_fingerprint(opts, target, &requested));
+        }
     }
 
     /// Save tracking information to disk.
@@ -491,6 +511,7 @@ impl CrateListingV2 {
         // Add these bins.
         if let Some(info) = self.installs.get_mut(&pkg.package_id()) {
             info.bins.append(&mut bins.clone());
+            info.target_selection = None;
             info.version_req = version_req;
             info.features = feature_set(&opts.cli_features.features);
             info.all_features = opts.cli_features.all_features;
@@ -504,6 +525,7 @@ impl CrateListingV2 {
                 InstallInfo {
                     version_req,
                     bins: bins.clone(),
+                    target_selection: None,
                     features: feature_set(&opts.cli_features.features),
                     all_features: opts.cli_features.all_features,
                     no_default_features: !opts.cli_features.uses_default_features,
@@ -589,6 +611,7 @@ impl InstallInfo {
         InstallInfo {
             version_req: None,
             bins: set.clone(),
+            target_selection: None,
             features: BTreeSet::new(),
             all_features: false,
             no_default_features: false,
@@ -599,16 +622,43 @@ impl InstallInfo {
         }
     }
 
+    /// Binds skipped targets to their original flags and ownership, including across older writers.
+    fn selection_fingerprint(
+        &self,
+        opts: &CompileOptions,
+        target: &str,
+        requested: &BTreeSet<String>,
+    ) -> String {
+        crate::util::hex::short_hash(&(
+            &opts.filter,
+            &opts.cli_features,
+            opts.build_config.requested_profile.as_str(),
+            target,
+            requested,
+            &self.bins,
+        ))
+    }
+
     /// Determine if this installation is "up to date", or if it needs to be reinstalled.
     ///
     /// This does not do Package/Source/Version checking.
-    fn is_up_to_date(&self, opts: &CompileOptions, target: &str, exes: &BTreeSet<String>) -> bool {
+    fn is_up_to_date(
+        &self,
+        opts: &CompileOptions,
+        target: &str,
+        exes: &BTreeSet<String>,
+        dst: &Path,
+    ) -> bool {
         self.features == feature_set(&opts.cli_features.features)
             && self.all_features == opts.cli_features.all_features
             && self.no_default_features != opts.cli_features.uses_default_features
             && self.profile.as_str() == opts.build_config.requested_profile.as_str()
             && (self.target.is_none() || self.target.as_deref() == Some(target))
-            && &self.bins == exes
+            && (&self.bins == exes
+                || self.target_selection.as_ref().is_some_and(|selection| {
+                    selection == &self.selection_fingerprint(opts, target, exes)
+                }))
+            && self.bins.iter().all(|name| dst.join(name).is_file())
     }
 }
 
