@@ -2576,7 +2576,16 @@ fn compute_metadata(
         .map(|dep| *metadata_of(&dep.unit, build_runner, metas))
         .collect::<Vec<_>>();
     let c_extra_filename = use_extra_filename(bcx, unit);
-    let pkg_dir = use_pkg_dir(bcx, unit);
+    // Full rustdoc JSON and mergeable cross-crate info are both named <crate>.json.
+    // Give each format a separate output directory and freshness fingerprint.
+    let doc_format = match unit.mode {
+        CompileMode::Doc if bcx.build_config.intent.wants_doc_json_output() => Some("rustdoc-json"),
+        CompileMode::Doc if bcx.gctx.cli_unstable().rustdoc_mergeable_info => {
+            Some("rustdoc-mergeable-info")
+        }
+        _ => None,
+    };
+    let pkg_dir = doc_format.is_some() || use_pkg_dir(bcx, unit);
 
     let mut shared_hasher = StableHasher::new();
 
@@ -2705,6 +2714,9 @@ fn compute_metadata(
     dep_c_metadata_hashes.hash(&mut c_metadata_hasher);
 
     let mut unit_id_hasher = shared_hasher.clone();
+    if let Some(format) = doc_format {
+        format.hash(&mut unit_id_hasher);
+    }
     if shared_stages {
         unit.mode.hash(&mut unit_id_hasher);
     }

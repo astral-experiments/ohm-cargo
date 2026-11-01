@@ -3364,7 +3364,7 @@ fn mergeable_info_with_deps() {
         fs::read_to_string(p.build_dir().join(".rustdoc_fingerprint.json")).unwrap(),
         str![[r#"
 {
-  "doc_parts": [
+  "doc_parts_by_unit": [
     "debug/build/dep-[HASH]/out/dep.json",
     "debug/build/foo-[HASH]/out/foo.json"
   ],
@@ -3448,7 +3448,7 @@ fn mergeable_info_no_deps() {
         fs::read_to_string(p.build_dir().join(".rustdoc_fingerprint.json")).unwrap(),
         str![[r#"
 {
-  "doc_parts": [
+  "doc_parts_by_unit": [
     "debug/build/foo-[HASH]/out/foo.json"
   ],
   "rustc_vv": "{...}"
@@ -3522,7 +3522,7 @@ fn mergeable_info_workspace() {
         fs::read_to_string(p.build_dir().join(".rustdoc_fingerprint.json")).unwrap(),
         str![[r#"
 {
-  "doc_parts": [
+  "doc_parts_by_unit": [
     "debug/build/bar-[HASH]/out/bar.json",
     "debug/build/dep-[HASH]/out/dep.json",
     "debug/build/foo-[HASH]/out/foo.json"
@@ -3591,7 +3591,7 @@ fn mergeable_info_multi_targets() {
         p.read_file(format!("target/{host}/.rustdoc_fingerprint.json")),
         str![[r#"
 {
-  "doc_parts": [
+  "doc_parts_by_unit": [
     "debug/build/foo-[HASH]/out/foo.json"
   ],
   "rustc_vv": "{...}"
@@ -3604,7 +3604,7 @@ fn mergeable_info_multi_targets() {
         p.read_file(format!("target/{target}/.rustdoc_fingerprint.json")),
         str![[r#"
 {
-  "doc_parts": [
+  "doc_parts_by_unit": [
     "debug/build/foo-[HASH]/out/foo.json"
   ],
   "rustc_vv": "{...}"
@@ -3651,7 +3651,7 @@ fn mergeable_info_rebuild_detection() {
         fs::read_to_string(p.build_dir().join(".rustdoc_fingerprint.json")).unwrap(),
         str![[r#"
 {
-  "doc_parts": [
+  "doc_parts_by_unit": [
     "debug/build/foo-[HASH]/out/foo.json"
   ],
   "rustc_vv": "{...}"
@@ -3678,7 +3678,7 @@ fn mergeable_info_rebuild_detection() {
         fs::read_to_string(p.build_dir().join(".rustdoc_fingerprint.json")).unwrap(),
         str![[r#"
 {
-  "doc_parts": [
+  "doc_parts_by_unit": [
     "debug/build/foo-[HASH]/out/foo.json"
   ],
   "rustc_vv": "{...}"
@@ -3739,7 +3739,7 @@ fn mergeable_info_rebuild_detection() {
         fs::read_to_string(p.build_dir().join(".rustdoc_fingerprint.json")).unwrap(),
         str![[r#"
 {
-  "doc_parts": [
+  "doc_parts_by_unit": [
     "debug/build/foo-[HASH]/out/foo.json"
   ],
   "rustc_vv": "{...}"
@@ -3789,7 +3789,7 @@ fn mergeable_info_rebuild_with_depinfo() {
         fs::read_to_string(p.build_dir().join(".rustdoc_fingerprint.json")).unwrap(),
         str![[r#"
 {
-  "doc_parts": [
+  "doc_parts_by_unit": [
     "debug/build/foo-[HASH]/out/foo.json"
   ],
   "rustc_vv": "{...}"
@@ -3816,7 +3816,7 @@ fn mergeable_info_rebuild_with_depinfo() {
         fs::read_to_string(p.build_dir().join(".rustdoc_fingerprint.json")).unwrap(),
         str![[r#"
 {
-  "doc_parts": [
+  "doc_parts_by_unit": [
     "debug/build/foo-[HASH]/out/foo.json"
   ],
   "rustc_vv": "{...}"
@@ -3877,7 +3877,7 @@ fn mergeable_info_rebuild_with_depinfo() {
         fs::read_to_string(p.build_dir().join(".rustdoc_fingerprint.json")).unwrap(),
         str![[r#"
 {
-  "doc_parts": [
+  "doc_parts_by_unit": [
     "debug/build/foo-[HASH]/out/foo.json"
   ],
   "rustc_vv": "{...}"
@@ -3945,7 +3945,7 @@ fn mergeable_info_additive() {
         fs::read_to_string(p.build_dir().join(".rustdoc_fingerprint.json")).unwrap(),
         str![[r#"
 {
-  "doc_parts": [
+  "doc_parts_by_unit": [
     "debug/build/foo-[HASH]/out/foo.json"
   ],
   "rustc_vv": "{...}"
@@ -3981,7 +3981,7 @@ fn mergeable_info_additive() {
         fs::read_to_string(p.build_dir().join(".rustdoc_fingerprint.json")).unwrap(),
         str![[r#"
 {
-  "doc_parts": [
+  "doc_parts_by_unit": [
     "debug/build/dep-[HASH]/out/dep.json",
     "debug/build/foo-[HASH]/out/foo.json"
   ],
@@ -4018,7 +4018,7 @@ fn mergeable_info_additive() {
         fs::read_to_string(p.build_dir().join(".rustdoc_fingerprint.json")).unwrap(),
         str![[r#"
 {
-  "doc_parts": [
+  "doc_parts_by_unit": [
     "debug/build/bar-[HASH]/out/bar.json",
     "debug/build/dep-[HASH]/out/dep.json",
     "debug/build/foo-[HASH]/out/foo.json"
@@ -4096,7 +4096,7 @@ fn mergeable_info_dep_collision() {
         &first_fingerprint,
         str![[r#"
 {
-  "doc_parts": [
+  "doc_parts_by_unit": [
     "debug/build/dep-[HASH]/out/dep.json"
   ],
   "rustc_vv": "{...}"
@@ -4136,7 +4136,7 @@ fn mergeable_info_dep_collision() {
         &second_fingerprint,
         str![[r#"
 {
-  "doc_parts": [
+  "doc_parts_by_unit": [
     "debug/build/dep-[HASH]/out/dep.json"
   ],
   "rustc_vv": "{...}"
@@ -4243,6 +4243,35 @@ fn doc_output_format_json_no_deps() {
 
     let foo_json = fs::read_to_string(p.root().join("target/doc/foo.json")).unwrap();
     assert!(foo_json.contains("foo_fn"));
+}
+
+#[cargo_test(nightly, reason = "rustdoc JSON and mergeable info are unstable")]
+fn doc_json_and_mergeable_info_can_share_a_target_directory() {
+    let p = project().file("src/lib.rs", "pub fn visible() {}").build();
+    for args in [
+        "doc -Zunstable-options --output-format=json",
+        "doc -Zrustdoc-mergeable-info",
+        "doc -Zunstable-options --output-format=json",
+    ] {
+        p.cargo(args)
+            .masquerade_as_nightly_cargo(&["rustdoc-output-format", "rustdoc-mergeable-info"])
+            .run();
+        let output: serde_json::Value =
+            serde_json::from_str(&p.read_file("target/doc/foo.json")).unwrap();
+        assert!(output["index"].is_object());
+    }
+
+    // Older Cargo versions can replace the merged index while leaving the unit outputs intact.
+    let fingerprint = p.build_dir().join(".rustdoc_fingerprint.json");
+    let legacy = fs::read_to_string(&fingerprint)
+        .unwrap()
+        .replace("doc_parts_by_unit", "doc_parts");
+    fs::write(fingerprint, legacy).unwrap();
+    p.change_file("target/doc/crates.js", "window.ALL_CRATES = [];");
+    p.cargo("doc -Zrustdoc-mergeable-info")
+        .masquerade_as_nightly_cargo(&["rustdoc-mergeable-info"])
+        .run();
+    assert!(p.read_file("target/doc/crates.js").contains(r#""foo""#));
 }
 
 #[cargo_test(nightly, reason = "--output-format is unstable")]
