@@ -1224,6 +1224,90 @@ fn dependent_crates_in_crates() {
 }
 
 #[cargo_test]
+#[cfg(unix)]
+fn vendor_git_checksum_paths() {
+    let git = git::new("dep", |p| {
+        p.file("Cargo.toml", &basic_lib_manifest("dep"))
+            .file("src/lib.rs", "")
+            .file(r"data\item", "literal")
+            .file("data/item", "nested")
+    });
+    let p = project()
+        .file(
+            "Cargo.toml",
+            &format!(
+                "{}\n[dependencies]\ndep = {{ git = '{}' }}",
+                basic_manifest("app", "0.1.0"),
+                git.url()
+            ),
+        )
+        .file("src/lib.rs", "")
+        .build();
+
+    let output = p.cargo("vendor --respect-source-config").run();
+    let checksum: serde_json::Value =
+        serde_json::from_str(&p.read_file("vendor/dep/.cargo-checksum.json")).unwrap();
+    assert!(checksum["files"][r"data\item"].is_string());
+    assert_ne!(
+        checksum["files"][r"data\item"],
+        checksum["files"]["data/item"]
+    );
+    p.change_file(
+        ".cargo/config.toml",
+        std::str::from_utf8(&output.stdout).unwrap(),
+    );
+    p.cargo("check --frozen").run();
+}
+
+#[cargo_test]
+#[cfg(unix)]
+fn vendor_registry_checksum_upgrade() {
+    Package::new("plain", "1.0.0")
+        .file("src/lib.rs", "")
+        .publish();
+    Package::new("dep", "1.0.0")
+        .file("src/lib.rs", "")
+        .file(r"data\dir/item", "literal")
+        .publish();
+    let p = project()
+        .file(
+            "Cargo.toml",
+            &format!(
+                "{}\n[dependencies]\ndep = '1'\nplain = '1'",
+                basic_manifest("app", "0.1.0")
+            ),
+        )
+        .file("src/lib.rs", "")
+        .build();
+    let command = "vendor --respect-source-config --versioned-dirs";
+    p.cargo(command).run();
+    let name = "vendor/dep-1.0.0/.cargo-checksum.json";
+    let mut old: serde_json::Value = serde_json::from_str(&p.read_file(name)).unwrap();
+    old.as_object_mut().unwrap().remove("vendor-format");
+    let files = old["files"].as_object_mut().unwrap();
+    if let Some(value) = files.remove(r"data\dir/item") {
+        files.insert("data/dir/item".to_owned(), value);
+    }
+    p.change_file(name, &old.to_string());
+    let plain = "vendor/plain-1.0.0/.cargo-checksum.json";
+    let mut old_plain: serde_json::Value = serde_json::from_str(&p.read_file(plain)).unwrap();
+    old_plain.as_object_mut().unwrap().remove("vendor-format");
+    p.change_file(plain, &old_plain.to_string());
+    p.change_file(r"vendor/plain-1.0.0/local\notes", "keep");
+
+    let output = p.cargo(command).run();
+    assert_eq!(p.read_file(r"vendor/plain-1.0.0/local\notes"), "keep");
+    p.change_file("vendor/dep-1.0.0/keep", "");
+    p.cargo(command).run();
+    assert!(p.root().join("vendor/dep-1.0.0/keep").is_file());
+    p.change_file(
+        ".cargo/config.toml",
+        std::str::from_utf8(&output.stdout).unwrap(),
+    );
+    p.cargo("check --frozen").run();
+}
+
+#[cargo_test]
 fn vendoring_git_crates() {
     let git = git::new("git", |p| {
         p.file("Cargo.toml", &basic_lib_manifest("serde_derive"))

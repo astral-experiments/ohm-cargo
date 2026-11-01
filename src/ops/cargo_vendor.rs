@@ -21,7 +21,7 @@ use crate::util::data_structures::{HashMap, HashSet};
 use std::collections::{BTreeMap, BTreeSet};
 use std::ffi::OsStr;
 use std::fs::{self, File, OpenOptions};
-use std::io::{self, Read, Write};
+use std::io::{self, Read, Seek, SeekFrom, Write};
 use std::path::{Path, PathBuf};
 
 pub struct VendorOptions<'a> {
@@ -234,7 +234,8 @@ fn sync(
         let cksum = dst.join(".cargo-checksum.json");
         // Registries are the only immutable sources,
         // path and git dependencies' versions cannot be trusted to mean "no change"
-        if dir_has_version_suffix && id.source_id().is_registry() && cksum.exists() {
+        let immutable_registry = dir_has_version_suffix && id.source_id().is_registry();
+        if immutable_registry && reusable_checksum(&cksum, src) {
             // Don't re-copy directory with version suffix in case it comes from a registry
             continue;
         }
@@ -285,7 +286,7 @@ fn sync(
                         .update_path(path)
                         .map(Sha256::finish_hex)
                         .with_context(|| format!("failed to checksum `{}`", path.display()))?;
-                    file_cksums.insert(relative.to_str().unwrap().replace("\\", "/"), cksum);
+                    file_cksums.insert(checksum_path(relative)?, cksum);
                 }
                 Ok::<_, anyhow::Error>(())
             };
@@ -348,12 +349,15 @@ fn sync(
         }
 
         // Finally, emit the metadata about this package
-        let json = serde_json::json!({
+        let mut json = serde_json::json!({
             "$comment": "This file only protects against accidental modifications. \
                 It is not a security mechanism and does not protect against malicious changes.",
             "package": checksums.get(id),
             "files": file_cksums,
         });
+        if immutable_registry {
+            json["vendor-format"] = 1.into();
+        }
 
         paths::write(&cksum, json.to_string())?;
     }
@@ -432,6 +436,40 @@ fn sync(
     Ok(VendorConfig { source: config })
 }
 
+/// Keeps immutable registry directories unless an older vendor could have lost a filename.
+fn reusable_checksum(checksum: &Path, source: &Path) -> bool {
+    let Ok(mut file) = File::open(checksum) else {
+        return false;
+    };
+    // The format tag ends the compact JSON for immutable directories. Read just the tag
+    // on a warm run, even if the package has thousands of file hashes.
+    const SUFFIX: &[u8] = br#","vendor-format":1}"#;
+    let mut suffix = [0; SUFFIX.len()];
+    if cfg!(windows)
+        || (file.seek(SeekFrom::End(-(SUFFIX.len() as i64))).is_ok()
+            && file.read_exact(&mut suffix).is_ok()
+            && suffix == SUFFIX)
+    {
+        return true;
+    }
+    // Extra files in a vendor directory do not make its original checksum map ambiguous.
+    WalkDir::new(source)
+        .min_depth(1)
+        .into_iter()
+        .all(|entry| entry.is_ok_and(|e| e.file_name().to_str().is_some_and(|s| !s.contains('\\'))))
+}
+
+/// Encodes a relative filename for the JSON checksum map without conflating Unix paths.
+fn checksum_path(relative: &Path) -> CargoResult<String> {
+    let path = relative.to_str().with_context(|| {
+        format!(
+            "cannot write non-UTF-8 path `{}` to .cargo-checksum.json",
+            relative.display()
+        )
+    })?;
+    Ok(normalize_path_string_sep(path.to_owned()))
+}
+
 fn cp_sources(
     pkg: &Package,
     src: &Path,
@@ -447,6 +485,7 @@ fn cp_sources(
         if !vendor_this(relative) {
             continue;
         }
+        let checksum_key = checksum_path(relative)?;
 
         // Join pathname components individually to make sure that the joined
         // path uses the correct directory separators everywhere, since
@@ -492,7 +531,7 @@ fn cp_sources(
             copy_and_checksum(&dst, &mut dst_opts, &mut src, &p, tmp_buf)?
         };
 
-        cksums.insert(relative.to_str().unwrap().replace("\\", "/"), cksum);
+        cksums.insert(checksum_key, cksum);
     }
     Ok(())
 }
