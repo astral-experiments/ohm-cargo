@@ -70,10 +70,34 @@ fn append_file(text: &str, shell: bool, expanded: &mut Vec<String>) -> Option<()
     Some(())
 }
 
+/// Shares argument files between the crate build and the final HTML merge.
+pub(crate) type SharedRustdocArgFiles = std::sync::Arc<std::sync::OnceLock<RustdocArgFiles>>;
+
+/// Files captured during the unit build and reused by subsequent Rustdoc passes.
+#[derive(Debug)]
+pub(crate) struct RustdocArgFiles {
+    copies: Vec<(String, OsString, NamedTempFile)>,
+}
+
+impl RustdocArgFiles {
+    /// Replays only configured flags in the merge. They follow per-unit flags in the original command.
+    pub(crate) fn configured_args(&self, flags: &[String]) -> Vec<OsString> {
+        let mut copies = self.copies.iter().rev().peekable();
+        let mut args: Vec<OsString> = flags.iter().map(OsString::from).collect();
+        for arg in args.iter_mut().rev() {
+            if let Some((raw, replacement, _)) = copies.peek()
+                && arg == std::ffi::OsStr::new(raw)
+            {
+                *arg = replacement.clone();
+                copies.next();
+            }
+        }
+        args
+    }
+}
+
 /// Snapshots inputs once when a Rustdoc command with untracked arguments must run twice.
-pub(crate) fn snapshot_for_replay(
-    cmd: &mut ProcessBuilder,
-) -> crate::CargoResult<Vec<NamedTempFile>> {
+pub(crate) fn snapshot_for_replay(cmd: &mut ProcessBuilder) -> crate::CargoResult<RustdocArgFiles> {
     let cwd = cmd.get_cwd().unwrap_or_else(|| Path::new("."));
     let mut copies = Vec::new();
     let mut snapshot_error = None;
@@ -120,7 +144,7 @@ pub(crate) fn snapshot_for_replay(
             "could not replace Rustdoc argument {raw}"
         );
     }
-    Ok(copies.into_iter().map(|(_, _, file)| file).collect())
+    Ok(RustdocArgFiles { copies })
 }
 
 /// Leaves non-file inputs unread so the compiler can consume them exactly once.

@@ -51,6 +51,8 @@ pub struct RustdocFingerprint {
     rustc_vv: String,
     /// Working directory for the final Rustdoc process.
     pub(crate) merge_cwd: PathBuf,
+    /// Configured argument files captured by the merge root's Rustdoc job.
+    pub(crate) merge_argfiles: Option<crate::util::argfiles::SharedRustdocArgFiles>,
     /// Relocatable identity for the merge directory in the on-disk fingerprint.
     merge_cwd_key: PathBuf,
     /// Absolute paths to new cross crate info JSON files generated in the current session.
@@ -108,16 +110,21 @@ impl RustdocFingerprint {
         let on_disk = load_on_disk(&path);
         let ws = build_runner.bcx.ws;
         let roots = &build_runner.bcx.roots;
-        let merge_cwd = roots
+        let root = roots
             .iter()
             .find(|unit| unit.kind == kind && unit.mode.is_doc())
-            .or_else(|| roots.first())
+            .or_else(|| roots.first());
+        let merge_argfiles = root
+            .and_then(|unit| build_runner.bcx.argfile_hashes.get(unit))
+            .and_then(|inputs| inputs.merge_argfiles.clone());
+        let merge_cwd = root
             .map(|unit| crate::util::path_args(ws, unit).1)
             .unwrap_or_else(|| ws.root().to_owned());
         let merge_cwd_key =
             pathdiff::diff_paths(&merge_cwd, ws.root()).unwrap_or_else(|| merge_cwd.clone());
         Self {
             merge_cwd,
+            merge_argfiles,
             merge_cwd_key,
             path,
             rustc_vv,

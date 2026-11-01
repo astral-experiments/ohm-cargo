@@ -145,7 +145,16 @@ fn merge_cross_crate_info(ws: &Workspace<'_>, compilation: &Compilation<'_>) -> 
                 .arg(rustdoc_artifact_dir.as_path_unlocked())
                 .arg("-Zunstable-options");
             cmd.arg("--edition=2015"); // to suppress edition unspecified warning
-            cmd.args(&compilation.rustdocflags[kind]);
+            let configured = &compilation.rustdocflags[kind];
+            if let Some(files) = fingerprint
+                .merge_argfiles
+                .as_ref()
+                .and_then(|slot| slot.get())
+            {
+                cmd.args(&files.configured_args(configured));
+            } else {
+                cmd.args(configured);
+            }
             for parts_dir in doc_parts_dirs {
                 let mut include_arg = OsString::from("--read-doc-meta-dir=");
                 include_arg.push(parts_dir);
