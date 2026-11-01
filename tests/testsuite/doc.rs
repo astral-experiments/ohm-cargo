@@ -3347,7 +3347,7 @@ fn mergeable_info_with_deps() {
 [RUNNING] `rustdoc [..]--crate-name foo [..]--write-doc-meta-dir=[ROOT]/foo/target/debug/build/foo-[HASH]/out[..]`
 [FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
 [MERGING] 2 docs for host
-[RUNNING] `rustdoc -o [ROOT]/foo/target/doc -Zunstable-options --read-doc-meta-dir=[ROOT]/foo/target/debug/build/dep-[HASH]/out --read-doc-meta-dir=[ROOT]/foo/target/debug/build/foo-[HASH]/out`
+[RUNNING] `rustdoc -o [ROOT]/foo/target/doc -Zunstable-options --edition=2015 --read-doc-meta-dir=[ROOT]/foo/target/debug/build/dep-[HASH]/out --read-doc-meta-dir=[ROOT]/foo/target/debug/build/foo-[HASH]/out`
 [FINISHED] documentation merge in [ELAPSED]s
 [GENERATED] [ROOT]/foo/target/doc/foo/index.html
 
@@ -3393,7 +3393,7 @@ fn mergeable_info_with_rustdocflags() {
 [RUNNING] `rustdoc [..]--crate-name foo [..]-o [ROOT]/foo/target/doc [..]-Zunstable-options --write-doc-meta-dir=[ROOT]/foo/target/debug/build/foo-[HASH]/out [..]--markdown-playground-url=example.com --crate-version 0.5.0`
 [FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
 [MERGING] 1 doc for host
-[RUNNING] `rustdoc -o [ROOT]/foo/target/doc -Zunstable-options --markdown-playground-url=example.com --read-doc-meta-dir=[ROOT]/foo/target/debug/build/foo-[HASH]/out`
+[RUNNING] `rustdoc -o [ROOT]/foo/target/doc -Zunstable-options --edition=2015 --markdown-playground-url=example.com --read-doc-meta-dir=[ROOT]/foo/target/debug/build/foo-[HASH]/out`
 [FINISHED] documentation merge in [ELAPSED]s
 [GENERATED] [ROOT]/foo/target/doc/foo/index.html
 
@@ -3431,7 +3431,7 @@ fn mergeable_info_no_deps() {
 [RUNNING] `rustdoc [..]--crate-name foo [..]--write-doc-meta-dir=[ROOT]/foo/target/debug/build/foo-[HASH]/out [..]`
 [FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
 [MERGING] 1 doc for host
-[RUNNING] `rustdoc -o [ROOT]/foo/target/doc -Zunstable-options --read-doc-meta-dir=[ROOT]/foo/target/debug/build/foo-[HASH]/out`
+[RUNNING] `rustdoc -o [ROOT]/foo/target/doc -Zunstable-options --edition=2015 --read-doc-meta-dir=[ROOT]/foo/target/debug/build/foo-[HASH]/out`
 [FINISHED] documentation merge in [ELAPSED]s
 [GENERATED] [ROOT]/foo/target/doc/foo/index.html
 
@@ -3501,7 +3501,7 @@ fn mergeable_info_workspace() {
 [RUNNING] `rustdoc [..]--crate-name foo [..]--write-doc-meta-dir=[ROOT]/foo/target/debug/build/foo-[HASH]/out [..]`
 [FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
 [MERGING] 3 docs for host
-[RUNNING] `rustdoc -o [ROOT]/foo/target/doc -Zunstable-options --read-doc-meta-dir=[ROOT]/foo/target/debug/build/bar-[HASH]/out --read-doc-meta-dir=[ROOT]/foo/target/debug/build/dep-[HASH]/out --read-doc-meta-dir=[ROOT]/foo/target/debug/build/foo-[HASH]/out`
+[RUNNING] `rustdoc -o [ROOT]/foo/target/doc -Zunstable-options --edition=2015 --read-doc-meta-dir=[ROOT]/foo/target/debug/build/bar-[HASH]/out --read-doc-meta-dir=[ROOT]/foo/target/debug/build/dep-[HASH]/out --read-doc-meta-dir=[ROOT]/foo/target/debug/build/foo-[HASH]/out`
 [FINISHED] documentation merge in [ELAPSED]s
 [GENERATED] [ROOT]/foo/target/doc/bar/index.html
 [GENERATED] [ROOT]/foo/target/doc/dep/index.html
@@ -3565,9 +3565,9 @@ fn mergeable_info_multi_targets() {
 [RUNNING] `rustdoc [..]--crate-name foo src/lib.rs --target [ALT_TARGET] [..]--write-doc-meta-dir=[ROOT]/foo/target/[ALT_TARGET]/debug/build/foo-[HASH]/out [..]`
 [FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
 [MERGING] 1 doc for [ALT_TARGET]
-[RUNNING] `rustdoc -o [ROOT]/foo/target/[ALT_TARGET]/doc -Zunstable-options --read-doc-meta-dir=[ROOT]/foo/target/[ALT_TARGET]/debug/build/foo-[HASH]/out`
+[RUNNING] `rustdoc -o [ROOT]/foo/target/[ALT_TARGET]/doc -Zunstable-options --edition=2015 --read-doc-meta-dir=[ROOT]/foo/target/[ALT_TARGET]/debug/build/foo-[HASH]/out`
 [MERGING] 1 doc for [HOST_TARGET]
-[RUNNING] `rustdoc -o [ROOT]/foo/target/[HOST_TARGET]/doc -Zunstable-options --read-doc-meta-dir=[ROOT]/foo/target/[HOST_TARGET]/debug/build/foo-[HASH]/out`
+[RUNNING] `rustdoc -o [ROOT]/foo/target/[HOST_TARGET]/doc -Zunstable-options --edition=2015 --read-doc-meta-dir=[ROOT]/foo/target/[HOST_TARGET]/debug/build/foo-[HASH]/out`
 [FINISHED] documentation merge in [ELAPSED]s
 [GENERATED] [ROOT]/foo/target/[HOST_TARGET]/doc/foo/index.html
 [GENERATED] [ROOT]/foo/target/[ALT_TARGET]/doc/foo/index.html
@@ -3636,7 +3636,7 @@ fn mergeable_info_rebuild_detection() {
 [RUNNING] `rustdoc [..]--crate-name foo [..]--write-doc-meta-dir=[ROOT]/foo/target/debug/build/foo-[HASH]/out [..]`
 [FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
 [MERGING] 1 doc for host
-[RUNNING] `rustdoc -o [ROOT]/foo/target/doc -Zunstable-options --read-doc-meta-dir=[ROOT]/foo/target/debug/build/foo-[HASH]/out`
+[RUNNING] `rustdoc -o [ROOT]/foo/target/doc -Zunstable-options --edition=2015 --read-doc-meta-dir=[ROOT]/foo/target/debug/build/foo-[HASH]/out`
 [FINISHED] documentation merge in [ELAPSED]s
 [GENERATED] [ROOT]/foo/target/doc/foo/index.html
 
@@ -3700,7 +3700,7 @@ fn mergeable_info_rebuild_detection() {
 [RUNNING] `rustdoc [..]--crate-name foo [..]--write-doc-meta-dir=[ROOT]/foo/target/debug/build/foo-[HASH]/out [..]`
 [FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
 [MERGING] 1 doc for host
-[RUNNING] `rustdoc -o [ROOT]/foo/target/doc -Zunstable-options --read-doc-meta-dir=[ROOT]/foo/target/debug/build/foo-[HASH]/out`
+[RUNNING] `rustdoc -o [ROOT]/foo/target/doc -Zunstable-options --edition=2015 --read-doc-meta-dir=[ROOT]/foo/target/debug/build/foo-[HASH]/out`
 [FINISHED] documentation merge in [ELAPSED]s
 [GENERATED] [ROOT]/foo/target/doc/foo/index.html
 
@@ -3774,7 +3774,7 @@ fn mergeable_info_rebuild_with_depinfo() {
 [RUNNING] `rustdoc [..]--crate-name foo [..]--emit=html-non-static-files,dep-info=[..] --write-doc-meta-dir=[ROOT]/foo/target/debug/build/foo-[HASH]/out [..]`
 [FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
 [MERGING] 1 doc for host
-[RUNNING] `rustdoc -o [ROOT]/foo/target/doc -Zunstable-options --read-doc-meta-dir=[ROOT]/foo/target/debug/build/foo-[HASH]/out`
+[RUNNING] `rustdoc -o [ROOT]/foo/target/doc -Zunstable-options --edition=2015 --read-doc-meta-dir=[ROOT]/foo/target/debug/build/foo-[HASH]/out`
 [FINISHED] documentation merge in [ELAPSED]s
 [GENERATED] [ROOT]/foo/target/doc/foo/index.html
 
@@ -3838,7 +3838,7 @@ fn mergeable_info_rebuild_with_depinfo() {
 [RUNNING] `rustdoc [..]--crate-name foo [..]--emit=html-non-static-files,dep-info=[..] --write-doc-meta-dir=[ROOT]/foo/target/debug/build/foo-[HASH]/out [..]`
 [FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
 [MERGING] 1 doc for host
-[RUNNING] `rustdoc -o [ROOT]/foo/target/doc -Zunstable-options --read-doc-meta-dir=[ROOT]/foo/target/debug/build/foo-[HASH]/out`
+[RUNNING] `rustdoc -o [ROOT]/foo/target/doc -Zunstable-options --edition=2015 --read-doc-meta-dir=[ROOT]/foo/target/debug/build/foo-[HASH]/out`
 [FINISHED] documentation merge in [ELAPSED]s
 [GENERATED] [ROOT]/foo/target/doc/foo/index.html
 
@@ -3926,7 +3926,7 @@ fn mergeable_info_additive() {
 [RUNNING] `rustdoc [..]--crate-name foo [..]--write-doc-meta-dir=[ROOT]/foo/target/debug/build/foo-[HASH]/out [..]`
 [FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
 [MERGING] 1 doc for host
-[RUNNING] `rustdoc -o [ROOT]/foo/target/doc -Zunstable-options --read-doc-meta-dir=[ROOT]/foo/target/debug/build/foo-[HASH]/out`
+[RUNNING] `rustdoc -o [ROOT]/foo/target/doc -Zunstable-options --edition=2015 --read-doc-meta-dir=[ROOT]/foo/target/debug/build/foo-[HASH]/out`
 [FINISHED] documentation merge in [ELAPSED]s
 [GENERATED] [ROOT]/foo/target/doc/foo/index.html
 
@@ -3962,7 +3962,7 @@ fn mergeable_info_additive() {
 [RUNNING] `rustdoc [..]--crate-name dep [..]--write-doc-meta-dir=[ROOT]/foo/target/debug/build/dep-[HASH]/out [..]`
 [FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
 [MERGING] 2 docs for host
-[RUNNING] `rustdoc -o [ROOT]/foo/target/doc -Zunstable-options --read-doc-meta-dir=[ROOT]/foo/target/debug/build/dep-[HASH]/out --read-doc-meta-dir=[ROOT]/foo/target/debug/build/foo-[HASH]/out`
+[RUNNING] `rustdoc -o [ROOT]/foo/target/doc -Zunstable-options --edition=2015 --read-doc-meta-dir=[ROOT]/foo/target/debug/build/dep-[HASH]/out --read-doc-meta-dir=[ROOT]/foo/target/debug/build/foo-[HASH]/out`
 [FINISHED] documentation merge in [ELAPSED]s
 [GENERATED] [ROOT]/foo/target/doc/dep/index.html
 
@@ -3999,7 +3999,7 @@ fn mergeable_info_additive() {
 [RUNNING] `rustdoc [..]--crate-name bar [..]--write-doc-meta-dir=[ROOT]/foo/target/debug/build/bar-[HASH]/out [..]`
 [FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
 [MERGING] 3 docs for host
-[RUNNING] `rustdoc -o [ROOT]/foo/target/doc -Zunstable-options --read-doc-meta-dir=[ROOT]/foo/target/debug/build/bar-[HASH]/out --read-doc-meta-dir=[ROOT]/foo/target/debug/build/dep-[HASH]/out --read-doc-meta-dir=[ROOT]/foo/target/debug/build/foo-[HASH]/out`
+[RUNNING] `rustdoc -o [ROOT]/foo/target/doc -Zunstable-options --edition=2015 --read-doc-meta-dir=[ROOT]/foo/target/debug/build/bar-[HASH]/out --read-doc-meta-dir=[ROOT]/foo/target/debug/build/dep-[HASH]/out --read-doc-meta-dir=[ROOT]/foo/target/debug/build/foo-[HASH]/out`
 [FINISHED] documentation merge in [ELAPSED]s
 [GENERATED] [ROOT]/foo/target/doc/bar/index.html
 
@@ -4075,7 +4075,7 @@ fn mergeable_info_dep_collision() {
 [RUNNING] `rustdoc [..]--crate-name dep [..]--write-doc-meta-dir=[ROOT]/foo/target/debug/build/dep-[HASH]/out [..]--crate-version 0.1.0`
 [FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
 [MERGING] 1 doc for host
-[RUNNING] `rustdoc -o [ROOT]/foo/target/doc -Zunstable-options --read-doc-meta-dir=[ROOT]/foo/target/debug/build/dep-[HASH]/out`
+[RUNNING] `rustdoc -o [ROOT]/foo/target/doc -Zunstable-options --edition=2015 --read-doc-meta-dir=[ROOT]/foo/target/debug/build/dep-[HASH]/out`
 [FINISHED] documentation merge in [ELAPSED]s
 [GENERATED] [ROOT]/foo/target/doc/dep/index.html
 
@@ -4114,7 +4114,7 @@ fn mergeable_info_dep_collision() {
 [RUNNING] `rustdoc [..]--crate-name dep [..]--write-doc-meta-dir=[ROOT]/foo/target/debug/build/dep-[HASH]/out [..]--crate-version 0.2.0`
 [FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
 [MERGING] 1 doc for host
-[RUNNING] `rustdoc -o [ROOT]/foo/target/doc -Zunstable-options --read-doc-meta-dir=[ROOT]/foo/target/debug/build/dep-[HASH]/out`
+[RUNNING] `rustdoc -o [ROOT]/foo/target/doc -Zunstable-options --edition=2015 --read-doc-meta-dir=[ROOT]/foo/target/debug/build/dep-[HASH]/out`
 [FINISHED] documentation merge in [ELAPSED]s
 [GENERATED] [ROOT]/foo/target/doc/dep/index.html
 
