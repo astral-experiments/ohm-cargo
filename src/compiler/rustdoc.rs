@@ -258,6 +258,72 @@ pub fn add_output_format(
     Ok(())
 }
 
+/// Whether flags passed to rustdoc request JSON. Option values can start with a dash.
+pub(crate) fn forwarded_json<'a>(mut args: impl Iterator<Item = &'a str>) -> bool {
+    while let Some(arg) = args.next() {
+        if arg == "--" {
+            break;
+        }
+        if let Some(long) = arg.strip_prefix("--") {
+            let (name, value) = long
+                .split_once('=')
+                .map_or((long, None), |(name, value)| (name, Some(value)));
+            if name == "output-format" {
+                return value.or_else(|| args.next()) == Some("json");
+            }
+            // Rustdoc's long switches take no value. Skip the argument of other
+            // bare options, including paths spelled `--output-format=json`.
+            if value.is_none()
+                && !matches!(
+                    name,
+                    "help"
+                        | "version"
+                        | "verbose"
+                        | "extern-html-root-takes-precedence"
+                        | "document-private-items"
+                        | "document-hidden-items"
+                        | "test"
+                        | "markdown-no-toc"
+                        | "display-doctest-warnings"
+                        | "sort-modules-by-appearance"
+                        | "enable-index-page"
+                        | "show-coverage"
+                        | "check"
+                        | "generate-redirect-map"
+                        | "no-run"
+                        | "show-type-layout"
+                        | "no-capture"
+                        | "generate-link-to-definition"
+                        | "scrape-tests"
+                        | "html-no-source"
+                        | "disable-minification"
+                        | "generate-macro-expansion"
+                        | "no-defaults"
+                )
+            {
+                args.next();
+            }
+        } else if let Some(short) = arg.strip_prefix('-') {
+            let mut chars = short.chars();
+            while let Some(option) = chars.next() {
+                if matches!(option, 'h' | 'v' | 'V') {
+                    continue;
+                }
+                let value = if chars.as_str().is_empty() {
+                    args.next()
+                } else {
+                    Some(chars.as_str())
+                };
+                if option == 'w' {
+                    return value == Some("json");
+                }
+                break;
+            }
+        }
+    }
+    false
+}
+
 /// Indicates whether a target should have examples scraped from it by rustdoc.
 /// Configured within Cargo.toml and only for unstable feature
 /// [`-Zrustdoc-scrape-examples`][1].

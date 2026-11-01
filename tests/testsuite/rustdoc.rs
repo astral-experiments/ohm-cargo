@@ -8,6 +8,30 @@ use cargo_test_support::{basic_manifest, cross_compile, project};
 
 use crate::utils::cross_compile::disabled as cross_compile_disabled;
 
+#[cargo_test(nightly, reason = "rustdoc JSON output and dep-info are unstable")]
+fn forwarded_json_tracks_the_generated_output() {
+    let p = project()
+        .file("src/lib.rs", "/// Forwarded.\npub fn example() {}")
+        .build();
+    for configured in [false, true] {
+        let mut cmd = p.cargo("rustdoc -Zrustdoc-depinfo --lib");
+        cmd.masquerade_as_nightly_cargo(&["rustdoc-depinfo"]);
+        if configured {
+            cmd.env("RUSTDOCFLAGS", "-Zunstable-options -w json");
+        } else {
+            cmd.args(&["--", "-Zunstable-options", "--output-format=json"]);
+        }
+        cmd.run();
+        let json = p.build_dir().join("doc/foo.json");
+        assert!(
+            std::fs::read_to_string(&json)
+                .unwrap()
+                .contains("Forwarded.")
+        );
+        std::fs::remove_file(json).unwrap();
+    }
+}
+
 #[cargo_test]
 fn rustdoc_simple() {
     let p = project().file("src/lib.rs", "").build();

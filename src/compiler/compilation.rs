@@ -91,6 +91,8 @@ pub struct Compilation<'gctx> {
 
     /// The crate names of the root units specified on the command-line.
     pub root_crate_names: Vec<String>,
+    /// Public output paths for documentation roots in this compilation.
+    pub(crate) root_doc_paths: Vec<PathBuf>,
 
     /// All directories for the output of native build commands.
     ///
@@ -221,6 +223,7 @@ impl<'gctx> Compilation<'gctx> {
             runner_snapshot: None,
             cdylibs: Vec::new(),
             root_crate_names: Vec::new(),
+            root_doc_paths: Vec::new(),
             extra_env: HashMap::default(),
             to_doc_test: Vec::new(),
             rustdoc_fingerprints: None,

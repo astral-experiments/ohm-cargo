@@ -3571,8 +3571,6 @@ fn mergeable_info_multi_targets() {
 [FINISHED] documentation merge in [ELAPSED]s
 [GENERATED] [ROOT]/foo/target/[HOST_TARGET]/doc/foo/index.html
 [GENERATED] [ROOT]/foo/target/[ALT_TARGET]/doc/foo/index.html
-[GENERATED] [ROOT]/foo/target/[HOST_TARGET]/doc/foo/index.html
-[GENERATED] [ROOT]/foo/target/[ALT_TARGET]/doc/foo/index.html
 
 "#]].unordered(),
         )

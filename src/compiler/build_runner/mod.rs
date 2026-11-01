@@ -606,7 +606,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         self.check_collisions()?;
 
         for unit in &self.bcx.roots {
-            self.collect_tests_and_executables(unit)?;
+            self.collect_root_outputs(unit)?;
         }
 
         Ok(self.compilation)
@@ -950,7 +950,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
 
         // Collect the result of the build into `self.compilation`.
         for unit in &self.bcx.roots {
-            self.collect_tests_and_executables(unit)?;
+            self.collect_root_outputs(unit)?;
 
             // Collect information for `rustdoc --test`.
             if unit.mode.is_doc_test() {
@@ -1264,7 +1264,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         Ok(())
     }
 
-    fn collect_tests_and_executables(&mut self, unit: &Unit) -> CargoResult<()> {
+    fn collect_root_outputs(&mut self, unit: &Unit) -> CargoResult<()> {
         for output in self.outputs(unit)?.iter() {
             if matches!(
                 output.flavor,
@@ -1277,6 +1277,9 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             }
 
             let bindst = output.bin_dst();
+            if unit.mode.is_doc() && output.flavor == FileFlavor::Normal {
+                self.compilation.root_doc_paths.push(bindst.clone());
+            }
 
             if unit.mode == CompileMode::Test {
                 self.compilation
@@ -1337,6 +1340,10 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
                 .entry(unit.kind)
                 .or_default()
                 .push(doc_parts.path.to_owned());
+        }
+
+        if doc_parts_map.is_empty() {
+            return Ok(());
         }
 
         self.compilation.rustdoc_fingerprints = Some(

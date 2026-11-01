@@ -80,6 +80,8 @@ pub struct BuildContext<'a, 'gctx> {
 
     /// Effective flags for units whose compiler arguments reference files.
     pub(super) argfile_hashes: HashMap<Unit, u64>,
+    /// Documentation units whose forwarded arguments select JSON output.
+    forwarded_json_docs: HashSet<Unit>,
 
     /// Package downloader.
     ///
@@ -140,7 +142,8 @@ impl<'a, 'gctx> BuildContext<'a, 'gctx> {
             .chain(std::iter::once(CompileKind::Host))
             .collect();
 
-        let argfile_hashes = argfile_fingerprints(ws, &unit_graph, &extra_compiler_args);
+        let (argfile_hashes, forwarded_json_docs) =
+            compiler_inputs(ws, &unit_graph, &extra_compiler_args);
 
         Ok(BuildContext {
             ws,
@@ -153,6 +156,7 @@ impl<'a, 'gctx> BuildContext<'a, 'gctx> {
             profiles,
             extra_compiler_args,
             argfile_hashes,
+            forwarded_json_docs,
             target_data,
             roots,
             test_check_candidates,
@@ -207,6 +211,11 @@ impl<'a, 'gctx> BuildContext<'a, 'gctx> {
         self.build_config.jobs
     }
 
+    /// Whether Cargo or the flags forwarded to this rustdoc unit requested JSON.
+    pub(crate) fn wants_doc_json(&self, unit: &Unit) -> bool {
+        self.build_config.intent.wants_doc_json_output() || self.forwarded_json_docs.contains(unit)
+    }
+
     /// Extra compiler args for either `rustc` or `rustdoc`.
     ///
     /// As of now, these flags come from the trailing args of either
@@ -233,13 +242,14 @@ impl DepKindSet {
     }
 }
 
-/// Fingerprints the effective arguments of units that use response files.
-fn argfile_fingerprints(
+/// Resolves file-backed arguments and identifies the documentation each unit produces.
+fn compiler_inputs(
     ws: &Workspace<'_>,
     units: &UnitGraph,
     extra: &HashMap<Unit, Vec<String>>,
-) -> HashMap<Unit, u64> {
-    let mut result = HashMap::default();
+) -> (HashMap<Unit, u64>, HashSet<Unit>) {
+    let mut hashes = HashMap::default();
+    let mut json_docs = HashSet::default();
     let mut sources = HashMap::default();
     for unit in units.keys() {
         let doc = unit.mode.is_doc() || unit.mode.is_doc_scrape();
@@ -255,18 +265,33 @@ fn argfile_fingerprints(
             .map(|flag| flag.as_str())
             .chain(extra.get(unit).into_iter().flatten().map(String::as_str))
             .chain(configured.iter().map(String::as_str));
-        if flags.clone().any(|arg| arg.starts_with('@')) {
-            // A missing or streaming file must be handled by the compiler itself.
-            // A new fingerprint also invalidates dependent artifacts in this build.
-            let hash = crate::util::argfiles::expand(
+        let expanded = if flags.clone().any(|arg| arg.starts_with('@')) {
+            let expanded = crate::util::argfiles::expand(
                 &crate::util::path_args(ws, unit).1,
-                flags,
+                flags.clone(),
                 &mut sources,
-            )
-            .map(crate::util::hash_u64)
-            .unwrap_or_else(rand::random);
-            result.insert(unit.clone(), hash);
+            );
+            // Missing or streaming files must be handled by the compiler itself.
+            let hash = expanded
+                .as_ref()
+                .map(crate::util::hash_u64)
+                .unwrap_or_else(rand::random);
+            hashes.insert(unit.clone(), hash);
+            expanded
+        } else {
+            None
+        };
+        if doc {
+            let json = match expanded {
+                Some(args) => {
+                    crate::compiler::rustdoc::forwarded_json(args.iter().map(String::as_str))
+                }
+                None => crate::compiler::rustdoc::forwarded_json(flags),
+            };
+            if json {
+                json_docs.insert(unit.clone());
+            }
         }
     }
-    result
+    (hashes, json_docs)
 }
