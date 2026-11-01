@@ -266,18 +266,20 @@ impl ProcessGroup {
     pub(super) fn finish(&mut self) -> CargoResult<bool> {
         #[cfg(unix)]
         if let Some(relay) = &mut self.relay {
-            if let Some(mut input) = relay.stdin.take() {
-                if let Some(terminal) = &self.terminal {
-                    terminal.restore(self.id);
-                }
-                // SAFETY: resume only our relay. A stopped relay may still
-                // have the same Ctrl-C pending that just terminated the test.
-                unsafe { libc::kill(self.id, libc::SIGCONT) };
-                if let Err(error) = input.write_all(b"F")
-                    && error.kind() != std::io::ErrorKind::BrokenPipe
-                {
-                    return Err(error.into());
-                }
+            let input = relay.stdin.take();
+            if input.is_some()
+                && let Some(terminal) = &self.terminal
+            {
+                terminal.restore(self.id);
+            }
+            // A terminal reader can stop the relay again after it receives the finish command.
+            // SAFETY: the relay is our unreaped child. Signal it alone, including on later polls.
+            unsafe { libc::kill(self.id, libc::SIGCONT) };
+            if let Some(mut input) = input
+                && let Err(error) = input.write_all(b"F")
+                && error.kind() != std::io::ErrorKind::BrokenPipe
+            {
+                return Err(error.into());
             }
             if relay.try_wait()?.is_none() {
                 return Ok(false);
@@ -466,4 +468,49 @@ pub fn run_ready_test_relay() -> bool {
     // EOF without a finish command means Cargo disappeared. Cancel its tests.
     unsafe { libc::kill(0, libc::SIGKILL) };
     true
+}
+
+#[cfg(all(test, unix))]
+#[test]
+fn a_stopped_relay_finishes_after_its_test_exits() {
+    use std::time::{Duration, Instant};
+
+    let relay = Command::new("sh")
+        .args(["-c", "kill -STOP $$; cat >/dev/null; kill -STOP $$"])
+        .stdin(Stdio::piped())
+        .process_group(0)
+        .spawn()
+        .unwrap();
+    let id = relay.id() as i32;
+    let mut group = ProcessGroup {
+        id,
+        relay: Some(relay),
+        terminal: None,
+    };
+    let wait_for_stop = || {
+        let deadline = Instant::now() + Duration::from_secs(5);
+        loop {
+            let mut status = 0;
+            // SAFETY: wait only for the relay child and store its status in a live integer.
+            let pid = unsafe { libc::waitpid(id, &mut status, libc::WUNTRACED | libc::WNOHANG) };
+            assert!(pid >= 0);
+            if pid == id {
+                assert!(libc::WIFSTOPPED(status));
+                break;
+            }
+            assert!(Instant::now() < deadline, "relay did not stop");
+            std::thread::sleep(Duration::from_millis(1));
+        }
+    };
+    wait_for_stop();
+    assert!(!group.finish().unwrap());
+    wait_for_stop();
+    let deadline = Instant::now() + Duration::from_secs(5);
+    while !group.finish().unwrap() {
+        assert!(
+            Instant::now() < deadline,
+            "relay stayed stopped after teardown"
+        );
+        std::thread::sleep(Duration::from_millis(1));
+    }
 }
