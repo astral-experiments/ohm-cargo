@@ -105,6 +105,51 @@ fn clippy_tracks_edits_to_a_non_unicode_config_path() {
 }
 
 #[cargo_test]
+fn moved_checkout_reads_its_own_resources() {
+    for scripted in [false, true] {
+        let root = paths::root().join(if scripted { "script" } else { "direct" });
+        let before = root.join("before");
+        let after = root.join("after");
+        let project = project().at(before.join("pkg")).file("resource", "source");
+        let p = if scripted {
+            project.file("build.rs", r#"
+                fn main() {
+                    let root = std::env::var("CARGO_MANIFEST_DIR").unwrap();
+                    println!("cargo::rustc-env=RESOURCE_ROOT={root}");
+                    println!("cargo::rerun-if-changed=resource");
+                }
+            "#).file("src/main.rs", r#"
+                fn main() {
+                    let file = std::path::Path::new(env!("RESOURCE_ROOT")).join("resource");
+                    println!("{}", std::fs::read_to_string(file).unwrap());
+                }
+            "#)
+        } else {
+            project.file("src/main.rs", r#"
+                fn main() {
+                    let dir = std::path::Path::new(env!("CARGO_MANIFEST_DIR"));
+                    let manifest_dir = std::path::Path::new(env!("CARGO_MANIFEST_PATH")).parent().unwrap();
+                    assert_eq!(dir, manifest_dir);
+                    println!("{}", std::fs::read_to_string(dir.join("resource")).unwrap());
+                }
+            "#)
+        }.build();
+        for area in [&before, &after] {
+            if area == &after {
+                fs::rename(&before, &after).unwrap();
+                fs::create_dir_all(before.join("pkg")).unwrap();
+                fs::write(before.join("pkg/resource"), "foreign").unwrap();
+            }
+            p.cargo("run --quiet")
+                .cwd(area.join("pkg"))
+                .env("CARGO_TARGET_DIR", area.join("target"))
+                .with_stdout_data("source\n")
+                .run();
+        }
+    }
+}
+
+#[cargo_test]
 fn compiler_out_dir_follows_the_target_directory_alias() {
     if !cargo_test_support::symlink_supported() {
         return;
@@ -1214,7 +1259,7 @@ new desc
 }
 
 #[cargo_test]
-fn no_rebuild_when_rename_dir() {
+fn build_scripts_rerun_once_after_the_package_directory_moves() {
     let p = project()
         .file(
             "Cargo.toml",
@@ -1250,6 +1295,16 @@ fn no_rebuild_when_rename_dir() {
     new.push("bar");
     fs::rename(p.root(), &new).unwrap();
 
+    // Both packages have build scripts, whose working directories changed.
+    p.cargo("build")
+        .cwd(&new)
+        .with_stderr_data(str![[r#"
+[COMPILING] foo v0.0.1 ([ROOT]/bar/foo)
+[COMPILING] bar v0.0.1 ([ROOT]/bar)
+[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
+
+"#]])
+        .run();
     p.cargo("build")
         .cwd(&new)
         .with_stderr_data(str![[r#"
