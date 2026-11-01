@@ -1,6 +1,7 @@
 //! [`BuildContext`] is a (mostly) static information about a build task.
 
-use std::path::PathBuf;
+use std::hash::Hash;
+use std::path::{Path, PathBuf};
 
 use crate::compiler::BuildConfig;
 use crate::compiler::CompileKind;
@@ -8,11 +9,11 @@ use crate::compiler::Unit;
 use crate::compiler::UnitIndex;
 use crate::compiler::unit_graph::UnitGraph;
 use crate::context::GlobalContext;
-use crate::util::Rustc;
 use crate::util::data_structures::{HashMap, HashSet};
 use crate::util::errors::CargoResult;
 use crate::util::interning::InternedString;
 use crate::util::logger::BuildLogger;
+use crate::util::{Rustc, StableHasher};
 use crate::workspace::PackageId;
 use crate::workspace::PackageSet;
 use crate::workspace::Workspace;
@@ -56,8 +57,8 @@ pub struct BuildContext<'a, 'gctx> {
     /// The workspace the build is for.
     pub ws: &'a Workspace<'gctx>,
 
-    /// The physical build directory for ordinary layouts, which can be shared across checkouts.
-    ordinary_build_dir: Option<PathBuf>,
+    /// The physical build directory used to make local source paths relocatable.
+    build_dir: PathBuf,
 
     /// The cargo context.
     pub gctx: &'gctx GlobalContext,
@@ -136,12 +137,9 @@ impl<'a, 'gctx> BuildContext<'a, 'gctx> {
             .chain(std::iter::once(CompileKind::Host))
             .collect();
 
-        let ordinary_build_dir = (!ws.shared_registry_cache_enabled())
-            .then(|| ws.canonical_build_path(ws.build_dir().as_path_unlocked()));
-
         Ok(BuildContext {
             ws,
-            ordinary_build_dir,
+            build_dir: ws.canonical_build_path(ws.build_dir().as_path_unlocked()),
             gctx: ws.gctx(),
             logger,
             packages,
@@ -176,14 +174,26 @@ impl<'a, 'gctx> BuildContext<'a, 'gctx> {
         self.target_data.rustc.host
     }
 
-    /// Identifies a local package relative to its artifacts so a checkout can move with its cache.
-    pub(crate) fn shared_build_source(&self, unit: &Unit) -> Option<PathBuf> {
-        let build_dir = self.ordinary_build_dir.as_ref()?;
+    /// Distinguishes the source on disk and the manifest path visible to build scripts and rustc.
+    pub(crate) fn hash_shared_build_source(&self, unit: &Unit, hasher: &mut StableHasher) {
         if unit.is_std || !unit.pkg.package_id().source_id().is_path() {
-            return None;
+            return;
         }
-        let source = self.ws.canonical_build_path(unit.pkg.root());
-        Some(pathdiff::diff_paths(&source, build_dir).unwrap_or(source))
+        let root = unit.pkg.root();
+        let resolved = self.ws.canonical_build_path(root);
+        if root == resolved && self.ws.shared_registry_cache_enabled() {
+            return;
+        }
+        let mut hash_relative = |path: &Path| {
+            pathdiff::diff_paths(path, &self.build_dir)
+                .as_deref()
+                .unwrap_or(path)
+                .hash(hasher);
+        };
+        hash_relative(&resolved);
+        if root != resolved {
+            hash_relative(root);
+        }
     }
 
     /// Gets the number of jobs specified for this build.

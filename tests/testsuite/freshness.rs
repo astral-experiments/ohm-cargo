@@ -105,6 +105,42 @@ fn clippy_tracks_edits_to_a_non_unicode_config_path() {
 }
 
 #[cargo_test]
+fn manifest_aliases_keep_their_own_build_script_output() {
+    if !cargo_test_support::symlink_supported() {
+        return;
+    }
+    let p = project()
+        .file("pkg/Cargo.toml", &format!("{}\n[workspace]\n", basic_manifest("paint", "0.1.0")))
+        .file("pkg/build.rs", r#"
+            fn main() {
+                let root = std::path::PathBuf::from(std::env::var_os("CARGO_MANIFEST_DIR").unwrap());
+                println!("cargo::rerun-if-changed=build.rs");
+                println!("cargo::rustc-env=ALIAS={}", root.file_name().unwrap().display());
+            }
+        "#)
+        .file("pkg/src/main.rs", r#"fn main() { println!("{}", env!("ALIAS")); }"#)
+        .symlink_dir("pkg", "one")
+        .symlink_dir("one", "two")
+        .build();
+    for (layout, flags) in [
+        ("ordinary", ""),
+        ("registry", "-Zohm-shared-registry-cache"),
+    ] {
+        let cache = p.root().join(layout);
+        for alias in ["one", "two", "one"] {
+            p.cargo(&format!(
+                "-Zohm-defaults=no {flags} run --quiet --manifest-path {alias}/Cargo.toml"
+            ))
+            .masquerade_as_nightly_cargo(&["ohm-defaults", "ohm-shared-registry-cache"])
+            .env("CARGO_TARGET_DIR", cache.join("target"))
+            .env("CARGO_BUILD_BUILD_DIR", cache.join("build"))
+            .with_stdout_data(format!("{alias}\n"))
+            .run();
+        }
+    }
+}
+
+#[cargo_test]
 fn nested_workspaces_can_share_the_inner_target_directory() {
     let [outer, inner] = [("outer", "left"), ("outer/nested", "right")].map(|(dir, name)| {
         project()

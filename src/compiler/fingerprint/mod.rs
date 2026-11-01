@@ -2951,16 +2951,19 @@ fn calculate_normal(
     let ohm_worktree_namespace = super::unit_worktree_seed_namespace(build_runner, unit)
         .map(|namespace| namespace.strip_prefix(&build_root).map(Path::to_path_buf))
         .transpose()?;
+    // Some targets have fixed file names. Check which manifest path last wrote them.
+    let mut path = StableHasher::new();
+    if !unit.is_std && unit.pkg.package_id().source_id().is_path() {
+        // An old cache can hold an alias's output under the key for an unaliased package.
+        "ohm-manifest-root-v1".hash(&mut path);
+    }
+    build_runner.bcx.hash_shared_build_source(unit, &mut path);
+    path_args(build_runner.bcx.ws, unit).0.hash(&mut path);
     Ok(Fingerprint {
         rustc: util::hash_u64(&build_runner.bcx.rustc().verbose_version),
         target: util::hash_u64(&unit.target),
         profile: profile_hash,
-        // Some targets cannot carry a hash in their file name. Rebuild when another
-        // path package last wrote that artifact in the shared build directory.
-        path: match build_runner.bcx.shared_build_source(unit) {
-            Some(source) => util::hash_u64((source, path_args(build_runner.bcx.ws, unit).0)),
-            None => util::hash_u64(path_args(build_runner.bcx.ws, unit).0),
-        },
+        path: Hasher::finish(&path),
         features: format!("{:?}", unit.features),
         declared_features: format!("{declared_features:?}"),
         deps,

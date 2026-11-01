@@ -2715,9 +2715,7 @@ fn compute_metadata(
 
     let mut unit_id_hasher = shared_hasher.clone();
     // Qualify on-disk artifacts and OUT_DIR while keeping symbol metadata reproducible.
-    if let Some(source) = bcx.shared_build_source(unit) {
-        source.hash(&mut unit_id_hasher);
-    }
+    bcx.hash_shared_build_source(unit, &mut unit_id_hasher);
     if let Some(format) = doc_format {
         format.hash(&mut unit_id_hasher);
     }
