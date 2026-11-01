@@ -87,10 +87,9 @@ fn parse(path: &Path, output: &Path) -> Option<Report> {
     })
 }
 
+/// Ask the C driver about the same prefixes and multilib mode used for linking.
 #[cfg(target_os = "linux")]
-fn search_dirs(driver: &OsStr, args: &[OsString]) -> Option<BTreeSet<PathBuf>> {
-    // GCC and clang both expose their configured library directories. Linkers
-    // may also search the target's ordinary system paths without a driver -L.
+fn driver_query(driver: &OsStr, args: &[OsString]) -> Option<Command> {
     let mut query = command(driver, &[]);
     for arg in args {
         let flag = arg.to_str()?;
@@ -104,7 +103,17 @@ fn search_dirs(driver: &OsStr, args: &[OsString]) -> Option<BTreeSet<PathBuf>> {
             query.arg(arg);
         }
     }
-    let out = query.arg("-print-search-dirs").output().ok()?;
+    Some(query)
+}
+
+#[cfg(target_os = "linux")]
+fn search_dirs(driver: &OsStr, args: &[OsString]) -> Option<BTreeSet<PathBuf>> {
+    // Some drivers search a prefix for startup files without exposing it in
+    // their library search report. Leave such links to the driver.
+    let out = driver_query(driver, args)?
+        .arg("-print-search-dirs")
+        .output()
+        .ok()?;
     if !out.status.success() {
         return None;
     }
@@ -113,6 +122,13 @@ fn search_dirs(driver: &OsStr, args: &[OsString]) -> Option<BTreeSet<PathBuf>> {
         .lines()
         .find_map(|line| line.strip_prefix("libraries: ="))?;
     let mut dirs: BTreeSet<_> = env::split_paths(paths).collect();
+    if args
+        .iter()
+        .filter_map(|arg| arg.to_str()?.strip_prefix("-B"))
+        .any(|prefix| !dirs.contains(Path::new(prefix)))
+    {
+        return None;
+    }
     dirs.extend(
         [
             "/lib",
@@ -131,6 +147,54 @@ fn search_dirs(driver: &OsStr, args: &[OsString]) -> Option<BTreeSet<PathBuf>> {
         dirs.extend(env::split_paths(&extra));
     }
     dirs.iter().all(|p| p.is_absolute()).then_some(dirs)
+}
+
+/// The driver supplies startup objects such as crti.o outside the original
+/// argv. Its dependency file records the old choice even after a new one wins.
+#[cfg(target_os = "linux")]
+fn driver_object_covered(driver: &OsStr, args: &[OsString], path: &Path) -> Option<()> {
+    if path.extension() != Some(OsStr::new("o")) || args.iter().any(|arg| Path::new(arg) == path) {
+        return Some(());
+    }
+    let name = path.file_name()?.to_str()?;
+    let out = driver_query(driver, args)?
+        .arg(format!("-print-file-name={name}"))
+        .output()
+        .ok()?;
+    let selected = std::str::from_utf8(&out.stdout).ok()?.strip_suffix('\n')?;
+    (out.status.success() && Path::new(selected) == path).then_some(())
+}
+
+/// A driver prefix can also supply specs and executable plugins, whose own
+/// inputs aren't reported by ld. Only keep prefixes containing tracked tools,
+/// library candidates and object files.
+#[cfg(target_os = "linux")]
+fn gnu_prefix_covered(inputs: &mut Inputs, dir: &Path, filenames: &BTreeSet<String>) -> Option<()> {
+    for (index, entry) in fs::read_dir(dir).ok()?.enumerate() {
+        if index == super::MAX_DRIVER_PREFIX_ENTRIES {
+            return None;
+        }
+        let path = entry.ok()?.path();
+        let name = path.file_name()?.to_str()?;
+        let tool = matches!(
+            name,
+            "ld" | "ld.bfd"
+                | "ld.lld"
+                | "ld.gold"
+                | "ld64.lld"
+                | "lld-link"
+                | "wasm-ld"
+                | "collect2"
+        );
+        if name == "liblto_plugin.so"
+            || (!tool && !filenames.contains(name) && !name.ends_with(".o"))
+        {
+            return None;
+        }
+        observe(inputs, path)?;
+    }
+    inputs.directories.insert(dir.to_owned());
+    Some(())
 }
 
 fn observe(inputs: &mut Inputs, path: PathBuf) -> Option<()> {
@@ -404,8 +468,12 @@ fn action(
         // GCC's libgcc_s.so group also searches for libgcc_s.so.1 and -lgcc.
         // Include these from the first link, before we have a dependency file.
         filenames.extend(["libgcc_s.so.1", "libgcc.so", "libgcc.a"].map(str::to_owned));
+        for prefix in &tool_roots {
+            gnu_prefix_covered(&mut inputs, prefix, &filenames)?;
+        }
         roots.insert(cwd);
         for path in &report.files {
+            driver_object_covered(driver, args, path)?;
             gnu_input_covered(path, report, &roots, &filenames)?;
         }
         inputs.action.push("checked GNU script inputs v2".into());
@@ -608,5 +676,39 @@ mod tests {
         assert!(!covered("GROUP(/lib/missing.so)", true));
         assert!(!covered("SEARCH_DIR(/new) INPUT(-lgcc)", true));
         assert!(!covered("INPUT(-lgcc) INCLUDE unknown.ld", true));
+    }
+
+    #[cfg(all(target_arch = "x86_64", target_env = "gnu"))]
+    #[test]
+    fn startup_objects_follow_the_drivers_current_prefix() {
+        let dir = tempfile::tempdir().unwrap();
+        let high = dir.path().join("high");
+        let low = dir.path().join("low");
+        fs::create_dir(&high).unwrap();
+        fs::create_dir(&low).unwrap();
+        let args = [&high, &low].map(|p| OsString::from(format!("-B{}/", p.display())));
+        let high = high.join("ohm-startup.o");
+        let low = low.join("ohm-startup.o");
+        let cc = OsStr::new("cc");
+
+        fs::write(&low, b"original").unwrap();
+        assert!(driver_object_covered(cc, &args, &low).is_some());
+        fs::write(&high, b"replacement").unwrap();
+        assert!(driver_object_covered(cc, &args, &low).is_none());
+        assert!(driver_object_covered(cc, &args, &high).is_some());
+    }
+
+    #[test]
+    fn a_driver_prefix_with_private_specs_cannot_publish_a_link() {
+        let dir = tempfile::tempdir().unwrap();
+        fs::write(dir.path().join("ld.bfd"), b"linker").unwrap();
+        let mut inputs = Inputs::default();
+        assert!(gnu_prefix_covered(&mut inputs, dir.path(), &BTreeSet::new()).is_some());
+        assert!(inputs.directories.contains(dir.path()));
+        let before = inputs.snapshot().unwrap();
+
+        fs::write(dir.path().join("specs"), b"private specs").unwrap();
+        assert!(gnu_prefix_covered(&mut Inputs::default(), dir.path(), &BTreeSet::new()).is_none());
+        assert_ne!(before, inputs.snapshot().unwrap());
     }
 }
