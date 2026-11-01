@@ -2697,6 +2697,62 @@ pub(crate) fn unit_profile_hash(build_runner: &BuildRunner<'_, '_>, unit: &Unit)
     ))
 }
 
+/// Records which configuration Clippy will discover, including a newly shadowing file.
+fn hash_clippy_config(
+    build_runner: &BuildRunner<'_, '_>,
+    unit: &Unit,
+    config: &mut StableHasher,
+) -> CargoResult<()> {
+    let bcx = &build_runner.bcx;
+    let rustc = bcx.rustc();
+    let workspace_wrapper = rustc
+        .workspace_wrapper
+        .as_deref()
+        .filter(|_| bcx.ws.is_member(&unit.pkg));
+    let is_clippy = [
+        Some(rustc.path.as_path()),
+        rustc.wrapper.as_deref(),
+        workspace_wrapper,
+    ]
+    .into_iter()
+    .flatten()
+    .any(|path| path.file_stem() == Some(OsStr::new("clippy-driver")));
+    if !is_clippy || unit.mode.is_doc() || unit.mode.is_doc_scrape() {
+        return Ok(());
+    }
+
+    let root = unit.pkg.root();
+    let configured = bcx
+        .gctx
+        .env_config()?
+        .get("CLIPPY_CONF_DIR")
+        .map(OsString::as_os_str)
+        .or_else(|| bcx.gctx.get_env_os("CLIPPY_CONF_DIR"));
+    let start = configured.map_or_else(|| root.to_owned(), |path| root.join(path));
+    let Ok(start) = start.canonicalize() else {
+        "missing-clippy-config-directory".hash(config);
+        return Ok(());
+    };
+    for dir in start.ancestors() {
+        let candidates = [".clippy.toml", "clippy.toml"].map(|name| {
+            let path = dir.join(name);
+            let file = fs::metadata(&path).ok()?.is_file();
+            let path = path.canonicalize().ok()?;
+            Some((
+                path.strip_prefix(bcx.ws.root()).unwrap_or(&path).to_owned(),
+                file,
+            ))
+        });
+        if candidates.iter().flatten().any(|(_, file)| *file) {
+            // The driver tracks the selected file's contents in dep-info. Cargo also
+            // needs its identity and the second candidate that can change diagnostics.
+            candidates.hash(config);
+            break;
+        }
+    }
+    Ok(())
+}
+
 /// Calculate a fingerprint for a "normal" unit, or anything that's not a build
 /// script. This is an internal helper of [`calculate`], don't call directly.
 fn calculate_normal(
@@ -2764,6 +2820,7 @@ fn calculate_normal(
 
     let profile_hash = unit_profile_hash(build_runner, unit);
     let mut config = StableHasher::new();
+    hash_clippy_config(build_runner, unit, &mut config)?;
     let linker = if unit.target.for_host() && !build_runner.bcx.gctx.target_applies_to_host()? {
         build_runner.compilation.host_linker()
     } else {
