@@ -1,5 +1,7 @@
 //! [`BuildContext`] is a (mostly) static information about a build task.
 
+use std::path::PathBuf;
+
 use crate::compiler::BuildConfig;
 use crate::compiler::CompileKind;
 use crate::compiler::Unit;
@@ -53,6 +55,9 @@ pub use self::target_info::TargetInfo;
 pub struct BuildContext<'a, 'gctx> {
     /// The workspace the build is for.
     pub ws: &'a Workspace<'gctx>,
+
+    /// The physical build directory for ordinary layouts, which can be shared across checkouts.
+    ordinary_build_dir: Option<PathBuf>,
 
     /// The cargo context.
     pub gctx: &'gctx GlobalContext,
@@ -131,8 +136,12 @@ impl<'a, 'gctx> BuildContext<'a, 'gctx> {
             .chain(std::iter::once(CompileKind::Host))
             .collect();
 
+        let ordinary_build_dir = (!ws.shared_registry_cache_enabled())
+            .then(|| ws.canonical_build_path(ws.build_dir().as_path_unlocked()));
+
         Ok(BuildContext {
             ws,
+            ordinary_build_dir,
             gctx: ws.gctx(),
             logger,
             packages,
@@ -165,6 +174,16 @@ impl<'a, 'gctx> BuildContext<'a, 'gctx> {
     /// - operating system: `linux-gnu`.
     pub fn host_triple(&self) -> InternedString {
         self.target_data.rustc.host
+    }
+
+    /// Identifies a local package relative to its artifacts so a checkout can move with its cache.
+    pub(crate) fn shared_build_source(&self, unit: &Unit) -> Option<PathBuf> {
+        let build_dir = self.ordinary_build_dir.as_ref()?;
+        if unit.is_std || !unit.pkg.package_id().source_id().is_path() {
+            return None;
+        }
+        let source = unit.pkg.root();
+        Some(pathdiff::diff_paths(source, build_dir).unwrap_or_else(|| source.to_owned()))
     }
 
     /// Gets the number of jobs specified for this build.
