@@ -294,10 +294,8 @@ impl<'gctx> InstallablePackage<'gctx> {
         // of concurrent installs.
         if no_track {
             // Check for conflicts.
-            ip.no_track_duplicates(&dst)?;
-        } else if is_installed(
-            &ip.pkg, gctx, &ip.opts, &ip.rustc, &ip.target, &ip.root, &dst, force,
-        )? {
+            ip.no_track_duplicates(&dst, None)?;
+        } else if is_installed(&ip.pkg, gctx, &ip.opts, &ip.target, &ip.root, &dst, force)? {
             let msg = format!(
                 "package `{}` is already installed, use --force to override",
                 ip.pkg
@@ -309,8 +307,12 @@ impl<'gctx> InstallablePackage<'gctx> {
         Ok(Some(ip))
     }
 
-    fn no_track_duplicates(&self, dst: &Path) -> CargoResult<BTreeMap<String, Option<PackageId>>> {
-        let duplicates = find_duplicates(dst, &exe_names(&self.pkg, &self.opts.filter), None)?;
+    fn no_track_duplicates(
+        &self,
+        dst: &Path,
+        built: Option<&BTreeSet<String>>,
+    ) -> CargoResult<BTreeMap<String, Option<PackageId>>> {
+        let duplicates = find_duplicates(dst, &self.pkg, &self.opts.filter, built, None)?;
         if !self.force && !duplicates.is_empty() {
             let mut msg: Vec<String> = duplicates
                 .iter()
@@ -461,17 +463,18 @@ impl<'gctx> InstallablePackage<'gctx> {
         // This is primarily to make testing easier.
         binaries.sort_unstable();
 
+        let built = binaries.iter().map(|&(name, _)| name.to_owned()).collect();
         let (tracker, duplicates) = if self.no_track {
-            (None, self.no_track_duplicates(&dst)?)
+            (None, self.no_track_duplicates(&dst, Some(&built))?)
         } else {
             let tracker = InstallTracker::load(self.gctx, &self.root)?;
-            let (_freshness, duplicates) = tracker.check_upgrade(
+            let (_freshness, duplicates) = tracker.check_install_outputs(
                 &dst,
                 &self.pkg,
                 self.force,
                 &self.opts,
                 &self.target,
-                &self.rustc.verbose_version,
+                Some(&built),
             )?;
             (Some(tracker), duplicates)
         };
@@ -871,7 +874,6 @@ fn is_installed(
     pkg: &Package,
     gctx: &GlobalContext,
     opts: &ops::CompileOptions,
-    rustc: &Rustc,
     target: &str,
     root: &Filesystem,
     dst: &Path,
@@ -879,7 +881,7 @@ fn is_installed(
 ) -> CargoResult<bool> {
     let tracker = InstallTracker::load(gctx, root)?;
     let (freshness, _duplicates) =
-        tracker.check_upgrade(dst, pkg, force, opts, target, &rustc.verbose_version)?;
+        tracker.check_install_outputs(dst, pkg, force, opts, target, None)?;
     Ok(freshness.is_fresh())
 }
 
@@ -905,9 +907,9 @@ fn installed_exact_package(
     // If this fails, the caller will possibly do an index update and try again, this is just a
     // best-effort check to see if we can avoid hitting the network.
     if let Ok(pkg) = select_dep_pkg(source, dep, gctx, false, None) {
-        let (_ws, rustc, target) =
+        let (_ws, _rustc, target) =
             make_ws_rustc_target(gctx, opts, &source.source_id(), pkg.clone())?;
-        if let Ok(true) = is_installed(&pkg, gctx, opts, &rustc, &target, root, dst, force) {
+        if let Ok(true) = is_installed(&pkg, gctx, opts, &target, root, dst, force) {
             return Ok(Some(pkg));
         }
     }
