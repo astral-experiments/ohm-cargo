@@ -1350,6 +1350,42 @@ fn uninstall_piecemeal() {
 
 #[cfg(unix)]
 #[cargo_test]
+fn install_preserves_dangling_symlink_without_force() {
+    let p = project().file("src/main.rs", "fn main() {}").build();
+    let bin = cargo_home().join("bin/foo");
+    fs::create_dir_all(bin.parent().unwrap()).unwrap();
+    std::os::unix::fs::symlink("missing", &bin).unwrap();
+
+    for command in ["install --path .", "install --no-track --path ."] {
+        p.cargo(command)
+            .with_status(101)
+            .with_stderr_data(str![[r#"
+[ERROR] binary `foo` already exists in destination[..]
+Add --force to overwrite
+
+"#]])
+            .run();
+        assert!(bin.is_symlink());
+    }
+    p.cargo("install --force --path .").run();
+    assert!(bin.symlink_metadata().unwrap().is_file());
+}
+
+#[cfg(unix)]
+#[cargo_test]
+fn install_repairs_its_own_dangling_symlink() {
+    pkg("foo", "0.0.1");
+    cargo_process("install foo").run();
+    let bin = cargo_home().join("bin/foo");
+    fs::remove_file(&bin).unwrap();
+    std::os::unix::fs::symlink("missing", &bin).unwrap();
+
+    cargo_process("install foo").run();
+    assert!(bin.symlink_metadata().unwrap().is_file());
+}
+
+#[cfg(unix)]
+#[cargo_test]
 fn uninstall_dangling_symlink() {
     let p = project().file("src/main.rs", "fn main() {}").build();
     cargo_process("install --path").arg(p.root()).run();
