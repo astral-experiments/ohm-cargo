@@ -8,6 +8,33 @@ use cargo_test_support::str;
 use cargo_test_support::{basic_bin_manifest, project};
 
 #[cargo_test]
+fn nested_alias_keeps_global_options() {
+    let p = project()
+        .file(
+            "src/main.rs",
+            r#"fn main() { print!("{} {}", env!("OUTER"), env!("INNER")); }"#,
+        )
+        .file(
+            ".cargo/config.toml",
+            r#"
+            [alias]
+            outer = ["--config", "env.OUTER='first'", "middle"]
+            middle = ["--config", "env.INNER='second'", "inner"]
+            inner = ["run", "--quiet"]
+            explain = ["-Zhelp", "inner"]
+        "#,
+        )
+        .build();
+    p.cargo("outer")
+        .with_stdout_data(str!["first second"])
+        .run();
+    p.cargo("explain")
+        .masquerade_as_nightly_cargo(&["-Zhelp"])
+        .with_stdout_contains("Available unstable (nightly-only) flags:")
+        .run();
+}
+
+#[cargo_test]
 fn alias_incorrect_config_type() {
     let p = project()
         .file("Cargo.toml", &basic_bin_manifest("foo"))
