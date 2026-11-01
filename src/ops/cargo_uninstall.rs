@@ -5,7 +5,7 @@ use crate::util::GlobalContext;
 use crate::util::errors::CargoResult;
 use crate::workspace::PackageId;
 use crate::workspace::{PackageIdSpec, PackageIdSpecQuery, SourceId};
-use anyhow::bail;
+use anyhow::{Context as _, bail};
 use std::collections::BTreeSet;
 use std::env;
 
@@ -131,11 +131,14 @@ fn uninstall_pkgid(
     let dst = root.join("bin").into_path_unlocked();
     for bin in &to_remove {
         let bin = dst.join(bin);
-        if !bin.exists() {
-            bail!(
-                "corrupt metadata, `{}` does not exist when it should",
-                bin.display()
-            )
+        if let Err(err) = bin.symlink_metadata() {
+            if err.kind() == std::io::ErrorKind::NotFound {
+                bail!(
+                    "corrupt metadata, `{}` does not exist when it should",
+                    bin.display()
+                );
+            }
+            return Err(err).with_context(|| format!("failed to inspect `{}`", bin.display()));
         }
     }
 
