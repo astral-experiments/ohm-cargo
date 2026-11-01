@@ -221,7 +221,7 @@ fn custom_runner() {
         .with_stderr_data(str![[r#"
 [COMPILING] foo v0.0.1 ([ROOT]/foo)
 [FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
-[RUNNING] `nonexistent-runner -r target/debug/foo[EXE] --param`
+[RUNNING] `nonexistent-runner -r target/debug/.cargo-run/run-[..]/foo[EXE] --param`
 ...
 "#]])
         .run();
@@ -269,7 +269,7 @@ fn custom_runner_cfg() {
         .with_stderr_data(str![[r#"
 [COMPILING] foo v0.0.1 ([ROOT]/foo)
 [FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
-[RUNNING] `nonexistent-runner -r target/debug/foo[EXE] --param`
+[RUNNING] `nonexistent-runner -r target/debug/.cargo-run/run-[..]/foo[EXE] --param`
 ...
 "#]])
         .run();
@@ -302,7 +302,7 @@ fn custom_runner_cfg_precedence() {
         .with_stderr_data(str![[r#"
 [COMPILING] foo v0.0.1 ([ROOT]/foo)
 [FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
-[RUNNING] `nonexistent-runner -r target/debug/foo[EXE] --param`
+[RUNNING] `nonexistent-runner -r target/debug/.cargo-run/run-[..]/foo[EXE] --param`
 ...
 "#]])
         .run();
@@ -347,8 +347,8 @@ fn custom_runner_env() {
         .with_stderr_data(str![[r#"
 [COMPILING] foo v0.0.1 ([ROOT]/foo)
 [FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
-[RUNNING] `nonexistent-runner --foo target/debug/foo[EXE]`
-[ERROR] could not execute process `nonexistent-runner --foo target/debug/foo[EXE]` (never executed)
+[RUNNING] `nonexistent-runner --foo target/debug/.cargo-run/run-[..]/foo[EXE]`
+[ERROR] could not execute process `nonexistent-runner --foo target/debug/.cargo-run/run-[..]/foo[EXE]` (never executed)
 
 Caused by:
   [NOT_FOUND]
@@ -381,7 +381,7 @@ fn custom_runner_env_overrides_config() {
         .with_status(101)
         .with_stderr_data(str![[r#"
 ...
-[RUNNING] `should-run --foo target/debug/foo[EXE]`
+[RUNNING] `should-run --foo target/debug/.cargo-run/run-[..]/foo[EXE]`
 ...
 "#]])
         .run();
@@ -401,7 +401,7 @@ fn custom_runner_env_true() {
         .with_stderr_data(str![[r#"
 [COMPILING] foo v0.0.1 ([ROOT]/foo)
 [FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
-[RUNNING] `true target/debug/foo[EXE]`
+[RUNNING] `true target/debug/.cargo-run/run-[..]/foo[EXE]`
 
 "#]])
         .run();
@@ -434,8 +434,8 @@ fn custom_runner_target_applies_to_host() {
         .with_stderr_data(str![[r#"
 [COMPILING] foo v0.0.1 ([ROOT]/foo)
 [FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
-[RUNNING] `nonexistent-runner -r target/debug/foo[EXE]`
-[ERROR] could not execute process `nonexistent-runner -r target/debug/foo[EXE]` (never executed)
+[RUNNING] `nonexistent-runner -r target/debug/.cargo-run/run-[..]/foo[EXE]`
+[ERROR] could not execute process `nonexistent-runner -r target/debug/.cargo-run/run-[..]/foo[EXE]` (never executed)
 
 Caused by:
   [NOT_FOUND]

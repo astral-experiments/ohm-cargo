@@ -91,7 +91,9 @@ pub fn run(
     // `cargo run` is only compatible with one `--target` flag at most
     options.build_config.single_requested_kind()?;
 
-    let compile = ops::compile(ws, options)?;
+    let mut options = options.clone();
+    options.build_config.capture_runner_outputs = true;
+    let compile = ops::compile(ws, &options)?;
     assert_eq!(compile.binaries.len(), 1);
     let UnitOutput {
         unit,
