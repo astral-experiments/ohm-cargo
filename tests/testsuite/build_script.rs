@@ -6141,6 +6141,39 @@ fn dev_dep_with_links() {
 }
 
 #[cargo_test]
+fn rerun_if_file_symlink_is_retargeted() {
+    if !symlink_supported() {
+        return;
+    }
+    let p = project()
+        .file(
+            "src/main.rs",
+            r#"fn main() { println!("{}", env!("VALUE")); }"#,
+        )
+        .file(
+            "build.rs",
+            r#"
+            fn main() {
+                println!("cargo::rerun-if-changed=selected");
+                let value = std::fs::read_to_string("selected").unwrap();
+                println!("cargo::rustc-env=VALUE={value}");
+            }
+        "#,
+        )
+        .file("one", "first")
+        .file("two", "second")
+        .build();
+    p.symlink("one", "selected");
+    p.cargo("run --quiet").with_stdout_data("first\n").run();
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    fs::remove_file(p.root().join("selected")).unwrap();
+    p.symlink("two", "selected");
+    p.cargo("run --quiet").with_stdout_data("second\n").run();
+}
+
+#[cargo_test]
 fn rerun_if_directory() {
     if !symlink_supported() {
         return;

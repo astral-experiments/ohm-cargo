@@ -355,9 +355,16 @@ pub fn mtime(path: &Path) -> Result<FileTime> {
 /// Returns the maximum mtime of the given path, recursing into
 /// subdirectories, and following symlinks.
 pub fn mtime_recursive(path: &Path) -> Result<FileTime> {
-    let meta = metadata(path)?;
+    let entry = symlink_metadata(path)?;
+    let entry_mtime = FileTime::from_last_modification_time(&entry);
+    let meta = if entry.is_symlink() {
+        metadata(path)?
+    } else {
+        entry
+    };
     if !meta.is_dir() {
-        return Ok(FileTime::from_last_modification_time(&meta));
+        // Retargeting the link can select a file older than the previous build.
+        return Ok(entry_mtime.max(FileTime::from_last_modification_time(&meta)));
     }
     let max_meta = walkdir::WalkDir::new(path)
         .follow_links(true)
