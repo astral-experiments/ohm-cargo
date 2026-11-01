@@ -228,7 +228,7 @@ impl InstallTracker {
                     && info.is_up_to_date(opts, target, &exes)
             };
             if matching_duplicates.iter().all(is_up_to_date)
-                && duplicates.keys().all(|name| dst.join(name).is_file())
+                && exes.iter().all(|name| dst.join(name).is_file())
             {
                 Ok((Freshness::Fresh, duplicates))
             } else {

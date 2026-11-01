@@ -1371,6 +1371,21 @@ Add --force to overwrite
     assert!(bin.symlink_metadata().unwrap().is_file());
 }
 
+#[cargo_test]
+fn install_repairs_missing_binary_from_multi_binary_package() {
+    Package::new("foo", "0.0.1")
+        .file("src/bin/first.rs", "fn main() {}")
+        .file("src/bin/second.rs", "fn main() {}")
+        .publish();
+    cargo_process("install foo").run();
+    let root = cargo_home();
+    fs::remove_file(root.join("bin").join(exe("first"))).unwrap();
+
+    cargo_process("install foo").run();
+    assert_has_installed_exe(&root, "first");
+    assert_has_installed_exe(&root, "second");
+}
+
 #[cfg(unix)]
 #[cargo_test]
 fn install_repairs_its_own_dangling_symlink() {
