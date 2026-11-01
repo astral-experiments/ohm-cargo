@@ -519,8 +519,8 @@ fn format_dirty_reason(
             let new = new.strip_prefix(ws_root).unwrap_or(new).display();
             format!("rerun-if-changed output file changed: {old} -> {new}")
         }
-        DirtyReason::WatchedSymlinksChanged => {
-            "a watched symlink may have changed its target".to_owned()
+        DirtyReason::WatchedInputStateChanged => {
+            "the availability of a watched input may have changed".to_owned()
         }
         DirtyReason::RerunIfChangedOutputPathsChanged { old, new } => {
             let old = old.len();

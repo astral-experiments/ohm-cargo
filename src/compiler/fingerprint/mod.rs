@@ -1649,6 +1649,7 @@ enum LocalFingerprint {
     RerunIfChanged {
         output: PathBuf,
         paths: Vec<PathBuf>,
+        // Retain the old representation when verifying a fingerprint read from disk.
         #[serde(default, skip_serializing_if = "WatchedSymlinks::is_empty")]
         symlinks: WatchedSymlinks,
     },
@@ -1660,7 +1661,10 @@ enum LocalFingerprint {
     RerunIfEnvChanged { var: String, val: BuildEnvValue },
 }
 
-/// A digest of unresolved names, or a provisional observation from a new watch.
+/// Use a precalculated component so older Cargo versions can read back its hash.
+const WATCHED_INPUT_STATE: &str = "watched input state v1 ";
+
+/// The symlink-only digest written by older versions of Cargo.
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 struct WatchedSymlinks(Option<u64>);
 
@@ -2059,6 +2063,16 @@ impl Fingerprint {
         Cow::Owned(normalized)
     }
 
+    /// Prefer a concrete filesystem change when it also explains the rebuild.
+    fn watched_input_dirty_reason(&self) -> DirtyReason {
+        let status = self.fs_status.lock().unwrap();
+        if matches!(*status, FsStatus::StaleItem(_)) {
+            DirtyReason::FsStatusOutdated(status.clone())
+        } else {
+            DirtyReason::WatchedInputStateChanged
+        }
+    }
+
     /// Compares this fingerprint with an old version which was previously
     /// serialized to filesystem.
     ///
@@ -2112,6 +2126,10 @@ impl Fingerprint {
             match (new, old) {
                 (LocalFingerprint::Precalculated(a), LocalFingerprint::Precalculated(b)) => {
                     if a != b {
+                        if a.starts_with(WATCHED_INPUT_STATE) && b.starts_with(WATCHED_INPUT_STATE)
+                        {
+                            return self.watched_input_dirty_reason();
+                        }
                         return DirtyReason::PrecalculatedComponentsChanged {
                             old: b.to_string(),
                             new: a.to_string(),
@@ -2142,12 +2160,12 @@ impl Fingerprint {
                     LocalFingerprint::RerunIfChanged {
                         output: a_out,
                         paths: a_paths,
-                        symlinks: a_symlinks,
+                        symlinks: a_state,
                     },
                     LocalFingerprint::RerunIfChanged {
                         output: b_out,
                         paths: b_paths,
-                        symlinks: b_symlinks,
+                        symlinks: b_state,
                     },
                 ) => {
                     if a_out != b_out {
@@ -2162,12 +2180,8 @@ impl Fingerprint {
                             new: a_paths.clone(),
                         };
                     }
-                    if a_symlinks != b_symlinks {
-                        let status = self.fs_status.lock().unwrap();
-                        if matches!(*status, FsStatus::StaleItem(_)) {
-                            return DirtyReason::FsStatusOutdated(status.clone());
-                        }
-                        return DirtyReason::WatchedSymlinksChanged;
+                    if a_state != b_state {
+                        return self.watched_input_dirty_reason();
                     }
                 }
                 (
@@ -3139,14 +3153,16 @@ fn build_script_local_fingerprints(
         .iter()
         .map(|path| {
             let state = build_runner
-                .watched_link_states
+                .watched_input_states
                 .entry(pkg_root.join(path))
                 .or_insert_with_key(|full_path| {
-                    let (mtime, state) = scan_watched_path(full_path, &immutable, |_| {})?;
-                    build_runner
-                        .mtime_cache
-                        .entry(full_path.clone())
-                        .or_insert(mtime);
+                    let (mtime, state) = scan_watched_path(full_path, &immutable, |_| {});
+                    if let Some(mtime) = mtime {
+                        build_runner
+                            .mtime_cache
+                            .entry(full_path.clone())
+                            .or_insert(mtime);
+                    }
                     state
                 });
             (path.clone(), *state)
@@ -3251,25 +3267,34 @@ fn local_fingerprints_deps(
         let started = std::cell::LazyCell::new(|| paths::mtime(&deps.build_script_output).ok());
         for (index, path) in deps.rerun_if_changed.iter().enumerate() {
             let state = watched.get(path).copied().unwrap_or_else(|| {
-                // A newly declared directory was unknown before the script ran.
-                // Verify it on the next invocation if a link may have changed in flight.
-                scan_watched_path(&pkg_root.join(path), immutable, |link| {
+                // A newly declared input was unknown before the script ran.
+                let full = pkg_root.join(path);
+                let (mtime, state) = scan_watched_path(&full, immutable, |link| {
                     provisional = provisional
                         || started.is_none_or(|start| !stable_link_before(link, pkg_root, start));
-                })
-                .and_then(|(_, state)| state)
+                });
+                if mtime.is_some() {
+                    provisional = provisional
+                        || started
+                            .is_none_or(|start| !stable_lookup_before(&full, pkg_root, start));
+                }
+                state
             });
             if let Some(state) = state {
                 unresolved.push((index, state));
             }
         }
-        let digest = (provisional || !unresolved.is_empty())
-            .then(|| crate::util::hex::hash_u64((provisional, unresolved)));
+        // Record even an all-present observation. A legacy fingerprint could
+        // have been produced by a script that read its missing-file fallback.
+        let state = crate::util::hex::hash_u64((provisional, unresolved));
         local.push(LocalFingerprint::RerunIfChanged {
             output,
             paths,
-            symlinks: WatchedSymlinks(digest),
+            symlinks: WatchedSymlinks::default(),
         });
+        local.push(LocalFingerprint::Precalculated(format!(
+            "{WATCHED_INPUT_STATE}{state:016x}"
+        )));
     }
 
     local.extend(
@@ -3286,21 +3311,36 @@ fn scan_watched_path(
     path: &Path,
     immutable: &[PathBuf],
     mut observe_link: impl FnMut(&Path),
-) -> Option<(FileTime, Option<u64>)> {
+) -> (Option<FileTime>, Option<u64>) {
     if immutable.iter().any(|dir| path.starts_with(dir)) {
-        return None;
+        return (None, None);
     }
     let mut unresolved = Vec::new();
-    let mtime = paths::mtime_recursive_with_symlinks(path, |link, resolved| {
+    let result = paths::mtime_recursive_with_symlinks(path, |link, resolved| {
         observe_link(link);
         if !resolved {
             unresolved.push(link.strip_prefix(path).unwrap().to_owned());
         }
-    })
-    .ok()?;
+    });
+    let mtime = match result {
+        Ok(mtime) => Some(mtime),
+        Err(err)
+            if err.downcast_ref::<io::Error>().is_some_and(|err| {
+                matches!(
+                    err.kind(),
+                    io::ErrorKind::NotFound | io::ErrorKind::NotADirectory
+                )
+            }) =>
+        {
+            // The empty relative path is the declared input itself.
+            unresolved.push(PathBuf::new());
+            None
+        }
+        Err(_) => return (None, None),
+    };
     unresolved.sort_unstable();
     let state = (!unresolved.is_empty()).then(|| crate::util::hex::hash_u64(unresolved));
-    Some((mtime, state))
+    (mtime, state)
 }
 
 /// Prove a newly reported link and its lookup directories predate the script.
@@ -3310,11 +3350,7 @@ fn stable_link_before(link: &Path, root: &Path, start: FileTime) -> bool {
         return false;
     };
     let target = parent.join(target);
-    if !target.starts_with(root)
-        || !paths::normalize_path(&target).starts_with(root)
-        || !link.starts_with(root)
-        || !fs::symlink_metadata(link)
-            .is_ok_and(|m| FileTime::from_last_modification_time(&m) < start)
+    if !fs::symlink_metadata(link).is_ok_and(|m| FileTime::from_last_modification_time(&m) < start)
     {
         return false;
     }
@@ -3325,8 +3361,15 @@ fn stable_link_before(link: &Path, root: &Path, start: FileTime) -> bool {
         Err(err) if err.kind() != io::ErrorKind::NotFound => return false,
         _ => {}
     }
-    [link, target.as_path()].into_iter().all(|path| {
-        path.ancestors()
+    stable_lookup_before(link, root, start) && stable_lookup_before(&target, root, start)
+}
+
+/// Check if a name could have appeared or disappeared during the script.
+fn stable_lookup_before(path: &Path, root: &Path, start: FileTime) -> bool {
+    path.starts_with(root)
+        && paths::normalize_path(path).starts_with(root)
+        && path
+            .ancestors()
             .skip(1)
             .take_while(|dir| dir.starts_with(root))
             .all(|dir| {
@@ -3335,7 +3378,6 @@ fn stable_link_before(link: &Path, root: &Path, start: FileTime) -> bool {
                         meta.is_dir() && FileTime::from_last_modification_time(&meta) < start
                     })
             })
-    })
 }
 
 /// Writes the short fingerprint hash value to `<loc>`
