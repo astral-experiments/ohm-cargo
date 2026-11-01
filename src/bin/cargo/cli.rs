@@ -31,15 +31,12 @@ pub fn main(gctx: &mut GlobalContext) -> CliResult {
     if let Some(new_cwd) = args.get_one::<std::path::PathBuf>("directory") {
         // This is a temporary hack.
         // This cannot access `GlobalContext`, so this is a bit messy.
-        // This does not properly parse `-Z` flags that appear after the subcommand.
         // The error message is not as helpful as the standard one.
         let nightly_features_allowed = matches!(&*features::channel(), "nightly" | "dev");
         if !nightly_features_allowed
             || (nightly_features_allowed
-                && !args
-                    .get_many("unstable-features")
-                    .map(|mut z| z.any(|value: &String| value == "unstable-options"))
-                    .unwrap_or(false))
+                && !global_values(&args, "unstable-features")
+                    .any(|value| value == "unstable-options"))
         {
             return Err(anyhow::format_err!(
                 "the `-C` flag is unstable, \
@@ -55,8 +52,8 @@ pub fn main(gctx: &mut GlobalContext) -> CliResult {
 
     let is_verbose = expanded_args.verbose() > 0;
 
-    if expanded_args
-        .get_one::<String>("unstable-features")
+    if global_values(&expanded_args, "unstable-features")
+        .next()
         .map(String::as_str)
         == Some("help")
     {
@@ -370,7 +367,7 @@ To pass the arguments to the subcommand, remove `--`",
                 // capture those global options now.
                 // Note that an alias to an external command will not receive
                 // these arguments. That may be confusing, but such is life.
-                let global_args = GlobalArgs::new(sub_args);
+                let global_args = GlobalArgs::new(&args);
                 let new_args = cli(gctx).no_binary_name(true).try_get_matches_from(alias)?;
 
                 let Some(new_cmd) = new_args.subcommand_name() else {
@@ -439,13 +436,9 @@ fn configure_gctx(
     let locked = args.flag("locked") || global_args.locked;
     let offline = args.flag("offline") || global_args.offline;
     let mut unstable_flags = global_args.unstable_flags;
-    if let Some(values) = args.get_many::<String>("unstable-features") {
-        unstable_flags.extend(values.cloned());
-    }
+    unstable_flags.extend(global_values(args, "unstable-features").cloned());
     let mut config_args = global_args.config_args;
-    if let Some(values) = args.get_many::<String>("config") {
-        config_args.extend(values.cloned());
-    }
+    config_args.extend(global_values(args, "config").cloned());
     gctx.configure(
         verbose,
         quiet,
@@ -551,16 +544,8 @@ impl GlobalArgs {
             frozen: args.flag("frozen"),
             locked: args.flag("locked"),
             offline: args.flag("offline"),
-            unstable_flags: args
-                .get_many::<String>("unstable-features")
-                .unwrap_or_default()
-                .cloned()
-                .collect(),
-            config_args: args
-                .get_many::<String>("config")
-                .unwrap_or_default()
-                .cloned()
-                .collect(),
+            unstable_flags: global_values(args, "unstable-features").cloned().collect(),
+            config_args: global_values(args, "config").cloned().collect(),
         }
     }
 }
@@ -600,7 +585,7 @@ pub fn cli(gctx: &GlobalContext) -> Command {
             .invalid(style::INVALID)
     };
 
-    Command::new("cargo")
+    let command = Command::new("cargo")
         // Subcommands all count their args' display order independently (from 0),
         // which makes their args interspersed with global args. This puts global args last.
         //
@@ -702,7 +687,7 @@ See '<bright-cyan,bold>cargo help</> <cyan><<command>></>' for more information 
         .arg(multi_opt("config", "KEY=VALUE|PATH", "Override a configuration value").add(clap_complete::engine::ArgValueCompleter::new(
                     clap_complete::engine::PathCompleter::any()
                         .filter(|path| path.is_file() && path.extension() == Some(OsStr::new("toml"))),
-                )).global(true))
+                )))
         // Better suggestion for the unsupported lowercase unstable feature flag.
         .arg( Arg::new("unsupported-lowercase-unstable-feature-flag")
             .help("")
@@ -716,7 +701,6 @@ See '<bright-cyan,bold>cargo help</> <cyan><<command>></>' for more information 
             .short('Z')
             .value_name("FLAG")
             .action(ArgAction::Append)
-            .global(true)
         .add(clap_complete::ArgValueCandidates::new(|| {
             let flags = CliUnstable::help();
             flags.into_iter().map(|flag| {
@@ -735,7 +719,33 @@ See '<bright-cyan,bold>cargo help</> <cyan><<command>></>' for more information 
             }
             candidates
         }))
-        .subcommands(commands::builtin())
+        .subcommands(commands::builtin());
+
+    // Clap propagates the last command's global value to every ancestor. Keep
+    // each occurrence of an accumulating option on the command that parsed it.
+    let accumulating: Vec<_> = command
+        .get_arguments()
+        .filter(|arg| matches!(arg.get_id().as_str(), "config" | "unstable-features"))
+        .cloned()
+        .collect();
+    command.mut_subcommands(|child| add_global_values(child, &accumulating))
+}
+
+/// Makes accumulating options available on every built-in command.
+fn add_global_values(command: Command, options: &[Arg]) -> Command {
+    command
+        .args(options.iter().cloned())
+        .mut_subcommands(|child| add_global_values(child, options))
+}
+
+/// Reads accumulating options in command-line order down to the invoked subcommand.
+fn global_values<'a>(
+    matches: &'a ArgMatches,
+    id: &'static str,
+) -> impl Iterator<Item = &'a String> {
+    std::iter::successors(Some(matches), |args| args.subcommand().map(|(_, sub)| sub))
+        .filter_map(move |args| args.try_get_many::<String>(id).ok().flatten())
+        .flatten()
 }
 
 fn get_toolchains_from_rustup() -> Vec<String> {

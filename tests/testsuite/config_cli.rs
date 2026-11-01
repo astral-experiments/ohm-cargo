@@ -6,11 +6,42 @@ use std::fs;
 use crate::prelude::*;
 use cargo_test_support::compare::assert_e2e;
 use cargo_test_support::paths;
-use cargo_test_support::str;
+use cargo_test_support::{project, str};
 
 use super::config::{
     GlobalContextBuilder, assert_error, read_output, write_config_at, write_config_toml,
 };
+
+#[cargo_test]
+fn overrides_across_subcommand() {
+    let p = project()
+        .file(
+            "src/main.rs",
+            r#"fn main() { print!("{} {}", env!("LEFT"), env!("RIGHT")); }"#,
+        )
+        .build();
+    for command in ["run", "r"] {
+        p.cargo("")
+            .args(&[
+                "--config",
+                "env.LEFT='left'",
+                command,
+                "--quiet",
+                "--config",
+                "env.RIGHT='right'",
+            ])
+            .with_stdout_data(str!["left right"])
+            .run();
+    }
+}
+
+#[cargo_test]
+fn unstable_options_across_subcommand() {
+    let p = project().file("src/lib.rs", "").build();
+    p.cargo("-Zunstable-options build -Zavoid-dev-deps --unit-graph")
+        .masquerade_as_nightly_cargo(&["unit-graph", "avoid-dev-deps"])
+        .run();
+}
 
 #[cargo_test]
 fn basic() {
