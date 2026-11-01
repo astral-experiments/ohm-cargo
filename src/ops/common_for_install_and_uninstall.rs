@@ -173,8 +173,21 @@ impl InstallTracker {
         _rustc: &str,
     ) -> CargoResult<(Freshness, BTreeMap<String, Option<PackageId>>)> {
         let exes = exe_names(pkg, &opts.filter);
+        self.check_install_outputs(dst, pkg, force, opts, target, Some(&exes))
+    }
+
+    /// Checks the selected destinations before resolution or the exact outputs after compilation.
+    pub(super) fn check_install_outputs(
+        &self,
+        dst: &Path,
+        pkg: &Package,
+        force: bool,
+        opts: &CompileOptions,
+        target: &str,
+        built: Option<&BTreeSet<String>>,
+    ) -> CargoResult<(Freshness, BTreeMap<String, Option<PackageId>>)> {
         // Check if any tracked exe's are already installed.
-        let duplicates = find_duplicates(dst, &exes, Some(self))?;
+        let duplicates = find_duplicates(dst, pkg, &opts.filter, built, Some(self))?;
         if force || duplicates.is_empty() {
             return Ok((Freshness::Dirty(DirtyReason::Forced), duplicates));
         }
@@ -208,6 +221,7 @@ impl InstallTracker {
                 // `cargo install --path ...` is always rebuilt.
                 return Ok((Freshness::Dirty(DirtyReason::Forced), duplicates));
             }
+            let exes = exe_names(pkg, &opts.filter);
             let is_up_to_date = |dupe_pkg_id| {
                 let info = self
                     .v2
@@ -829,15 +843,37 @@ where
 /// Finds existing executable entries and their owners when install tracking is enabled.
 pub(super) fn find_duplicates(
     dst: &Path,
-    exes: &BTreeSet<String>,
+    pkg: &Package,
+    filter: &CompileFilter,
+    built: Option<&BTreeSet<String>>,
     tracker: Option<&InstallTracker>,
 ) -> CargoResult<BTreeMap<String, Option<PackageId>>> {
+    let declared;
+    let exes = match built {
+        Some(built) => built,
+        None => {
+            declared = exe_names(pkg, filter);
+            &declared
+        }
+    };
     let mut duplicates = BTreeMap::new();
     for name in exes {
         let path = dst.join(name);
         match path.symlink_metadata() {
             Ok(_) => {
                 let owner = tracker.and_then(|tracker| tracker.v2.package_for_bin(name));
+                // Until features have been resolved, a gated target may never be installed.
+                // Check its occupied destination once the actual outputs are known.
+                if built.is_none()
+                    && owner.is_none_or(|id| id.name() != pkg.name())
+                    && pkg.targets().iter().any(|t| {
+                        Some(t.name()) == name.strip_suffix(env::consts::EXE_SUFFIX)
+                            && t.required_features()
+                                .is_some_and(|features| !features.is_empty())
+                    })
+                {
+                    continue;
+                }
                 duplicates.insert(name.clone(), owner);
             }
             Err(err) if err.kind() == io::ErrorKind::NotFound => {}

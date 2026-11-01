@@ -1386,6 +1386,43 @@ fn install_repairs_missing_binary_from_multi_binary_package() {
     assert_has_installed_exe(&root, "second");
 }
 
+#[cargo_test]
+fn skips_conflicts_for_feature_disabled_binaries() {
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+            [package]
+            name = "foo"
+            version = "1.0.0"
+            edition = "2024"
+            [features]
+            extra = []
+            [[bin]]
+            name = "optional"
+            path = "optional.rs"
+            required-features = ["extra"]
+        "#,
+        )
+        .file("src/main.rs", "fn main() {}")
+        .file("optional.rs", "fn main() {}")
+        .build();
+    for (command, prefix) in [
+        ("install --path .", "tracked"),
+        ("install --path . --no-track", "untracked"),
+    ] {
+        let root = p.root().join(prefix);
+        let bin = root.join("bin");
+        fs::create_dir_all(&bin).unwrap();
+        let optional = bin.join(exe("optional"));
+        fs::write(&optional, b"keep").unwrap();
+
+        p.cargo(command).arg("--root").arg(&root).run();
+        assert_has_installed_exe(&root, "foo");
+        assert_eq!(fs::read(optional).unwrap(), b"keep");
+    }
+}
+
 #[cfg(unix)]
 #[cargo_test]
 fn install_repairs_its_own_dangling_symlink() {
