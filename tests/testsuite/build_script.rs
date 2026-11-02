@@ -6152,6 +6152,7 @@ fn workspace_member_watches_a_sibling_directory() {
         .file("Cargo.toml", "[workspace]\nmembers = ['app']")
         .file("app/Cargo.toml", &basic_manifest("app", "0.1.0"))
         .file("native/value", "17")
+        .file("standby/value", "63")
         .file(
             "app/build.rs",
             r#"
@@ -6178,6 +6179,17 @@ fn workspace_member_watches_a_sibling_directory() {
     p.cargo("run -q -p app").with_stdout_data("17 1\n").run();
     p.change_file("native/value", "41");
     p.cargo("run -q -p app").with_stdout_data("41 2\n").run();
+    fs::rename(p.root().join("native"), p.root().join("previous")).unwrap();
+    fs::rename(p.root().join("standby"), p.root().join("native")).unwrap();
+    p.cargo("run -q -p app").with_stdout_data("63 3\n").run();
+    p.cargo("run -q -p app").with_stdout_data("63 3\n").run();
+    let native = p.root().join("native");
+    fs::remove_dir_all(&native).unwrap();
+    fs::create_dir(&native).unwrap();
+    fs::copy(p.root().join("previous/value"), native.join("value")).unwrap();
+    native.move_into_the_past();
+    p.cargo("run -q -p app").with_stdout_data("41 4\n").run();
+    p.cargo("run -q -p app").with_stdout_data("41 4\n").run();
 }
 
 #[cargo_test]
@@ -6299,6 +6311,7 @@ fn rerun_if_directory_symlink_target_disappears() {
         )
         .file("watched/regular", "")
         .file("external", "found")
+        .file("replacement", "other")
         .file("remove-after-read", "")
         .build();
     p.symlink("external", "watched/link");
@@ -6310,11 +6323,16 @@ fn rerun_if_directory_symlink_target_disappears() {
     for _ in 0..2 {
         p.cargo("run --quiet").with_stdout_data("found\n").run();
     }
+    fs::rename(p.root().join("external"), p.root().join("saved")).unwrap();
+    fs::rename(p.root().join("replacement"), p.root().join("external")).unwrap();
+    for _ in 0..2 {
+        p.cargo("run --quiet").with_stdout_data("other\n").run();
+    }
     fs::remove_file(p.root().join("external")).unwrap();
     for _ in 0..2 {
         p.cargo("run --quiet").with_stdout_data("missing\n").run();
     }
-    assert_eq!(fs::read_to_string(p.root().join("runs")).unwrap(), "xxxx");
+    assert_eq!(fs::read_to_string(p.root().join("runs")).unwrap(), "xxxxx");
 }
 
 #[cargo_test]
