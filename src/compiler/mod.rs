@@ -144,7 +144,6 @@ use cargo_util_schemas::manifest::TomlDebugInfo;
 use cargo_util_terminal::Verbosity;
 use rustfix::diagnostics::Applicability;
 
-const RUSTDOC_CRATE_VERSION_FLAG: &str = "--crate-version";
 const OHM_DEFAULT_RUSTFLAGS: [&str; 2] = ["-Zpublic-api-hash", "-Zthreads=8"];
 const OHM_EARLY_METADATA_RUSTFLAG: &str = "-Zohm-early-metadata";
 const OHM_INCREMENTAL_CODEGEN_RUSTFLAGS: [&str; 2] =
@@ -2796,16 +2795,13 @@ fn prepare_rustdoc(
         add_extra_args(&mut rustdoc, &unit.rustdocflags);
     }
 
-    if !crate_version_flag_already_present(&rustdoc) {
-        append_crate_version_flag(unit, &mut rustdoc);
-    }
-
     build_runner.inherit_shared_cache_locks(&mut rustdoc)?;
     Ok(rustdoc)
 }
 
 /// Creates a unit of work invoking `rustdoc` for documenting the `unit`.
 fn rustdoc(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<Work> {
+    let crate_version = unit.pkg.version().to_string();
     let crate_name = unit.target.crate_name();
     let planned_json = build_runner.bcx.wants_doc_json(unit);
     let native_json = build_runner.bcx.build_config.intent.wants_doc_json_output();
@@ -2882,22 +2878,52 @@ fn rustdoc(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<W
 
     Ok(Work::new(move |state| {
         // A producer may be started by a build script. Resolve its flags after dependencies finish.
-        let is_json_output = if let Some(slot) = deferred {
-            let (files, expanded) = crate::util::argfiles::snapshot_for_replay(&rustdoc)?;
-            let json = native_json
+        let (files, expanded) = if rustdoc
+            .get_args()
+            .any(|arg| arg.as_encoded_bytes().starts_with(b"@"))
+        {
+            let (files, expanded) =
+                crate::util::argfiles::snapshot_for_replay(&rustdoc, deferred.is_some())?;
+            (Some(files), expanded)
+        } else {
+            (None, None)
+        };
+        let is_json_output = if deferred.is_some() {
+            native_json
                 || expanded.as_ref().map_or(planned_json, |args| {
                     rustdoc::forwarded_json(args.iter().map(String::as_str))
-                });
-            if json != planned_json {
-                rustdoc = alternate.expect("a deferred Rustdoc format has both commands");
-            }
-            files.apply(&mut rustdoc)?;
-            slot.set(build_context::ResolvedDocArgs { files, json })
-                .expect("a Rustdoc unit runs once per build");
-            json
+                })
         } else {
             planned_json
         };
+        if is_json_output != planned_json {
+            rustdoc = alternate.expect("a deferred Rustdoc format has both commands");
+        }
+        if let Some(files) = &files {
+            files.apply(&mut rustdoc)?;
+        }
+        let has_version = match &expanded {
+            Some(args) => {
+                rustdoc::forwarded_option(args.iter().map(String::as_str), "crate-version")
+            }
+            None => rustdoc::forwarded_option(
+                rustdoc
+                    .get_args()
+                    .map(|arg| arg.to_str().unwrap_or_default()),
+                "crate-version",
+            ),
+        }
+        .is_some();
+        if !has_version {
+            rustdoc.arg("--crate-version").arg(&crate_version);
+        }
+        if let Some(slot) = deferred {
+            slot.set(build_context::ResolvedDocArgs {
+                files: files.expect("a deferred Rustdoc unit has argument files"),
+                json: is_json_output,
+            })
+            .expect("a Rustdoc unit runs once per build");
+        }
         output_options.prepare_for_compiler();
 
         add_custom_flags(
@@ -3017,21 +3043,6 @@ fn rustdoc(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<W
         }
         Ok(())
     }))
-}
-
-// The --crate-version flag could have already been passed in RUSTDOCFLAGS
-// or as an extra compiler argument for rustdoc
-fn crate_version_flag_already_present(rustdoc: &ProcessBuilder) -> bool {
-    rustdoc.get_args().any(|flag| {
-        flag.to_str()
-            .map_or(false, |flag| flag.starts_with(RUSTDOC_CRATE_VERSION_FLAG))
-    })
-}
-
-fn append_crate_version_flag(unit: &Unit, rustdoc: &mut ProcessBuilder) {
-    rustdoc
-        .arg(RUSTDOC_CRATE_VERSION_FLAG)
-        .arg(unit.pkg.version().to_string());
 }
 
 enum CapLints {

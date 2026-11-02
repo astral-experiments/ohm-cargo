@@ -259,7 +259,15 @@ pub fn add_output_format(
 }
 
 /// Whether flags passed to rustdoc request JSON. Option values can start with a dash.
-pub(crate) fn forwarded_json<'a>(mut args: impl Iterator<Item = &'a str>) -> bool {
+pub(crate) fn forwarded_json<'a>(args: impl Iterator<Item = &'a str>) -> bool {
+    forwarded_option(args, "output-format") == Some(Some("json"))
+}
+
+/// Find a forwarded option, leaving a missing operand for rustdoc to diagnose.
+pub(crate) fn forwarded_option<'a>(
+    mut args: impl Iterator<Item = &'a str>,
+    wanted: &str,
+) -> Option<Option<&'a str>> {
     while let Some(arg) = args.next() {
         if arg == "--" {
             break;
@@ -268,8 +276,8 @@ pub(crate) fn forwarded_json<'a>(mut args: impl Iterator<Item = &'a str>) -> boo
             let (name, value) = long
                 .split_once('=')
                 .map_or((long, None), |(name, value)| (name, Some(value)));
-            if name == "output-format" {
-                return value.or_else(|| args.next()) == Some("json");
+            if name == wanted {
+                return Some(value.or_else(|| args.next()));
             }
             // Rustdoc's long switches take no value. Skip the argument of other
             // bare options, including paths spelled `--output-format=json`.
@@ -314,14 +322,14 @@ pub(crate) fn forwarded_json<'a>(mut args: impl Iterator<Item = &'a str>) -> boo
                 } else {
                     Some(chars.as_str())
                 };
-                if option == 'w' {
-                    return value == Some("json");
+                if option == 'w' && wanted == "output-format" {
+                    return Some(value);
                 }
                 break;
             }
         }
     }
-    false
+    None
 }
 
 /// Indicates whether a target should have examples scraped from it by rustdoc.
