@@ -5914,3 +5914,190 @@ fn cargo_test_set_out_dir_env_var() {
     p.cargo("test --package foo --test case -- tests::test_add --exact --no-capture")
         .run();
 }
+
+#[cargo_test]
+fn cached_doctests_reuse_extraction_and_rerun_the_examples() {
+    let p = project()
+        .file("Cargo.toml", "[workspace]\nmembers = ['app', 'dep']\nresolver = '3'")
+        .file("app/Cargo.toml", "[package]\nname = 'app'\nversion = '1.0.0'\nedition = '2024'\n[dev-dependencies]\ndep.path = '../dep'")
+        .file("dep/Cargo.toml", &basic_lib_manifest("dep"))
+        .file("dep/src/lib.rs", "pub fn value() -> u8 { 1 }")
+        .file("app/build.rs", r#"fn main() {
+            println!("cargo::rerun-if-changed=build.rs");
+            println!("cargo::rustc-check-cfg=cfg(doc_example)");
+            println!("cargo::rustc-cfg=doc_example");
+            println!("cargo::rustc-env=EXAMPLE_ENV=from-build-script");
+        }"#)
+        .file("app/src/lib.rs", r#"
+            #[cfg(all(doctest, doc_example))]
+            #[doc = include_str!("../../example.md")]
+            pub struct Example;
+        "#)
+        .file("example.md", r#"
+```
+# use std::io::Write;
+assert_eq!(dep::value(), 1);
+assert_eq!(std::env::args().count(), 1);
+assert_eq!(env!("EXAMPLE_ENV"), "from-build-script");
+std::fs::OpenOptions::new().append(true).create(true).open("ran")?.write_all(b"x")?;
+# Ok::<(), std::io::Error>(())
+```
+
+```no_run
+panic!("only typechecked");
+```
+
+```should_panic
+panic!("expected");
+```
+
+```ignore
+this is intentionally not Rust
+```
+"#)
+        .build();
+    let run = |args: &str| {
+        let mut cmd = p.cargo(args);
+        cmd.masquerade_as_nightly_cargo(&["ohm-cached-doctests"])
+            .env("CARGO_UNSTABLE_OHM_DEFAULTS", "false")
+            .env("RUSTC_BOOTSTRAP", "1");
+        cmd
+    };
+    let command = "test --doc -p app -Zohm-cached-doctests -v";
+    run(command)
+        .with_stderr_contains("[RUNNING] [..]--output-format=doctest[..]")
+        .run();
+    run(command)
+        .with_stderr_does_not_contain("[RUNNING] [..]--output-format=doctest[..]")
+        .run();
+    run("test --doc -p app -Zohm-cached-doctests -v -- --list")
+        .with_stderr_does_not_contain("[RUNNING] [..]--test-run-directory[..]")
+        .run();
+    assert_eq!(p.read_file("app/ran"), "xx");
+
+    p.change_file("dep/src/lib.rs", "pub fn value() -> u8 { 2 }");
+    run(command)
+        .with_status(101)
+        .with_stdout_contains("[..]Example (line [..] ... FAILED")
+        .run();
+    let example = p
+        .read_file("example.md")
+        .replace("dep::value(), 1", "dep::value(), 2");
+    p.change_file("example.md", &example);
+    run(command).run();
+    assert_eq!(p.read_file("app/ran"), "xxx");
+
+    // Only the external Markdown changes. It is absent from the normal library dep-info.
+    p.change_file(
+        "example.md",
+        &example.replace("dep::value(), 2", "dep::value(), 3"),
+    );
+    run(command)
+        .with_status(101)
+        .with_stdout_contains("[..] ... FAILED")
+        .run();
+    run("test --doc -p app -Zohm-cached-doctests -- --ignored")
+        .with_status(101)
+        .with_stdout_contains("[..] ... FAILED")
+        .run();
+}
+
+#[cargo_test]
+fn cached_doctests_fall_back_when_a_crate_gains_a_compile_fail_example() {
+    let wrapper = crate::rustflags::ohm_defaults_wrapper();
+    let p = project()
+        .file(
+            "Cargo.toml",
+            "[package]\nname = 'foo'\nversion = '1.0.0'\nedition = '2024'",
+        )
+        .file(
+            "src/lib.rs",
+            "/// ```\n/// assert!(true);\n/// ```\npub fn foo() {}",
+        )
+        .build();
+    let run = |flags: &str| {
+        let mut cmd = p.cargo(&format!("test --doc -v {flags}"));
+        cmd.masquerade_as_nightly_cargo(&["ohm-cached-doctests", "ohm-defaults"])
+            .env("CARGO_UNSTABLE_OHM_DEFAULTS", "true")
+            .env("RUSTC_WRAPPER", &wrapper)
+            .env("OHM_DEFAULTS_LOG", p.root().join("rustc.log"))
+            .env("RUSTC_BOOTSTRAP", "1");
+        cmd
+    };
+    run("")
+        .with_stderr_contains("[RUNNING] [..]--output-format=doctest[..]")
+        .run();
+    for flag in ["-Zohm-cached-doctests=no", "-Zohm-defaults=no"] {
+        run(flag)
+            .with_stderr_contains("[RUNNING] [..]--test-run-directory[..]")
+            .run();
+    }
+    p.change_file(
+        "src/lib.rs",
+        "/// ```compile_fail\n/// let _: i32 = \"x\";\n/// ```\npub fn foo() {}",
+    );
+    run("")
+        .with_stderr_contains("[RUNNING] [..]--test-run-directory[..]")
+        .run();
+    p.change_file(
+        "src/lib.rs",
+        "/// ```compile_fail\n/// let _: i32 = 1;\n/// ```\npub fn foo() {}",
+    );
+    run("")
+        .with_status(101)
+        .with_stdout_contains("Test compiled successfully, but it's marked [..]")
+        .run();
+}
+
+#[cfg(all(target_os = "linux", target_env = "gnu"))]
+#[cargo_test(requires = "cc", requires = "ar")]
+fn cached_doctests_relink_an_unbundled_native_archive() {
+    let p = project()
+        .file(
+            "Cargo.toml",
+            "[package]\nname = 'foo'\nversion = '1.0.0'\nedition = '2024'",
+        )
+        .file(
+            "build.rs",
+            r#"fn main() {
+            println!("cargo::rustc-link-search=native={}/native", env!("CARGO_MANIFEST_DIR"));
+            println!("cargo::rerun-if-changed=build.rs");
+        }"#,
+        )
+        .file(
+            "src/lib.rs",
+            r#"
+            #[link(name = "answer", kind = "static", modifiers = "-bundle")]
+            unsafe extern "C" { fn answer() -> i32; }
+            /// ```
+            /// assert_eq!(foo::value(), 1);
+            /// ```
+            pub fn value() -> i32 { unsafe { answer() } }
+        "#,
+        )
+        .file("native/answer.c", "int answer(void) { return 1; }")
+        .build();
+    let archive = || {
+        p.process("cc")
+            .args(&["-c", "native/answer.c", "-o", "native/answer.o"])
+            .run();
+        p.process("ar")
+            .args(&["rcs", "native/libanswer.a", "native/answer.o"])
+            .run();
+    };
+    let run = || {
+        let mut cmd = p.cargo("test --doc -Zohm-cached-doctests");
+        cmd.masquerade_as_nightly_cargo(&["ohm-cached-doctests"])
+            .env("CARGO_UNSTABLE_OHM_DEFAULTS", "false")
+            .env("RUSTC_BOOTSTRAP", "1");
+        cmd
+    };
+    archive();
+    run().run();
+    p.change_file("native/answer.c", "int answer(void) { return 2; }");
+    archive();
+    run()
+        .with_status(101)
+        .with_stdout_contains("[..] ... FAILED")
+        .run();
+}

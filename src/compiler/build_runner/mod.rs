@@ -992,7 +992,18 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
                 args.push("--error-format".into());
                 args.push(format.into());
 
+                let executable = self
+                    .outputs(unit)?
+                    .first()
+                    .filter(|output| {
+                        output
+                            .path
+                            .metadata()
+                            .is_ok_and(|metadata| metadata.len() > 0)
+                    })
+                    .map(|output| output.path.clone());
                 self.compilation.to_doc_test.push(compilation::Doctest {
+                    executable,
                     unit: unit.clone(),
                     args,
                     unstable_opts,
@@ -1065,9 +1076,9 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             .bcx
             .unit_graph
             .keys()
-            // Doctests run after compilation and deliberately have no fingerprint.
+            // Only cached doctests participate in build fingerprints.
             .filter(|unit| {
-                !unit.mode.is_doc_test()
+                (!unit.mode.is_doc_test() || compiler::cached_doctests::enabled(self.bcx, unit))
                     && self
                         .execution_units
                         .as_ref()

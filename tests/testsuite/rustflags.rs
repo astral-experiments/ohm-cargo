@@ -12,7 +12,8 @@ use serde_json::Value;
 use snapbox::assert_data_eq;
 use walkdir::WalkDir;
 
-fn ohm_defaults_wrapper() -> PathBuf {
+/// Handles Ohm-specific flags on stock rustc and logs the original arguments.
+pub(super) fn ohm_defaults_wrapper() -> PathBuf {
     let wrapper = project()
         .at("ohm-defaults-wrapper")
         .file(

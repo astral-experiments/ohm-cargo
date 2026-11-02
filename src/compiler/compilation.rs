@@ -42,6 +42,8 @@ impl ToolKind {
 
 /// Structure with enough information to run `rustdoc --test`.
 pub struct Doctest {
+    /// Cargo-built executable for mergeable examples, when available.
+    pub executable: Option<PathBuf>,
     /// What's being doctested
     pub unit: Unit,
     /// Arguments needed to pass to rustdoc to run this test.
