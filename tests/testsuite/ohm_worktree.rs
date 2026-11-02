@@ -315,6 +315,47 @@ fn git_failure_preserves_an_existing_destination() {
 }
 
 #[cargo_test]
+#[cfg(unix)]
+fn missing_parent_components_do_not_hide_overlapping_storage() {
+    let donor = git::new("donor", |p| p.file("src/lib.rs", "pub fn value() {}"));
+    let alias = paths::root().join("alias");
+    std::os::unix::fs::symlink(donor.root(), &alias).unwrap();
+    let nested = alias.join("missing/../nested");
+    let separate = paths::root().join("separate");
+
+    for (dest, target, error) in [
+        (
+            &nested,
+            &separate,
+            "the new worktree must be outside the source worktree",
+        ),
+        (
+            &separate,
+            &nested,
+            "destination target directory overlaps source storage",
+        ),
+    ] {
+        donor
+            .cargo("-Zohm-defaults worktree add --detach")
+            .masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .arg("--target-dir")
+            .arg(target)
+            .arg(dest)
+            .with_status(101)
+            .with_stderr_contains(format!("[ERROR] {error}[..]"))
+            .run();
+        assert_eq!(
+            git2::Repository::open(donor.root())
+                .unwrap()
+                .worktrees()
+                .unwrap()
+                .len(),
+            0
+        );
+    }
+}
+
+#[cargo_test]
 fn destination_target_must_be_independent_of_the_donor() {
     let donor = git::new("donor", |p| p.file("src/lib.rs", "pub fn value() {}"));
     let destination = paths::root().join("seeded");
