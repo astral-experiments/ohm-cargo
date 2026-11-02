@@ -718,7 +718,7 @@ const RECHECK_DEPENDENT_LINKS: &str = "/dev/null/ohm-recheck-dependent-links";
 pub fn unit_can_use_relink_only(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
     !unit.artifact.is_true()
         && (unit.mode == CompileMode::Test
-            || (unit.mode == CompileMode::Build && unit.target.is_bin()))
+            || (unit.mode == CompileMode::Build && unit.target.is_executable()))
         && matches!(
             build_runner.lto[unit],
             super::lto::Lto::Off | super::lto::Lto::OnlyObject

@@ -5736,17 +5736,32 @@ pub(super) fn relink_only_wrapper() -> PathBuf {
 #[cfg(unix)]
 #[cargo_test]
 fn native_recheck_reuses_codegen_until_the_root_changes() {
-    check_native_relink("/dev/null/ohm-recheck-dependent-links-v2");
+    check_native_relink("/dev/null/ohm-recheck-dependent-links-v2", false);
 }
 
 #[cfg(unix)]
 #[cargo_test]
 fn legacy_native_recheck_reuses_codegen_until_the_root_changes() {
-    check_native_relink("/dev/null/ohm-recheck-dependent-links");
+    check_native_relink("/dev/null/ohm-recheck-dependent-links", false);
 }
 
 #[cfg(unix)]
-fn check_native_relink(marker: &str) {
+#[cargo_test]
+fn native_recheck_reuses_example_codegen_until_the_source_changes() {
+    check_native_relink("/dev/null/ohm-recheck-dependent-links-v2", true);
+}
+
+#[cfg(unix)]
+fn check_native_relink(marker: &str, example: bool) {
+    let (source, command, executable) = if example {
+        (
+            "examples/app.rs",
+            "-Zohm-defaults build --example app",
+            "examples/app",
+        )
+    } else {
+        ("src/main.rs", "-Zohm-defaults build", "app")
+    };
     let wrapper = relink_only_wrapper();
     let p = project()
         .file(
@@ -5757,7 +5772,7 @@ fn check_native_relink(marker: &str) {
             ),
         )
         .file(
-            "src/main.rs",
+            source,
             "extern crate dep; fn main() { println!(\"{}\", dep::value()); }",
         )
         .file("dep/Cargo.toml", &basic_manifest("dep", "0.1.0"))
@@ -5766,7 +5781,7 @@ fn check_native_relink(marker: &str) {
     let log = p.root().join("compiler.log");
     let build = || {
         fs::write(&log, "").unwrap();
-        p.cargo("-Zohm-defaults build")
+        p.cargo(command)
             .masquerade_as_nightly_cargo(&["ohm-defaults"])
             .env("RUSTC", &wrapper)
             .env(
@@ -5782,14 +5797,14 @@ fn check_native_relink(marker: &str) {
     assert_eq!(build(), "link:app\n");
     p.change_file("dep/src/lib.rs", "pub fn value() -> i32 { 18 }");
     assert_eq!(build(), "compile:dep\nlink:app\n");
-    p.process(&p.bin("app")).with_stdout_data("18\n").run();
+    p.process(&p.bin(executable)).with_stdout_data("18\n").run();
     p.change_file("dep/src/lib.rs", "pub fn value() -> i32 { 17 }");
     p.change_file(
-        "src/main.rs",
+        source,
         "extern crate dep; fn main() { println!(\"{}\", dep::value() + 25); }",
     );
     assert_eq!(build(), "compile:dep\ncompile-link:app\n");
-    p.process(&p.bin("app")).with_stdout_data("42\n").run();
+    p.process(&p.bin(executable)).with_stdout_data("42\n").run();
 }
 
 #[cfg(unix)]
