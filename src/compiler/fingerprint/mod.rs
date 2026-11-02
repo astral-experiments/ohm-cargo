@@ -793,11 +793,11 @@ pub fn can_skip_due_to_early_cutoff(fingerprint: &Fingerprint) -> bool {
     found_rebuilt_unchanged
 }
 
-/// Returns whether an integration executable changed only through a proven-unused library.
+/// Returns whether an integration test can reuse codegen after its unused library changed.
 ///
 /// The caller separately verifies compiler-reported direct extern usage and rules out
 /// transitive paths through cyclic development dependencies.
-pub fn can_skip_unused_integration_dependency(
+pub fn can_relink_unused_integration_dependency(
     fingerprint: &Fingerprint,
     unused_dependency: UnitIndex,
 ) -> bool {
@@ -822,40 +822,6 @@ pub fn can_skip_unused_integration_dependency(
     }
 
     found_unused_change
-}
-
-/// Accepts only dependency changes proven absent from an integration executable.
-///
-/// `SkippedEarlyCutoff` units retain their previous artifact, but are accepted
-/// only when that direct dependency was independently proven unused and absent
-/// from every linked transitive dependency.
-pub fn can_skip_unused_workspace_integration_dependencies(
-    fingerprint: &Fingerprint,
-    unused_dependencies: &HashSet<UnitIndex>,
-) -> bool {
-    if !fingerprint.is_early_cutoff_candidate() {
-        return false;
-    }
-
-    let mut found_rebuilt_unused = false;
-    for dependency in &fingerprint.deps {
-        match dependency.fingerprint.build_state() {
-            BuildState::BuiltUnchanged
-                if unused_dependencies.contains(&dependency.fingerprint.index) =>
-            {
-                found_rebuilt_unused = true;
-            }
-            BuildState::SkippedEarlyCutoff
-                if unused_dependencies.contains(&dependency.fingerprint.index) => {}
-            BuildState::Fresh => {}
-            BuildState::Pending
-            | BuildState::BuiltChanged
-            | BuildState::BuiltUnchanged
-            | BuildState::SkippedEarlyCutoff => return false,
-        }
-    }
-
-    found_rebuilt_unused
 }
 
 /// Checks whether a dependency-only rebuild can reuse this unit's codegen and
@@ -2743,6 +2709,16 @@ fn calculate_normal(
     if super::unit_suppresses_default_public_api_hash(build_runner, unit) {
         ("ohm-terminal-check-public-api-hash", 1_u8).hash(&mut config);
     }
+    if unit.mode == CompileMode::Test
+        && unit.target.is_test()
+        && build_runner.bcx.gctx.cli_unstable().ohm_defaults()
+        && unit_can_use_relink_only(build_runner, unit)
+        && unit.pkg.targets().iter().any(|target| target.is_lib())
+    {
+        // Older Cargo could mark an integration executable fresh without running
+        // its linker. Even an unchanged command must revalidate that output once.
+        ("ohm-native-integration-relink", 1_u8).hash(&mut config);
+    }
 
     let compile_kind = unit.kind.fingerprint_hash();
     let mut declared_features = unit.pkg.summary().features().keys().collect::<Vec<_>>();
@@ -4256,67 +4232,29 @@ mod early_cutoff_tests {
     }
 
     #[test]
-    fn unused_workspace_dependency_with_skipped_unused_root_can_skip() {
+    fn changed_unused_package_library_can_relink_only_if_other_dependencies_are_fresh() {
         let mut fingerprint = make_stale_due_to_dep();
-        fingerprint
-            .deps
-            .push(make_dep_fingerprint(make_indexed_fingerprint(
-                UnitIndex(1),
-                FsStatus::Stale,
-                BuildState::BuiltUnchanged,
-            )));
-        fingerprint
-            .deps
-            .push(make_dep_fingerprint(make_indexed_fingerprint(
-                UnitIndex(2),
-                FsStatus::Stale,
-                BuildState::SkippedEarlyCutoff,
-            )));
-
-        assert!(can_skip_unused_workspace_integration_dependencies(
+        let dependency =
+            make_indexed_fingerprint(UnitIndex(1), FsStatus::Stale, BuildState::BuiltChanged);
+        fingerprint.deps.push(make_dep_fingerprint(dependency));
+        assert!(can_relink_unused_integration_dependency(
             &fingerprint,
-            &HashSet::from_iter([UnitIndex(1), UnitIndex(2)]),
+            UnitIndex(1)
         ));
-    }
-
-    #[test]
-    fn changed_workspace_dependency_cannot_skip_unused_integration_target() {
-        let mut fingerprint = make_stale_due_to_dep();
-        fingerprint
-            .deps
-            .push(make_dep_fingerprint(make_indexed_fingerprint(
-                UnitIndex(1),
-                FsStatus::Stale,
-                BuildState::BuiltChanged,
-            )));
-
-        assert!(!can_skip_unused_workspace_integration_dependencies(
+        assert!(!can_relink_unused_integration_dependency(
             &fingerprint,
-            &HashSet::from_iter([UnitIndex(1)]),
+            UnitIndex(2)
         ));
-    }
 
-    #[test]
-    fn unproven_skipped_workspace_dependency_cannot_skip_integration_target() {
-        let mut fingerprint = make_stale_due_to_dep();
-        fingerprint
-            .deps
-            .push(make_dep_fingerprint(make_indexed_fingerprint(
-                UnitIndex(1),
-                FsStatus::Stale,
-                BuildState::BuiltUnchanged,
-            )));
-        fingerprint
-            .deps
-            .push(make_dep_fingerprint(make_indexed_fingerprint(
-                UnitIndex(2),
-                FsStatus::Stale,
-                BuildState::SkippedEarlyCutoff,
-            )));
-
-        assert!(!can_skip_unused_workspace_integration_dependencies(
+        let other = make_indexed_fingerprint(
+            UnitIndex(2),
+            FsStatus::Stale,
+            BuildState::SkippedEarlyCutoff,
+        );
+        fingerprint.deps.push(make_dep_fingerprint(other));
+        assert!(!can_relink_unused_integration_dependency(
             &fingerprint,
-            &HashSet::from_iter([UnitIndex(1)]),
+            UnitIndex(1)
         ));
     }
 
