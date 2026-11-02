@@ -711,9 +711,13 @@ pub fn unit_can_use_early_cutoff(build_runner: &BuildRunner<'_, '_>, unit: &Unit
 /// consume their dependencies' public hashes without producing one themselves.
 pub fn unit_can_use_relink_only(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
     !unit.artifact.is_true()
-        && unit_consumes_public_api_hash(build_runner, unit)
         && (unit.mode == CompileMode::Test
             || (unit.mode == CompileMode::Build && unit.target.is_bin()))
+        && matches!(
+            build_runner.lto[unit],
+            super::lto::Lto::Off | super::lto::Lto::OnlyObject
+        )
+        && unit_consumes_public_api_hash(build_runner, unit)
 }
 
 fn is_early_cutoff_candidate(fingerprint: &Fingerprint, dirty_reason: &DirtyReason) -> bool {
@@ -2709,15 +2713,16 @@ fn calculate_normal(
     if super::unit_suppresses_default_public_api_hash(build_runner, unit) {
         ("ohm-terminal-check-public-api-hash", 1_u8).hash(&mut config);
     }
-    if unit.mode == CompileMode::Test
-        && unit.target.is_test()
-        && build_runner.bcx.gctx.cli_unstable().ohm_defaults()
-        && unit_can_use_relink_only(build_runner, unit)
-        && unit.pkg.targets().iter().any(|target| target.is_lib())
-    {
-        // Older Cargo could mark an integration executable fresh without running
-        // its linker. Even an unchanged command must revalidate that output once.
-        ("ohm-native-integration-relink", 1_u8).hash(&mut config);
+    if unit_can_use_relink_only(build_runner, unit) {
+        // Cache collection changes the rustc arguments even when both modes
+        // use full codegen. A proc macro can observe those arguments.
+        let unstable = build_runner.bcx.gctx.cli_unstable();
+        (
+            "ohm-native-codegen-reuse",
+            unstable.relink_only(),
+            unstable.collect_relink_cache(),
+        )
+            .hash(&mut config);
     }
 
     let compile_kind = unit.kind.fingerprint_hash();

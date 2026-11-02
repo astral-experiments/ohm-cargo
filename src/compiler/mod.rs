@@ -1120,9 +1120,10 @@ fn rustc(
 
     let outputs = build_runner.outputs(unit)?;
     let root = build_runner.files().output_dir(unit);
-    let relink_cache = (build_runner.bcx.gctx.cli_unstable().relink_only()
-        && fingerprint::unit_can_use_relink_only(build_runner, unit)
-        && matches!(build_runner.lto[unit], lto::Lto::Off | lto::Lto::OnlyObject))
+    let unstable = build_runner.bcx.gctx.cli_unstable();
+    let reuse_codegen = unstable.relink_only();
+    let relink_cache = (unstable.collect_relink_cache()
+        && fingerprint::unit_can_use_relink_only(build_runner, unit))
     .then(|| {
         outputs
             .iter()
@@ -1465,17 +1466,20 @@ fn rustc(
             }
         }
 
-        let can_relink_dependencies = fingerprint.as_ref().is_some_and(|fingerprint| {
-            // An unused Rust library can leave this test's codegen valid even if its
-            // public API changed. Native inputs are resolved independently by the linker.
-            fingerprint::can_relink_due_to_early_cutoff(fingerprint, &relinkable_dependencies)
-                || unused_integration_dependency.is_some_and(|(dependency, extern_name)| {
-                    fingerprint::can_relink_unused_integration_dependency(fingerprint, dependency)
-                        && relink_cache
+        let can_relink_dependencies = reuse_codegen
+            && fingerprint.as_ref().is_some_and(|fingerprint| {
+                // An unused Rust library can leave this test's codegen valid even if its
+                // public API changed. Native inputs are resolved independently by the linker.
+                fingerprint::can_relink_due_to_early_cutoff(fingerprint, &relinkable_dependencies)
+                    || unused_integration_dependency.is_some_and(|(dependency, extern_name)| {
+                        fingerprint::can_relink_unused_integration_dependency(
+                            fingerprint,
+                            dependency,
+                        ) && relink_cache
                             .as_ref()
                             .is_some_and(|cache| cache.proves_unused_extern(extern_name))
-                })
-        });
+                    })
+            });
         let validation_started = Instant::now();
         let use_cached_relink = early_test.is_none()
             && deferred_dev_names.is_empty()

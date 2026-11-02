@@ -233,7 +233,7 @@ fn native_auxiliary_text_supported(text: &str) -> bool {
 /// Unsupported commands retain the ordinary build path.
 pub(crate) fn supported(runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
     runner.bcx.gctx.cli_unstable().ohm_defaults()
-        && runner.bcx.gctx.cli_unstable().relink_only()
+        && runner.bcx.gctx.cli_unstable().collect_relink_cache()
         && !runner.bcx.gctx.cli_unstable().cargo_lints
         && runner.bcx.roots.len() == 1
         && runner.bcx.roots[0] == *unit
