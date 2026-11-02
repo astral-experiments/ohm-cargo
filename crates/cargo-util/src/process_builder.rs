@@ -24,6 +24,8 @@ pub struct ProcessBuilder {
     arg0: Option<OsString>,
     /// A list of arguments to pass to the program.
     args: Vec<OsString>,
+    /// Number of arguments that must follow options added later.
+    trailing_args: usize,
     /// Any environment variables that should be set for the program.
     env: BTreeMap<String, Option<OsString>>,
     /// The directory to run the program from.
@@ -79,6 +81,7 @@ impl ProcessBuilder {
             program: cmd.as_ref().to_os_string(),
             arg0: None,
             args: Vec::new(),
+            trailing_args: 0,
             cwd: None,
             env: BTreeMap::new(),
             wrappers: Vec::new(),
@@ -103,14 +106,26 @@ impl ProcessBuilder {
 
     /// (chainable) Adds `arg` to the args list.
     pub fn arg<T: AsRef<OsStr>>(&mut self, arg: T) -> &mut ProcessBuilder {
-        self.args.push(arg.as_ref().to_os_string());
+        let position = self.args.len() - self.trailing_args;
+        self.args.insert(position, arg.as_ref().to_os_string());
         self
     }
 
     /// (chainable) Adds multiple `args` to the args list.
     pub fn args<T: AsRef<OsStr>>(&mut self, args: &[T]) -> &mut ProcessBuilder {
+        let position = self.args.len() - self.trailing_args;
+        self.args.splice(
+            position..position,
+            args.iter().map(|t| t.as_ref().to_os_string()),
+        );
+        self
+    }
+
+    /// Adds arguments that stay after subsequent calls to [`Self::arg`] and [`Self::args`].
+    pub fn args_last<T: AsRef<OsStr>>(&mut self, args: &[T]) -> &mut ProcessBuilder {
         self.args
             .extend(args.iter().map(|t| t.as_ref().to_os_string()));
+        self.trailing_args += args.len();
         self
     }
 
@@ -123,6 +138,7 @@ impl ProcessBuilder {
             self.program = program;
             self.wrappers = Vec::new();
         }
+        self.trailing_args = 0;
         self.args = args.iter().map(|t| t.as_ref().to_os_string()).collect();
         self
     }
