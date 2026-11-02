@@ -8,6 +8,7 @@ use std::path::{Path, PathBuf};
 use std::sync::LazyLock;
 
 use cargo_util_schemas::manifest::TomlManifest;
+use serde::Deserialize;
 
 use super::deserialize_toml;
 use crate::util::GlobalContext;
@@ -136,12 +137,12 @@ impl<'a> Entry<'a> {
         Some(manifest)
     }
 
-    pub(super) fn store(&self, contents: &str) {
-        let _ = self.try_store(contents);
+    pub(super) fn store(&self, document: toml::Spanned<toml::de::DeTable<'_>>) {
+        let _ = self.try_store(document);
     }
 
-    fn try_store(&self, contents: &str) -> Option<()> {
-        let value: toml::Value = toml::from_str(contents).ok()?;
+    fn try_store(&self, document: toml::Spanned<toml::de::DeTable<'_>>) -> Option<()> {
+        let value = toml::Value::deserialize(toml::de::Deserializer::from(document)).ok()?;
         if !supported(&value, 0) {
             return None;
         }
@@ -230,7 +231,7 @@ path = "src/lib.rs"
         let expected = deserialize_toml(toml::de::Deserializer::parse(SOURCE).unwrap()).unwrap();
         assert!(expected._unused_keys.contains("package.unknown"));
         assert!(entry.read().is_none());
-        entry.store(SOURCE);
+        entry.store(toml::de::DeTable::parse(SOURCE).unwrap());
         assert_eq!(
             format!("{:?}", entry.read().unwrap()),
             format!("{expected:?}")
@@ -242,7 +243,7 @@ path = "src/lib.rs"
         let home = private_home();
         let dir = directory(home.path()).unwrap();
         let entry = Entry::at(&dir, SOURCE);
-        entry.store(SOURCE);
+        entry.store(toml::de::DeTable::parse(SOURCE).unwrap());
         let bytes = fs::read(&entry.path).unwrap();
         let mut other = Entry::at(&dir, "[package]\nname = 'other'\nversion = '2'\n");
         other.path = entry.path.clone();
@@ -277,7 +278,7 @@ path = "src/lib.rs"
         ] {
             let source = format!("[package]\nname='p'\nversion='1'\n[package.metadata]\n{field}\n");
             let entry = Entry::at(&dir, &source);
-            entry.store(&source);
+            entry.store(toml::de::DeTable::parse(&source).unwrap());
             assert!(!entry.path.exists(), "{field}");
         }
         assert!(!supported(&toml::Value::String("x".into()), MAX_DEPTH + 1));
@@ -288,14 +289,14 @@ path = "src/lib.rs"
         let home = private_home();
         let dir = directory(home.path()).unwrap();
         let entry = Entry::at(&dir, SOURCE);
-        entry.store(SOURCE);
+        entry.store(toml::de::DeTable::parse(SOURCE).unwrap());
         fs::set_permissions(&entry.path, fs::Permissions::from_mode(0o644)).unwrap();
         assert!(entry.read().is_none());
         let external = home.path().join("sentinel");
         fs::write(&external, b"untouched").unwrap();
         fs::remove_file(&entry.path).unwrap();
         symlink(&external, &entry.path).unwrap();
-        entry.store(SOURCE);
+        entry.store(toml::de::DeTable::parse(SOURCE).unwrap());
         assert!(entry.read().is_none());
         assert_eq!(fs::read(&external).unwrap(), b"untouched");
         fs::set_permissions(&dir, fs::Permissions::from_mode(0o755)).unwrap();
@@ -337,11 +338,15 @@ path = "src/lib.rs"
         let first = at_slots(&cache, SOURCE, "001", "002");
         let second = at_slots(&cache, &other, "001", "003");
         assert!(first.read().is_none());
-        first.try_store(SOURCE).unwrap();
+        first
+            .try_store(toml::de::DeTable::parse(SOURCE).unwrap())
+            .unwrap();
         let original = fs::read(&first.path).unwrap();
         assert!(second.read().is_none());
         assert_eq!(second.store_in_alternate.get(), Some(true));
-        second.try_store(&other).unwrap();
+        second
+            .try_store(toml::de::DeTable::parse(&other).unwrap())
+            .unwrap();
         assert_eq!(fs::read(&first.path).unwrap(), original);
         assert_manifest(&first, SOURCE);
         assert_manifest(&second, &other);
@@ -357,11 +362,17 @@ path = "src/lib.rs"
         let first = at_slots(&cache, SOURCE, "001", "002");
         let second = at_slots(&cache, &second_source, "003", "004");
         let third = at_slots(&cache, &third_source, "001", "003");
-        first.try_store(SOURCE).unwrap();
-        second.try_store(&second_source).unwrap();
+        first
+            .try_store(toml::de::DeTable::parse(SOURCE).unwrap())
+            .unwrap();
+        second
+            .try_store(toml::de::DeTable::parse(&second_source).unwrap())
+            .unwrap();
         let primary = fs::read(&first.path).unwrap();
         assert!(third.read().is_none());
-        third.try_store(&third_source).unwrap();
+        third
+            .try_store(toml::de::DeTable::parse(&third_source).unwrap())
+            .unwrap();
         assert_eq!(fs::read(&first.path).unwrap(), primary);
         assert_manifest(&first, SOURCE);
         assert_manifest(&third, &third_source);
@@ -374,7 +385,9 @@ path = "src/lib.rs"
         let home = private_home();
         let cache = directory(home.path()).unwrap();
         let entry = at_slots(&cache, SOURCE, "001", "002");
-        entry.try_store(SOURCE).unwrap();
+        entry
+            .try_store(toml::de::DeTable::parse(SOURCE).unwrap())
+            .unwrap();
         symlink(home.path().join("missing"), &entry.alternate).unwrap();
         assert_manifest(&entry, SOURCE);
         assert_eq!(entry.store_in_alternate.get(), Some(false));
@@ -387,10 +400,14 @@ path = "src/lib.rs"
         let other = SOURCE.replace("example", "second-fixture");
         let first = at_slots(&cache, SOURCE, "001", "001");
         let second = at_slots(&cache, &other, "001", "001");
-        first.try_store(SOURCE).unwrap();
+        first
+            .try_store(toml::de::DeTable::parse(SOURCE).unwrap())
+            .unwrap();
         assert!(second.read().is_none());
         assert_eq!(second.store_in_alternate.get(), Some(false));
-        second.try_store(&other).unwrap();
+        second
+            .try_store(toml::de::DeTable::parse(&other).unwrap())
+            .unwrap();
         assert!(first.read().is_none());
         assert_manifest(&second, &other);
         assert_eq!(fs::read_dir(&cache).unwrap().count(), 1);
@@ -403,9 +420,13 @@ path = "src/lib.rs"
         let other = SOURCE.replace("example", "second-fixture");
         let first = at_slots(&cache, SOURCE, "001", "002");
         let second = at_slots(&cache, &other, "001", "003");
-        first.try_store(SOURCE).unwrap();
+        first
+            .try_store(toml::de::DeTable::parse(SOURCE).unwrap())
+            .unwrap();
         assert!(second.read().is_none());
-        second.try_store(&other).unwrap();
+        second
+            .try_store(toml::de::DeTable::parse(&other).unwrap())
+            .unwrap();
         let original = fs::read(&second.alternate).unwrap();
         for offset in [0, MAGIC.len(), MAGIC.len() + 32, original.len() - 1] {
             let mut bytes = original.clone();
@@ -435,24 +456,40 @@ path = "src/lib.rs"
         let other = SOURCE.replace("example", "second-fixture");
         let first = at_slots(&cache, SOURCE, "001", "002");
         let second = at_slots(&cache, &other, "001", "003");
-        first.try_store(SOURCE).unwrap();
+        first
+            .try_store(toml::de::DeTable::parse(SOURCE).unwrap())
+            .unwrap();
         assert!(second.read().is_none());
-        second.try_store(&other).unwrap();
+        second
+            .try_store(toml::de::DeTable::parse(&other).unwrap())
+            .unwrap();
         fs::set_permissions(&second.alternate, fs::Permissions::from_mode(0o644)).unwrap();
         assert!(second.read().is_none());
-        assert!(second.try_store(&other).is_none());
+        assert!(
+            second
+                .try_store(toml::de::DeTable::parse(&other).unwrap())
+                .is_none()
+        );
         fs::remove_file(&second.alternate).unwrap();
         let outside = home.path().join("outside");
         fs::write(&outside, b"sentinel").unwrap();
         symlink(&outside, &second.alternate).unwrap();
         assert!(second.read().is_none());
-        assert!(second.try_store(&other).is_none());
+        assert!(
+            second
+                .try_store(toml::de::DeTable::parse(&other).unwrap())
+                .is_none()
+        );
         assert_eq!(fs::read(&outside).unwrap(), b"sentinel");
         fs::remove_file(&second.alternate).unwrap();
         let name = CString::new(second.alternate.as_os_str().as_encoded_bytes()).unwrap();
         assert_eq!(unsafe { libc::mkfifo(name.as_ptr(), 0o600) }, 0);
         assert!(second.read().is_none());
-        assert!(second.try_store(&other).is_none());
+        assert!(
+            second
+                .try_store(toml::de::DeTable::parse(&other).unwrap())
+                .is_none()
+        );
         assert!(
             second
                 .alternate
@@ -470,12 +507,182 @@ path = "src/lib.rs"
         let cache = directory(home.path()).unwrap();
         let existing = at_slots(&cache, SOURCE, "002", "003");
         let entry = at_slots(&cache, SOURCE, "001", "002");
-        existing.try_store(SOURCE).unwrap();
+        existing
+            .try_store(toml::de::DeTable::parse(SOURCE).unwrap())
+            .unwrap();
         assert!(entry.read().is_none());
         assert_eq!(entry.store_in_alternate.get(), Some(false));
-        entry.try_store(SOURCE).unwrap();
+        entry
+            .try_store(toml::de::DeTable::parse(SOURCE).unwrap())
+            .unwrap();
         assert_manifest(&entry, SOURCE);
         assert_manifest(&existing, SOURCE);
         assert_eq!(fs::read_dir(&cache).unwrap().count(), 2);
+    }
+
+    fn registry_context(home: &Path) -> GlobalContext {
+        let mut gctx = GlobalContext::new(
+            cargo_util_terminal::Shell::new(),
+            home.to_path_buf(),
+            home.to_path_buf(),
+        );
+        gctx.nightly_features_allowed = true;
+        gctx.configure(
+            0,
+            false,
+            None,
+            false,
+            false,
+            true,
+            &None,
+            &["ohm-defaults=yes".into()],
+            &[],
+        )
+        .unwrap();
+        assert!(gctx.registry_manifest_cache().is_some());
+        gctx
+    }
+
+    #[test]
+    fn registry_miss_preserves_complete_typed_and_syntax_errors() {
+        let home = private_home();
+        let gctx = registry_context(home.path());
+        let source_id = crate::workspace::SourceId::for_registry(
+            &url::Url::parse("https://example.invalid/index").unwrap(),
+        )
+        .unwrap();
+        for contents in [
+            "[package]\nname = []\n",
+            "[package]\nname = 'p'\nversion = []\n",
+            "[package]\nname = 'p'\nversion = '1.0.0'\n[dependencies]\na = 17\n",
+            "# Καλημέρα\n[package]\nname = []\n",
+            "# header\r\n[package]\r\nname = []\r\n",
+            "[package]\nname = 'p'\nname = 'q'\n",
+            "[package]\nname = \"bad\\q\"\n",
+        ] {
+            let expected = toml::de::Deserializer::parse(contents)
+                .and_then(deserialize_toml)
+                .unwrap_err();
+            let actual =
+                super::super::deserialize_without_document(contents, source_id, &gctx).unwrap_err();
+            assert_eq!(actual, expected);
+            assert_eq!(actual.to_string(), expected.to_string());
+        }
+        assert_eq!(
+            fs::read_dir(gctx.registry_manifest_cache().unwrap())
+                .unwrap()
+                .count(),
+            0
+        );
+    }
+
+    #[test]
+    fn registry_miss_and_hit_preserve_metadata_and_ignored_keys() {
+        let home = private_home();
+        let gctx = registry_context(home.path());
+        let source_id = crate::workspace::SourceId::for_registry(
+            &url::Url::parse("https://example.invalid/index").unwrap(),
+        )
+        .unwrap();
+        let expected = deserialize_toml(toml::de::Deserializer::parse(SOURCE).unwrap()).unwrap();
+        let cold = super::super::deserialize_without_document(SOURCE, source_id, &gctx).unwrap();
+        assert_eq!(format!("{cold:?}"), format!("{expected:?}"));
+        let paths = fs::read_dir(gctx.registry_manifest_cache().unwrap())
+            .unwrap()
+            .map(|entry| entry.unwrap().path())
+            .collect::<Vec<_>>();
+        assert_eq!(paths.len(), 1);
+        let before = fs::read(&paths[0]).unwrap();
+        let inode = fs::metadata(&paths[0]).unwrap().ino();
+        let warm = super::super::deserialize_without_document(SOURCE, source_id, &gctx).unwrap();
+        assert_eq!(format!("{warm:?}"), format!("{expected:?}"));
+        assert!(warm._unused_keys.contains("package.unknown"));
+        assert_eq!(fs::read(&paths[0]).unwrap(), before);
+        assert_eq!(fs::metadata(&paths[0]).unwrap().ino(), inode);
+    }
+
+    fn colliding_source(cache: &Path, source: &str, primary: &Path) -> String {
+        for nonce in 0..262_144 {
+            let contents = format!("{source}\n# deterministic collision {nonce}\n");
+            let entry = Entry::at(cache, &contents);
+            if entry.path == primary && entry.alternate != primary {
+                return contents;
+            }
+        }
+        panic!("bounded fixture search did not find a distinct alternate");
+    }
+
+    #[test]
+    fn registry_collision_single_parse_preserves_both_payloads() {
+        let home = private_home();
+        let gctx = registry_context(home.path());
+        let source_id = crate::workspace::SourceId::for_registry(
+            &url::Url::parse("https://example.invalid/index").unwrap(),
+        )
+        .unwrap();
+        let cache = gctx.registry_manifest_cache().unwrap();
+        super::super::deserialize_without_document(SOURCE, source_id, &gctx).unwrap();
+        let first = Entry::at(cache, SOURCE);
+        let before = fs::read(&first.path).unwrap();
+        let first_inode = fs::metadata(&first.path).unwrap().ino();
+        let source = colliding_source(
+            cache,
+            &SOURCE.replace("example", "second-fixture"),
+            &first.path,
+        );
+        let second = Entry::at(cache, &source);
+        let expected = deserialize_toml(toml::de::Deserializer::parse(&source).unwrap()).unwrap();
+        let cold = super::super::deserialize_without_document(&source, source_id, &gctx).unwrap();
+        assert_eq!(format!("{cold:?}"), format!("{expected:?}"));
+        assert!(cold._unused_keys.contains("package.unknown"));
+        let alternate = fs::read(&second.alternate).unwrap();
+        let value: toml::Value = toml::from_str(&source).unwrap();
+        assert_eq!(
+            &alternate[MAGIC.len() + 64..],
+            serde_json::to_vec(&value).unwrap()
+        );
+        let alternate_inode = fs::metadata(&second.alternate).unwrap().ino();
+        let warm = super::super::deserialize_without_document(&source, source_id, &gctx).unwrap();
+        assert_eq!(format!("{warm:?}"), format!("{expected:?}"));
+        assert_manifest(&first, SOURCE);
+        assert_eq!(fs::read(&first.path).unwrap(), before);
+        assert_eq!(fs::metadata(&first.path).unwrap().ino(), first_inode);
+        assert_eq!(fs::read(&second.alternate).unwrap(), alternate);
+        assert_eq!(
+            fs::metadata(&second.alternate).unwrap().ino(),
+            alternate_inode
+        );
+        assert_eq!(fs::read_dir(cache).unwrap().count(), 2);
+    }
+
+    #[test]
+    fn registry_collision_errors_preserve_source_and_existing_entry() {
+        let home = private_home();
+        let gctx = registry_context(home.path());
+        let source_id = crate::workspace::SourceId::for_registry(
+            &url::Url::parse("https://example.invalid/index").unwrap(),
+        )
+        .unwrap();
+        let cache = gctx.registry_manifest_cache().unwrap();
+        super::super::deserialize_without_document(SOURCE, source_id, &gctx).unwrap();
+        let first = Entry::at(cache, SOURCE);
+        let before = fs::read(&first.path).unwrap();
+        let inode = fs::metadata(&first.path).unwrap().ino();
+        for invalid in [
+            "# π\n[package]\nname = []\n",
+            "[package]\nname = 'p'\nname = 'q'\n",
+        ] {
+            let source = colliding_source(cache, invalid, &first.path);
+            let expected = toml::de::Deserializer::parse(&source)
+                .and_then(deserialize_toml)
+                .unwrap_err();
+            let actual =
+                super::super::deserialize_without_document(&source, source_id, &gctx).unwrap_err();
+            assert_eq!(actual, expected);
+            assert_eq!(actual.to_string(), expected.to_string());
+            assert_eq!(fs::read_dir(cache).unwrap().count(), 1);
+            assert_eq!(fs::read(&first.path).unwrap(), before);
+            assert_eq!(fs::metadata(&first.path).unwrap().ino(), inode);
+        }
     }
 }
