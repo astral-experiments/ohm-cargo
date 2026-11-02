@@ -35,6 +35,9 @@ pub struct RustcDepInfo {
     ///
     /// The optional checksums are parsed from the special `# checksum:...` comments.
     pub files: HashMap<PathBuf, Option<(u64, Checksum)>>,
+    /// Whether rustc observed foreign spans, and whether it recorded all binary inputs.
+    pub observed_span_inputs: Option<bool>,
+    conflicting_checksums: bool,
     /// The list of environment variables we found that the rustc compilation
     /// depends on.
     ///
@@ -110,12 +113,16 @@ pub enum DepInfoPathType {
 /// [`f4ca7390`]: https://github.com/rust-lang/cargo/commit/f4ca739073185ea5e1148ff100bb4a06d3bf721d
 #[derive(Default, Debug, PartialEq, Eq)]
 pub struct EncodedDepInfo {
+    /// An optional trailer points at rustc's deliberately missing input. Older Cargo versions
+    /// still see that input and always compile an observer.
+    pub observer: Option<(usize, bool)>,
     pub files: Vec<(DepInfoPathType, PathBuf, Option<(u64, String)>)>,
     pub env: Vec<(String, Option<String>)>,
 }
 
 impl EncodedDepInfo {
     pub fn parse(mut bytes: &[u8]) -> Option<EncodedDepInfo> {
+        let record = bytes;
         let bytes = &mut bytes;
         read_magic_marker(bytes)?;
         let version = read_u8(bytes)?;
@@ -157,7 +164,35 @@ impl EncodedDepInfo {
             };
             env.push((key, val));
         }
-        return Some(EncodedDepInfo { files, env });
+        let observer = if bytes.is_empty() {
+            None
+        } else {
+            let suffix = bytes.strip_prefix(b"OBS1")?;
+            let mut suffix = suffix;
+            let index = read_usize(&mut suffix)?;
+            let complete = match read_u8(&mut suffix)? {
+                0 => false,
+                1 => true,
+                _ => return None,
+            };
+            let (_, marker, checksum) = files.get(index)?;
+            // A changed status byte could otherwise certify a first-run list containing
+            // only the reader's sources, with none of the compiler binaries it observed.
+            let (body, digest) = record.split_last_chunk::<32>()?;
+            if suffix != digest
+                || blake3::hash(body).as_bytes() != digest
+                || checksum.is_some()
+                || marker.file_name()? != "ohm-foreign-span-bytes"
+            {
+                return None;
+            }
+            Some((index, complete))
+        };
+        return Some(EncodedDepInfo {
+            files,
+            env,
+            observer,
+        });
 
         /// See [`EncodedDepInfo`] for why a magic marker exists.
         fn read_magic_marker(bytes: &mut &[u8]) -> Option<()> {
@@ -233,6 +268,13 @@ impl EncodedDepInfo {
                 }
             }
         }
+        if let Some((index, complete)) = self.observer {
+            dst.extend_from_slice(b"OBS1");
+            write_usize(dst, index);
+            write_bool(dst, complete);
+            let digest = blake3::hash(dst);
+            dst.extend_from_slice(digest.as_bytes());
+        }
         return Ok(ret);
 
         /// See [`EncodedDepInfo`] for why a magic marker exists.
@@ -302,8 +344,24 @@ pub fn translate_dep_info(
     allow_package: bool,
     env_config: &Arc<HashMap<String, OsString>>,
     worktree_seed_namespace: Option<&Path>,
+    captures_observer_inputs: bool,
 ) -> CargoResult<()> {
     let depinfo = parse_rustc_dep_info(rustc_dep_info)?;
+    let marker = rustc_dep_info.join("ohm-foreign-span-bytes");
+    let observer = depinfo.files.contains_key(&marker);
+    let complete = observer
+        && !depinfo.conflicting_checksums
+        && captures_observer_inputs
+        && depinfo.files.keys().any(|path| {
+            path.extension()
+                .is_some_and(|ext| ext == "rmeta" || ext == "rlib")
+        })
+        && depinfo
+            .files
+            .iter()
+            .all(|(path, checksum)| path == &marker || checksum.is_some());
+    // Unlike ordinary shared registry freshness, a reader must retain its entire compiler input list.
+    let allow_package = allow_package || observer;
 
     let build_root = crate::util::try_canonicalize(build_root)?;
     let original_pkg_root = pkg_root;
@@ -377,6 +435,11 @@ pub fn translate_dep_info(
     });
 
     let serialize_path = |file: PathBuf| {
+        if observer {
+            // Reopen the names rustc actually used, including symlinks. A different checkout
+            // must capture its own names before it can use this proof.
+            return Some((DepInfoPathType::BuildRootRelative, rustc_cwd.join(file)));
+        }
         if let Some(cwd_from_package) = &cwd_from_package {
             // Preserve what rustc actually opened. Canonicalizing loses a
             // relative symlink's spelling; absolutizing ../ inputs binds a
@@ -417,6 +480,9 @@ pub fn translate_dep_info(
     };
 
     for (file, checksum_info) in depinfo.files {
+        if observer && file == marker {
+            on_disk_info.observer = Some((on_disk_info.files.len(), complete));
+        }
         let Some((path_type, path)) = serialize_path(file) else {
             continue;
         };
@@ -530,7 +596,15 @@ pub fn parse_rustc_dep_info(rustc_dep_info: &Path) -> CargoResult<RustcDepInfo> 
                     lines.next();
                 }
             }
-            ret.files.insert(path.into(), Some((file_len, checksum)));
+            let proof = (file_len, checksum);
+            if ret
+                .files
+                .insert(path.into(), Some(proof))
+                .flatten()
+                .is_some_and(|old| old != proof)
+            {
+                ret.conflicting_checksums = true;
+            }
         }
     }
     return Ok(ret);
@@ -637,15 +711,25 @@ pub fn parse_dep_info(
     }
     let mut ret = RustcDepInfo::default();
     ret.env = info.env;
-    ret.files
-        .extend(info.files.into_iter().map(|(ty, path, checksum_info)| {
-            (
-                make_absolute_path(ty, pkg_root, build_root, path),
-                checksum_info.and_then(|(file_len, checksum)| {
-                    Checksum::from_str(&checksum).ok().map(|c| (file_len, c))
-                }),
-            )
-        }));
+    ret.observed_span_inputs = info.observer.map(|(_, complete)| complete);
+    // Keep the missing input until the producer has emitted a verified binary dependency list.
+    let complete_marker = info
+        .observer
+        .and_then(|(index, complete)| complete.then_some(index));
+    ret.files.extend(
+        info.files
+            .into_iter()
+            .enumerate()
+            .filter_map(|(index, item)| (Some(index) != complete_marker).then_some(item))
+            .map(|(ty, path, checksum_info)| {
+                (
+                    make_absolute_path(ty, pkg_root, build_root, path),
+                    checksum_info.and_then(|(file_len, checksum)| {
+                        Checksum::from_str(&checksum).ok().map(|c| (file_len, c))
+                    }),
+                )
+            }),
+    );
     Ok(Some(ret))
 }
 
@@ -929,6 +1013,7 @@ mod encoded_dep_info {
                 true,
                 &env,
                 seeded.then_some(namespace.as_path()),
+                false,
             )
             .unwrap();
             let info = EncodedDepInfo::parse(&std::fs::read(&cargo_dep_info).unwrap()).unwrap();
@@ -967,6 +1052,7 @@ mod encoded_dep_info {
         );
 
         let depinfo = EncodedDepInfo {
+            observer: None,
             files: vec![lib_rs.clone()],
             env: Vec::new(),
         };
@@ -979,6 +1065,7 @@ mod encoded_dep_info {
             checksum.clone(),
         );
         let depinfo = EncodedDepInfo {
+            observer: None,
             files: vec![lib_rs.clone(), mod_rs.clone()],
             env: Vec::new(),
         };
@@ -986,6 +1073,7 @@ mod encoded_dep_info {
         assert_eq!(EncodedDepInfo::parse(&data).unwrap(), depinfo);
 
         let depinfo = EncodedDepInfo {
+            observer: None,
             files: vec![lib_rs, mod_rs],
             env: vec![
                 ("Gimli".into(), Some("Legolas".into())),
@@ -999,6 +1087,22 @@ mod encoded_dep_info {
     #[test]
     fn round_trip() {
         gen_test(false);
+    }
+
+    #[test]
+    fn incomplete_observer_cannot_be_changed_to_complete() {
+        let mut info = EncodedDepInfo::default();
+        info.files.push((
+            DepInfoPathType::BuildRootRelative,
+            PathBuf::from("reader.d/ohm-foreign-span-bytes"),
+            None,
+        ));
+        info.observer = Some((0, false));
+        let mut bytes = info.serialize().unwrap();
+        assert_eq!(EncodedDepInfo::parse(&bytes).unwrap(), info);
+        let status = bytes.len() - 33;
+        bytes[status] = 1;
+        assert!(EncodedDepInfo::parse(&bytes).is_none());
     }
 
     #[test]
@@ -1023,6 +1127,7 @@ mod encoded_dep_info {
         assert_eq!(
             EncodedDepInfo::parse(&data).unwrap(),
             EncodedDepInfo {
+                observer: None,
                 files: vec![(DepInfoPathType::PackageRootRelative, "rust".into(), None)],
                 env: Vec::new(),
             }
