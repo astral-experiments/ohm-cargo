@@ -17,7 +17,9 @@ use tracing::debug;
 use super::{BuildContext, BuildRunner, CompileKind, FileFlavor, Layout};
 use crate::compiler::custom_build::OHM_SHARED_RUSTC_LOG_ENVIRONMENT;
 use crate::compiler::trim_paths;
-use crate::compiler::{CompileMode, CompileTarget, CrateType, FileType, Unit, UserIntent};
+use crate::compiler::{
+    CompileMode, CompileTarget, CrateType, FileType, Unit, UserIntent, has_remap_path_prefix,
+};
 use crate::util::{self, CargoResult, OnceExt, StableHasher};
 use crate::workspace::build_cache_gc::worktrees::provenance;
 use crate::workspace::build_cache_gc::{self, FileIdentity};
@@ -2718,6 +2720,15 @@ fn compute_metadata(
     if !has_remap_path_prefix(&extra_args) {
         extra_args.hash(&mut unit_id_hasher);
     }
+    // HACK: Detect the *potential* presence of `--remap-path-prefix`
+    //
+    // As CLI parsing is contextual and dependent on the CLI definition to understand the context, we
+    // can't say for sure whether `--remap-path-prefix` is present, so we guess if anything looks like
+    // it.
+    // If we could, we'd strip it out for hashing.
+    // Instead, we use this to avoid hashing rustflags if it might be present to avoid the risk of taking
+    // a flag that is trying to make things reproducible and making things less reproducible by the
+    // `-Cextra-filename` showing up in the rlib, even with `split-debuginfo`.
     if unit.mode.is_doc() || unit.mode.is_doc_scrape() {
         if !has_remap_path_prefix(&unit.rustdocflags) {
             unit.rustdocflags.hash(&mut unit_id_hasher);
@@ -2749,20 +2760,6 @@ fn compute_metadata(
         c_extra_filename,
         pkg_dir,
     }
-}
-
-/// HACK: Detect the *potential* presence of `--remap-path-prefix`
-///
-/// As CLI parsing is contextual and dependent on the CLI definition to understand the context, we
-/// can't say for sure whether `--remap-path-prefix` is present, so we guess if anything looks like
-/// it.
-/// If we could, we'd strip it out for hashing.
-/// Instead, we use this to avoid hashing rustflags if it might be present to avoid the risk of taking
-/// a flag that is trying to make things reproducible and making things less reproducible by the
-/// `-Cextra-filename` showing up in the rlib, even with `split-debuginfo`.
-fn has_remap_path_prefix(args: &[String]) -> bool {
-    args.iter()
-        .any(|s| s.starts_with("--remap-path-prefix=") || s == "--remap-path-prefix")
 }
 
 /// Hash the version of rustc being used during the build process.

@@ -217,13 +217,31 @@ fn unit_rustflags_without_ohm_defaults<'a>(
     }
 }
 
+/// Detects either spelling of the compiler's path remapping option.
+fn has_remap_path_prefix(args: &[String]) -> bool {
+    args.iter()
+        .any(|arg| arg == "--remap-path-prefix" || arg.starts_with("--remap-path-prefix="))
+}
+
 /// Keeps mutable-package source identities stable when a completed build is
 /// copied into a new worktree. Immutable dependencies retain their existing
 /// compiler flags and shared-cache fingerprints.
 fn unit_uses_ohm_worktree_seeds(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
+    let flags = if unit.mode.is_doc() || unit.mode.is_doc_scrape() {
+        &unit.rustdocflags
+    } else {
+        &unit.rustflags
+    };
     build_runner.bcx.gctx.cli_unstable().ohm_worktree_seeds()
         && !unit.is_std
         && unit.pkg.package_id().source_id().is_path()
+        // The seed's cwd mapping wins over explicit rules, including rules in response files.
+        && unit.profile.trim_paths.as_ref().is_none_or(|trim| trim.is_none())
+        && std::iter::once(flags.as_ref())
+            .chain(build_runner.bcx.extra_args_for(unit).map(Vec::as_slice))
+            .all(|args| {
+            !has_remap_path_prefix(args) && !args.iter().any(|arg| arg.starts_with('@'))
+        })
 }
 
 /// A library can assemble external inputs before any executable is linked.
