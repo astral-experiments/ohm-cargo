@@ -3050,3 +3050,18 @@ fn worktree_seeds_respect_explicit_source_remaps() {
         .with_stdout_data(str!["/user-sources/src/location.rs"])
         .run();
 }
+
+#[cargo_test]
+fn configured_end_of_options_preserves_target_queries_and_compilation() {
+    let p = project()
+        .file("src/main.rs", "#[cfg(armed)] fn main() {}")
+        .file("flags.args", "--cfg=armed\n--\n")
+        .build();
+    p.cargo("run").env("RUSTFLAGS", "--cfg=armed --").run();
+    p.cargo("run")
+        .env(
+            "CARGO_ENCODED_RUSTFLAGS",
+            format!("@{}", p.root().join("flags.args").display()),
+        )
+        .run();
+}
