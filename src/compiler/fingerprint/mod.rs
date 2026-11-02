@@ -604,15 +604,19 @@ fn restored_metadata_mtime(
         })
 }
 
-/// Returns whether an unchanged metadata output can retain its generation.
-pub fn can_preserve_metadata_generation(fingerprint: &Fingerprint, output: &Path) -> bool {
-    paths::mtime(output)
-        .ok()
-        .and_then(|mtime| {
-            restored_metadata_mtime(fingerprint, mtime)
-                .filter(|minimum_mtime| *minimum_mtime == mtime)
-        })
-        .is_some()
+/// Keep skipped artifacts whose existing timestamp already satisfies their dependencies.
+pub(super) fn can_preserve_skipped_output(fingerprint: &Fingerprint, output: &Path) -> bool {
+    let Ok(mtime) = paths::mtime(output) else {
+        return false;
+    };
+    match output.extension().and_then(|ext| ext.to_str()) {
+        Some("rmeta") => restored_metadata_mtime(fingerprint, mtime) == Some(mtime),
+        Some("rlib") => fingerprint.deps.iter().all(|dep| {
+            dep.previous_output_mtime()
+                .is_some_and(|required| required <= mtime)
+        }),
+        _ => false,
+    }
 }
 
 /// Restores a metadata generation when its public semantics did not change.
@@ -702,6 +706,8 @@ pub fn unit_can_use_early_cutoff(build_runner: &BuildRunner<'_, '_>, unit: &Unit
         && !unit.artifact.is_true()
         && unit_consumes_public_api_hash(build_runner, unit)
 }
+
+const RECHECK_DEPENDENT_LINKS: &str = "/dev/null/ohm-recheck-dependent-links";
 
 /// Returns whether this unit can be split into codegen and reusable link steps.
 ///
@@ -1063,6 +1069,7 @@ pub fn prepare_target(
             && has_exclusive_metadata_access,
     );
     if fingerprint.ohm_worktree_namespace.is_some()
+        && !fingerprint.must_recheck_native_link(unit)
         && !force
         && !unit.artifact.is_true()
         && !previous_dependency_changes.any
@@ -1390,6 +1397,12 @@ pub struct Fingerprint {
     /// Used for early cutoff propagation through the dependency graph.
     #[serde(skip)]
     build_state: Mutex<BuildState>,
+    /// Whether this unit or a dependency reused assembly that still requires native link checks.
+    #[serde(skip)]
+    recheck_dependent_links: AtomicBool,
+    /// The persisted action and its inputs were fresh before forcing a native link.
+    #[serde(skip)]
+    native_link_only: bool,
     /// Whether a procedural macro read foreign span data during the previous compile.
     #[serde(skip)]
     observes_foreign_span: bool,
@@ -1766,6 +1779,7 @@ impl LocalFingerprint {
         worktree_seed: bool,
         checksum_parallelism: ChecksumParallelism<'_>,
         observes_foreign_span: &mut bool,
+        recheck_dependent_links: &mut bool,
     ) -> CargoResult<Option<StaleItem>> {
         let pkg_root = pkg.root();
         match self {
@@ -1780,6 +1794,7 @@ impl LocalFingerprint {
                 let Some(info) = parse_dep_info(pkg_root, build_root, &dep_info)? else {
                     return Ok(Some(StaleItem::MissingFile { path: dep_info }));
                 };
+                *recheck_dependent_links |= info.recheck_dependent_links;
                 if let Some(path) = info.foreign_span_marker {
                     *observes_foreign_span = true;
                     return Ok(Some(StaleItem::MissingFile { path }));
@@ -1879,6 +1894,8 @@ impl Fingerprint {
             index: UnitIndex::default(),
             fs_status: Mutex::new(FsStatus::Stale),
             build_state: Mutex::new(BuildState::Pending),
+            recheck_dependent_links: AtomicBool::new(false),
+            native_link_only: false,
             observes_foreign_span: false,
             early_cutoff_candidate: AtomicBool::new(false),
             previously_changed_metadata_dependency: AtomicBool::new(false),
@@ -1915,6 +1932,66 @@ impl Fingerprint {
     pub(super) fn mark_worktree_reused(&self) {
         self.worktree_reused.store(true, Ordering::Release);
         self.set_build_state(BuildState::SkippedEarlyCutoff);
+    }
+
+    /// Native links can read inputs that are absent from an upstream rlib's dep-info.
+    fn must_recheck_native_link(&self, unit: &Unit) -> bool {
+        self.recheck_dependent_links.load(Ordering::Acquire)
+            && matches!(unit.mode, CompileMode::Build | CompileMode::Test)
+            && unit.requires_upstream_objects()
+    }
+
+    /// Custom compilers and wrappers retain their ordinary compilation behavior.
+    pub(super) fn native_recheck_can_reuse_codegen(
+        &self,
+        build_runner: &BuildRunner<'_, '_>,
+        unit: &Unit,
+    ) -> bool {
+        self.must_recheck_native_link(unit)
+            && build_runner.bcx.build_config.primary_unit_rustc.is_none()
+            && build_runner.bcx.rustc().wrapper.is_none()
+            && build_runner.bcx.rustc().workspace_wrapper.is_none()
+    }
+
+    /// Read completed prerequisites too, since their first dep-info may arrive after scheduling.
+    pub(super) fn needs_native_link_driver(&self) -> bool {
+        self.recheck_dependent_links.load(Ordering::Acquire)
+            || self.deps.iter().any(|dep| {
+                dep.fingerprint
+                    .recheck_dependent_links
+                    .load(Ordering::Acquire)
+            })
+    }
+
+    /// An intermediate job can finish with early metadata before a leaf reports its marker.
+    /// Traverse the completed graph before reusing a seeded executable without invoking rustc.
+    fn inherited_native_recheck(&self) -> bool {
+        let mut pending = vec![self];
+        let mut seen = HashSet::default();
+        while let Some(fp) = pending.pop() {
+            if seen.insert(fp.index) {
+                if fp.recheck_dependent_links.load(Ordering::Acquire) {
+                    return true;
+                }
+                pending.extend(fp.deps.iter().map(|dep| dep.fingerprint.as_ref()));
+            }
+        }
+        false
+    }
+
+    pub(super) fn record_native_link_inputs(&self, marked: bool) {
+        if marked || self.needs_native_link_driver() {
+            self.recheck_dependent_links.store(true, Ordering::Release);
+        }
+    }
+
+    /// A dependency rebuilt after job preparation may have invalidated the cached objects.
+    pub(super) fn can_recheck_from_cached_codegen(&self) -> bool {
+        self.native_link_only
+            && self
+                .deps
+                .iter()
+                .all(|dep| matches!(dep.fingerprint.build_state(), BuildState::Fresh))
     }
 
     /// These compilers can read bytes that are absent from the public dependency metadata.
@@ -2200,6 +2277,7 @@ impl Fingerprint {
                 worktree_seed,
                 checksum_parallelism,
                 &mut self.observes_foreign_span,
+                self.recheck_dependent_links.get_mut(),
             )? {
                 item.log();
                 *self.fs_status.get_mut().unwrap() = FsStatus::StaleItem(item);
@@ -2525,6 +2603,31 @@ fn calculate(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
         },
     )?;
 
+    // Public metadata can remain unchanged through arbitrarily many rlibs. The final
+    // native link still observes external files, including libraries newly visible in -L.
+    fingerprint.record_native_link_inputs(false);
+    // An already dirty unit will run the linker. Preserve its original reason so
+    // dependency-only changes can reuse codegen and local changes still compile.
+    if fingerprint.must_recheck_native_link(unit)
+        && fingerprint.fs_status.get_mut().unwrap().up_to_date()
+    {
+        fingerprint.native_link_only = unit_can_use_relink_only(build_runner, unit)
+            && fingerprint.native_recheck_can_reuse_codegen(build_runner, unit)
+            && matches!(
+                fingerprint.fs_status.get_mut().unwrap(),
+                FsStatus::UpToDate { .. }
+            )
+            && unit_has_exclusive_metadata_access(build_runner, unit)
+            && !previous_dependency_changes(&fingerprint).any
+            && short_fingerprint_matches(
+                &build_runner.files().fingerprint_file_path(unit, ""),
+                fingerprint.hash_u64(),
+            );
+        *fingerprint.fs_status.get_mut().unwrap() = FsStatus::StaleItem(StaleItem::MissingFile {
+            path: RECHECK_DEPENDENT_LINKS.into(),
+        });
+    }
+
     // A downstream library may have finished using provisional metadata before
     // this producer failed. Reverting the source can satisfy the old dep-info
     // checksums, but an uncommitted producer must still dirty its dependents.
@@ -2726,7 +2829,15 @@ fn calculate_normal(
     }
     if super::unit_checks_relink_inputs(build_runner, unit) {
         // Dep-info from an older or unwrapped compiler may omit assembler inputs.
-        "ohm-declared-native-inputs-v1".hash(&mut config);
+        let target = match unit.kind {
+            CompileKind::Host => build_runner.bcx.host_triple(),
+            CompileKind::Target(target) => target.rustc_target(),
+        };
+        if target.as_str() == "aarch64-apple-darwin" {
+            "ohm-declared-native-inputs-with-versioned-rechecks-v1".hash(&mut config);
+        } else {
+            "ohm-declared-native-inputs-v1".hash(&mut config);
+        }
     }
 
     let compile_kind = unit.kind.fingerprint_hash();
@@ -2755,6 +2866,8 @@ fn calculate_normal(
         config: Hasher::finish(&config),
         compile_kind,
         index: build_runner.bcx.unit_to_index[unit],
+        recheck_dependent_links: AtomicBool::new(false),
+        native_link_only: false,
         observes_foreign_span: false,
         rustflags: extra_flags,
         fs_status: Mutex::new(FsStatus::Stale),
@@ -3993,6 +4106,40 @@ mod early_cutoff_tests {
         check.deps.push(dep);
 
         assert_eq!(restored_metadata_mtime(&check, invoked), Some(generation));
+    }
+
+    #[test]
+    fn a_late_leaf_marker_blocks_transitive_native_seed_reuse() {
+        let mut leaf = Fingerprint::new();
+        leaf.index = UnitIndex(1);
+        let leaf = Arc::new(leaf);
+        let mut mid = Fingerprint::new();
+        mid.index = UnitIndex(2);
+        mid.deps.push(make_dep_fingerprint(Arc::clone(&leaf)));
+        let mut bin = Fingerprint::new();
+        bin.index = UnitIndex(3);
+        bin.deps.push(make_dep_fingerprint(Arc::new(mid)));
+        assert!(!bin.inherited_native_recheck());
+        leaf.record_native_link_inputs(true);
+        assert!(bin.inherited_native_recheck());
+    }
+
+    #[test]
+    fn skipped_rlib_only_keeps_a_current_timestamp() {
+        let dir = tempfile::tempdir().unwrap();
+        let rmeta = dir.path().join("leaf.rmeta");
+        let rlib = dir.path().join("middle.rlib");
+        std::fs::write(&rmeta, "").unwrap();
+        std::fs::write(&rlib, "").unwrap();
+        let mut leaf = Fingerprint::new();
+        leaf.outputs.push(rmeta.clone());
+        let mut middle = Fingerprint::new();
+        middle.deps.push(make_dep_fingerprint(Arc::new(leaf)));
+        filetime::set_file_mtime(&rlib, FileTime::from_unix_time(2, 0)).unwrap();
+        filetime::set_file_mtime(&rmeta, FileTime::from_unix_time(1, 0)).unwrap();
+        assert!(can_preserve_skipped_output(&middle, &rlib));
+        filetime::set_file_mtime(&rmeta, FileTime::from_unix_time(3, 0)).unwrap();
+        assert!(!can_preserve_skipped_output(&middle, &rlib));
     }
 
     #[test]
