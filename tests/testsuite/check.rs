@@ -603,6 +603,59 @@ fn ohm_reuses_built_registry_dependency_closure() {
 }
 
 #[cargo_test]
+fn ohm_built_registry_dependency_reuse_checks_conflicting_runtime_libraries() {
+    Package::new("mixed", "1.0.0")
+        .file(
+            "Cargo.toml",
+            &format!(
+                "{}\n[lib]\ncrate-type = [\"rlib\", \"cdylib\"]",
+                basic_manifest("mixed", "1.0.0")
+            ),
+        )
+        .file("src/lib.rs", "pub struct Token;")
+        .publish();
+    Package::new("bridge", "1.0.0")
+        .dep("mixed", "1.0.0")
+        .file(
+            "src/lib.rs",
+            "extern crate mixed; pub fn token() -> mixed::Token { mixed::Token }",
+        )
+        .publish();
+    Package::new("independent", "1.0.0")
+        .file("src/lib.rs", "pub fn value() {}")
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.1.0"
+                edition = "2021"
+
+                [dependencies]
+                bridge = "1"
+                mixed = "1"
+                independent = "1"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> mixed::Token { independent::value(); bridge::token() }",
+        )
+        .build();
+
+    p.cargo("build").run();
+    p.cargo("-Zohm-reuse-built-deps check -v")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .with_stderr_contains("[CHECKING] mixed v1.0.0")
+        .with_stderr_contains("[CHECKING] bridge v1.0.0")
+        .with_stderr_contains("[FRESH] independent v1.0.0")
+        .run();
+}
+
+#[cargo_test]
 fn ohm_reuses_compatible_test_built_registry_dependencies_when_features_change() {
     Package::new("stable-leaf", "1.0.0")
         .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
