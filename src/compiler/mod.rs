@@ -2504,6 +2504,20 @@ where
     search_path
 }
 
+/// Adds the user's compiler or rustdoc arguments while preserving a possible option terminator.
+fn add_extra_args(command: &mut ProcessBuilder, args: &[String]) {
+    if may_end_options(args) {
+        command.args_last(args);
+    } else {
+        command.args(args);
+    }
+}
+
+/// An argument file can contain an end-of-options marker, including one consumed as a value.
+fn may_end_options(args: &[String]) -> bool {
+    args.iter().any(|arg| arg == "--" || arg.starts_with('@'))
+}
+
 /// Prepares flags and environments we can compute for a `rustc` invocation
 /// before the job queue starts compiling any unit.
 ///
@@ -2569,13 +2583,7 @@ fn prepare_rustc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
     build_deps_args(&mut base, build_runner, unit)?;
     add_cap_lints(build_runner.bcx, unit, &mut base);
     if let Some(args) = build_runner.bcx.extra_args_for(unit) {
-        // A response file can end option parsing. Keep the whole list together
-        // because an earlier option may consume a literal `--` as its value.
-        if args.iter().any(|arg| arg == "--" || arg.starts_with('@')) {
-            base.args_last(args);
-        } else {
-            base.args(args);
-        }
+        add_extra_args(&mut base, args);
     }
     let info = build_runner.bcx.target_data.info(unit.kind);
     let mut rustflags = unit_rustflags_without_ohm_defaults(gctx, &unit.rustflags);
@@ -2774,10 +2782,19 @@ fn prepare_rustdoc(
 
     rustdoc::add_output_format(build_runner, &mut rustdoc)?;
 
-    if let Some(args) = build_runner.bcx.extra_args_for(unit) {
-        rustdoc.args(args);
+    let extra = build_runner
+        .bcx
+        .extra_args_for(unit)
+        .map(Vec::as_slice)
+        .unwrap_or_default();
+    // Keep configured flags before a trailing CLI list, including when both use argument files.
+    if may_end_options(extra) {
+        add_extra_args(&mut rustdoc, &unit.rustdocflags);
+        rustdoc.args_last(extra);
+    } else {
+        rustdoc.args(extra);
+        add_extra_args(&mut rustdoc, &unit.rustdocflags);
     }
-    rustdoc.args(&unit.rustdocflags);
 
     if !crate_version_flag_already_present(&rustdoc) {
         append_crate_version_flag(unit, &mut rustdoc);
