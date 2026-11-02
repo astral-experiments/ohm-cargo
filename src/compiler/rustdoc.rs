@@ -265,8 +265,38 @@ pub(crate) fn forwarded_json<'a>(args: impl Iterator<Item = &'a str>) -> bool {
 
 /// Find a forwarded option, leaving a missing operand for rustdoc to diagnose.
 pub(crate) fn forwarded_option<'a>(
-    mut args: impl Iterator<Item = &'a str>,
+    args: impl Iterator<Item = &'a str>,
     wanted: &str,
+) -> Option<Option<&'a str>> {
+    next_forwarded_option(args, |name| name == wanted)
+}
+
+/// Paths whose contents rustdoc embeds in its generated documentation.
+pub(crate) fn external_inputs<'a>(
+    mut args: impl Iterator<Item = &'a str>,
+) -> impl Iterator<Item = &'a str> {
+    std::iter::from_fn(move || {
+        next_forwarded_option(&mut args, |name| {
+            matches!(
+                name,
+                "html-in-header"
+                    | "html-before-content"
+                    | "html-after-content"
+                    | "markdown-before-content"
+                    | "markdown-after-content"
+                    | "extend-css"
+                    | "theme"
+                    | "index-page"
+            )
+        })
+        .flatten()
+    })
+}
+
+/// Advances past one matching option and its operand, respecting the end of options.
+fn next_forwarded_option<'a>(
+    mut args: impl Iterator<Item = &'a str>,
+    wanted: impl Fn(&str) -> bool,
 ) -> Option<Option<&'a str>> {
     while let Some(arg) = args.next() {
         if arg == "--" {
@@ -276,7 +306,7 @@ pub(crate) fn forwarded_option<'a>(
             let (name, value) = long
                 .split_once('=')
                 .map_or((long, None), |(name, value)| (name, Some(value)));
-            if name == wanted {
+            if wanted(name) {
                 return Some(value.or_else(|| args.next()));
             }
             // Rustdoc's long switches take no value. Skip the argument of other
@@ -322,7 +352,9 @@ pub(crate) fn forwarded_option<'a>(
                 } else {
                     Some(chars.as_str())
                 };
-                if option == 'w' && wanted == "output-format" {
+                if (option == 'w' && wanted("output-format"))
+                    || (option == 'e' && wanted("extend-css"))
+                {
                     return Some(value);
                 }
                 break;

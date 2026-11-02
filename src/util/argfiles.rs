@@ -1,7 +1,7 @@
 //! Inputs passed to rustc and rustdoc through argument files.
 
 use std::ffi::OsString;
-use std::fs::OpenOptions;
+use std::fs::{File, OpenOptions};
 use std::io::{Read, Write};
 
 use cargo_util::ProcessBuilder;
@@ -156,8 +156,8 @@ pub(crate) fn snapshot_for_replay(
     Ok((RustdocArgFiles { copies }, expanded))
 }
 
-/// Leaves non-file inputs unread so the compiler can consume them exactly once.
-fn read_regular_file(path: &Path) -> Option<String> {
+/// Opens a regular input without consuming a stream intended for the compiler.
+pub(crate) fn open_regular_file(path: &Path) -> Option<File> {
     if !path.metadata().ok()?.is_file() {
         return None;
     }
@@ -168,11 +168,18 @@ fn read_regular_file(path: &Path) -> Option<String> {
         use std::os::unix::fs::OpenOptionsExt;
         options.custom_flags(libc::O_NONBLOCK);
     }
-    let mut file = options.open(path).ok()?;
+    let file = options.open(path).ok()?;
     if !file.metadata().ok()?.is_file() {
         return None;
     }
+    Some(file)
+}
+
+/// Reads a regular argument file as UTF-8.
+fn read_regular_file(path: &Path) -> Option<String> {
     let mut contents = String::new();
-    file.read_to_string(&mut contents).ok()?;
+    open_regular_file(path)?
+        .read_to_string(&mut contents)
+        .ok()?;
     Some(contents)
 }
