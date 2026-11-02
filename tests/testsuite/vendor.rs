@@ -146,6 +146,36 @@ directory = "deps/.vendor"
 
     let lock = p.read_file("deps/.vendor/log/Cargo.toml");
     assert!(lock.contains("version = \"0.3.5\""));
+
+    #[cfg(unix)]
+    {
+        use std::ffi::OsStr;
+        use std::os::unix::ffi::OsStrExt;
+
+        let raw = OsStr::from_bytes(b"vendor-\xff");
+        p.cargo("vendor --respect-source-config")
+            .arg(raw)
+            .with_status(101)
+            .with_stderr_data(str![[r#"
+[ERROR] failed to sync
+
+Caused by:
+  vendor destination is not valid UTF-8 and cannot be written to the source configuration
+
+"#]])
+            .run();
+        assert!(!p.root().join(raw).exists());
+
+        let output = p
+            .cargo("vendor --respect-source-config")
+            .arg(r"literal\directory")
+            .run();
+        p.change_file(
+            ".cargo/config.toml",
+            std::str::from_utf8(&output.stdout).unwrap(),
+        );
+        p.cargo("check --frozen").run();
+    }
 }
 
 fn add_crates_io_vendor_config(p: &Project) {
