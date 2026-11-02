@@ -45,6 +45,8 @@ use crate::workspace::{
 };
 
 mod embedded;
+#[cfg(unix)]
+pub(crate) mod registry_cache;
 mod targets;
 
 use self::targets::to_targets;
@@ -87,9 +89,7 @@ pub fn read_manifest(
             .map_err(|e| emit_toml_diagnostic(e.into(), &contents, path, gctx))?;
         (original_toml, Some(make_document_owned(document)))
     } else {
-        let deserializer = toml::de::Deserializer::parse(&contents)
-            .map_err(|e| emit_toml_diagnostic(e.into(), &contents, path, gctx))?;
-        let original_toml = deserialize_toml(deserializer)
+        let original_toml = deserialize_without_document(&contents, source_id, gctx)
             .map_err(|e| emit_toml_diagnostic(e.into(), &contents, path, gctx))?;
         (original_toml, None)
     };
@@ -204,9 +204,10 @@ fn parse_document(contents: &str) -> Result<toml::Spanned<toml::de::DeTable<'_>>
 }
 
 #[tracing::instrument(skip_all)]
-fn deserialize_toml(
-    deserializer: toml::de::Deserializer<'_>,
-) -> Result<manifest::TomlManifest, toml::de::Error> {
+fn deserialize_toml<'de, D>(deserializer: D) -> Result<manifest::TomlManifest, D::Error>
+where
+    D: serde::Deserializer<'de>,
+{
     let mut unused = BTreeSet::new();
     let mut document: manifest::TomlManifest = serde_ignored::deserialize(deserializer, |path| {
         let mut key = String::new();
@@ -215,6 +216,36 @@ fn deserialize_toml(
     })?;
     document._unused_keys = unused;
     Ok(document)
+}
+
+fn deserialize_without_document(
+    contents: &str,
+    source_id: SourceId,
+    gctx: &GlobalContext,
+) -> Result<manifest::TomlManifest, toml::de::Error> {
+    #[cfg(not(unix))]
+    let _ = (source_id, gctx);
+    #[cfg(unix)]
+    let entry = if gctx.cli_unstable().ohm_defaults()
+        && matches!(
+            source_id.kind(),
+            SourceKind::Registry | SourceKind::SparseRegistry
+        ) {
+        registry_cache::Entry::new(gctx, contents)
+    } else {
+        None
+    };
+    #[cfg(unix)]
+    if let Some(manifest) = entry.as_ref().and_then(registry_cache::Entry::read) {
+        return Ok(manifest);
+    }
+
+    let manifest = deserialize_toml(toml::de::Deserializer::parse(contents)?)?;
+    #[cfg(unix)]
+    if let Some(entry) = entry {
+        entry.store(contents);
+    }
+    Ok(manifest)
 }
 
 #[cfg(test)]

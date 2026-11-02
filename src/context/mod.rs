@@ -297,6 +297,8 @@ pub struct GlobalContext {
     ws_roots: Mutex<HashMap<PathBuf, WorkspaceRootConfig>>,
     /// The global cache tracker is a database used to track disk cache usage.
     global_cache_tracker: OnceLock<Mutex<GlobalCacheTracker>>,
+    #[cfg(unix)]
+    registry_manifest_cache: OnceLock<Option<PathBuf>>,
     /// A cache of modifications to make to [`GlobalContext::global_cache_tracker`],
     /// saved to disk in a batch to improve performance.
     deferred_global_last_use: OnceLock<Mutex<DeferredGlobalLastUse>>,
@@ -409,6 +411,8 @@ impl GlobalContext {
             nightly_features_allowed: matches!(&*features::channel(), "nightly" | "dev"),
             ws_roots: Default::default(),
             global_cache_tracker: Default::default(),
+            #[cfg(unix)]
+            registry_manifest_cache: Default::default(),
             deferred_global_last_use: Default::default(),
         }
     }
@@ -433,6 +437,15 @@ impl GlobalContext {
     /// Gets the user's Cargo home directory (OS-dependent).
     pub fn home(&self) -> &Filesystem {
         &self.home_path
+    }
+
+    #[cfg(unix)]
+    pub(crate) fn registry_manifest_cache(&self) -> Option<&Path> {
+        self.registry_manifest_cache
+            .get_or_init(|| {
+                crate::workspace::parser::registry_cache::directory(self.home().as_path_unlocked())
+            })
+            .as_deref()
     }
 
     /// Returns a path to display to the user with the location of their home
@@ -681,6 +694,10 @@ impl GlobalContext {
 
         self.cwd = cwd;
         self.home_path = Filesystem::new(homedir);
+        #[cfg(unix)]
+        {
+            self.registry_manifest_cache = OnceLock::new();
+        }
         self.reload_rooted_at(self.cwd.clone())?;
         Ok(())
     }
