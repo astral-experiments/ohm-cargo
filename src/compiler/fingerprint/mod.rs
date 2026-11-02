@@ -1400,9 +1400,6 @@ pub struct Fingerprint {
     /// Whether this unit or a dependency reused assembly that still requires native link checks.
     #[serde(skip)]
     recheck_dependent_links: AtomicBool,
-    /// The persisted action and its inputs were fresh before forcing a native link.
-    #[serde(skip)]
-    native_link_only: bool,
     /// Whether a procedural macro read foreign span data during the previous compile.
     #[serde(skip)]
     observes_foreign_span: bool,
@@ -1895,7 +1892,6 @@ impl Fingerprint {
             fs_status: Mutex::new(FsStatus::Stale),
             build_state: Mutex::new(BuildState::Pending),
             recheck_dependent_links: AtomicBool::new(false),
-            native_link_only: false,
             observes_foreign_span: false,
             early_cutoff_candidate: AtomicBool::new(false),
             previously_changed_metadata_dependency: AtomicBool::new(false),
@@ -1983,15 +1979,6 @@ impl Fingerprint {
         if marked || self.needs_native_link_driver() {
             self.recheck_dependent_links.store(true, Ordering::Release);
         }
-    }
-
-    /// A dependency rebuilt after job preparation may have invalidated the cached objects.
-    pub(super) fn can_recheck_from_cached_codegen(&self) -> bool {
-        self.native_link_only
-            && self
-                .deps
-                .iter()
-                .all(|dep| matches!(dep.fingerprint.build_state(), BuildState::Fresh))
     }
 
     /// These compilers can read bytes that are absent from the public dependency metadata.
@@ -2603,30 +2590,9 @@ fn calculate(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
         },
     )?;
 
-    // Public metadata can remain unchanged through arbitrarily many rlibs. The final
-    // native link still observes external files, including libraries newly visible in -L.
+    // A native input marker restricts reuse when Cargo needs to rebuild. A warm
+    // unit still follows Cargo's ordinary source and build-script declarations.
     fingerprint.record_native_link_inputs(false);
-    // An already dirty unit will run the linker. Preserve its original reason so
-    // dependency-only changes can reuse codegen and local changes still compile.
-    if fingerprint.must_recheck_native_link(unit)
-        && fingerprint.fs_status.get_mut().unwrap().up_to_date()
-    {
-        fingerprint.native_link_only = unit_can_use_relink_only(build_runner, unit)
-            && fingerprint.native_recheck_can_reuse_codegen(build_runner, unit)
-            && matches!(
-                fingerprint.fs_status.get_mut().unwrap(),
-                FsStatus::UpToDate { .. }
-            )
-            && unit_has_exclusive_metadata_access(build_runner, unit)
-            && !previous_dependency_changes(&fingerprint).any
-            && short_fingerprint_matches(
-                &build_runner.files().fingerprint_file_path(unit, ""),
-                fingerprint.hash_u64(),
-            );
-        *fingerprint.fs_status.get_mut().unwrap() = FsStatus::StaleItem(StaleItem::MissingFile {
-            path: RECHECK_DEPENDENT_LINKS.into(),
-        });
-    }
 
     // A downstream library may have finished using provisional metadata before
     // this producer failed. Reverting the source can satisfy the old dep-info
@@ -2858,7 +2824,6 @@ fn calculate_normal(
         compile_kind,
         index: build_runner.bcx.unit_to_index[unit],
         recheck_dependent_links: AtomicBool::new(false),
-        native_link_only: false,
         observes_foreign_span: false,
         rustflags: extra_flags,
         fs_status: Mutex::new(FsStatus::Stale),
