@@ -2747,11 +2747,12 @@ fn calculate_normal(
     // Figure out what the outputs of our unit is, and we'll be storing them
     // into the fingerprint as well.
     let unit_outputs = build_runner.outputs(unit)?;
-    let outputs = unit_outputs
+    let mut outputs = unit_outputs
         .iter()
         .filter(|output| !matches!(output.flavor, FileFlavor::DebugInfo | FileFlavor::Auxiliary))
         .map(|output| output.path.clone())
         .collect::<Vec<_>>();
+    outputs.extend(doc_output_marker(build_runner, unit));
     // Fill out a bunch more information that we'll be tracking typically
     // hashed to take up less space on disk as we just need to know when things
     // change.
@@ -3194,6 +3195,22 @@ pub fn prepare_init(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> Carg
     }
 
     Ok(())
+}
+
+/// Marks which unit fingerprint owns the HTML files in a shared crate directory.
+pub(super) fn doc_output_marker(
+    build_runner: &BuildRunner<'_, '_>,
+    unit: &Unit,
+) -> Option<PathBuf> {
+    if !unit.mode.is_doc() || build_runner.bcx.build_config.intent.wants_doc_json_output() {
+        return None;
+    }
+    let files = build_runner.files();
+    let dir = files.output_dir(unit).join(unit.target.crate_name());
+    let fingerprint = files.fingerprint_file_path(unit, "");
+    // Keep the marker stable when the workspace and its target directory move together.
+    let owner = pathdiff::diff_paths(&fingerprint, &dir).unwrap_or(fingerprint);
+    Some(dir.join(format!(".cargo-doc-{}", util::short_hash(&owner))))
 }
 
 /// Returns the location that the dep-info file will show up at
