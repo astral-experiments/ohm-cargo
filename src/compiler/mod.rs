@@ -2569,7 +2569,13 @@ fn prepare_rustc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
     build_deps_args(&mut base, build_runner, unit)?;
     add_cap_lints(build_runner.bcx, unit, &mut base);
     if let Some(args) = build_runner.bcx.extra_args_for(unit) {
-        base.args(args);
+        // A response file can end option parsing. Keep the whole list together
+        // because an earlier option may consume a literal `--` as its value.
+        if args.iter().any(|arg| arg == "--" || arg.starts_with('@')) {
+            base.args_last(args);
+        } else {
+            base.args(args);
+        }
     }
     let info = build_runner.bcx.target_data.info(unit.kind);
     let mut rustflags = unit_rustflags_without_ohm_defaults(gctx, &unit.rustflags);
