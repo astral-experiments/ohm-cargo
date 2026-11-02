@@ -3279,7 +3279,7 @@ fn local_fingerprints_deps(
             .iter()
             .map(|p| p.strip_prefix(pkg_root).unwrap_or(p).to_path_buf())
             .collect();
-        let mut unresolved = Vec::new();
+        let mut states = Vec::new();
         let mut provisional = false;
         let started = std::cell::LazyCell::new(|| paths::mtime(&deps.build_script_output).ok());
         for (index, path) in deps.rerun_if_changed.iter().enumerate() {
@@ -3305,12 +3305,12 @@ fn local_fingerprints_deps(
                 state
             });
             if let Some(state) = state {
-                unresolved.push((index, state));
+                states.push((index, state));
             }
         }
         // Record even an all-present observation. A legacy fingerprint could
         // have been produced by a script that read its missing-file fallback.
-        let state = crate::util::hex::hash_u64((provisional, unresolved));
+        let state = crate::util::hex::hash_u64((provisional, states));
         local.push(LocalFingerprint::RerunIfChanged {
             output,
             paths,
@@ -3377,31 +3377,62 @@ fn scan_watched_path(
         return (None, None);
     }
     let mut unresolved = Vec::new();
-    let mut aliases = Vec::new();
-    let mut record = |entry: &Path, symlink: bool, resolved: bool| {
+    let mut resolved = Vec::new();
+    let mut record = |entry: &Path, symlink: bool, target: Option<&fs::Metadata>| {
         let relative = entry.strip_prefix(path).unwrap();
-        if !resolved {
+        let Some(meta) = target else {
             unresolved.push(relative.to_owned());
             return;
-        }
+        };
+        // A rename can select older contents without advancing any mtime in the watched tree.
+        let identity = if meta.is_dir() || meta.is_file() {
+            #[cfg(unix)]
+            {
+                use std::os::unix::fs::MetadataExt;
+                // A restored copy can reuse a recently deleted inode.
+                let generation = meta
+                    .created()
+                    .map(FileTime::from_system_time)
+                    .unwrap_or_else(|_| {
+                        FileTime::from_unix_time(meta.ctime(), meta.ctime_nsec() as u32)
+                    });
+                Some(crate::util::hex::hash_u64((
+                    meta.dev(),
+                    meta.ino(),
+                    generation,
+                )))
+            }
+            #[cfg(not(unix))]
+            {
+                same_file::Handle::from_path(entry)
+                    .ok()
+                    .map(|handle| crate::util::hex::hash_u64((handle, meta.created().ok())))
+            }
+        } else {
+            None
+        };
         match resolver.alias(entry, symlink) {
-            Ok(Some(target)) => aliases.push(crate::util::hex::hash_u64((relative, target))),
-            Ok(None) => {}
+            Ok(alias) if alias.is_some() || identity.is_some() => {
+                resolved.push(crate::util::hex::hash_u64((relative, alias, identity)));
+            }
+            Ok(_) => {}
             Err(_) => unresolved.push(relative.to_owned()),
         }
     };
     let mut root_was_link = false;
-    let result = paths::mtime_recursive_with_symlinks(path, |link, resolved| {
+    let result = paths::mtime_recursive_with_metadata(path, |link, target| {
         root_was_link |= link == path;
         observe_link(link);
-        record(link, true, resolved);
+        record(link, true, target);
     });
-    if result.is_ok() && !root_was_link {
+    if let Ok((_, meta)) = &result
+        && !root_was_link
+    {
         // Even a regular leaf can be reached through a directory symlink.
-        record(path, false, true);
+        record(path, false, Some(meta));
     }
     let mtime = match result {
-        Ok(mtime) => Some(mtime),
+        Ok((mtime, _)) => Some(mtime),
         Err(err)
             if err.downcast_ref::<io::Error>().is_some_and(|err| {
                 matches!(
@@ -3417,9 +3448,9 @@ fn scan_watched_path(
         Err(_) => return (None, None),
     };
     unresolved.sort_unstable();
-    aliases.sort_unstable();
-    let state = (!unresolved.is_empty() || !aliases.is_empty())
-        .then(|| crate::util::hex::hash_u64((unresolved, aliases)));
+    resolved.sort_unstable();
+    let state = (!unresolved.is_empty() || !resolved.is_empty())
+        .then(|| crate::util::hex::hash_u64((unresolved, resolved)));
     (mtime, state)
 }
 

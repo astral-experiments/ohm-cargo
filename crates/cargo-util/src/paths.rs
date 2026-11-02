@@ -363,13 +363,22 @@ pub fn mtime_recursive_with_symlinks(
     path: &Path,
     mut symlink: impl FnMut(&Path, bool),
 ) -> Result<FileTime> {
+    mtime_recursive_with_metadata(path, |entry, target| symlink(entry, target.is_some()))
+        .map(|(mtime, _)| mtime)
+}
+
+/// Returns the recursive mtime and root metadata, reporting the target metadata for each symlink.
+pub fn mtime_recursive_with_metadata(
+    path: &Path,
+    mut symlink: impl FnMut(&Path, Option<&Metadata>),
+) -> Result<(FileTime, Metadata)> {
     let entry = symlink_metadata(path)?;
     let entry_mtime = FileTime::from_last_modification_time(&entry);
     let meta = if entry.is_symlink() {
         let target = metadata(path)?;
         if !target.is_dir() {
             // Directory links are reported by the walk below.
-            symlink(path, true);
+            symlink(path, Some(&target));
         }
         target
     } else {
@@ -377,7 +386,10 @@ pub fn mtime_recursive_with_symlinks(
     };
     if !meta.is_dir() {
         // Retargeting the link can select a file older than the previous build.
-        return Ok(entry_mtime.max(FileTime::from_last_modification_time(&meta)));
+        return Ok((
+            entry_mtime.max(FileTime::from_last_modification_time(&meta)),
+            meta,
+        ));
     }
     let max_meta = walkdir::WalkDir::new(path)
         .follow_links(true)
@@ -390,7 +402,7 @@ pub fn mtime_recursive_with_symlinks(
                         && err.io_error().is_some()
                         && path.is_symlink()
                     {
-                        symlink(path, false);
+                        symlink(path, None);
                     }
                     tracing::debug!("failed to determine mtime while walking directory: {err}");
                     return None;
@@ -418,7 +430,7 @@ pub fn mtime_recursive_with_symlinks(
                 // Walkdir follows symlinks.
                 match e.metadata() {
                     Ok(target_meta) => {
-                        symlink(e.path(), true);
+                        symlink(e.path(), Some(&target_meta));
                         let target_mtime = FileTime::from_last_modification_time(&target_meta);
                         Some(sym_mtime.max(target_mtime))
                     }
@@ -431,7 +443,7 @@ pub fn mtime_recursive_with_symlinks(
                             e.path().display(),
                             err
                         );
-                        symlink(e.path(), false);
+                        symlink(e.path(), None);
                         Some(sym_mtime)
                     }
                 }
@@ -456,7 +468,7 @@ pub fn mtime_recursive_with_symlinks(
         .max()
         // or_else handles the case where there are no files in the directory.
         .unwrap_or_else(|| FileTime::from_last_modification_time(&meta));
-    Ok(max_meta)
+    Ok((max_meta, meta))
 }
 
 /// Record the current time on the filesystem (using the filesystem's clock)
