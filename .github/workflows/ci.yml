@@ -160,7 +160,12 @@ jobs:
             exit 1
           fi
           # The stable-built testsuite marks these nightly tests ignored at compile time.
-          "$testsuite" profiles::ohm_default_debuginfo --include-ignored --nocapture
+          for test in \
+            profile_settings::ohm_default_debuginfo \
+            profile_settings::ohm_default_debuginfo_respects_overrides; do
+            "$testsuite" "$test" --exact --include-ignored --list | grep -Fx "$test: test"
+            "$testsuite" "$test" --exact --include-ignored --nocapture
+          done
           for test in \
             worktree_import_requires_cloning \
             bundled_clippy_isolation_defaults_follow_actual_snapshot_cloning \
