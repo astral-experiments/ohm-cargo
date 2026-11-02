@@ -58,6 +58,7 @@ mod io;
 pub mod job;
 mod local_poll_adapter;
 pub use local_poll_adapter::LocalPollAdapter;
+pub(crate) mod argfiles;
 pub mod data_structures;
 mod lockserver;
 pub mod log_message;
