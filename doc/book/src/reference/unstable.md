@@ -93,6 +93,7 @@ Each new feature described below should explain how to use it.
     * [binary-dep-depinfo](#binary-dep-depinfo) --- Causes the dep-info file to track binary dependencies.
     * [checksum-freshness](#checksum-freshness) --- When passed, the decision as to whether a crate needs to be rebuilt is made using file checksums instead of the file mtime.
     * [headstart](#headstart) --- Overlap dependency checks using early interface metadata in Ohm.
+    * [ohm-cached-doctests](#ohm-cached-doctests) --- Compile and cache inline doctests in Cargo.
     * [ohm-clippy-seed-isolation](#ohm-clippy-seed-isolation) --- Keep bundled Clippy state out of worktree snapshots.
     * [ohm-proc-macro-trust](#ohm-proc-macro-trust) --- Set procedural-macro trust for registry sharing and workspace artifact reuse.
     * [ohm-worktree-seeds](#ohm-worktree-seeds) --- Prepare build state for seeding new Git worktrees with Ohm.
@@ -2147,6 +2148,24 @@ Use `-Zohm-defer-dev-deps=no`, `[unstable] ohm-defer-dev-deps = false`, or
 through external Cargo subcommands and can be overridden by a nested command's
 own flag. This requires Ohm defaults and cached relinking; `-Zohm-defaults=no`
 also disables it.
+
+## ohm-cached-doctests
+
+`cargo test --doc -Zohm-cached-doctests` builds supported inline examples as
+one executable per library in Cargo's build graph. Rustdoc extracts the
+examples with the package's features, dev-dependencies, and build-script
+outputs. Cargo fingerprints the extraction inputs and the compiled examples.
+Ohm reuses fresh generated sources and object files. It repeats the final
+link so changes to native archives outside Cargo's graph remain visible.
+It then runs the examples on every invocation.
+Examples run in separate processes with the package root as their working directory.
+
+The flag is opt-in and applies to host Rust 2024 library doctests. Requests
+with name filters, `--exact`, or `--list` can use the cache. Other test arguments
+and custom rustdoc flags use ordinary rustdoc. A library with a `compile_fail`,
+standalone, or otherwise unmergeable example also runs through rustdoc. Generated code retains the
+original test names. Panic locations in merged examples can refer to the
+generated source.
 
 ## ohm-ready-tests
 

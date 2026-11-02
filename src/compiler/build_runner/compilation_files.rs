@@ -1451,6 +1451,20 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                 // outputs.
                 vec![]
             }
+            CompileMode::Doctest if crate::compiler::cached_doctests::enabled(bcx, unit) => {
+                let name = format!(
+                    "{}-{}{}",
+                    unit.target.crate_name(),
+                    self.metadata(unit).unit_id(),
+                    std::env::consts::EXE_SUFFIX
+                );
+                vec![OutputFile {
+                    path: self.deps_dir(unit).join(name),
+                    hardlink: None,
+                    export_path: None,
+                    flavor: FileFlavor::Normal,
+                }]
+            }
             CompileMode::Doctest => {
                 // Doctests are built in a temporary directory and then
                 // deleted. There is the `--persist-doctests` unstable flag,
@@ -2879,7 +2893,10 @@ fn use_extra_filename(bcx: &BuildContext<'_, '_>, unit: &Unit) -> bool {
 
 /// Returns whether or not this unit should use a hash in the pkg_dir to make it unique.
 fn use_pkg_dir(bcx: &BuildContext<'_, '_>, unit: &Unit) -> bool {
-    if unit.mode.is_doc_test() || unit.mode.is_doc() {
+    if unit.mode.is_doc_test() {
+        return crate::compiler::cached_doctests::enabled(bcx, unit);
+    }
+    if unit.mode.is_doc() {
         // Doc tests do not have metadata.
         return false;
     }

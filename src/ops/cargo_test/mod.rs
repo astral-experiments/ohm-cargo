@@ -78,7 +78,15 @@ pub fn run_tests(ws: &Workspace<'_>, options: &TestOptions, test_args: &[&str]) 
         args: test_args.iter().map(|arg| (*arg).to_owned()).collect(),
         no_fail_fast: options.no_fail_fast,
     });
-    let mut compilation = compile_tests(ws, options, ready)?;
+    let cache_doctests = ws.gctx().cli_unstable().ohm_cached_doctests
+        && matches!(
+            options.compile_opts.build_config.intent,
+            crate::compiler::UserIntent::Doctest
+        )
+        && test_args
+            .iter()
+            .all(|arg| !arg.starts_with('-') || matches!(*arg, "--exact" | "--list"));
+    let mut compilation = compile_tests(ws, options, ready, cache_doctests)?;
 
     if options.no_run {
         if !options.compile_opts.build_config.emit_json() {
@@ -119,7 +127,7 @@ pub fn run_tests(ws: &Workspace<'_>, options: &TestOptions, test_args: &[&str]) 
 /// On error, the returned [`CliError`] will have the appropriate process exit
 /// code that Cargo should use.
 pub fn run_benches(ws: &Workspace<'_>, options: &TestOptions, args: &[&str]) -> CliResult {
-    let compilation = compile_tests(ws, options, None)?;
+    let compilation = compile_tests(ws, options, None, false)?;
 
     if options.no_run {
         if !options.compile_opts.build_config.emit_json() {
@@ -139,9 +147,11 @@ fn compile_tests<'a>(
     ws: &Workspace<'a>,
     options: &TestOptions,
     ready: Option<ready_tests::ReadyTestOptions>,
+    cache_doctests: bool,
 ) -> CargoResult<Compilation<'a>> {
     let mut compile_opts = options.compile_opts.clone();
     compile_opts.build_config.ready_tests = ready;
+    compile_opts.build_config.cached_doctests = cache_doctests;
     let mut compilation = ops::compile(ws, &compile_opts)?;
     compilation.tests.sort_by_key(|u| u.unit.clone());
     Ok(compilation)
@@ -243,6 +253,7 @@ fn run_doc_tests(
 
     for doctest_info in &compilation.to_doc_test {
         let Doctest {
+            executable,
             args,
             unstable_opts,
             unit,
@@ -252,6 +263,35 @@ fn run_doc_tests(
         } = doctest_info;
 
         gctx.shell().status("Doc-tests", unit.target.name())?;
+        if let Some(executable) = executable {
+            let mut cmd = compilation.target_process(
+                executable,
+                unit.kind,
+                &unit.pkg,
+                script_metas.as_ref(),
+            )?;
+            cmd.cwd(unit.pkg.root()).args(test_args);
+            cmd.env_remove("RUSTDOC_DOCTEST_RUN_NB_TEST");
+            cmd.env_remove("RUSTDOC_DOCTEST_BIN_PATH");
+            for (name, value) in env {
+                cmd.env(name, value);
+            }
+            if gctx.shell().verbosity() == Verbosity::Quiet {
+                cmd.arg("--quiet");
+            }
+            gctx.shell()
+                .verbose(|shell| shell.status("Running", &cmd))?;
+            record_test_result(
+                ws,
+                options,
+                test_args,
+                unit,
+                TestKind::Doctest,
+                cmd.exec(),
+                &mut errors,
+            )?;
+            continue;
+        }
         let mut p = compilation.rustdoc_process(unit, script_metas.as_ref())?;
 
         for (var, value) in env {
@@ -316,18 +356,15 @@ fn run_doc_tests(
         gctx.shell()
             .verbose(|shell| shell.status("Running", p.to_string()))?;
 
-        if let Err(e) = p.exec() {
-            let code = fail_fast_code(&e);
-            let unit_err = UnitTestError {
-                unit: unit.clone(),
-                kind: TestKind::Doctest,
-            };
-            report_test_error(ws, test_args, &options.compile_opts, &unit_err, e);
-            errors.push(unit_err);
-            if !options.no_fail_fast {
-                return Err(CliError::code(code));
-            }
-        }
+        record_test_result(
+            ws,
+            options,
+            test_args,
+            unit,
+            TestKind::Doctest,
+            p.exec(),
+            &mut errors,
+        )?;
     }
     Ok(errors)
 }

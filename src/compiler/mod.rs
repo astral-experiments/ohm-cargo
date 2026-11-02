@@ -32,6 +32,7 @@ pub mod artifact;
 mod build_config;
 pub(crate) mod build_context;
 pub(crate) mod build_runner;
+mod cached_doctests;
 mod compilation;
 mod compile_kind;
 mod crate_type;
@@ -284,7 +285,7 @@ fn unit_suppresses_default_public_api_hash(
     build_runner.bcx.gctx.cli_unstable().ohm_defaults()
         && ((build_runner.is_terminal_check_unit(unit)
             && !unit_uses_ohm_shared_stages(build_runner, unit))
-            || unit.mode == CompileMode::Test
+            || matches!(unit.mode, CompileMode::Test | CompileMode::Doctest)
             || (matches!(unit.mode, CompileMode::Build | CompileMode::Check { .. })
                 && unit.target.is_lib()
                 && !unit.target.proc_macro()
@@ -476,8 +477,8 @@ fn compile<'gctx>(
 
         let job = if unit.mode.is_run_custom_build() {
             custom_build::prepare(build_runner, unit)?
-        } else if unit.mode.is_doc_test() {
-            // We run these targets later, so this is just a no-op for now.
+        } else if unit.mode.is_doc_test() && !cached_doctests::enabled(build_runner.bcx, unit) {
+            // Rustdoc builds these targets when the test runner executes them.
             Job::new_fresh()
         } else {
             let force = exec.force_rebuild(unit) || force_rebuild;
@@ -496,6 +497,12 @@ fn compile<'gctx>(
                     unit,
                     true,
                 )?)
+            } else if unit.mode.is_doc_test() {
+                if job.freshness().is_dirty() {
+                    cached_doctests::prepare(build_runner, unit, force)?
+                } else {
+                    Work::noop()
+                }
             } else if job.freshness().is_dirty() {
                 let work = if unit.mode.is_doc() || unit.mode.is_doc_scrape() {
                     rustdoc(build_runner, unit)?
@@ -721,6 +728,14 @@ impl RelinkCachePaths {
             manifest,
             objects,
         }
+    }
+
+    /// Retains the objects referenced by this cache across full and link-only invocations.
+    fn preserve_codegen(&self, rustc: &mut ProcessBuilder) {
+        rustc.arg("-Z").arg("emit-rlink");
+        let mut temps_dir = OsString::from("temps-dir=");
+        temps_dir.push(&self.objects);
+        rustc.arg("-Z").arg(temps_dir);
     }
 
     fn is_valid(&self) -> bool {
@@ -1157,6 +1172,26 @@ fn has_opaque_integration_linker_flags(build_runner: &BuildRunner<'_, '_>, unit:
     false
 }
 
+/// Dependency artifacts whose unchanged public metadata permits reusing consumer codegen.
+fn relinkable_dependencies(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> HashSet<UnitIndex> {
+    build_runner
+        .unit_deps(unit)
+        .iter()
+        .filter(|dep| {
+            dep.unit.mode == CompileMode::Build
+                && !dep.unit.artifact.is_true()
+                && dep.unit.target.is_lib()
+                && dep
+                    .unit
+                    .target
+                    .rustc_crate_types()
+                    .iter()
+                    .all(|crate_type| matches!(crate_type, CrateType::Lib | CrateType::Rlib))
+        })
+        .map(|dep| build_runner.bcx.unit_to_index[&dep.unit])
+        .collect()
+}
+
 /// Creates a unit of work invoking `rustc` for building the `unit`.
 fn rustc(
     build_runner: &mut BuildRunner<'_, '_>,
@@ -1189,22 +1224,7 @@ fn rustc(
     }
     let reuse_codegen = relink_cache.is_some() && unstable.relink_only() && check_relink_inputs;
     let source_arg = path_args(build_runner.bcx.ws, unit).0;
-    let relinkable_dependencies = build_runner
-        .unit_deps(unit)
-        .iter()
-        .filter(|dep| {
-            dep.unit.mode == CompileMode::Build
-                && !dep.unit.artifact.is_true()
-                && dep.unit.target.is_lib()
-                && dep
-                    .unit
-                    .target
-                    .rustc_crate_types()
-                    .iter()
-                    .all(|crate_type| matches!(crate_type, CrateType::Lib | CrateType::Rlib))
-        })
-        .map(|dep| build_runner.bcx.unit_to_index[&dep.unit])
-        .collect::<HashSet<_>>();
+    let relinkable_dependencies = relinkable_dependencies(build_runner, unit);
     let unused_integration_dependency = unused_integration_self_dependency(build_runner, unit);
     let record_dev_unused = ohm_deferred_dev_deps::supported(build_runner, unit);
     let dev_native_output_dirs = record_dev_unused
@@ -1244,13 +1264,7 @@ fn rustc(
         (completion, name)
     });
     if let Some(cache) = &relink_cache {
-        // Preserve the codegen objects referenced by the cached `.rlink`, and
-        // keep them outside the dependency search directory while completing
-        // the initial link.
-        rustc.arg("-Z").arg("emit-rlink");
-        let mut temps_dir = OsString::from("temps-dir=");
-        temps_dir.push(&cache.objects);
-        rustc.arg("-Z").arg(temps_dir);
+        cache.preserve_codegen(&mut rustc);
     }
 
     // Prepare the native lib state (extra `-L` and `-l` flags).
