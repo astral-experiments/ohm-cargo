@@ -1,4 +1,4 @@
-use crate::util::data_structures::HashMap;
+use crate::util::data_structures::{HashMap, HashSet};
 use std::path::Path;
 use std::path::PathBuf;
 
@@ -19,7 +19,12 @@ struct RustdocFingerprintJson {
     pub rustc_vv: String,
 
     /// Relative paths to cross crate info JSON files from previous `cargo doc` invocations.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    // Older entries can point at full rustdoc JSON, which the cross-crate merger cannot read.
+    #[serde(
+        default,
+        rename = "doc_parts_by_unit",
+        skip_serializing_if = "Vec::is_empty"
+    )]
     pub doc_parts: Vec<PathBuf>,
 }
 
@@ -171,7 +176,13 @@ impl RustdocFingerprint {
             return true;
         }
 
+        let base = self.path.parent().unwrap();
+        let previous: HashSet<_> = on_disk.doc_parts.iter().map(PathBuf::as_path).collect();
         for path in &self.doc_parts {
+            // An older Cargo may have rebuilt the shared index using a different inventory.
+            if !previous.contains(path.strip_prefix(base).unwrap_or(path)) {
+                return true;
+            }
             let parts_mtime = match paths::mtime(&path) {
                 Ok(mtime) => mtime,
                 Err(e) => {
