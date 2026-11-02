@@ -1415,10 +1415,11 @@ fn rustc(
                     })
                 })
         });
-        let early_test = if unused_integration_dependency.is_none() {
-            if let Some((completion, _)) = early_test {
-                completion.wait()?;
-            }
+        let early_test = if let Some((completion, _)) = &early_test
+            && (unused_integration_dependency.is_none() || completion.is_finished())
+        {
+            // A test that starts after its library finished can compile against it normally.
+            completion.wait()?;
             None
         } else {
             early_test

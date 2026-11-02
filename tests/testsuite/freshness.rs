@@ -7513,6 +7513,7 @@ fn early_native_integration_tests_default_and_fallback() {
     for (case, flags, extra_env, used, fails, overlap, invocations) in [
         ("unused", "", None, false, false, true, 1),
         ("used", "", None, true, false, true, 2),
+        ("built-library", "", None, true, false, false, 1),
         (
             "missing-proof",
             "",
@@ -7580,6 +7581,14 @@ fn early_native_integration_tests_default_and_fallback() {
             .build();
         let log = p.root().join("wrapper.log");
         let jobs = if case == "serial" { 1 } else { 2 };
+        if case == "built-library" {
+            p.cargo("-Zohm-defaults -Zheadstart -Zsection-timings build --lib -j2")
+                .masquerade_as_nightly_cargo(&["ohm-defaults", "headstart", "section-timings"])
+                .env("RUSTC_WRAPPER", &wrapper)
+                .env("RELINK_WRAPPER_LOG", &log)
+                .env("EARLY_TEST_CONTROL", p.root())
+                .run();
+        }
         let mut command = p.cargo(&format!(
             "-Zohm-defaults -Zheadstart -Zsection-timings test --test integration -j{jobs} {flags}"
         ));
