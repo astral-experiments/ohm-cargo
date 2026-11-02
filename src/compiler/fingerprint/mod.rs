@@ -2726,7 +2726,7 @@ fn calculate_normal(
     }
     if super::unit_checks_relink_inputs(build_runner, unit) {
         // Dep-info from an older or unwrapped compiler may omit assembler inputs.
-        "ohm-checked-native-inputs-v1".hash(&mut config);
+        "ohm-declared-native-inputs-v1".hash(&mut config);
     }
 
     let compile_kind = unit.kind.fingerprint_hash();
