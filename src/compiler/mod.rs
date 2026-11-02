@@ -776,7 +776,7 @@ impl RelinkCachePaths {
             proof_checksum: crate::util::hash_u64((input_checksum, &manifest.unused_extern_names)),
             manifest,
         };
-        paths::write_atomic(&self.manifest, serde_json::to_vec(&checked)?)?;
+        paths::write_atomic_no_follow(&self.manifest, serde_json::to_vec(&checked)?)?;
         Ok(())
     }
 
@@ -4536,13 +4536,20 @@ mod relink_cache_tests {
 
     #[cfg(unix)]
     #[test]
-    fn relink_manifest_json_still_rejects_a_final_symlink() -> CargoResult<()> {
+    fn relink_manifest_reads_and_writes_do_not_follow_a_final_symlink() -> CargoResult<()> {
         let dir = tempfile::tempdir()?;
         let cache = RelinkCachePaths::new(dir.path().join("app"));
         let target = dir.path().join("manifest.json");
-        fs::write(&target, manifest_json()?)?;
-        std::os::unix::fs::symlink(target, &cache.manifest)?;
+        let original = manifest_json()?;
+        fs::write(&target, &original)?;
+        std::os::unix::fs::symlink(&target, &cache.manifest)?;
         assert!(cache.read_manifest().is_none());
+
+        let mut manifest = serde_json::from_slice::<CheckedRelinkManifest>(&original)?.manifest;
+        manifest.unused_extern_names = None;
+        cache.write_manifest(manifest)?;
+        assert_eq!(fs::read(target)?, original);
+        assert!(cache.read_manifest().unwrap().unused_extern_names.is_none());
         Ok(())
     }
 
