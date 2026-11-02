@@ -583,3 +583,18 @@ fn rustdoc_json_same_crate_different_version() {
     assert!(dep_json.contains("dep_v1_fn"));
     assert!(!dep_json.contains("dep_v2_fn"));
 }
+
+#[cargo_test]
+fn rustdoc_flags_precede_the_end_of_options() {
+    let p = project().file("src/lib.rs", "fn hidden() {}").build();
+    p.cargo("rustdoc --lib -- --")
+        .env("RUSTDOCFLAGS", "--document-private-items")
+        .run();
+    assert!(p.root().join("target/doc/foo/fn.hidden.html").is_file());
+    let target = p.root().join("configured-target");
+    p.cargo("doc --lib")
+        .env("CARGO_TARGET_DIR", &target)
+        .env("RUSTDOCFLAGS", "--document-private-items --")
+        .run();
+    assert!(target.join("doc/foo/fn.hidden.html").is_file());
+}
