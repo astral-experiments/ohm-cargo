@@ -6147,6 +6147,40 @@ fn dev_dep_with_links() {
 }
 
 #[cargo_test]
+fn workspace_member_watches_a_sibling_directory() {
+    let p = project()
+        .file("Cargo.toml", "[workspace]\nmembers = ['app']")
+        .file("app/Cargo.toml", &basic_manifest("app", "0.1.0"))
+        .file("native/value", "17")
+        .file(
+            "app/build.rs",
+            r#"
+                fn main() {
+                    let native = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+                        .parent().unwrap().join("native");
+                    println!("cargo::rerun-if-changed={}", native.display());
+                    let value = std::fs::read_to_string(native.join("value")).unwrap();
+                    let counter = std::path::Path::new(&std::env::var_os("OUT_DIR").unwrap())
+                        .join("runs");
+                    let runs = std::fs::read_to_string(&counter)
+                        .map(|n| n.parse::<u32>().unwrap()).unwrap_or(0) + 1;
+                    std::fs::write(counter, runs.to_string()).unwrap();
+                    println!("cargo::rustc-env=RESULT={value} {runs}");
+                }
+            "#,
+        )
+        .file(
+            "app/src/main.rs",
+            r#"fn main() { println!("{}", env!("RESULT")); }"#,
+        )
+        .build();
+    p.cargo("run -q -p app").with_stdout_data("17 1\n").run();
+    p.cargo("run -q -p app").with_stdout_data("17 1\n").run();
+    p.change_file("native/value", "41");
+    p.cargo("run -q -p app").with_stdout_data("41 2\n").run();
+}
+
+#[cargo_test]
 fn rerun_if_file_symlink_is_retargeted() {
     if !symlink_supported() {
         return;

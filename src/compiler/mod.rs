@@ -1573,20 +1573,15 @@ fn rustc(
                                 .is_some_and(|cache| cache.proves_unused_extern(extern_name))
                         })
             });
-        let recheck_native_link = !force
-            && check_relink_inputs
-            && fingerprint
-                .as_ref()
-                .is_some_and(|fp| fp.can_recheck_from_cached_codegen());
         let validation_started = Instant::now();
         let use_cached_relink = early_test.is_none()
             && deferred_dev_names.is_empty()
-            && (can_relink_dependencies || recheck_native_link)
+            && can_relink_dependencies
             && !observes_foreign_span
             && relink_cache
                 .as_ref()
                 .is_some_and(RelinkCachePaths::is_valid);
-        if can_relink_dependencies || recheck_native_link {
+        if can_relink_dependencies {
             tracing::info!(
                 "relink-only: cache validation for {unit_name} took {:?}",
                 validation_started.elapsed()
