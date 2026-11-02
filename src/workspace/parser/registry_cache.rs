@@ -1,6 +1,7 @@
 //! Read published registry manifests from a compact representation on subsequent runs.
 
 use std::cell::Cell;
+use std::collections::BTreeSet;
 use std::fs::{self, OpenOptions};
 use std::io::{Read, Write};
 use std::os::unix::fs::{DirBuilderExt, MetadataExt, OpenOptionsExt};
@@ -10,11 +11,10 @@ use std::sync::LazyLock;
 use cargo_util_schemas::manifest::TomlManifest;
 use serde::Deserialize;
 
-use super::deserialize_toml;
 use crate::util::GlobalContext;
 
-const MAGIC: &[u8] = b"ohm-registry-json-v1\0";
-const DIRECTORY: &str = ".ohm-registry-json-v1";
+const MAGIC: &[u8] = b"ohm-registry-json-v2\0";
+const DIRECTORY: &str = ".ohm-registry-json-v2";
 const MAX_SOURCE: usize = 256 * 1024;
 const MAX_ENTRY: usize = 64 * 1024;
 const MAX_DEPTH: usize = 32;
@@ -135,22 +135,30 @@ impl<'a> Entry<'a> {
         if digest != blake3::keyed_hash(self.key.as_bytes(), payload).as_bytes() {
             return None;
         }
-        let mut de = serde_json::Deserializer::from_slice(payload);
-        let manifest = deserialize_toml(&mut de).ok()?;
-        de.end().ok()?;
+        let (mut manifest, unused_keys): (TomlManifest, BTreeSet<String>) =
+            serde_json::from_slice(payload).ok()?;
+        manifest._unused_keys = unused_keys;
         Some(manifest)
     }
 
-    pub(super) fn store(&self, document: toml::Spanned<toml::de::DeTable<'_>>) {
-        let _ = self.try_store(document);
+    pub(super) fn store(
+        &self,
+        document: toml::Spanned<toml::de::DeTable<'_>>,
+        unused_keys: &BTreeSet<String>,
+    ) {
+        let _ = self.try_store(document, unused_keys);
     }
 
-    fn try_store(&self, document: toml::Spanned<toml::de::DeTable<'_>>) -> Option<()> {
+    fn try_store(
+        &self,
+        document: toml::Spanned<toml::de::DeTable<'_>>,
+        unused_keys: &BTreeSet<String>,
+    ) -> Option<()> {
         let value = toml::Value::deserialize(toml::de::Deserializer::from(document)).ok()?;
         if !supported(&value, 0) {
             return None;
         }
-        let payload = serde_json::to_vec(&value).ok()?;
+        let payload = serde_json::to_vec(&(&value, unused_keys)).ok()?;
         if MAGIC.len() + 64 + payload.len() > MAX_ENTRY {
             return None;
         }
@@ -203,6 +211,7 @@ fn supported(value: &toml::Value, depth: usize) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::workspace::parser::deserialize_toml;
     use std::os::unix::fs::{PermissionsExt, symlink};
 
     const SOURCE: &str = r#"
@@ -216,9 +225,26 @@ nested = [{ text = "a\tb", flag = true }]
 [dependencies.other]
 version = "1"
 default-features = false
+unknown-option = "keep this dependency warning"
 [lib]
 path = "src/lib.rs"
 "#;
+
+    const INVALID_PAYLOADS: &[&[u8]] = &[
+        b"{",
+        b"{}",
+        b"[{}, []] null",
+        br#"[{"package":{"name":17}}, []]"#,
+        b"[{}, [17]]",
+    ];
+
+    impl Entry<'_> {
+        fn store_source(&self, contents: &str) -> Option<()> {
+            let document = toml::de::DeTable::parse(contents).unwrap();
+            let manifest = deserialize_toml(toml::de::Deserializer::from(document.clone())).ok()?;
+            self.try_store(document, &manifest._unused_keys)
+        }
+    }
 
     fn private_home() -> tempfile::TempDir {
         tempfile::Builder::new()
@@ -234,8 +260,16 @@ path = "src/lib.rs"
         let entry = Entry::at(&dir, SOURCE);
         let expected = deserialize_toml(toml::de::Deserializer::parse(SOURCE).unwrap()).unwrap();
         assert!(expected._unused_keys.contains("package.unknown"));
+        let dependency = expected
+            .dependencies
+            .as_ref()
+            .unwrap()
+            .values()
+            .next()
+            .unwrap();
+        assert_eq!(dependency.unused_keys(), ["unknown-option"]);
         assert!(entry.read().is_none());
-        entry.store(toml::de::DeTable::parse(SOURCE).unwrap());
+        entry.store_source(SOURCE).unwrap();
         assert_eq!(
             format!("{:?}", entry.read().unwrap()),
             format!("{expected:?}")
@@ -247,7 +281,7 @@ path = "src/lib.rs"
         let home = private_home();
         let dir = directory(home.path()).unwrap();
         let entry = Entry::at(&dir, SOURCE);
-        entry.store(toml::de::DeTable::parse(SOURCE).unwrap());
+        entry.store_source(SOURCE).unwrap();
         let bytes = fs::read(&entry.path).unwrap();
         let mut other = Entry::at(&dir, "[package]\nname = 'other'\nversion = '2'\n");
         other.path = entry.path.clone();
@@ -258,7 +292,7 @@ path = "src/lib.rs"
             fs::write(&entry.path, corrupt).unwrap();
             assert!(entry.read().is_none());
         }
-        for payload in [b"{".as_slice(), b"{} null", br#"{"package":{"name":17}}"#] {
+        for &payload in INVALID_PAYLOADS {
             let mut bad = bytes[..MAGIC.len() + 32].to_vec();
             bad.extend_from_slice(blake3::keyed_hash(entry.key.as_bytes(), payload).as_bytes());
             bad.extend_from_slice(payload);
@@ -282,7 +316,7 @@ path = "src/lib.rs"
         ] {
             let source = format!("[package]\nname='p'\nversion='1'\n[package.metadata]\n{field}\n");
             let entry = Entry::at(&dir, &source);
-            entry.store(toml::de::DeTable::parse(&source).unwrap());
+            assert!(entry.store_source(&source).is_none());
             assert!(!entry.path.exists(), "{field}");
         }
         assert!(!supported(&toml::Value::String("x".into()), MAX_DEPTH + 1));
@@ -293,14 +327,14 @@ path = "src/lib.rs"
         let home = private_home();
         let dir = directory(home.path()).unwrap();
         let entry = Entry::at(&dir, SOURCE);
-        entry.store(toml::de::DeTable::parse(SOURCE).unwrap());
+        entry.store_source(SOURCE).unwrap();
         fs::set_permissions(&entry.path, fs::Permissions::from_mode(0o644)).unwrap();
         assert!(entry.read().is_none());
         let external = home.path().join("sentinel");
         fs::write(&external, b"untouched").unwrap();
         fs::remove_file(&entry.path).unwrap();
         symlink(&external, &entry.path).unwrap();
-        entry.store(toml::de::DeTable::parse(SOURCE).unwrap());
+        assert!(entry.store_source(SOURCE).is_none());
         assert!(entry.read().is_none());
         assert_eq!(fs::read(&external).unwrap(), b"untouched");
         fs::set_permissions(&dir, fs::Permissions::from_mode(0o755)).unwrap();
@@ -342,15 +376,11 @@ path = "src/lib.rs"
         let first = at_slots(&cache, SOURCE, "001", "002");
         let second = at_slots(&cache, &other, "001", "003");
         assert!(first.read().is_none());
-        first
-            .try_store(toml::de::DeTable::parse(SOURCE).unwrap())
-            .unwrap();
+        first.store_source(SOURCE).unwrap();
         let original = fs::read(&first.path).unwrap();
         assert!(second.read().is_none());
         assert_eq!(second.store_in_alternate.get(), Some(true));
-        second
-            .try_store(toml::de::DeTable::parse(&other).unwrap())
-            .unwrap();
+        second.store_source(&other).unwrap();
         assert_eq!(fs::read(&first.path).unwrap(), original);
         assert_manifest(&first, SOURCE);
         assert_manifest(&second, &other);
@@ -366,17 +396,11 @@ path = "src/lib.rs"
         let first = at_slots(&cache, SOURCE, "001", "002");
         let second = at_slots(&cache, &second_source, "003", "004");
         let third = at_slots(&cache, &third_source, "001", "003");
-        first
-            .try_store(toml::de::DeTable::parse(SOURCE).unwrap())
-            .unwrap();
-        second
-            .try_store(toml::de::DeTable::parse(&second_source).unwrap())
-            .unwrap();
+        first.store_source(SOURCE).unwrap();
+        second.store_source(&second_source).unwrap();
         let primary = fs::read(&first.path).unwrap();
         assert!(third.read().is_none());
-        third
-            .try_store(toml::de::DeTable::parse(&third_source).unwrap())
-            .unwrap();
+        third.store_source(&third_source).unwrap();
         assert_eq!(fs::read(&first.path).unwrap(), primary);
         assert_manifest(&first, SOURCE);
         assert_manifest(&third, &third_source);
@@ -389,9 +413,7 @@ path = "src/lib.rs"
         let home = private_home();
         let cache = directory(home.path()).unwrap();
         let entry = at_slots(&cache, SOURCE, "001", "002");
-        entry
-            .try_store(toml::de::DeTable::parse(SOURCE).unwrap())
-            .unwrap();
+        entry.store_source(SOURCE).unwrap();
         symlink(home.path().join("missing"), &entry.alternate).unwrap();
         assert_manifest(&entry, SOURCE);
         assert_eq!(entry.store_in_alternate.get(), Some(false));
@@ -404,14 +426,10 @@ path = "src/lib.rs"
         let other = SOURCE.replace("example", "second-fixture");
         let first = at_slots(&cache, SOURCE, "001", "001");
         let second = at_slots(&cache, &other, "001", "001");
-        first
-            .try_store(toml::de::DeTable::parse(SOURCE).unwrap())
-            .unwrap();
+        first.store_source(SOURCE).unwrap();
         assert!(second.read().is_none());
         assert_eq!(second.store_in_alternate.get(), Some(false));
-        second
-            .try_store(toml::de::DeTable::parse(&other).unwrap())
-            .unwrap();
+        second.store_source(&other).unwrap();
         assert!(first.read().is_none());
         assert_manifest(&second, &other);
         assert_eq!(fs::read_dir(&cache).unwrap().count(), 1);
@@ -424,13 +442,9 @@ path = "src/lib.rs"
         let other = SOURCE.replace("example", "second-fixture");
         let first = at_slots(&cache, SOURCE, "001", "002");
         let second = at_slots(&cache, &other, "001", "003");
-        first
-            .try_store(toml::de::DeTable::parse(SOURCE).unwrap())
-            .unwrap();
+        first.store_source(SOURCE).unwrap();
         assert!(second.read().is_none());
-        second
-            .try_store(toml::de::DeTable::parse(&other).unwrap())
-            .unwrap();
+        second.store_source(&other).unwrap();
         let original = fs::read(&second.alternate).unwrap();
         for offset in [0, MAGIC.len(), MAGIC.len() + 32, original.len() - 1] {
             let mut bytes = original.clone();
@@ -438,7 +452,7 @@ path = "src/lib.rs"
             fs::write(&second.alternate, bytes).unwrap();
             assert!(second.read().is_none());
         }
-        for payload in [b"{".as_slice(), b"{} null", br#"{"package":{"name":12}}"#] {
+        for &payload in INVALID_PAYLOADS {
             let mut bytes = original[..MAGIC.len() + 32].to_vec();
             bytes.extend_from_slice(blake3::keyed_hash(second.key.as_bytes(), payload).as_bytes());
             bytes.extend_from_slice(payload);
@@ -460,40 +474,24 @@ path = "src/lib.rs"
         let other = SOURCE.replace("example", "second-fixture");
         let first = at_slots(&cache, SOURCE, "001", "002");
         let second = at_slots(&cache, &other, "001", "003");
-        first
-            .try_store(toml::de::DeTable::parse(SOURCE).unwrap())
-            .unwrap();
+        first.store_source(SOURCE).unwrap();
         assert!(second.read().is_none());
-        second
-            .try_store(toml::de::DeTable::parse(&other).unwrap())
-            .unwrap();
+        second.store_source(&other).unwrap();
         fs::set_permissions(&second.alternate, fs::Permissions::from_mode(0o644)).unwrap();
         assert!(second.read().is_none());
-        assert!(
-            second
-                .try_store(toml::de::DeTable::parse(&other).unwrap())
-                .is_none()
-        );
+        assert!(second.store_source(&other).is_none());
         fs::remove_file(&second.alternate).unwrap();
         let outside = home.path().join("outside");
         fs::write(&outside, b"sentinel").unwrap();
         symlink(&outside, &second.alternate).unwrap();
         assert!(second.read().is_none());
-        assert!(
-            second
-                .try_store(toml::de::DeTable::parse(&other).unwrap())
-                .is_none()
-        );
+        assert!(second.store_source(&other).is_none());
         assert_eq!(fs::read(&outside).unwrap(), b"sentinel");
         fs::remove_file(&second.alternate).unwrap();
         let name = CString::new(second.alternate.as_os_str().as_encoded_bytes()).unwrap();
         assert_eq!(unsafe { libc::mkfifo(name.as_ptr(), 0o600) }, 0);
         assert!(second.read().is_none());
-        assert!(
-            second
-                .try_store(toml::de::DeTable::parse(&other).unwrap())
-                .is_none()
-        );
+        assert!(second.store_source(&other).is_none());
         assert!(
             second
                 .alternate
@@ -511,14 +509,10 @@ path = "src/lib.rs"
         let cache = directory(home.path()).unwrap();
         let existing = at_slots(&cache, SOURCE, "002", "003");
         let entry = at_slots(&cache, SOURCE, "001", "002");
-        existing
-            .try_store(toml::de::DeTable::parse(SOURCE).unwrap())
-            .unwrap();
+        existing.store_source(SOURCE).unwrap();
         assert!(entry.read().is_none());
         assert_eq!(entry.store_in_alternate.get(), Some(false));
-        entry
-            .try_store(toml::de::DeTable::parse(SOURCE).unwrap())
-            .unwrap();
+        entry.store_source(SOURCE).unwrap();
         assert_manifest(&entry, SOURCE);
         assert_manifest(&existing, SOURCE);
         assert_eq!(fs::read_dir(&cache).unwrap().count(), 2);
@@ -643,7 +637,7 @@ path = "src/lib.rs"
         let value: toml::Value = toml::from_str(&source).unwrap();
         assert_eq!(
             &alternate[MAGIC.len() + 64..],
-            serde_json::to_vec(&value).unwrap()
+            serde_json::to_vec(&(&value, &expected._unused_keys)).unwrap()
         );
         let alternate_inode = fs::metadata(&second.alternate).unwrap().ino();
         let warm = super::super::deserialize_without_document(&source, source_id, &gctx).unwrap();
