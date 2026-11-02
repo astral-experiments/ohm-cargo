@@ -2173,23 +2173,10 @@ impl WorkspaceRootConfig {
             custom_metadata: custom_metadata.clone(),
         }
     }
-    /// Checks the path against the `excluded` list.
-    ///
-    /// This method does **not** consider the `members` list.
+    /// Checks whether the path is excluded. Explicit members take precedence.
     fn is_excluded(&self, manifest_path: &Path) -> bool {
-        let excluded = self
-            .exclude
-            .iter()
-            .any(|ex| manifest_path.starts_with(self.root_dir.join(ex)));
-
-        let explicit_member = match self.members {
-            Some(ref members) => members
-                .iter()
-                .any(|mem| manifest_path.starts_with(self.root_dir.join(mem))),
-            None => false,
-        };
-
-        !explicit_member && excluded
+        let matches_path = |path: &String| manifest_path.starts_with(self.root_dir.join(path));
+        self.exclude.iter().any(matches_path) && !self.members.iter().flatten().any(matches_path)
     }
 
     /// Checks if the path is explicitly listed as a workspace member.
