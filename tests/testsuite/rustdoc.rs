@@ -598,3 +598,14 @@ fn rustdoc_flags_precede_the_end_of_options() {
         .run();
     assert!(target.join("doc/foo/fn.hidden.html").is_file());
 }
+
+#[cargo_test]
+fn crate_version_in_rustdoc_argument_file() {
+    let p = project()
+        .file("src/lib.rs", "")
+        .file("version.args", "--crate-version\n9.8.7\n")
+        .build();
+    p.cargo("rustdoc --lib -- @version.args").run();
+    let index = std::fs::read_to_string(p.root().join("target/doc/foo/index.html")).unwrap();
+    assert!(index.contains("9.8.7"));
+}

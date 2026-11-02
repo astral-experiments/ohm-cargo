@@ -104,9 +104,11 @@ impl RustdocArgFiles {
     }
 }
 
-/// Captures argument files in driver order and returns the arguments they supplied.
+/// Reads argument files in driver order, saving streams so rustdoc can consume them.
+/// Also saves regular files when a second rustdoc invocation will replay these flags.
 pub(crate) fn snapshot_for_replay(
     cmd: &ProcessBuilder,
+    replay_regular_files: bool,
 ) -> crate::CargoResult<(RustdocArgFiles, Option<Vec<String>>)> {
     let cwd = cmd.get_cwd().unwrap_or_else(|| Path::new("."));
     let mut copies = Vec::new();
@@ -124,6 +126,9 @@ pub(crate) fn snapshot_for_replay(
                     path.display()
                 )));
                 return None;
+            }
+            if !replay_regular_files && source.metadata().is_ok_and(|metadata| metadata.is_file()) {
+                return append_file(std::str::from_utf8(&bytes).ok()?, shell, expanded);
             }
             let copy = NamedTempFile::new().and_then(|mut file| {
                 file.write_all(&bytes)?;
