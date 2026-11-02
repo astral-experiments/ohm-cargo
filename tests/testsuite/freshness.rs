@@ -5779,7 +5779,7 @@ fn check_native_relink(marker: &str) {
         fs::read_to_string(&log).unwrap()
     };
     assert_eq!(build(), "compile:dep\ncompile-link:app\n");
-    assert_eq!(build(), "link:app\n");
+    assert_eq!(build(), "");
     p.change_file("dep/src/lib.rs", "pub fn value() -> i32 { 18 }");
     assert_eq!(build(), "compile:dep\nlink:app\n");
     p.process(&p.bin("app")).with_stdout_data("18\n").run();
