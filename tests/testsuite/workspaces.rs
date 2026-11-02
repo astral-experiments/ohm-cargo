@@ -3036,6 +3036,27 @@ fn workspace_resolve_cache_reuses_unchanged_workspace() {
         .run();
 }
 
+#[cfg(unix)]
+#[cargo_test]
+fn workspace_resolve_cache_replaces_a_symlink() {
+    let project = workspace_resolve_cache_project();
+    let target = project.root().join("sentinel");
+    let cache = project.build_dir().join(".cargo-resolve-cache-v1");
+    workspace_resolve_cache_command(&project, "check --package selected").run();
+    let valid_marker = fs::read(&cache).unwrap();
+    fs::rename(&cache, &target).unwrap();
+    std::os::unix::fs::symlink(&target, &cache).unwrap();
+
+    workspace_resolve_cache_command(&project, "check --package selected")
+        .with_stderr_does_not_contain(WORKSPACE_RESOLVE_CACHE_HIT)
+        .run();
+    assert_eq!(fs::read(target).unwrap(), valid_marker);
+    assert!(!cache.is_symlink());
+    workspace_resolve_cache_command(&project, "check --package selected")
+        .with_stderr_contains(WORKSPACE_RESOLVE_CACHE_HIT)
+        .run();
+}
+
 #[cargo_test]
 fn workspace_resolve_cache_ignores_execution_only_environment() {
     let project = workspace_resolve_cache_project();
@@ -3107,14 +3128,13 @@ fn workspace_resolve_cache_rejects_replaced_lockfile_after_loading() {
     let current_lockfile = project.read_lockfile();
     assert_ne!(old_lockfile, current_lockfile);
 
-    let cache_path = project.build_dir().join(".cargo-resolve-cache-v1");
-    let current_fingerprint = fs::read(&cache_path).unwrap();
-    fs::write(project.root().join("Cargo.lock"), old_lockfile).unwrap();
-    fs::remove_file(&cache_path).unwrap();
-
+    // Pause Cargo on the old file descriptor while the pathname and the cache
+    // marker describe the new resolution. The marker itself stays a regular file.
+    let lock_path = project.root().join("Cargo.lock");
+    fs::remove_file(&lock_path).unwrap();
     assert!(
         Command::new("mkfifo")
-            .arg(&cache_path)
+            .arg(&lock_path)
             .status()
             .expect("a FIFO can be created")
             .success()
@@ -3131,12 +3151,12 @@ fn workspace_resolve_cache_rejects_replaced_lockfile_after_loading() {
     let (opened_sender, opened_receiver) = mpsc::channel();
     let (continue_sender, continue_receiver) = mpsc::channel();
     let writer = thread::spawn(move || {
-        let mut marker = fs::OpenOptions::new().write(true).open(cache_path).unwrap();
+        let mut old_file = fs::OpenOptions::new().write(true).open(lock_path).unwrap();
         opened_sender.send(()).unwrap();
         continue_receiver
             .recv_timeout(slow_cpu_multiplier(15))
             .expect("lockfile replacement should not deadlock");
-        marker.write_all(&current_fingerprint).unwrap();
+        old_file.write_all(old_lockfile.as_bytes()).unwrap();
     });
 
     if opened_receiver
@@ -3144,7 +3164,7 @@ fn workspace_resolve_cache_rejects_replaced_lockfile_after_loading() {
         .is_err()
     {
         let _ = child.kill();
-        panic!("Cargo did not load the old lockfile and open its cache marker");
+        panic!("Cargo did not open the old lockfile");
     }
 
     // Replace the path rather than mutating the file descriptor Cargo already

@@ -89,7 +89,8 @@ impl CheckHint {
     }
 
     fn vetoes_speculation(&self) -> bool {
-        fs::read(&self.path).is_ok_and(|contents| contents == b"uses-library\n")
+        const HINT: &[u8] = b"uses-library\n";
+        paths::read_regular_bounded(&self.path, HINT.len() as u64).is_ok_and(|bytes| bytes == HINT)
     }
 
     /// A failed or uninformative new check must not leave an older hint behind.
@@ -106,7 +107,7 @@ impl CheckHint {
             return;
         }
         let result = paths::create_dir_all(self.path.parent().unwrap())
-            .and_then(|()| paths::write_atomic(&self.path, b"uses-library\n"));
+            .and_then(|()| paths::write_atomic_no_follow(&self.path, b"uses-library\n"));
         if let Err(error) = result {
             tracing::debug!(?error, "could not record early-test check hint");
         }

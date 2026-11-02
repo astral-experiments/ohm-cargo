@@ -19,12 +19,13 @@ pub(super) fn cached_workspace_resolve_is_fresh(
     rustc: &Rustc,
     lockfile_contents: &str,
 ) -> bool {
-    let Ok(cached_fingerprint) = paths::read(&cache_path(workspace)) else {
+    let Ok(cached_fingerprint) = paths::read_regular_bounded(&cache_path(workspace), 64) else {
         return false;
     };
 
-    workspace_resolve_fingerprint(workspace, previous, rustc, lockfile_contents)
-        .is_ok_and(|fingerprint| cached_fingerprint.trim() == format!("{fingerprint:016x}"))
+    workspace_resolve_fingerprint(workspace, previous, rustc, lockfile_contents).is_ok_and(
+        |fingerprint| cached_fingerprint.trim_ascii() == format!("{fingerprint:016x}").as_bytes(),
+    )
 }
 
 /// Records the inputs that produced a complete workspace resolution.
@@ -45,7 +46,7 @@ pub(super) fn mark_workspace_resolve_fresh(
             paths::create_dir_all_excluded_from_backups_atomic(parent)?;
         }
 
-        paths::write_atomic(cache_path, format!("{fingerprint:016x}"))?;
+        paths::write_atomic_no_follow(cache_path, format!("{fingerprint:016x}"))?;
         Ok(())
     })?;
     Ok(())

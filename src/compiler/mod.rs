@@ -1888,7 +1888,7 @@ fn rustc(
         if let Some((path, provenance)) = &message_provenance {
             let mut provenance = provenance.clone();
             provenance.capture_messages(&cached_output_path)?;
-            paths::write_atomic(path, serde_json::to_vec(&provenance)?)?;
+            paths::write_atomic_no_follow(path, serde_json::to_vec(&provenance)?)?;
 
             if let Some(readiness_path) = &registry_reuse_readiness_path
                 && let Err(error) = fs::OpenOptions::new()
