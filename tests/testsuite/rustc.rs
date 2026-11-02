@@ -898,3 +898,16 @@ fn build_with_duplicate_crate_types() {
 "#]])
         .run();
 }
+
+#[cargo_test]
+fn compiler_flags_precede_the_end_of_options() {
+    let p = project()
+        .file(
+            "src/lib.rs",
+            "#[cfg(not(from_env))] compile_error!(\"missing rustflags\");",
+        )
+        .build();
+    p.cargo("rustc --lib -- --")
+        .env("RUSTFLAGS", "--cfg from_env")
+        .run();
+}
