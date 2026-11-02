@@ -78,7 +78,7 @@ pub fn run_tests(ws: &Workspace<'_>, options: &TestOptions, test_args: &[&str]) 
         args: test_args.iter().map(|arg| (*arg).to_owned()).collect(),
         no_fail_fast: options.no_fail_fast,
     });
-    let cache_doctests = ws.gctx().cli_unstable().ohm_cached_doctests
+    let cache_doctests = ws.gctx().cli_unstable().ohm_cached_doctests()
         && matches!(
             options.compile_opts.build_config.intent,
             crate::compiler::UserIntent::Doctest

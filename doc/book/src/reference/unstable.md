@@ -2151,7 +2151,7 @@ also disables it.
 
 ## ohm-cached-doctests
 
-`cargo test --doc -Zohm-cached-doctests` builds supported inline examples as
+With Ohm defaults, `cargo test --doc` builds supported inline examples as
 one executable per library in Cargo's build graph. Rustdoc extracts the
 examples with the package's features, dev-dependencies, and build-script
 outputs. Cargo fingerprints the extraction inputs and the compiled examples.
@@ -2160,12 +2160,16 @@ link so changes to native archives outside Cargo's graph remain visible.
 It then runs the examples on every invocation.
 Examples run in separate processes with the package root as their working directory.
 
-The flag is opt-in and applies to host Rust 2024 library doctests. Requests
-with name filters, `--exact`, or `--list` can use the cache. Other test arguments
-and custom rustdoc flags use ordinary rustdoc. A library with a `compile_fail`,
-standalone, or otherwise unmergeable example also runs through rustdoc. Generated code retains the
-original test names. Panic locations in merged examples can refer to the
-generated source.
+The cache applies to host Rust 2024 library doctests. Use
+`-Zohm-cached-doctests=no` to run them through rustdoc instead.
+`-Zohm-defaults=no` also disables the cache unless you explicitly enable it
+with `-Zohm-cached-doctests`.
+
+Requests with name filters, `--exact`, or `--list` can use the cache. Other
+test arguments and custom rustdoc flags use ordinary rustdoc. A library with a
+`compile_fail`, standalone, or otherwise unmergeable example also runs through
+rustdoc. Generated code retains the original test names. Panic locations in
+merged examples can refer to the generated source.
 
 ## ohm-ready-tests
 

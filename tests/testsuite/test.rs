@@ -6014,26 +6014,33 @@ fn cached_doctests_fall_back_when_a_crate_gains_a_compile_fail_example() {
             "/// ```\n/// assert!(true);\n/// ```\npub fn foo() {}",
         )
         .build();
-    let run = || {
-        let mut cmd = p.cargo("test --doc -Zohm-cached-doctests -v");
+    let run = |flags: &str| {
+        let mut cmd = p.cargo(&format!("test --doc -v {flags}"));
         cmd.masquerade_as_nightly_cargo(&["ohm-cached-doctests"])
-            .env("CARGO_UNSTABLE_OHM_DEFAULTS", "false")
+            .env("CARGO_UNSTABLE_OHM_DEFAULTS", "true")
             .env("RUSTC_BOOTSTRAP", "1");
         cmd
     };
-    run().run();
+    run("")
+        .with_stderr_contains("[RUNNING] [..]--output-format=doctest[..]")
+        .run();
+    for flag in ["-Zohm-cached-doctests=no", "-Zohm-defaults=no"] {
+        run(flag)
+            .with_stderr_contains("[RUNNING] [..]--test-run-directory[..]")
+            .run();
+    }
     p.change_file(
         "src/lib.rs",
         "/// ```compile_fail\n/// let _: i32 = \"x\";\n/// ```\npub fn foo() {}",
     );
-    run()
+    run("")
         .with_stderr_contains("[RUNNING] [..]--test-run-directory[..]")
         .run();
     p.change_file(
         "src/lib.rs",
         "/// ```compile_fail\n/// let _: i32 = 1;\n/// ```\npub fn foo() {}",
     );
-    run()
+    run("")
         .with_status(101)
         .with_stdout_contains("Test compiled successfully, but it's marked [..]")
         .run();
