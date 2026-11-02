@@ -601,15 +601,25 @@ pub fn parse_rustc_dep_info(rustc_dep_info: &Path) -> CargoResult<RustcDepInfo> 
     let raw = contents.strip_prefix("# ohm-raw-checksum-paths-v2\n");
     ret.raw_checksum_paths = raw.is_some();
     let contents = raw.unwrap_or(&contents);
-    let rules = rustc_input_rules(contents, rustc_dep_info);
+    let make_rules = contents.split_once('\n').and_then(|(header, rules)| {
+        (header == "# ohm-make-paths-v1" || header.starts_with("# ohm-make-paths-v1: "))
+            .then_some(rules)
+    });
+    let rules = rustc_input_rules(make_rules.unwrap_or(contents), rustc_dep_info);
     let has_input_rules = rules.is_some();
     let mut found_deps = has_input_rules;
     let data = if let Some((inputs, targets, annotations)) = rules {
         // Both compiler markers require downstream links to recheck their inputs.
         // Keep the path on disk so older readers rebuild on the missing file.
-        ret.recheck_dependent_links = has_link_only_marker(&inputs, targets, rustc_dep_info);
+        ret.recheck_dependent_links =
+            has_link_only_marker(&inputs, targets, rustc_dep_info, make_rules.is_some());
         for input in inputs {
-            ret.files.insert(input.replace("\\ ", " ").into(), None);
+            let path = if make_rules.is_some() {
+                unescape_make_path(input)
+            } else {
+                input.replace("\\ ", " ")
+            };
+            ret.files.insert(path.into(), None);
         }
         annotations
     } else {
@@ -706,6 +716,32 @@ pub fn parse_rustc_dep_info(rustc_dep_info: &Path) -> CargoResult<RustcDepInfo> 
     }
 }
 
+/// Decodes the dollar signs and backslash-quoted separators in rustc's Make rules.
+fn unescape_make_path(word: &str) -> String {
+    let mut path = String::with_capacity(word.len());
+    let mut chars = word.chars().peekable();
+    let mut slashes = 0;
+    while let Some(c) = chars.next() {
+        if c == '\\' {
+            slashes += 1;
+            continue;
+        }
+        let count = if matches!(c, ' ' | '\t' | '#' | ':') {
+            slashes / 2
+        } else {
+            slashes
+        };
+        path.extend(std::iter::repeat_n('\\', count));
+        slashes = 0;
+        if c == '$' && chars.peek() == Some(&'$') {
+            chars.next();
+        }
+        path.push(c);
+    }
+    path.extend(std::iter::repeat_n('\\', slashes));
+    path
+}
+
 /// Rustc writes the same filenames twice, separated by spaces in each output
 /// rule and by a colon and newline in its empty input rules. Reading the lists
 /// together distinguishes separators from literal whitespace and backslashes.
@@ -753,7 +789,7 @@ fn rustc_input_rules<'a>(
 
 /// Rustc omits only its synthetic marker from the depfile's own rule. A path
 /// actually tracked by rustc or a proc macro occurs in both lists.
-fn has_link_only_marker(inputs: &[&str], targets: &str, output: &Path) -> bool {
+fn has_link_only_marker(inputs: &[&str], targets: &str, output: &Path, make_paths: bool) -> bool {
     let Some((marker, ordinary)) = inputs.split_last() else {
         return false;
     };
@@ -771,14 +807,15 @@ fn has_link_only_marker(inputs: &[&str], targets: &str, output: &Path) -> bool {
     let Some((_, last_rule)) = targets.rsplit_once("\n\n") else {
         return false;
     };
-    let target = output.replace(' ', "\\ ").replace(':', "\\:");
-    let Some(actual) = last_rule
-        .strip_prefix(&target)
-        .and_then(|s| s.strip_prefix(": "))
-    else {
+    let Some((target, actual)) = last_rule.split_once(": ") else {
         return false;
     };
-    actual == ordinary.join(" ")
+    let matches = if make_paths {
+        unescape_make_path(target) == output
+    } else {
+        target == output.replace(' ', "\\ ").replace(':', "\\:")
+    };
+    matches && actual == ordinary.join(" ")
 }
 
 /// Parses Cargo's internal [`EncodedDepInfo`] structure that was previously
@@ -1063,6 +1100,41 @@ pub enum InvalidChecksum {
 #[cfg(test)]
 mod encoded_dep_info {
     use super::*;
+
+    #[test]
+    fn literal_make_paths_override_the_legacy_fallback() {
+        let temp = tempfile::tempdir().unwrap();
+        let dep = temp.path().join("paths.d");
+        let encoded = "price$$X\\#\\\\\\ space\\:\\\t.txt";
+        let raw = "price$X#\\ space:\t.txt";
+        for header in ["# ohm-make-paths-v1", "# ohm-make-paths-v1: /missing"] {
+            std::fs::write(
+                &dep,
+                format!("{header}\nartifact: {encoded}\n\n{encoded}:\n"),
+            )
+            .unwrap();
+            let info = parse_rustc_dep_info(&dep).unwrap();
+            assert_eq!(info.files.keys().collect::<Vec<_>>(), [Path::new(raw)]);
+        }
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn recheck_links_for_make_quoted_depfiles() {
+        let temp = tempfile::tempdir().unwrap();
+        let root = temp.path().canonicalize().unwrap();
+        let dep = root.join("price$#.d");
+        let target = dep.to_str().unwrap().replace('$', "$$").replace('#', "\\#");
+        for marker in RECHECK_MARKERS {
+            let data = format!(
+                "# ohm-make-paths-v1\nlib.rlib: src.rs {marker}\n\n{target}: src.rs\n\nsrc.rs:\n{marker}:\n"
+            );
+            std::fs::write(&dep, data).unwrap();
+            let info = parse_rustc_dep_info(&dep).unwrap();
+            assert!(info.recheck_dependent_links);
+            assert!(info.files.contains_key(Path::new(marker)));
+        }
+    }
 
     #[cfg(unix)]
     #[test]
