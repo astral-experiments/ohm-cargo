@@ -37,7 +37,7 @@ fn compiler() -> PathBuf {
                         log.write_all(record.as_bytes()).unwrap();
                     }
                 }
-                args.retain(|arg| arg != "-Zohm-shared-stages");
+                args.retain(|arg| arg != "-Zohm-shared-stages" && arg != "-Zohm-check-relink-inputs");
                 let status = Command::new(env::var_os("OHM_REAL_RUSTC").unwrap())
                     .args(args).status().unwrap();
                 exit(status.code().unwrap_or(1));
@@ -54,7 +54,7 @@ fn compiler() -> PathBuf {
 
 fn cargo(p: &Project, compiler: &Path, command: &str) -> Execs {
     let mut exec = p.cargo(&format!("-Zohm-defaults=no {command}"));
-    exec.masquerade_as_nightly_cargo(&["ohm-defaults", "ohm-shared-stages"])
+    exec.masquerade_as_nightly_cargo(&["ohm-defaults", "ohm-shared-stages", "relink-only"])
         .env("RUSTC", compiler)
         .env("RUSTC_BOOTSTRAP", "1")
         .env("CARGO_INCREMENTAL", "1")
@@ -134,7 +134,7 @@ fn check_and_build_share_compiler_identity_but_not_artifacts() {
         .file("dep/src/lib.rs", "pub fn value() -> u32 { 41 }")
         .build();
 
-    cargo(&p, &compiler, "-Zohm-shared-stages check").run();
+    cargo(&p, &compiler, "-Zohm-shared-stages -Zrelink-only=yes check").run();
     let checked = invocations();
     assert!(!p.bin("stage-app").exists());
     assert!(
@@ -152,10 +152,13 @@ fn check_and_build_share_compiler_identity_but_not_artifacts() {
     );
 
     clear_invocations();
-    cargo(&p, &compiler, "-Zohm-shared-stages build").run();
+    cargo(&p, &compiler, "-Zohm-shared-stages -Zrelink-only=yes build").run();
     let built = invocations();
     let checked = app_library(&checked);
     let built = app_library(&built);
+    for args in [checked, built] {
+        assert!(args.iter().any(|arg| arg == "-Zohm-check-relink-inputs"));
+    }
     assert_eq!(option(checked, "metadata="), option(built, "metadata="));
     assert_eq!(
         option(checked, "incremental="),
@@ -170,15 +173,15 @@ fn check_and_build_share_compiler_identity_but_not_artifacts() {
         .run();
 
     clear_invocations();
-    cargo(&p, &compiler, "-Zohm-shared-stages build").run();
+    cargo(&p, &compiler, "-Zohm-shared-stages -Zrelink-only=yes build").run();
     assert!(invocations().is_empty());
 
     p.change_file(
         "src/lib.rs",
         "pub fn value() -> u32 { stage_dep::value() + 2 }",
     );
-    cargo(&p, &compiler, "-Zohm-shared-stages check").run();
-    cargo(&p, &compiler, "-Zohm-shared-stages build").run();
+    cargo(&p, &compiler, "-Zohm-shared-stages -Zrelink-only=yes check").run();
+    cargo(&p, &compiler, "-Zohm-shared-stages -Zrelink-only=yes build").run();
     p.process(&p.bin("stage-app"))
         .with_stdout_contains("43")
         .run();

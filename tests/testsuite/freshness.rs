@@ -5351,7 +5351,13 @@ pub(super) fn relink_only_wrapper() -> PathBuf {
                             "-Clink-arg=-B{sysroot}/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld"
                         ));
                     while index < args.len() {
-                        if matches!(
+                        if args[index] == OsStr::new("-Zohm-check-relink-inputs") {
+                            if env::var_os("RELINK_WRAPPER_LEGACY_COMPILER").is_some() {
+                                eprintln!("unknown unstable option: ohm-check-relink-inputs");
+                                exit(1);
+                            }
+                            index += 1;
+                        } else if matches!(
                             args[index].to_str(),
                             Some(
                                 "-Zpublic-api-hash"
@@ -5648,9 +5654,83 @@ pub(super) fn relink_only_wrapper() -> PathBuf {
     wrapper.bin("relink-only-wrapper")
 }
 
+#[cfg(unix)]
+#[cargo_test]
+fn assembler_checks_follow_the_compiler_for_each_unit() {
+    let checked = relink_only_wrapper();
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "app"
+                version = "0.1.0"
+                edition = "2021"
+                [workspace]
+                exclude = ["external"]
+                [lib]
+                name = "engine"
+                [dependencies]
+                external = { path = "external" }
+            "#,
+        )
+        .file("src/lib.rs", "pub fn value() -> u8 { external::value() }")
+        .file(
+            "src/main.rs",
+            r#"fn main() { println!("{}", engine::value()); }"#,
+        )
+        .file("external/Cargo.toml", &basic_manifest("external", "0.1.0"))
+        .file("external/src/lib.rs", "pub fn value() -> u8 { 17 }")
+        .executable(
+            "select-driver",
+            r#"#!/bin/sh
+if [ "$1" = "$RUSTC_WORKSPACE_WRAPPER" ]; then
+    exec "$@"
+fi
+export RELINK_WRAPPER_LEGACY_COMPILER=1
+exec "$RUSTC_WORKSPACE_WRAPPER" "$@"
+"#,
+        )
+        .build();
+    let run = |args: &str| {
+        let mut cmd = p.cargo(args);
+        cmd.masquerade_as_nightly_cargo(&["ohm-defaults", "relink-only"])
+            .env("RUSTC_WRAPPER", p.root().join("select-driver"))
+            .env("RUSTC_WORKSPACE_WRAPPER", &checked)
+            .env("RELINK_WRAPPER_LOG", p.root().join("calls"));
+        cmd
+    };
+    run("-Zohm-defaults build -vv")
+        .with_stderr_contains("[..]--crate-name engine [..]-Zohm-check-relink-inputs[..]")
+        .with_stderr_contains("[..]--crate-name app [..]-Zohm-check-relink-inputs[..]")
+        .run();
+    run("-Zohm-defaults build -vv")
+        .with_stderr_does_not_contain("[..]--crate-name [..]")
+        .run();
+    // A selected non-member still uses the plain compiler, including for its test harness.
+    run("-Zohm-defaults -Zrelink-only=yes test -p external --lib --no-run -vv")
+        .with_stderr_contains("[..]--crate-name external [..]--test[..]")
+        .with_stderr_does_not_contain("[..]--crate-name external [..]-Zohm-check-relink-inputs[..]")
+        .run();
+    run("-Zohm-defaults=no build -vv")
+        .with_stderr_does_not_contain("[..]-Zohm-check-relink-inputs[..]")
+        .run();
+}
+
 #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
 #[cargo_test]
 fn dependency_edit_reassembles_native_targets_by_default() {
+    check_assembler_input_after_dependency_edit(false);
+}
+
+#[cfg(all(target_os = "linux", target_arch = "x86_64"))]
+#[cargo_test]
+fn explicit_relink_falls_back_with_an_older_compiler() {
+    check_assembler_input_after_dependency_edit(true);
+}
+
+#[cfg(all(target_os = "linux", target_arch = "x86_64"))]
+fn check_assembler_input_after_dependency_edit(legacy_relink: bool) {
     let wrapper = relink_only_wrapper();
     let p = project()
         .file("Cargo.toml", &basic_manifest("app", "0.1.0"))
@@ -5677,8 +5757,14 @@ fn dependency_edit_reassembles_native_targets_by_default() {
         .build();
     let log = p.root().join("compiler.log");
     let test = |expected| {
-        let mut cmd = p.cargo("-Zohm-defaults test --test integration");
-        cmd.masquerade_as_nightly_cargo(&["ohm-defaults"])
+        let mut cmd = if legacy_relink {
+            let mut cmd = p.cargo("-Zohm-defaults -Zrelink-only=yes test --test integration");
+            cmd.env("RELINK_WRAPPER_LEGACY_COMPILER", "1");
+            cmd
+        } else {
+            p.cargo("-Zohm-defaults test --test integration")
+        };
+        cmd.masquerade_as_nightly_cargo(&["ohm-defaults", "relink-only"])
             .env("CARGO_INCREMENTAL", "0")
             .env("RUSTC_WRAPPER", &wrapper)
             .env("RELINK_WRAPPER_LOG", &log)

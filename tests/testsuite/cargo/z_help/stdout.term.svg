@@ -124,7 +124,7 @@
 </tspan>
     <tspan x="10px" y="982px"><tspan>    -Z publish-timeout             Enable the `publish.timeout` key in .cargo/config.toml file</tspan>
 </tspan>
-    <tspan x="10px" y="1000px"><tspan>    -Z relink-only                 Reuse cached rustc codegen when only dependencies changed (assumes all assembler inputs are tracked)</tspan>
+    <tspan x="10px" y="1000px"><tspan>    -Z relink-only                 Reuse cached native codegen when rustc can account for the target's inputs</tspan>
 </tspan>
     <tspan x="10px" y="1018px"><tspan>    -Z root-dir                    Set the root directory relative to which paths are printed (defaults to workspace root)</tspan>
 </tspan>

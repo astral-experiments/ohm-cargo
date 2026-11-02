@@ -210,6 +210,21 @@ fn unit_uses_ohm_worktree_seeds(build_runner: &BuildRunner<'_, '_>, unit: &Unit)
         && unit.pkg.package_id().source_id().is_path()
 }
 
+/// A library can assemble external inputs before any executable is linked.
+/// Ask the driver that actually emits this unit's objects whether it can track them.
+fn unit_checks_relink_inputs(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
+    let bcx = build_runner.bcx;
+    let unstable = bcx.gctx.cli_unstable();
+    (unstable.ohm_defaults() || unstable.relink_only())
+        // Shared check/build stages need the same tracked compiler options.
+        && (matches!(unit.mode, CompileMode::Build | CompileMode::Test)
+            || unit_uses_ohm_shared_stages(build_runner, unit))
+        && !(bcx.build_config.primary_unit_rustc.is_some() && build_runner.is_primary_package(unit))
+        && bcx
+            .rustc()
+            .supports_relink_input_checks(bcx.gctx, bcx.ws.is_member(&unit.pkg))
+}
+
 /// A new checkout has new source mtimes, so seeded mutable units must validate
 /// source contents. Explicit checksum freshness still applies to every unit.
 fn unit_uses_checksum_freshness(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
@@ -1121,7 +1136,6 @@ fn rustc(
     let outputs = build_runner.outputs(unit)?;
     let root = build_runner.files().output_dir(unit);
     let unstable = build_runner.bcx.gctx.cli_unstable();
-    let reuse_codegen = unstable.relink_only();
     let relink_cache = (unstable.collect_relink_cache()
         && fingerprint::unit_can_use_relink_only(build_runner, unit))
     .then(|| {
@@ -1131,6 +1145,11 @@ fn rustc(
             .map(|output| RelinkCachePaths::new(output.path.clone()))
     })
     .flatten();
+    let check_relink_inputs = unit_checks_relink_inputs(build_runner, unit);
+    if check_relink_inputs {
+        rustc.arg("-Zohm-check-relink-inputs");
+    }
+    let reuse_codegen = relink_cache.is_some() && unstable.relink_only() && check_relink_inputs;
     let source_arg = path_args(build_runner.bcx.ws, unit).0;
     let relinkable_dependencies = build_runner
         .unit_deps(unit)

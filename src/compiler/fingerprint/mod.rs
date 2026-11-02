@@ -2724,6 +2724,10 @@ fn calculate_normal(
         )
             .hash(&mut config);
     }
+    if super::unit_checks_relink_inputs(build_runner, unit) {
+        // Dep-info from an older or unwrapped compiler may omit assembler inputs.
+        "ohm-checked-native-inputs-v1".hash(&mut config);
+    }
 
     let compile_kind = unit.kind.fingerprint_hash();
     let mut declared_features = unit.pkg.summary().features().keys().collect::<Vec<_>>();
