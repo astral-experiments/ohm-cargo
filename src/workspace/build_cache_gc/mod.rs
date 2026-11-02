@@ -1960,6 +1960,20 @@ mod tests {
     }
 
     impl Cache {
+        /// Waits for concurrently forked children to close inherited consumer leases.
+        fn wait_for_consumers(&self, context: Option<&str>) -> CargoResult<()> {
+            let path = match context {
+                Some(context) => {
+                    crate::workspace::build_cache_gc_lease::context_lock(&self.root, context)
+                }
+                None => self.root.join(DIRECTORY).join(CONSUMERS_LOCK),
+            };
+            let file = File::open(path)?;
+            crate::util::flock::lock_exclusive(&file)?;
+            crate::util::flock::unlock(&file)?;
+            Ok(())
+        }
+
         fn new() -> CargoResult<Self> {
             let temporary = tempfile::tempdir()?;
             let base = temporary.path().canonicalize()?;
@@ -2098,6 +2112,7 @@ mod tests {
                 );
             }
             drop(lease);
+            cache.wait_for_consumers(Some(busy))?;
             assert_eq!(collect(&cache.root, false, None)?.counts.files, 2);
             assert!(cache.tracker()?.contexts()?.is_empty());
         }
@@ -2127,7 +2142,10 @@ mod tests {
             assert!(legacy.exists());
             assert_eq!(scoped.exists(), dry_run);
         }
-        drop((consumer, profile, pruner));
+        crate::util::flock::unlock(&profile)?;
+        crate::util::flock::unlock(&pruner)?;
+        drop(consumer);
+        cache.wait_for_consumers(None)?;
         assert_eq!(collect(&cache.root, false, None)?.counts.files, 1);
         Ok(())
     }
@@ -2195,6 +2213,7 @@ mod tests {
         let lease = crate::workspace::build_cache_gc_lease::ConsumerLease::acquire(&cache.root)?;
         assert!(collect_at(&cache.root, false, now, None)?.busy);
         drop(lease);
+        cache.wait_for_consumers(None)?;
         let collected = collect_at(&cache.root, false, now, None)?;
         assert_eq!(collected.counts.files, 2);
         assert_eq!(collected.counts.bytes, 17);
