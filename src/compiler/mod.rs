@@ -2505,12 +2505,17 @@ where
 
 /// Keeps configured flags before a trailing CLI list when both can contain an option terminator.
 fn add_compiler_args(command: &mut ProcessBuilder, extra: &[String], configured: &[String]) {
+    for args in ordered_compiler_args(extra, configured) {
+        add_extra_args(command, args);
+    }
+}
+
+/// Returns the user argument lists in the order the compiler will see them.
+fn ordered_compiler_args<'a>(extra: &'a [String], configured: &'a [String]) -> [&'a [String]; 2] {
     if may_end_options(extra) {
-        add_extra_args(command, configured);
-        command.args_last(extra);
+        [configured, extra]
     } else {
-        command.args(extra);
-        add_extra_args(command, configured);
+        [extra, configured]
     }
 }
 

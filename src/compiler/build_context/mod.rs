@@ -276,6 +276,7 @@ fn compiler_inputs(
     let mut hashes = HashMap::default();
     let mut json_docs = HashSet::default();
     let mut sources = HashMap::default();
+    let mut file_hashes = HashMap::default();
     for unit in units.keys() {
         let doc = unit.mode.is_doc() || unit.mode.is_doc_scrape();
         let configured = if doc {
@@ -284,16 +285,23 @@ fn compiler_inputs(
             &unit.rustflags
         };
         let profile = (!doc).then_some(&unit.profile.rustflags);
-        let flags = profile
-            .into_iter()
-            .flatten()
-            .map(|flag| flag.as_str())
-            .chain(extra.get(unit).into_iter().flatten().map(String::as_str))
-            .chain(configured.iter().map(String::as_str));
-        let expanded = if flags.clone().any(|arg| arg.starts_with('@')) {
+        let args = extra.get(unit).map(Vec::as_slice).unwrap_or_default();
+        let flags = || {
+            profile
+                .into_iter()
+                .flatten()
+                .map(|flag| flag.as_str())
+                .chain(
+                    super::ordered_compiler_args(args, configured)
+                        .into_iter()
+                        .flatten()
+                        .map(String::as_str),
+                )
+        };
+        let expanded = if flags().any(|arg| arg.starts_with('@')) {
             let expanded = crate::util::argfiles::expand(
                 &crate::util::path_args(ws, unit).1,
-                flags.clone(),
+                flags(),
                 &mut sources,
             );
             // Missing or streaming files must be handled by the compiler itself.
@@ -316,13 +324,31 @@ fn compiler_inputs(
             None
         };
         if doc {
-            let json = match expanded {
-                Some(args) => {
-                    crate::compiler::rustdoc::forwarded_json(args.iter().map(String::as_str))
-                }
-                None => crate::compiler::rustdoc::forwarded_json(flags),
+            let args = match &expanded {
+                Some(args) => itertools::Either::Left(args.iter().map(String::as_str)),
+                None => itertools::Either::Right(flags()),
             };
-            if json {
+            let mut inputs = crate::compiler::rustdoc::external_inputs(args.clone()).peekable();
+            if inputs.peek().is_some() {
+                let cwd = crate::util::path_args(ws, unit).1;
+                let digests = inputs
+                    .map(|name| {
+                        *file_hashes
+                            .entry(cwd.join(name))
+                            .or_insert_with_key(|path| {
+                                crate::util::argfiles::open_regular_file(path)
+                                    .and_then(|file| crate::util::hex::hash_u64_file(&file).ok())
+                                    .unwrap_or_else(rand::random::<u64>)
+                            })
+                    })
+                    .collect::<Vec<_>>();
+                let entry = hashes.entry(unit.clone()).or_insert(ArgfileFingerprint {
+                    hash: 0,
+                    doc_args: None,
+                });
+                entry.hash = crate::util::hash_u64((entry.hash, digests));
+            }
+            if crate::compiler::rustdoc::forwarded_json(args) {
                 json_docs.insert(unit.clone());
             }
         }

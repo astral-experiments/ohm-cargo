@@ -609,3 +609,22 @@ fn crate_version_in_rustdoc_argument_file() {
     let index = std::fs::read_to_string(p.root().join("target/doc/foo/index.html")).unwrap();
     assert!(index.contains("9.8.7"));
 }
+
+#[cargo_test]
+fn tracks_external_html_fragments() {
+    let p = project().file("src/lib.rs", "pub fn item() {}").build();
+    let fragment = p.root().parent().unwrap().join("header.html");
+    let flags = format!("--html-in-header={}", fragment.display());
+    let page = p.root().join("target/doc/foo/index.html");
+    for marker in ["header-v1", "header-v2"] {
+        fs::write(&fragment, marker).unwrap();
+        p.cargo("doc --no-deps").env("RUSTDOCFLAGS", &flags).run();
+        assert!(fs::read_to_string(&page).unwrap().contains(marker));
+    }
+    fs::remove_file(fragment).unwrap();
+    p.cargo("doc --no-deps")
+        .env("RUSTDOCFLAGS", flags)
+        .with_status(101)
+        .with_stderr_contains("[..]error reading [..]header.html[..]")
+        .run();
+}
