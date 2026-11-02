@@ -649,9 +649,10 @@ impl<'gctx> RegistrySource<'gctx> {
         let path = self
             .unpack_package(package, path)
             .with_context(|| format!("failed to unpack package `{}`", package))?;
-        let src = PathSource::new(&path, self.source_id, self.gctx);
-        src.load()?;
-        let mut pkg = match src.download(package).await? {
+        let mut pkg = match PathSource::new(&path, self.source_id, self.gctx)
+            .download(package)
+            .await?
+        {
             MaybePackage::Ready(pkg) => pkg,
             MaybePackage::Download { .. } => unreachable!(),
         };
