@@ -203,7 +203,7 @@ test-runner:
         .arg("-j2")
         .with_stderr_data(str![[r#"
 [FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
-[RUNNING] `runner target/debug/cargo-jobserver-check[EXE]`
+[RUNNING] `runner target/debug/.cargo-run/run-[..]/cargo-jobserver-check[EXE]`
 this is a runner
 
 "#]])
@@ -245,7 +245,7 @@ this is a runner
         .with_status(101)
         .with_stderr_data(str![[r#"
 [FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
-[RUNNING] `runner target/debug/cargo-jobserver-check[EXE]`
+[RUNNING] `runner target/debug/.cargo-run/run-[..]/cargo-jobserver-check[EXE]`
 this is a runner
 ...
 [..]no jobserver from env[..]

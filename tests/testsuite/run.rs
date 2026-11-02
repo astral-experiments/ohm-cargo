@@ -7,6 +7,60 @@ use cargo_test_support::{
 use cargo_util::paths::dylib_path_envvar;
 
 #[cargo_test]
+fn target_runner_keeps_compiled_executable() {
+    let runner = project()
+        .at("runner")
+        .file(
+            "src/main.rs",
+            r##"
+            use std::{env, process::Command};
+            fn main() {
+                let cargo = env::var_os("CARGO").unwrap();
+                let mut build = Command::new(cargo);
+                build.arg("build");
+                if env::var_os("EDIT_SOURCE").is_some() {
+                    std::fs::write("src/main.rs", r#"fn main() { println!("edited"); }"#).unwrap();
+                } else {
+                    build.args(["--features", "other"]);
+                }
+                let build = build.status().unwrap();
+                assert!(build.success());
+                assert!(Command::new(env::args_os().nth(1).unwrap()).status().unwrap().success());
+            }
+        "##,
+        )
+        .build();
+    runner.cargo("build").run();
+    let p = project()
+        .file(
+            "Cargo.toml",
+            &format!(
+                "{}\n[features]\nother = []\n",
+                basic_manifest("foo", "0.1.0")
+            ),
+        )
+        .file(
+            ".cargo/config.toml",
+            &format!(
+                "[target.'cfg(all())']\nrunner = [{:?}]\n",
+                runner.bin("foo")
+            ),
+        )
+        .file(
+            "src/main.rs",
+            r#"fn main() { println!("{}", cfg!(feature = "other")); }"#,
+        )
+        .build();
+    p.cargo("run").with_stdout_data("false\n").run();
+    p.process(&p.bin("foo")).with_stdout_data("true\n").run();
+    p.cargo("run")
+        .env("EDIT_SOURCE", "1")
+        .with_stdout_data("false\n")
+        .run();
+    p.process(&p.bin("foo")).with_stdout_data("edited\n").run();
+}
+
+#[cargo_test]
 fn simple() {
     let p = project()
         .file("src/main.rs", r#"fn main() { println!("hello"); }"#)
