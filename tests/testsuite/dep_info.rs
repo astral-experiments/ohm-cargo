@@ -149,6 +149,45 @@ fn dep_path_inside_target_has_correct_path() {
     }
 }
 
+#[cfg(unix)]
+#[cargo_test]
+fn native_workspace_path_in_external_dep_info() {
+    use std::ffi::OsStr;
+    use std::os::unix::ffi::OsStrExt;
+
+    let p = project().file("src/main.rs", "fn main() {}").build();
+    let native = p.root().with_file_name(OsStr::from_bytes(b"native-\xff"));
+    if let Err(error) = std::fs::rename(p.root(), &native) {
+        // Some filesystems reject non-Unicode names before Cargo can use the workspace.
+        assert_eq!(error.raw_os_error(), Some(libc::EILSEQ), "{error}");
+        return;
+    }
+    let target = paths::root().join("target");
+    p.cargo("build")
+        .cwd(&native)
+        .env("CARGO_TARGET_DIR", &target)
+        .run();
+
+    let depfile = target.join("debug/foo.d");
+    assert!(
+        std::fs::read(&depfile)
+            .unwrap()
+            .ends_with(b"/native-\xff/src/main.rs\n")
+    );
+
+    p.cargo("build")
+        .arg("--config")
+        .arg("build.dep-info-basedir=\".\"")
+        .cwd(&native)
+        .env("CARGO_TARGET_DIR", &target)
+        .run();
+    assert!(
+        std::fs::read(&depfile)
+            .unwrap()
+            .ends_with(b": src/main.rs\n")
+    );
+}
+
 #[cargo_test]
 fn no_rewrite_if_no_change() {
     let p = project()

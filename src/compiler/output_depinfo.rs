@@ -3,7 +3,6 @@
 
 use crate::util::data_structures::{HashMap, HashSet};
 use cargo_util::paths::normalize_path;
-use std::io::{BufWriter, Write};
 use std::path::{Path, PathBuf};
 
 use super::{BuildRunner, FileFlavor, Unit, fingerprint};
@@ -11,25 +10,37 @@ use crate::util::{CargoResult, internal};
 use cargo_util::paths;
 use tracing::debug;
 
-/// Basically just normalizes a given path and converts it to a string.
-fn render_filename<P: AsRef<Path>>(path: P, basedir: Option<&str>) -> CargoResult<String> {
-    fn wrap_path(path: &Path) -> CargoResult<String> {
-        path.to_str()
-            .ok_or_else(|| internal(format!("path `{:?}` not utf-8", path)))
-            .map(|f| f.replace(" ", "\\ "))
-    }
-
-    let path = path.as_ref();
-    if let Some(basedir) = basedir {
-        let norm_path = normalize_path(path);
-        let norm_basedir = normalize_path(basedir.as_ref());
-        match norm_path.strip_prefix(norm_basedir) {
-            Ok(relpath) => wrap_path(relpath),
-            _ => wrap_path(path),
-        }
+/// Makes paths relative to the configured base and escapes spaces in Make rules.
+fn render_filename(path: &Path, basedir: Option<&Path>) -> CargoResult<PathBuf> {
+    let normalized;
+    let path = if let Some(basedir) = basedir {
+        normalized = normalize_path(path);
+        normalized.strip_prefix(basedir).unwrap_or(path)
     } else {
-        wrap_path(path)
+        path
+    };
+    let bytes = paths::path2bytes(path)?;
+    if !bytes.contains(&b' ') {
+        return Ok(path.to_owned());
     }
+    let mut escaped = Vec::with_capacity(bytes.len());
+    for &byte in bytes {
+        if byte == b' ' {
+            escaped.push(b'\\');
+        }
+        escaped.push(byte);
+    }
+    paths::bytes2path(&escaped)
+}
+
+/// Compares the prerequisites of a native depfile when the UTF-8 parser cannot read it.
+fn same_native_prerequisites(previous: &[u8], prerequisites: &[u8]) -> bool {
+    // Spaces in the target are escaped, so the first ": " or ":\n" ends the target.
+    std::str::from_utf8(previous).is_err()
+        && previous
+            .windows(2)
+            .position(|pair| matches!(pair, b": " | b":\n"))
+            .is_some_and(|end| &previous[end..] == prerequisites)
 }
 
 /// Collects all dependencies of the `unit` for the output dep info file.
@@ -170,22 +181,15 @@ pub fn output_depinfo(
     // A stable sort preserves the first spelling of equivalent paths.
     deps.sort();
     deps.dedup();
-    let basedir_string;
-    let basedir = match bcx.gctx.build_config()?.dep_info_basedir.clone() {
-        Some(value) => {
-            basedir_string = value
-                .resolve_path(bcx.gctx)
-                .as_os_str()
-                .to_str()
-                .ok_or_else(|| anyhow::format_err!("build.dep-info-basedir path not utf-8"))?
-                .to_string();
-            Some(basedir_string.as_str())
-        }
-        None => None,
-    };
+    let basedir = bcx
+        .gctx
+        .build_config()?
+        .dep_info_basedir
+        .as_ref()
+        .map(|value| normalize_path(&value.resolve_path(bcx.gctx)));
     let deps = deps
         .iter()
-        .map(|f| render_filename(f, basedir))
+        .map(|f| render_filename(f, basedir.as_deref()))
         .collect::<CargoResult<Vec<_>>>()?;
 
     // Preserve the legacy target selection for crate types sharing a dep-info path.
@@ -193,41 +197,37 @@ pub fn output_depinfo(
     for link_dst in outputs {
         let output_path = link_dst.with_extension("d");
         if success {
-            let target_fn = render_filename(link_dst, basedir)?;
+            let target = render_filename(link_dst, basedir.as_deref())?;
+            let mut contents = paths::path2bytes(&target)?.to_vec();
+            let target_len = contents.len();
+            contents.push(b':');
+            for dep in &deps {
+                contents.push(b' ');
+                contents.extend_from_slice(paths::path2bytes(dep)?);
+            }
+            contents.push(b'\n');
 
             if single_output {
-                let mut contents = Vec::new();
-                write!(contents, "{}:", target_fn)?;
-                for dep in &deps {
-                    write!(contents, " {}", dep)?;
-                }
-                writeln!(contents)?;
-
                 // Preserve the mtime when the complete rendered dep-info is unchanged.
                 if paths::read_bytes(&output_path).is_ok_and(|previous| previous == contents) {
                     continue;
                 }
-                paths::write(output_path, contents)?;
-            } else {
+            } else if let Ok(previous) = fingerprint::parse_rustc_dep_info(&output_path) {
                 // The dependency-only comparison can retain an earlier output's target.
-                if let Ok(previous) = fingerprint::parse_rustc_dep_info(&output_path) {
-                    if previous
-                        .files
-                        .iter()
-                        .map(|(path, _checksum)| path)
-                        .eq(deps.iter().map(Path::new))
-                    {
-                        continue;
-                    }
+                if previous
+                    .files
+                    .iter()
+                    .map(|(path, _checksum)| path)
+                    .eq(&deps)
+                {
+                    continue;
                 }
-
-                let mut outfile = BufWriter::new(paths::create(output_path)?);
-                write!(outfile, "{}:", target_fn)?;
-                for dep in &deps {
-                    write!(outfile, " {}", dep)?;
-                }
-                writeln!(outfile)?;
+            } else if paths::read_bytes(&output_path)
+                .is_ok_and(|previous| same_native_prerequisites(&previous, &contents[target_len..]))
+            {
+                continue;
             }
+            paths::write(output_path, contents)?;
 
         // dep-info generation failed, so delete output file. This will
         // usually cause the build system to always rerun the build
