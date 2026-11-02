@@ -2503,6 +2503,17 @@ where
     search_path
 }
 
+/// Keeps configured flags before a trailing CLI list when both can contain an option terminator.
+fn add_compiler_args(command: &mut ProcessBuilder, extra: &[String], configured: &[String]) {
+    if may_end_options(extra) {
+        add_extra_args(command, configured);
+        command.args_last(extra);
+    } else {
+        command.args(extra);
+        add_extra_args(command, configured);
+    }
+}
+
 /// Adds the user's compiler or rustdoc arguments while preserving a possible option terminator.
 fn add_extra_args(command: &mut ProcessBuilder, args: &[String]) {
     if may_end_options(args) {
@@ -2581,9 +2592,11 @@ fn prepare_rustc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
     base.inherit_jobserver(&build_runner.jobserver);
     build_deps_args(&mut base, build_runner, unit)?;
     add_cap_lints(build_runner.bcx, unit, &mut base);
-    if let Some(args) = build_runner.bcx.extra_args_for(unit) {
-        add_extra_args(&mut base, args);
-    }
+    let extra = build_runner
+        .bcx
+        .extra_args_for(unit)
+        .map(Vec::as_slice)
+        .unwrap_or_default();
     let info = build_runner.bcx.target_data.info(unit.kind);
     let mut rustflags = unit_rustflags_without_ohm_defaults(gctx, &unit.rustflags);
     if info.ohm_linker_flags != 0 {
@@ -2595,14 +2608,7 @@ fn prepare_rustc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
                 .rustflags
                 .iter()
                 .map(|flag| flag.as_str())
-                .chain(
-                    build_runner
-                        .bcx
-                        .extra_args_for(unit)
-                        .into_iter()
-                        .flatten()
-                        .map(String::as_str),
-                ),
+                .chain(extra.iter().map(String::as_str)),
         );
         if explicit {
             rustflags = &rustflags[..rustflags.len() - info.ohm_linker_flags];
@@ -2617,7 +2623,7 @@ fn prepare_rustc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
             );
         }
     }
-    base.args(rustflags);
+    add_compiler_args(&mut base, extra, rustflags);
     if gctx.cli_unstable().binary_dep_depinfo {
         base.arg("-Z").arg("binary-dep-depinfo");
     }
@@ -2786,14 +2792,7 @@ fn prepare_rustdoc(
         .extra_args_for(unit)
         .map(Vec::as_slice)
         .unwrap_or_default();
-    // Keep configured flags before a trailing CLI list, including when both use argument files.
-    if may_end_options(extra) {
-        add_extra_args(&mut rustdoc, &unit.rustdocflags);
-        rustdoc.args_last(extra);
-    } else {
-        rustdoc.args(extra);
-        add_extra_args(&mut rustdoc, &unit.rustdocflags);
-    }
+    add_compiler_args(&mut rustdoc, extra, &unit.rustdocflags);
 
     build_runner.inherit_shared_cache_locks(&mut rustdoc)?;
     Ok(rustdoc)

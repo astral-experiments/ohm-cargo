@@ -13,6 +13,7 @@ use crate::compiler::CompileTarget;
 use crate::compiler::CrateType;
 use crate::compiler::OHM_DEFAULT_RUSTFLAGS;
 use crate::compiler::OHM_EARLY_METADATA_RUSTFLAG;
+use crate::compiler::add_extra_args;
 use crate::compiler::apply_env_config;
 use crate::context::{GlobalContext, StringList, TargetConfig};
 use crate::util::interning::InternedString;
@@ -198,8 +199,8 @@ impl TargetInfo {
                 .arg("--crate-name")
                 .arg("___")
                 .arg("--print=file-names")
-                .args(&rustflags)
                 .env_remove("RUSTC_LOG");
+            add_extra_args(&mut process, &rustflags);
 
             // Removes `FD_CLOEXEC` set by `jobserver::Client` to pass jobserver
             // as environment variables specify.
@@ -333,8 +334,8 @@ impl TargetInfo {
                 target_spec_process
                     .arg("--print=target-spec-json")
                     .arg("-Zunstable-options")
-                    .args(&rustflags)
                     .env_remove("RUSTC_LOG");
+                add_extra_args(&mut target_spec_process, &rustflags);
 
                 kind.add_target_arg(&mut target_spec_process);
 
