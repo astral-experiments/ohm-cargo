@@ -6004,6 +6004,7 @@ this is intentionally not Rust
 
 #[cargo_test]
 fn cached_doctests_fall_back_when_a_crate_gains_a_compile_fail_example() {
+    let wrapper = crate::rustflags::ohm_defaults_wrapper();
     let p = project()
         .file(
             "Cargo.toml",
@@ -6016,8 +6017,10 @@ fn cached_doctests_fall_back_when_a_crate_gains_a_compile_fail_example() {
         .build();
     let run = |flags: &str| {
         let mut cmd = p.cargo(&format!("test --doc -v {flags}"));
-        cmd.masquerade_as_nightly_cargo(&["ohm-cached-doctests"])
+        cmd.masquerade_as_nightly_cargo(&["ohm-cached-doctests", "ohm-defaults"])
             .env("CARGO_UNSTABLE_OHM_DEFAULTS", "true")
+            .env("RUSTC_WRAPPER", &wrapper)
+            .env("OHM_DEFAULTS_LOG", p.root().join("rustc.log"))
             .env("RUSTC_BOOTSTRAP", "1");
         cmd
     };
