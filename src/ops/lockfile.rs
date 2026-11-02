@@ -68,15 +68,23 @@ pub fn resolve_to_string(ws: &Workspace<'_>, resolve: &Resolve) -> CargoResult<S
 /// Ensure the resolve result is written to fisk
 ///
 /// Returns `true` if the lockfile changed
-#[tracing::instrument(skip_all)]
 pub fn write_pkg_lockfile(ws: &Workspace<'_>, resolve: &mut Resolve) -> CargoResult<bool> {
+    Ok(write_pkg_lockfile_with_encoding(ws, resolve)?.0)
+}
+
+/// Returns whether the file changed and the encoding of the final resolution.
+#[tracing::instrument(name = "write_pkg_lockfile", skip_all)]
+pub(super) fn write_pkg_lockfile_with_encoding(
+    ws: &Workspace<'_>,
+    resolve: &mut Resolve,
+) -> CargoResult<(bool, String)> {
     let (orig, mut out, lock_root) = resolve_to_string_orig(ws, resolve);
 
     // If the lock file contents haven't changed so don't rewrite it. This is
     // helpful on read-only filesystems.
     if let Some(orig) = &orig {
         if are_equal_lockfiles(orig, &out, ws) {
-            return Ok(false);
+            return Ok((false, out));
         }
     }
 
@@ -131,7 +139,7 @@ pub fn write_pkg_lockfile(ws: &Workspace<'_>, resolve: &mut Resolve) -> CargoRes
                 lock_root.as_path_unlocked().join(LOCKFILE_NAME).display()
             )
         })?;
-    Ok(true)
+    Ok((true, out))
 }
 
 fn resolve_to_string_orig(

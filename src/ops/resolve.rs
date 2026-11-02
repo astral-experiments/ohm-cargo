@@ -136,7 +136,7 @@ version. This may also occur with an optional dependency that is not enabled.";
 /// `package`, which don't specify any options or features.
 pub fn resolve_ws<'a>(ws: &Workspace<'a>, dry_run: bool) -> CargoResult<(PackageSet<'a>, Resolve)> {
     let mut registry = ws.package_registry()?;
-    let resolve = resolve_with_registry(ws, &mut registry, dry_run)?;
+    let (resolve, _) = resolve_with_registry(ws, &mut registry, dry_run, false)?;
     let packages = get_resolved_packages(&resolve, registry)?;
     Ok((packages, resolve))
 }
@@ -248,11 +248,15 @@ pub fn resolve_ws_with_opts<'gctx>(
             // packages with required target features take the ordinary path.
             (resolve, true)
         } else {
-            let resolve = resolve_with_registry(ws, &mut registry, dry_run)?;
-            if can_reuse_workspace_resolve {
-                if let Err(error) =
-                    resolve_cache::mark_workspace_resolve_fresh(ws, &resolve, &target_data.rustc)
-                {
+            let (resolve, encoding) =
+                resolve_with_registry(ws, &mut registry, dry_run, can_reuse_workspace_resolve)?;
+            if let Some(encoding) = encoding {
+                if let Err(error) = resolve_cache::mark_workspace_resolve_fresh(
+                    ws,
+                    &resolve,
+                    &target_data.rustc,
+                    &encoding,
+                ) {
                     debug!("unable to cache the workspace resolution: {error}");
                 }
             }
@@ -436,7 +440,8 @@ fn resolve_with_registry<'gctx>(
     ws: &Workspace<'gctx>,
     registry: &mut PackageRegistry<'gctx>,
     dry_run: bool,
-) -> CargoResult<Resolve> {
+    retain_lockfile_encoding: bool,
+) -> CargoResult<(Resolve, Option<String>)> {
     let prev = ops::load_pkg_lockfile(ws)?;
     let mut resolve = resolve_with_previous(
         registry,
@@ -449,9 +454,13 @@ fn resolve_with_registry<'gctx>(
         true,
     )?;
 
+    let mut encoding = None;
     let print = if !ws.is_ephemeral() && ws.require_optional_deps() {
         if !dry_run {
-            ops::write_pkg_lockfile(ws, &mut resolve)?
+            let (changed, contents) =
+                ops::lockfile::write_pkg_lockfile_with_encoding(ws, &mut resolve)?;
+            encoding = retain_lockfile_encoding.then_some(contents);
+            changed
         } else {
             true
         }
@@ -465,7 +474,7 @@ fn resolve_with_registry<'gctx>(
     if print {
         ops::print_lockfile_changes(ws, prev.as_ref(), &resolve, registry)?;
     }
-    Ok(resolve)
+    Ok((resolve, encoding))
 }
 
 /// Resolves all dependencies for a package using an optional previous instance
