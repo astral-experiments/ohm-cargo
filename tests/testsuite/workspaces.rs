@@ -3066,6 +3066,35 @@ false
         .run();
 }
 
+#[cargo_test]
+fn workspace_resolve_cache_applies_edited_workspace_lints() {
+    // A later cache hit can follow a full workspace resolution in the same command.
+    const FULL_RESOLVE: &str =
+        "[..]resolve_with_registry:resolve_with_previous:register_patch_entries:[..]";
+    let manifest = format!(
+        "{}\n[lints]\nworkspace = true\n[workspace.lints.rust]\nunused_variables = 'allow'\n",
+        basic_manifest("selected", "0.1.0")
+    );
+    let project = project()
+        .file("Cargo.toml", &manifest)
+        .file("src/main.rs", "fn main() { let value = 17; }")
+        .build();
+
+    workspace_resolve_cache_command(&project, "check --package selected").run();
+    project.change_file("Cargo.toml", &manifest.replace("'allow'", "'deny'"));
+    workspace_resolve_cache_command(&project, "check --package selected")
+        .with_status(101)
+        .with_stderr_contains(WORKSPACE_RESOLVE_CACHE_HIT)
+        .with_stderr_does_not_contain(FULL_RESOLVE)
+        .with_stderr_contains("[ERROR] unused variable: `value`")
+        .run();
+    project.change_file("Cargo.toml", &manifest);
+    workspace_resolve_cache_command(&project, "check --package selected")
+        .with_stderr_contains(WORKSPACE_RESOLVE_CACHE_HIT)
+        .with_stderr_does_not_contain(FULL_RESOLVE)
+        .run();
+}
+
 #[cfg(unix)]
 #[cargo_test]
 fn workspace_resolve_cache_replaces_a_symlink() {
