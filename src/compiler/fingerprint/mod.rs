@@ -3871,17 +3871,17 @@ mod parallel_checksum_tests {
 
     #[test]
     fn parallel_checksums_preserve_first_dirty_before_a_fifo() {
-        for failure in ["checksum", "size", "missing_checksum", "metadata"] {
+        for failure in [
+            "checksum",
+            "size",
+            "missing_checksum",
+            "cargo_home_missing_checksum",
+            "metadata",
+        ] {
             let (_directory, reference, mut paths) = fixture();
             let mut cache = HashMap::default();
             cache.insert(paths[0].0.clone(), checksum(b"data"));
             fs::remove_file(&paths[0].0).unwrap();
-            paths[1] = (
-                home::cargo_home()
-                    .unwrap()
-                    .join("registry/__ohm_checksum_test_missing__"),
-                None,
-            );
             match failure {
                 "checksum" => fs::write(&paths[5].0, b"edit").unwrap(),
                 "size" => File::options()
@@ -3891,6 +3891,14 @@ mod parallel_checksum_tests {
                     .set_len(16 * 1024 * 1024)
                     .unwrap(),
                 "missing_checksum" => paths[5].1 = None,
+                "cargo_home_missing_checksum" => {
+                    paths[5] = (
+                        home::cargo_home()
+                            .unwrap()
+                            .join("registry/__ohm_checksum_test_missing__"),
+                        None,
+                    );
+                }
                 "metadata" => fs::remove_file(&paths[5].0).unwrap(),
                 _ => unreachable!(),
             }
@@ -3906,7 +3914,10 @@ mod parallel_checksum_tests {
                 (failure, reason),
                 ("checksum", Some(StaleItem::ChangedChecksum { .. }))
                     | ("size", Some(StaleItem::FileSizeChanged { .. }))
-                    | ("missing_checksum", Some(StaleItem::MissingChecksum { .. }))
+                    | (
+                        "missing_checksum" | "cargo_home_missing_checksum",
+                        Some(StaleItem::MissingChecksum { .. })
+                    )
                     | ("metadata", Some(StaleItem::FailedToReadMetadata { .. }))
             ));
         }
