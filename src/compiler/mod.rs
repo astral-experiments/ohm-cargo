@@ -245,11 +245,13 @@ fn instruments_coverage<'a>(mut args: impl Iterator<Item = &'a str>) -> bool {
     coverage
 }
 
-/// Keeps mutable-package source identities stable when a completed build is
-/// copied into a new worktree. Immutable dependencies retain their existing
-/// compiler flags and shared-cache fingerprints.
-fn unit_uses_ohm_worktree_seeds(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
-    let flags = if unit.mode.is_doc() || unit.mode.is_doc_scrape() {
+/// Keeps source identities in compiled artifacts stable across seeded worktrees.
+fn ohm_worktree_seed_flags(
+    build_runner: &BuildRunner<'_, '_>,
+    unit: &Unit,
+) -> Option<&'static [&'static str]> {
+    let rustdoc = unit.mode.is_doc() || unit.mode.is_doc_scrape();
+    let flags = if rustdoc {
         &unit.rustdocflags
     } else {
         &unit.rustflags
@@ -266,7 +268,7 @@ fn unit_uses_ohm_worktree_seeds(build_runner: &BuildRunner<'_, '_>, unit: &Unit)
         .map(|arg| arg.as_str())
         .chain(extra_args.iter().map(String::as_str))
         .chain(flags.iter().map(String::as_str));
-    build_runner.bcx.gctx.cli_unstable().ohm_worktree_seeds()
+    let enabled = build_runner.bcx.gctx.cli_unstable().ohm_worktree_seeds()
         && !unit.is_std
         && unit.pkg.package_id().source_id().is_path()
         // The seed's cwd mapping wins over explicit rules, including rules in response files.
@@ -276,7 +278,35 @@ fn unit_uses_ohm_worktree_seeds(build_runner: &BuildRunner<'_, '_>, unit: &Unit)
         && !has_remap_path_prefix(extra_args)
         && !compiler_args.clone().any(|arg| arg.starts_with('@'))
         // llvm-cov opens the source filenames embedded in instrumented artifacts.
-        && !instruments_coverage(compiler_args)
+        && !instruments_coverage(compiler_args.clone());
+    if !enabled {
+        return None;
+    }
+    // Rustdoc requires -Zunstable-options for --remap-path-scope.
+    if rustdoc {
+        return Some(&[OHM_WORKTREE_SEED_RUSTFLAG]);
+    }
+    // Preserve an explicit cwd mapping's default scope. Rustc also accepts
+    // only one --remap-path-scope option.
+    let mut args = compiler_args;
+    while let Some(arg) = args.next() {
+        if arg == "--remap-path-scope" || arg.starts_with("--remap-path-scope=") {
+            return Some(&[OHM_WORKTREE_SEED_RUSTFLAG]);
+        }
+        let unstable = if arg == "-Z" {
+            args.next()
+        } else {
+            arg.strip_prefix("-Z")
+        };
+        if matches!(
+            unstable.and_then(|opt| opt.split('=').next()),
+            Some("remap-cwd-prefix" | "remap_cwd_prefix")
+        ) {
+            return Some(&[OHM_WORKTREE_SEED_RUSTFLAG]);
+        }
+    }
+    // Editors and rustfix need real filenames even when object paths are shared.
+    Some(&[OHM_WORKTREE_SEED_RUSTFLAG, "--remap-path-scope=object"])
 }
 
 /// A library can assemble external inputs before any executable is linked.
@@ -299,7 +329,7 @@ fn unit_checks_relink_inputs(build_runner: &BuildRunner<'_, '_>, unit: &Unit) ->
 /// of direct inputs, including when the dependency was built by a previous command.
 fn unit_uses_checksum_freshness(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
     build_runner.bcx.gctx.cli_unstable().checksum_freshness
-        || unit_uses_ohm_worktree_seeds(build_runner, unit)
+        || ohm_worktree_seed_flags(build_runner, unit).is_some()
         || fingerprint::unit_can_use_early_cutoff(build_runner, unit)
         || fingerprint::unit_can_use_relink_only(build_runner, unit)
 }
@@ -309,7 +339,7 @@ fn unit_worktree_seed_namespace(
     build_runner: &BuildRunner<'_, '_>,
     unit: &Unit,
 ) -> Option<PathBuf> {
-    (unit_uses_ohm_worktree_seeds(build_runner, unit)
+    (ohm_worktree_seed_flags(build_runner, unit).is_some()
         && build_runner.bcx.ws.shared_registry_cache_enabled())
     .then(|| build_runner.files().worktree_seed_namespace(unit))
 }
@@ -2584,11 +2614,11 @@ fn prepare_rustc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
             base.arg("-Zpublic-api-hash=no");
         }
     }
-    if unit_uses_ohm_worktree_seeds(build_runner, unit) {
+    if let Some(flags) = ohm_worktree_seed_flags(build_runner, unit) {
         // Unlike a checkout-specific --remap-path-prefix, this keeps the real
         // working directory out of rustc's incremental compatibility hash.
         // Both the donor build and later builds must use this same mode.
-        base.arg(OHM_WORKTREE_SEED_RUSTFLAG);
+        base.args(flags);
     }
     build_base_args(build_runner, &mut base, unit)?;
     if unit.pkg.manifest().is_embedded() {
@@ -2689,8 +2719,8 @@ fn prepare_rustdoc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResu
     // script_metadata is not needed here, it is only for tests.
     let mut rustdoc = build_runner.compilation.rustdoc_process(unit, None)?;
     let wants_json_output = build_runner.bcx.build_config.intent.wants_doc_json_output();
-    if unit_uses_ohm_worktree_seeds(build_runner, unit) {
-        rustdoc.arg(OHM_WORKTREE_SEED_RUSTFLAG);
+    if let Some(flags) = ohm_worktree_seed_flags(build_runner, unit) {
+        rustdoc.args(flags);
     }
     if unit.pkg.manifest().is_embedded() {
         if !bcx.gctx.cli_unstable().script {
