@@ -1874,24 +1874,20 @@ impl LocalFingerprint {
 
 impl Fingerprint {
     /// Rechecks files rustc read after prerequisites have had a chance to rewrite them.
-    pub(super) fn dep_info_files_are_fresh(
-        &self,
-        pkg_root: &Path,
-        build_root: &Path,
-        require_checksums: bool,
-    ) -> bool {
+    pub(super) fn dep_info_files_are_fresh(&self, pkg_root: &Path, build_root: &Path) -> bool {
         // Preparation-time caches may still describe the previous contents.
         let mut mtimes = HashMap::default();
         let mut checksums = HashMap::default();
         let local = self.local.lock().unwrap();
         !local.is_empty()
             && local.iter().all(|local| {
-                let LocalFingerprint::CheckDepInfo { dep_info, checksum } = local else {
+                let LocalFingerprint::CheckDepInfo {
+                    dep_info,
+                    checksum: true,
+                } = local
+                else {
                     return false;
                 };
-                if require_checksums && !*checksum {
-                    return false;
-                }
                 let dep_info = build_root.join(dep_info);
                 let Ok(Some(info)) = parse_dep_info(pkg_root, build_root, &dep_info) else {
                     return false;
@@ -1902,7 +1898,7 @@ impl Fingerprint {
                         &mut checksums,
                         &dep_info,
                         info.files.iter().map(|(path, checksum)| (path, *checksum)),
-                        *checksum,
+                        true,
                     )
                     .is_none()
             })
