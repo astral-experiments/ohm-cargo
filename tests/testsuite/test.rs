@@ -6003,6 +6003,47 @@ this is intentionally not Rust
 }
 
 #[cargo_test]
+fn cached_doctests_keep_running_the_original_examples() {
+    let p = project()
+        .file(
+            "Cargo.toml",
+            "[package]\nname = 'foo'\nversion = '0.0.1'\nedition = '2024'",
+        )
+        .file(
+            "src/lib.rs",
+            r#"
+                /// ```
+                /// foo::rebuild();
+                /// ```
+                pub fn alpha() {}
+
+                pub fn rebuild() {
+                    std::fs::write("zulu.md", "```\nassert!(true);\n```\n").unwrap();
+                    let status = std::process::Command::new(std::env::var_os("REBUILD_CARGO").unwrap())
+                        .args(["test", "--doc", "-Zohm-cached-doctests", "--", "--list"])
+                        .status().unwrap();
+                    assert!(status.success());
+                }
+
+                #[doc = include_str!("../zulu.md")]
+                pub fn zulu() {}
+            "#,
+        )
+        .file("zulu.md", "```\npanic!(\"original example\");\n```\n")
+        .build();
+    p.cargo("test --doc -Zohm-cached-doctests -v")
+        .masquerade_as_nightly_cargo(&["ohm-cached-doctests"])
+        .env("CARGO_UNSTABLE_OHM_DEFAULTS", "false")
+        .env("RUSTC_BOOTSTRAP", "1")
+        .env("RUST_TEST_THREADS", "1")
+        .env("REBUILD_CARGO", cargo_exe())
+        .with_status(101)
+        .with_stdout_contains("original example")
+        .with_stderr_does_not_contain("[RUNNING] [..]--test-run-directory[..]")
+        .run();
+}
+
+#[cargo_test]
 fn cached_doctests_fall_back_when_a_crate_gains_a_compile_fail_example() {
     let wrapper = crate::rustflags::ohm_defaults_wrapper();
     let p = project()
