@@ -3821,7 +3821,6 @@ mod parallel_checksum_tests {
             let results: Vec<_> = prefetch_checksums(
                 &paths,
                 &mut HashMap::default(),
-                None,
                 ChecksumParallelism {
                     jobserver: &jobserver,
                     reserved_tokens: &reserved_tokens,
