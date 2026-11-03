@@ -262,8 +262,9 @@ fn unit_checks_relink_inputs(build_runner: &BuildRunner<'_, '_>, unit: &Unit) ->
             .supports_relink_input_checks(bcx.gctx, bcx.ws.is_member(&unit.pkg))
 }
 
-/// A new checkout has new source mtimes, so seeded mutable units must validate
-/// source contents. Explicit checksum freshness still applies to every unit.
+/// Restoring an unchanged public metadata generation can preserve the mtime of a
+/// rewritten file. Units that reuse compilation or codegen must check the contents
+/// of direct inputs, including when the dependency was built by a previous command.
 fn unit_fingerprint_method(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<FingerprintMethod> {
     if unit_uses_ohm_worktree_seeds(build_runner, unit) {
         Ok(FingerprintMethod::Content)
@@ -277,6 +278,8 @@ fn unit_fingerprint_method(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> C
     } else {
         Ok(FingerprintMethod::Mtime)
     }
+        || fingerprint::unit_can_use_early_cutoff(build_runner, unit)
+        || fingerprint::unit_can_use_relink_only(build_runner, unit)
 }
 
 /// Returns the private namespace whose completed artifacts may seed another worktree.
@@ -1541,7 +1544,7 @@ fn rustc(
         let compiler_inputs_are_fresh = std::cell::LazyCell::new(|| {
             fingerprint
                 .as_ref()
-                .is_some_and(|fp| fp.dep_info_files_are_fresh(&pkg_root, &build_dir, false))
+                .is_some_and(|fp| fp.dep_info_files_are_fresh(&pkg_root, &build_dir))
         });
         if let Some(ref fp) = fingerprint
             && !observes_foreign_span
