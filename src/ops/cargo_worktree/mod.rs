@@ -81,6 +81,17 @@ pub fn worktree_add(gctx: &GlobalContext, opts: &WorktreeOptions) -> CargoResult
     );
 
     let mut git = ProcessBuilder::new("git");
+    // A Git hook can export the calling repository's location and object database.
+    for variable in [
+        "GIT_DIR",
+        "GIT_WORK_TREE",
+        "GIT_COMMON_DIR",
+        "GIT_INDEX_FILE",
+        "GIT_OBJECT_DIRECTORY",
+        "GIT_ALTERNATE_OBJECT_DIRECTORIES",
+    ] {
+        git.env_remove(variable);
+    }
     git.arg("-C").arg(&git_root).args(&["worktree", "add"]);
     if let Some(branch) = &opts.branch {
         git.arg("-b").arg(branch);
