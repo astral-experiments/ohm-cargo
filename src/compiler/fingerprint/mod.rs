@@ -1791,7 +1791,9 @@ impl LocalFingerprint {
             // rustc.
             LocalFingerprint::CheckDepInfo { dep_info, checksum } => {
                 let dep_info = build_root.join(dep_info);
-                let Some(info) = parse_dep_info(pkg_root, build_root, &dep_info)? else {
+                let Some(info) =
+                    dep_info::parse_dep_info_inputs(pkg_root, build_root, &dep_info, false)?
+                else {
                     return Ok(Some(StaleItem::MissingFile { path: dep_info }));
                 };
                 *recheck_dependent_links |= info.recheck_dependent_links;
@@ -1874,7 +1876,12 @@ impl LocalFingerprint {
 
 impl Fingerprint {
     /// Rechecks files rustc read after prerequisites have had a chance to rewrite them.
-    pub(super) fn dep_info_files_are_fresh(&self, pkg_root: &Path, build_root: &Path) -> bool {
+    pub(super) fn dep_info_files_are_fresh(
+        &self,
+        pkg_root: &Path,
+        build_root: &Path,
+        registry_inputs: bool,
+    ) -> bool {
         // Preparation-time caches may still describe the previous contents.
         let mut mtimes = HashMap::default();
         let mut checksums = HashMap::default();
@@ -1892,7 +1899,10 @@ impl Fingerprint {
                 let Ok(Some(info)) = parse_dep_info(pkg_root, build_root, &dep_info) else {
                     return false;
                 };
-                !info.files.is_empty()
+                // Older registry records can contain a generated input while omitting every
+                // file from the package itself. Recompile once before relying on such a record.
+                (!registry_inputs || info.retained_registry_inputs)
+                    && !info.files.is_empty()
                     && find_stale_file(
                         &mut mtimes,
                         &mut checksums,

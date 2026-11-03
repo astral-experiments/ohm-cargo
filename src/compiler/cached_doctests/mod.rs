@@ -160,6 +160,7 @@ pub(super) fn prepare(br: &BuildRunner<'_, '_>, unit: &Unit, force: bool) -> Car
                     &build_root,
                     cmd,
                     local,
+                    false,
                     &env_config,
                     None,
                 )?;

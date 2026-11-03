@@ -1414,6 +1414,8 @@ fn rustc(
     let mut cached_output_options = OutputOptions::for_fresh(build_runner, unit);
     let script_metadatas = build_runner.find_build_script_metadatas(unit);
     let is_local = unit.is_local();
+    let registry_inputs = unit.pkg.package_id().source_id().is_registry()
+        && unit_uses_checksum_freshness(build_runner, unit);
     let worktree_seed_namespace = unit_worktree_seed_namespace(build_runner, unit);
     let artifact = unit.artifact;
     let sbom_files = build_runner.sbom_output_files(unit)?;
@@ -1546,9 +1548,9 @@ fn rustc(
         // An unchanged public API does not cover files read directly by the compiler,
         // e.g. a dependency's metadata consumed by include_bytes! through a symlink.
         let compiler_inputs_are_fresh = std::cell::LazyCell::new(|| {
-            fingerprint
-                .as_ref()
-                .is_some_and(|fp| fp.dep_info_files_are_fresh(&pkg_root, &build_dir))
+            fingerprint.as_ref().is_some_and(|fp| {
+                fp.dep_info_files_are_fresh(&pkg_root, &build_dir, registry_inputs)
+            })
         });
         if let Some(ref fp) = fingerprint
             && !observes_foreign_span
@@ -2132,6 +2134,7 @@ fn rustc(
                 &rustc,
                 // Do not track source files in the fingerprint for registry dependencies.
                 is_local,
+                registry_inputs,
                 &env_config,
                 worktree_seed_namespace.as_deref(),
             )
@@ -2957,6 +2960,7 @@ fn rustdoc(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<W
                 &rustdoc,
                 // Should we track source file for doc gen?
                 is_local,
+                false,
                 &env_config,
                 worktree_seed_namespace.as_deref(),
             )
