@@ -1506,6 +1506,13 @@ fn rustc(
         let observes_foreign_span = fingerprint
             .as_ref()
             .is_some_and(|fp| fp.observes_foreign_span());
+        // An unchanged public API does not cover files read directly by the compiler,
+        // e.g. a dependency's metadata consumed by include_bytes! through a symlink.
+        let compiler_inputs_are_fresh = std::cell::LazyCell::new(|| {
+            fingerprint
+                .as_ref()
+                .is_some_and(|fp| fp.dep_info_files_are_fresh(&pkg_root, &build_dir, false))
+        });
         if let Some(ref fp) = fingerprint
             && !observes_foreign_span
         {
@@ -1523,6 +1530,7 @@ fn rustc(
                 && deferred_dev_names.is_empty()
                 && can_skip_compilation
                 && fingerprint::can_skip_due_to_early_cutoff(fp)
+                && *compiler_inputs_are_fresh
             {
                 let essential_outputs = outputs
                     .iter()
@@ -1593,7 +1601,8 @@ fn rustc(
             && !observes_foreign_span
             && relink_cache
                 .as_ref()
-                .is_some_and(RelinkCachePaths::is_valid);
+                .is_some_and(RelinkCachePaths::is_valid)
+            && *compiler_inputs_are_fresh;
         if can_relink_dependencies {
             tracing::info!(
                 "relink-only: cache validation for {unit_name} took {:?}",

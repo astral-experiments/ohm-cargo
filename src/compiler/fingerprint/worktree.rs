@@ -8,14 +8,13 @@ use std::sync::atomic::Ordering;
 use cargo_util::{ProcessBuilder, paths};
 use filetime::FileTime;
 
-use super::{BuildState, Fingerprint, LocalFingerprint, find_stale_file, parse_dep_info};
+use super::{BuildState, Fingerprint};
 use crate::CargoResult;
 use crate::compiler::{
     BuildOutput, OHM_WORKTREE_SEED_DENY_MARKER, OHM_WORKTREE_SEED_LOCAL_PROC_MACRO_MARKER,
     OHM_WORKTREE_SEED_MARKER,
 };
 use crate::util;
-use crate::util::data_structures::HashMap;
 
 /// A completed script result and its generation, independent of execution freshness.
 pub(crate) const OHM_WORKTREE_SCRIPT_RESULT: &str = ".ohm-worktree-result-v1";
@@ -243,34 +242,5 @@ pub(in crate::compiler) fn can_reuse_after_scripts(
         return false;
     }
 
-    // Never reuse the preparation-time cache: the script may have changed a
-    // generated file or even package source, including backdating its mtime.
-    let mut mtimes = HashMap::default();
-    let mut checksums = HashMap::default();
-    let local = fingerprint.local.lock().unwrap();
-    if local.is_empty() {
-        return false;
-    }
-    local.iter().all(|local| {
-        let LocalFingerprint::CheckDepInfo {
-            dep_info,
-            checksum: true,
-        } = local
-        else {
-            return false;
-        };
-        let dep_info = build_root.join(dep_info);
-        let Ok(Some(info)) = parse_dep_info(pkg_root, build_root, &dep_info) else {
-            return false;
-        };
-        !info.files.is_empty()
-            && find_stale_file(
-                &mut mtimes,
-                &mut checksums,
-                &dep_info,
-                info.files.iter().map(|(path, checksum)| (path, *checksum)),
-                true,
-            )
-            .is_none()
-    })
+    fingerprint.dep_info_files_are_fresh(pkg_root, build_root, true)
 }

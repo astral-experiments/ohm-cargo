@@ -4495,6 +4495,69 @@ fn assert_early_cutoff_checks_dependents_with_build_directory(
 }
 
 #[cargo_test]
+fn early_cutoff_rechecks_included_dependency_metadata() {
+    let wrapper = public_api_hash_wrapper();
+    let old = "pub const VALUE: u8 = 1; fn private() -> u8 { 10 }";
+    let p = project()
+        .file(
+            "Cargo.toml",
+            &format!(
+                "{}\n[dependencies]\ndep = {{ path = 'dep' }}",
+                basic_manifest("app", "0.1.0")
+            ),
+        )
+        .file("src/lib.rs", "pub use dep::VALUE;")
+        .file("dep/Cargo.toml", &basic_manifest("dep", "0.1.0"))
+        .file("dep/src/lib.rs", old)
+        .build();
+    let check = || {
+        let mut cmd = p.cargo("check");
+        cmd.env("RUSTC_WRAPPER", &wrapper)
+            .env("RUSTFLAGS", "-Zpublic-api-hash");
+        cmd
+    };
+    check().run();
+    let rmeta = p
+        .glob("target/debug/deps/libdep-*.rmeta")
+        .next()
+        .unwrap()
+        .unwrap();
+    let previous = fs::read(&rmeta).unwrap();
+    fs::write(p.root().join("src/previous.rmeta"), &previous).unwrap();
+    p.change_file(
+        "src/lib.rs",
+        &format!(
+            r#"
+            pub use dep::VALUE;
+            const PREVIOUS: &[u8] = include_bytes!("previous.rmeta");
+            const CURRENT: &[u8] = include_bytes!({rmeta:?});
+            const _: [(); 1] = [(); {{
+                let mut i = 0;
+                while i < CURRENT.len() && i < PREVIOUS.len() && CURRENT[i] == PREVIOUS[i] {{
+                    i += 1;
+                }}
+                (i == PREVIOUS.len() && i == CURRENT.len()) as usize
+            }}];
+        "#
+        ),
+    );
+    check().run();
+    sleep_ms(1000);
+    p.change_file(
+        "dep/src/lib.rs",
+        "pub const VALUE: u8 = 1; fn private() -> u8 { 20 }",
+    );
+    check()
+        .with_status(101)
+        .with_stderr_contains("error[E0308]: mismatched types")
+        .run();
+    assert_ne!(fs::read(&rmeta).unwrap(), previous);
+    sleep_ms(1000);
+    p.change_file("dep/src/lib.rs", old);
+    check().run();
+}
+
+#[cargo_test]
 fn early_cutoff_skips_check_dependents() {
     assert_early_cutoff_checks_dependents("check", Some("-Zpublic-api-hash"), "dep\n");
 }
