@@ -6003,6 +6003,53 @@ this is intentionally not Rust
 }
 
 #[cargo_test]
+#[cfg(unix)]
+fn cached_doctests_use_rustdoc_with_a_target_runner() {
+    let p = project()
+        .file(
+            "Cargo.toml",
+            "[package]\nname = 'foo'\nversion = '0.0.1'\nedition = '2024'",
+        )
+        .file(
+            "src/lib.rs",
+            r#"
+                /// ```
+                /// if let Ok(pid) = std::env::var("DOCTEST_RUNNER_PID") {
+                ///     assert_eq!(std::process::id().to_string(), pid);
+                /// }
+                /// ```
+                pub fn example() {}
+            "#,
+        )
+        .file(".cargo/config.toml", "")
+        .file(
+            "runner.sh",
+            "test \"$#\" -eq 1 || exit 42\nexport DOCTEST_RUNNER_PID=$$\nexec \"$@\"\n",
+        )
+        .build();
+    let run = || {
+        let mut cmd = p.cargo("test --doc -Zohm-cached-doctests -v -- example");
+        cmd.masquerade_as_nightly_cargo(&["ohm-cached-doctests"])
+            .env("CARGO_UNSTABLE_OHM_DEFAULTS", "false")
+            .env("RUSTC_BOOTSTRAP", "1");
+        cmd
+    };
+    run()
+        .with_stderr_contains("[RUNNING] [..]--output-format=doctest[..]")
+        .run();
+    p.change_file(
+        ".cargo/config.toml",
+        "[target.'cfg(unix)']\nrunner = ['sh', 'runner.sh']\n",
+    );
+    for _ in 0..2 {
+        run()
+            .with_stderr_contains("[RUNNING] [..]--test-runtool[..]")
+            .with_stdout_contains("[..]example (line [..] ... ok")
+            .run();
+    }
+}
+
+#[cargo_test]
 fn cached_doctests_do_not_enable_libtest_in_examples() {
     let p = project()
         .file(

@@ -344,14 +344,7 @@ impl<'gctx> Compilation<'gctx> {
     }
 
     pub fn target_runner(&self, kind: CompileKind) -> Option<&(PathBuf, Vec<String>)> {
-        let target_applies_to_host = self.gctx.target_applies_to_host().unwrap_or(true);
-        let kind = if !target_applies_to_host && kind.is_host() {
-            // Use explicit host target triple when `target-applies-to-host=false`
-            // This ensures `host.runner` won't be accidentally applied to `cargo run` / `cargo test`.
-            explicit_host_kind(&self.host)
-        } else {
-            kind
-        };
+        let kind = runner_config_kind(self.gctx, &self.host, kind);
         self.runners.get(&kind).and_then(|x| x.as_ref())
     }
 
@@ -580,6 +573,21 @@ fn get_sysroot_target_libdir(
             Ok((kind, info.sysroot_target_libdir.clone()))
         })
         .collect()
+}
+
+/// Selects the runner for an executable, independently of the runner for host build tools.
+fn runner_config_kind(gctx: &GlobalContext, host: &str, kind: CompileKind) -> CompileKind {
+    if kind.is_host() && !gctx.target_applies_to_host().unwrap_or(true) {
+        explicit_host_kind(host)
+    } else {
+        kind
+    }
+}
+
+/// Returns whether host tests can run without a configured target runner.
+pub(super) fn host_tests_run_directly(bcx: &BuildContext<'_, '_>) -> bool {
+    let kind = runner_config_kind(bcx.gctx, &bcx.host_triple(), CompileKind::Host);
+    target_runner(bcx, kind).is_ok_and(|runner| runner.is_none())
 }
 
 fn target_runner(

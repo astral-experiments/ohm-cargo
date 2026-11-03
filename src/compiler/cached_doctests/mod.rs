@@ -19,6 +19,7 @@ pub(super) fn enabled(bcx: &BuildContext<'_, '_>, unit: &Unit) -> bool {
         && unit.target.edition() == Edition::Edition2024
         && !unit.target.proc_macro()
         && unit.rustdocflags.is_empty()
+        && super::compilation::host_tests_run_directly(bcx)
 }
 
 /// Encoded dependencies of the crate under rustdoc's cfgs, separate from the
