@@ -7,7 +7,7 @@ use std::sync::Arc;
 
 use cargo_util::{ProcessBuilder, paths};
 
-use super::{BuildContext, BuildRunner, RelinkCachePaths, Unit, Work, fingerprint};
+use super::{BuildContext, BuildRunner, JobState, RelinkCachePaths, Unit, Work, fingerprint};
 use crate::util::{CargoResult, add_path_args, path_args};
 use crate::workspace::{Edition, profiles::PanicStrategy};
 
@@ -24,7 +24,8 @@ pub(super) fn enabled(bcx: &BuildContext<'_, '_>, unit: &Unit) -> bool {
 /// Encoded dependencies of the crate under rustdoc's cfgs, separate from the
 /// dependencies rustc reports for the extracted examples themselves.
 pub(super) fn extraction_dep_info(dir: &Path) -> PathBuf {
-    dir.join("dep-doctest-extraction")
+    // Recheck cached executables whose snippets were compiled with the driver's feature gates.
+    dir.join("dep-doctest-extraction-v2")
 }
 
 /// Prepares both compiler commands with the dependencies of the doctest unit.
@@ -66,12 +67,21 @@ pub(super) fn prepare(br: &BuildRunner<'_, '_>, unit: &Unit, force: bool) -> Car
     let source = dir.join("doctests.rs");
     let compiled_deps = dir.join("doctests.d");
     let extracted_deps = dir.join("extraction.d");
-    rustc.args(&[
-        "--edition=2024",
-        "--crate-name",
-        "rust_out",
-        "-Ccodegen-units=1",
-    ]);
+    let driver_source = dir.join("doctest-driver.rs");
+    let examples_lib = dir.join("lib__ohm_doctest_examples.rlib");
+    rustc.args(&["--edition=2024", "-Ccodegen-units=1"]);
+    let mut examples = rustc.clone();
+    let mut emit = OsString::from("--emit=link,dep-info=");
+    emit.push(&compiled_deps);
+    examples.args(&["--crate-type=rlib", "--crate-name", "rust_out"]);
+    examples.arg(emit).arg(&source).arg("-o").arg(&examples_lib);
+
+    let mut examples_extern = OsString::from("__ohm_doctest_examples=");
+    examples_extern.push(&examples_lib);
+    rustc
+        .arg("--crate-name=__ohm_doctest_driver")
+        .arg("--extern")
+        .arg(examples_extern);
     let unstable = bcx.gctx.cli_unstable();
     let check_links = (unstable.ohm_defaults() || unstable.relink_only())
         && bcx
@@ -79,6 +89,7 @@ pub(super) fn prepare(br: &BuildRunner<'_, '_>, unit: &Unit, force: bool) -> Car
             .supports_relink_input_checks(bcx.gctx, bcx.ws.is_member(&unit.pkg));
     if check_links {
         rustc.arg("-Zohm-check-relink-inputs");
+        examples.arg("-Zohm-check-relink-inputs");
     }
     let linked = dir.join(format!("doctest-link{}", std::env::consts::EXE_SUFFIX));
     let cache = (check_links
@@ -91,10 +102,14 @@ pub(super) fn prepare(br: &BuildRunner<'_, '_>, unit: &Unit, force: bool) -> Car
     if let Some(cache) = &cache {
         cache.preserve_codegen(&mut rustc);
     }
+    let examples_cache = cache
+        .as_ref()
+        .map(|_| RelinkCachePaths::new(examples_lib.clone()));
+    if let Some(cache) = &examples_cache {
+        cache.preserve_codegen(&mut examples);
+    }
     let relinkable = super::relinkable_dependencies(br, unit);
-    let mut emit = OsString::from("--emit=link,dep-info=");
-    emit.push(&compiled_deps);
-    rustc.arg(emit).arg(&source).arg("-o").arg(&linked);
+    rustc.arg(&driver_source).arg("-o").arg(&linked);
 
     let scripts = br.find_build_script_metadatas(unit);
     let build_scripts = br.build_scripts.get(unit).cloned();
@@ -112,7 +127,7 @@ pub(super) fn prepare(br: &BuildRunner<'_, '_>, unit: &Unit, force: bool) -> Car
     Ok(Work::new(move |state| {
         {
             let outputs = outputs.lock().unwrap();
-            for cmd in [&mut rustdoc, &mut rustc] {
+            for cmd in [&mut rustdoc, &mut examples, &mut rustc] {
                 super::add_custom_flags(cmd, &outputs, scripts.clone())?;
                 for meta in scripts.iter().flatten() {
                     if let Some(output) = outputs.get(*meta) {
@@ -162,11 +177,14 @@ pub(super) fn prepare(br: &BuildRunner<'_, '_>, unit: &Unit, force: bool) -> Car
         // graph. Reuse the extraction and object files when Cargo has
         // validated both sets of Rust inputs, but let the linker resolve them.
         let inputs_unchanged = !force
+            && source.is_file()
+            && driver_source.is_file()
+            && examples_lib.is_file()
             && !fingerprint.observes_foreign_span()
             && (fingerprint.can_reuse_doctest_codegen()
                 || (cache.is_some()
                     && fingerprint::can_relink_due_to_early_cutoff(&fingerprint, &relinkable)));
-        if !(inputs_unchanged && source.is_file()) {
+        if !inputs_unchanged {
             let mut extract = rustdoc.clone();
             extract.arg("--output-format=doctest");
             state.running(&extract);
@@ -184,7 +202,9 @@ pub(super) fn prepare(br: &BuildRunner<'_, '_>, unit: &Unit, force: bool) -> Car
             state.running(&rustdoc);
             if rustdoc.exec_with_output().is_ok() {
                 translate(&extracted_deps, &extracted_info, &rustdoc, started)?;
-                paths::write_if_changed(&source, generated.unwrap_or_default())?;
+                let generated = generated.unwrap_or_default();
+                paths::write_if_changed(&driver_source, generated.driver)?;
+                paths::write_if_changed(&source, generated.examples)?;
             } else {
                 // Never admit an executable whose extraction inputs are unknown.
                 if extracted_info.exists() {
@@ -193,38 +213,45 @@ pub(super) fn prepare(br: &BuildRunner<'_, '_>, unit: &Unit, force: bool) -> Car
                 paths::write_if_changed(&source, "")?;
             }
         }
-        if source.metadata()?.len() != 0 {
-            if let Some(cache) = &cache {
-                if inputs_unchanged && cache.is_valid() {
-                    let mut link = rustc.clone();
-                    assert!(link.replace_arg(&source, &cache.rlink));
-                    link.arg("-Zlink-only");
-                    state.running(&link);
-                    // The public executable can still be running in another
-                    // Cargo process. Give the linker a new private inode.
-                    paths::remove_file(&linked)?;
-                    if link.exec_with_output().is_ok() {
-                        publish()?;
-                        cache.refresh_executable()?;
-                        return Ok(());
-                    }
-                }
-                cache.invalidate()?;
-                cache.clear_codegen_temps()?;
-            }
-            if linked.exists() {
-                paths::remove_file(&linked)?;
-            }
+        let mut runnable = source.metadata()?.len() != 0;
+        if runnable {
+            // An inline #[link] can bundle a native archive into the example library.
+            // Reassemble the library before linking the driver so both see current inputs.
             let compile_started = paths::set_invocation_time(&dir)?;
-            state.running(&rustc);
-            if rustc.exec_with_output().is_ok() {
-                translate(&compiled_deps, &compiled_info, &rustc, compile_started)?;
-                publish()?;
-                if let Some(cache) = &cache {
-                    cache.initialize(None)?;
+            match compile(
+                state,
+                &examples,
+                &source,
+                &examples_lib,
+                examples_cache.as_ref(),
+                inputs_unchanged,
+            )? {
+                CompileStatus::Compiled => {
+                    translate(&compiled_deps, &compiled_info, &examples, compile_started)?
                 }
-                return Ok(());
+                CompileStatus::Relinked => {}
+                CompileStatus::Failed => {
+                    // Keep using rustdoc until a change triggers a fresh extraction.
+                    paths::write_if_changed(&source, "")?;
+                    runnable = false;
+                }
             }
+        }
+        if runnable
+            && !matches!(
+                compile(
+                    state,
+                    &rustc,
+                    &driver_source,
+                    &linked,
+                    cache.as_ref(),
+                    inputs_unchanged
+                )?,
+                CompileStatus::Failed
+            )
+        {
+            publish()?;
+            return Ok(());
         }
         // A snippet that cannot be merged may still pass on its own.
         // Let rustdoc diagnose it and retry extraction if the inputs change.
@@ -240,4 +267,48 @@ pub(super) fn prepare(br: &BuildRunner<'_, '_>, unit: &Unit, force: bool) -> Car
         std::fs::rename(staged_binary, binary)?;
         Ok(())
     }))
+}
+
+enum CompileStatus {
+    Compiled,
+    Relinked,
+    Failed,
+}
+
+/// Builds a doctest artifact, reusing validated Rust objects while resolving native inputs afresh.
+fn compile(
+    state: &JobState<'_, '_>,
+    command: &ProcessBuilder,
+    source: &Path,
+    output: &Path,
+    cache: Option<&RelinkCachePaths>,
+    reuse: bool,
+) -> CargoResult<CompileStatus> {
+    if let Some(cache) = cache {
+        if reuse && cache.is_valid() {
+            let mut link = command.clone();
+            assert!(link.replace_arg(source, &cache.rlink));
+            link.arg("-Zlink-only");
+            state.running(&link);
+            // Give the linker a new inode if an earlier doctest is still running.
+            paths::remove_file(output)?;
+            if link.exec_with_output().is_ok() {
+                cache.refresh_executable()?;
+                return Ok(CompileStatus::Relinked);
+            }
+        }
+        cache.invalidate()?;
+        cache.clear_codegen_temps()?;
+    }
+    if output.exists() {
+        paths::remove_file(output)?;
+    }
+    state.running(command);
+    if command.exec_with_output().is_err() {
+        return Ok(CompileStatus::Failed);
+    }
+    if let Some(cache) = cache {
+        cache.initialize(None)?;
+    }
+    Ok(CompileStatus::Compiled)
 }

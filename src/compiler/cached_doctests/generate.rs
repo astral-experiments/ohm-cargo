@@ -52,16 +52,24 @@ struct Wrapper {
     after: String,
 }
 
+/// Sources for the example library and its libtest executable.
+#[derive(Default)]
+pub(super) struct Harness {
+    pub(super) examples: String,
+    pub(super) driver: String,
+}
+
 /// Generates one executable for mergeable examples. Rustdoc owns the crate if
 /// any example requires its standalone compiler or a different language mode.
-pub(super) fn harness(json: &[u8]) -> Option<String> {
+pub(super) fn harness(json: &[u8]) -> Option<Harness> {
     let extraction: Extraction = serde_json::from_slice(json).ok()?;
     if extraction.format_version != 2 {
         return None;
     }
-    let mut source = String::from("#![feature(test)]\nextern crate test;\n");
+    let mut source = String::from("use ::std::process::Termination;\n");
     let mut arms = String::new();
-    let mut cases = String::new();
+    let mut driver = String::from(include_str!("harness.rs"));
+    driver.push_str("\nconst CASES: &[Case] = &[\n");
     for (id, example) in extraction.doctests.into_iter().enumerate() {
         let attrs = example.doctest_attributes;
         let ignore = match attrs.ignore {
@@ -100,13 +108,15 @@ pub(super) fn harness(json: &[u8]) -> Option<String> {
             );
             writeln!(arms, "{id} => example_{id}::run().report(),").unwrap();
         }
-        writeln!(cases, "Case {{ name: {:?}, file: {:?}, line: {}, ignore: {ignore}, no_run: {}, should_panic: {} }},",
+        writeln!(driver, "Case {{ name: {:?}, file: {:?}, line: {}, ignore: {ignore}, no_run: {}, should_panic: {} }},",
             example.name, example.file, example.line, attrs.no_run, attrs.should_panic).unwrap();
     }
-    writeln!(source, "fn run_example(id: usize) -> ::std::process::ExitCode {{ match id {{\n{arms}_ => unreachable!(),\n}} }}").unwrap();
-    writeln!(source, "const CASES: &[Case] = &[\n{cases}];").unwrap();
-    source.push_str(include_str!("harness.rs"));
-    Some(source)
+    writeln!(source, "pub fn run_example(id: usize) -> ::std::process::ExitCode {{ match id {{\n{arms}_ => unreachable!(),\n}} }}").unwrap();
+    driver.push_str("];\n");
+    Some(Harness {
+        examples: source,
+        driver,
+    })
 }
 
 /// Location macros and crate-root items can change meaning when moved into a
