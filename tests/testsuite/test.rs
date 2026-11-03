@@ -6003,6 +6003,87 @@ this is intentionally not Rust
 }
 
 #[cargo_test]
+fn cached_doctests_do_not_enable_libtest_in_examples() {
+    let p = project()
+        .file(
+            "Cargo.toml",
+            "[package]\nname = 'foo'\nversion = '0.0.1'\nedition = '2024'",
+        )
+        .file(
+            "src/lib.rs",
+            r#"
+                #[macro_export]
+                macro_rules! bench_hint {
+                    ($value:expr) => {{
+                        extern crate test as benchmark;
+                        benchmark::black_box($value)
+                    }};
+                }
+                #[doc = include_str!("../example.md")]
+                pub fn documented() {}
+            "#,
+        )
+        .file("example.md", "")
+        .build();
+
+    for example in ["#[bench]\nfn candidate() {}", "foo::bench_hint!(3);"] {
+        p.change_file("example.md", &format!("```\n{example}\n```\n"));
+        for _ in 0..2 {
+            p.cargo("test --doc -Zohm-cached-doctests")
+                .masquerade_as_nightly_cargo(&["ohm-cached-doctests"])
+                .env("CARGO_UNSTABLE_OHM_DEFAULTS", "false")
+                .env("RUSTC_BOOTSTRAP", "1")
+                .with_status(101)
+                .with_stdout_contains(
+                    "[..]error[E0658]: use of unstable library feature `test`[..]",
+                )
+                .run();
+        }
+    }
+}
+
+#[cargo_test]
+fn cached_doctests_keep_running_the_original_examples() {
+    let p = project()
+        .file(
+            "Cargo.toml",
+            "[package]\nname = 'foo'\nversion = '0.0.1'\nedition = '2024'",
+        )
+        .file(
+            "src/lib.rs",
+            r#"
+                /// ```
+                /// foo::rebuild();
+                /// ```
+                pub fn alpha() {}
+
+                pub fn rebuild() {
+                    std::fs::write("zulu.md", "```\nassert!(true);\n```\n").unwrap();
+                    let status = std::process::Command::new(std::env::var_os("REBUILD_CARGO").unwrap())
+                        .args(["test", "--doc", "-Zohm-cached-doctests", "--", "--list"])
+                        .status().unwrap();
+                    assert!(status.success());
+                }
+
+                #[doc = include_str!("../zulu.md")]
+                pub fn zulu() {}
+            "#,
+        )
+        .file("zulu.md", "```\npanic!(\"original example\");\n```\n")
+        .build();
+    p.cargo("test --doc -Zohm-cached-doctests -v")
+        .masquerade_as_nightly_cargo(&["ohm-cached-doctests"])
+        .env("CARGO_UNSTABLE_OHM_DEFAULTS", "false")
+        .env("RUSTC_BOOTSTRAP", "1")
+        .env("RUST_TEST_THREADS", "1")
+        .env("REBUILD_CARGO", cargo_exe())
+        .with_status(101)
+        .with_stdout_contains("original example")
+        .with_stderr_does_not_contain("[RUNNING] [..]--test-run-directory[..]")
+        .run();
+}
+
+#[cargo_test]
 fn cached_doctests_fall_back_when_a_crate_gains_a_compile_fail_example() {
     let wrapper = crate::rustflags::ohm_defaults_wrapper();
     let p = project()
@@ -6051,7 +6132,7 @@ fn cached_doctests_fall_back_when_a_crate_gains_a_compile_fail_example() {
 
 #[cfg(all(target_os = "linux", target_env = "gnu"))]
 #[cargo_test(requires = "cc", requires = "ar")]
-fn cached_doctests_relink_an_unbundled_native_archive() {
+fn cached_doctests_relink_native_archives() {
     let p = project()
         .file(
             "Cargo.toml",
@@ -6095,6 +6176,25 @@ fn cached_doctests_relink_an_unbundled_native_archive() {
     archive();
     run().run();
     p.change_file("native/answer.c", "int answer(void) { return 2; }");
+    archive();
+    run()
+        .with_status(101)
+        .with_stdout_contains("[..] ... FAILED")
+        .run();
+    // The example itself can bundle the same archive into the extracted library.
+    p.change_file(
+        "src/lib.rs",
+        r#"
+            /// ```
+            /// #[link(name = "answer", kind = "static")]
+            /// unsafe extern "C" { fn answer() -> i32; }
+            /// assert_eq!(unsafe { answer() }, 2);
+            /// ```
+            pub fn documented() {}
+        "#,
+    );
+    run().run();
+    p.change_file("native/answer.c", "int answer(void) { return 3; }");
     archive();
     run()
         .with_status(101)
