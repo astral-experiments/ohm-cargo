@@ -224,6 +224,26 @@ fn has_remap_path_prefix(args: &[String]) -> bool {
         .any(|arg| arg == "--remap-path-prefix" || arg.starts_with("--remap-path-prefix="))
 }
 
+/// Checks whether the effective codegen options produce a source-based coverage map.
+fn instruments_coverage<'a>(mut args: impl Iterator<Item = &'a str>) -> bool {
+    let mut coverage = false;
+    while let Some(arg) = args.next() {
+        let option = match arg {
+            "-C" | "--codegen" => args.next(),
+            _ => arg
+                .strip_prefix("-C")
+                .or_else(|| arg.strip_prefix("--codegen=")),
+        };
+        if let Some(option) = option {
+            let (name, value) = option.split_once('=').unwrap_or((option, "yes"));
+            if matches!(name, "instrument-coverage" | "instrument_coverage") {
+                coverage = !matches!(value, "0" | "n" | "no" | "off" | "false");
+            }
+        }
+    }
+    coverage
+}
+
 /// Keeps mutable-package source identities stable when a completed build is
 /// copied into a new worktree. Immutable dependencies retain their existing
 /// compiler flags and shared-cache fingerprints.
@@ -233,16 +253,28 @@ fn unit_uses_ohm_worktree_seeds(build_runner: &BuildRunner<'_, '_>, unit: &Unit)
     } else {
         &unit.rustflags
     };
+    let extra_args = build_runner
+        .bcx
+        .extra_args_for(unit)
+        .map(Vec::as_slice)
+        .unwrap_or_default();
+    let compiler_args = unit
+        .profile
+        .rustflags
+        .iter()
+        .map(|arg| arg.as_str())
+        .chain(extra_args.iter().map(String::as_str))
+        .chain(flags.iter().map(String::as_str));
     build_runner.bcx.gctx.cli_unstable().ohm_worktree_seeds()
         && !unit.is_std
         && unit.pkg.package_id().source_id().is_path()
         // The seed's cwd mapping wins over explicit rules, including rules in response files.
         && unit.profile.trim_paths.as_ref().is_none_or(|trim| trim.is_none())
-        && std::iter::once(flags.as_ref())
-            .chain(build_runner.bcx.extra_args_for(unit).map(Vec::as_slice))
-            .all(|args| {
-            !has_remap_path_prefix(args) && !args.iter().any(|arg| arg.starts_with('@'))
-        })
+        && !has_remap_path_prefix(flags)
+        && !has_remap_path_prefix(extra_args)
+        && !compiler_args.clone().any(|arg| arg.starts_with('@'))
+        // llvm-cov opens the source filenames embedded in instrumented artifacts.
+        && !instruments_coverage(compiler_args)
 }
 
 /// A library can assemble external inputs before any executable is linked.
