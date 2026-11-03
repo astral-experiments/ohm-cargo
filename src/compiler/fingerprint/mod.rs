@@ -3422,7 +3422,10 @@ where
         }
     };
 
-    let skippable_dirs = if let Ok(cargo_home) = home::cargo_home() {
+    // Cargo omits immutable package sources when translating the dep-info. A
+    // recorded checksum can still name a generated file under CARGO_HOME,
+    // including a dependency artifact in a configured build directory.
+    let skippable_dirs = if !use_checksums && let Ok(cargo_home) = home::cargo_home() {
         let skippable_dirs: Vec<_> = ["git", "registry"]
             .into_iter()
             .map(|subfolder| cargo_home.join(subfolder))
@@ -3438,12 +3441,7 @@ where
         && parallelism.is_some_and(|parallelism| parallelism.jobs > 1)
     {
         let paths = paths.collect::<Vec<_>>();
-        let prefetched = prefetch_checksums(
-            &paths,
-            checksum_cache,
-            skippable_dirs.as_deref(),
-            parallelism.unwrap(),
-        );
+        let prefetched = prefetch_checksums(&paths, checksum_cache, parallelism.unwrap());
         (itertools::Either::Left(paths.into_iter()), prefetched)
     } else {
         (itertools::Either::Right(paths), None)
@@ -3613,17 +3611,11 @@ fn prefetch_checksum(
 fn prefetch_checksums<P: AsRef<Path> + Sync>(
     paths: &[(P, Option<(u64, Checksum)>)],
     cache: &mut HashMap<PathBuf, Checksum>,
-    skippable_dirs: Option<&[PathBuf]>,
     parallelism: ChecksumParallelism<'_>,
 ) -> Option<PrefetchedChecksums> {
-    let skipped = |path: &Path| {
-        skippable_dirs.is_some_and(|dirs| dirs.iter().any(|dir| path.starts_with(dir)))
-    };
     let misses = paths
         .iter()
-        .filter(|(path, prior)| {
-            prior.is_some() && !skipped(path.as_ref()) && !cache.contains_key(path.as_ref())
-        })
+        .filter(|(path, prior)| prior.is_some() && !cache.contains_key(path.as_ref()))
         .count();
     if misses < MIN_PARALLEL_CHECKSUM_FILES {
         return None;
@@ -3665,9 +3657,6 @@ fn prefetch_checksums<P: AsRef<Path> + Sync>(
                 break;
             }
             let path = path.as_ref();
-            if skipped(path) {
-                continue;
-            }
             let Some((expected, prior)) = *prior else {
                 first_unconfirmed.fetch_min(index, Ordering::Relaxed);
                 continue;
@@ -3713,7 +3702,6 @@ fn prefetch_checksums<P: AsRef<Path> + Sync>(
 fn prefetch_checksums<P: AsRef<Path> + Sync>(
     _paths: &[(P, Option<(u64, Checksum)>)],
     _cache: &mut HashMap<PathBuf, Checksum>,
-    _skippable_dirs: Option<&[PathBuf]>,
     _parallelism: ChecksumParallelism<'_>,
 ) -> Option<PrefetchedChecksums> {
     None
