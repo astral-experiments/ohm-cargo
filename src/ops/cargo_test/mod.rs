@@ -6,7 +6,7 @@ use crate::util::{CliError, CliResult, GlobalContext, add_path_args};
 use crate::workspace::profiles::PanicStrategy;
 use crate::workspace::{TargetKind, Workspace};
 use anyhow::format_err;
-use cargo_util::{ProcessBuilder, ProcessError};
+use cargo_util::{ProcessBuilder, ProcessError, paths};
 use cargo_util_terminal::{ColorChoice, Verbosity};
 use std::ffi::OsString;
 use std::fmt::Write;
@@ -264,8 +264,15 @@ fn run_doc_tests(
 
         gctx.shell().status("Doc-tests", unit.target.name())?;
         if let Some(executable) = executable {
+            // Each example reopens the harness. A concurrent build can replace the cached path.
+            let run_executable = tempfile::Builder::new()
+                .prefix("doctest-run-")
+                .suffix(std::env::consts::EXE_SUFFIX)
+                .tempfile_in(executable.parent().unwrap())?
+                .into_temp_path();
+            paths::link_or_copy(executable, &run_executable)?;
             let mut cmd = compilation.target_process(
-                executable,
+                &run_executable,
                 unit.kind,
                 &unit.pkg,
                 script_metas.as_ref(),
