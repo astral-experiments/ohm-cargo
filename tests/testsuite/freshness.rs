@@ -2383,6 +2383,7 @@ fn conditional_metadata_pipeline_wrapper() -> PathBuf {
                     });
                     let mut child = Command::new(rustc)
                         .args(arguments)
+                        .env("RUSTC_BOOTSTRAP", "1")
                         .stdout(Stdio::inherit())
                         .stderr(Stdio::piped())
                         .spawn()
