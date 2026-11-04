@@ -3064,3 +3064,27 @@ fn worktree_seeds_respect_explicit_source_remaps() {
         .with_stdout_data(str!["/profile-sources/src/location.rs"])
         .run();
 }
+
+#[cargo_test]
+fn worktree_seeds_keep_suggestions_editable() {
+    let p = project()
+        .file(
+            "src/main.rs",
+            r#"include!(concat!(env!("CARGO_MANIFEST_DIR"), "/included.rs"));"#,
+        )
+        .file(
+            "included.rs",
+            r#"fn main() { let mut path = file!(); print!("{}", path.replace('\\', "/")); }"#,
+        )
+        .build();
+    p.cargo("fix --allow-no-vcs -Zohm-worktree-seeds=yes")
+        .masquerade_as_nightly_cargo(&["ohm-worktree-seeds"])
+        .env("RUSTC_BOOTSTRAP", "1")
+        .run();
+    assert!(!p.read_file("included.rs").contains("let mut"));
+    p.cargo("run -Zohm-worktree-seeds=yes")
+        .masquerade_as_nightly_cargo(&["ohm-worktree-seeds"])
+        .env("RUSTC_BOOTSTRAP", "1")
+        .with_stdout_data(str!["/ohm-workspace/v7/included.rs"])
+        .run();
+}
