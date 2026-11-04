@@ -6003,6 +6003,46 @@ this is intentionally not Rust
 }
 
 #[cargo_test]
+fn cached_doctests_report_child_output_only_on_failure() {
+    let p = project()
+        .file(
+            "Cargo.toml",
+            "[package]\nname = 'foo'\nversion = '1.0.0'\nedition = '2024'",
+        )
+        .file(
+            "src/lib.rs",
+            r#"/// ```
+/// println!("example stdout marker");
+/// eprintln!("example stderr marker");
+/// assert!(std::env::var_os("FAIL_EXAMPLE").is_none());
+/// ```
+pub fn example() {}
+"#,
+        )
+        .build();
+    let run = || {
+        let mut cmd = p.cargo("test --doc -Zohm-cached-doctests -v");
+        cmd.masquerade_as_nightly_cargo(&["ohm-cached-doctests"])
+            .env("CARGO_UNSTABLE_OHM_DEFAULTS", "false")
+            .env("RUSTC_BOOTSTRAP", "1")
+            .env("RUST_TEST_NOCAPTURE", "1");
+        cmd
+    };
+    run()
+        .with_stderr_contains("[..]doctest-run-[..]")
+        .with_stdout_does_not_contain("[..]example stdout marker[..]")
+        .with_stderr_does_not_contain("[..]example stderr marker[..]")
+        .run();
+    run()
+        .env("FAIL_EXAMPLE", "1")
+        .with_status(101)
+        .with_stdout_does_not_contain("[..]example stdout marker[..]")
+        .with_stderr_contains("stdout:\nexample stdout marker")
+        .with_stderr_contains("stderr:\nexample stderr marker[..]")
+        .run();
+}
+
+#[cargo_test]
 fn cached_doctests_inherit_the_crate_name_at_runtime() {
     let p = project()
         .file(

@@ -56,13 +56,22 @@ fn main() -> ExitCode {
                             eprintln!("could not launch doctest: {error}");
                             std::process::exit(1)
                         });
-                    print!("{}", String::from_utf8_lossy(&output.stdout));
-                    eprint!("{}", String::from_utf8_lossy(&output.stderr));
                     if output.status.success() {
-                        Ok(())
-                    } else {
-                        Err(output.status.to_string())
+                        return Ok(());
                     }
+                    match output.status.code() {
+                        Some(code) => eprintln!("Test executable failed (exit status: {code})."),
+                        None => eprintln!("Test executable failed (terminated by signal)."),
+                    }
+                    if !output.stdout.is_empty() || !output.stderr.is_empty() {
+                        eprintln!();
+                    }
+                    for (label, bytes) in [("stdout", output.stdout), ("stderr", output.stderr)] {
+                        if !bytes.is_empty() {
+                            eprintln!("{label}:\n{}", String::from_utf8_lossy(&bytes));
+                        }
+                    }
+                    test::assert_test_result(ExitCode::FAILURE)
                 })),
             }
         })
