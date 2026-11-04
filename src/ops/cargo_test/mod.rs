@@ -275,12 +275,8 @@ fn run_doc_tests(
                 .tempfile_in(executable.parent().unwrap())?
                 .into_temp_path();
             paths::link_or_copy(executable, &run_executable)?;
-            let mut cmd = compilation.target_process(
-                &run_executable,
-                unit.kind,
-                &unit.pkg,
-                script_metas.as_ref(),
-            )?;
+            let mut cmd =
+                compilation.cached_doctest_process(&run_executable, unit, script_metas.as_ref())?;
             cmd.cwd(unit.pkg.root());
             for arg in rustdoc_test_args(test_args) {
                 cmd.arg(arg);
