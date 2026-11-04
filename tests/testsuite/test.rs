@@ -6102,6 +6102,42 @@ exec rustdoc "$@"
 }
 
 #[cargo_test]
+#[cfg(unix)]
+fn cached_doctests_keep_workspace_wrapper_cfgs_out_of_examples() {
+    use std::os::unix::fs::PermissionsExt;
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            "[package]\nname = 'foo'\nversion = '0.0.1'\nedition = '2024'",
+        )
+        .file(
+            "src/lib.rs",
+            r#"
+                /// ```
+                /// assert!(foo::WRAPPED);
+                /// assert!(!cfg!(from_wrapper));
+                /// ```
+                pub const WRAPPED: bool = cfg!(from_wrapper);
+            "#,
+        )
+        .file("wrap-rustc", "#!/bin/sh\nexec \"$@\" --cfg from_wrapper\n")
+        .build();
+    let wrapper = p.root().join("wrap-rustc");
+    fs::set_permissions(&wrapper, fs::Permissions::from_mode(0o755)).unwrap();
+    for _ in 0..2 {
+        p.cargo("test --doc -Zohm-cached-doctests -v")
+            .masquerade_as_nightly_cargo(&["ohm-cached-doctests"])
+            .env("CARGO_UNSTABLE_OHM_DEFAULTS", "false")
+            .env("RUSTC_BOOTSTRAP", "1")
+            .env("RUSTC_WORKSPACE_WRAPPER", &wrapper)
+            .with_stderr_contains("[RUNNING] [..]doctest-run-[..]")
+            .with_stdout_contains("[..]1 passed; 0 failed[..]")
+            .run();
+    }
+}
+
+#[cargo_test]
 fn cached_doctests_do_not_enable_libtest_in_examples() {
     let p = project()
         .file(

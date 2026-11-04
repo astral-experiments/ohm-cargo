@@ -26,8 +26,8 @@ pub(super) fn enabled(bcx: &BuildContext<'_, '_>, unit: &Unit) -> bool {
 /// Encoded dependencies of the crate under rustdoc's cfgs, separate from the
 /// dependencies rustc reports for the extracted examples themselves.
 pub(super) fn extraction_dep_info(dir: &Path) -> PathBuf {
-    // Recheck cached executables whose snippets were compiled with the driver's feature gates.
-    dir.join("dep-doctest-extraction-v2")
+    // Recompile cached snippets that may have inherited flags from Cargo's compiler wrappers.
+    dir.join("dep-doctest-extraction-v3")
 }
 
 /// Prepares both compiler commands with the dependencies of the doctest unit.
@@ -37,11 +37,17 @@ pub(super) fn prepare(br: &BuildRunner<'_, '_>, unit: &Unit, force: bool) -> Car
     let dir = br.files().fingerprint_dir(unit);
     let binary = br.outputs(unit)?[0].path.clone();
     let mut rustdoc = br.compilation.rustdoc_process(unit, None)?;
-    let mut rustc = br.compilation.rustc_process(
-        unit,
-        br.is_primary_package(unit),
-        bcx.ws.is_member(&unit.pkg),
-    )?;
+    // Rustdoc compiles examples with the sysroot compiler, independently of Cargo's wrappers.
+    let compiler = bcx
+        .target_data
+        .info(unit.kind)
+        .sysroot
+        .join("bin")
+        .join("rustc")
+        .with_extension(std::env::consts::EXE_EXTENSION);
+    let mut rustc = br
+        .compilation
+        .configure_rustc_process(unit, ProcessBuilder::new(compiler))?;
     let (_, cwd) = path_args(bcx.ws, unit);
     for cmd in [&mut rustdoc, &mut rustc] {
         cmd.cwd(&cwd).inherit_jobserver(&br.jobserver);
