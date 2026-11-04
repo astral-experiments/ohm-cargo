@@ -3050,4 +3050,17 @@ fn worktree_seeds_respect_explicit_source_remaps() {
         )
         .with_stdout_data(str!["/user-sources/src/location.rs"])
         .run();
+
+    p.change_file(
+        "Cargo.toml",
+        &format!(
+            "cargo-features = ['profile-rustflags']\n{}\n[profile.dev]\nrustflags = ['--remap-path-prefix', '{}=/profile-sources']\n",
+            p.read_file("Cargo.toml"), p.root().display()
+        ),
+    );
+    p.cargo("run -Zohm-worktree-seeds=yes")
+        .masquerade_as_nightly_cargo(&["ohm-worktree-seeds", "profile-rustflags"])
+        .env("RUSTC_BOOTSTRAP", "1")
+        .with_stdout_data(str!["/profile-sources/src/location.rs"])
+        .run();
 }
