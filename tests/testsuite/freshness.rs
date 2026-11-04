@@ -3649,6 +3649,7 @@ fn conditional_metadata_pipeline_wrapper() -> PathBuf {
                     });
                     let mut child = Command::new(rustc)
                         .args(arguments)
+                        .env("RUSTC_BOOTSTRAP", "1")
                         .stdout(Stdio::inherit())
                         .stderr(Stdio::piped())
                         .spawn()
@@ -4314,10 +4315,10 @@ fn early_cutoff_skips_dependent_rebuild() {
         .env("RUSTC_WRAPPER", &wrapper)
         .env("RUSTFLAGS", "-Zpublic-api-hash")
         .with_stderr_data(str![[r#"
-[DIRTY] dep v0.1.0 ([ROOT]/foo/dep): the file `dep/src/lib.rs` has changed ([TIME_DIFF_AFTER_LAST_BUILD])
+[DIRTY] dep v0.1.0 ([ROOT]/foo/dep): file size changed (394 != 389) for `dep/src/lib.rs`
 [COMPILING] dep v0.1.0 ([ROOT]/foo/dep)
 [RUNNING] `[..]/public-api-hash-wrapper[EXE] rustc --crate-name dep [..]`
-[DIRTY] middle v0.1.0 ([ROOT]/foo/middle): the file `middle/src/lib.rs` has changed ([TIME_DIFF_AFTER_LAST_BUILD])
+[DIRTY] middle v0.1.0 ([ROOT]/foo/middle): file size changed (53 != 42) for `middle/src/lib.rs`
 [COMPILING] middle v0.1.0 ([ROOT]/foo/middle)
 [RUNNING] `[..]/public-api-hash-wrapper[EXE] rustc --crate-name middle [..]`
 [DIRTY] app v0.1.0 ([ROOT]/foo): the previous build has no matching fingerprint
@@ -4492,6 +4493,69 @@ fn assert_early_cutoff_checks_dependents_with_build_directory(
             assert_eq!(rebuilt_modified, initial_modified);
         }
     }
+}
+
+#[cargo_test]
+fn early_cutoff_rechecks_included_dependency_metadata() {
+    let wrapper = public_api_hash_wrapper();
+    let old = "#![allow(dead_code)]\npub const VALUE: u8 = 1; fn private() -> u8 { 10 }";
+    let outputs = paths::cargo_home().join("registry/generated-artifacts");
+    let p = project()
+        .file(
+            "Cargo.toml",
+            "[package]\nname = 'app'\nversion = '0.1.0'\nedition = '2024'\n[dependencies]\ndep = { path = 'dep' }",
+        )
+        .file("src/lib.rs", "pub use dep::VALUE;")
+        .file("dep/Cargo.toml", &basic_manifest("dep", "0.1.0"))
+        .file("dep/src/lib.rs", old)
+        .build();
+    let check = || {
+        let mut cmd = p.cargo("check");
+        cmd.env("RUSTC_WRAPPER", &wrapper)
+            .env("RUSTFLAGS", "-Zpublic-api-hash")
+            .env("CARGO_TARGET_DIR", outputs.join("target"))
+            .env("CARGO_BUILD_BUILD_DIR", outputs.join("build"));
+        cmd
+    };
+    let built = check().arg("--message-format=json").run();
+    let dep = std::str::from_utf8(&built.stdout)
+        .unwrap()
+        .lines()
+        .map(|line| serde_json::from_str::<serde_json::Value>(line).unwrap())
+        .find(|msg| msg["reason"] == "compiler-artifact" && msg["target"]["name"] == "dep")
+        .unwrap();
+    let rmeta = PathBuf::from(dep["filenames"][0].as_str().unwrap());
+    assert!(rmeta.starts_with(&outputs) && rmeta.extension().unwrap() == "rmeta");
+    let previous = fs::read(&rmeta).unwrap();
+    fs::write(p.root().join("src/previous.rmeta"), &previous).unwrap();
+    p.change_file(
+        "src/lib.rs",
+        &format!(
+            r#"
+            pub use dep::VALUE;
+            const PREVIOUS: &[u8] = include_bytes!("previous.rmeta");
+            const CURRENT: &[u8] = include_bytes!({rmeta:?});
+            const _: [(); 1] = [(); {{
+                let mut i = 0;
+                while i < CURRENT.len() && i < PREVIOUS.len() && CURRENT[i] == PREVIOUS[i] {{
+                    i += 1;
+                }}
+                (i == PREVIOUS.len() && i == CURRENT.len()) as usize
+            }}];
+        "#
+        ),
+    );
+    check().run();
+    sleep_ms(1000);
+    p.change_file("dep/src/lib.rs", &old.replace("10", "20"));
+    check()
+        .with_status(101)
+        .with_stderr_contains("error[E0308]: mismatched types")
+        .run();
+    assert_ne!(fs::read(&rmeta).unwrap(), previous);
+    sleep_ms(1000);
+    p.change_file("dep/src/lib.rs", old);
+    check().run();
 }
 
 #[cargo_test]

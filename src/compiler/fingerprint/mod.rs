@@ -1873,6 +1873,37 @@ impl LocalFingerprint {
 }
 
 impl Fingerprint {
+    /// Rechecks files rustc read after prerequisites have had a chance to rewrite them.
+    pub(super) fn dep_info_files_are_fresh(&self, pkg_root: &Path, build_root: &Path) -> bool {
+        // Preparation-time caches may still describe the previous contents.
+        let mut mtimes = HashMap::default();
+        let mut checksums = HashMap::default();
+        let local = self.local.lock().unwrap();
+        !local.is_empty()
+            && local.iter().all(|local| {
+                let LocalFingerprint::CheckDepInfo {
+                    dep_info,
+                    checksum: true,
+                } = local
+                else {
+                    return false;
+                };
+                let dep_info = build_root.join(dep_info);
+                let Ok(Some(info)) = parse_dep_info(pkg_root, build_root, &dep_info) else {
+                    return false;
+                };
+                !info.files.is_empty()
+                    && find_stale_file(
+                        &mut mtimes,
+                        &mut checksums,
+                        &dep_info,
+                        info.files.iter().map(|(path, checksum)| (path, *checksum)),
+                        true,
+                    )
+                    .is_none()
+            })
+    }
+
     fn new() -> Fingerprint {
         Fingerprint {
             rustc: 0,
@@ -3391,7 +3422,10 @@ where
         }
     };
 
-    let skippable_dirs = if let Ok(cargo_home) = home::cargo_home() {
+    // Cargo omits immutable package sources when translating the dep-info. A
+    // recorded checksum can still name a generated file under CARGO_HOME,
+    // including a dependency artifact in a configured build directory.
+    let skippable_dirs = if !use_checksums && let Ok(cargo_home) = home::cargo_home() {
         let skippable_dirs: Vec<_> = ["git", "registry"]
             .into_iter()
             .map(|subfolder| cargo_home.join(subfolder))
@@ -3407,12 +3441,7 @@ where
         && parallelism.is_some_and(|parallelism| parallelism.jobs > 1)
     {
         let paths = paths.collect::<Vec<_>>();
-        let prefetched = prefetch_checksums(
-            &paths,
-            checksum_cache,
-            skippable_dirs.as_deref(),
-            parallelism.unwrap(),
-        );
+        let prefetched = prefetch_checksums(&paths, checksum_cache, parallelism.unwrap());
         (itertools::Either::Left(paths.into_iter()), prefetched)
     } else {
         (itertools::Either::Right(paths), None)
@@ -3582,17 +3611,11 @@ fn prefetch_checksum(
 fn prefetch_checksums<P: AsRef<Path> + Sync>(
     paths: &[(P, Option<(u64, Checksum)>)],
     cache: &mut HashMap<PathBuf, Checksum>,
-    skippable_dirs: Option<&[PathBuf]>,
     parallelism: ChecksumParallelism<'_>,
 ) -> Option<PrefetchedChecksums> {
-    let skipped = |path: &Path| {
-        skippable_dirs.is_some_and(|dirs| dirs.iter().any(|dir| path.starts_with(dir)))
-    };
     let misses = paths
         .iter()
-        .filter(|(path, prior)| {
-            prior.is_some() && !skipped(path.as_ref()) && !cache.contains_key(path.as_ref())
-        })
+        .filter(|(path, prior)| prior.is_some() && !cache.contains_key(path.as_ref()))
         .count();
     if misses < MIN_PARALLEL_CHECKSUM_FILES {
         return None;
@@ -3634,9 +3657,6 @@ fn prefetch_checksums<P: AsRef<Path> + Sync>(
                 break;
             }
             let path = path.as_ref();
-            if skipped(path) {
-                continue;
-            }
             let Some((expected, prior)) = *prior else {
                 first_unconfirmed.fetch_min(index, Ordering::Relaxed);
                 continue;
@@ -3682,7 +3702,6 @@ fn prefetch_checksums<P: AsRef<Path> + Sync>(
 fn prefetch_checksums<P: AsRef<Path> + Sync>(
     _paths: &[(P, Option<(u64, Checksum)>)],
     _cache: &mut HashMap<PathBuf, Checksum>,
-    _skippable_dirs: Option<&[PathBuf]>,
     _parallelism: ChecksumParallelism<'_>,
 ) -> Option<PrefetchedChecksums> {
     None
@@ -3802,7 +3821,6 @@ mod parallel_checksum_tests {
             let results: Vec<_> = prefetch_checksums(
                 &paths,
                 &mut HashMap::default(),
-                None,
                 ChecksumParallelism {
                     jobserver: &jobserver,
                     reserved_tokens: &reserved_tokens,
@@ -3853,17 +3871,17 @@ mod parallel_checksum_tests {
 
     #[test]
     fn parallel_checksums_preserve_first_dirty_before_a_fifo() {
-        for failure in ["checksum", "size", "missing_checksum", "metadata"] {
+        for failure in [
+            "checksum",
+            "size",
+            "missing_checksum",
+            "cargo_home_missing_checksum",
+            "metadata",
+        ] {
             let (_directory, reference, mut paths) = fixture();
             let mut cache = HashMap::default();
             cache.insert(paths[0].0.clone(), checksum(b"data"));
             fs::remove_file(&paths[0].0).unwrap();
-            paths[1] = (
-                home::cargo_home()
-                    .unwrap()
-                    .join("registry/__ohm_checksum_test_missing__"),
-                None,
-            );
             match failure {
                 "checksum" => fs::write(&paths[5].0, b"edit").unwrap(),
                 "size" => File::options()
@@ -3873,6 +3891,14 @@ mod parallel_checksum_tests {
                     .set_len(16 * 1024 * 1024)
                     .unwrap(),
                 "missing_checksum" => paths[5].1 = None,
+                "cargo_home_missing_checksum" => {
+                    paths[5] = (
+                        home::cargo_home()
+                            .unwrap()
+                            .join("registry/__ohm_checksum_test_missing__"),
+                        None,
+                    );
+                }
                 "metadata" => fs::remove_file(&paths[5].0).unwrap(),
                 _ => unreachable!(),
             }
@@ -3888,7 +3914,10 @@ mod parallel_checksum_tests {
                 (failure, reason),
                 ("checksum", Some(StaleItem::ChangedChecksum { .. }))
                     | ("size", Some(StaleItem::FileSizeChanged { .. }))
-                    | ("missing_checksum", Some(StaleItem::MissingChecksum { .. }))
+                    | (
+                        "missing_checksum" | "cargo_home_missing_checksum",
+                        Some(StaleItem::MissingChecksum { .. })
+                    )
                     | ("metadata", Some(StaleItem::FailedToReadMetadata { .. }))
             ));
         }

@@ -214,7 +214,7 @@ pub fn output_depinfo(
                     if previous
                         .files
                         .iter()
-                        .map(|(path, _checksum)| path)
+                        .map(|(path, _checksum)| Path::new(path))
                         .eq(deps.iter().map(Path::new))
                     {
                         continue;
