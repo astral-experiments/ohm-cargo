@@ -4,7 +4,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 use crate::prelude::*;
-use cargo_test_support::{Execs, Project, git, paths, str};
+use cargo_test_support::{Execs, Project, git, paths, project, str};
 
 fn seeded_cargo(project: &Project, command: &str) -> Execs {
     // Packaged Ohm exercises bare commands; other test builds opt into its defaults.
@@ -26,6 +26,55 @@ fn seeded_cargo(project: &Project, command: &str) -> Execs {
         .env_remove("CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST")
         .env_remove("CARGO_TARGET_DIR");
     cargo
+}
+
+#[cargo_test]
+fn coverage_uses_source_paths_from_the_checkout() {
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+            cargo-features = ["profile-rustflags"]
+            [package]
+            name = "coverage-paths"
+            version = "0.1.0"
+            edition = "2021"
+            [profile.covered]
+            inherits = "dev"
+            rustflags = ["@coverage.rsp"]
+        "#,
+        )
+        .file("coverage.rsp", "-Cinstrument-coverage\n")
+        .file("src/lib.rs", "pub fn covered() -> u8 { 1 }")
+        .build();
+    for (profile, flags, remapped) in [
+        ("dev", "-Cinstrument-coverage", false),
+        ("dev", "--codegen instrument_coverage=yes", false),
+        (
+            "dev",
+            "-Cinstrument-coverage -C instrument-coverage=no",
+            true,
+        ),
+        ("covered", "", false),
+    ] {
+        let mut check = p.cargo("-Zohm-defaults=no -Zohm-worktree-seeds check -v");
+        check
+            .arg("--profile")
+            .arg(profile)
+            .masquerade_as_nightly_cargo(&[
+                "ohm-defaults",
+                "ohm-worktree-seeds",
+                "profile-rustflags",
+            ])
+            .env("RUSTC_BOOTSTRAP", "1")
+            .env("RUSTFLAGS", flags);
+        if remapped {
+            check.with_stderr_contains("[..]-Zremap-cwd-prefix=[..]");
+        } else {
+            check.with_stderr_does_not_contain("[..]-Zremap-cwd-prefix=[..]");
+        }
+        check.run();
+    }
 }
 
 /// Reuse-specific assertions require a clone-capable test filesystem.
