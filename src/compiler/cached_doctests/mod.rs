@@ -26,8 +26,8 @@ pub(super) fn enabled(bcx: &BuildContext<'_, '_>, unit: &Unit) -> bool {
 /// Encoded dependencies of the crate under rustdoc's cfgs, separate from the
 /// dependencies rustc reports for the extracted examples themselves.
 pub(super) fn extraction_dep_info(dir: &Path) -> PathBuf {
-    // Recompile cached snippets that could resolve an undefined name to the generated dispatcher.
-    dir.join("dep-doctest-extraction-v5")
+    // Refresh cached drivers that forwarded output from successful examples.
+    dir.join("dep-doctest-extraction-v6")
 }
 
 /// Prepares both compiler commands with the dependencies of the doctest unit.
