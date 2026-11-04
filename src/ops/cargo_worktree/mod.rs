@@ -515,8 +515,10 @@ fn relocate_dep_info(path: &Path, old_prefix: &Path, new_prefix: &Path) -> Cargo
     // Rewrite older observer records as incomplete even when no paths need rebasing.
     let mut changed = info.observer.is_some();
     for (kind, path, _) in &mut info.files {
-        if *kind == DepInfoPathType::BuildRootRelative
-            && let Ok(relative) = path.strip_prefix(old_prefix)
+        if matches!(
+            kind,
+            DepInfoPathType::BuildRootRelative | DepInfoPathType::RegistryAbsolute
+        ) && let Ok(relative) = path.strip_prefix(old_prefix)
         {
             *path = new_prefix.join(relative);
             changed = true;
