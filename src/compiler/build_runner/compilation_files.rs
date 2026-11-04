@@ -11,7 +11,7 @@ use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
 use cargo_platform::CfgExpr;
-use cargo_util::paths;
+use cargo_util::{ProcessBuilder, paths};
 use tracing::debug;
 
 use super::{BuildContext, BuildRunner, CompileKind, FileFlavor, Layout};
@@ -2239,6 +2239,36 @@ fn compiler_has_verified_toolchain_identity(
         .is_ok_and(|expected| expected == compiler)
 }
 
+/// A custom rustdoc must receive the ordinary `--test` invocation to apply its own test policy.
+pub(in crate::compiler) fn uses_toolchain_rustdoc(bcx: &BuildContext<'_, '_>) -> bool {
+    let Ok(rustdoc) = bcx.gctx.rustdoc() else {
+        return false;
+    };
+    if cfg!(windows) && !rustdoc.is_absolute() {
+        return false;
+    }
+    let mut command = ProcessBuilder::new(rustdoc);
+    if crate::compiler::apply_env_config(bcx.gctx, &mut command).is_err() {
+        return false;
+    }
+    resolve_effective_executable(rustdoc, command.get_env("PATH").as_deref())
+        .ok()
+        .flatten()
+        .is_some_and(|actual| {
+            same_file::is_same_file(actual, toolchain_rustdoc(bcx)).unwrap_or(false)
+        })
+}
+
+/// Installed rustdoc for the sysroot reported by the host compiler.
+fn toolchain_rustdoc(bcx: &BuildContext<'_, '_>) -> PathBuf {
+    bcx.target_data
+        .info(CompileKind::Host)
+        .sysroot
+        .join("bin")
+        .join("rustdoc")
+        .with_extension(std::env::consts::EXE_EXTENSION)
+}
+
 /// Accepts the selected toolchain's rustdoc, its exact missing path, or an authenticated proxy.
 ///
 /// Build scripts can execute `RUSTDOC` without tracking the wrapper's private inputs.
@@ -2250,14 +2280,7 @@ fn rustdoc_has_verified_toolchain_identity(
     if cfg!(windows) && !rustdoc.is_absolute() {
         return false;
     }
-    let expected = build_runner
-        .bcx
-        .target_data
-        .info(CompileKind::Host)
-        .sysroot
-        .join("bin")
-        .join("rustdoc")
-        .with_extension(std::env::consts::EXE_EXTENSION);
+    let expected = toolchain_rustdoc(build_runner.bcx);
 
     match expected.canonicalize() {
         Ok(expected) => resolve_effective_executable(rustdoc, executable_search_path)
