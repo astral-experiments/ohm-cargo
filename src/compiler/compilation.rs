@@ -311,8 +311,7 @@ impl<'gctx> Compilation<'gctx> {
         if self.gctx.extra_verbose() {
             rustdoc.display_env_vars();
         }
-        let cmd = fill_rustc_tool_env(rustdoc, unit);
-        let mut cmd = self.fill_env(cmd, &unit.pkg, script_metas, unit.kind, ToolKind::Rustdoc)?;
+        let mut cmd = self.configure_rustdoc_env(rustdoc, unit, script_metas)?;
         cmd.retry_with_argfile(true);
         unit.target.edition().cmd_edition_arg(&mut cmd);
 
@@ -321,6 +320,17 @@ impl<'gctx> Compilation<'gctx> {
         }
 
         Ok(cmd)
+    }
+
+    /// Sets the environment inherited by rustdoc and by the examples it launches.
+    fn configure_rustdoc_env(
+        &self,
+        builder: ProcessBuilder,
+        unit: &Unit,
+        script_metas: Option<&Vec<UnitHash>>,
+    ) -> CargoResult<ProcessBuilder> {
+        let cmd = fill_rustc_tool_env(builder, unit);
+        self.fill_env(cmd, &unit.pkg, script_metas, unit.kind, ToolKind::Rustdoc)
     }
 
     /// Returns a [`ProcessBuilder`] appropriate for running a process for the
@@ -403,7 +413,8 @@ impl<'gctx> Compilation<'gctx> {
         } else {
             ProcessBuilder::new(cmd)
         };
-        self.configure_target_process(builder, pkg, script_metas, kind)
+        let builder = self.fill_env(builder, pkg, script_metas, kind, ToolKind::TargetProcess)?;
+        Ok(self.with_jobserver(builder))
     }
 
     /// Sets the same unit-specific environment that examples inherit when rustdoc runs them.
@@ -413,25 +424,17 @@ impl<'gctx> Compilation<'gctx> {
         unit: &Unit,
         script_metas: Option<&Vec<UnitHash>>,
     ) -> CargoResult<ProcessBuilder> {
-        let builder = fill_rustc_tool_env(ProcessBuilder::new(executable), unit);
-        self.configure_target_process(builder, &unit.pkg, script_metas, unit.kind)
+        let builder =
+            self.configure_rustdoc_env(ProcessBuilder::new(executable), unit, script_metas)?;
+        Ok(self.with_jobserver(builder))
     }
 
-    /// Sets the runtime environment and passes the parent jobserver to the target.
-    fn configure_target_process(
-        &self,
-        builder: ProcessBuilder,
-        pkg: &Package,
-        script_metas: Option<&Vec<UnitHash>>,
-        kind: CompileKind,
-    ) -> CargoResult<ProcessBuilder> {
-        let mut builder =
-            self.fill_env(builder, pkg, script_metas, kind, ToolKind::TargetProcess)?;
+    /// Passes the parent jobserver to the child process when one is available.
+    fn with_jobserver(&self, mut builder: ProcessBuilder) -> ProcessBuilder {
         if let Some(client) = self.gctx.jobserver_from_env() {
             builder.inherit_jobserver(client);
         }
-
-        Ok(builder)
+        builder
     }
 
     /// Prepares a new process with an appropriate environment to run against
