@@ -41,6 +41,7 @@ use super::{
 
 mod compilation_files;
 use self::compilation_files::CompilationFiles;
+pub(super) use self::compilation_files::uses_toolchain_rustdoc;
 pub use self::compilation_files::{Metadata, OutputFile, UnitHash};
 
 /// A speculative registry-reuse graph needs an existing or fallback check graph.

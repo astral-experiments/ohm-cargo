@@ -20,6 +20,7 @@ pub(super) fn enabled(bcx: &BuildContext<'_, '_>, unit: &Unit) -> bool {
         && !unit.target.proc_macro()
         && unit.rustdocflags.is_empty()
         && super::compilation::host_tests_run_directly(bcx)
+        && super::build_runner::uses_toolchain_rustdoc(bcx)
 }
 
 /// Encoded dependencies of the crate under rustdoc's cfgs, separate from the

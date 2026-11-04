@@ -6050,6 +6050,58 @@ fn cached_doctests_use_rustdoc_with_a_target_runner() {
 }
 
 #[cargo_test]
+#[cfg(unix)]
+fn cached_doctests_respect_a_configured_rustdoc() {
+    use std::os::unix::fs::PermissionsExt;
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            "[package]\nname = 'foo'\nversion = '0.0.1'\nedition = '2024'",
+        )
+        .file(
+            "src/lib.rs",
+            r#"
+                /// ```
+                /// assert!(std::env::var_os("ALLOW_REMOTE").is_some());
+                /// ```
+                pub fn remote() {}
+            "#,
+        )
+        .file(
+            "policy-rustdoc",
+            r#"#!/bin/sh
+for arg do
+    if [ "$arg" = "--test" ]; then
+        exec rustdoc "$@" --test-args=--skip --test-args=remote
+    fi
+done
+exec rustdoc "$@"
+"#,
+        )
+        .build();
+    let rustdoc = p.root().join("policy-rustdoc");
+    fs::set_permissions(&rustdoc, fs::Permissions::from_mode(0o755)).unwrap();
+    let run = || {
+        let mut cmd = p.cargo("test --doc -Zohm-cached-doctests -v");
+        cmd.masquerade_as_nightly_cargo(&["ohm-cached-doctests"])
+            .env("CARGO_UNSTABLE_OHM_DEFAULTS", "false")
+            .env("RUSTC_BOOTSTRAP", "1");
+        cmd
+    };
+    run()
+        .env("ALLOW_REMOTE", "1")
+        .with_stderr_contains("[RUNNING] [..]--output-format=doctest[..]")
+        .run();
+    for _ in 0..2 {
+        run()
+            .env("RUSTDOC", &rustdoc)
+            .with_stdout_contains("[..]1 filtered out[..]")
+            .run();
+    }
+}
+
+#[cargo_test]
 fn cached_doctests_do_not_enable_libtest_in_examples() {
     let p = project()
         .file(
