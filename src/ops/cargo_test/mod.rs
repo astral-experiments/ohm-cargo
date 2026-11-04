@@ -83,9 +83,8 @@ pub fn run_tests(ws: &Workspace<'_>, options: &TestOptions, test_args: &[&str]) 
             options.compile_opts.build_config.intent,
             crate::compiler::UserIntent::Doctest
         )
-        && test_args
-            .iter()
-            .all(|arg| !arg.starts_with('-') || matches!(*arg, "--exact" | "--list"));
+        && rustdoc_test_args(test_args)
+            .all(|arg| !arg.starts_with('-') || matches!(arg, "--exact" | "--list"));
     let mut compilation = compile_tests(ws, options, ready, cache_doctests)?;
 
     if options.no_run {
@@ -237,6 +236,11 @@ fn record_test_result(
     Ok(())
 }
 
+/// Rustdoc splits each `--test-args` value on whitespace before passing it to libtest.
+fn rustdoc_test_args<'a>(args: &'a [&str]) -> impl Iterator<Item = &'a str> {
+    args.iter().flat_map(|arg| arg.split_whitespace())
+}
+
 /// Runs doc tests.
 ///
 /// Returns a `Vec` of tests that failed when `--no-fail-fast` is used.
@@ -277,7 +281,10 @@ fn run_doc_tests(
                 &unit.pkg,
                 script_metas.as_ref(),
             )?;
-            cmd.cwd(unit.pkg.root()).args(test_args);
+            cmd.cwd(unit.pkg.root());
+            for arg in rustdoc_test_args(test_args) {
+                cmd.arg(arg);
+            }
             cmd.env_remove("RUSTDOC_DOCTEST_RUN_NB_TEST");
             cmd.env_remove("RUSTDOC_DOCTEST_BIN_PATH");
             for (name, value) in env {
