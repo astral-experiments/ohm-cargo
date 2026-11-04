@@ -6003,6 +6003,51 @@ this is intentionally not Rust
 }
 
 #[cargo_test]
+fn cached_doctests_inherit_the_crate_name_at_runtime() {
+    let p = project()
+        .file(
+            "Cargo.toml",
+            "[package]\nname = 'foo'\nversion = '0.0.1'\nedition = '2024'\n[lib]\nname = 'renamed'",
+        )
+        .file(
+            ".cargo/config.toml",
+            "[env]\nCARGO_CRATE_NAME = { value = 'configured', force = true }",
+        )
+        .file(
+            "src/lib.rs",
+            r#"/// ```
+/// assert_eq!(std::env::var("CARGO_CRATE_NAME").unwrap(), env!("CARGO_CRATE_NAME"));
+/// ```
+pub fn example() {}
+"#,
+        )
+        .file(
+            "build.rs",
+            r#"fn main() {
+                println!("cargo::rerun-if-env-changed=BUILD_NAME");
+                if let Ok(name) = std::env::var("BUILD_NAME") {
+                    println!("cargo::rustc-env=CARGO_CRATE_NAME={name}");
+                }
+            }"#,
+        )
+        .build();
+    for build_name in [None, Some("from_script")] {
+        let mut cmd = p.cargo("test --doc -Zohm-cached-doctests -v");
+        cmd.masquerade_as_nightly_cargo(&["ohm-cached-doctests"])
+            .env("CARGO_UNSTABLE_OHM_DEFAULTS", "false")
+            .env("RUSTC_BOOTSTRAP", "1")
+            .env_remove("BUILD_NAME")
+            .env("CARGO_CRATE_NAME", "parent");
+        if let Some(name) = build_name {
+            cmd.env("BUILD_NAME", name);
+        }
+        cmd.with_stdout_contains("[..]1 passed; 0 failed[..]")
+            .with_stderr_does_not_contain("[RUNNING] [..]--test-run-directory[..]")
+            .run();
+    }
+}
+
+#[cargo_test]
 fn cached_doctests_split_test_args_like_rustdoc() {
     let p = project()
         .file(

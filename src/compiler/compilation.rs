@@ -403,9 +403,30 @@ impl<'gctx> Compilation<'gctx> {
         } else {
             ProcessBuilder::new(cmd)
         };
-        let tool_kind = ToolKind::TargetProcess;
-        let mut builder = self.fill_env(builder, pkg, script_metas, kind, tool_kind)?;
+        self.configure_target_process(builder, pkg, script_metas, kind)
+    }
 
+    /// Sets the same unit-specific environment that examples inherit when rustdoc runs them.
+    pub(crate) fn cached_doctest_process(
+        &self,
+        executable: &Path,
+        unit: &Unit,
+        script_metas: Option<&Vec<UnitHash>>,
+    ) -> CargoResult<ProcessBuilder> {
+        let builder = fill_rustc_tool_env(ProcessBuilder::new(executable), unit);
+        self.configure_target_process(builder, &unit.pkg, script_metas, unit.kind)
+    }
+
+    /// Sets the runtime environment and passes the parent jobserver to the target.
+    fn configure_target_process(
+        &self,
+        builder: ProcessBuilder,
+        pkg: &Package,
+        script_metas: Option<&Vec<UnitHash>>,
+        kind: CompileKind,
+    ) -> CargoResult<ProcessBuilder> {
+        let mut builder =
+            self.fill_env(builder, pkg, script_metas, kind, ToolKind::TargetProcess)?;
         if let Some(client) = self.gctx.jobserver_from_env() {
             builder.inherit_jobserver(client);
         }
