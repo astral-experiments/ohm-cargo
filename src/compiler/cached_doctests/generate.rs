@@ -66,7 +66,7 @@ pub(super) fn harness(json: &[u8]) -> Option<Harness> {
     if extraction.format_version != 2 {
         return None;
     }
-    let mut source = String::from("use ::std::process::Termination;\n");
+    let mut source = String::new();
     let mut arms = String::new();
     let mut driver = String::from(include_str!("harness.rs"));
     driver.push_str("\nconst CASES: &[Case] = &[\n");
@@ -97,22 +97,29 @@ pub(super) fn harness(json: &[u8]) -> Option<Harness> {
             {
                 return None;
             }
-            writeln!(source, "mod example_{id} {{\n{}", code.crate_level).unwrap();
+            // Match the module and entry point rustdoc generates for a merged example.
+            writeln!(source, "pub mod __doctest_{id} {{\n{}", code.crate_level).unwrap();
             if let Some(wrapper) = code.wrapper {
                 writeln!(source, "{}{}{}", wrapper.before, code.code, wrapper.after).unwrap();
             } else {
                 writeln!(source, "{}", code.code).unwrap();
             }
-            source.push_str(
-                "pub(super) fn run() -> impl ::std::process::Termination { main() }\n}\n",
-            );
-            writeln!(arms, "{id} => example_{id}::run().report(),").unwrap();
+            source.push_str("pub fn __main_fn() -> impl std::process::Termination { main() }\n}\n");
+            writeln!(
+                arms,
+                "{id} => __ohm_doctest_examples::__doctest_{id}::__main_fn().report(),"
+            )
+            .unwrap();
         }
         writeln!(driver, "Case {{ name: {:?}, file: {:?}, line: {}, ignore: {ignore}, no_run: {}, should_panic: {} }},",
             example.name, example.file, example.line, attrs.no_run, attrs.should_panic).unwrap();
     }
-    writeln!(source, "pub fn run_example(id: usize) -> ::std::process::ExitCode {{ match id {{\n{arms}_ => unreachable!(),\n}} }}").unwrap();
     driver.push_str("];\n");
+    writeln!(
+        driver,
+        "fn run_example(id: usize) -> ExitCode {{ match id {{\n{arms}_ => unreachable!(),\n}} }}"
+    )
+    .unwrap();
     Some(Harness {
         examples: source,
         driver,

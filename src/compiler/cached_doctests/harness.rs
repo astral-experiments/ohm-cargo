@@ -1,7 +1,7 @@
 // The examples are compiled in a separate crate with their own feature gates.
 #![feature(test)]
 extern crate test;
-use std::process::{Command, ExitCode};
+use std::process::{Command, ExitCode, Termination};
 
 struct Case {
     name: &'static str,
@@ -16,7 +16,7 @@ fn main() -> ExitCode {
     let args: Vec<_> = std::env::args().collect();
     const RUN_OPTION: &str = "RUSTDOC_DOCTEST_RUN_NB_TEST";
     if let Ok(id) = std::env::var(RUN_OPTION) {
-        return __ohm_doctest_examples::run_example(id.parse().expect("doctest index"));
+        return run_example(id.parse().expect("doctest index"));
     }
 
     let exe = std::env::current_exe().expect("doctest executable path");
