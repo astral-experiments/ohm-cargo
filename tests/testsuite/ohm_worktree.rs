@@ -299,6 +299,8 @@ fn worktree_uses_manifest_repository_with_foreign_git_environment() {
         git::new_repo("foreign", |p| p.file("src/lib.rs", "pub fn foreign() {}"));
     let destination = paths::root().join("recipient");
     let foreign_git = foreign_repo.path();
+    let quarantine = foreign_git.join("objects/incoming-test");
+    std::fs::create_dir(&quarantine).unwrap();
 
     foreign
         .cargo("-Zohm-defaults worktree add --detach")
@@ -310,7 +312,8 @@ fn worktree_uses_manifest_repository_with_foreign_git_environment() {
         .env("GIT_WORK_TREE", foreign.root())
         .env("GIT_COMMON_DIR", foreign_git)
         .env("GIT_INDEX_FILE", foreign_git.join("index"))
-        .env("GIT_OBJECT_DIRECTORY", foreign_git.join("objects"))
+        .env("GIT_OBJECT_DIRECTORY", &quarantine)
+        .env("GIT_QUARANTINE_PATH", &quarantine)
         .env(
             "GIT_ALTERNATE_OBJECT_DIRECTORIES",
             foreign_git.join("objects"),
@@ -323,6 +326,32 @@ fn worktree_uses_manifest_repository_with_foreign_git_environment() {
         donor_repo.head().unwrap().target()
     );
     assert_eq!(foreign_repo.worktrees().unwrap().len(), 0);
+}
+
+#[cargo_test]
+fn worktree_keeps_the_quarantine_for_a_linked_checkout_of_the_receiver() {
+    let (receiver, repo) = git::new_repo("receiver", |p| p.file("src/lib.rs", ""));
+    let linked = paths::root().join("linked");
+    repo.worktree("linked", &linked, None).unwrap();
+    let objects = repo.path().join("objects");
+    let quarantine = objects.join("incoming-test");
+    std::fs::create_dir(&quarantine).unwrap();
+
+    receiver
+        .cargo("-Zohm-defaults worktree add -b blocked")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .arg("--manifest-path")
+        .arg(linked.join("Cargo.toml"))
+        .arg(paths::root().join("recipient"))
+        .env("GIT_DIR", repo.path())
+        .env("GIT_OBJECT_DIRECTORY", &quarantine)
+        .env("GIT_ALTERNATE_OBJECT_DIRECTORIES", &objects)
+        .env("GIT_QUARANTINE_PATH", &quarantine)
+        .with_status(101)
+        .with_stderr_contains("[..]ref updates forbidden inside quarantine environment[..]")
+        .run();
+
+    assert!(repo.find_reference("refs/heads/blocked").is_err());
 }
 
 #[cargo_test]

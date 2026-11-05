@@ -60,6 +60,12 @@ pub fn worktree_add(gctx: &GlobalContext, opts: &WorktreeOptions) -> CargoResult
     // Drop Git's record terminator, preserving any newline in the directory name.
     let root = output.stdout.strip_suffix(b"\n").unwrap_or(&output.stdout);
     let git_root = cargo_util::paths::bytes2path(root)?.canonicalize()?;
+    // Receive-pack forbids ref updates in the repository that owns its quarantine.
+    if let Some(receiver) = receiving_object_directory(gctx)
+        && repository_object_directory(&git, &git_root).is_some_and(|donor| donor != receiver)
+    {
+        git.env_remove("GIT_QUARANTINE_PATH");
+    }
     let destination = new_storage_path(&opts.path, gctx.cwd())?;
     ensure_absent(&destination, "worktree destination")?;
     ensure!(
@@ -174,6 +180,30 @@ pub fn worktree_add(gctx: &GlobalContext, opts: &WorktreeOptions) -> CargoResult
     }
     gctx.shell().status("Target", target.display())?;
     Ok(())
+}
+
+/// Identifies the receiver only when Git placed its quarantine in that repository's object store.
+fn receiving_object_directory(gctx: &GlobalContext) -> Option<PathBuf> {
+    let cwd = gctx.cwd();
+    let quarantine = cwd
+        .join(gctx.get_env_os("GIT_QUARANTINE_PATH")?)
+        .canonicalize()
+        .ok()?;
+    let objects = repository_object_directory(&ProcessBuilder::new("git"), cwd)?;
+    (quarantine.parent() == Some(objects.as_path())).then_some(objects)
+}
+
+/// Resolves the ordinary object store shared by a repository and its linked worktrees.
+fn repository_object_directory(git: &ProcessBuilder, cwd: &Path) -> Option<PathBuf> {
+    let output = git
+        .clone()
+        .cwd(cwd)
+        .args(&["rev-parse", "--git-common-dir"])
+        .exec_with_output()
+        .ok()?;
+    let path = output.stdout.strip_suffix(b"\n")?;
+    let common_dir = cargo_util::paths::bytes2path(path).ok()?;
+    cwd.join(common_dir).join("objects").canonicalize().ok()
 }
 
 #[derive(Default)]
