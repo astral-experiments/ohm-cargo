@@ -375,13 +375,16 @@ fn compile_ws<'a>(
     result
 }
 
+// A megabyte accommodates thousands of package IDs. Larger selections can use
+// normal graph discovery without reading or writing an unbounded advisory file.
+const MAX_SELECTIVE_CHECK_GRAPH_BYTES: u64 = 1024 * 1024;
+
 /// A hint can exclude promotion candidates. Every included unit still requires its
 /// normal compiler provenance and locked fingerprint checks.
 fn read_selective_check_graph(hint: &Path) -> Option<HashSet<PackageId>> {
-    if !std::fs::symlink_metadata(hint).ok()?.is_file() {
-        return None;
-    }
-    let rejected: HashSet<PackageId> = serde_json::from_slice(&std::fs::read(hint).ok()?).ok()?;
+    let data =
+        cargo_util::paths::read_regular_bounded(hint, MAX_SELECTIVE_CHECK_GRAPH_BYTES).ok()?;
+    let rejected: HashSet<PackageId> = serde_json::from_slice(&data).ok()?;
     (!rejected.is_empty()).then_some(rejected)
 }
 
@@ -391,6 +394,7 @@ fn record_selective_check_graph(hint: &Path, rejected: &HashSet<PackageId>) {
         return;
     }
     if let Ok(data) = serde_json::to_vec(rejected)
+        && data.len() as u64 <= MAX_SELECTIVE_CHECK_GRAPH_BYTES
         && std::fs::create_dir_all(hint.parent().unwrap()).is_ok()
     {
         let _ = cargo_util::paths::write_atomic_no_follow(hint, data);
