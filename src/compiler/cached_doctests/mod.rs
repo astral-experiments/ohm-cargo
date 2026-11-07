@@ -171,6 +171,7 @@ pub(super) fn prepare(br: &BuildRunner<'_, '_>, unit: &Unit, force: bool) -> Car
                     false,
                     &env_config,
                     None,
+                    false,
                 )?;
                 paths::set_file_time_no_err(encoded, timestamp);
                 Ok(())

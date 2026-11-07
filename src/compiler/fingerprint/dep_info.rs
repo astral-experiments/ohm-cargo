@@ -3,7 +3,8 @@
 //!
 //! [the documentation]: crate::compiler::fingerprint#dep-info-files
 
-use crate::util::data_structures::HashMap;
+use crate::util::data_structures::{HashMap, HashSet};
+use std::ffi::OsStr;
 use std::ffi::OsString;
 use std::fmt;
 use std::io;
@@ -30,6 +31,11 @@ const RECHECK_MARKERS: [&str; 2] = [
     "/dev/null/ohm-recheck-dependent-links-v2",
 ];
 
+/// LNK1 could discard a checked archive reached through a mutable symlink.
+/// Rebuild those records once, including after a compiler swap with the same version.
+const RECHECK_PROOF_VERSION: &[u8; 4] = b"LNK2";
+const BUNDLED_ARCHIVE_GUARD: &str = "/dev/null/ohm-checked-bundled-archives-v1";
+
 fn is_recheck_marker(path: &Path) -> bool {
     RECHECK_MARKERS.iter().any(|name| path == Path::new(name))
 }
@@ -54,6 +60,8 @@ pub struct RustcDepInfo<P = PathBuf> {
     /// Rustc proved it could reuse the object code if consumers still check their native links.
     pub(super) recheck_dependent_links: bool,
     raw_checksum_paths: bool,
+    /// Proven raw archive names to reopen even when they currently point into a Git package.
+    bundled_archives: HashSet<OsString>,
     // The writer retained package inputs that old registry records could omit.
     pub(super) retained_registry_inputs: bool,
     /// The list of environment variables we found that the rustc compilation
@@ -219,24 +227,25 @@ impl EncodedDepInfo {
             };
             env.push((key, val));
         }
-        let recheck_dependent_links = if let Some(mut suffix) = bytes.strip_prefix(b"LNK1") {
-            let index = read_usize(&mut suffix)?;
-            let (kind, path, checksum) = files.get(index)?;
-            let body = &record[..record.len() - suffix.len()];
-            let (digest, rest) = suffix.split_first_chunk::<32>()?;
-            if !cfg!(unix)
-                || *kind != DepInfoPathType::BuildRootRelative
-                || !is_recheck_marker(path)
-                || checksum.is_some()
-                || blake3::hash(body).as_bytes() != digest
-            {
-                return None;
-            }
-            *bytes = rest;
-            Some(index)
-        } else {
-            None
-        };
+        let recheck_dependent_links =
+            if let Some(mut suffix) = bytes.strip_prefix(RECHECK_PROOF_VERSION) {
+                let index = read_usize(&mut suffix)?;
+                let (kind, path, checksum) = files.get(index)?;
+                let body = &record[..record.len() - suffix.len()];
+                let (digest, rest) = suffix.split_first_chunk::<32>()?;
+                if !cfg!(unix)
+                    || *kind != DepInfoPathType::BuildRootRelative
+                    || !is_recheck_marker(path)
+                    || checksum.is_some()
+                    || blake3::hash(body).as_bytes() != digest
+                {
+                    return None;
+                }
+                *bytes = rest;
+                Some(index)
+            } else {
+                None
+            };
         let observer = if bytes.is_empty() {
             // Legacy ordinary paths were canonicalized and made relative. Even a name without
             // spaces may have come from a symlink or prefix for which rustc hashed a different file.
@@ -359,7 +368,7 @@ impl EncodedDepInfo {
             }
         }
         if let Some(index) = self.recheck_dependent_links {
-            dst.extend_from_slice(b"LNK1");
+            dst.extend_from_slice(RECHECK_PROOF_VERSION);
             write_usize(dst, index);
             let digest = blake3::hash(dst);
             dst.extend_from_slice(digest.as_bytes());
@@ -441,6 +450,7 @@ pub fn translate_dep_info(
     retain_registry_inputs: bool,
     env_config: &Arc<HashMap<String, OsString>>,
     worktree_seed_namespace: Option<&Path>,
+    checksum_freshness: bool,
 ) -> CargoResult<bool> {
     let mut depinfo = parse_rustc_dep_info(rustc_dep_info)?;
     if !depinfo.raw_checksum_paths {
@@ -530,7 +540,8 @@ pub fn translate_dep_info(
             || key == CARGO_ENV
     });
 
-    let serialize_path = |file: PathBuf, has_checksum: bool| {
+    let mut unverified_link_alias = false;
+    let mut serialize_path = |file: PathBuf, has_checksum: bool| {
         if observer {
             // Reopen the names rustc actually used, including symlinks. A different checkout
             // must capture its own names before it can use this proof.
@@ -556,12 +567,27 @@ pub fn translate_dep_info(
         // If canonicalization fails, just use the abs path. There is currently
         // a bug where --remap-path-prefix is affecting .d files, causing them
         // to point to non-existent paths.
-        let canon_file =
-            crate::util::try_canonicalize(&abs_file).unwrap_or_else(|_| abs_file.clone());
+        let canonical = crate::util::try_canonicalize(&abs_file);
+        let resolved = canonical.is_ok();
+        let canon_file = canonical.unwrap_or_else(|_| abs_file.clone());
 
         let (ty, path) = if let Ok(stripped) = canon_file.strip_prefix(&build_root) {
             (DepInfoPathType::BuildRootRelative, stripped)
         } else if let Ok(stripped) = canon_file.strip_prefix(&pkg_root) {
+            // Git and registry package contents are immutable, but a different lookup
+            // can reach them through a mutable link. Never discard or defer that name.
+            // Preserve unresolved and parent-directory spellings for the same reason.
+            if has_checksum
+                && !allow_package
+                && (!resolved
+                    || abs_file.strip_prefix(original_pkg_root).ok() != Some(stripped)
+                    || stripped
+                        .components()
+                        .any(|p| p == std::path::Component::ParentDir))
+            {
+                unverified_link_alias |= depinfo.recheck_dependent_links && !checksum_freshness;
+                return Some((DepInfoPathType::BuildRootRelative, abs_file));
+            }
             let ty = if allow_package {
                 DepInfoPathType::PackageRootRelative
             } else if retain_registry_inputs {
@@ -611,13 +637,32 @@ pub fn translate_dep_info(
         if observer && file == marker {
             on_disk_info.observer = Some(on_disk_info.files.len());
         }
-        let Some((path_type, path)) = serialize_path(file, checksum_info.is_some()) else {
+        // A generated link can currently resolve into an immutable package, then
+        // be retargeted without modifying any package source file.
+        let preserve_archives = checksum_freshness && !depinfo.bundled_archives.is_empty();
+        if preserve_archives && file.as_os_str() == BUNDLED_ARCHIVE_GUARD {
+            continue;
+        }
+        let classified = if preserve_archives && depinfo.bundled_archives.contains(file.as_os_str())
+        {
+            Some((DepInfoPathType::BuildRootRelative, file))
+        } else {
+            serialize_path(file, checksum_info.is_some())
+        };
+        let Some((path_type, path)) = classified else {
             continue;
         };
         on_disk_info.files.push((
             path_type,
             path,
             checksum_info.map(|(len, checksum)| (len, checksum.to_string())),
+        ));
+    }
+    if unverified_link_alias {
+        on_disk_info.files.push((
+            DepInfoPathType::BuildRootRelative,
+            BUNDLED_ARCHIVE_GUARD.into(),
+            None,
         ));
     }
     paths::write(cargo_dep_info, on_disk_info.serialize()?)?;
@@ -651,22 +696,71 @@ fn ambiguous_legacy_checksum_path(path: &Path) -> bool {
     path.contains([' ', char::REPLACEMENT_CHARACTER])
 }
 
+/// Read the counted prelude before any Make rule or potentially multiline filename.
+/// An empty set indicates a malformed claim whose missing guard must be retained.
+fn take_bundled_archive_claim(contents: &mut &str) -> Option<HashSet<OsString>> {
+    const HEADER: &str = "# ohm-bundled-archives-v1:";
+    const ARCHIVE: &str = "# ohm-bundled-archive-v1:";
+    let is_claim = |s: &str| s.starts_with(HEADER) || s.starts_with(ARCHIVE);
+    if !is_claim(contents) {
+        return None;
+    }
+    let (header, rest) = contents.split_once('\n').unwrap_or((contents, ""));
+    *contents = rest;
+    let count = header
+        .strip_prefix(HEADER)
+        .filter(|s| !s.starts_with('0') && s.bytes().all(|b| b.is_ascii_digit()))
+        .and_then(|s| s.parse::<usize>().ok());
+    let mut paths = HashSet::default();
+    let mut valid = count.is_some();
+    while is_claim(contents) {
+        let (line, rest) = contents.split_once('\n').unwrap_or((contents, ""));
+        *contents = rest;
+        if let Some(path) = line.strip_prefix(ARCHIVE)
+            && Path::new(path).is_absolute()
+            && path
+                .bytes()
+                .all(|b| b.is_ascii_alphanumeric() || b"/._-+ ".contains(&b))
+            && path != BUNDLED_ARCHIVE_GUARD
+            && !is_recheck_marker(Path::new(path))
+        {
+            valid &= paths.insert(OsString::from(path));
+        } else {
+            valid = false;
+        }
+    }
+    if !valid || Some(paths.len()) != count || contents.lines().any(is_claim) {
+        paths.clear();
+    }
+    Some(paths)
+}
+
 /// Parse the `.d` dep-info file generated by rustc.
 pub fn parse_rustc_dep_info(rustc_dep_info: &Path) -> CargoResult<RustcDepInfo<OsString>> {
     let contents = paths::read(rustc_dep_info)?;
     let mut ret = RustcDepInfo::default();
     let raw = contents.strip_prefix("# ohm-raw-checksum-paths-v2\n");
     ret.raw_checksum_paths = raw.is_some();
-    let contents = raw.unwrap_or(&contents);
+    let mut contents = raw.unwrap_or(&contents);
+    let archive_claim = take_bundled_archive_claim(&mut contents);
+    let mut archive_rules = false;
     let rules = rustc_input_rules(contents, rustc_dep_info);
     let has_input_rules = rules.is_some();
     let mut found_deps = has_input_rules;
     let data = if let Some((inputs, targets, annotations)) = rules {
         // Both compiler markers require downstream links to recheck their inputs.
         // Keep the path on disk so older readers rebuild on the missing file.
-        ret.recheck_dependent_links = has_link_only_marker(&inputs, targets, rustc_dep_info);
+        ret.recheck_dependent_links = has_link_only_marker(&inputs, targets, rustc_dep_info, false);
+        if raw.is_some() && archive_claim.as_ref().is_some_and(|p| !p.is_empty()) {
+            archive_rules = has_link_only_marker(&inputs, targets, rustc_dep_info, true);
+        }
         for input in inputs {
             ret.files.insert(input.replace("\\ ", " ").into(), None);
+        }
+        // Check before reading checksum comments: those comments may name files
+        // absent from the actual Make prerequisites.
+        if let Some(paths) = &archive_claim {
+            archive_rules &= paths.iter().all(|path| ret.files.contains_key(path));
         }
         annotations
     } else {
@@ -712,16 +806,27 @@ pub fn parse_rustc_dep_info(rustc_dep_info: &Path) -> CargoResult<RustcDepInfo<O
             }
         } else if let Some(rest) = line.strip_prefix("# checksum:") {
             let mut parts = rest.splitn(3, ' ');
-            let Some(checksum) = parts.next().map(Checksum::from_str).transpose()? else {
-                continue;
+            let token = parts.next().unwrap();
+            let checksum = match Checksum::from_str(token) {
+                Ok(sum) => sum,
+                Err(_) if archive_claim.is_some() => {
+                    archive_rules = false;
+                    continue;
+                }
+                Err(error) => return Err(error.into()),
             };
+            if archive_rules && token.bytes().filter(|b| *b == b'=').count() != 1 {
+                archive_rules = false;
+            }
             let Some(Ok(file_len)) = parts
                 .next()
                 .and_then(|s| s.strip_prefix("file_len:").map(|s| s.parse::<u64>()))
             else {
+                archive_rules = false;
                 continue;
             };
             let Some(path) = parts.next() else {
+                archive_rules = false;
                 continue;
             };
             let mut path = path.replace("\\ ", " ");
@@ -752,6 +857,21 @@ pub fn parse_rustc_dep_info(rustc_dep_info: &Path) -> CargoResult<RustcDepInfo<O
                     row.insert(Some(sum));
                 }
             }
+        }
+    }
+    if let Some(paths) = archive_claim {
+        if archive_rules
+            && ret.conflicting_checksum.is_none()
+            && ret.files.get(OsStr::new(BUNDLED_ARCHIVE_GUARD)) == Some(&None)
+            && paths
+                .iter()
+                .all(|path| ret.files.get(path).is_some_and(Option::is_some))
+        {
+            ret.bundled_archives = paths;
+            ret.recheck_dependent_links = true;
+        } else {
+            // A truncated proof may even have lost the missing prerequisite.
+            ret.files.entry(BUNDLED_ARCHIVE_GUARD.into()).or_default();
         }
     }
     return Ok(ret);
@@ -826,9 +946,28 @@ fn rustc_input_rules<'a>(
 
 /// Rustc omits only its synthetic marker from the depfile's own rule. A path
 /// actually tracked by rustc or a proc macro occurs in both lists.
-fn has_link_only_marker(inputs: &[&str], targets: &str, output: &Path) -> bool {
+fn has_link_only_marker(
+    inputs: &[&str],
+    targets: &str,
+    output: &Path,
+    archive_guard: bool,
+) -> bool {
     let Some((marker, ordinary)) = inputs.split_last() else {
         return false;
+    };
+    let ordinary = if archive_guard {
+        let Some((&BUNDLED_ARCHIVE_GUARD, rest)) = ordinary.split_last() else {
+            return false;
+        };
+        if rest
+            .iter()
+            .any(|s| Path::new(s) == Path::new(BUNDLED_ARCHIVE_GUARD))
+        {
+            return false;
+        }
+        rest
+    } else {
+        ordinary
     };
     if !RECHECK_MARKERS.contains(marker)
         || !cfg!(unix)
@@ -1165,6 +1304,195 @@ mod encoded_dep_info {
     use super::*;
 
     #[cfg(unix)]
+    fn bundled_archive_depfile(raw: &Path, path: &str, sum: &str) -> String {
+        let escaped = path.replace(' ', "\\ ");
+        let target = raw
+            .display()
+            .to_string()
+            .replace(' ', "\\ ")
+            .replace(':', "\\:");
+        format!(
+            "# ohm-raw-checksum-paths-v2\n# ohm-bundled-archives-v1:1\n\
+             # ohm-bundled-archive-v1:{path}\n\
+             result: src.rs {escaped} {BUNDLED_ARCHIVE_GUARD} {RECHECK_DEPENDENT_LINKS}\n\n\
+             {target}: src.rs {escaped}\n\n\
+             src.rs:\n{escaped}:\n{BUNDLED_ARCHIVE_GUARD}:\n{RECHECK_DEPENDENT_LINKS}:\n\
+             # checksum:{sum} file_len:1 {escaped}\n"
+        )
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn bundled_archive_proof_preserves_the_lookup_into_a_git_package() {
+        let tmp = tempfile::tempdir().unwrap();
+        let root = tmp.path().canonicalize().unwrap();
+        let package = root.join("git-sources");
+        let build = root.join("build");
+        std::fs::create_dir(&package).unwrap();
+        std::fs::create_dir(&build).unwrap();
+        std::fs::write(package.join("v7.a"), b"7").unwrap();
+        std::fs::write(package.join("v9.a"), b"9").unwrap();
+        let lookup = build.join("selected archive.a");
+        std::os::unix::fs::symlink(package.join("v7.a"), &lookup).unwrap();
+        let hash = |path: &Path| {
+            Checksum::compute(
+                ChecksumAlgo::Blake3,
+                std::fs::File::open(path).unwrap(),
+                &mut [0; 32],
+            )
+            .unwrap()
+        };
+        let before = hash(&lookup);
+        let raw = build.join("crate.d");
+        let encoded = build.join("dep-info");
+        std::fs::write(
+            &raw,
+            bundled_archive_depfile(&raw, lookup.to_str().unwrap(), &before.to_string()),
+        )
+        .unwrap();
+        for checksums in [false, true] {
+            translate_dep_info(
+                &raw,
+                &encoded,
+                &package,
+                &package,
+                &build,
+                &ProcessBuilder::new("rustc"),
+                false,
+                false,
+                &Arc::default(),
+                None,
+                checksums,
+            )
+            .unwrap();
+            let info = parse_dep_info(&package, &build, &encoded).unwrap().unwrap();
+            assert!(info.recheck_dependent_links);
+            assert_eq!(
+                info.files.contains_key(Path::new(BUNDLED_ARCHIVE_GUARD)),
+                !checksums
+            );
+            if checksums {
+                assert_eq!(info.files.get(&lookup), Some(&Some((1, before))));
+                assert!(!info.files.contains_key(&package.join("v7.a")));
+                std::fs::remove_file(&lookup).unwrap();
+                std::os::unix::fs::symlink(package.join("v9.a"), &lookup).unwrap();
+                assert_ne!(hash(&lookup), before);
+            }
+        }
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn earlier_compiler_keeps_mutable_aliases_out_of_immutable_source_filtering() {
+        let tmp = tempfile::tempdir().unwrap();
+        let root = tmp.path().canonicalize().unwrap();
+        let pkg = root.join("package");
+        let build = root.join("target");
+        std::fs::create_dir_all(pkg.join("subdir")).unwrap();
+        std::fs::create_dir(&build).unwrap();
+        std::fs::write(pkg.join("v7.a"), b"7").unwrap();
+        let alias = build.join("libprobe.a");
+        std::os::unix::fs::symlink(pkg.join("v7.a"), &alias).unwrap();
+        let raw = build.join("crate.d");
+        let encoded = build.join("fingerprint");
+        let sum = format!("sha256={}", "a".repeat(64));
+        for lookup in [alias, pkg.join("subdir/../v7.a")] {
+            // This older compiler emitted only its ordinary native-recheck marker.
+            let data = bundled_archive_depfile(&raw, lookup.to_str().unwrap(), &sum)
+                .lines()
+                .filter(|l| {
+                    !l.starts_with("# ohm-bundled-archive")
+                        && *l != format!("{BUNDLED_ARCHIVE_GUARD}:")
+                })
+                .collect::<Vec<_>>()
+                .join("\n")
+                .replace(&format!("{BUNDLED_ARCHIVE_GUARD} "), "")
+                + "\n";
+            std::fs::write(&raw, data).unwrap();
+            for registry in [false, true] {
+                for checksums in [false, true] {
+                    translate_dep_info(
+                        &raw,
+                        &encoded,
+                        &pkg,
+                        &pkg,
+                        &build,
+                        &ProcessBuilder::new("rustc"),
+                        false,
+                        registry,
+                        &Arc::default(),
+                        None,
+                        checksums,
+                    )
+                    .unwrap();
+                    let info = parse_dep_info_inputs(&pkg, &build, &encoded, false)
+                        .unwrap()
+                        .unwrap();
+                    assert!(info.recheck_dependent_links);
+                    assert!(info.files.get(&lookup).unwrap().is_some());
+                    assert_eq!(
+                        info.files.contains_key(Path::new(BUNDLED_ARCHIVE_GUARD)),
+                        !checksums
+                    );
+                }
+            }
+        }
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn bundled_archive_proof_rejects_incomplete_or_ambiguous_input() {
+        let tmp = tempfile::tempdir().unwrap();
+        let raw = tmp.path().join("crate.d");
+        let path = "/input/lib.a";
+        let sum = format!("sha256={}", "a".repeat(64));
+        let valid = bundled_archive_depfile(&raw, path, &sum);
+        let header = "# ohm-bundled-archives-v1:1\n";
+        let claim = format!("# ohm-bundled-archive-v1:{path}\n");
+        let check = format!("# checksum:{sum} file_len:1 {path}\n");
+        let guards = format!("{BUNDLED_ARCHIVE_GUARD} {RECHECK_DEPENDENT_LINKS}");
+        let own = format!("{}: src.rs {path}", raw.display());
+        let cases = [
+            valid.replacen("# ohm-raw-checksum-paths-v2\n", "", 1),
+            valid.replacen(header, "", 1),
+            valid.replacen(header, "# ohm-bundled-archives-v1:0\n", 1),
+            valid.replacen(header, "# ohm-bundled-archives-v1:2\n", 1),
+            valid.replacen(header, &format!("{header}{header}"), 1),
+            valid.replacen(&claim, "", 1),
+            valid.replacen(&claim, &format!("{claim}{claim}"), 1),
+            valid.replacen(&claim, "# ohm-bundled-archive-v1:lib.a\n", 1),
+            valid.replacen(&claim, "# ohm-bundled-archive-v1:/input/l:b.a\n", 1),
+            valid.replacen(&claim, "# ohm-bundled-archive-v1:/unlisted.a\n", 1)
+                + &format!("# checksum:{sum} file_len:1 /unlisted.a\n"),
+            valid.replacen(&check, "", 1),
+            valid.replacen(
+                &check,
+                &format!("# checksum:invalid file_len:1 {path}\n"),
+                1,
+            ),
+            valid.clone() + &check.replace("file_len:1", "file_len:3"),
+            valid.clone() + &claim,
+            valid.replacen(&guards, RECHECK_DEPENDENT_LINKS, 1),
+            valid.replacen(
+                &guards,
+                &format!("{RECHECK_DEPENDENT_LINKS} {BUNDLED_ARCHIVE_GUARD}"),
+                1,
+            ),
+            valid.replacen(&own, &format!("{own} {BUNDLED_ARCHIVE_GUARD}"), 1),
+            valid.replacen(&format!("{BUNDLED_ARCHIVE_GUARD}:\n"), "", 1),
+        ];
+        for (i, contents) in cases.iter().enumerate() {
+            std::fs::write(&raw, contents).unwrap();
+            let info = parse_rustc_dep_info(&raw).unwrap();
+            assert!(info.bundled_archives.is_empty(), "case {i}");
+            assert!(
+                info.files.contains_key(OsStr::new(BUNDLED_ARCHIVE_GUARD)),
+                "case {i}"
+            );
+        }
+    }
+
+    #[cfg(unix)]
     #[test]
     fn recheck_links_only_for_the_compiler_generated_marker() {
         let temp = tempfile::tempdir().unwrap();
@@ -1231,6 +1559,7 @@ mod encoded_dep_info {
                 false,
                 &Arc::default(),
                 None,
+                false,
             )
             .unwrap();
             let info = parse_dep_info(&root, &root, &record).unwrap().unwrap();
@@ -1245,7 +1574,14 @@ mod encoded_dep_info {
                 let mut bytes = std::fs::read(&record).unwrap();
                 // An older record with no link marker trailer still tracks the missing path.
                 let end = bytes.len() - 40;
-                assert_eq!(&bytes[end..end + 4], b"LNK1");
+                assert_eq!(&bytes[end..end + 4], RECHECK_PROOF_VERSION);
+                // LNK1's authenticated marker came from a translator that could
+                // omit native archive paths. Even an intact old digest must rebuild.
+                let mut legacy = bytes.clone();
+                legacy[end..end + 4].copy_from_slice(b"LNK1");
+                let digest = blake3::hash(&legacy[..end + 8]);
+                legacy[end + 8..].copy_from_slice(digest.as_bytes());
+                assert!(EncodedDepInfo::parse(&legacy).is_none());
                 std::fs::write(&record, &bytes[..end]).unwrap();
                 let old = parse_dep_info(&root, &root, &record).unwrap().unwrap();
                 assert!(!old.recheck_dependent_links);
@@ -1335,6 +1671,7 @@ mod encoded_dep_info {
                 false,
                 &Arc::default(),
                 None,
+                false,
             )
             .unwrap();
             assert_eq!(
@@ -1376,6 +1713,7 @@ mod encoded_dep_info {
                 retain,
                 &Arc::default(),
                 None,
+                false,
             )
             .unwrap();
             let early = parse_dep_info_inputs(&package, &target, &record, false)
@@ -1484,21 +1822,18 @@ mod encoded_dep_info {
                 false,
                 &Arc::new(HashMap::default()),
                 None,
+                false,
             )
             .unwrap();
             let info = EncodedDepInfo::parse(&std::fs::read(&encoded).unwrap()).unwrap();
-            if allow_package {
-                assert_eq!(
-                    info.files,
-                    [(
-                        DepInfoPathType::PackageRootRelative,
-                        "alias space".into(),
-                        Some((2, sum.into()))
-                    )]
-                );
-            } else {
-                assert!(info.files.is_empty());
-            }
+            assert_eq!(
+                info.files,
+                [(
+                    DepInfoPathType::PackageRootRelative,
+                    "alias space".into(),
+                    Some((2, sum.into()))
+                )]
+            );
         }
     }
 
@@ -1540,6 +1875,7 @@ mod encoded_dep_info {
                 false,
                 &env,
                 seeded.then_some(namespace.as_path()),
+                false,
             )
             .unwrap();
             let info = EncodedDepInfo::parse(&std::fs::read(&cargo_dep_info).unwrap()).unwrap();

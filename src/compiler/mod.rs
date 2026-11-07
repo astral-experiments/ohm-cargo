@@ -1444,8 +1444,8 @@ fn rustc(
     let mut cached_output_options = OutputOptions::for_fresh(build_runner, unit);
     let script_metadatas = build_runner.find_build_script_metadatas(unit);
     let is_local = unit.is_local();
-    let registry_inputs = unit.pkg.package_id().source_id().is_registry()
-        && unit_uses_checksum_freshness(build_runner, unit);
+    let checksum_freshness = unit_uses_checksum_freshness(build_runner, unit);
+    let registry_inputs = unit.pkg.package_id().source_id().is_registry() && checksum_freshness;
     let worktree_seed_namespace = unit_worktree_seed_namespace(build_runner, unit);
     let artifact = unit.artifact;
     let sbom_files = build_runner.sbom_output_files(unit)?;
@@ -2167,6 +2167,7 @@ fn rustc(
                 registry_inputs,
                 &env_config,
                 worktree_seed_namespace.as_deref(),
+                checksum_freshness,
             )
             .with_context(|| {
                 internal(format!(
@@ -2993,6 +2994,7 @@ fn rustdoc(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<W
                 false,
                 &env_config,
                 worktree_seed_namespace.as_deref(),
+                false,
             )
             .with_context(|| {
                 internal(format_args!(
