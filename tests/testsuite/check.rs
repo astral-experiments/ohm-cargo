@@ -942,15 +942,20 @@ fn ohm_skips_cold_ordinary_check_graphs_after_test_builds() {
         .next()
         .unwrap()
         .unwrap();
-    std::fs::write(&hint, b"[truncated").unwrap();
+    // Trailing JSON whitespace keeps the oversized selection otherwise valid.
+    let mut oversized = std::fs::read(&hint).unwrap();
+    oversized.resize(1024 * 1024 + 1, b' ');
+    for (invocation, invalid) in [(2, b"[truncated".as_slice()), (3, oversized.as_slice())] {
+        std::fs::write(&hint, invalid).unwrap();
+        check()
+            .with_stderr_contains("[FRESH] foo v0.0.1 ([ROOT]/foo)")
+            .run();
+        assert!(graph_count(invocation) > 1);
+    }
     check()
         .with_stderr_contains("[FRESH] foo v0.0.1 ([ROOT]/foo)")
         .run();
-    assert!(graph_count(2) > 1);
-    check()
-        .with_stderr_contains("[FRESH] foo v0.0.1 ([ROOT]/foo)")
-        .run();
-    assert_eq!(graph_count(3), 1);
+    assert_eq!(graph_count(4), 1);
 
     let provenance = project
         .glob("target/**/ohm-message-provenance-lib-stable")
