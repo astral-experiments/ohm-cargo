@@ -24,8 +24,13 @@ pub(super) fn load_pkg_lockfile_with<T>(
 ) -> CargoResult<Option<T>> {
     with_pkg_lockfile(ws, |contents, path| {
         let resolve = (|| -> CargoResult<Resolve> {
-            let lockfile: TomlLockfile = toml::from_str(contents)?;
-            into_resolve(lockfile, contents, ws)
+            #[cfg(feature = "ohm-defaults")]
+            if ws.gctx().cli_unstable().ohm_defaults()
+                && let Some(lockfile) = crate::workspace::parser::fast_toml::lockfile(contents)
+            {
+                return into_resolve(lockfile, contents, ws);
+            }
+            into_resolve(toml::from_str(contents)?, contents, ws)
         })()
         .with_context(|| format!("failed to parse lock file at: {}", path.display()))?;
 

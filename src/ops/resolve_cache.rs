@@ -10,8 +10,6 @@ use crate::resolver::Resolve;
 use crate::util::{CargoResult, ConfigValue, Rustc, StableHasher};
 use crate::workspace::Workspace;
 
-const CACHE_FILE_NAME: &str = ".cargo-resolve-cache-v1";
-
 /// Returns whether an earlier complete workspace resolution has identical inputs.
 pub(super) fn cached_workspace_resolve_is_fresh(
     workspace: &Workspace<'_>,
@@ -19,7 +17,8 @@ pub(super) fn cached_workspace_resolve_is_fresh(
     rustc: &Rustc,
     lockfile_contents: &str,
 ) -> bool {
-    let Ok(cached_fingerprint) = paths::read_regular_bounded(&cache_path(workspace), 64) else {
+    let Ok(cached_fingerprint) = paths::read_regular_bounded(&cache_path(workspace, rustc), 64)
+    else {
         return false;
     };
 
@@ -45,7 +44,7 @@ pub(super) fn mark_workspace_resolve_fresh(
 
         let fingerprint =
             workspace_resolve_fingerprint(workspace, resolve, rustc, lockfile_contents)?;
-        let cache_path = cache_path(workspace);
+        let cache_path = cache_path(workspace, rustc);
         if let Some(parent) = cache_path.parent() {
             paths::create_dir_all_excluded_from_backups_atomic(parent)?;
         }
@@ -56,11 +55,14 @@ pub(super) fn mark_workspace_resolve_fresh(
     Ok(())
 }
 
-fn cache_path(workspace: &Workspace<'_>) -> PathBuf {
-    workspace
-        .target_dir()
-        .as_path_unlocked()
-        .join(CACHE_FILE_NAME)
+fn cache_path(workspace: &Workspace<'_>, rustc: &Rustc) -> PathBuf {
+    // Clippy sets a workspace wrapper. Keep its stamp across ordinary checks and builds.
+    let name = if rustc.workspace_wrapper.is_some() {
+        ".cargo-resolve-cache-wrapped-v1"
+    } else {
+        ".cargo-resolve-cache-v1"
+    };
+    workspace.target_dir().as_path_unlocked().join(name)
 }
 
 fn workspace_resolve_fingerprint(

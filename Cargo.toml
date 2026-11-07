@@ -226,6 +226,7 @@ thiserror.workspace = true
 time.workspace = true
 toml = { workspace = true, features = ["std", "serde", "parse", "display", "preserve_order"] }
 toml_edit.workspace = true
+toml-spanner = { version = "1.0.3", default-features = false, optional = true }
 toml_parser.workspace = true
 toml_writer.workspace = true
 tracing = { workspace = true, features = ["attributes"] }
@@ -297,7 +298,7 @@ doc = false
 
 [features]
 default = ["http-transport-curl"]
-ohm-defaults = ["dep:object"]
+ohm-defaults = ["dep:object", "dep:toml-spanner"]
 vendored-openssl = ["openssl/vendored"]
 vendored-libgit2 = ["libgit2-sys/vendored"]
 # This is primarily used by rust-lang/rust distributing cargo the executable.
