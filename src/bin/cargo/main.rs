@@ -14,6 +14,15 @@ mod commands;
 
 use crate::command_prelude::*;
 
+#[cfg(all(
+    feature = "ohm-defaults",
+    target_os = "linux",
+    target_env = "gnu",
+    target_arch = "x86_64"
+))]
+#[global_allocator]
+static ALLOCATOR: mimalloc::MiMalloc = mimalloc::MiMalloc;
+
 fn main() {
     #[cfg(all(
         feature = "ohm-defaults",
