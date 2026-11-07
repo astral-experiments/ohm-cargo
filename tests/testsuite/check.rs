@@ -871,6 +871,40 @@ fn ohm_preserves_fresh_checks_while_holding_shared_workspace_locks() {
 }
 
 #[cargo_test]
+fn ohm_rebuilds_missing_check_output_without_probing_the_same_graph_twice() {
+    if !ohm_compiler_supports_defaults() {
+        return;
+    }
+
+    let p = project()
+        .file("Cargo.toml", &basic_manifest("foo", "0.0.1"))
+        .file("src/lib.rs", "pub fn value() -> u32 { 1 }")
+        .build();
+    p.cargo("check")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("__CARGO_OHM_DEFAULTS", "yes")
+        .run();
+    let metadata = p.glob("target/**/libfoo-*.rmeta").next().unwrap().unwrap();
+    std::fs::remove_file(&metadata).unwrap();
+
+    let output = p
+        .cargo("check")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("__CARGO_OHM_DEFAULTS", "yes")
+        .env("RUST_FLAGS", "ignored")
+        .with_stderr_contains("[CHECKING] foo v0.0.1 ([ROOT]/foo)")
+        .run();
+    let stderr = String::from_utf8(output.stderr).unwrap();
+    assert!(metadata.is_file());
+    assert_eq!(
+        stderr
+            .matches("ignoring environment variable `RUST_FLAGS`")
+            .count(),
+        1
+    );
+}
+
+#[cargo_test]
 fn ohm_skips_cold_ordinary_check_graphs_after_test_builds() {
     Package::new("stable", "1.0.0")
         .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
