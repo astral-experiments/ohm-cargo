@@ -232,6 +232,38 @@ fn multiple_crate_types_preserve_dep_info_target() {
 }
 
 #[cargo_test]
+fn shared_paths_keep_the_first_spelling_in_each_depfile() {
+    let script = |first, second| {
+        format!(
+            r#"
+        fn main() {{
+            let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).parent().unwrap();
+            println!("cargo:rerun-if-changed={{}}/{first}", root.display());
+            println!("cargo:rerun-if-changed={{}}/{second}", root.display());
+        }}
+    "#
+        )
+    };
+    let p = project()
+        .file("Cargo.toml", "[workspace]\nmembers = ['a', 'b']\n")
+        .file("a/Cargo.toml", &basic_manifest("a", "0.1.0"))
+        .file("a/src/lib.rs", "")
+        .file("a/build.rs", &script("shared/./input", "shared/input"))
+        .file("b/Cargo.toml", &basic_manifest("b", "0.1.0"))
+        .file("b/src/lib.rs", "")
+        .file("b/build.rs", &script("shared/input", "shared/./input"))
+        .file("shared/input", "")
+        .build();
+    p.cargo("build").run();
+    let a = p.read_file("target/debug/liba.d");
+    let b = p.read_file("target/debug/libb.d");
+    assert!(a.contains("shared/./input"));
+    assert!(!a.contains("shared/input"));
+    assert!(b.contains("shared/input"));
+    assert!(!b.contains("shared/./input"));
+}
+
+#[cargo_test]
 fn shared_dependencies_are_refreshed_after_rebuild() {
     let p = project()
         .file("src/lib.rs", "mod first;")
