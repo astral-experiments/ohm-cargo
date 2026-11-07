@@ -45,6 +45,8 @@ use crate::workspace::{
 };
 
 mod embedded;
+#[cfg(feature = "ohm-defaults")]
+pub(crate) mod fast_toml;
 #[cfg(unix)]
 pub(crate) mod registry_cache;
 mod targets;
@@ -223,35 +225,35 @@ fn deserialize_without_document(
     source_id: SourceId,
     gctx: &GlobalContext,
 ) -> Result<manifest::TomlManifest, toml::de::Error> {
-    #[cfg(not(unix))]
+    #[cfg(not(any(unix, feature = "ohm-defaults")))]
     let _ = (source_id, gctx);
-    #[cfg(unix)]
-    let entry = if gctx.cli_unstable().ohm_defaults()
+    #[cfg(any(unix, feature = "ohm-defaults"))]
+    if gctx.cli_unstable().ohm_defaults()
         && matches!(
             source_id.kind(),
             SourceKind::Registry | SourceKind::SparseRegistry
-        ) {
-        registry_cache::Entry::new(gctx, contents)
-    } else {
-        None
-    };
-    #[cfg(unix)]
-    if let Some(manifest) = entry.as_ref().and_then(registry_cache::Entry::read) {
-        return Ok(manifest);
-    }
+        )
+    {
+        #[cfg(unix)]
+        if let Some(entry) = registry_cache::Entry::new(gctx, contents) {
+            if let Some(manifest) = entry.read() {
+                return Ok(manifest);
+            }
+            let document = parse_document(contents)?;
+            let manifest = deserialize_toml(toml::de::Deserializer::from(document.clone()))
+                .map_err(|mut error| {
+                    // Unlike `Deserializer::parse`, `from` does not retain the source.
+                    error.set_input(Some(contents));
+                    error
+                })?;
+            entry.store(document, &manifest._unused_keys);
+            return Ok(manifest);
+        }
 
-    #[cfg(unix)]
-    if let Some(entry) = entry {
-        let document = parse_document(contents)?;
-        let manifest = deserialize_toml(toml::de::Deserializer::from(document.clone())).map_err(
-            |mut error| {
-                // Unlike `Deserializer::parse`, `from` does not retain the source.
-                error.set_input(Some(contents));
-                error
-            },
-        )?;
-        entry.store(document, &manifest._unused_keys);
-        return Ok(manifest);
+        #[cfg(feature = "ohm-defaults")]
+        if let Some(manifest) = fast_toml::manifest(contents) {
+            return Ok(manifest);
+        }
     }
     deserialize_toml(toml::de::Deserializer::parse(contents)?)
 }
