@@ -56,7 +56,7 @@ use crate::context::{GlobalContext, WarningHandling};
 use crate::drop_println;
 use crate::ops;
 use crate::ops::resolve::{SpecsAndResolvedFeatures, WorkspaceResolve};
-use crate::resolver::features::{self, CliFeatures, FeaturesFor};
+use crate::resolver::features::{self, CliFeatures, FeaturesFor, ResolvedFeatures};
 use crate::resolver::{ForceAllTargets, HasDevUnits, Resolve};
 use crate::util::BuildLogger;
 use crate::util::interning::InternedString;
@@ -66,7 +66,7 @@ use crate::util::machine_message::Message as _;
 use crate::util::{CargoResult, StableHasher};
 use crate::workspace::features::{OhmNativeToolTrust, OhmProcMacroTrust};
 use crate::workspace::profiles::{ProfileRoot, Profiles};
-use crate::workspace::{PackageId, PackageSet, SourceId, TargetKind, Workspace};
+use crate::workspace::{PackageId, PackageIdSpec, PackageSet, SourceId, TargetKind, Workspace};
 
 mod compile_filter;
 use cargo_util_terminal::report::{Group, Level, Origin};
@@ -218,13 +218,13 @@ fn compile_ws<'a>(
     // Compile it directly, even if a stale output means it must be rebuilt.
     let ordinary_graph_tried = check_graph_hint.as_ref().is_some_and(|hint| hint.is_file())
         && built_registry_graph_ready(ws);
+    let (resolution, mut resources) = resolve_for_build(ws, options, logger.as_ref())?;
     if ordinary_graph_tried {
         let ordinary_interner = UnitInterner::new();
         let ordinary_bcx = create_bcx_with_registry_reuse(
-            ws,
-            options,
+            &resolution,
+            resources,
             &ordinary_interner,
-            logger.as_ref(),
             false,
             &HashSet::default(),
         )?;
@@ -237,9 +237,16 @@ fn compile_ws<'a>(
         }
         // A stale hint must not repeatedly delay a newly selected native graph.
         let _ = std::fs::remove_file(check_graph_hint.as_ref().unwrap());
+        resources = ordinary_bcx.into();
     }
 
-    let bcx = create_bcx(ws, options, &interner, logger.as_ref())?;
+    let bcx = create_bcx_with_registry_reuse(
+        &resolution,
+        resources,
+        &interner,
+        can_try_registry_reuse(ws, options),
+        &HashSet::default(),
+    )?;
 
     if options.build_config.unit_graph {
         unit_graph::emit_serialized_unit_graph(&bcx.roots, &bcx.unit_graph, ws.gctx())?;
@@ -252,6 +259,9 @@ fn compile_ws<'a>(
     }
 
     let mut ordinary_graph_selected = !build_runner.reuses_registry_builds();
+    // An ordinary graph never retries promotion. Release the resolver's temporary tables
+    // before running its compiler jobs.
+    let retry_resolution = (!ordinary_graph_selected).then_some(resolution);
     let result = match build_runner.compile(exec, !ordinary_graph_tried) {
         Err(error) if error.is::<RegistryReuseNeedsFallback>() => {
             let Some(registry_reuse_fallback) = error.downcast_ref::<RegistryReuseNeedsFallback>()
@@ -260,7 +270,10 @@ fn compile_ws<'a>(
             };
             let rejected_registry_packages = registry_reuse_fallback.packages.clone();
             let ordinary_check_might_exist = registry_reuse_fallback.ordinary_check_might_exist;
-            drop(bcx);
+            let resolution = retry_resolution
+                .as_ref()
+                .expect("a speculative registry graph");
+            let mut resources: BuildResources<'_> = bcx.into();
 
             if ordinary_check_might_exist && !ordinary_graph_tried {
                 // A previous ordinary check may already have built the exact graph
@@ -270,10 +283,9 @@ fn compile_ws<'a>(
                 // is still up to date or only existing workspace sources changed.
                 let ordinary_interner = UnitInterner::new();
                 let ordinary_bcx = create_bcx_with_registry_reuse(
-                    ws,
-                    options,
+                    resolution,
+                    resources,
                     &ordinary_interner,
-                    logger.as_ref(),
                     false,
                     &HashSet::default(),
                 )?;
@@ -286,14 +298,14 @@ fn compile_ws<'a>(
                     record_check_graph_hint(check_graph_hint.as_deref());
                     return Ok(compilation);
                 }
+                resources = ordinary_bcx.into();
             }
 
             let fallback_interner = UnitInterner::new();
             let fallback_bcx = create_bcx_with_registry_reuse(
-                ws,
-                options,
+                resolution,
+                resources,
                 &fallback_interner,
-                logger.as_ref(),
                 true,
                 &rejected_registry_packages,
             )?;
@@ -305,13 +317,12 @@ fn compile_ws<'a>(
                     // Artifact races or a newly exposed incompatible closure
                     // must never turn a check into an ordinary codegen build.
                     // Preserve the original fail-closed full fallback.
-                    drop(fallback_bcx);
+                    let resources = fallback_bcx.into();
                     let final_interner = UnitInterner::new();
                     let final_bcx = create_bcx_with_registry_reuse(
-                        ws,
-                        options,
+                        resolution,
+                        resources,
                         &final_interner,
-                        logger.as_ref(),
                         false,
                         &HashSet::default(),
                     )?;
@@ -428,20 +439,21 @@ pub fn create_bcx<'a, 'gctx>(
     interner: &'a UnitInterner,
     logger: Option<&'a BuildLogger>,
 ) -> CargoResult<BuildContext<'a, 'gctx>> {
-    let unstable = ws.gctx().cli_unstable();
-    let reuse_built_registry_dependencies =
-        !matches!(options.build_config.intent, UserIntent::Check { .. })
-            || !unstable.ohm_reuse_built_deps()
-            || built_registry_graph_ready(ws);
-
+    let (resolution, resources) = resolve_for_build(ws, options, logger)?;
     create_bcx_with_registry_reuse(
-        ws,
-        options,
+        &resolution,
+        resources,
         interner,
-        logger,
-        reuse_built_registry_dependencies,
+        can_try_registry_reuse(ws, options),
         &HashSet::default(),
     )
+}
+
+fn can_try_registry_reuse(ws: &Workspace<'_>, options: &CompileOptions) -> bool {
+    let unstable = ws.gctx().cli_unstable();
+    !matches!(options.build_config.intent, UserIntent::Check { .. })
+        || !unstable.ohm_reuse_built_deps()
+        || built_registry_graph_ready(ws)
 }
 
 fn built_registry_graph_ready(ws: &Workspace<'_>) -> bool {
@@ -459,27 +471,46 @@ fn built_registry_graph_ready(ws: &Workspace<'_>) -> bool {
                 .is_file())
 }
 
-/// Explicitly control speculative registry reuse so a failed preflight can
-/// rebuild the dependency graph for an ordinary, unmodified check.
-fn create_bcx_with_registry_reuse<'a, 'gctx>(
+/// Package versions and features are independent of which registry units can use build artifacts.
+struct BuildResolution<'a, 'gctx> {
     ws: &'a Workspace<'gctx>,
     options: &'a CompileOptions,
-    interner: &'a UnitInterner,
     logger: Option<&'a BuildLogger>,
-    reuse_built_registry_dependencies: bool,
-    rejected_built_registry_packages: &HashSet<PackageId>,
-) -> CargoResult<BuildContext<'a, 'gctx>> {
+    specs: Vec<PackageIdSpec>,
+    has_dev_units: HasDevUnits,
+    workspace_resolve: Option<Resolve>,
+    resolve: Resolve,
+    specs_and_features: Vec<SpecsAndResolvedFeatures>,
+    std_resolve_features: Option<(Resolve, ResolvedFeatures)>,
+}
+
+/// The selected graph owns these resources while its fingerprints are checked.
+struct BuildResources<'gctx> {
+    packages: PackageSet<'gctx>,
+    target_data: RustcTargetData<'gctx>,
+}
+
+impl<'gctx> From<BuildContext<'_, 'gctx>> for BuildResources<'gctx> {
+    fn from(context: BuildContext<'_, 'gctx>) -> Self {
+        Self {
+            packages: context.packages,
+            target_data: context.target_data,
+        }
+    }
+}
+
+fn resolve_for_build<'a, 'gctx>(
+    ws: &'a Workspace<'gctx>,
+    options: &'a CompileOptions,
+    logger: Option<&'a BuildLogger>,
+) -> CargoResult<(BuildResolution<'a, 'gctx>, BuildResources<'gctx>)> {
     let CompileOptions {
-        ref build_config,
-        ref spec,
-        ref cli_features,
-        ref filter,
-        ref target_rustdoc_args,
-        ref target_rustc_args,
-        ref target_rustc_crate_types,
-        rustdoc_document_private_items,
-        honor_rust_version,
-    } = *options;
+        build_config,
+        spec,
+        cli_features,
+        filter,
+        ..
+    } = options;
     let gctx = ws.gctx();
 
     // Perform some pre-flight validation.
@@ -576,10 +607,66 @@ fn create_bcx_with_registry_reuse<'a, 'gctx>(
         None
     };
 
+    Ok((
+        BuildResolution {
+            ws,
+            options,
+            logger,
+            specs,
+            has_dev_units,
+            workspace_resolve,
+            resolve,
+            specs_and_features,
+            std_resolve_features,
+        },
+        BuildResources {
+            packages: pkg_set,
+            target_data,
+        },
+    ))
+}
+
+/// Constructs a unit graph with the requested registry promotion policy using the same
+/// package resolution as any preceding attempt in this compile.
+fn create_bcx_with_registry_reuse<'a, 'gctx>(
+    resolution: &BuildResolution<'a, 'gctx>,
+    resources: BuildResources<'gctx>,
+    interner: &UnitInterner,
+    reuse_built_registry_dependencies: bool,
+    rejected_built_registry_packages: &HashSet<PackageId>,
+) -> CargoResult<BuildContext<'a, 'gctx>> {
+    let &BuildResolution {
+        ws,
+        options,
+        logger,
+        ref specs,
+        has_dev_units,
+        ref workspace_resolve,
+        ref resolve,
+        ref specs_and_features,
+        ref std_resolve_features,
+    } = resolution;
+    let CompileOptions {
+        ref build_config,
+        ref spec,
+        ref filter,
+        ref target_rustdoc_args,
+        ref target_rustc_args,
+        ref target_rustc_crate_types,
+        rustdoc_document_private_items,
+        honor_rust_version,
+        ..
+    } = *options;
+    let gctx = ws.gctx();
+    let BuildResources {
+        packages: pkg_set,
+        target_data,
+    } = resources;
+
     // Find the packages in the resolver that the user wants to build (those
     // passed in with `-p` or the defaults from the workspace), and convert
     // Vec<PackageIdSpec> to a Vec<PackageId>.
-    let to_build_ids = resolve.specs_to_ids(&specs)?;
+    let to_build_ids = resolve.specs_to_ids(specs)?;
     // Now get the `Package` for each `PackageId`. This may trigger a download
     // if the user specified `-p` for a dependency that is not downloaded.
     // Dependencies will be downloaded during build_unit_dependencies.
@@ -622,7 +709,7 @@ fn create_bcx_with_registry_reuse<'a, 'gctx>(
     profiles.validate_packages(
         ws.profiles(),
         &mut gctx.shell(),
-        workspace_resolve.as_ref().unwrap_or(&resolve),
+        workspace_resolve.as_ref().unwrap_or(resolve),
     )?;
 
     // If `--target` has not been specified, then the unit graph is built
@@ -655,7 +742,7 @@ fn create_bcx_with_registry_reuse<'a, 'gctx>(
     for SpecsAndResolvedFeatures {
         specs,
         resolved_features,
-    } in &specs_and_features
+    } in specs_and_features
     {
         // Passing `build_config.requested_kinds` instead of
         // `explicit_host_kinds` here so that `generate_root_units` can do
@@ -677,8 +764,8 @@ fn create_bcx_with_registry_reuse<'a, 'gctx>(
             requested_kinds: &build_config.requested_kinds,
             explicit_host_kind,
             intent: build_config.intent,
-            resolve: &resolve,
-            workspace_resolve: &workspace_resolve,
+            resolve,
+            workspace_resolve,
             resolved_features: &resolved_features,
             package_set: &pkg_set,
             profiles: &profiles,
@@ -721,7 +808,7 @@ fn create_bcx_with_registry_reuse<'a, 'gctx>(
         let (dependencies, test_candidates) = build_unit_dependencies(
             ws,
             &pkg_set,
-            &resolve,
+            resolve,
             &resolved_features,
             std_resolve_features.as_ref(),
             &targeted_root_units,
