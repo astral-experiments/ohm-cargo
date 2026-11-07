@@ -227,7 +227,7 @@ fn deserialize_without_document(
     let entry = if gctx.cli_unstable().ohm_defaults()
         && matches!(
             source_id.kind(),
-            SourceKind::Registry | SourceKind::SparseRegistry
+            SourceKind::Path | SourceKind::Registry | SourceKind::SparseRegistry
         ) {
         registry_cache::Entry::new(gctx, contents)
     } else {
