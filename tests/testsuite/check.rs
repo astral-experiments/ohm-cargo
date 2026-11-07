@@ -872,6 +872,10 @@ fn ohm_preserves_fresh_checks_while_holding_shared_workspace_locks() {
 
 #[cargo_test]
 fn ohm_rebuilds_missing_check_output_without_probing_the_same_graph_twice() {
+    if !ohm_compiler_supports_defaults() {
+        return;
+    }
+
     let p = project()
         .file("Cargo.toml", &basic_manifest("foo", "0.0.1"))
         .file("src/lib.rs", "pub fn value() -> u32 { 1 }")
