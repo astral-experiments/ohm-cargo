@@ -1826,14 +1826,15 @@ mod encoded_dep_info {
             )
             .unwrap();
             let info = EncodedDepInfo::parse(&std::fs::read(&encoded).unwrap()).unwrap();
-            assert_eq!(
-                info.files,
-                [(
+            let (kind, path) = if allow_package {
+                (
                     DepInfoPathType::PackageRootRelative,
-                    "alias space".into(),
-                    Some((2, sum.into()))
-                )]
-            );
+                    PathBuf::from("alias space"),
+                )
+            } else {
+                (DepInfoPathType::BuildRootRelative, root.join("alias space"))
+            };
+            assert_eq!(info.files, [(kind, path, Some((2, sum.into())))]);
         }
     }
 
