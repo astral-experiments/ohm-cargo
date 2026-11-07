@@ -8509,3 +8509,90 @@ fn early_native_integration_tests_warm_evidence_and_fallback() {
         }
     }
 }
+
+#[cfg(all(target_os = "linux", target_env = "gnu", target_arch = "x86_64"))]
+#[cargo_test(requires = "cc", requires = "ar")]
+fn checked_bundled_archive_reopens_the_git_dependency_search_path() {
+    use cargo_test_support::git;
+
+    let rustc = std::env::var_os("RUSTC").unwrap_or_else(|| "rustc".into());
+    if cargo_test_support::process(rustc)
+        .args(&["-Zohm-check-relink-inputs", "--print=sysroot"])
+        .exec_with_output()
+        .is_err()
+    {
+        return;
+    }
+    let dep = project()
+        .at("native-provider")
+        .file("Cargo.toml", &basic_manifest("provider", "0.1.0"))
+        .file(
+            "src/lib.rs",
+            r#"
+            unsafe extern "C" { fn native_value() -> i32; }
+            pub fn value() -> i32 { unsafe { core::arch::asm!("nop"); native_value() } }
+        "#,
+        )
+        .file(
+            "build.rs",
+            r#"
+            use std::{env, os::unix::fs::symlink, path::PathBuf};
+            fn main() {
+                let package = PathBuf::from(env::var_os("CARGO_MANIFEST_DIR").unwrap());
+                let out = PathBuf::from(env::var_os("OUT_DIR").unwrap());
+                let link = out.join("libprobe.a");
+                if !link.exists() { symlink(package.join("v7.a"), link).unwrap(); }
+                println!("cargo:rerun-if-changed=build.rs");
+                println!("cargo:rustc-link-search=native={}", out.display());
+                println!("cargo:rustc-link-lib=static=probe");
+            }
+        "#,
+        )
+        .build();
+    for n in [7, 9] {
+        dep.change_file(
+            "value.c",
+            &format!("int native_value(void) {{ return {n}; }}"),
+        );
+        dep.process("cc")
+            .args(&["-c", "value.c", "-o", "value.o"])
+            .run();
+        dep.process("ar")
+            .args(&["rcs", &format!("v{n}.a"), "value.o"])
+            .run();
+    }
+    let repo = git::init(&dep.root());
+    git::add(&repo);
+    git::commit(&repo);
+    let app = project()
+        .file(
+            "Cargo.toml",
+            &format!(
+                "{}\n[dependencies]\nprovider = {{ git = '{}' }}",
+                basic_manifest("app", "0.1.0"),
+                dep.url()
+            ),
+        )
+        .file(
+            "src/main.rs",
+            "fn main() { println!(\"{}\", provider::value()); }",
+        )
+        .build();
+    let run = || {
+        let mut cmd = app.cargo("-Zohm-defaults run --quiet");
+        cmd.masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("CARGO_TARGET_DIR", app.root().join("target"))
+            .env_remove("CARGO_BUILD_BUILD_DIR");
+        cmd
+    };
+    run().with_stdout_data("7\n").run();
+    let mut archives = app.glob("target/**/out/libprobe.a");
+    let lookup = archives.next().unwrap().unwrap();
+    assert!(archives.next().is_none());
+    // Only the generated symlink changes. Both of its targets remain immutable
+    // files within the very same Git dependency revision.
+    let next = fs::read_link(&lookup).unwrap().with_file_name("v9.a");
+    fs::remove_file(&lookup).unwrap();
+    std::os::unix::fs::symlink(next, lookup).unwrap();
+    run().with_stdout_data("9\n").run();
+}
