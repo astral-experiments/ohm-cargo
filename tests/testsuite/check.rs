@@ -939,26 +939,62 @@ fn ohm_skips_cold_ordinary_check_graphs_after_test_builds() {
 
     project.cargo("test --no-run").run();
 
-    project
-        .cargo("-Zohm-reuse-built-deps -Zbuild-analysis check -v")
-        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps", "build-analysis"])
-        .env("CARGO_BUILD_ANALYSIS_ENABLED", "true")
+    let check = || {
+        let mut check = project.cargo("-Zohm-reuse-built-deps -Zbuild-analysis check -v");
+        check
+            .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps", "build-analysis"])
+            .env("CARGO_BUILD_ANALYSIS_ENABLED", "true");
+        check
+    };
+    let graph_count = |invocation| {
+        let log = std::fs::read_to_string(cargo_test_support::paths::log_file(invocation)).unwrap();
+        let events: Vec<serde_json::Value> = log
+            .lines()
+            .map(|line| serde_json::from_str(line).unwrap())
+            .collect();
+        let count = |reason: &str| {
+            events
+                .iter()
+                .filter(|event| event["reason"] == reason)
+                .count()
+        };
+        assert_eq!(count("resolution-started"), 1, "{log}");
+        count("unit-graph-started")
+    };
+    check()
         .with_stderr_contains("[CHECKING] changing v1.0.0")
         .with_stderr_contains("[CHECKING] foo v0.0.1 ([ROOT]/foo)")
         .run();
-    let log = std::fs::read_to_string(cargo_test_support::paths::log_file(0)).unwrap();
-    let events: Vec<serde_json::Value> = log
-        .lines()
-        .map(|line| serde_json::from_str(line).unwrap())
-        .collect();
-    let count = |reason: &str| {
-        events
-            .iter()
-            .filter(|event| event["reason"] == reason)
-            .count()
-    };
-    assert_eq!(count("resolution-started"), 1, "{log}");
-    assert_eq!(count("unit-graph-started"), 2, "{log}");
+    assert_eq!(graph_count(0), 2);
+    check()
+        .with_stderr_contains("[FRESH] foo v0.0.1 ([ROOT]/foo)")
+        .run();
+    assert_eq!(graph_count(1), 1);
+
+    let hint = project
+        .glob("target/.ohm-check-graphs/*.selective-v1")
+        .next()
+        .unwrap()
+        .unwrap();
+    std::fs::write(&hint, b"[truncated").unwrap();
+    check()
+        .with_stderr_contains("[FRESH] foo v0.0.1 ([ROOT]/foo)")
+        .run();
+    assert!(graph_count(2) > 1);
+    check()
+        .with_stderr_contains("[FRESH] foo v0.0.1 ([ROOT]/foo)")
+        .run();
+    assert_eq!(graph_count(3), 1);
+
+    let provenance = project
+        .glob("target/**/ohm-message-provenance-lib-stable")
+        .next()
+        .unwrap()
+        .unwrap();
+    std::fs::remove_file(provenance).unwrap();
+    check()
+        .with_stderr_contains("[CHECKING] stable v1.0.0")
+        .run();
 }
 
 #[cargo_test]
