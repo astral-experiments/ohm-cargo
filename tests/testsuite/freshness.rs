@@ -8585,7 +8585,7 @@ fn checked_bundled_archive_reopens_the_git_dependency_search_path() {
             .env_remove("CARGO_BUILD_BUILD_DIR");
         cmd
     };
-    run().with_stdout_data(str!["7\n"]).run();
+    run().with_stdout_data("7\n").run();
     let mut archives = app.glob("target/**/out/libprobe.a");
     let lookup = archives.next().unwrap().unwrap();
     assert!(archives.next().is_none());
@@ -8594,5 +8594,5 @@ fn checked_bundled_archive_reopens_the_git_dependency_search_path() {
     let next = fs::read_link(&lookup).unwrap().with_file_name("v9.a");
     fs::remove_file(&lookup).unwrap();
     std::os::unix::fs::symlink(next, lookup).unwrap();
-    run().with_stdout_data(str!["9\n"]).run();
+    run().with_stdout_data("9\n").run();
 }
