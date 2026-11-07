@@ -1,4 +1,4 @@
-//! Read published registry manifests from a compact representation on subsequent runs.
+//! Read manifest source from a content-keyed representation on subsequent runs.
 
 use std::cell::Cell;
 use std::collections::BTreeSet;
@@ -608,6 +608,43 @@ path = "src/lib.rs"
             }
         }
         panic!("bounded fixture search did not find a distinct alternate");
+    }
+
+    #[test]
+    fn cached_member_uses_current_workspace_and_exact_source_spans() {
+        let home = private_home();
+        let root = home.path().join("Cargo.toml");
+        let member_dir = home.path().join("member");
+        fs::create_dir_all(member_dir.join("src")).unwrap();
+        fs::write(member_dir.join("src/lib.rs"), "").unwrap();
+        let member_source = "# π\n[package]\nname = 'member'\nversion.workspace = true\nedition = '2024'\nunknown = true\n";
+        fs::write(member_dir.join("Cargo.toml"), member_source).unwrap();
+        for version in ["1.2.3", "1.2.3", "3.2.1"] {
+            let root_source = format!(
+                "[workspace]\nmembers = ['member']\nresolver = '3'\n[workspace.package]\nversion = '{version}'\n"
+            );
+            fs::write(&root, &root_source).unwrap();
+            let gctx = registry_context(home.path());
+            let workspace = crate::workspace::Workspace::new(&root, &gctx).unwrap();
+            let member = workspace.members().next().unwrap();
+            assert_eq!(member.version().to_string(), version);
+            let cache = gctx.registry_manifest_cache().unwrap();
+            assert!(Entry::at(cache, &root_source).read().is_some());
+            let parsed = Entry::at(cache, member_source).read().unwrap();
+            assert!(parsed._unused_keys.contains("package.unknown"));
+            let span = crate::diagnostics::get_key_value_span(
+                member.manifest().document().unwrap(),
+                &["package", "unknown"],
+            )
+            .unwrap();
+            assert_eq!(&member_source[span.key], "unknown");
+            let root_span = crate::diagnostics::get_key_value_span(
+                workspace.root_maybe().document().unwrap(),
+                &["workspace", "package", "version"],
+            )
+            .unwrap();
+            assert_eq!(&root_source[root_span.value], format!("'{version}'"));
+        }
     }
 
     #[test]
