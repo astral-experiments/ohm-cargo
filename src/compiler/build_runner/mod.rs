@@ -697,7 +697,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         })
     }
 
-    /// Compiles an established ordinary check graph when it can still be reused.
+    /// Compiles a previously selected check graph when it can still be reused.
     ///
     /// Keep the package-cache and workspace locks held while validating fingerprints and
     /// executing the selected graph. Consuming the runner also releases its workspace locks
@@ -737,6 +737,10 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
 
         self.prepare()?;
         custom_build::build_map(&mut self)?;
+
+        if self.registry_reuse_fallback(false)?.is_some() {
+            return Ok(None);
+        }
 
         let fine_grain_locking = self.bcx.gctx.cli_unstable().fine_grain_locking;
         let workspace_is_locked = self
@@ -792,7 +796,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             }
         }
 
-        self.compile_prepared(exec, queue, false).map(Some)
+        self.compile_prepared(exec, queue).map(Some)
     }
 
     /// Starts compilation, waits for it to finish, and returns information
@@ -872,18 +876,17 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         self.prepare_units()?;
         self.prepare()?;
         custom_build::build_map(&mut self)?;
-        self.compile_prepared(exec, queue, preserve_existing_check_graph)
+        if let Some(fallback) = self.registry_reuse_fallback(preserve_existing_check_graph)? {
+            return Err(fallback.into());
+        }
+        self.compile_prepared(exec, queue)
     }
 
-    /// Executes a graph after its layouts, fingerprints, and build scripts are prepared.
-    ///
-    /// Both callers retain the package-cache lock for this method's entire execution.
-    fn compile_prepared(
-        mut self,
-        exec: &Arc<dyn Executor>,
-        mut queue: JobQueue<'gctx>,
+    /// Validate every promoted unit while retaining its locks through job execution.
+    fn registry_reuse_fallback(
+        &mut self,
         preserve_existing_check_graph: bool,
-    ) -> CargoResult<Compilation<'gctx>> {
+    ) -> CargoResult<Option<RegistryReuseNeedsFallback>> {
         let stale_registry_packages = self.stale_reused_registry_dependencies()?;
         // Even compatible native dependencies can change a root's fingerprint
         // directory. Before creating a new check graph, give an established
@@ -895,13 +898,23 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             });
         let ordinary_check_might_exist = (!stale_registry_packages.is_empty() || new_check_graph)
             && self.ordinary_check_might_exist();
-        if !stale_registry_packages.is_empty() || ordinary_check_might_exist {
-            return Err(RegistryReuseNeedsFallback {
-                packages: stale_registry_packages,
-                ordinary_check_might_exist,
-            }
-            .into());
-        }
+        Ok(
+            (!stale_registry_packages.is_empty() || ordinary_check_might_exist).then_some(
+                RegistryReuseNeedsFallback {
+                    packages: stale_registry_packages,
+                    ordinary_check_might_exist,
+                },
+            ),
+        )
+    }
+
+    /// Execute a graph after its layouts, build scripts, and registry promotions are prepared.
+    /// Both callers retain the package-cache lock for this method's entire execution.
+    fn compile_prepared(
+        mut self,
+        exec: &Arc<dyn Executor>,
+        mut queue: JobQueue<'gctx>,
+    ) -> CargoResult<Compilation<'gctx>> {
         self.validate_test_check_reuse()?;
         self.check_collisions()?;
         self.compute_metadata_for_doc_units();
