@@ -214,7 +214,10 @@ fn compile_ws<'a>(
     }
 
     let check_graph_hint = ordinary_check_graph_hint(ws, options);
-    let ordinary_graph_tried = check_graph_hint.as_ref().is_some_and(|hint| hint.is_file());
+    // In a check-only target the preferred graph is already the ordinary one.
+    // Compile it directly, even if a stale output means it must be rebuilt.
+    let ordinary_graph_tried = check_graph_hint.as_ref().is_some_and(|hint| hint.is_file())
+        && built_registry_graph_ready(ws);
     if ordinary_graph_tried {
         let ordinary_interner = UnitInterner::new();
         let ordinary_bcx = create_bcx_with_registry_reuse(
@@ -429,18 +432,7 @@ pub fn create_bcx<'a, 'gctx>(
     let reuse_built_registry_dependencies =
         !matches!(options.build_config.intent, UserIntent::Check { .. })
             || !unstable.ohm_reuse_built_deps()
-            || unstable.ohm_reuse_built_deps
-            || ws
-                .build_dir()
-                .as_path_unlocked()
-                .join(OHM_BUILT_REGISTRY_READY_MARKER)
-                .is_file()
-            || (ws.shared_registry_cache_enabled()
-                && ws
-                    .configured_build_dir()
-                    .as_path_unlocked()
-                    .join(OHM_BUILT_REGISTRY_READY_MARKER)
-                    .is_file());
+            || built_registry_graph_ready(ws);
 
     create_bcx_with_registry_reuse(
         ws,
@@ -450,6 +442,21 @@ pub fn create_bcx<'a, 'gctx>(
         reuse_built_registry_dependencies,
         &HashSet::default(),
     )
+}
+
+fn built_registry_graph_ready(ws: &Workspace<'_>) -> bool {
+    ws.gctx().cli_unstable().ohm_reuse_built_deps
+        || ws
+            .build_dir()
+            .as_path_unlocked()
+            .join(OHM_BUILT_REGISTRY_READY_MARKER)
+            .is_file()
+        || (ws.shared_registry_cache_enabled()
+            && ws
+                .configured_build_dir()
+                .as_path_unlocked()
+                .join(OHM_BUILT_REGISTRY_READY_MARKER)
+                .is_file())
 }
 
 /// Explicitly control speculative registry reuse so a failed preflight can
