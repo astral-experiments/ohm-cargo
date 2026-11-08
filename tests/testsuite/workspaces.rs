@@ -12,7 +12,7 @@ use std::sync::mpsc;
 use std::thread;
 
 use crate::prelude::*;
-use cargo_test_support::registry::Package;
+use cargo_test_support::registry::{Package, registry_path};
 use cargo_test_support::str;
 use cargo_test_support::{
     ProjectBuilder, basic_lib_manifest, basic_manifest, git, paths, project, project_in_home,
@@ -3025,7 +3025,7 @@ fn workspace_resolve_cache_command(
 
 #[cargo_test]
 fn selected_resolution_honors_locked_yanked_versions() {
-    let checksum = Package::new("old", "1.0.0").yanked(true).publish();
+    Package::new("old", "1.0.0").publish();
     let project = project()
         .file(
             "Cargo.toml",
@@ -3035,25 +3035,15 @@ fn selected_resolution_honors_locked_yanked_versions() {
             ),
         )
         .file("src/lib.rs", "")
-        .file(
-            "Cargo.lock",
-            &format!(
-                r#"version = 4
-
-[[package]]
-name = "old"
-version = "1.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "{checksum}"
-
-[[package]]
-name = "selected"
-version = "0.1.0"
-dependencies = ["old"]
-"#
-            ),
-        )
         .build();
+    project.cargo("generate-lockfile").run();
+    fs::remove_file(registry_path().join("3/o/old")).unwrap();
+    Package::new("old", "1.0.0").yanked(true).publish();
+    project
+        .cargo("update")
+        .with_status(101)
+        .with_stderr_contains("[..]yanked[..]")
+        .run();
     let check = || workspace_resolve_cache_command(&project, "check --locked -p selected");
     check().run();
     check().run();
