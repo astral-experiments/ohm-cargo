@@ -381,6 +381,50 @@ mod linux {
         }
 
         #[test]
+        fn a_skipped_freshness_read_needs_matching_history_and_current_options() {
+            use crate::compiler::fingerprint::dep_info::{DepInfoPathType, EncodedDepInfo};
+
+            let tmp = tempdir().unwrap();
+            let path = tmp.path().join("clippy-driver");
+            let history = tmp.path().join("dep-info");
+            fs::write(&path, b"actual image").unwrap();
+            let handoff = fixture(&path);
+            let command = |incremental: bool| {
+                let mut cmd = ProcessBuilder::new(&path);
+                cmd.arg("--emit=dep-info,metadata")
+                    .arg("-Zchecksum-hash-algorithm=blake3");
+                if incremental {
+                    cmd.arg("-C").arg("incremental=target/incremental");
+                }
+                cmd
+            };
+            let mut actual = command(true);
+            fs::write(&history, b"malformed").unwrap();
+            handoff.dispatch_to(&mut actual, &history);
+            assert!(actual.get_env(FDS_ENV).is_none());
+            let mut recorded = EncodedDepInfo::default();
+            let false_old_sum = Checksum::new(ChecksumAlgo::Blake3, [0x99; 32]);
+            recorded.files.push((
+                DepInfoPathType::BuildRootRelative,
+                path.clone(),
+                Some((12, false_old_sum.to_string())),
+            ));
+            fs::write(&history, recorded.serialize().unwrap()).unwrap();
+            let mut disabled = command(false);
+            handoff.dispatch_to(&mut disabled, &history);
+            assert!(disabled.get_env(FDS_ENV).is_none());
+            assert!(handoff.driver.attempted.get().is_none());
+            handoff.dispatch_to(&mut actual, &history);
+            let Some(proof) = handoff.driver.proof.get() else {
+                return;
+            };
+            assert!(actual.get_env(FDS_ENV).is_some());
+            let mut sum = [0; 32];
+            proof.record.read_exact_at(&mut sum, 72).unwrap();
+            assert_eq!(&sum, blake3::hash(b"actual image").as_bytes());
+        }
+
+        #[test]
         fn a_concurrent_writer_declines_or_breaks_the_handoff() {
             use std::os::unix::fs::PermissionsExt;
             use std::time::Instant;
