@@ -322,12 +322,16 @@ fn emit_build_output(
     output: &BuildOutput,
     out_dir: &Path,
     package_id: PackageId,
+    shared_paths: Option<&SharedLibraryPaths>,
 ) -> CargoResult<()> {
     let library_paths = output
         .library_paths
         .iter()
-        .map(|l| l.as_ref().display().to_string())
-        .collect::<Vec<_>>();
+        .map(|l| match shared_paths {
+            Some(paths) => paths.report(l.as_ref()),
+            None => Ok(l.as_ref().display().to_string()),
+        })
+        .collect::<CargoResult<Vec<_>>>()?;
 
     let msg = machine_message::BuildScript {
         package_id: package_id.to_spec(),
@@ -340,6 +344,54 @@ fn emit_build_output(
     .to_json_string();
     state.stdout(msg)?;
     Ok(())
+}
+
+#[derive(Clone)]
+struct SharedLibraryPaths {
+    registry_root: PathBuf,
+    workspace_build: PathBuf,
+}
+
+impl SharedLibraryPaths {
+    /// Give JSON consumers a search path beneath the build directory reported by `cargo metadata`.
+    fn report(&self, raw: &Path) -> CargoResult<String> {
+        let (kind, search) = super::split_dynamic_search_path(raw);
+        if search.starts_with(&self.workspace_build) {
+            return Ok(raw.display().to_string());
+        }
+        let Some(source) = super::shared_registry_search_path(search, &self.registry_root)
+            .filter(|path| path.is_dir())
+        else {
+            return Ok(raw.display().to_string());
+        };
+        // Link its parent so archivers see the search directory itself as an ordinary directory.
+        let parent = source.parent().unwrap();
+        let views = self.workspace_build.join(".ohm-native-search");
+        let entry = views.join(crate::util::short_hash(&parent));
+        let link = entry.join("root");
+        if !same_file::is_same_file(parent, &link).unwrap_or(false) {
+            paths::create_dir_all(&views)?;
+            let staging = tempfile::tempdir_in(&views)?;
+            let staged_link = staging.path().join("root");
+            #[cfg(unix)]
+            std::os::unix::fs::symlink(parent, &staged_link)?;
+            #[cfg(windows)]
+            junction::create(parent, &staged_link)
+                .or_else(|_| std::os::windows::fs::symlink_dir(parent, &staged_link))?;
+            if let Err(err) = std::fs::rename(staging.path(), &entry)
+                && !same_file::is_same_file(parent, &link).unwrap_or(false)
+            {
+                return Err(err).with_context(|| {
+                    format!("failed to expose native libraries at `{}`", entry.display())
+                });
+            }
+        }
+        let visible = link.join(source.file_name().unwrap());
+        Ok(match kind {
+            Some(kind) => format!("{kind}={}", visible.display()),
+            None => visible.display().to_string(),
+        })
+    }
 }
 
 /// Constructs the unit of work of running a build script.
@@ -551,6 +603,20 @@ fn build_work(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResul
     );
     let build_scripts = build_runner.build_scripts.get(unit).cloned();
     let json_messages = bcx.build_config.emit_json();
+    let shared_paths = shared_registry_root
+        .as_ref()
+        .filter(|_| json_messages)
+        .and_then(|root| root.canonicalize().ok())
+        .map(|registry_root| SharedLibraryPaths {
+            registry_root,
+            workspace_build: build_runner
+                .files()
+                .layout(unit.kind)
+                .build_dir()
+                .build()
+                .to_owned(),
+        });
+    let fresh_shared_paths = shared_paths.clone();
     let extra_verbose = bcx.gctx.extra_verbose();
     let (prev_output, prev_script_out_dir) = prev_build_output(build_runner, unit);
     let metadata_hash = build_runner.get_run_build_script_metadata(unit);
@@ -743,7 +809,13 @@ fn build_work(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResul
         )?;
 
         if json_messages {
-            emit_build_output(state, &parsed_output, script_out_dir.as_path(), id)?;
+            emit_build_output(
+                state,
+                &parsed_output,
+                script_out_dir.as_path(),
+                id,
+                shared_paths.as_ref(),
+            )?;
         }
         build_script_outputs
             .lock()
@@ -779,7 +851,13 @@ fn build_work(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResul
         )?;
 
         if json_messages {
-            emit_build_output(state, &output, script_out_dir.as_path(), id)?;
+            emit_build_output(
+                state,
+                &output,
+                script_out_dir.as_path(),
+                id,
+                fresh_shared_paths.as_ref(),
+            )?;
         }
 
         build_script_outputs

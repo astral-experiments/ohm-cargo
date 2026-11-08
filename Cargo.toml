@@ -265,6 +265,7 @@ openssl-probe.workspace = true
 
 [target.'cfg(windows)'.dependencies]
 cargo-credential-wincred.workspace = true
+junction = { version = "2.1.0", default-features = false }
 
 [target.'cfg(windows)'.dependencies.windows-sys]
 workspace = true
