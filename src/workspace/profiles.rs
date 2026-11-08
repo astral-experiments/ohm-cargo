@@ -286,6 +286,17 @@ impl Profiles {
         Ok(maker)
     }
 
+    /// Whether the profile enables incremental compilation for a registry library
+    /// in both its normal and build-dependency roles.
+    pub(crate) fn registry_observer_incremental(&self, pkg_id: PackageId) -> bool {
+        self.incremental.unwrap_or_else(|| {
+            let maker = self.get_profile_maker(&self.requested_profile).unwrap();
+            [false, true]
+                .into_iter()
+                .all(|for_host| maker.get_profile(Some(pkg_id), false, for_host).incremental)
+        })
+    }
+
     /// Retrieves the profile for a target.
     /// `is_member` is whether or not this package is a member of the
     /// workspace.
