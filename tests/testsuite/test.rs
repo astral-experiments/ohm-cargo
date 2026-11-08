@@ -6138,6 +6138,54 @@ fn cached_doctests_keep_workspace_wrapper_cfgs_out_of_examples() {
 }
 
 #[cargo_test]
+fn cached_doctests_keep_the_dispatcher_out_of_examples() {
+    let p = project()
+        .file(
+            "Cargo.toml",
+            "[package]\nname = 'foo'\nversion = '0.0.1'\nedition = '2024'",
+        )
+        .file(
+            "src/lib.rs",
+            r#"
+                #[macro_export]
+                macro_rules! callback { () => { run }; }
+                #[doc = include_str!("../example.md")]
+                pub fn documented() {}
+            "#,
+        )
+        .file("example.md", "")
+        .build();
+
+    for (code, diagnostic) in [
+        (
+            "let _callback = run;",
+            "cannot find value `run` in this scope",
+        ),
+        (
+            "let _callback = foo::callback!();",
+            "cannot find value `run` in this scope",
+        ),
+        (
+            "use crate as root; let _callback = root::run_example;",
+            "cannot find value `run_example` in module `root`",
+        ),
+        (
+            "use crate as root; let _ = Option::<root::Example<0>>::None;",
+            "cannot find type `Example` in module `root`",
+        ),
+    ] {
+        p.change_file("example.md", &format!("```\n{code}\n```\n"));
+        p.cargo("test --doc -Zohm-cached-doctests")
+            .masquerade_as_nightly_cargo(&["ohm-cached-doctests"])
+            .env("CARGO_UNSTABLE_OHM_DEFAULTS", "false")
+            .env("RUSTC_BOOTSTRAP", "1")
+            .with_status(101)
+            .with_stdout_contains(&format!("[..]{diagnostic}[..]"))
+            .run();
+    }
+}
+
+#[cargo_test]
 fn cached_doctests_do_not_enable_libtest_in_examples() {
     let p = project()
         .file(
