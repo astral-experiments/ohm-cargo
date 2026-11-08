@@ -6003,6 +6003,43 @@ this is intentionally not Rust
 }
 
 #[cargo_test]
+fn cached_doctests_split_test_args_like_rustdoc() {
+    let p = project()
+        .file(
+            "Cargo.toml",
+            "[package]\nname = 'foo'\nversion = '0.0.1'\nedition = '2024'",
+        )
+        .file(
+            "src/lib.rs",
+            "/// ```\n/// panic!(\"selected\");\n/// ```\npub fn alpha() {}",
+        )
+        .build();
+    let run = || {
+        let mut cmd = p.cargo("test --doc -v -Zohm-cached-doctests --");
+        cmd.masquerade_as_nightly_cargo(&["ohm-cached-doctests"])
+            .env("CARGO_UNSTABLE_OHM_DEFAULTS", "false")
+            .env("RUSTC_BOOTSTRAP", "1");
+        cmd
+    };
+    run()
+        .arg("alpha beta")
+        .with_status(101)
+        .with_stdout_contains("[..]0 passed; 1 failed[..]")
+        .with_stderr_does_not_contain("[RUNNING] [..]--test-run-directory[..]")
+        .run();
+    run()
+        .arg("")
+        .arg("absent")
+        .with_stdout_contains("[..]0 passed; 0 failed[..]")
+        .run();
+    run()
+        .arg("alpha --skip alpha")
+        .with_stdout_contains("[..]0 passed; 0 failed[..]")
+        .with_stderr_contains("[RUNNING] [..]--test-run-directory[..]")
+        .run();
+}
+
+#[cargo_test]
 #[cfg(unix)]
 fn cached_doctests_use_rustdoc_with_a_target_runner() {
     let p = project()
