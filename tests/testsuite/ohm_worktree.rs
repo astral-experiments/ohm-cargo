@@ -254,6 +254,26 @@ fn creates_a_worktree_without_a_previous_build() {
     assert!(destination.join(".git").is_file());
 }
 
+#[cfg(unix)]
+#[cargo_test]
+fn keeps_the_package_root_of_a_symlinked_manifest() {
+    let (donor, repo) = git::new_repo("donor", |p| p.file("src/lib.rs", ""));
+    let root = donor.root();
+    fs::create_dir(root.join("templates")).unwrap();
+    fs::rename(root.join("Cargo.toml"), root.join("templates/package.toml")).unwrap();
+    std::os::unix::fs::symlink("templates/package.toml", root.join("Cargo.toml")).unwrap();
+    git::add(&repo);
+    git::commit(&repo);
+
+    let child = paths::root().join("child");
+    donor
+        .cargo("-Zohm-defaults worktree add --detach")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .arg(&child)
+        .run();
+    donor.cargo("check").cwd(child).run();
+}
+
 #[cargo_test]
 fn discovers_a_nested_package_in_a_sha256_repository() {
     let root = paths::root().join("donor");
