@@ -1774,6 +1774,67 @@ impl SharedRegistryProjectExt for cargo_test_support::Project {
 }
 
 #[cargo_test]
+fn shared_registry_test_executable_identifies_the_dylib_profile() {
+    let p = project()
+        .file("Cargo.toml", "[package]\nname='client'\nversion='0.1.0'\nedition='2021'\n[dependencies]\nprovider={path='provider'}\n")
+        .file("src/lib.rs", "#[test] fn answer() { assert_eq!(provider::answer(), 42); }")
+        .file("provider/Cargo.toml", "[package]\nname='provider'\nversion='0.1.0'\nedition='2021'\n[lib]\ncrate-type=['dylib']\n")
+        .file("provider/src/lib.rs", "pub fn answer() -> u8 { 42 }")
+        .build();
+    for _ in 0..2 {
+        let output = p
+            .shared_registry_cargo(
+                "-Zohm-shared-registry-cache test --lib --no-run --message-format=json",
+            )
+            .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+            .env(
+                "CARGO_BUILD_BUILD_DIR",
+                paths::root().join("registry-builds"),
+            )
+            .run();
+        let messages: Vec<serde_json::Value> = String::from_utf8(output.stdout)
+            .unwrap()
+            .lines()
+            .map(|line| serde_json::from_str(line).unwrap())
+            .collect();
+        let test = messages
+            .iter()
+            .find(|m| m["executable"].is_string())
+            .unwrap();
+        assert!(
+            test["filenames"]
+                .as_array()
+                .unwrap()
+                .contains(&test["executable"])
+        );
+        let exe = PathBuf::from(test["executable"].as_str().unwrap());
+        let provider = messages
+            .iter()
+            .find(|m| m["target"]["name"] == "provider")
+            .unwrap();
+        let dylib = provider["filenames"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .filter_map(|f| f.as_str())
+            .find(|f| f.ends_with(DLL_SUFFIX))
+            .unwrap();
+        let dylib = PathBuf::from(dylib);
+        assert!(exe.is_file() && dylib.is_file());
+        let profile = dylib.parent().unwrap();
+        let out = exe.parent().unwrap();
+        assert!(
+            out == profile.join("deps")
+                || (out.ends_with("out")
+                    && out.ancestors().nth(3) == Some(profile.join("build").as_path())),
+            "cannot recover profile {} from {}",
+            profile.display(),
+            exe.display()
+        );
+    }
+}
+
+#[cargo_test]
 fn shared_registry_reports_native_search_paths_under_the_workspace_build_directory() {
     Package::new("native-search-provider", "1.0.0")
         .file("src/lib.rs", "")
