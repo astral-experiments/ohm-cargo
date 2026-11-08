@@ -385,6 +385,52 @@ fn discovers_a_nested_package_in_a_sha256_repository() {
 }
 
 #[cargo_test]
+fn worktree_add_uses_the_repository_discovered_from_the_package() {
+    let enclosing = git::new("outer", |p| {
+        p.no_manifest()
+            .file(".gitignore", "/selected/\n")
+            .file(
+                "package/Cargo.toml",
+                &cargo_test_support::basic_manifest("enclosing", "1.0.0"),
+            )
+            .file("package/src/lib.rs", "")
+    });
+    let (donor, repo) = git::new_repo("outer/selected", |p| {
+        p.no_manifest()
+            .file(
+                "package/Cargo.toml",
+                &cargo_test_support::basic_manifest("selected", "1.0.0"),
+            )
+            .file("package/src/lib.rs", "")
+    });
+    let expected_head = repo.head().unwrap().target();
+    drop(repo);
+    let package = donor.root().join("package");
+    fs::rename(donor.root().join(".git"), package.join(".git")).unwrap();
+    donor
+        .process("git")
+        .cwd(&package)
+        .args(&["config", "core.worktree", "../.."])
+        .run();
+
+    let child = paths::root().join("child");
+    enclosing
+        .cargo("-Zohm-defaults worktree add --detach --manifest-path")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .arg(package.join("Cargo.toml"))
+        .arg(&child)
+        .run();
+    assert_eq!(
+        git2::Repository::open(&child)
+            .unwrap()
+            .head()
+            .unwrap()
+            .target(),
+        expected_head
+    );
+}
+
+#[cargo_test]
 fn worktree_uses_manifest_repository_with_foreign_git_environment() {
     let (donor, donor_repo) = git::new_repo("donor", |p| p.file("src/lib.rs", "pub fn donor() {}"));
     let (foreign, foreign_repo) =
