@@ -117,18 +117,27 @@ pub fn worktree_add(gctx: &GlobalContext, opts: &WorktreeOptions) -> CargoResult
 
     let seed = || -> CargoResult<(Seeded, PathBuf)> {
         // The selected commit may itself contain a target directory. Do not adopt it.
-        let manifest = manifest_in_worktree(donor.root_manifest(), &git_root, &destination)?;
-        ensure_plain_descendants(&destination, manifest.parent().unwrap())?;
-        let target = target.unwrap_or_else(|| manifest.parent().unwrap().join("target"));
+        let workspace_dir = directory_in_worktree(donor.root(), &git_root, &destination)?
+            .context("workspace manifest is outside the source repository")?;
+        let manifest = workspace_dir.join(donor.root_manifest().file_name().unwrap());
+        ensure_plain_descendants(&destination, &workspace_dir)?;
+        let target = target.unwrap_or_else(|| workspace_dir.join("target"));
         ensure!(
             donor.canonical_build_path(&target) == target,
             "destination target directory changed through a checked-out symlink"
         );
         ensure_absent(&target, "destination target directory")?;
-        let mut recipient = Workspace::new(&manifest, gctx)?;
+        // Cargo discovers configuration from the invocation directory, including a workspace member.
+        let config_dir =
+            directory_in_worktree(gctx.cwd(), &git_root, &destination)?.unwrap_or(workspace_dir);
+        let recipient_gctx = gctx.for_worktree(&config_dir)?;
+        let mut recipient = Workspace::new(&manifest, &recipient_gctx)?;
         recipient.set_target_dir(Filesystem::new(target.clone()));
-        if gctx.cli_unstable().ohm_worktree_seeds() && donor.shared_registry_cache_enabled() {
-            return Ok((seed_shared_build(&donor, &recipient)?, target));
+        if [&donor, &recipient].into_iter().all(|ws| {
+            ws.gctx().cli_unstable().ohm_worktree_seeds() && ws.shared_registry_cache_enabled()
+        }) && let Some(seeded) = seed_shared_build(&donor, &recipient)?
+        {
+            return Ok((seeded, target));
         }
         #[cfg(any(target_os = "linux", target_os = "macos"))]
         register_created_target(&recipient, PrivateBuildLease::acquire(&recipient, false))?;
@@ -182,14 +191,14 @@ pub fn worktree_add(gctx: &GlobalContext, opts: &WorktreeOptions) -> CargoResult
     Ok(())
 }
 
-/// Maps the package directory into the new checkout and keeps the manifest's final filename.
-fn manifest_in_worktree(
-    manifest: &Path,
+/// Maps a directory in the source repository into the selected checkout, following local aliases.
+fn directory_in_worktree(
+    directory: &Path,
     git_root: &Path,
     destination: &Path,
-) -> CargoResult<PathBuf> {
+) -> CargoResult<Option<PathBuf>> {
     let mut recipient: Option<PathBuf> = None;
-    let parents = manifest.parent().unwrap().ancestors().collect::<Vec<_>>();
+    let parents = directory.ancestors().collect::<Vec<_>>();
     for directory in parents.into_iter().rev() {
         let path = if let Some(parent) = &recipient {
             let path = parent.join(directory.iter().next_back().unwrap());
@@ -225,8 +234,7 @@ fn manifest_in_worktree(
         );
         recipient = Some(physical);
     }
-    let directory = recipient.context("workspace manifest is outside the source repository")?;
-    Ok(directory.join(manifest.file_name().unwrap()))
+    Ok(recipient)
 }
 
 #[derive(Default)]
@@ -242,13 +250,16 @@ struct Seeded {
 ///
 /// Consumer leases protect legacy and scoped registry references without stopping
 /// builds in other worktrees. The new recipient cannot be another seeding operation's donor.
-fn seed_shared_build(donor: &Workspace<'_>, recipient: &Workspace<'_>) -> CargoResult<Seeded> {
+fn seed_shared_build(
+    donor: &Workspace<'_>,
+    recipient: &Workspace<'_>,
+) -> CargoResult<Option<Seeded>> {
     let shared_root = donor.canonical_build_path(donor.configured_build_dir().as_path_unlocked());
-    ensure!(
-        shared_root
-            == recipient.canonical_build_path(recipient.configured_build_dir().as_path_unlocked()),
-        "worktree seeding requires the same separate build directory in both worktrees"
-    );
+    if shared_root
+        != recipient.canonical_build_path(recipient.configured_build_dir().as_path_unlocked())
+    {
+        return Ok(None);
+    }
     let _consumer = crate::workspace::build_cache_gc_lease::ConsumerLease::acquire(&shared_root)?;
     let _donor_guard = PrivateBuildLease::acquire(donor, true)?;
     let _recipient_guard = PrivateBuildLease::acquire(recipient, true)?;
@@ -268,6 +279,10 @@ fn seed_shared_build(donor: &Workspace<'_>, recipient: &Workspace<'_>) -> CargoR
     {
         tracing::debug!(?error, "could not register shared build root");
     }
+    let proc_macro_trust = match donor.gctx().cli_unstable().ohm_proc_macro_trust {
+        OhmProcMacroTrust::All => recipient.gctx().cli_unstable().ohm_proc_macro_trust,
+        trust => trust,
+    };
     for profile in &profiles {
         ensure_plain_descendants(&source_root, profile)?;
         ensure_regular(&profile.join(".cargo-build-lock"))?;
@@ -277,7 +292,7 @@ fn seed_shared_build(donor: &Workspace<'_>, recipient: &Workspace<'_>) -> CargoR
             continue;
         }
         ensure_plain_descendants(profile, &source)?;
-        if !seed_policy_allows(&source, donor.gctx().cli_unstable().ohm_proc_macro_trust)? {
+        if !seed_policy_allows(&source, proc_macro_trust)? {
             seeded.skipped_profiles += 1;
             continue;
         }
@@ -309,7 +324,7 @@ fn seed_shared_build(donor: &Workspace<'_>, recipient: &Workspace<'_>) -> CargoR
     }
     #[cfg(any(target_os = "linux", target_os = "macos"))]
     register_created_target(recipient, Ok(_recipient_guard))?;
-    Ok(seeded)
+    Ok(Some(seeded))
 }
 
 #[cfg(any(target_os = "linux", target_os = "macos"))]

@@ -712,6 +712,35 @@ impl GlobalContext {
         Ok(())
     }
 
+    /// Creates a fresh configuration for a worktree while keeping the invocation's overrides.
+    pub(crate) fn for_worktree(&self, directory: &Path) -> CargoResult<Self> {
+        let mut shell = Shell::new();
+        shell.set_verbosity(self.shell().verbosity());
+        // Relative --config arguments still refer to the caller's working directory.
+        let mut context = Self {
+            env: self.env.clone(),
+            cli_config: self.cli_config.clone(),
+            unstable_flags_cli: self.unstable_flags_cli.clone(),
+            nightly_features_allowed: self.nightly_features_allowed,
+            search_stop_path: self.search_stop_path.clone(),
+            frozen: self.frozen,
+            locked: self.locked,
+            offline: self.offline,
+            ..Self::new(
+                shell,
+                self.cwd.clone(),
+                self.home_path.clone().into_path_unlocked(),
+            )
+        };
+        if let Some(flags) = &self.unstable_flags_cli {
+            context
+                .unstable_flags
+                .parse(flags, self.nightly_features_allowed)?;
+        }
+        context.reload_rooted_at(directory)?;
+        Ok(context)
+    }
+
     /// The current working directory.
     pub fn cwd(&self) -> &Path {
         &self.cwd
