@@ -1577,7 +1577,17 @@ fn rustc(
             .as_ref()
             .is_some_and(|fingerprint| fingerprint.is_early_cutoff_candidate());
 
+    let clippy_driver_checksum = build_runner
+        .clippy_driver_checksum
+        .as_ref()
+        .filter(|_| build_runner.bcx.ws.is_member(&unit.pkg))
+        .cloned();
+
     return Ok(Work::new(move |state| {
+        // A later unit's freshness check can verify the driver after this job was queued.
+        if let Some(driver) = &clippy_driver_checksum {
+            driver.pass_to(&mut rustc);
+        }
         // Build-script outputs are only authoritative after their jobs finish.
         // An unused Rust extern can still be consumed through native linking.
         let record_dev_unused = record_dev_unused
@@ -2664,9 +2674,6 @@ fn prepare_rustc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
     let mut base = build_runner
         .compilation
         .rustc_process(unit, is_primary, is_workspace)?;
-    if is_workspace && let Some(driver) = &build_runner.clippy_driver_checksum {
-        driver.pass_to(&mut base);
-    }
     if unit_uses_ohm_shared_stages(build_runner, unit) {
         base.arg("-Zohm-shared-stages");
     }

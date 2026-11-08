@@ -365,7 +365,8 @@ pub struct BuildRunner<'a, 'gctx> {
     pub mtime_cache: HashMap<PathBuf, FileTime>,
     /// Cache of file checksums to reduce filesystem reads.
     pub checksum_cache: HashMap<PathBuf, Checksum>,
-    pub(super) clippy_driver_checksum: Option<super::clippy_driver_checksum::ClippyDriverChecksum>,
+    pub(super) clippy_driver_checksum:
+        Option<Arc<super::clippy_driver_checksum::ClippyDriverChecksum>>,
     /// A set used to track which units have been compiled.
     /// A unit may appear in the job graph multiple times as a dependency of
     /// multiple packages, but it only needs to run once.
@@ -564,7 +565,8 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             deferred_dev_deps: super::ohm_deferred_dev_deps::State::default(),
             mtime_cache: HashMap::default(),
             checksum_cache: HashMap::default(),
-            clippy_driver_checksum: super::clippy_driver_checksum::ClippyDriverChecksum::new(bcx),
+            clippy_driver_checksum: super::clippy_driver_checksum::ClippyDriverChecksum::new(bcx)
+                .map(Arc::new),
             compiled: HashSet::default(),
             build_scripts: HashMap::default(),
             build_explicit_deps: HashMap::default(),

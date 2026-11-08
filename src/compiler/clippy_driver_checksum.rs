@@ -307,14 +307,32 @@ mod linux {
 
         #[test]
         fn a_concurrent_writer_declines_or_breaks_the_handoff() {
+            use std::os::unix::fs::PermissionsExt;
+            use std::time::Instant;
+
             let tmp = tempdir().unwrap();
             let path = tmp.path().join("clippy-driver");
-            fs::write(&path, b"input").unwrap();
+            // Use an interpreter so Linux allows writing the checked file while
+            // the child, which has inherited the actual proof, remains alive.
+            let script = br#"#!/bin/sh
+set -eu
+record=${CARGO_OHM_CLIPPY_DRIVER_HASH_FDS%,*}
+image=${CARGO_OHM_CLIPPY_DRIVER_HASH_FDS#*,}
+test -r /proc/self/fd/"$record"
+test -r /proc/self/fd/"$image"
+printf '%s' "$CARGO_OHM_CLIPPY_DRIVER_HASH_FDS" > "$1.tmp"
+mv "$1.tmp" "$1"
+i=0
+while test ! -e "$2" && test "$i" -lt 300; do i=$((i + 1)); sleep .01; done
+test -e "$2"
+"#;
+            fs::write(&path, script).unwrap();
+            fs::set_permissions(&path, fs::Permissions::from_mode(0o755)).unwrap();
             let handoff = fixture(&path);
             let writer = File::options().write(true).open(&path).unwrap();
             assert_eq!(
                 read(&handoff, &path).value(),
-                blake3::hash(b"input").as_bytes()
+                blake3::hash(script).as_bytes()
             );
             assert!(handoff.driver.proof.get().is_none());
             drop(writer);
@@ -322,19 +340,47 @@ mod linux {
             let Some(proof) = handoff.driver.proof.get() else {
                 return;
             };
+            let mut child = ProcessBuilder::new(&path);
+            handoff.pass_to(&mut child);
+            let received = tmp.path().join("received");
+            let finish = tmp.path().join("finish");
+            child.arg(&received).arg(&finish);
+            let child = std::thread::spawn(move || child.exec_with_output().unwrap());
+            let deadline = Instant::now() + Duration::from_secs(3);
+            while !received.exists() {
+                assert!(Instant::now() < deadline, "child must inherit the proof");
+                std::thread::sleep(Duration::from_millis(1));
+            }
+            let expected = format!(
+                "{},{}",
+                proof.record.as_raw_fd(),
+                proof.executable.as_raw_fd()
+            );
+            assert_eq!(fs::read_to_string(&received).unwrap(), expected);
             let update = path.clone();
             let (done, written) = mpsc::channel();
             std::thread::spawn(move || {
-                done.send(fs::write(update, b"later")).unwrap();
+                let start = Instant::now();
+                fs::write(update, b"later").unwrap();
+                done.send(start.elapsed()).unwrap();
             });
-            written
+            let elapsed = written
                 .recv_timeout(Duration::from_secs(3))
-                .expect("writer must not wait for the kernel lease expiry")
-                .unwrap();
+                .expect("writer must not wait for the kernel lease expiry");
             assert!(!leased(&proof.executable));
             let mut changed = ProcessBuilder::new(&path);
             handoff.pass_to(&mut changed);
             assert!(changed.get_env(FDS_ENV).is_none());
+            assert_eq!(
+                read(&handoff, &path).value(),
+                blake3::hash(b"later").as_bytes()
+            );
+            fs::write(finish, b"").unwrap();
+            child.join().unwrap();
+            eprintln!(
+                "blocking writer completed in {} microseconds",
+                elapsed.as_micros()
+            );
         }
     }
 }

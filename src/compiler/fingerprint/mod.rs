@@ -2663,7 +2663,7 @@ fn calculate(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
         cargo_exe,
         build_runner.bcx.gctx,
         ChecksumParallelism {
-            clippy_driver: build_runner.clippy_driver_checksum.as_ref(),
+            clippy_driver: build_runner.clippy_driver_checksum.as_deref(),
             #[cfg(unix)]
             jobserver: &build_runner.jobserver,
             #[cfg(unix)]
