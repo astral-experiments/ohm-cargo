@@ -53,9 +53,14 @@ impl ClippyDriverChecksum {
         Checksum::compute(algo, file, buffer)
     }
 
-    pub(super) fn pass_to(&self, _process: &mut ProcessBuilder) {
+    pub(super) fn dispatch_to(&self, _process: &mut ProcessBuilder, _dep_info: &Path) {
         #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
-        self.driver.pass_to(_process);
+        {
+            if _process.get_program() == self.driver.path.as_os_str() {
+                self.driver.prepare_if_needed(_process, _dep_info);
+                self.driver.pass_to(_process);
+            }
+        }
     }
 }
 
@@ -76,6 +81,7 @@ mod linux {
     pub(super) struct Driver {
         pub path: PathBuf,
         pub proof: OnceLock<Proof>,
+        attempted: OnceLock<()>,
     }
 
     pub(super) struct Proof {
@@ -153,6 +159,7 @@ mod linux {
                     .canonicalize()
                     .ok()?,
                 proof: OnceLock::new(),
+                attempted: OnceLock::new(),
             })
         }
 
@@ -214,6 +221,73 @@ mod linux {
                 .ok()
         }
 
+        pub(super) fn prepare_if_needed(&self, process: &ProcessBuilder, dep_info: &Path) {
+            if self.proof.get().is_some() || self.attempted.get().is_some() {
+                return;
+            }
+            // A dirty prerequisite can cause Cargo to skip this unit's ordinary
+            // freshness reads. Fill on actual dispatch only if it previously
+            // reported a BLAKE3 read of this exact driver and will emit dep-info.
+            let mut incremental = false;
+            let mut blake3 = false;
+            let mut dep_output = false;
+            for arg in process.get_args().filter_map(|arg| arg.to_str()) {
+                if let Some(value) = arg.trim_start_matches("-C").strip_prefix("incremental=") {
+                    incremental = !value.is_empty();
+                }
+                if let Some(value) = arg
+                    .trim_start_matches("-Z")
+                    .strip_prefix("checksum-hash-algorithm=")
+                {
+                    blake3 = value == "blake3";
+                }
+                if let Some(values) = arg.strip_prefix("--emit=") {
+                    dep_output = values.split(',').any(|value| value == "dep-info");
+                }
+            }
+            if !incremental || !blake3 || !dep_output {
+                return;
+            }
+            let Ok(bytes) = cargo_util::paths::read_regular_bounded(dep_info, 1024 * 1024) else {
+                return;
+            };
+            let Some(history) =
+                crate::compiler::fingerprint::dep_info::EncodedDepInfo::parse(&bytes)
+            else {
+                return;
+            };
+            if !history.files.iter().any(|(_, path, input)| {
+                path == &self.path
+                    && input.as_ref().is_some_and(|(_, value)| {
+                        value
+                            .parse::<Checksum>()
+                            .is_ok_and(|sum| sum.algo() == ChecksumAlgo::Blake3)
+                    })
+            }) {
+                return;
+            }
+            // Multiple units can reach dispatch together. The old dep-info only
+            // establishes that the read is useful. Always hash today's open ELF.
+            self.attempted.get_or_init(|| {
+                use std::os::unix::fs::OpenOptionsExt;
+                let Ok(file) = File::options()
+                    .read(true)
+                    .custom_flags(libc::O_NONBLOCK | libc::O_NOCTTY)
+                    .open(&self.path)
+                else {
+                    return;
+                };
+                let Some(before) = read_lease(&file) else {
+                    return;
+                };
+                let Ok(sum) = Checksum::compute(ChecksumAlgo::Blake3, &file, &mut [0; 64 * 1024])
+                else {
+                    return;
+                };
+                let _ = self.record(file, before, &sum);
+            });
+        }
+
         pub(super) fn pass_to(&self, process: &mut ProcessBuilder) {
             let Some(proof) = self.proof.get() else {
                 return;
@@ -250,6 +324,7 @@ mod linux {
                 driver: Driver {
                     path: path.into(),
                     proof: OnceLock::new(),
+                    attempted: OnceLock::new(),
                 },
             }
         }
@@ -288,16 +363,16 @@ mod linux {
                 SealFlags::GROW | SealFlags::SHRINK | SealFlags::WRITE | SealFlags::SEAL
             );
             let mut child = ProcessBuilder::new(&path);
-            handoff.pass_to(&mut child);
+            handoff.driver.pass_to(&mut child);
             assert!(child.get_env(FDS_ENV).is_some());
             let mut other = ProcessBuilder::new(tmp.path().join("other"));
-            handoff.pass_to(&mut other);
+            handoff.driver.pass_to(&mut other);
             assert!(other.get_env(FDS_ENV).is_none());
             let replacement = tmp.path().join("replacement");
             fs::write(&replacement, b"other").unwrap();
             fs::rename(&replacement, &path).unwrap();
             let mut changed = ProcessBuilder::new(&path);
-            handoff.pass_to(&mut changed);
+            handoff.driver.pass_to(&mut changed);
             assert!(changed.get_env(FDS_ENV).is_none());
             assert_eq!(
                 read(&handoff, &path).value(),
@@ -341,7 +416,7 @@ test -e "$2"
                 return;
             };
             let mut child = ProcessBuilder::new(&path);
-            handoff.pass_to(&mut child);
+            handoff.driver.pass_to(&mut child);
             let received = tmp.path().join("received");
             let finish = tmp.path().join("finish");
             child.arg(&received).arg(&finish);
@@ -369,7 +444,7 @@ test -e "$2"
                 .expect("writer must not wait for the kernel lease expiry");
             assert!(!leased(&proof.executable));
             let mut changed = ProcessBuilder::new(&path);
-            handoff.pass_to(&mut changed);
+            handoff.driver.pass_to(&mut changed);
             assert!(changed.get_env(FDS_ENV).is_none());
             assert_eq!(
                 read(&handoff, &path).value(),
