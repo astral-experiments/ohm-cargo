@@ -183,6 +183,10 @@ impl<'de> serde::Deserialize<'de> for InternedString {
                 Ok(value.into())
             }
         }
-        deserializer.deserialize_str(StringVisitor)
+        if deserializer.is_human_readable() {
+            deserializer.deserialize_any(StringVisitor)
+        } else {
+            deserializer.deserialize_str(StringVisitor)
+        }
     }
 }

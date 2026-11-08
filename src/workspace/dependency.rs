@@ -711,6 +711,17 @@ mod tests {
     use super::*;
 
     #[test]
+    fn packed_index_dependencies_preserve_source_precision() {
+        let registry = SourceId::for_registry(&"https://index.example/".parse().unwrap()).unwrap();
+        let locked = registry.with_locked_precise();
+        let mut dep = Dependency::parse("example", Some("1"), registry).unwrap();
+        assert!(PackedIndexDependency::pack(&dep, registry).is_some());
+        assert!(PackedIndexDependency::pack(&dep, locked).is_none());
+        dep.set_registry_id(locked);
+        assert!(PackedIndexDependency::pack(&dep, registry).is_none());
+    }
+
+    #[test]
     fn locking_preserves_the_source_with_the_package_precision() {
         let git = SourceId::from_url("git+https://github.com/lock-to/REPO.git").unwrap();
         let rev1 = SourceId::from_url("git+https://github.com/lock-to/repo#abc123").unwrap();
@@ -783,11 +794,11 @@ impl PackedIndexDependency {
         let OptVersionReq::Req(req) = &d.req else {
             return None;
         };
-        if dep.source_id != source
+        if !dep.source_id.full_eq(source)
             || d.artifact.is_some()
             || !d.specified_req
             || d.only_match_name
-            || d.registry_id.is_some_and(|id| id != source)
+            || d.registry_id.is_some_and(|id| !id.full_eq(source))
         {
             return None;
         }
