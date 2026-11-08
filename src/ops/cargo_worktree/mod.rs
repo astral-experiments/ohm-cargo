@@ -60,17 +60,17 @@ pub fn worktree_add(gctx: &GlobalContext, opts: &WorktreeOptions) -> CargoResult
     // Drop Git's record terminator, preserving any newline in the directory name.
     let root = output.stdout.strip_suffix(b"\n").unwrap_or(&output.stdout);
     let git_root = cargo_util::paths::bytes2path(root)?.canonicalize()?;
-    let destination = new_storage_path(&opts.path, gctx.cwd())?;
+    let destination = resolve_parent_dirs(&opts.path, gctx.cwd())?;
     ensure_absent(&destination, "worktree destination")?;
     ensure!(
         !destination.starts_with(&git_root) && !git_root.starts_with(&destination),
         "the new worktree must be outside the source worktree"
     );
 
-    let manifest = donor.root_manifest().canonicalize()?;
+    let manifest = resolve_parent_dirs(donor.root_manifest(), gctx.cwd())?;
     let manifest = destination.join(manifest.strip_prefix(&git_root)?);
     let target = match &opts.target_dir {
-        Some(path) => new_storage_path(path, gctx.cwd())?,
+        Some(path) => resolve_parent_dirs(path, gctx.cwd())?,
         None => manifest.parent().unwrap().join("target"),
     };
     ensure_absent(&target, "destination target directory")?;
@@ -575,8 +575,8 @@ fn physical_storage_path(path: &Path, cwd: &Path) -> CargoResult<PathBuf> {
     Ok(realpath(&physical)?)
 }
 
-/// Resolves the parent while preserving the final entry for the absence check.
-fn new_storage_path(path: &Path, cwd: &Path) -> CargoResult<PathBuf> {
+/// Resolves the parent directories and preserves the final directory entry.
+fn resolve_parent_dirs(path: &Path, cwd: &Path) -> CargoResult<PathBuf> {
     let path = cwd.join(path);
     match (path.parent(), path.file_name()) {
         (Some(parent), Some(name)) => Ok(physical_storage_path(parent, cwd)?.join(name)),
