@@ -958,8 +958,24 @@ pub(crate) enum ExistingCheckRoot {
 pub(crate) fn existing_check_root(
     build_runner: &mut BuildRunner<'_, '_>,
     unit: &Unit,
+    saved_ordinary_graph: bool,
 ) -> CargoResult<Option<ExistingCheckRoot>> {
     let fingerprint_path = build_runner.files().fingerprint_file_path(unit, "");
+    if saved_ordinary_graph {
+        match std::fs::symlink_metadata(&fingerprint_path) {
+            Ok(metadata) if metadata.is_file() => {}
+            // A package clean removes every fingerprint for this root. A sibling
+            // check may belong to an already warm promoted graph.
+            Err(err)
+                if err.kind() == io::ErrorKind::NotFound
+                    && unit.pkg.package_id().source_id().is_path()
+                    && !build_runner.check_fingerprints_might_exist(std::slice::from_ref(unit)) =>
+            {
+                return Ok(Some(ExistingCheckRoot::WorkspaceChanged));
+            }
+            _ => return Ok(None),
+        }
+    }
     let fingerprint = calculate(build_runner, unit)?;
 
     Ok(

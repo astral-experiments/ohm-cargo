@@ -231,7 +231,7 @@ fn compile_ws<'a>(
         crate::workspace::gc::auto_gc(ordinary_bcx.gctx);
         if let Some(compilation) =
             BuildRunner::new_with_checksum_reservations(&ordinary_bcx, reserve_checksum_slots)?
-                .compile_if_check_graph_is_reusable(exec)?
+                .compile_if_check_graph_is_reusable(exec, true)?
         {
             return Ok(compilation);
         }
@@ -259,7 +259,7 @@ fn compile_ws<'a>(
         crate::workspace::gc::auto_gc(hinted_bcx.gctx);
         let hinted =
             BuildRunner::new_with_checksum_reservations(&hinted_bcx, reserve_checksum_slots)?;
-        if let Some(compilation) = hinted.compile_if_check_graph_is_reusable(exec)? {
+        if let Some(compilation) = hinted.compile_if_check_graph_is_reusable(exec, false)? {
             return Ok(compilation);
         }
         let _ = std::fs::remove_file(hint);
@@ -319,7 +319,7 @@ fn compile_ws<'a>(
                     &ordinary_bcx,
                     reserve_checksum_slots,
                 )?
-                .compile_if_check_graph_is_reusable(exec)?
+                .compile_if_check_graph_is_reusable(exec, false)?
                 {
                     record_check_graph_hint(check_graph_hint.as_deref());
                     return Ok(compilation);
