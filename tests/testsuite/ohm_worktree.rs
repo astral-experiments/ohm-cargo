@@ -274,6 +274,78 @@ fn keeps_the_package_root_of_a_symlinked_manifest() {
     donor.cargo("check").cwd(child).run();
 }
 
+#[cfg(unix)]
+#[cargo_test]
+fn follows_package_directories_in_the_selected_commit() {
+    let (donor, repo) = git::new_repo("donor", |p| {
+        p.no_manifest()
+            .file(
+                "first/Cargo.toml",
+                &cargo_test_support::basic_manifest("app", "1.0.0"),
+            )
+            .file("first/src/lib.rs", "")
+    });
+    let root = donor.root();
+    let current = root.join("current");
+    std::os::unix::fs::symlink("first", &current).unwrap();
+    git::add(&repo);
+    let first = git::commit(&repo);
+    fs::rename(root.join("first"), root.join("second")).unwrap();
+    fs::remove_file(&current).unwrap();
+    std::os::unix::fs::symlink("second", &current).unwrap();
+    git::add(&repo);
+    git::commit(&repo);
+
+    let child = paths::root().join("child");
+    donor
+        .cargo("-Zohm-defaults worktree add --detach --manifest-path")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .arg(current.join("Cargo.toml"))
+        .arg(&child)
+        .arg(first.to_string())
+        .run();
+    donor
+        .cargo("check --manifest-path")
+        .arg(child.join("current/Cargo.toml"))
+        .run();
+}
+
+#[cfg(unix)]
+#[cargo_test]
+fn maps_a_donor_only_directory_alias_into_the_worktree() {
+    let donor = git::new("donor", |p| p.file("src/lib.rs", ""));
+    let local = donor.root().join("local");
+    fs::create_dir(&local).unwrap();
+    std::os::unix::fs::symlink("..", local.join("package")).unwrap();
+
+    donor
+        .cargo("-Zohm-defaults worktree add --detach --manifest-path")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .arg(local.join("package/Cargo.toml"))
+        .arg(paths::root().join("child"))
+        .run();
+}
+
+#[cfg(unix)]
+#[cargo_test]
+fn rejects_a_package_directory_pointing_back_to_the_donor() {
+    let (donor, repo) = git::new_repo("donor", |p| p.file("src/lib.rs", ""));
+    let alias = donor.root().join("current");
+    std::os::unix::fs::symlink(donor.root(), &alias).unwrap();
+    git::add(&repo);
+    git::commit(&repo);
+
+    donor
+        .cargo("-Zohm-defaults worktree add --detach --manifest-path")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .arg(alias.join("Cargo.toml"))
+        .arg(paths::root().join("child"))
+        .with_status(101)
+        .with_stderr_contains("[..]outside the new worktree[..]")
+        .run();
+    assert!(!donor.root().join("target").exists());
+}
+
 #[cargo_test]
 fn discovers_a_nested_package_in_a_sha256_repository() {
     let root = paths::root().join("donor");

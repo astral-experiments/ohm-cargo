@@ -67,13 +67,18 @@ pub fn worktree_add(gctx: &GlobalContext, opts: &WorktreeOptions) -> CargoResult
         "the new worktree must be outside the source worktree"
     );
 
-    let manifest = resolve_parent_dirs(donor.root_manifest(), gctx.cwd())?;
-    let manifest = destination.join(manifest.strip_prefix(&git_root)?);
-    let target = match &opts.target_dir {
-        Some(path) => resolve_parent_dirs(path, gctx.cwd())?,
-        None => manifest.parent().unwrap().join("target"),
-    };
-    ensure_absent(&target, "destination target directory")?;
+    let target = opts
+        .target_dir
+        .as_deref()
+        .map(|path| resolve_parent_dirs(path, gctx.cwd()))
+        .transpose()?;
+    if let Some(target) = &target {
+        ensure_absent(target, "destination target directory")?;
+        ensure!(
+            !destination.starts_with(target),
+            "destination target directory must not contain the new worktree"
+        );
+    }
     for protected in [
         git_root.clone(),
         donor.target_dir().into_path_unlocked(),
@@ -86,16 +91,14 @@ pub fn worktree_add(gctx: &GlobalContext, opts: &WorktreeOptions) -> CargoResult
             "worktree destination overlaps source storage: {}",
             protected.display()
         );
-        ensure!(
-            !target.starts_with(&protected) && !protected.starts_with(&target),
-            "destination target directory overlaps source storage: {}",
-            protected.display()
-        );
+        if let Some(target) = &target {
+            ensure!(
+                !target.starts_with(&protected) && !protected.starts_with(target),
+                "destination target directory overlaps source storage: {}",
+                protected.display()
+            );
+        }
     }
-    ensure!(
-        !destination.starts_with(&target),
-        "destination target directory must not contain the new worktree"
-    );
 
     git.arg("-C").arg(&git_root).args(&["worktree", "add"]);
     if let Some(branch) = &opts.branch {
@@ -111,9 +114,11 @@ pub fn worktree_add(gctx: &GlobalContext, opts: &WorktreeOptions) -> CargoResult
     }
     git.exec()?;
 
-    let seed = || -> CargoResult<Seeded> {
+    let seed = || -> CargoResult<(Seeded, PathBuf)> {
         // The selected commit may itself contain a target directory. Do not adopt it.
+        let manifest = manifest_in_worktree(donor.root_manifest(), &git_root, &destination)?;
         ensure_plain_descendants(&destination, manifest.parent().unwrap())?;
+        let target = target.unwrap_or_else(|| manifest.parent().unwrap().join("target"));
         ensure!(
             donor.canonical_build_path(&target) == target,
             "destination target directory changed through a checked-out symlink"
@@ -122,13 +127,13 @@ pub fn worktree_add(gctx: &GlobalContext, opts: &WorktreeOptions) -> CargoResult
         let mut recipient = Workspace::new(&manifest, gctx)?;
         recipient.set_target_dir(Filesystem::new(target.clone()));
         if gctx.cli_unstable().ohm_worktree_seeds() && donor.shared_registry_cache_enabled() {
-            return seed_shared_build(&donor, &recipient);
+            return Ok((seed_shared_build(&donor, &recipient)?, target));
         }
         #[cfg(any(target_os = "linux", target_os = "macos"))]
         register_created_target(&recipient, PrivateBuildLease::acquire(&recipient, false))?;
-        Ok(Seeded::default())
+        Ok((Seeded::default(), target))
     };
-    let seeded = seed().with_context(|| {
+    let (seeded, target) = seed().with_context(|| {
         format!(
             "worktree was created at {}, but build-state seeding failed",
             destination.display()
@@ -174,6 +179,53 @@ pub fn worktree_add(gctx: &GlobalContext, opts: &WorktreeOptions) -> CargoResult
     }
     gctx.shell().status("Target", target.display())?;
     Ok(())
+}
+
+/// Maps the package directory into the new checkout and keeps the manifest's final filename.
+fn manifest_in_worktree(
+    manifest: &Path,
+    git_root: &Path,
+    destination: &Path,
+) -> CargoResult<PathBuf> {
+    let mut recipient: Option<PathBuf> = None;
+    let parents = manifest.parent().unwrap().ancestors().collect::<Vec<_>>();
+    for directory in parents.into_iter().rev() {
+        let path = if let Some(parent) = &recipient {
+            let path = parent.join(directory.iter().next_back().unwrap());
+            // An alias local to the donor may be absent in a fresh Git checkout.
+            if directory.is_symlink()
+                && path
+                    .symlink_metadata()
+                    .is_err_and(|error| error.kind() == io::ErrorKind::NotFound)
+            {
+                destination.join(directory.canonicalize()?.strip_prefix(git_root)?)
+            } else {
+                path
+            }
+        } else {
+            // The caller can reach the Git repository through an external directory alias.
+            let physical = directory.canonicalize()?;
+            let Ok(relative) = physical.strip_prefix(git_root) else {
+                continue;
+            };
+            destination.join(relative)
+        };
+        let physical = if path.is_symlink() {
+            path.canonicalize()?
+        } else {
+            // A donor-only alias can live inside a directory Git did not copy.
+            physical_storage_path(&path, destination)?
+        };
+        ensure!(
+            physical.starts_with(destination),
+            "package directory `{}` is outside the new worktree `{}`",
+            physical.display(),
+            destination.display()
+        );
+        recipient = Some(physical);
+    }
+    let directory = recipient.context("workspace manifest is outside the source repository")?;
+    Ok(directory.join(manifest.file_name().unwrap()))
 }
 
 #[derive(Default)]
