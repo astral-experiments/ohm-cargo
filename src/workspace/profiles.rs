@@ -157,7 +157,6 @@ impl Profiles {
             ProfileMaker::new(
                 Profile::default_dev(ohm_defaults),
                 profiles.get("dev").cloned(),
-                ohm_defaults,
             ),
         );
 
@@ -166,7 +165,6 @@ impl Profiles {
             ProfileMaker::new(
                 Profile::default_release(trim_paths_enabled),
                 profiles.get("release").cloned(),
-                false,
             ),
         );
     }
@@ -301,11 +299,9 @@ impl Profiles {
     pub(crate) fn registry_observer_incremental(&self, pkg_id: PackageId) -> bool {
         self.incremental.unwrap_or_else(|| {
             let maker = self.get_profile_maker(&self.requested_profile).unwrap();
-            [false, true].into_iter().all(|for_host| {
-                maker
-                    .get_profile(Some(pkg_id), false, for_host, false)
-                    .incremental
-            })
+            [false, true]
+                .into_iter()
+                .all(|for_host| maker.get_profile(Some(pkg_id), false, for_host).incremental)
         })
     }
 
@@ -321,13 +317,7 @@ impl Profiles {
         kind: CompileKind,
     ) -> Profile {
         let maker = self.get_profile_maker(&self.requested_profile).unwrap();
-        let mut profile = maker.get_profile(
-            Some(pkg_id),
-            is_member,
-            unit_for.is_for_host(),
-            unit_for.proc_macro
-                && (pkg_id.source_id().is_registry() || pkg_id.source_id().is_git()),
-        );
+        let mut profile = maker.get_profile(Some(pkg_id), is_member, unit_for.is_for_host());
 
         // Dealing with `panic=abort` and `panic=unwind` requires some special
         // treatment. Be sure to process all the various options here.
@@ -415,9 +405,7 @@ impl Profiles {
     pub fn base_profile(&self) -> Profile {
         let profile_name = self.requested_profile;
         let maker = self.get_profile_maker(&profile_name).unwrap();
-        maker.get_profile(
-            None, /*is_member*/ true, /*is_for_host*/ false, false,
-        )
+        maker.get_profile(None, /*is_member*/ true, /*is_for_host*/ false)
     }
 
     /// Gets the directory name for a profile, like `debug` or `release`.
@@ -490,8 +478,6 @@ impl Profiles {
 struct ProfileMaker {
     /// The starting, hard-coded defaults for the profile.
     default: Profile,
-    /// Whether this profile optimizes prebuilt procedural macro dependencies.
-    optimize_proc_macros: bool,
     /// The TOML profile defined in `Cargo.toml` or config.
     ///
     /// This is None if the user did not specify one, in which case the
@@ -504,16 +490,8 @@ impl ProfileMaker {
     /// Creates a new `ProfileMaker`.
     ///
     /// Note that this does not process `inherits`, the caller is responsible for that.
-    fn new(
-        default: Profile,
-        toml: Option<TomlProfile>,
-        optimize_proc_macros: bool,
-    ) -> ProfileMaker {
-        ProfileMaker {
-            default,
-            toml,
-            optimize_proc_macros,
-        }
+    fn new(default: Profile, toml: Option<TomlProfile>) -> ProfileMaker {
+        ProfileMaker { default, toml }
     }
 
     /// Generates a new `Profile`.
@@ -522,7 +500,6 @@ impl ProfileMaker {
         pkg_id: Option<PackageId>,
         is_member: bool,
         is_for_host: bool,
-        prebuilt_proc_macro: bool,
     ) -> Profile {
         let mut profile = self.default.clone();
 
@@ -535,6 +512,14 @@ impl ProfileMaker {
         // Next start overriding those settings. First comes build dependencies
         // which default to opt-level 0...
         if is_for_host {
+            // For-host units are things like procedural macros, build scripts, and
+            // their dependencies. For these units most projects simply want them
+            // to compile quickly and the runtime doesn't matter too much since
+            // they tend to process very little data. For this reason we default
+            // them to a "compile as quickly as possible" mode which for now means
+            // basically turning down the optimization level and avoid limiting
+            // codegen units. This ensures that we spend little time optimizing as
+            // well as enabling parallelism by not constraining codegen units.
             profile.opt_level = "0".into();
             profile.codegen_units = None;
 
@@ -553,51 +538,30 @@ impl ProfileMaker {
         // ... and next comes any other sorts of overrides specified in
         // profiles, such as `[profile.release.build-override]` or
         // `[profile.release.package.foo]`
-        let explicit_host_level = self.toml.as_ref().is_some_and(|toml| {
-            merge_toml_overrides(pkg_id, is_member, is_for_host, &mut profile, toml)
-        });
-        if self.optimize_proc_macros
-            && prebuilt_proc_macro
-            && !explicit_host_level
-            && self.toml.as_ref().is_none_or(|toml| {
-                (toml.lto.is_none() || profile.lto == Lto::Off)
-                    && toml
-                        .opt_level
-                        .as_ref()
-                        .is_none_or(|level| level.0.as_str() == "1")
-            })
-            && profile.codegen_backend.is_none()
-            && profile.rustflags.is_empty()
-        {
-            profile.opt_level = "1".into();
-            profile.lto = Lto::Off;
+        if let Some(toml) = &self.toml {
+            merge_toml_overrides(pkg_id, is_member, is_for_host, &mut profile, toml);
         }
         profile
     }
 }
 
-/// Merge package and build overrides, returning whether an override chose the optimization level.
+/// Merge package and build overrides from the given TOML profile into the given `Profile`.
 fn merge_toml_overrides(
     pkg_id: Option<PackageId>,
     is_member: bool,
     is_for_host: bool,
     profile: &mut Profile,
     toml: &TomlProfile,
-) -> bool {
-    let mut explicit_level = false;
-    let mut apply = |overrides: &TomlProfile| {
-        explicit_level |= overrides.opt_level.is_some();
-        merge_profile(profile, overrides);
-    };
+) {
     if is_for_host {
         if let Some(build_override) = &toml.build_override {
-            apply(build_override);
+            merge_profile(profile, build_override);
         }
     }
     if let Some(overrides) = toml.package.as_ref() {
         if !is_member {
             if let Some(all) = overrides.get(&ProfilePackageSpec::All) {
-                apply(all);
+                merge_profile(profile, all);
             }
         }
         if let Some(pkg_id) = pkg_id {
@@ -614,7 +578,7 @@ fn merge_toml_overrides(
                     }
                 });
             if let Some(spec_profile) = matches.next() {
-                apply(spec_profile);
+                merge_profile(profile, spec_profile);
                 // `validate_packages` should ensure that there are
                 // no additional matches.
                 assert!(
@@ -625,7 +589,6 @@ fn merge_toml_overrides(
             }
         }
     }
-    explicit_level
 }
 
 /// Merge the given TOML profile into the given `Profile`.
@@ -1132,8 +1095,6 @@ pub struct UnitFor {
     /// build.rs` is `HOST=true`, `HOST_FEATURES=false` for the same reasons that
     /// foo's build script is set that way.
     host_features: bool,
-    /// Whether this library is loaded into the compiler as part of a procedural macro.
-    proc_macro: bool,
     /// How Cargo processes the `panic` setting or profiles.
     panic_setting: PanicSetting,
 
@@ -1181,7 +1142,6 @@ impl UnitFor {
         UnitFor {
             host: false,
             host_features: false,
-            proc_macro: false,
             panic_setting: PanicSetting::ReadProfile,
             root_compile_kind,
             artifact_target_for_features: None,
@@ -1198,20 +1158,11 @@ impl UnitFor {
         UnitFor {
             host: true,
             host_features,
-            proc_macro: false,
             // Force build scripts to always use `panic=unwind` for now to
             // maximally share dependencies with procedural macros.
             panic_setting: PanicSetting::AlwaysUnwind,
             root_compile_kind,
             artifact_target_for_features: None,
-        }
-    }
-
-    /// A procedural macro and the libraries it will execute during expansion.
-    pub fn new_proc_macro(root_compile_kind: CompileKind) -> UnitFor {
-        UnitFor {
-            proc_macro: true,
-            ..Self::new_host(true, root_compile_kind)
         }
     }
 
@@ -1223,7 +1174,6 @@ impl UnitFor {
             // plugins, so for now plugins don't split features. Since plugins
             // are mostly deprecated, just leave this as false.
             host_features: false,
-            proc_macro: false,
             // Force plugins to use `panic=abort` so panics in the compiler do
             // not abort the process but instead end with a reasonable error
             // message that involves catching the panic in the compiler.
@@ -1243,7 +1193,6 @@ impl UnitFor {
         UnitFor {
             host: false,
             host_features: false,
-            proc_macro: false,
             // We're testing out an unstable feature (`-Zpanic-abort-tests`)
             // which inherits the panic setting from the dev/release profile
             // (basically avoid recompiles) but historical defaults required
@@ -1310,7 +1259,6 @@ impl UnitFor {
         UnitFor {
             host: self.host || dep_for_host,
             host_features,
-            proc_macro: dep_target.proc_macro() || (self.proc_macro && dep_target.is_lib()),
             panic_setting,
             root_compile_kind,
             artifact_target_for_features,
@@ -1321,7 +1269,6 @@ impl UnitFor {
         UnitFor {
             host: true,
             host_features: self.host_features,
-            proc_macro: false,
             // Force build scripts to always use `panic=unwind` for now to
             // maximally share dependencies with procedural macros.
             panic_setting: PanicSetting::AlwaysUnwind,
@@ -1332,7 +1279,6 @@ impl UnitFor {
 
     /// Set the artifact compile target for use in features using the given `artifact`.
     pub(crate) fn with_artifact_features(mut self, artifact: &Artifact) -> UnitFor {
-        self.proc_macro = false;
         self.artifact_target_for_features = artifact.target().and_then(|t| t.to_compile_target());
         self
     }
