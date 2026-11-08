@@ -250,6 +250,7 @@ fn seed_shared_build(donor: &Workspace<'_>, recipient: &Workspace<'_>) -> CargoR
             seeded.files += profile_seeded.files;
             seeded.bytes += profile_seeded.bytes;
             seeded.reflinked_files += profile_seeded.reflinked_files;
+            seeded.skipped_profiles += profile_seeded.skipped_profiles;
         } else {
             seeded.unclonable_profiles += 1;
         }
@@ -330,7 +331,7 @@ fn seed_profile(
         clone_file,
     )? {
         stage.close()?;
-        return Ok(None);
+        return Ok(seeded.discarded_profile());
     }
     let staged_incremental = stage.path().join("incremental");
     let has_incremental = plain_directory(&incremental_source)?;
@@ -348,12 +349,22 @@ fn seed_profile(
             clone_file,
         )? {
             stage.close()?;
-            return Ok(None);
+            return Ok(seeded.discarded_profile());
         }
         fs::rename(&staged_incremental, &incremental_destination)?;
     }
     fs::rename(&staged_build, &destination)?;
     Ok(Some(seeded))
+}
+
+impl Seeded {
+    /// Discard staged file counts. An unsupported filesystem is reported separately by the caller.
+    fn discarded_profile(&self) -> Option<Self> {
+        (self.skipped_profiles != 0).then(|| Self {
+            skipped_profiles: self.skipped_profiles,
+            ..Self::default()
+        })
+    }
 }
 
 /// Enumerates the known host/profile and target/profile layouts without following links.
@@ -410,6 +421,12 @@ fn clone_tree(
         let name = entry.file_name();
         let text = name.to_string_lossy();
         let ty = entry.file_type()?;
+        if ty.is_file() && text.ends_with(".dwo") {
+            // The copied rlib or executable would still refer to the donor's absolute DWO path.
+            tracing::debug!(path = ?entry.path(), "rebuilding a profile with private split debug information");
+            seeded.skipped_profiles = 1;
+            return Ok(false);
+        }
         if text.ends_with("-working")
             || text == crate::compiler::OHM_WORKTREE_CLIPPY_DIRECTORY
             || text == ".cargo-workspace-lock"
@@ -707,6 +724,35 @@ mod tests {
             fs::write(destination, b"child")?;
             assert_eq!(fs::read(source)?, original);
         }
+        Ok(())
+    }
+
+    #[test]
+    fn private_split_debug_files_require_a_new_profile() -> CargoResult<()> {
+        let donor = tempfile::tempdir()?;
+        let recipient = tempfile::tempdir()?;
+        let unit = donor.path().join("debug/build/workspaces/donor/pkg/out");
+        fs::create_dir_all(&unit)?;
+        fs::write(unit.join("libpkg.rlib"), b"archive")?;
+        fs::write(unit.join("pkg.rcgu.dwo"), b"debug")?;
+        let seeded = seed_profile(
+            donor.path(),
+            recipient.path(),
+            Path::new("debug"),
+            "donor",
+            "recipient",
+            &|src, dst| {
+                fs::copy(src, dst)?;
+                Ok(true)
+            },
+        )?;
+        let skipped = seeded.unwrap();
+        assert_eq!(skipped.skipped_profiles, 1);
+        assert_eq!(skipped.files, 0);
+        assert_eq!(
+            fs::read_dir(recipient.path().join("debug/build/workspaces"))?.count(),
+            0
+        );
         Ok(())
     }
 
