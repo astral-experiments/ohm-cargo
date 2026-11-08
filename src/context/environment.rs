@@ -43,7 +43,7 @@ fn make_case_insensitive_and_normalized_env(
 /// This type contains the env var snapshot and helper methods for both APIs.
 ///
 /// [`GlobalContext`]: super::GlobalContext
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct Env {
     /// A snapshot of the process's environment variables.
     env: HashMap<OsString, OsString>,
