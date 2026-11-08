@@ -1141,6 +1141,17 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
             .join(&self.shared_registry_cache.as_ref().unwrap().workspace)
     }
 
+    /// A check and a native build can report the same observer. Keep different
+    /// compiler contexts, features and rustflags in distinct private histories.
+    pub(in crate::compiler) fn registry_observer_hint(&self, unit: &Unit) -> Option<PathBuf> {
+        self.shared_registry_cache.as_ref()?;
+        let key = util::short_hash(&(self.metadata(unit).c_metadata(), &unit.rustflags));
+        Some(
+            self.private_context_dir(unit)
+                .join(format!(".ohm-registry-observer-{key}")),
+        )
+    }
+
     /// Private units under this directory share a compiler and an artifact lease.
     pub(crate) fn private_context_dir(&self, unit: &Unit) -> PathBuf {
         self.worktree_seed_namespace(unit)
