@@ -762,15 +762,7 @@ fn ohm_rebuilds_missing_workspace_metadata_on_the_established_check_graph() {
         .with_stderr_contains("[CHECKING] application v0.0.1 [..]")
         .run();
     assert!(metadata.is_file());
-    let log = std::fs::read_to_string(paths::log_file(0)).unwrap();
-    assert_eq!(
-        log.lines()
-            .map(|line| serde_json::from_str::<serde_json::Value>(line).unwrap())
-            .filter(|event| event["reason"] == "unit-graph-started")
-            .count(),
-        1,
-        "{log}",
-    );
+    assert_eq!(ohm_logged_unit_graphs(0), 1);
 
     p.change_file("local/src/lib.rs", "pub fn value() -> u32 { false }");
     std::fs::remove_file(&metadata).unwrap();
@@ -778,6 +770,52 @@ fn ohm_rebuilds_missing_workspace_metadata_on_the_established_check_graph() {
         .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
         .with_status(101)
         .with_stderr_contains("[CHECKING] local v1.0.0 [..]")
+        .with_stderr_contains("error[E0308]: mismatched types")
+        .run();
+}
+
+fn ohm_logged_unit_graphs(index: usize) -> usize {
+    std::fs::read_to_string(paths::log_file(index))
+        .unwrap()
+        .lines()
+        .map(|line| serde_json::from_str::<serde_json::Value>(line).unwrap())
+        .filter(|event| event["reason"] == "unit-graph-started")
+        .count()
+}
+
+#[cargo_test]
+fn ohm_rechecks_a_cleaned_package_only_if_its_registry_graph_is_ready() {
+    let p = ohm_workspace_project();
+    p.cargo("-Zohm-reuse-built-deps check -p application")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .run();
+    let dependency = p
+        .glob("target/**/libdependency-*.rmeta")
+        .next()
+        .unwrap()
+        .unwrap();
+    p.cargo("build -p local").run();
+
+    let recheck = || {
+        p.cargo("clean -p application").run();
+        p.cargo("-Zohm-reuse-built-deps -Zbuild-analysis check -p application -v")
+            .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps", "build-analysis"])
+            .env("CARGO_BUILD_ANALYSIS_ENABLED", "true")
+            .with_stderr_contains("[CHECKING] application v0.0.1 [..]")
+            .run();
+    };
+    recheck();
+    assert_eq!(ohm_logged_unit_graphs(0), 1);
+
+    std::fs::remove_file(dependency).unwrap();
+    recheck();
+    assert!(ohm_logged_unit_graphs(1) > 1);
+
+    p.cargo("clean -p application").run();
+    p.change_file("local/src/lib.rs", "pub fn value() -> u32 { false }");
+    p.cargo("-Zohm-reuse-built-deps check -p application")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .with_status(101)
         .with_stderr_contains("error[E0308]: mismatched types")
         .run();
 }

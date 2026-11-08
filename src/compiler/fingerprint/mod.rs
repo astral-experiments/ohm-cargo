@@ -958,8 +958,23 @@ pub(crate) enum ExistingCheckRoot {
 pub(crate) fn existing_check_root(
     build_runner: &mut BuildRunner<'_, '_>,
     unit: &Unit,
+    saved_ordinary_graph: bool,
 ) -> CargoResult<Option<ExistingCheckRoot>> {
     let fingerprint_path = build_runner.files().fingerprint_file_path(unit, "");
+    if saved_ordinary_graph {
+        match std::fs::symlink_metadata(&fingerprint_path) {
+            Ok(metadata) if metadata.is_file() => {}
+            // A package clean removes the workspace root fingerprint along with its
+            // output. The caller still checks every registry unit on the saved graph.
+            Err(err)
+                if err.kind() == io::ErrorKind::NotFound
+                    && unit.pkg.package_id().source_id().is_path() =>
+            {
+                return Ok(Some(ExistingCheckRoot::WorkspaceChanged));
+            }
+            _ => return Ok(None),
+        }
+    }
     let fingerprint = calculate(build_runner, unit)?;
 
     Ok(
