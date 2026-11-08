@@ -1774,6 +1774,78 @@ impl SharedRegistryProjectExt for cargo_test_support::Project {
 }
 
 #[cargo_test]
+fn shared_registry_reports_native_search_paths_under_the_workspace_build_directory() {
+    Package::new("native-search-provider", "1.0.0")
+        .file("src/lib.rs", "")
+        .file(
+            "build.rs",
+            r#"
+            fn main() {
+                let out = std::path::PathBuf::from(std::env::var_os("OUT_DIR").unwrap());
+                let native = out.join("native");
+                std::fs::create_dir_all(&native).unwrap();
+                std::fs::write(native.join("native-proof"), "library").unwrap();
+                println!("cargo::rustc-link-search=native={}", native.display());
+                println!("cargo::rustc-link-search={}", native.display());
+                println!("cargo::rustc-link-search=dependency={}", native.join("native-proof").display());
+            }
+        "#,
+        )
+        .publish();
+    let p = project()
+        .file("Cargo.toml", "[package]\nname='client'\nversion='1.0.0'\nedition='2021'\n[dependencies]\nnative-search-provider='1.0.0'\n")
+        .file("src/lib.rs", "")
+        .build();
+    let shared = paths::root().join("registry-builds");
+    let cargo = |args: &str| {
+        let mut cmd = p.shared_registry_cargo(&format!("-Zohm-shared-registry-cache {args}"));
+        cmd.masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+            .env("CARGO_BUILD_BUILD_DIR", &shared);
+        cmd
+    };
+    let metadata = cargo("metadata --no-deps --format-version 1").run_json();
+    let build = PathBuf::from(metadata["build_directory"].as_str().unwrap());
+    for _ in 0..2 {
+        let output = cargo("check --message-format=json").run();
+        let script = String::from_utf8(output.stdout)
+            .unwrap()
+            .lines()
+            .map(|line| serde_json::from_str::<serde_json::Value>(line).unwrap())
+            .find(|message| message["reason"] == "build-script-executed")
+            .unwrap();
+        assert!(
+            walkdir::WalkDir::new(&shared)
+                .into_iter()
+                .map(Result::unwrap)
+                .any(|e| e.file_name() == "native-proof")
+        );
+        let search = script["linked_paths"][0]
+            .as_str()
+            .unwrap()
+            .strip_prefix("native=")
+            .unwrap();
+        let search = PathBuf::from(search);
+        assert_eq!(script["linked_paths"][1], search.to_str().unwrap());
+        let file = script["linked_paths"][2]
+            .as_str()
+            .unwrap()
+            .strip_prefix("dependency=")
+            .unwrap();
+        assert!(PathBuf::from(file).starts_with(&shared));
+        assert!(
+            search.starts_with(&build),
+            "{} is outside {}",
+            search.display(),
+            build.display()
+        );
+        assert_eq!(
+            std::fs::read_to_string(search.join("native-proof")).unwrap(),
+            "library"
+        );
+    }
+}
+
+#[cargo_test]
 fn shared_registry_cache_coalesces_concurrent_builds() {
     concurrent_shared_registry_misses("build", "env!(\"CARGO_PKG_VERSION\")", 1);
 }

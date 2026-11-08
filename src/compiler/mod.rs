@@ -2522,10 +2522,35 @@ fn add_plugin_deps(
 }
 
 fn get_dynamic_search_path(path: &Path) -> &Path {
+    split_dynamic_search_path(path).1
+}
+
+fn split_dynamic_search_path(path: &Path) -> (Option<&str>, &Path) {
     match path.to_str().and_then(|s| s.split_once("=")) {
-        Some(("native" | "crate" | "dependency" | "framework" | "all", path)) => Path::new(path),
-        _ => path,
+        Some((kind @ ("native" | "crate" | "dependency" | "framework" | "all"), path)) => {
+            (Some(kind), Path::new(path))
+        }
+        _ => (None, path),
     }
+}
+
+/// Resolves a search directory inside a Cargo-managed registry build script's output.
+fn shared_registry_search_path(dir: &Path, canonical_root: &Path) -> Option<PathBuf> {
+    let canonical = dir.canonicalize().ok()?;
+    let components: Vec<_> = canonical
+        .strip_prefix(canonical_root)
+        .ok()?
+        .components()
+        .map(|component| component.as_os_str())
+        .collect();
+    components
+        .windows(6)
+        .any(|directory| {
+            directory[0] == OsStr::new("build")
+                && directory[1] == OsStr::new("registries")
+                && directory[5] == OsStr::new("out")
+        })
+        .then_some(canonical)
 }
 
 // Determine paths to add to the dynamic search path from -L entries
@@ -2548,19 +2573,7 @@ where
         if dir.starts_with(&root_output) {
             search_path.push(dir.to_path_buf());
         } else if let Some(root) = &shared_registry_root
-            && let Ok(canonical) = dir.canonicalize()
-            && let Ok(relative) = canonical.strip_prefix(root)
-            && {
-                let components = relative
-                    .components()
-                    .map(|component| component.as_os_str())
-                    .collect::<Vec<_>>();
-                components.windows(6).any(|directory| {
-                    directory[0] == OsStr::new("build")
-                        && directory[1] == OsStr::new("registries")
-                        && directory[5] == OsStr::new("out")
-                })
-            }
+            && let Some(canonical) = shared_registry_search_path(dir, root)
         {
             search_path.push(canonical);
         } else {
