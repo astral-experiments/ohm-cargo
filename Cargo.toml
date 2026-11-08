@@ -246,6 +246,9 @@ libc.workspace = true
 cargo-credential-libsecret.workspace = true
 rustix = { version = "1.1.4", features = ["fs"] }
 
+[target.'cfg(all(target_os = "linux", target_env = "gnu", target_arch = "x86_64"))'.dependencies]
+mimalloc = { version = "0.1.52", default-features = false, features = ["no_thp", "v2"], optional = true }
+
 [target.'cfg(target_os = "macos")'.dependencies]
 cargo-credential-macos-keychain.workspace = true
 
@@ -297,7 +300,7 @@ doc = false
 
 [features]
 default = ["http-transport-curl"]
-ohm-defaults = ["dep:object"]
+ohm-defaults = ["dep:mimalloc", "dep:object"]
 vendored-openssl = ["openssl/vendored"]
 vendored-libgit2 = ["libgit2-sys/vendored"]
 # This is primarily used by rust-lang/rust distributing cargo the executable.
