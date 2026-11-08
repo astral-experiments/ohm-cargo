@@ -240,11 +240,37 @@ fn compile_ws<'a>(
         resources = ordinary_bcx.into();
     }
 
+    let try_registry_reuse = can_try_registry_reuse(ws, options);
+    let selective_hint = check_graph_hint
+        .as_ref()
+        .filter(|_| try_registry_reuse)
+        .map(|hint| hint.with_extension("selective-v1"));
+    if let Some(hint) = selective_hint.as_deref()
+        && let Some(rejected) = read_selective_check_graph(hint)
+    {
+        let hinted_interner = UnitInterner::new();
+        let hinted_bcx = create_bcx_with_registry_reuse(
+            &resolution,
+            resources,
+            &hinted_interner,
+            true,
+            &rejected,
+        )?;
+        crate::workspace::gc::auto_gc(hinted_bcx.gctx);
+        let hinted =
+            BuildRunner::new_with_checksum_reservations(&hinted_bcx, reserve_checksum_slots)?;
+        if let Some(compilation) = hinted.compile_if_check_graph_is_reusable(exec)? {
+            return Ok(compilation);
+        }
+        let _ = std::fs::remove_file(hint);
+        resources = hinted_bcx.into();
+    }
+
     let bcx = create_bcx_with_registry_reuse(
         &resolution,
         resources,
         &interner,
-        can_try_registry_reuse(ws, options),
+        try_registry_reuse,
         &HashSet::default(),
     )?;
 
@@ -330,7 +356,15 @@ fn compile_ws<'a>(
                     BuildRunner::new_with_checksum_reservations(&final_bcx, reserve_checksum_slots)?
                         .compile(exec, false)
                 }
-                result => result,
+                result => {
+                    if result.is_ok()
+                        && !ordinary_graph_selected
+                        && let Some(hint) = selective_hint.as_deref()
+                    {
+                        record_selective_check_graph(hint, &rejected_registry_packages);
+                    }
+                    result
+                }
             }
         }
         result => result,
@@ -339,6 +373,32 @@ fn compile_ws<'a>(
         record_check_graph_hint(check_graph_hint.as_deref());
     }
     result
+}
+
+// A megabyte accommodates thousands of package IDs. Larger selections can use
+// normal graph discovery without reading or writing an unbounded advisory file.
+const MAX_SELECTIVE_CHECK_GRAPH_BYTES: u64 = 1024 * 1024;
+
+/// A hint can exclude promotion candidates. Every included unit still requires its
+/// normal compiler provenance and locked fingerprint checks.
+fn read_selective_check_graph(hint: &Path) -> Option<HashSet<PackageId>> {
+    let data =
+        cargo_util::paths::read_regular_bounded(hint, MAX_SELECTIVE_CHECK_GRAPH_BYTES).ok()?;
+    let rejected: HashSet<PackageId> = serde_json::from_slice(&data).ok()?;
+    (!rejected.is_empty()).then_some(rejected)
+}
+
+/// Replace a previous selection only after its fallback completed successfully.
+fn record_selective_check_graph(hint: &Path, rejected: &HashSet<PackageId>) {
+    if rejected.is_empty() {
+        return;
+    }
+    if let Ok(data) = serde_json::to_vec(rejected)
+        && data.len() as u64 <= MAX_SELECTIVE_CHECK_GRAPH_BYTES
+        && std::fs::create_dir_all(hint.parent().unwrap()).is_ok()
+    {
+        let _ = cargo_util::paths::write_atomic_no_follow(hint, data);
+    }
 }
 
 /// Hints that this selection has an ordinary check graph worth validating first.
