@@ -946,15 +946,15 @@ pub(crate) fn existing_unit_is_fresh(
 pub(crate) enum ExistingCheckRoot {
     /// The root and its complete dependency graph are already up to date.
     Fresh,
-    /// Workspace source or an existing dependency changed and must be rebuilt.
+    /// The workspace root or an existing dependency needs recompilation.
     WorkspaceChanged,
 }
 
 /// Validates an existing root without hiding the normal rebuild it still requires.
 ///
-/// Missing artifacts and changed compiler options remain ineligible. A local
-/// source edit is checked before dependencies, so callers must independently
-/// validate registry units before preserving a dirty root's ordinary graph.
+/// A missing workspace metadata output can be rebuilt with the saved graph if
+/// the previous compiler fingerprint matches. Local changes are checked before
+/// dependencies, so callers independently validate registry units for dirty roots.
 pub(crate) fn existing_check_root(
     build_runner: &mut BuildRunner<'_, '_>,
     unit: &Unit,
@@ -965,6 +965,20 @@ pub(crate) fn existing_check_root(
     Ok(
         match _compare_old_fingerprint(&fingerprint_path, &fingerprint) {
             Ok(FingerprintComparison::Fresh) => Some(ExistingCheckRoot::Fresh),
+            Ok(FingerprintComparison::Dirty {
+                reason:
+                    DirtyReason::FsStatusOutdated(FsStatus::StaleItem(
+                        StaleItem::FailedToReadMetadata { path },
+                    )),
+            }) if unit.pkg.package_id().source_id().is_path()
+                && path.extension() == Some(OsStr::new("rmeta"))
+                && fingerprint.outputs.contains(&path)
+                && std::fs::symlink_metadata(&path)
+                    .is_err_and(|error| error.kind() == io::ErrorKind::NotFound)
+                && short_fingerprint_matches(&fingerprint_path, fingerprint.hash_u64()) =>
+            {
+                Some(ExistingCheckRoot::WorkspaceChanged)
+            }
             Ok(FingerprintComparison::Dirty {
                 reason:
                     DirtyReason::FsStatusOutdated(
