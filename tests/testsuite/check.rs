@@ -742,6 +742,47 @@ fn ohm_preserves_fresh_checks_after_building_the_same_graph() {
 }
 
 #[cargo_test]
+fn ohm_rebuilds_missing_workspace_metadata_on_the_established_check_graph() {
+    let p = ohm_workspace_project();
+    p.cargo("-Zohm-reuse-built-deps check -p application")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .run();
+    let metadata = p
+        .glob("target/**/libapplication-*.rmeta")
+        .next()
+        .unwrap()
+        .unwrap();
+    p.cargo("build -p local").run();
+
+    std::fs::remove_file(&metadata).unwrap();
+    p.cargo("-Zohm-reuse-built-deps -Zbuild-analysis check -p application -v")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps", "build-analysis"])
+        .env("CARGO_BUILD_ANALYSIS_ENABLED", "true")
+        .with_stderr_contains("[FRESH] local v0.0.1 [..]")
+        .with_stderr_contains("[CHECKING] application v0.0.1 [..]")
+        .run();
+    assert!(metadata.is_file());
+    let log = std::fs::read_to_string(paths::log_file(0)).unwrap();
+    assert_eq!(
+        log.lines()
+            .map(|line| serde_json::from_str::<serde_json::Value>(line).unwrap())
+            .filter(|event| event["reason"] == "unit-graph-started")
+            .count(),
+        1,
+        "{log}",
+    );
+
+    p.change_file("local/src/lib.rs", "pub fn value() -> u32 { false }");
+    std::fs::remove_file(&metadata).unwrap();
+    p.cargo("-Zohm-reuse-built-deps check -p application")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .with_status(101)
+        .with_stderr_contains("[CHECKING] local v0.0.1 [..]")
+        .with_stderr_contains("error[E0308]: mismatched types")
+        .run();
+}
+
+#[cargo_test]
 fn ohm_preserves_fresh_checks_when_test_registry_features_change() {
     Package::new("stable", "1.0.0")
         .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
