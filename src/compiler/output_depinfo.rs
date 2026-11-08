@@ -1,13 +1,15 @@
 //! dep-info files for external build system integration.
 //! See [`output_depinfo`] for more.
 
-use crate::util::data_structures::{HashMap, HashSet};
+use crate::util::data_structures::{IndexMap, IndexSet};
 use cargo_util::paths::normalize_path;
+use std::cell::OnceCell;
+use std::ffi::OsString;
 use std::io::{BufWriter, Write};
 use std::path::{Path, PathBuf};
 
 use super::{BuildRunner, FileFlavor, Unit, fingerprint};
-use crate::util::{CargoResult, internal};
+use crate::util::{CargoResult, OnceExt, internal};
 use cargo_util::paths;
 use tracing::debug;
 
@@ -32,55 +34,26 @@ fn render_filename<P: AsRef<Path>>(path: P, basedir: Option<&str>) -> CargoResul
     }
 }
 
-/// Collects all dependencies of the `unit` for the output dep info file.
-///
-/// Dependencies will be stored in `deps`, including:
-///
-/// * dependencies from [fingerprint dep-info]
-/// * paths from `rerun-if-changed` build script instruction
-/// * ...and traverse transitive dependencies recursively
-///
-/// [fingerprint dep-info]: super::fingerprint#fingerprint-dep-info-files
-fn add_deps_for_unit(
-    deps: &mut Vec<PathBuf>,
+/// Looks up the direct prerequisites once per unit, after all compiler jobs finish.
+fn unit_paths(
     build_runner: &BuildRunner<'_, '_>,
     unit: &Unit,
-    visited: &mut HashSet<Unit>,
-    dep_info_cache: &mut Option<HashMap<Unit, Vec<PathBuf>>>,
-) -> CargoResult<()> {
-    if !visited.insert(unit.clone()) {
-        return Ok(());
-    }
-
-    // units representing the execution of a build script don't actually
-    // generate a dep info file, so we just keep on going below
+    paths: &mut IndexSet<OsString>,
+) -> CargoResult<Vec<usize>> {
+    let mut deps = Vec::new();
     if !unit.mode.is_run_custom_build() {
-        if let Some(paths) = dep_info_cache.as_ref().and_then(|cache| cache.get(unit)) {
-            deps.extend(paths.iter().cloned());
-        } else {
-            // Add dependencies from rustc dep-info output (stored in fingerprint directory)
-            let dep_info_loc = fingerprint::dep_info_loc(build_runner, unit);
-            if let Some(paths) = fingerprint::dep_info_paths(
-                unit.pkg.root(),
-                &build_runner.files().build_root(unit),
-                &dep_info_loc,
-            ) {
-                if let Some(cache) = dep_info_cache.as_mut() {
-                    let paths: Vec<_> = paths.collect();
-                    deps.extend(paths.iter().cloned());
-                    cache.insert(unit.clone(), paths);
-                } else {
-                    deps.extend(paths);
-                }
-            } else {
-                debug!(
-                    "can't find dep_info for {:?} {}",
-                    unit.pkg.package_id(),
-                    unit.target
-                );
-                return Err(internal("dep_info missing"));
-            }
-        }
+        let dep_info_loc = fingerprint::dep_info_loc(build_runner, unit);
+        let build_root = build_runner.files().build_root(unit);
+        let Some(files) = fingerprint::dep_info_paths(unit.pkg.root(), &build_root, &dep_info_loc)
+        else {
+            debug!(
+                "can't find dep_info for {:?} {}",
+                unit.pkg.package_id(),
+                unit.target
+            );
+            return Err(internal("dep_info missing"));
+        };
+        deps.extend(files.map(|path| paths.insert_full(path.into_os_string()).0));
     }
 
     // Add rerun-if-changed dependencies
@@ -105,71 +78,82 @@ fn add_deps_for_unit(
                         package_root.join(path)
                     };
 
-                    deps.push(path);
+                    deps.push(paths.insert_full(path.into_os_string()).0);
                 }
             }
         }
     }
 
-    // Recursively traverse all transitive dependencies
+    Ok(deps)
+}
+
+/// Records each reachable local unit in the original depth-first order.
+fn collect_units(
+    build_runner: &BuildRunner<'_, '_>,
+    unit: &Unit,
+    units: &mut IndexSet<usize>,
+    dep_info_cache: &mut IndexMap<Unit, Vec<usize>>,
+    paths: &mut IndexSet<OsString>,
+) -> CargoResult<()> {
+    let index = if let Some(index) = dep_info_cache.get_index_of(unit) {
+        index
+    } else {
+        let deps = unit_paths(build_runner, unit, paths)?;
+        dep_info_cache.insert_full(unit.clone(), deps).0
+    };
+    if !units.insert(index) {
+        return Ok(());
+    }
     for dep in build_runner.unit_deps(unit) {
         if dep.unit.is_local() {
-            add_deps_for_unit(deps, build_runner, &dep.unit, visited, dep_info_cache)?;
+            collect_units(build_runner, &dep.unit, units, dep_info_cache, paths)?;
         }
     }
     Ok(())
 }
 
-/// Save a `.d` dep-info file for the given unit. This is the third kind of
-/// dep-info mentioned in [`fingerprint`] module.
+/// Saves external `.d` files for the build's uplifted artifacts.
 ///
-/// Argument `unit` is expected to be the root unit, which will be uplifted.
-///
-/// Cargo emits its own dep-info files in the output directory. This is
-/// only done for every "uplifted" artifact. These are intended to be used
-/// with external build systems so that they can detect if Cargo needs to be
-/// re-executed.
-///
-/// It includes all the entries from the `rustc` dep-info file, and extends it
-/// with any `rerun-if-changed` entries from build scripts. It also includes
-/// sources from any path dependencies. Registry dependencies are not included
-/// under the assumption that changes to them can be detected via changes to
-/// `Cargo.lock`.
-///
-/// Share `dep_info_cache` only across roots of the same completed build.
-///
-/// [`fingerprint`]: super::fingerprint#dep-info-files
-pub fn output_depinfo(
-    build_runner: &BuildRunner<'_, '_>,
-    unit: &Unit,
-    dep_info_cache: &mut Option<HashMap<Unit, Vec<PathBuf>>>,
-) -> CargoResult<()> {
-    let outputs = build_runner.outputs(unit)?;
-    let mut outputs = outputs
-        .iter()
-        .filter(|output| {
-            !matches!(
-                output.flavor,
-                FileFlavor::DebugInfo
-                    | FileFlavor::Auxiliary
-                    | FileFlavor::Sbom
-                    | FileFlavor::Unremap
-            )
-        })
-        .filter_map(|output| output.hardlink.as_ref())
-        .peekable();
-    if outputs.peek().is_none() {
+/// The prerequisites include rustc inputs and build-script `rerun-if-changed`
+/// paths from transitive local dependencies. Registry updates are represented
+/// by `Cargo.lock`. Compiler tasks must finish before their dep-info is read.
+pub fn output_depinfo(build_runner: &BuildRunner<'_, '_>) -> CargoResult<()> {
+    let mut paths = IndexSet::default();
+    let mut dep_info_cache = IndexMap::default();
+    let mut pending = Vec::new();
+    for unit in &build_runner.bcx.roots {
+        let outputs = build_runner.outputs(unit)?;
+        let destinations: Vec<_> = outputs
+            .iter()
+            .filter(|output| {
+                !matches!(
+                    output.flavor,
+                    FileFlavor::DebugInfo
+                        | FileFlavor::Auxiliary
+                        | FileFlavor::Sbom
+                        | FileFlavor::Unremap
+                )
+            })
+            .filter_map(|output| output.hardlink.clone())
+            .collect();
+        if destinations.is_empty() {
+            continue;
+        }
+        let mut units = IndexSet::default();
+        let success = collect_units(
+            build_runner,
+            unit,
+            &mut units,
+            &mut dep_info_cache,
+            &mut paths,
+        )
+        .is_ok();
+        pending.push((destinations, units, success));
+    }
+    if pending.is_empty() {
         return Ok(());
     }
-
     let bcx = build_runner.bcx;
-    let mut deps = Vec::new();
-    let mut visited = HashSet::default();
-    let success =
-        add_deps_for_unit(&mut deps, build_runner, unit, &mut visited, dep_info_cache).is_ok();
-    // A stable sort preserves the first spelling of equivalent paths.
-    deps.sort();
-    deps.dedup();
     let basedir_string;
     let basedir = match bcx.gctx.build_config()?.dep_info_basedir.clone() {
         Some(value) => {
@@ -183,13 +167,49 @@ pub fn output_depinfo(
         }
         None => None,
     };
-    let deps = deps
-        .iter()
-        .map(|f| render_filename(f, basedir))
-        .collect::<CargoResult<Vec<_>>>()?;
+    // Compare each distinct spelling in one workspace-wide sort. Path equality
+    // normalizes some spellings, so give those the same rank while retaining
+    // the first original spelling independently for each output.
+    let mut sorted: Vec<_> = (0..paths.len()).collect();
+    sorted.sort_unstable_by(|&a, &b| Path::new(&paths[a]).cmp(Path::new(&paths[b])));
+    let mut ranks = vec![0; paths.len()];
+    for (rank, group) in sorted
+        .chunk_by(|&a, &b| Path::new(&paths[a]) == Path::new(&paths[b]))
+        .enumerate()
+    {
+        for &id in group {
+            ranks[id] = rank;
+        }
+    }
+    let rendered = vec![OnceCell::new(); paths.len()];
+    for (outputs, units, success) in pending {
+        let mut deps = units
+            .into_iter()
+            .flat_map(|index| dep_info_cache[index].iter().copied())
+            .collect::<Vec<_>>();
+        deps.sort_by_key(|&id| ranks[id]);
+        deps.dedup_by_key(|id| ranks[*id]);
+        let deps = deps
+            .into_iter()
+            .map(|id| {
+                rendered[id]
+                    .try_borrow_with(|| render_filename(Path::new(&paths[id]), basedir))
+                    .map(String::as_str)
+            })
+            .collect::<CargoResult<Vec<_>>>()?;
+        write_depinfo(&outputs, &deps, basedir, success)?;
+    }
+    Ok(())
+}
 
+fn write_depinfo(
+    outputs: &[PathBuf],
+    deps: &[&str],
+    basedir: Option<&str>,
+    success: bool,
+) -> CargoResult<()> {
     // Preserve the legacy target selection for crate types sharing a dep-info path.
-    let single_output = outputs.clone().nth(1).is_none();
+    let single_output = outputs.len() == 1;
     for link_dst in outputs {
         let output_path = link_dst.with_extension("d");
         if success {
@@ -198,7 +218,7 @@ pub fn output_depinfo(
             if single_output {
                 let mut contents = Vec::new();
                 write!(contents, "{}:", target_fn)?;
-                for dep in &deps {
+                for dep in deps {
                     write!(contents, " {}", dep)?;
                 }
                 writeln!(contents)?;
@@ -223,7 +243,7 @@ pub fn output_depinfo(
 
                 let mut outfile = BufWriter::new(paths::create(output_path)?);
                 write!(outfile, "{}:", target_fn)?;
-                for dep in &deps {
+                for dep in deps {
                     write!(outfile, " {}", dep)?;
                 }
                 writeln!(outfile)?;
