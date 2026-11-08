@@ -8,14 +8,77 @@ use std::io::{Read, Write};
 use std::sync::{Mutex, OnceLock};
 
 const MAX_RECORD: usize = 256 * 1024;
+const AUTH_FILE: &str = ".ohm-prepared-manifest-key-v1";
+const AUTH_FORMAT: &[u8] = b"ohm-manifest-auth-v1\0";
 const MAX_TOML_FORMS: usize = 1024 * 1024;
 
 #[derive(Debug, Default)]
 pub(crate) struct Cache {
     pub(crate) enabled: bool,
-    pub(crate) settings: OnceLock<Option<(PathBuf, blake3::Hash)>>,
+    pub(crate) settings: OnceLock<Option<(PathBuf, blake3::Hash, AuthKey)>>,
     pub(crate) roots: Mutex<HashMap<PathBuf, blake3::Hash>>,
     pub(crate) target: OnceLock<PathBuf>,
+}
+
+/// The target may be restored independently of this Cargo home. Only its local writer can
+/// authenticate a validated record. Never expose the key through GlobalContext's Debug output.
+#[derive(Clone, Copy)]
+pub(crate) struct AuthKey([u8; 32]);
+
+impl std::fmt::Debug for AuthKey {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str("AuthKey")
+    }
+}
+
+impl AuthKey {
+    fn load(home: &Path, target: &Path) -> Option<Self> {
+        let home = home.canonicalize().ok()?;
+        if home.starts_with(target.canonicalize().ok()?) {
+            return None;
+        }
+        let path = home.join(AUTH_FILE);
+        if let Err(error) = path.symlink_metadata() {
+            if error.kind() != std::io::ErrorKind::NotFound {
+                return None;
+            }
+            let mut key = [0; 32];
+            std::fs::File::open("/dev/urandom")
+                .ok()?
+                .read_exact(&mut key)
+                .ok()?;
+            let mut temporary = tempfile::NamedTempFile::new_in(&home).ok()?;
+            temporary.write_all(AUTH_FORMAT).ok()?;
+            temporary.write_all(&key).ok()?;
+            match temporary.persist_noclobber(&path) {
+                Ok(_) => {}
+                Err(error) if error.error.kind() == std::io::ErrorKind::AlreadyExists => {}
+                Err(_) => return None,
+            }
+        }
+        let mut file = cargo_util::paths::open_regular(&path).ok()?;
+        let metadata = file.metadata().ok()?;
+        if !crate::workspace::parser::registry_cache::private(&metadata)
+            || metadata.len() != (AUTH_FORMAT.len() + 32) as u64
+        {
+            return None;
+        }
+        let mut prefix = [0; AUTH_FORMAT.len()];
+        file.read_exact(&mut prefix).ok()?;
+        if prefix != AUTH_FORMAT {
+            return None;
+        }
+        let mut key = [0; 32];
+        file.read_exact(&mut key).ok()?;
+        (key != [0; 32]).then_some(Self(key))
+    }
+
+    fn tag(&self, input: &blake3::Hash, payload: &[u8]) -> blake3::Hash {
+        let mut hasher = blake3::Hasher::new_keyed(&self.0);
+        hasher.update(input.as_bytes());
+        hasher.update(payload);
+        hasher.finalize()
+    }
 }
 
 #[derive(Debug)]
@@ -49,6 +112,7 @@ pub(crate) struct Entry {
     path: PathBuf,
     manifest: PathBuf,
     key: blake3::Hash,
+    auth: AuthKey,
     dependency_source: SourceId,
     before: OnceCell<u64>,
 }
@@ -95,7 +159,7 @@ impl Entry {
         } else {
             gctx.manifests.target.get().cloned()
         };
-        let (directory, salt) = gctx
+        let (directory, salt, auth) = gctx
             .manifests
             .settings
             .get_or_init(|| {
@@ -106,6 +170,7 @@ impl Entry {
                 };
                 let directory = target.join(".cargo-prepared-manifests-v1");
                 std::fs::create_dir_all(&directory).ok()?;
+                let auth = AuthKey::load(gctx.home().as_path_unlocked(), &target)?;
                 let mut hasher = blake3::Hasher::new();
                 hasher.update(env!("CARGO_PKG_VERSION").as_bytes());
                 hasher.update(option_env!("CARGO_COMMIT_HASH")?.as_bytes());
@@ -129,7 +194,7 @@ impl Entry {
                     hasher.update(value.as_bytes());
                     hasher.update(&[0]);
                 }
-                Some((directory, hasher.finalize()))
+                Some((directory, hasher.finalize(), auth))
             })
             .as_ref()?;
         // Keep one file per source path, replacing its older contents and settings.
@@ -154,6 +219,7 @@ impl Entry {
             path: directory.join(&slot.to_hex().as_str()[..32]),
             manifest: path.to_owned(),
             key,
+            auth: *auth,
             dependency_source,
             before: OnceCell::new(),
         })
@@ -187,7 +253,7 @@ impl Entry {
         }
         let payload = data.strip_prefix(self.key.as_bytes().as_slice())?;
         let (checksum, payload) = payload.split_at_checked(32)?;
-        if checksum != blake3::keyed_hash(self.key.as_bytes(), payload).as_bytes() {
+        if checksum != self.auth.tag(&self.key, payload).as_bytes() {
             return None;
         }
         let record: Record<'_> = postcard::from_bytes(payload).ok()?;
@@ -352,14 +418,17 @@ impl Entry {
         if encoded.len() > MAX_TOML_FORMS {
             return None;
         }
-        let verified: (TomlManifest, TomlManifest) = serde_json::from_slice(&encoded).ok()?;
-        if format!("{verified:?}") != format!("{forms:?}") {
-            return None;
-        }
         let mut encoder =
             flate2::write::DeflateEncoder::new(Vec::new(), flate2::Compression::fast());
         encoder.write_all(&encoded).ok()?;
         let normalized = encoder.finish().ok()?;
+        // Validate the compressed bytes that will be authenticated, using the reader's exact
+        // decoder and limit. A copied target cannot sign replacement bytes using its header.
+        let verified = StoredToml::decode(&normalized)?;
+        if format!("{verified:?}") != format!("{forms:?}") {
+            return None;
+        }
+
         let custom = serde_json::to_vec(&manifest.custom_metadata).ok()?;
         if serde_json::from_slice::<Option<toml::Value>>(&custom).ok()? != manifest.custom_metadata
         {
@@ -410,7 +479,7 @@ impl Entry {
         let mut temporary = tempfile::NamedTempFile::new_in(self.path.parent()?).ok()?;
         temporary.write_all(self.key.as_bytes()).ok()?;
         temporary
-            .write_all(blake3::keyed_hash(self.key.as_bytes(), &data).as_bytes())
+            .write_all(self.auth.tag(&self.key, &data).as_bytes())
             .ok()?;
         temporary.write_all(&data).ok()?;
         temporary.persist(&self.path).ok()?;
@@ -419,13 +488,104 @@ impl Entry {
 }
 
 impl StoredToml {
+    fn decode(compressed: &[u8]) -> Option<(TomlManifest, TomlManifest)> {
+        let mut bytes = Vec::new();
+        let decoded = flate2::read::DeflateDecoder::new(compressed)
+            .take(MAX_TOML_FORMS as u64 + 1)
+            .read_to_end(&mut bytes)
+            .ok()?;
+        if decoded > MAX_TOML_FORMS {
+            return None;
+        }
+        serde_json::from_slice(&bytes).ok()
+    }
+
     pub(super) fn forms(&self) -> &(TomlManifest, TomlManifest) {
         self.forms.get_or_init(|| {
-            let mut bytes = Vec::new();
-            flate2::read::DeflateDecoder::new(self.compressed_forms.as_slice())
-                .read_to_end(&mut bytes)
-                .expect("validated normalized manifest");
-            serde_json::from_slice(&bytes).expect("validated normalized manifest")
+            Self::decode(&self.compressed_forms)
+                .expect("the local writer validated the authenticated compressed manifest")
         })
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::os::unix::fs::PermissionsExt as _;
+
+    #[test]
+    fn key_creation_is_atomic_and_key_replacement_invalidates_the_tag() {
+        let home = tempfile::tempdir().unwrap();
+        let target = tempfile::tempdir().unwrap();
+        let input = blake3::hash(b"manifest");
+        let barrier = std::sync::Barrier::new(8);
+        let tags = std::thread::scope(|scope| {
+            let handles = (0..8)
+                .map(|_| {
+                    scope.spawn(|| {
+                        barrier.wait();
+                        AuthKey::load(home.path(), target.path())
+                            .unwrap()
+                            .tag(&input, b"payload")
+                    })
+                })
+                .collect::<Vec<_>>();
+            handles
+                .into_iter()
+                .map(|h| h.join().unwrap())
+                .collect::<Vec<_>>()
+        });
+        assert!(tags.iter().all(|tag| tag == &tags[0]));
+        assert_ne!(tags[0], blake3::keyed_hash(input.as_bytes(), b"payload"));
+        let path = home.path().join(AUTH_FILE);
+        std::fs::remove_file(&path).unwrap();
+        assert_ne!(
+            AuthKey::load(home.path(), target.path())
+                .unwrap()
+                .tag(&input, b"payload"),
+            tags[0]
+        );
+        assert!(AuthKey::load(home.path(), home.path()).is_none());
+        let malformed = vec![0; AUTH_FORMAT.len() + 32];
+        std::fs::write(&path, &malformed).unwrap();
+        assert!(AuthKey::load(home.path(), target.path()).is_none());
+        assert_eq!(std::fs::read(&path).unwrap(), malformed);
+        let moved = home.path().join("moved");
+        std::fs::rename(&path, &moved).unwrap();
+        std::os::unix::fs::symlink(&moved, &path).unwrap();
+        assert!(AuthKey::load(home.path(), target.path()).is_none());
+        assert!(path.is_symlink());
+    }
+
+    #[test]
+    fn read_only_home_reuses_an_existing_key_and_misses_without_one() {
+        let home = tempfile::tempdir().unwrap();
+        let target = tempfile::tempdir().unwrap();
+        let key = AuthKey::load(home.path(), target.path()).unwrap();
+        let permissions = home.path().metadata().unwrap().permissions();
+        std::fs::set_permissions(home.path(), std::fs::Permissions::from_mode(0o500)).unwrap();
+        assert_eq!(AuthKey::load(home.path(), target.path()).unwrap().0, key.0);
+        std::fs::set_permissions(home.path(), permissions.clone()).unwrap();
+        std::fs::remove_file(home.path().join(AUTH_FILE)).unwrap();
+        std::fs::set_permissions(home.path(), std::fs::Permissions::from_mode(0o500)).unwrap();
+        if tempfile::NamedTempFile::new_in(home.path()).is_err() {
+            assert!(AuthKey::load(home.path(), target.path()).is_none());
+        }
+        std::fs::set_permissions(home.path(), permissions).unwrap();
+    }
+
+    #[test]
+    fn compressed_forms_are_bounded_and_must_contain_the_typed_pair() {
+        for invalid in [
+            vec![0xff; 32],
+            b"[]".to_vec(),
+            vec![b' '; MAX_TOML_FORMS + 1],
+        ] {
+            let mut writer =
+                flate2::write::DeflateEncoder::new(Vec::new(), flate2::Compression::fast());
+            writer.write_all(&invalid).unwrap();
+            assert!(StoredToml::decode(&writer.finish().unwrap()).is_none());
+        }
+        assert!(StoredToml::decode(&[0xff; 32]).is_none());
     }
 }

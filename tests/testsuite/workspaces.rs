@@ -3699,6 +3699,40 @@ fn prepared_manifest_rechecks_workspace_settings_and_target_discovery() {
             .with_stderr_contains("[..]reusing prepared manifest [..]member/Cargo.toml")
             .run();
     }
+    if option_env!("CARGO_COMMIT_HASH").is_some() {
+        // Preserve the postcard record and damage only its compressed TOML. The target's
+        // previous self-checksum can be recomputed from its public header.
+        let directory = p.build_dir().join(".cargo-prepared-manifests-v1");
+        let entry = fs::read_dir(directory)
+            .unwrap()
+            .next()
+            .unwrap()
+            .unwrap()
+            .path();
+        let mut bytes = fs::read(&entry).unwrap();
+        let encoded = (64..bytes.len())
+            .find_map(|start| {
+                use std::io::Read as _;
+                let mut stream = flate2::read::DeflateDecoder::new(&bytes[start..]);
+                let mut json = Vec::new();
+                stream.by_ref().take(65536).read_to_end(&mut json).ok()?;
+                let forms: (serde_json::Value, serde_json::Value) =
+                    serde_json::from_slice(&json).ok()?;
+                (forms.0["package"]["name"] == "member")
+                    .then_some(start..start + stream.total_in() as usize)
+            })
+            .expect("the member record contains its complete manifest forms");
+        bytes[encoded].fill(0xff);
+        let key: [u8; 32] = bytes[..32].try_into().unwrap();
+        let forged = blake3::keyed_hash(&key, &bytes[64..]);
+        bytes[32..64].copy_from_slice(forged.as_bytes());
+        fs::write(&entry, &bytes).unwrap();
+        check().run();
+        assert_ne!(fs::read(&entry).unwrap(), bytes);
+        check()
+            .with_stderr_contains("[..]reusing prepared manifest [..]member/Cargo.toml")
+            .run();
+    }
     p.change_file(
         "member/tests/added.rs",
         "compile_error!(\"newly discovered target\");",
