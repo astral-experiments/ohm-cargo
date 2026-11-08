@@ -78,8 +78,8 @@ pub(crate) fn is_bind_descendant(
     if left_id == right_id {
         return Ok(false);
     }
-    let table = fs::read("/proc/self/mountinfo")
-        .context("could not resolve worktree storage across mounts")?;
+    let table =
+        fs::read("/proc/self/mountinfo").context("could not resolve storage across mounts")?;
     let locate = |file: &File, id| {
         // Use the kernel's spelling for both the path and its mountpoint.
         let path = fs::read_link(format!("/proc/self/fd/{}", file.as_raw_fd()))?;
