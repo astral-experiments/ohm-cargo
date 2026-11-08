@@ -3036,6 +3036,27 @@ fn workspace_resolve_cache_reuses_unchanged_workspace() {
         .run();
 }
 
+#[cfg(unix)]
+#[cargo_test]
+fn workspace_resolve_cache_survives_switching_workspace_wrappers() {
+    let project = workspace_resolve_cache_project();
+    let check = || workspace_resolve_cache_command(&project, "check -p selected");
+    check().run();
+    check().env("RUSTC_WORKSPACE_WRAPPER", "env").run();
+
+    let full_resolve =
+        "[..]resolve_with_registry:resolve_with_previous:register_patch_entries:[..]";
+    check()
+        .with_stderr_contains(WORKSPACE_RESOLVE_CACHE_HIT)
+        .with_stderr_does_not_contain(full_resolve)
+        .run();
+    check()
+        .env("RUSTC_WORKSPACE_WRAPPER", "env")
+        .with_stderr_contains(WORKSPACE_RESOLVE_CACHE_HIT)
+        .with_stderr_does_not_contain(full_resolve)
+        .run();
+}
+
 #[cargo_test]
 fn workspace_resolve_cache_applies_edited_profiles() {
     let manifest = format!(
