@@ -48,12 +48,13 @@ pub fn worktree_add(gctx: &GlobalContext, opts: &WorktreeOptions) -> CargoResult
     ] {
         git.env_remove(variable);
     }
+    // Start both Git commands at the workspace. With core.worktree, Git can
+    // report a root from which it would discover an enclosing repository.
+    git.cwd(donor.root())
+        .env_remove("GIT_CEILING_DIRECTORIES")
+        .env("GIT_DISCOVERY_ACROSS_FILESYSTEM", "1");
     let output = git
         .clone()
-        .cwd(donor.root())
-        // Discover from the selected manifest across mounts, independently of the caller's ceiling.
-        .env_remove("GIT_CEILING_DIRECTORIES")
-        .env("GIT_DISCOVERY_ACROSS_FILESYSTEM", "1")
         .args(&["rev-parse", "--show-toplevel"])
         .exec_with_output()
         .context("`cargo worktree` requires a Git working tree")?;
@@ -100,7 +101,7 @@ pub fn worktree_add(gctx: &GlobalContext, opts: &WorktreeOptions) -> CargoResult
         }
     }
 
-    git.arg("-C").arg(&git_root).args(&["worktree", "add"]);
+    git.args(&["worktree", "add"]);
     if let Some(branch) = &opts.branch {
         git.arg("-b").arg(branch);
     }
