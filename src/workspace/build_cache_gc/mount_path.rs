@@ -83,13 +83,7 @@ impl MountPath {
 
     #[cfg(target_os = "linux")]
     fn open_before_openat2(root: &File, name: &Path, flags: OFlags) -> io::Result<File> {
-        fn mount_id(file: &File) -> io::Result<u64> {
-            let info = std::fs::read_to_string(format!("/proc/self/fdinfo/{}", file.as_raw_fd()))?;
-            info.lines()
-                .find_map(|line| line.strip_prefix("mnt_id:"))
-                .and_then(|id| id.trim().parse().ok())
-                .ok_or(io::ErrorKind::Unsupported.into())
-        }
+        use crate::util::mountinfo::fd_mount_id as mount_id;
         let expected = mount_id(root)?;
         let mut parent = root.try_clone()?;
         let mut components = name.components().peekable();

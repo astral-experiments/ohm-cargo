@@ -679,6 +679,49 @@ fn missing_parent_components_do_not_hide_overlapping_storage() {
 }
 
 #[cargo_test]
+fn missing_target_aliases_are_rejected_before_creating_the_checkout() {
+    let donor = git::new("donor", |p| p.file("src/lib.rs", "pub fn value() {}"));
+    let root = paths::root();
+    let probe = tempfile::tempdir_in(&root).unwrap();
+    for (index, (name, other)) in [("Artifacts", "ARTIFACTS"), ("Café", "Cafe\u{301}")]
+        .into_iter()
+        .enumerate()
+    {
+        fs::create_dir(probe.path().join(name)).unwrap();
+        let aliases = probe.path().join(other).is_dir();
+        fs::remove_dir(probe.path().join(name)).unwrap();
+
+        for (relation, donor_suffix, recipient_suffix) in [
+            ("equal", "private", "private"),
+            ("ancestor", "private/child", "private"),
+            ("descendant", "private", "private/child"),
+            ("siblings", "private", "other"),
+        ] {
+            let area = root.join(format!("storage-{index}-{relation}"));
+            let destination = root.join(format!("checkout-{index}-{relation}"));
+            let mut command = donor.cargo("-Zohm-defaults worktree add --detach");
+            command
+                .masquerade_as_nightly_cargo(&["ohm-defaults"])
+                .env("CARGO_TARGET_DIR", area.join(name).join(donor_suffix))
+                .arg(&destination)
+                .arg("--target-dir")
+                .arg(area.join(other).join(recipient_suffix));
+            let overlap = aliases && relation != "siblings";
+            if overlap {
+                command.with_status(101).with_stderr_contains(
+                    "[ERROR] destination target directory overlaps source storage: [..]",
+                );
+            }
+            command.run();
+            assert_eq!(destination.join(".git").is_file(), !overlap);
+            if overlap {
+                assert!(!area.exists());
+            }
+        }
+    }
+}
+
+#[cargo_test]
 fn destination_target_must_be_independent_of_the_donor() {
     let donor = git::new("donor", |p| p.file("src/lib.rs", "pub fn value() {}"));
     let destination = paths::root().join("seeded");
