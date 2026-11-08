@@ -27,6 +27,7 @@ use crate::sources::{CRATES_IO_INDEX, CRATES_IO_REGISTRY, PathSource, SourceConf
 use crate::util::edit_distance;
 use crate::util::errors::{CargoResult, ManifestError};
 use crate::util::interning::InternedString;
+use crate::util::storage_path;
 use crate::util::{Filesystem, GlobalContext, IntoUrl, closest_msg};
 use crate::workspace::features::Features;
 use crate::workspace::parser::{InheritableFields, read_manifest};
@@ -233,6 +234,14 @@ pub(crate) struct SharedCacheAncestor {
     pub build_lock: PathBuf,
     #[serde(with = "shared_cache_path")]
     pub artifact_lock: PathBuf,
+}
+
+impl SharedCacheAncestor {
+    /// An ancestor's target and build directories already exist while it holds their locks.
+    fn owns_root(&self, root: &Path) -> CargoResult<bool> {
+        Ok(storage_path::same_file(root, &self.build_root)?
+            || storage_path::same_file(root, &self.target_root)?)
+    }
 }
 
 /// Keep inherited paths lossless on Unix, including non-UTF-8 directory names.
@@ -601,17 +610,15 @@ impl<'gctx> Workspace<'gctx> {
             return Ok(());
         }
         let build_root = self.canonical_build_path(self.configured_build_dir().as_path_unlocked());
-        if !ancestors
-            .iter()
-            .any(|ancestor| ancestor.build_root == build_root || ancestor.target_root == build_root)
-        {
-            return Ok(());
+        for ancestor in ancestors {
+            if ancestor.owns_root(&build_root)? {
+                // Pin the default before enabling the override: embedded manifests
+                // derive their default target from the build directory.
+                self.target_dir = Some(self.target_dir());
+                self.nested_shared_cache = true;
+                break;
+            }
         }
-        // Pin the default before enabling the override: embedded manifests derive their
-        // default target from the build directory. Later target overrides remain effective.
-        let target = self.target_dir();
-        self.target_dir = Some(target);
-        self.nested_shared_cache = true;
         Ok(())
     }
 
@@ -622,13 +629,12 @@ impl<'gctx> Workspace<'gctx> {
             return Ok(());
         }
         let target = self.canonical_build_path(self.target_dir().as_path_unlocked());
-        if ancestors
-            .iter()
-            .any(|ancestor| ancestor.build_root == target || ancestor.target_root == target)
-        {
-            bail!(
-                "nested Cargo requires a target directory separate from its parent's build and target directories"
-            );
+        for ancestor in ancestors {
+            if ancestor.owns_root(&target)? {
+                bail!(
+                    "nested Cargo requires a target directory separate from its parent's build and target directories"
+                );
+            }
         }
         Ok(())
     }
@@ -645,14 +651,16 @@ impl<'gctx> Workspace<'gctx> {
         }
         let build = self.canonical_build_path(build);
         let artifact = self.canonical_build_path(artifact);
-        if ancestors.iter().any(|ancestor| {
-            [&ancestor.build_lock, &ancestor.artifact_lock]
-                .into_iter()
-                .any(|held| *held == build || *held == artifact)
-        }) {
-            bail!(
-                "nested Cargo requires a target directory separate from its parent's build and target directories"
-            );
+        for ancestor in ancestors {
+            for held in [&ancestor.build_lock, &ancestor.artifact_lock] {
+                if storage_path::same_file(held, &build)?
+                    || storage_path::same_file(held, &artifact)?
+                {
+                    bail!(
+                        "nested Cargo requires a target directory separate from its parent's build and target directories"
+                    );
+                }
+            }
         }
         Ok(())
     }
