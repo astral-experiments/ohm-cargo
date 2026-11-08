@@ -1036,6 +1036,23 @@ fn ohm_native_dev_line_tables() {
             serde_json::json!(expected)
         );
     }
+    p.change_file("src/main.rs", "fn main() {}");
+    let graph = p
+        .cargo("test --no-run --unit-graph -Zunstable-options -Zohm-defaults=yes")
+        .masquerade_as_nightly_cargo(&["unit-graph", "ohm-defaults"])
+        .run_json();
+    let mut library = false;
+    let mut harness = false;
+    for unit in graph["units"].as_array().unwrap() {
+        let rlib = unit["mode"] == "build" && unit["target"]["kind"] == serde_json::json!(["lib"]);
+        library |= rlib;
+        harness |= unit["mode"] == "test";
+        assert_eq!(
+            unit["profile"]["split_debuginfo"],
+            serde_json::json!(rlib.then_some("unpacked"))
+        );
+    }
+    assert!(library && harness);
 }
 
 #[cargo_test]

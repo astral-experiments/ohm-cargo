@@ -11,8 +11,8 @@ Codex.
 Use Ohm only for local development, and at your own risk. Never use it for production builds or
 releases, and always verify your work with the official Rust toolchain.
 
-On native `x86_64-unknown-linux-gnu` development and test builds, Ohm keeps
-`line-tables-only` debug data in per-object `.dwo` files. This reduces the debug
+On native `x86_64-unknown-linux-gnu` development and test builds, Ohm keeps the
+`line-tables-only` debug data for Rust libraries in per-object `.dwo` files. This reduces the debug
 data the linker processes after an edit. Keep the build directory available to
 debuggers when moving a development executable. Set `split-debuginfo = "off"`
 in the development profile to embed the debug information in the executable.

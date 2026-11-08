@@ -21,7 +21,7 @@
 //! The precedence is explained in [`ProfileMaker`].
 //! The algorithm happens within [`ProfileMaker::get_profile`].
 
-use crate::compiler::{CompileKind, CompileTarget, Unit};
+use crate::compiler::{CompileKind, CompileMode, CompileTarget, CrateType, Unit};
 use crate::context;
 use crate::resolver::Resolve;
 use crate::resolver::features::FeaturesFor;
@@ -31,7 +31,9 @@ use crate::util::{CargoResult, GlobalContext, closest_msg};
 use crate::workspace::Feature;
 use crate::workspace::dependency::Artifact;
 use crate::workspace::parser::validate_profile;
-use crate::workspace::{PackageId, PackageIdSpec, PackageIdSpecQuery, Target, Workspace};
+use crate::workspace::{
+    PackageId, PackageIdSpec, PackageIdSpecQuery, Target, TargetKind, Workspace,
+};
 use anyhow::{Context as _, bail};
 use cargo_util::is_ci;
 use cargo_util_schemas::manifest::TomlTrimPaths;
@@ -324,21 +326,13 @@ impl Profiles {
             PanicSetting::ReadProfile => {}
         }
 
-        // Unpacked debug information avoids running dsymutil on macOS. For native ELF
-        // builds, keeping line-table data beside each object also reduces relinking work.
+        // Unpacked debug information avoids running dsymutil on macOS.
         if profile.debuginfo.is_turned_on() && profile.split_debuginfo.is_none() {
             let target = match &kind {
                 CompileKind::Host => self.rustc_host.as_str(),
                 CompileKind::Target(target) => target.short_name(),
             };
-            let native_line_tables = self.unpack_linux_line_tables
-                && profile.root == ProfileRoot::Debug
-                && profile.debuginfo.into_inner() == TomlDebugInfo::LineTablesOnly
-                && match kind {
-                    CompileKind::Host => true,
-                    CompileKind::Target(target) => target.rustc_target() == self.rustc_host,
-                };
-            if target.contains("-apple-") || native_line_tables {
+            if target.contains("-apple-") {
                 profile.split_debuginfo = Some("unpacked".into());
             }
         }
@@ -359,6 +353,34 @@ impl Profiles {
         }
         profile.name = self.requested_profile;
         profile
+    }
+
+    /// Keep rlib line tables beside their objects. Executables and test harnesses can
+    /// refer to invocation-specific temporary objects retained for link-only rebuilds.
+    pub(crate) fn set_library_line_tables(
+        &self,
+        profile: &mut Profile,
+        target: &Target,
+        kind: CompileKind,
+        mode: CompileMode,
+    ) {
+        if self.unpack_linux_line_tables
+            && profile.split_debuginfo.is_none()
+            && profile.root == ProfileRoot::Debug
+            && profile.debuginfo.into_inner() == TomlDebugInfo::LineTablesOnly
+            && matches!(
+                mode,
+                CompileMode::Build | CompileMode::Check { test: false }
+            )
+            && matches!(target.kind(), TargetKind::Lib(kinds)
+                if kinds.iter().all(|k| matches!(k, CrateType::Lib | CrateType::Rlib)))
+            && match kind {
+                CompileKind::Host => true,
+                CompileKind::Target(target) => target.rustc_target() == self.rustc_host,
+            }
+        {
+            profile.split_debuginfo = Some("unpacked".into());
+        }
     }
 
     /// The profile for *running* a `build.rs` script is only used for setting
