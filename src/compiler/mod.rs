@@ -2351,6 +2351,30 @@ fn downgrade_lock_to_shared(lock: LockKey) -> Work {
     })
 }
 
+/// Publishes a directory link inside a unique workspace build directory on a cold or fresh build.
+fn workspace_output_link(source: &Path, views: &Path, name: &str) -> CargoResult<PathBuf> {
+    let entry = views.join(crate::util::short_hash(&source));
+    let link = entry.join(name);
+    if !same_file::is_same_file(source, &link).unwrap_or(false) {
+        paths::create_dir_all(views)?;
+        let staging = tempfile::tempdir_in(views)?;
+        let staged_link = staging.path().join(name);
+        #[cfg(unix)]
+        std::os::unix::fs::symlink(source, &staged_link)?;
+        #[cfg(windows)]
+        junction::create(source, &staged_link)
+            .or_else(|_| std::os::windows::fs::symlink_dir(source, &staged_link))?;
+        if let Err(err) = std::fs::rename(staging.path(), &entry)
+            && !same_file::is_same_file(source, &link).unwrap_or(false)
+        {
+            return Err(err).with_context(|| {
+                format!("failed to expose build outputs at `{}`", entry.display())
+            });
+        }
+    }
+    Ok(link)
+}
+
 /// Link the compiled target (often of form `foo-{metadata_hash}`) to the
 /// final target. This must happen during both "Fresh" and "Compile".
 fn link_targets(
@@ -2386,6 +2410,17 @@ fn link_targets(
     let features = unit.features.iter().map(|s| s.to_string()).collect();
     let json_messages = bcx.build_config.emit_json();
     let executable = build_runner.get_executable(unit)?;
+    let test_output_views = (json_messages
+        && unit_mode.is_any_test()
+        && bcx.ws.shared_registry_cache_enabled())
+    .then(|| {
+        build_runner
+            .files()
+            .layout(unit.kind)
+            .build_dir()
+            .build()
+            .join(".ohm-test-binaries")
+    });
     let mut target = Target::clone(&unit.target);
     if let TargetSourcePath::Metabuild = target.src_path() {
         // Give it something to serialize.
@@ -2432,6 +2467,21 @@ fn link_targets(
         }
 
         if json_messages {
+            let mut executable = executable;
+            if let (Some(views), Some(path)) = (&test_output_views, &mut executable)
+                && path.is_file()
+            {
+                // Cargo JSON consumers recover the profile's dylib directory from
+                // `build/<package>/<unit>/out/<test>`. Keep the unit's sibling files together.
+                let original = path.parent().unwrap();
+                let view = workspace_output_link(original, views, "out")?;
+                for filename in &mut destinations {
+                    if let Ok(relative) = filename.strip_prefix(original) {
+                        *filename = view.join(relative);
+                    }
+                }
+                *path = view.join(path.file_name().unwrap());
+            }
             let debuginfo = match profile.debuginfo.into_inner() {
                 TomlDebugInfo::None => machine_message::ArtifactDebuginfo::Int(0),
                 TomlDebugInfo::Limited => machine_message::ArtifactDebuginfo::Int(1),

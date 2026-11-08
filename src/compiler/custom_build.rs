@@ -366,26 +366,11 @@ impl SharedLibraryPaths {
         };
         // Link its parent so archivers see the search directory itself as an ordinary directory.
         let parent = source.parent().unwrap();
-        let views = self.workspace_build.join(".ohm-native-search");
-        let entry = views.join(crate::util::short_hash(&parent));
-        let link = entry.join("root");
-        if !same_file::is_same_file(parent, &link).unwrap_or(false) {
-            paths::create_dir_all(&views)?;
-            let staging = tempfile::tempdir_in(&views)?;
-            let staged_link = staging.path().join("root");
-            #[cfg(unix)]
-            std::os::unix::fs::symlink(parent, &staged_link)?;
-            #[cfg(windows)]
-            junction::create(parent, &staged_link)
-                .or_else(|_| std::os::windows::fs::symlink_dir(parent, &staged_link))?;
-            if let Err(err) = std::fs::rename(staging.path(), &entry)
-                && !same_file::is_same_file(parent, &link).unwrap_or(false)
-            {
-                return Err(err).with_context(|| {
-                    format!("failed to expose native libraries at `{}`", entry.display())
-                });
-            }
-        }
+        let link = super::workspace_output_link(
+            parent,
+            &self.workspace_build.join(".ohm-native-search"),
+            "root",
+        )?;
         let visible = link.join(source.file_name().unwrap());
         Ok(match kind {
             Some(kind) => format!("{kind}={}", visible.display()),
