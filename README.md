@@ -16,6 +16,9 @@ On native `x86_64-unknown-linux-gnu` development and test builds, Ohm keeps the
 data the linker processes after an edit. Keep the build directory available to
 debuggers when moving a development executable. Set `split-debuginfo = "off"`
 in the development profile to embed the debug information in the executable.
+When a private build profile contains these files, `cargo worktree add` lets
+the recipient rebuild it with its own debug paths. Both worktrees can reuse
+immutable registry artifacts in their shared build directory.
 
 Ohm defaults enable native ThinLTO object caching for supported Linux builds. Cargo manages
 `<build-dir>/.ohm-thinlto-cache`, pruning it after builds to 2 GiB or 100,000 objects and expiring
