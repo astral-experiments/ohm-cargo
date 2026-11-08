@@ -44,9 +44,8 @@ impl SelectedSignature {
         if id.source_id().is_registry()
             && let Some((source, digest)) = gctx
                 .selected_index
-                .borrow()
-                .as_ref()
-                .and_then(|i| i.observed(id))
+                .current()
+                .and_then(|i| i.lock().unwrap().observed(id))
         {
             SelectedSignature::Index(source, digest)
         } else {
@@ -107,6 +106,7 @@ impl SelectedPlan {
         registry: &PackageRegistry<'_>,
         roots: &[(Summary, ResolveOpts)],
         version: ResolveVersion,
+        version_prefs: &crate::resolver::VersionPreferences,
         gctx: &crate::GlobalContext,
     ) -> Option<Resolve> {
         use std::io::Read as _;
@@ -132,11 +132,15 @@ impl SelectedPlan {
         if digest != blake3::hash(payload).as_bytes() {
             return None;
         }
-        let selected: Selection = postcard::from_bytes(payload).ok()?;
+        let selected: Selection = postcard::from_bytes(payload)
+            .inspect_err(|error| {
+                tracing::debug!("unable to decode a prior locked selection: {error}");
+            })
+            .ok()?;
         if selected.key != self.key {
             return None;
         }
-        *gctx.selected_index.borrow_mut() = Some(selected.index);
+        *gctx.selected_index.current()?.lock().unwrap() = selected.index;
         let ids = previous.iter().collect::<Vec<_>>();
         let roots = roots
             .iter()
@@ -161,10 +165,23 @@ impl SelectedPlan {
                         .into_iter();
                     match (matches.next(), matches.next()) {
                         (Some(IndexSummary::Candidate(s)), None) if s.package_id() == id => s,
-                        _ => return None,
+                        // The resolver permits a yanked version only when already preferred
+                        // from the lockfile. This path only considers fully locked selections.
+                        (Some(IndexSummary::Yanked(s)), None)
+                            if s.package_id() == id && version_prefs.should_prefer(&id) =>
+                        {
+                            s
+                        }
+                        _ => {
+                            tracing::debug!(
+                                "the source did not return one locked candidate for {id}"
+                            );
+                            return None;
+                        }
                     }
                 };
                 if SelectedSignature::for_summary(&summary, gctx) != pkg.signature {
+                    tracing::debug!("the locked source summary changed for {id}");
                     return None;
                 }
                 graph.add(id);
@@ -232,7 +249,7 @@ impl SelectedPlan {
                 dependencies,
             });
         }
-        let mut index = gctx.selected_index.borrow_mut().take().unwrap_or_default();
+        let mut index = std::mem::take(&mut *gctx.selected_index.current()?.lock().unwrap());
         index.finish_recording();
         let data = postcard::to_allocvec(&Selection {
             key: self.key,

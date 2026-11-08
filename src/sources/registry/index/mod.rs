@@ -21,7 +21,7 @@
 //! To learn the rationale behind this multi-layer index metadata loading,
 //! see [the documentation of the on-disk index cache](cache).
 mod selected;
-pub(crate) use selected::SelectedIndex;
+pub(crate) use selected::{SelectedIndex, SelectedIndexes};
 
 use crate::sources::registry::{LoadResponse, RegistryData};
 use crate::util::IntoUrl;
@@ -681,8 +681,11 @@ impl MaybeIndexSummary {
             MaybeIndexSummary::Parsed(summary) => return Ok(summary),
         };
         let raw = &raw_data[start..end];
-        let summary = if let Some(cache) = gctx.selected_index.borrow_mut().as_mut() {
-            cache.parse(raw, source_id, gctx.cli_unstable())?
+        let summary = if let Some(cache) = gctx.selected_index.current() {
+            cache
+                .lock()
+                .unwrap()
+                .parse(raw, source_id, gctx.cli_unstable())?
         } else {
             IndexSummary::parse(raw, source_id, gctx.cli_unstable())?
         };

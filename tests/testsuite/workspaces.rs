@@ -3024,6 +3024,45 @@ fn workspace_resolve_cache_command(
 }
 
 #[cargo_test]
+fn selected_resolution_honors_locked_yanked_versions() {
+    let checksum = Package::new("old", "1.0.0").yanked(true).publish();
+    let project = project()
+        .file(
+            "Cargo.toml",
+            &format!(
+                "{}\n[dependencies]\nold = '1'\n",
+                basic_manifest("selected", "0.1.0")
+            ),
+        )
+        .file("src/lib.rs", "")
+        .file(
+            "Cargo.lock",
+            &format!(
+                r#"version = 4
+
+[[package]]
+name = "old"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "{checksum}"
+
+[[package]]
+name = "selected"
+version = "0.1.0"
+dependencies = ["old"]
+"#
+            ),
+        )
+        .build();
+    let check = || workspace_resolve_cache_command(&project, "check --locked -p selected");
+    check().run();
+    check().run();
+    check()
+        .with_stderr_contains("[..]reusing locked package selection[..]")
+        .run();
+}
+
+#[cargo_test]
 fn selected_resolution_validates_features_and_damaged_cache() {
     Package::new("dependency", "1.0.0")
         .feature("fast", &[])

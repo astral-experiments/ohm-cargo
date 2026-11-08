@@ -630,34 +630,35 @@ fn resolve_with_previous_plan<'gctx>(
     let plan = workspace_fingerprint.and_then(|key| {
         resolve_cache::SelectedPlan::new(ws, key, cli_features, has_dev_units, specs)
     });
-    let previous_index = plan
-        .as_ref()
-        .map(|_| ws.gctx().selected_index.replace(Some(Default::default())));
-    let resolved = if let Some(cached) = plan
-        .as_ref()
-        .and_then(|plan| plan.load(previous?, registry, &summaries, version, ws.gctx()))
-    {
-        debug!("reusing locked package selection");
-        Ok(cached)
-    } else {
-        resolver::resolve(
-            &summaries,
-            &replace,
-            registry,
-            &version_prefs,
-            version,
-            ws.gctx(),
-        )
-        .inspect(|resolved| {
-            if let (Some(plan), Some(previous)) = (plan.as_ref(), previous) {
-                plan.store(previous, resolved, ws.gctx());
-            }
-        })
-    };
-    if let Some(previous_index) = previous_index {
-        ws.gctx().selected_index.replace(previous_index);
-    }
-    let mut resolved = resolved?;
+    let mut resolved = ws.gctx().selected_index.scoped(plan.is_some(), || {
+        if let Some(cached) = plan.as_ref().and_then(|plan| {
+            plan.load(
+                previous?,
+                registry,
+                &summaries,
+                version,
+                &version_prefs,
+                ws.gctx(),
+            )
+        }) {
+            debug!("reusing locked package selection");
+            Ok(cached)
+        } else {
+            resolver::resolve(
+                &summaries,
+                &replace,
+                registry,
+                &version_prefs,
+                version,
+                ws.gctx(),
+            )
+            .inspect(|resolved| {
+                if let (Some(plan), Some(previous)) = (plan.as_ref(), previous) {
+                    plan.store(previous, resolved, ws.gctx());
+                }
+            })
+        }
+    })?;
     let patches = registry.patches().values().flat_map(|v| v.iter());
     resolved.register_used_patches(patches);
 

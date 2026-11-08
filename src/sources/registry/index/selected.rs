@@ -3,6 +3,55 @@ use super::{
 };
 use crate::workspace::summary::PackedIndexSummary;
 
+use std::sync::{Arc, Mutex};
+use std::thread::{self, ThreadId};
+
+type SharedIndex = Arc<Mutex<SelectedIndex>>;
+
+/// A Cargo context may be shared between threads. Each synchronous resolver owns its
+/// registry queries on one thread, including while polling its local registry futures.
+#[derive(Default, Debug)]
+pub(crate) struct SelectedIndexes(Mutex<rustc_hash::FxHashMap<ThreadId, SharedIndex>>);
+
+impl SelectedIndexes {
+    pub(crate) fn current(&self) -> Option<SharedIndex> {
+        self.0.lock().unwrap().get(&thread::current().id()).cloned()
+    }
+
+    pub(crate) fn scoped<T>(&self, enabled: bool, run: impl FnOnce() -> T) -> T {
+        let owner = thread::current().id();
+        let previous = if enabled {
+            self.0.lock().unwrap().insert(owner, Arc::default())
+        } else {
+            self.0.lock().unwrap().remove(&owner)
+        };
+        if !enabled && previous.is_none() {
+            return run();
+        }
+        struct Restore<'a> {
+            indexes: &'a SelectedIndexes,
+            owner: ThreadId,
+            previous: Option<SharedIndex>,
+        }
+        impl Drop for Restore<'_> {
+            fn drop(&mut self) {
+                let mut scopes = self.indexes.0.lock().unwrap();
+                if let Some(previous) = self.previous.take() {
+                    scopes.insert(self.owner, previous);
+                } else {
+                    scopes.remove(&self.owner);
+                }
+            }
+        }
+        let _restore = Restore {
+            indexes: self,
+            owner,
+            previous,
+        };
+        run()
+    }
+}
+
 /// Decoded records from a previous resolution. The digest covers the entire raw index row,
 /// including its schema, yanked status and checksum, before source replacement or locking.
 #[derive(Debug, Default, serde::Serialize, serde::Deserialize)]
@@ -69,5 +118,35 @@ impl SelectedIndex {
             }
         }
         Ok(summary)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn selected_index_scopes_restore_and_isolate_resolvers() {
+        let scopes = SelectedIndexes::default();
+        scopes.scoped(true, || {
+            let outer = scopes.current().unwrap();
+            std::thread::scope(|threads| {
+                threads.spawn(|| {
+                    assert!(scopes.current().is_none());
+                    scopes.scoped(true, || {
+                        assert!(!Arc::ptr_eq(&outer, &scopes.current().unwrap()));
+                    });
+                });
+                assert!(
+                    std::panic::catch_unwind(|| scopes.scoped(false, || {
+                        assert!(scopes.current().is_none());
+                        panic!("resolve aborted");
+                    }))
+                    .is_err()
+                );
+            });
+            assert!(Arc::ptr_eq(&outer, &scopes.current().unwrap()));
+        });
+        assert!(scopes.current().is_none());
     }
 }
