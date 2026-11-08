@@ -17,6 +17,14 @@ data the linker processes after an edit. Keep the build directory available to
 debuggers when moving a development executable. Set `split-debuginfo = "off"`
 in the development profile to embed the debug information in the executable.
 
+In dev-derived profiles, Ohm builds registry and Git procedural macros and their library
+dependencies at optimization level 1 with per-crate ThinLTO disabled. Downstream source edits
+execute this code during macro expansion. The first build pays the optimization cost, and a
+library used by both a macro and a build script may need two compiled copies. The default applies
+to profiles with an implicit optimization level or level 1 and an implicit LTO mode or `lto = "off"`.
+Matching build and package optimization overrides take precedence. Path dependencies, build scripts, and
+their ordinary dependencies keep Cargo's existing profiles.
+
 Ohm defaults enable native ThinLTO object caching for supported Linux builds. Cargo manages
 `<build-dir>/.ohm-thinlto-cache`, pruning it after builds to 2 GiB or 100,000 objects and expiring
 entries unused for 30 days. Concurrent builds can temporarily exceed these limits. Compiler
