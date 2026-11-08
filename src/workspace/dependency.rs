@@ -845,3 +845,59 @@ impl PackedIndexDependency {
         })
     }
 }
+
+#[cfg(unix)]
+#[derive(serde::Serialize, serde::Deserialize)]
+pub(crate) struct ManifestDependency {
+    path: Option<std::path::PathBuf>,
+    any: bool,
+    specified: bool,
+}
+
+#[cfg(unix)]
+impl ManifestDependency {
+    pub(crate) fn encode(
+        mut dep: Dependency,
+        registry: SourceId,
+    ) -> Option<(Dependency, Option<Self>)> {
+        let path = if dep.source_id.full_eq(registry) {
+            None
+        } else {
+            let path = dep.source_id.local_path()?;
+            if !SourceId::for_path(&path).ok()?.full_eq(dep.source_id) {
+                return None;
+            }
+            Some(path)
+        };
+        let any = matches!(dep.version_req(), OptVersionReq::Any);
+        let specified = dep.specified_req();
+        if path.is_none() && !any && specified {
+            return Some((dep, None));
+        }
+        dep.source_id = registry;
+        let inner = Arc::make_mut(&mut dep.inner);
+        inner.specified_req = true;
+        if any {
+            inner.req = OptVersionReq::Req(semver::VersionReq::STAR);
+        }
+        Some((
+            dep,
+            Some(Self {
+                path,
+                any,
+                specified,
+            }),
+        ))
+    }
+    pub(crate) fn restore(self, mut dep: Dependency) -> Option<Dependency> {
+        if let Some(path) = self.path {
+            dep.source_id = SourceId::for_path(&path).ok()?;
+        }
+        let inner = Arc::make_mut(&mut dep.inner);
+        inner.specified_req = self.specified;
+        if self.any {
+            inner.req = OptVersionReq::Any;
+        }
+        Some(dep)
+    }
+}

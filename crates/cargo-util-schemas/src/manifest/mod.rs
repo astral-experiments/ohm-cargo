@@ -92,6 +92,20 @@ impl TomlManifest {
         .flatten()
     }
 
+    /// Cargo lints declared by the workspace and the package, respectively.
+    pub fn cargo_lints(&self) -> (Option<&TomlToolLints>, Option<&TomlToolLints>) {
+        let workspace = self
+            .workspace
+            .as_ref()
+            .and_then(|ws| ws.lints.as_ref())
+            .and_then(|lints| lints.get("cargo"));
+        let package = self
+            .lints
+            .as_ref()
+            .and_then(|lints| lints.lints.get("cargo"));
+        (workspace, package)
+    }
+
     pub fn has_profiles(&self) -> bool {
         self.profile.is_some()
     }

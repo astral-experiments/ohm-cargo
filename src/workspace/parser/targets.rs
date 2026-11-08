@@ -27,6 +27,7 @@ use crate::util::{closest_msg, errors::CargoResult, restricted_names};
 use crate::workspace::parser::deprecated_underscore;
 use crate::workspace::{Edition, Feature, Features, Target};
 
+const BUILD_RS: &str = "build.rs";
 const DEFAULT_TEST_DIR_NAME: &'static str = "tests";
 const DEFAULT_BENCH_DIR_NAME: &'static str = "benches";
 const DEFAULT_EXAMPLE_DIR_NAME: &'static str = "examples";
@@ -704,6 +705,26 @@ fn normalize_targets_with_legacy_path(
     }
 }
 
+/// Fingerprint the filesystem observations used by the modern target layout and the
+/// implicit build script and README. Use the same discovery functions as normalization.
+#[cfg(unix)]
+pub(crate) fn inferred_manifest_inputs(root: &Path) -> u64 {
+    use std::hash::{Hash, Hasher};
+    let mut hash = crate::util::StableHasher::new();
+    inferred_lib(root).hash(&mut hash);
+    inferred_bins(root, "").hash(&mut hash);
+    for directory in [
+        DEFAULT_EXAMPLE_DIR_NAME,
+        DEFAULT_TEST_DIR_NAME,
+        DEFAULT_BENCH_DIR_NAME,
+    ] {
+        infer_from_directory(root, Path::new(directory)).hash(&mut hash);
+    }
+    root.join(BUILD_RS).is_file().hash(&mut hash);
+    super::default_readme_from_package_root(root).hash(&mut hash);
+    Hasher::finish(&hash)
+}
+
 fn inferred_lib(package_root: &Path) -> Option<PathBuf> {
     let lib = Path::new("src").join("lib.rs");
     if package_root.join(&lib).exists() {
@@ -1097,7 +1118,6 @@ pub fn normalize_build(
     build: Option<&TomlPackageBuild>,
     package_root: &Path,
 ) -> CargoResult<Option<TomlPackageBuild>> {
-    const BUILD_RS: &str = "build.rs";
     match build {
         None => {
             // If there is a `build.rs` file next to the `Cargo.toml`, assume it is

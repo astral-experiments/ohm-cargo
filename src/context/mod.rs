@@ -119,6 +119,7 @@ pub use key::ConfigKey;
 
 mod config_value;
 pub use config_value::ConfigValue;
+pub(crate) use config_value::hash_config_table;
 use config_value::is_nonmergeable_list;
 
 mod path;
@@ -300,12 +301,20 @@ pub struct GlobalContext {
     global_cache_tracker: OnceLock<Mutex<GlobalCacheTracker>>,
     #[cfg(unix)]
     registry_manifest_cache: OnceLock<Option<PathBuf>>,
+    #[cfg(unix)]
+    pub(crate) manifests: crate::workspace::manifest::cache::Cache,
     /// A cache of modifications to make to [`GlobalContext::global_cache_tracker`],
     /// saved to disk in a batch to improve performance.
     deferred_global_last_use: OnceLock<Mutex<DeferredGlobalLastUse>>,
 }
 
 impl GlobalContext {
+    /// Reuse validated package manifests during a compilation command.
+    #[cfg(unix)]
+    pub fn enable_prepared_manifests(&mut self) {
+        self.manifests.enabled = self.cli_unstable().ohm_defaults();
+    }
+
     /// Creates a new config instance.
     ///
     /// This is typically used for tests or other special cases. `default` is
@@ -415,6 +424,8 @@ impl GlobalContext {
             global_cache_tracker: Default::default(),
             #[cfg(unix)]
             registry_manifest_cache: Default::default(),
+            #[cfg(unix)]
+            manifests: Default::default(),
             deferred_global_last_use: Default::default(),
         }
     }
@@ -699,6 +710,9 @@ impl GlobalContext {
         #[cfg(unix)]
         {
             self.registry_manifest_cache = OnceLock::new();
+            self.manifests.settings = OnceLock::new();
+            self.manifests.roots.lock().unwrap().clear();
+            self.manifests.target = OnceLock::new();
         }
         self.reload_rooted_at(self.cwd.clone())?;
         Ok(())
@@ -985,6 +999,10 @@ impl GlobalContext {
     /// Helper primarily for testing.
     pub fn set_env(&mut self, env: HashMap<String, String>) {
         self.env = Env::from_map(env);
+        #[cfg(unix)]
+        {
+            self.manifests.settings = OnceLock::new();
+        }
     }
 
     /// Returns all environment variables as an iterator,

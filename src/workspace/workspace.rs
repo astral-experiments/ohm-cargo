@@ -1399,7 +1399,7 @@ impl<'gctx> Workspace<'gctx> {
                     );
                     self.gctx.shell().warn(&msg)
                 };
-                if manifest.normalized_toml().has_profiles() {
+                if manifest.profiles().is_some() {
                     emit_warning("profiles")?;
                 }
                 if !manifest.replace().is_empty() {

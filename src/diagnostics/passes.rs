@@ -134,17 +134,7 @@ fn emit_parse_pkg_diagnostics(
 ) -> CargoResult<()> {
     let mut pkg_stats = global_stats.scope();
 
-    let toml_lints = pkg
-        .manifest()
-        .normalized_toml()
-        .lints
-        .clone()
-        .map(|lints| lints.lints)
-        .unwrap_or(manifest::TomlLints::default());
-    let cargo_lints = toml_lints
-        .get("cargo")
-        .cloned()
-        .unwrap_or(manifest::TomlToolLints::default());
+    let cargo_lints = pkg.manifest().cargo_lints().1.cloned().unwrap_or_default();
 
     for rule in rules {
         match rule {

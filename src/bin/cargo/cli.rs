@@ -98,6 +98,10 @@ fn main_with_matches(gctx: &mut GlobalContext, args: clap::ArgMatches) -> CliRes
             global_args,
             Some(&exec),
         )?;
+        #[cfg(unix)]
+        if matches!(cmd, "build" | "check" | "test") {
+            gctx.enable_prepared_manifests();
+        }
         super::register_git_initializer();
 
         exec.exec(gctx, subcommand_args)?;

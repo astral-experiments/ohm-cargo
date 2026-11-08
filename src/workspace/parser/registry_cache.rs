@@ -44,7 +44,7 @@ pub(crate) fn private_directory(home: &Path, name: &str) -> Option<PathBuf> {
     (meta.is_dir() && private(&meta)).then_some(directory)
 }
 
-fn private(meta: &fs::Metadata) -> bool {
+pub(in crate::workspace) fn private(meta: &fs::Metadata) -> bool {
     // SAFETY: geteuid has no arguments or memory-safety requirements.
     meta.uid() == unsafe { libc::geteuid() } && meta.mode() & 0o077 == 0
 }

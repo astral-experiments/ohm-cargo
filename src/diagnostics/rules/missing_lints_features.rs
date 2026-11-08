@@ -26,12 +26,12 @@ pub(crate) fn diagnose_manifest(
     pkg_stats: &mut ScopedDiagnosticStats<'_>,
     gctx: &GlobalContext,
 ) -> CargoResult<()> {
-    let normalized_toml = match &manifest {
-        ManifestFor::Package(pkg) => pkg.manifest().normalized_toml(),
+    let (ws_lints, pkg_lints) = match &manifest {
+        ManifestFor::Package(pkg) => pkg.manifest().cargo_lints(),
         ManifestFor::Workspace {
             maybe_pkg: MaybePackage::Virtual(vm),
             ..
-        } => vm.normalized_toml(),
+        } => vm.normalized_toml().cargo_lints(),
         ManifestFor::Workspace {
             maybe_pkg: MaybePackage::Package(_),
             ..
@@ -40,17 +40,6 @@ pub(crate) fn diagnose_manifest(
             return Ok(());
         }
     };
-
-    let ws_lints = normalized_toml
-        .workspace
-        .as_ref()
-        .and_then(|ws| ws.lints.as_ref())
-        .and_then(|lints| lints.get("cargo"));
-    let pkg_lints = normalized_toml
-        .lints
-        .as_ref()
-        .map(|lints| &lints.lints)
-        .and_then(|lints| lints.get("cargo"));
 
     if let Some(cargo_lints) = ws_lints {
         diagnose_manifest_inner(ws, &manifest, manifest_path, cargo_lints, pkg_stats, gctx)?;

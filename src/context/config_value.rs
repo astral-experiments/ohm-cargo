@@ -6,6 +6,7 @@
 use crate::util::data_structures::HashMap;
 use std::collections::hash_map::Entry;
 use std::fmt;
+use std::hash::Hash;
 use std::mem;
 
 use anyhow::Context as _;
@@ -308,4 +309,48 @@ impl ConfigValue {
 
 pub(super) fn is_nonmergeable_list(key: &ConfigKey) -> bool {
     NON_MERGEABLE_LISTS.iter().any(|l| key.matches(l))
+}
+
+/// Hash configuration values and their defining paths in stable key order.
+pub(crate) fn hash_config_table(
+    values: &HashMap<String, ConfigValue>,
+    hasher: &mut crate::util::StableHasher,
+) {
+    let mut entries: Vec<_> = values.iter().collect();
+    entries.sort_unstable_by_key(|(key, _)| *key);
+    entries.len().hash(hasher);
+    for (key, value) in entries {
+        key.hash(hasher);
+        hash_config_value(value, hasher);
+    }
+}
+
+fn hash_config_value(value: &ConfigValue, hasher: &mut crate::util::StableHasher) {
+    value.definition().to_string().hash(hasher);
+
+    match value {
+        ConfigValue::Integer(value, _) => {
+            0_u8.hash(hasher);
+            value.hash(hasher);
+        }
+        ConfigValue::String(value, _) => {
+            1_u8.hash(hasher);
+            value.hash(hasher);
+        }
+        ConfigValue::List(values, _) => {
+            2_u8.hash(hasher);
+            values.len().hash(hasher);
+            for value in values {
+                hash_config_value(value, hasher);
+            }
+        }
+        ConfigValue::Table(values, _) => {
+            3_u8.hash(hasher);
+            hash_config_table(values, hasher);
+        }
+        ConfigValue::Boolean(value, _) => {
+            4_u8.hash(hasher);
+            value.hash(hasher);
+        }
+    }
 }

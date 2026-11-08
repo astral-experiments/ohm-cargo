@@ -3673,3 +3673,44 @@ fn workspace_resolve_cache_allows_unselected_required_target_features() {
         .with_stderr_contains(WORKSPACE_RESOLVE_CACHE_HIT)
         .run();
 }
+
+#[cfg(unix)]
+#[cargo_test(nightly, reason = "Ohm defaults require the Ohm compiler")]
+fn prepared_manifest_rechecks_workspace_settings_and_target_discovery() {
+    let workspace = "[workspace]\nmembers=['member']\nresolver='2'\n[workspace.lints.rust]\nunused_variables='allow'\n";
+    let p = project()
+        .file("Cargo.toml", workspace)
+        .file(
+            "member/Cargo.toml",
+            "[package]\nname='member'\nversion='0.1.0'\nedition='2021'\n[lints]\nworkspace=true\n",
+        )
+        .file("member/src/lib.rs", "pub fn value() { let unused = 0; }\n")
+        .build();
+    let check = || {
+        let mut command = p.cargo("check --all-targets -Zohm-defaults=yes");
+        command.masquerade_as_nightly_cargo(&["ohm-defaults"]);
+        command.env("CARGO_TARGET_DIR", p.build_dir());
+        command.env("CARGO_LOG", "cargo::workspace::manifest::cache=debug");
+        command
+    };
+    check().run();
+    if option_env!("CARGO_COMMIT_HASH").is_some() {
+        check()
+            .with_stderr_contains("[..]reusing prepared manifest [..]member/Cargo.toml")
+            .run();
+    }
+    p.change_file(
+        "member/tests/added.rs",
+        "compile_error!(\"newly discovered target\");",
+    );
+    check()
+        .with_status(101)
+        .with_stderr_contains("[ERROR] newly discovered target")
+        .run();
+    fs::remove_file(p.root().join("member/tests/added.rs")).unwrap();
+    p.change_file("Cargo.toml", &workspace.replace("'allow'", "'deny'"));
+    check()
+        .with_status(101)
+        .with_stderr_contains("[ERROR] unused variable: `unused`")
+        .run();
+}
