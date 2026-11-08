@@ -296,7 +296,7 @@ fn deps_of_roots(roots: &[Unit], state: &mut State<'_, '_>) -> CargoResult<()> {
             // generates all units.
             UnitFor::new_host(false, root_compile_kind)
         } else if unit.target.proc_macro() {
-            UnitFor::new_host(true, root_compile_kind)
+            UnitFor::new_proc_macro(root_compile_kind)
         } else if unit.target.for_host() {
             // Plugin should never have panic set.
             UnitFor::new_compiler(root_compile_kind)

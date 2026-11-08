@@ -139,6 +139,13 @@ fn calculate(
         }
     };
 
+    // Host units and their rlibs can inherit object-only output even when their
+    // own profile explicitly disables per-crate ThinLTO.
+    let lto = match (lto, &unit.profile.lto) {
+        (Lto::OnlyObject, profiles::Lto::Off) => Lto::Off,
+        _ => lto,
+    };
+
     // Merge the computed LTO. If this unit appears multiple times in the
     // graph, the merge may expand the requirements.
     let merged_lto = match map.entry(unit.clone()) {
