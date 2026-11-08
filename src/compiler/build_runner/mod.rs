@@ -614,13 +614,13 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         !self.reused_registry_units.is_empty()
     }
 
-    /// Conservatively checks whether every root has an existing same-profile check.
+    /// Conservatively checks whether each requested root has an existing same-profile check.
     ///
     /// A speculative graph changes dependency metadata and therefore the root's
     /// fingerprint directory. Scan only siblings in the locked workspace/profile
     /// namespace; ambiguous entries retain the complete ordinary graph probe.
-    fn ordinary_check_might_exist(&self) -> bool {
-        self.bcx.roots.iter().all(|unit| {
+    pub(super) fn check_fingerprints_might_exist(&self, roots: &[Unit]) -> bool {
+        roots.iter().all(|unit| {
             if !unit.mode.is_check() {
                 return true;
             }
@@ -702,19 +702,23 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
     /// Keep the package-cache and workspace locks held while validating fingerprints and
     /// executing the selected graph. Consuming the runner also releases its workspace locks
     /// before an alternative graph is prepared when this graph cannot be reused.
+    /// A saved ordinary graph can also rebuild a workspace package whose check
+    /// fingerprint was removed by `cargo clean -p`.
     #[tracing::instrument(name = "compile", skip_all)]
     pub(crate) fn compile_if_check_graph_is_reusable(
         self,
         exec: &Arc<dyn Executor>,
+        saved_ordinary_graph: bool,
     ) -> CargoResult<Option<Compilation<'gctx>>> {
         self.retry_with_shared_cache_write_locks(|runner| {
-            runner.compile_if_check_graph_is_reusable_inner(exec)
+            runner.compile_if_check_graph_is_reusable_inner(exec, saved_ordinary_graph)
         })
     }
 
     fn compile_if_check_graph_is_reusable_inner(
         mut self,
         exec: &Arc<dyn Executor>,
+        saved_ordinary_graph: bool,
     ) -> CargoResult<Option<Compilation<'gctx>>> {
         if !matches!(self.bcx.build_config.intent, UserIntent::Check { .. })
             || self.bcx.build_config.force_rebuild
@@ -730,7 +734,9 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         self.prepare_units()?;
 
         if self.bcx.roots.iter().any(|unit| {
-            !unit.mode.is_check() || !self.files().fingerprint_file_path(unit, "").is_file()
+            !unit.mode.is_check()
+                || (!saved_ordinary_graph
+                    && !self.files().fingerprint_file_path(unit, "").is_file())
         }) {
             return Ok(None);
         }
@@ -758,7 +764,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
 
         let mut workspace_changed = false;
         for unit in self.bcx.roots.clone() {
-            match fingerprint::existing_check_root(&mut self, &unit)? {
+            match fingerprint::existing_check_root(&mut self, &unit, saved_ordinary_graph)? {
                 Some(fingerprint::ExistingCheckRoot::Fresh) => {}
                 Some(fingerprint::ExistingCheckRoot::WorkspaceChanged) => workspace_changed = true,
                 None => return Ok(None),
@@ -897,7 +903,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
                 unit.mode.is_check() && !self.files().fingerprint_file_path(unit, "").is_file()
             });
         let ordinary_check_might_exist = (!stale_registry_packages.is_empty() || new_check_graph)
-            && self.ordinary_check_might_exist();
+            && self.check_fingerprints_might_exist(&self.bcx.roots);
         Ok(
             (!stale_registry_packages.is_empty() || ordinary_check_might_exist).then_some(
                 RegistryReuseNeedsFallback {
