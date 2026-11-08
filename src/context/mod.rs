@@ -207,6 +207,8 @@ pub struct CredentialCacheValue {
 /// relating to cargo itself.
 #[derive(Debug)]
 pub struct GlobalContext {
+    pub(crate) selected_index:
+        std::cell::RefCell<Option<crate::sources::registry::index::SelectedIndex>>,
     /// The location of the user's Cargo home directory. OS-dependent.
     home_path: Filesystem,
     /// Information about how to write messages to the shell
@@ -372,6 +374,7 @@ impl GlobalContext {
         };
 
         GlobalContext {
+            selected_index: Default::default(),
             home_path: Filesystem::new(homedir),
             shell: Mutex::new(shell),
             cwd,

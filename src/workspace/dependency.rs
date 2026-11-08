@@ -762,3 +762,75 @@ mod tests {
         assert!(!remapped.is_optional());
     }
 }
+
+#[derive(Debug, serde::Serialize, serde::Deserialize)]
+pub(crate) struct PackedIndexDependency {
+    name: InternedString,
+    explicit_name: Option<InternedString>,
+    req: semver::VersionReq,
+    kind: u8,
+    optional: bool,
+    public: bool,
+    default_features: bool,
+    sets_registry: bool,
+    features: Vec<InternedString>,
+    platform: Option<cargo_platform::Platform>,
+}
+
+impl PackedIndexDependency {
+    pub(crate) fn pack(dep: &Dependency, source: SourceId) -> Option<Self> {
+        let d = &*dep.inner;
+        let OptVersionReq::Req(req) = &d.req else {
+            return None;
+        };
+        if dep.source_id != source
+            || d.artifact.is_some()
+            || !d.specified_req
+            || d.only_match_name
+            || d.registry_id.is_some_and(|id| id != source)
+        {
+            return None;
+        }
+        Some(Self {
+            name: dep.name,
+            explicit_name: d.explicit_name_in_toml,
+            req: req.clone(),
+            kind: match d.kind {
+                DepKind::Normal => 0,
+                DepKind::Development => 1,
+                DepKind::Build => 2,
+            },
+            optional: d.optional,
+            public: d.public,
+            default_features: d.default_features,
+            sets_registry: d.registry_id.is_some(),
+            features: d.features.clone(),
+            platform: d.platform.clone(),
+        })
+    }
+    pub(crate) fn unpack(self, source: SourceId) -> Option<Dependency> {
+        Some(Dependency {
+            name: self.name,
+            source_id: source,
+            inner: Arc::new(Inner {
+                registry_id: self.sets_registry.then_some(source),
+                req: OptVersionReq::Req(self.req),
+                specified_req: true,
+                only_match_name: false,
+                explicit_name_in_toml: self.explicit_name,
+                kind: match self.kind {
+                    0 => DepKind::Normal,
+                    1 => DepKind::Development,
+                    2 => DepKind::Build,
+                    _ => return None,
+                },
+                optional: self.optional,
+                public: self.public,
+                default_features: self.default_features,
+                features: self.features,
+                platform: self.platform,
+                artifact: None,
+            }),
+        })
+    }
+}

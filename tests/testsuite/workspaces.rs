@@ -3024,6 +3024,62 @@ fn workspace_resolve_cache_command(
 }
 
 #[cargo_test]
+fn selected_resolution_validates_features_and_damaged_cache() {
+    Package::new("dependency", "1.0.0")
+        .feature("fast", &[])
+        .file("src/lib.rs", "#[cfg(feature = \"fast\")] pub fn fast() {}")
+        .publish();
+    let project = project()
+        .file(
+            "Cargo.toml",
+            r#"
+            [package]
+            name = "selected"
+            version = "0.1.0"
+            edition = "2021"
+            [dependencies]
+            dependency = "1"
+            [features]
+            fast = ["dependency/fast"]
+        "#,
+        )
+        .file(
+            "src/lib.rs",
+            "#[cfg(feature = \"fast\")] pub use dependency::fast;",
+        )
+        .build();
+
+    let hit = "[..]reusing locked package selection[..]";
+    let check = |cmd| workspace_resolve_cache_command(&project, cmd);
+    check("check -p selected").run();
+    check("check -p selected").run();
+    check("check -p selected").with_stderr_contains(hit).run();
+    check("check -p selected --features fast")
+        .with_stderr_does_not_contain(hit)
+        .run();
+    check("check -p selected --features fast")
+        .with_stderr_contains(hit)
+        .run();
+
+    for entry in fs::read_dir(project.root().join("target"))
+        .unwrap()
+        .flatten()
+    {
+        if entry
+            .file_name()
+            .to_string_lossy()
+            .starts_with(".cargo-locked-selection-")
+        {
+            fs::write(entry.path(), b"damaged").unwrap();
+        }
+    }
+    check("check -p selected")
+        .with_stderr_does_not_contain(hit)
+        .run();
+    check("check -p selected").with_stderr_contains(hit).run();
+}
+
+#[cargo_test]
 fn workspace_resolve_cache_reuses_unchanged_workspace() {
     let project = workspace_resolve_cache_project();
 
