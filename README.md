@@ -11,6 +11,12 @@ Codex.
 Use Ohm only for local development, and at your own risk. Never use it for production builds or
 releases, and always verify your work with the official Rust toolchain.
 
+On native `x86_64-unknown-linux-gnu` development and test builds, Ohm keeps the
+`line-tables-only` debug data for Rust libraries in per-object `.dwo` files. This reduces the debug
+data the linker processes after an edit. Keep the build directory available to
+debuggers when moving a development executable. Set `split-debuginfo = "off"`
+in the development profile to embed the debug information in the executable.
+
 Ohm defaults enable native ThinLTO object caching for supported Linux builds. Cargo manages
 `<build-dir>/.ohm-thinlto-cache`, pruning it after builds to 2 GiB or 100,000 objects and expiring
 entries unused for 30 days. Concurrent builds can temporarily exceed these limits. Compiler

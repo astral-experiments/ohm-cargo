@@ -977,6 +977,84 @@ fn ohm_default_debuginfo_respects_overrides() {
     );
 }
 
+#[cfg(all(target_arch = "x86_64", target_os = "linux", target_env = "gnu"))]
+#[cargo_test(nightly, reason = "Ohm defaults require the Ohm compiler")]
+fn ohm_native_dev_line_tables() {
+    let p = project().file("src/lib.rs", "pub fn answer() {}").build();
+    for (defaults, profile, debug, split, target, expected) in [
+        (
+            "yes",
+            "dev",
+            "line-tables-only",
+            None,
+            None,
+            Some("unpacked"),
+        ),
+        (
+            "yes",
+            "test",
+            "line-tables-only",
+            None,
+            None,
+            Some("unpacked"),
+        ),
+        (
+            "yes",
+            "dev",
+            "line-tables-only",
+            Some("off"),
+            None,
+            Some("off"),
+        ),
+        ("yes", "dev", "full", None, None, None),
+        ("yes", "release", "line-tables-only", None, None, None),
+        ("no", "dev", "line-tables-only", None, None, None),
+        (
+            "yes",
+            "dev",
+            "line-tables-only",
+            None,
+            Some("x86_64-pc-windows-msvc"),
+            None,
+        ),
+    ] {
+        let mut cmd = p.cargo(&format!(
+            "build --profile {profile} --unit-graph -Zunstable-options -Zohm-defaults={defaults}"
+        ));
+        cmd.masquerade_as_nightly_cargo(&["unit-graph", "ohm-defaults"])
+            .env("CARGO_PROFILE_DEV_DEBUG", debug)
+            .env("CARGO_PROFILE_RELEASE_DEBUG", debug);
+        if let Some(split) = split {
+            cmd.env("CARGO_PROFILE_DEV_SPLIT_DEBUGINFO", split);
+        }
+        if let Some(target) = target {
+            cmd.arg("--target").arg(target);
+        }
+        let graph = cmd.run_json();
+        assert_eq!(
+            graph["units"][0]["profile"]["split_debuginfo"],
+            serde_json::json!(expected)
+        );
+    }
+    p.change_file("src/main.rs", "fn main() {}");
+    let graph = p
+        .cargo("test --no-run --unit-graph -Zunstable-options -Zohm-defaults=yes")
+        .masquerade_as_nightly_cargo(&["unit-graph", "ohm-defaults"])
+        .run_json();
+    let mut library = false;
+    let mut harness = false;
+    for unit in graph["units"].as_array().unwrap() {
+        let rlib = unit["mode"] == "build" && unit["target"]["kind"] == serde_json::json!(["lib"]);
+        library |= rlib;
+        harness |= unit["mode"] == "test";
+        assert_eq!(
+            unit["profile"]["split_debuginfo"],
+            serde_json::json!(rlib.then_some("unpacked"))
+        );
+    }
+    assert!(library && harness);
+}
+
 #[cargo_test]
 fn profile_hint_mostly_unused_warn_without_gate() {
     Package::new("bar", "1.0.0").publish();
