@@ -146,12 +146,18 @@ impl<'a> UnitGenerator<'a, '_> {
                 } else {
                     UnitFor::new_normal(kind)
                 };
-                let profile = self.profiles.get_profile(
+                let mut profile = self.profiles.get_profile(
                     pkg.package_id(),
                     self.ws.is_member(pkg),
                     is_local,
                     unit_for,
                     kind,
+                );
+                self.profiles.set_library_line_tables(
+                    &mut profile,
+                    target,
+                    kind,
+                    initial_target_mode,
                 );
                 let kind = kind.for_target(target);
                 self.interner.intern(

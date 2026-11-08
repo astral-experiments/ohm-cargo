@@ -21,7 +21,7 @@
 //! The precedence is explained in [`ProfileMaker`].
 //! The algorithm happens within [`ProfileMaker::get_profile`].
 
-use crate::compiler::{CompileKind, CompileTarget, Unit};
+use crate::compiler::{CompileKind, CompileMode, CompileTarget, CrateType, Unit};
 use crate::context;
 use crate::resolver::Resolve;
 use crate::resolver::features::FeaturesFor;
@@ -31,7 +31,9 @@ use crate::util::{CargoResult, GlobalContext, closest_msg};
 use crate::workspace::Feature;
 use crate::workspace::dependency::Artifact;
 use crate::workspace::parser::validate_profile;
-use crate::workspace::{PackageId, PackageIdSpec, PackageIdSpecQuery, Target, Workspace};
+use crate::workspace::{
+    PackageId, PackageIdSpec, PackageIdSpecQuery, Target, TargetKind, Workspace,
+};
 use anyhow::{Context as _, bail};
 use cargo_util::is_ci;
 use cargo_util_schemas::manifest::TomlTrimPaths;
@@ -68,6 +70,8 @@ pub struct Profiles {
     requested_profile: InternedString,
     /// The host target for rustc being used by this `Profiles`.
     rustc_host: InternedString,
+    /// Keep line-table debug data in object sidecars for native Linux development builds.
+    unpack_linux_line_tables: bool,
 }
 
 impl Profiles {
@@ -82,6 +86,7 @@ impl Profiles {
         };
         let mut profiles = merge_config_profiles(ws, requested_profile)?;
         let rustc_host = ws.gctx().load_global_rustc(Some(ws))?.host;
+        let ohm_defaults = gctx.cli_unstable().ohm_defaults();
 
         let mut profile_makers = Profiles {
             incremental,
@@ -90,6 +95,9 @@ impl Profiles {
             original_profiles: profiles.clone(),
             requested_profile,
             rustc_host,
+            unpack_linux_line_tables: ohm_defaults
+                && !ws.is_ephemeral()
+                && rustc_host.as_str() == "x86_64-unknown-linux-gnu",
         };
 
         let trim_paths_enabled = ws.unstable_features().is_enabled(Feature::trim_paths())
@@ -98,7 +106,7 @@ impl Profiles {
             &mut profile_makers,
             &profiles,
             trim_paths_enabled,
-            gctx.cli_unstable().ohm_defaults(),
+            ohm_defaults,
         );
 
         // Merge with predefined profiles.
@@ -318,11 +326,7 @@ impl Profiles {
             PanicSetting::ReadProfile => {}
         }
 
-        // Default macOS debug information to being stored in the "unpacked"
-        // split-debuginfo format. At the time of this writing that's the only
-        // platform which has a stable `-Csplit-debuginfo` option for rustc,
-        // and it's typically much faster than running `dsymutil` on all builds
-        // in incremental cases.
+        // Unpacked debug information avoids running dsymutil on macOS.
         if profile.debuginfo.is_turned_on() && profile.split_debuginfo.is_none() {
             let target = match &kind {
                 CompileKind::Host => self.rustc_host.as_str(),
@@ -349,6 +353,34 @@ impl Profiles {
         }
         profile.name = self.requested_profile;
         profile
+    }
+
+    /// Keep rlib line tables beside their objects. Executables and test harnesses can
+    /// refer to invocation-specific temporary objects retained for link-only rebuilds.
+    pub(crate) fn set_library_line_tables(
+        &self,
+        profile: &mut Profile,
+        target: &Target,
+        kind: CompileKind,
+        mode: CompileMode,
+    ) {
+        if self.unpack_linux_line_tables
+            && profile.split_debuginfo.is_none()
+            && profile.root == ProfileRoot::Debug
+            && profile.debuginfo.into_inner() == TomlDebugInfo::LineTablesOnly
+            && matches!(
+                mode,
+                CompileMode::Build | CompileMode::Check { test: false }
+            )
+            && matches!(target.kind(), TargetKind::Lib(kinds)
+                if kinds.iter().all(|k| matches!(k, CrateType::Lib | CrateType::Rlib)))
+            && match kind {
+                CompileKind::Host => true,
+                CompileKind::Target(target) => target.rustc_target() == self.rustc_host,
+            }
+        {
+            profile.split_debuginfo = Some("unpacked".into());
+        }
     }
 
     /// The profile for *running* a `build.rs` script is only used for setting

@@ -189,13 +189,14 @@ fn generate_roots(
             let kind = **kind;
             let list = ret.entry(kind).or_insert_with(Vec::new);
             let unit_for = UnitFor::new_normal(kind);
-            let profile = profiles.get_profile(
+            let mut profile = profiles.get_profile(
                 pkg.package_id(),
                 /*is_member*/ false,
                 /*is_local*/ false,
                 unit_for,
                 kind,
             );
+            profiles.set_library_line_tables(&mut profile, lib, kind, mode);
             list.push(interner.intern(
                 pkg,
                 lib,
