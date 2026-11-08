@@ -299,7 +299,12 @@ fn run_doc_tests(
                 TestKind::Doctest,
                 cmd.exec(),
                 &mut errors,
-            )?;
+            )
+            // Rustdoc reports a failed merged test executable as a doctest failure.
+            .map_err(|error| CliError {
+                exit_code: 101,
+                ..error
+            })?;
             continue;
         }
         let mut p = compilation.rustdoc_process(unit, script_metas.as_ref())?;

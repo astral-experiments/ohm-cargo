@@ -6395,6 +6395,37 @@ fn cached_doctests_fall_back_when_a_crate_gains_a_compile_fail_example() {
         .run();
 }
 
+#[cfg(target_os = "linux")]
+#[cargo_test]
+fn cached_doctests_report_early_process_exits_as_test_failures() {
+    let p = project()
+        .file(
+            "Cargo.toml",
+            "[package]\nname = 'foo'\nversion = '1.0.0'\nedition = '2024'",
+        )
+        .file(
+            "src/lib.rs",
+            r#"#[used]
+#[unsafe(link_section = ".init_array")]
+static START: extern "C" fn() = initialize;
+extern "C" fn initialize() { std::process::exit(42); }
+/// ```
+/// assert_eq!(foo::value(), 7);
+/// ```
+#[inline(never)]
+pub fn value() -> i32 { std::hint::black_box(7) }
+"#,
+        )
+        .build();
+    p.cargo("test --doc -Zohm-cached-doctests -v")
+        .masquerade_as_nightly_cargo(&["ohm-cached-doctests"])
+        .env("CARGO_UNSTABLE_OHM_DEFAULTS", "false")
+        .env("RUSTC_BOOTSTRAP", "1")
+        .with_status(101)
+        .with_stderr_contains("[..]doctest-run-[..]([EXIT_STATUS]: 42)")
+        .run();
+}
+
 #[cfg(all(target_os = "linux", target_env = "gnu"))]
 #[cargo_test(requires = "cc")]
 fn cached_doctests_use_rustdocs_library_search_path() {
