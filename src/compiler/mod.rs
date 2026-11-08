@@ -411,9 +411,14 @@ fn registry_observer_history(
             .bcx
             .profiles
             .registry_observer_incremental(package)
+        // Extra arguments to cargo rustc can change a registry root's identity
+        // without changing its ordinary check/build metadata.
+        || build_runner.bcx.extra_args_for(unit).is_some_and(|args| !args.is_empty())
         || rustc.get_args().any(|arg| {
             let bytes = arg.as_encoded_bytes();
-            bytes.starts_with(b"incremental=")
+            // An opaque response file may already select an incremental directory.
+            bytes.starts_with(b"@")
+                || bytes.starts_with(b"incremental=")
                 || bytes.starts_with(b"-Cincremental=")
                 || bytes.starts_with(b"--codegen=incremental=")
         })
