@@ -14,6 +14,7 @@ use crate::compiler::fingerprint::dep_info::{DepInfoPathType, EncodedDepInfo};
 use crate::compiler::fingerprint::{OHM_WORKTREE_SCRIPT_RERUN, OHM_WORKTREE_SCRIPT_RESULT};
 use crate::compiler::layout::PrivateBuildLease;
 use crate::util::file_clone::try_clone;
+use crate::util::storage_path;
 use crate::util::{Filesystem, GlobalContext};
 use crate::workspace::Workspace;
 use crate::workspace::features::OhmProcMacroTrust;
@@ -64,7 +65,7 @@ pub fn worktree_add(gctx: &GlobalContext, opts: &WorktreeOptions) -> CargoResult
     let destination = resolve_parent_dirs(&opts.path, gctx.cwd())?;
     ensure_absent(&destination, "worktree destination")?;
     ensure!(
-        !storage_overlaps(&destination, &git_root)?,
+        !storage_path::overlaps(&destination, &git_root)?,
         "the new worktree must be outside the source worktree"
     );
 
@@ -76,7 +77,7 @@ pub fn worktree_add(gctx: &GlobalContext, opts: &WorktreeOptions) -> CargoResult
     if let Some(target) = &target {
         ensure_absent(target, "destination target directory")?;
         ensure!(
-            !storage_starts_with(&destination, target)?,
+            !storage_path::starts_with(&destination, target)?,
             "destination target directory must not contain the new worktree"
         );
     }
@@ -88,13 +89,13 @@ pub fn worktree_add(gctx: &GlobalContext, opts: &WorktreeOptions) -> CargoResult
     ] {
         let protected = physical_storage_path(&protected, gctx.cwd())?;
         ensure!(
-            !storage_overlaps(&destination, &protected)?,
+            !storage_path::overlaps(&destination, &protected)?,
             "worktree destination overlaps source storage: {}",
             protected.display()
         );
         if let Some(target) = &target {
             ensure!(
-                !storage_overlaps(target, &protected)?,
+                !storage_path::overlaps(target, &protected)?,
                 "destination target directory overlaps source storage: {}",
                 protected.display()
             );
@@ -652,88 +653,6 @@ fn resolve_parent_dirs(path: &Path, cwd: &Path) -> CargoResult<PathBuf> {
     }
 }
 
-/// Checks containment in either direction before the checkout or its private locks exist.
-fn storage_overlaps(left: &Path, right: &Path) -> CargoResult<bool> {
-    Ok(storage_starts_with(left, right)? || storage_starts_with(right, left)?)
-}
-
-/// Finds the on-disk prefix of an absolute storage path without creating its missing tail.
-fn existing_storage_ancestor(path: &Path) -> io::Result<(&Path, fs::Metadata)> {
-    for ancestor in path.ancestors() {
-        match fs::metadata(ancestor) {
-            Ok(metadata) => return Ok((ancestor, metadata)),
-            Err(error)
-                if matches!(
-                    error.kind(),
-                    io::ErrorKind::NotFound | io::ErrorKind::NotADirectory
-                ) => {}
-            Err(error) => return Err(error),
-        }
-    }
-    Err(io::ErrorKind::NotFound.into())
-}
-
-/// Compares resolved storage paths using the filesystem's lookup rules for missing names.
-fn storage_starts_with(path: &Path, base: &Path) -> CargoResult<bool> {
-    if path.starts_with(base) {
-        return Ok(true);
-    }
-    let (left, left_metadata) = existing_storage_ancestor(path)?;
-    let (right, right_metadata) = existing_storage_ancestor(base)?;
-    if !left_metadata.is_dir() || !right_metadata.is_dir() {
-        return Ok(false);
-    }
-    let same_directory = |candidate: &Path| -> io::Result<bool> {
-        #[cfg(unix)]
-        {
-            use std::os::unix::fs::MetadataExt as _;
-            let metadata = fs::metadata(candidate)?;
-            Ok((metadata.dev(), metadata.ino()) == (right_metadata.dev(), right_metadata.ino()))
-        }
-        #[cfg(not(unix))]
-        same_file::is_same_file(candidate, right)
-    };
-    if right == base {
-        for ancestor in left.ancestors() {
-            if ancestor == right || same_directory(ancestor)? {
-                return Ok(true);
-            }
-        }
-        #[cfg(target_os = "linux")]
-        return crate::util::mountinfo::is_bind_descendant(left, right);
-        #[cfg(not(target_os = "linux"))]
-        return Ok(false);
-    }
-    if left != right && !same_directory(left)? {
-        return Ok(false);
-    }
-    let mut remaining = path.strip_prefix(left)?.iter();
-    let mut missing = Vec::new();
-    for b in base.strip_prefix(right)? {
-        let Some(a) = remaining.next() else {
-            return Ok(false);
-        };
-        if a != b {
-            missing.push((a, b));
-        }
-    }
-    if missing.is_empty() {
-        return Ok(true);
-    }
-    // Both tails are absent under the same directory. Probe differing names on that
-    // filesystem without creating either requested path. This also handles Unicode aliases.
-    let probe = tempfile::tempdir_in(left)?;
-    for (a, b) in missing {
-        let entry = probe.path().join(a);
-        fs::create_dir(&entry)?;
-        if !probe.path().join(b).try_exists()? {
-            return Ok(false);
-        }
-        fs::remove_dir(entry)?;
-    }
-    Ok(true)
-}
-
 fn ensure_absent(path: &Path, description: &str) -> CargoResult<()> {
     match fs::symlink_metadata(path) {
         Err(error) if error.kind() == io::ErrorKind::NotFound => Ok(()),
@@ -789,26 +708,6 @@ fn plain_directory(path: &Path) -> CargoResult<bool> {
 mod tests {
     use super::*;
     use crate::compiler::{OHM_WORKTREE_SEED_LOCAL_PROC_MACRO_MARKER, OHM_WORKTREE_SEED_MARKER};
-
-    #[test]
-    fn storage_aliases_can_have_different_numbers_of_ancestors() -> CargoResult<()> {
-        let root = tempfile::tempdir()?;
-        let source = root.path().join("storage");
-        let directory = root.path().join("several/levels");
-        fs::create_dir(&source)?;
-        fs::create_dir_all(&directory)?;
-        let alias = directory.join("view");
-        // A symlink lets the test give a directory two names without mounting a filesystem.
-        std::os::unix::fs::symlink(&source, &alias)?;
-        assert!(storage_overlaps(&source.join("new"), &alias.join("new"))?);
-        assert!(storage_overlaps(
-            &alias.join("new"),
-            &source.join("new/child")
-        )?);
-        assert!(storage_overlaps(&source, &alias.join("new/child"))?);
-        assert!(!storage_overlaps(&source.join("one"), &alias.join("two"))?);
-        Ok(())
-    }
 
     #[test]
     fn unsupported_clone_discards_both_stages_and_their_counts() -> CargoResult<()> {
