@@ -6396,6 +6396,52 @@ fn cached_doctests_fall_back_when_a_crate_gains_a_compile_fail_example() {
 }
 
 #[cfg(all(target_os = "linux", target_env = "gnu"))]
+#[cargo_test(requires = "cc")]
+fn cached_doctests_use_rustdocs_library_search_path() {
+    let p = project()
+        .file(
+            "Cargo.toml",
+            "[package]\nname = 'foo'\nversion = '1.0.0'\nedition = '2024'",
+        )
+        .file(
+            "build.rs",
+            r#"fn main() {
+                println!("cargo::rustc-link-search=native={}/native", env!("CARGO_MANIFEST_DIR"));
+            }"#,
+        )
+        .file("native/answer.c", "int answer(void) { return ANSWER; }")
+        .file(
+            "src/lib.rs",
+            r#"#[link(name = "answer")]
+unsafe extern "C" { fn answer() -> i32; }
+/// ```
+/// assert_eq!(foo::value(), 7);
+/// ```
+pub fn value() -> i32 { unsafe { answer() } }
+"#,
+        )
+        .build();
+    let native = p.root().join("native");
+    let profile = p.root().join("target/debug");
+    fs::create_dir_all(&profile).unwrap();
+    for (dir, define) in [(&native, "-DANSWER=7"), (&profile, "-DANSWER=9")] {
+        p.process("cc")
+            .args(&["-shared", "-fPIC", define, "native/answer.c", "-o"])
+            .arg(dir.join("libanswer.so"))
+            .run();
+    }
+    p.cargo("test --doc -Zohm-cached-doctests -v")
+        .masquerade_as_nightly_cargo(&["ohm-cached-doctests"])
+        .env("CARGO_UNSTABLE_OHM_DEFAULTS", "false")
+        .env("RUSTC_BOOTSTRAP", "1")
+        .env("CARGO_TARGET_DIR", p.root().join("target"))
+        .env("LD_LIBRARY_PATH", native)
+        .with_stdout_contains("[..]1 passed; 0 failed[..]")
+        .with_stderr_does_not_contain("[RUNNING] [..]--test-run-directory[..]")
+        .run();
+}
+
+#[cfg(all(target_os = "linux", target_env = "gnu"))]
 #[cargo_test(requires = "cc", requires = "ar")]
 fn cached_doctests_relink_native_archives() {
     let p = project()
