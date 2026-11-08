@@ -68,6 +68,8 @@ pub struct Profiles {
     requested_profile: InternedString,
     /// The host target for rustc being used by this `Profiles`.
     rustc_host: InternedString,
+    /// Keep line-table debug data in object sidecars for native Linux development builds.
+    unpack_linux_line_tables: bool,
 }
 
 impl Profiles {
@@ -82,6 +84,7 @@ impl Profiles {
         };
         let mut profiles = merge_config_profiles(ws, requested_profile)?;
         let rustc_host = ws.gctx().load_global_rustc(Some(ws))?.host;
+        let ohm_defaults = gctx.cli_unstable().ohm_defaults();
 
         let mut profile_makers = Profiles {
             incremental,
@@ -90,6 +93,9 @@ impl Profiles {
             original_profiles: profiles.clone(),
             requested_profile,
             rustc_host,
+            unpack_linux_line_tables: ohm_defaults
+                && !ws.is_ephemeral()
+                && rustc_host.as_str() == "x86_64-unknown-linux-gnu",
         };
 
         let trim_paths_enabled = ws.unstable_features().is_enabled(Feature::trim_paths())
@@ -98,7 +104,7 @@ impl Profiles {
             &mut profile_makers,
             &profiles,
             trim_paths_enabled,
-            gctx.cli_unstable().ohm_defaults(),
+            ohm_defaults,
         );
 
         // Merge with predefined profiles.
@@ -318,17 +324,21 @@ impl Profiles {
             PanicSetting::ReadProfile => {}
         }
 
-        // Default macOS debug information to being stored in the "unpacked"
-        // split-debuginfo format. At the time of this writing that's the only
-        // platform which has a stable `-Csplit-debuginfo` option for rustc,
-        // and it's typically much faster than running `dsymutil` on all builds
-        // in incremental cases.
+        // Unpacked debug information avoids running dsymutil on macOS. For native ELF
+        // builds, keeping line-table data beside each object also reduces relinking work.
         if profile.debuginfo.is_turned_on() && profile.split_debuginfo.is_none() {
             let target = match &kind {
                 CompileKind::Host => self.rustc_host.as_str(),
                 CompileKind::Target(target) => target.short_name(),
             };
-            if target.contains("-apple-") {
+            let native_line_tables = self.unpack_linux_line_tables
+                && profile.root == ProfileRoot::Debug
+                && profile.debuginfo.into_inner() == TomlDebugInfo::LineTablesOnly
+                && match kind {
+                    CompileKind::Host => true,
+                    CompileKind::Target(target) => target.rustc_target() == self.rustc_host,
+                };
+            if target.contains("-apple-") || native_line_tables {
                 profile.split_debuginfo = Some("unpacked".into());
             }
         }
