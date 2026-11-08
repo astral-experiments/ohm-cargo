@@ -11,6 +11,14 @@ Codex.
 Use Ohm only for local development, and at your own risk. Never use it for production builds or
 releases, and always verify your work with the official Rust toolchain.
 
+In dev-derived profiles, Ohm builds registry and Git procedural macros and their library
+dependencies at optimization level 1 with per-crate ThinLTO disabled. Downstream source edits
+execute this code during macro expansion. The first build pays the optimization cost, and a
+library used by both a macro and a build script may need two compiled copies. The default applies
+to profiles with an implicit optimization level or level 1 and an implicit LTO mode or `lto = "off"`.
+Matching build and package optimization overrides take precedence. Path dependencies, build scripts, and
+their ordinary dependencies keep Cargo's existing profiles.
+
 Ohm defaults enable native ThinLTO object caching for supported Linux builds. Cargo manages
 `<build-dir>/.ohm-thinlto-cache`, pruning it after builds to 2 GiB or 100,000 objects and expiring
 entries unused for 30 days. Concurrent builds can temporarily exceed these limits. Compiler
