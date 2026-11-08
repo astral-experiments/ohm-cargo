@@ -385,6 +385,49 @@ fn unit_uses_ohm_shared_stages(build_runner: &BuildRunner<'_, '_>, unit: &Unit) 
         && bcx.rustc().supports_ohm_shared_stages(bcx.gctx)
 }
 
+/// Workspace-private evidence for a registry crate and the mode chosen for this invocation.
+struct RegistryObserver {
+    hint: PathBuf,
+    incremental: bool,
+}
+
+fn registry_observer_history(
+    build_runner: &BuildRunner<'_, '_>,
+    unit: &Unit,
+    rustc: &ProcessBuilder,
+) -> Option<PathBuf> {
+    let package = unit.pkg.package_id();
+    if !package.source_id().is_remote_registry()
+        || !unit.target.is_lib()
+        || !unit
+            .target
+            .rustc_crate_types()
+            .iter()
+            .all(|ty| matches!(ty, CrateType::Lib | CrateType::Rlib))
+        || !build_runner.bcx.gctx.cli_unstable().ohm_defaults()
+        || !unit_uses_ohm_shared_stages(build_runner, unit)
+        || build_runner.files().is_shared_registry_unit(unit)
+        || !build_runner
+            .bcx
+            .profiles
+            .registry_observer_incremental(package)
+        // Extra arguments to cargo rustc can change a registry root's identity
+        // without changing its ordinary check/build metadata.
+        || build_runner.bcx.extra_args_for(unit).is_some_and(|args| !args.is_empty())
+        || rustc.get_args().any(|arg| {
+            let bytes = arg.as_encoded_bytes();
+            // An opaque response file may already select an incremental directory.
+            bytes.starts_with(b"@")
+                || bytes.starts_with(b"incremental=")
+                || bytes.starts_with(b"-Cincremental=")
+                || bytes.starts_with(b"--codegen=incremental=")
+        })
+    {
+        return None;
+    }
+    build_runner.files().registry_observer_hint(unit)
+}
+
 fn unit_uses_ohm_incremental_codegen(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
     let gctx = build_runner.bcx.gctx;
     if !gctx.cli_unstable().ohm_defaults()
@@ -1271,6 +1314,36 @@ fn rustc(
     let name = unit.pkg.name();
 
     let outputs = build_runner.outputs(unit)?;
+    let registry_observer = registry_observer_history(build_runner, unit, &rustc).map(|hint| {
+        // A new rlib may adopt the mode learned from a previous check or build.
+        // A live rlib retains the mode that produced it, including on upgrade.
+        let incremental = unit.mode == CompileMode::Build
+            && outputs
+                .iter()
+                .find(|o| o.path.extension() == Some(OsStr::new("rlib")))
+                .is_some_and(|o| match o.path.symlink_metadata() {
+                    Ok(metadata) => {
+                        metadata.is_file()
+                            && fingerprint::dep_info::was_registry_observer_incremental(
+                                &fingerprint::dep_info_loc(build_runner, unit),
+                            )
+                    }
+                    Err(err) if err.kind() == std::io::ErrorKind::NotFound => {
+                        paths::read_regular_bounded(&hint, 2).is_ok_and(|bytes| bytes == b"1\n")
+                    }
+                    Err(_) => false,
+                });
+        if incremental {
+            add_codegen_incremental(
+                &mut rustc,
+                &build_runner
+                    .files()
+                    .fingerprint_dir(unit)
+                    .join("observer-incremental"),
+            );
+        }
+        RegistryObserver { hint, incremental }
+    });
     let root = build_runner.files().output_dir(unit);
     let unstable = build_runner.bcx.gctx.cli_unstable();
     let relink_cache = (unstable.collect_relink_cache()
@@ -2155,7 +2228,7 @@ fn rustc(
         }
 
         if rustc_dep_info_loc.exists() {
-            let marked = fingerprint::translate_dep_info(
+            let marked = fingerprint::dep_info::translate_dep_info_with_observer(
                 &rustc_dep_info_loc,
                 &dep_info_loc,
                 &cwd,
@@ -2168,6 +2241,7 @@ fn rustc(
                 &env_config,
                 worktree_seed_namespace.as_deref(),
                 checksum_freshness,
+                registry_observer.as_ref(),
             )
             .with_context(|| {
                 internal(format!(
@@ -3361,7 +3435,7 @@ fn build_base_args(
     add_codegen_linker(cmd, build_runner, unit, bcx.gctx.target_applies_to_host()?);
 
     if incremental {
-        add_codegen_incremental(cmd, build_runner, unit)
+        add_codegen_incremental(cmd, &build_runner.files().incremental_dir(unit))
     }
 
     let pkg_hint_mostly_unused = match hints.mostly_unused {
@@ -3820,12 +3894,7 @@ fn add_codegen_linker(
 }
 
 /// Adds `-C incremental=<path>`.
-fn add_codegen_incremental(
-    cmd: &mut ProcessBuilder,
-    build_runner: &BuildRunner<'_, '_>,
-    unit: &Unit,
-) {
-    let dir = build_runner.files().incremental_dir(&unit);
+fn add_codegen_incremental(cmd: &mut ProcessBuilder, dir: &Path) {
     let mut arg = OsString::from("incremental=");
     arg.push(dir.as_os_str());
     cmd.arg("-C").arg(arg);
