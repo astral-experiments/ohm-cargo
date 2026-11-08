@@ -255,6 +255,44 @@ fn creates_a_worktree_without_a_previous_build() {
 }
 
 #[cargo_test]
+fn discovers_a_nested_package_in_a_sha256_repository() {
+    let root = paths::root().join("donor");
+    let donor = project()
+        .at(root.join("nested"))
+        .file("src/lib.rs", "pub fn from_donor() {}")
+        .build();
+    donor
+        .process("git")
+        .cwd(&root)
+        .args(&["init", "--object-format=sha256"])
+        .run();
+    donor.process("git").args(&["add", "."]).run();
+    donor
+        .process("git")
+        .args(&[
+            "-c",
+            "user.name=fixture",
+            "-c",
+            "user.email=fixture@example.invalid",
+            "commit",
+            "-qm",
+            "initial",
+        ])
+        .run();
+    let destination = paths::root().join("child");
+    donor
+        .cargo("-Zohm-defaults worktree add --detach")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("GIT_CEILING_DIRECTORIES", &root)
+        .arg(&destination)
+        .run();
+    assert_eq!(
+        fs::read(destination.join("nested/src/lib.rs")).unwrap(),
+        fs::read(donor.root().join("src/lib.rs")).unwrap()
+    );
+}
+
+#[cargo_test]
 fn worktree_uses_manifest_repository_with_foreign_git_environment() {
     let (donor, donor_repo) = git::new_repo("donor", |p| p.file("src/lib.rs", "pub fn donor() {}"));
     let (foreign, foreign_repo) =

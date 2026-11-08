@@ -36,13 +36,30 @@ pub struct WorktreeOptions {
 /// after that validation, rather than exposing an unvalidated donor executable.
 pub fn worktree_add(gctx: &GlobalContext, opts: &WorktreeOptions) -> CargoResult<()> {
     let donor = Workspace::new(&opts.manifest_path, gctx)?;
-    crate::util::ensure_git_initialized();
-    let repo = git2::Repository::discover(donor.root())
+    let mut git = ProcessBuilder::new("git");
+    // A Git hook can export the calling repository's location and object database.
+    for variable in [
+        "GIT_DIR",
+        "GIT_WORK_TREE",
+        "GIT_COMMON_DIR",
+        "GIT_INDEX_FILE",
+        "GIT_OBJECT_DIRECTORY",
+        "GIT_ALTERNATE_OBJECT_DIRECTORIES",
+    ] {
+        git.env_remove(variable);
+    }
+    let output = git
+        .clone()
+        .cwd(donor.root())
+        // Discover from the selected manifest across mounts, independently of the caller's ceiling.
+        .env_remove("GIT_CEILING_DIRECTORIES")
+        .env("GIT_DISCOVERY_ACROSS_FILESYSTEM", "1")
+        .args(&["rev-parse", "--show-toplevel"])
+        .exec_with_output()
         .context("`cargo worktree` requires a Git working tree")?;
-    let git_root = repo
-        .workdir()
-        .context("cannot seed from a bare repository")?;
-    let git_root = git_root.canonicalize()?;
+    // Drop Git's record terminator, preserving any newline in the directory name.
+    let root = output.stdout.strip_suffix(b"\n").unwrap_or(&output.stdout);
+    let git_root = cargo_util::paths::bytes2path(root)?.canonicalize()?;
     let destination = new_storage_path(&opts.path, gctx.cwd())?;
     ensure_absent(&destination, "worktree destination")?;
     ensure!(
@@ -80,18 +97,6 @@ pub fn worktree_add(gctx: &GlobalContext, opts: &WorktreeOptions) -> CargoResult
         "destination target directory must not contain the new worktree"
     );
 
-    let mut git = ProcessBuilder::new("git");
-    // A Git hook can export the calling repository's location and object database.
-    for variable in [
-        "GIT_DIR",
-        "GIT_WORK_TREE",
-        "GIT_COMMON_DIR",
-        "GIT_INDEX_FILE",
-        "GIT_OBJECT_DIRECTORY",
-        "GIT_ALTERNATE_OBJECT_DIRECTORIES",
-    ] {
-        git.env_remove(variable);
-    }
     git.arg("-C").arg(&git_root).args(&["worktree", "add"]);
     if let Some(branch) = &opts.branch {
         git.arg("-b").arg(branch);
