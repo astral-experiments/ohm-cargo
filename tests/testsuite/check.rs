@@ -821,6 +821,37 @@ fn ohm_rechecks_a_cleaned_package_only_if_its_registry_graph_is_ready() {
 }
 
 #[cargo_test]
+fn ohm_keeps_a_fresh_alternate_check_after_cleaning_a_package() {
+    let p = ohm_workspace_project();
+    let check = |selection: &str| {
+        let mut command = p.cargo(&format!(
+            "-Zohm-reuse-built-deps check -p application {selection} -v"
+        ));
+        command.masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"]);
+        command
+    };
+    check("").run();
+    let ordinary = p
+        .glob("target/**/libapplication-*.rmeta")
+        .next()
+        .unwrap()
+        .unwrap();
+    p.cargo("build -p local").run();
+    p.cargo("clean -p application").run();
+    check("--lib").run();
+    assert!(
+        !ordinary.exists(),
+        "the alternate check should have its own metadata"
+    );
+
+    check("")
+        .with_stderr_contains("[FRESH] application v0.0.1 [..]")
+        .with_stderr_does_not_contain("[CHECKING]")
+        .run();
+    assert!(!ordinary.exists());
+}
+
+#[cargo_test]
 fn ohm_preserves_fresh_checks_when_test_registry_features_change() {
     Package::new("stable", "1.0.0")
         .file("src/lib.rs", "pub fn value() -> u32 { 19 }")

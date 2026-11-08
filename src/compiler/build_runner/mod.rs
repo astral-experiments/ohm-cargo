@@ -614,13 +614,13 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         !self.reused_registry_units.is_empty()
     }
 
-    /// Conservatively checks whether every root has an existing same-profile check.
+    /// Conservatively checks whether each requested root has an existing same-profile check.
     ///
     /// A speculative graph changes dependency metadata and therefore the root's
     /// fingerprint directory. Scan only siblings in the locked workspace/profile
     /// namespace; ambiguous entries retain the complete ordinary graph probe.
-    fn ordinary_check_might_exist(&self) -> bool {
-        self.bcx.roots.iter().all(|unit| {
+    pub(super) fn check_fingerprints_might_exist(&self, roots: &[Unit]) -> bool {
+        roots.iter().all(|unit| {
             if !unit.mode.is_check() {
                 return true;
             }
@@ -903,7 +903,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
                 unit.mode.is_check() && !self.files().fingerprint_file_path(unit, "").is_file()
             });
         let ordinary_check_might_exist = (!stale_registry_packages.is_empty() || new_check_graph)
-            && self.ordinary_check_might_exist();
+            && self.check_fingerprints_might_exist(&self.bcx.roots);
         Ok(
             (!stale_registry_packages.is_empty() || ordinary_check_might_exist).then_some(
                 RegistryReuseNeedsFallback {
