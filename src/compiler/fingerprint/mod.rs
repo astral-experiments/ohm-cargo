@@ -2663,6 +2663,7 @@ fn calculate(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
         cargo_exe,
         build_runner.bcx.gctx,
         ChecksumParallelism {
+            clippy_driver: build_runner.clippy_driver_checksum.as_ref(),
             #[cfg(unix)]
             jobserver: &build_runner.jobserver,
             #[cfg(unix)]
@@ -3404,6 +3405,7 @@ fn pkg_fingerprint(bcx: &BuildContext<'_, '_>, pkg: &Package) -> CargoResult<Str
 /// every worker finishes before another batch can reuse these reservations.
 #[derive(Clone, Copy)]
 struct ChecksumParallelism<'a> {
+    clippy_driver: Option<&'a super::clippy_driver_checksum::ClippyDriverChecksum>,
     #[cfg(unix)]
     jobserver: &'a jobserver::Client,
     #[cfg(unix)]
@@ -3516,7 +3518,13 @@ where
                         let file = File::open(path).map_err(|_| StaleItem::MissingFile {
                             path: path.to_path_buf(),
                         })?;
-                        read_checksum(path, prior_checksum, file, &mut checksum_buffer)
+                        read_checksum(
+                            path,
+                            prior_checksum,
+                            file,
+                            &mut checksum_buffer,
+                            parallelism.and_then(|p| p.clippy_driver),
+                        )
                     });
                     match checksum {
                         Ok(checksum) => *v.insert(checksum),
@@ -3604,9 +3612,14 @@ fn read_checksum(
     prior: Checksum,
     file: File,
     buffer: &mut Vec<u8>,
+    clippy_driver: Option<&super::clippy_driver_checksum::ClippyDriverChecksum>,
 ) -> Result<Checksum, StaleItem> {
     buffer.resize(64 * 1024, 0);
-    Checksum::compute(prior.algo(), file, buffer).map_err(|_| StaleItem::UnableToReadFile {
+    let result = match clippy_driver {
+        Some(driver) => driver.read(path, prior.algo(), file, buffer),
+        None => Checksum::compute(prior.algo(), file, buffer),
+    };
+    result.map_err(|_| StaleItem::UnableToReadFile {
         path: path.to_path_buf(),
     })
 }
@@ -3632,6 +3645,7 @@ fn prefetch_checksum(
     expected: u64,
     prior: Checksum,
     buffer: &mut Vec<u8>,
+    clippy_driver: Option<&super::clippy_driver_checksum::ClippyDriverChecksum>,
 ) -> Option<Result<Checksum, StaleItem>> {
     let metadata = match checksum_metadata(path, expected) {
         Ok(metadata) => metadata,
@@ -3643,7 +3657,9 @@ fn prefetch_checksum(
     let file = open_regular_file_of_size(path, expected)?;
     // A speculative nonblocking read may fail where an ordinary read succeeds.
     // Retry all read errors in the original ordered consumer.
-    read_checksum(path, prior, file, buffer).ok().map(Ok)
+    read_checksum(path, prior, file, buffer, clippy_driver)
+        .ok()
+        .map(Ok)
 }
 
 /// Computes isolated results without changing the shared cache or error order.
@@ -3707,7 +3723,13 @@ fn prefetch_checksums<P: AsRef<Path> + Sync>(
                 }
                 continue;
             }
-            *result = prefetch_checksum(path, expected, prior, &mut buffer);
+            *result = prefetch_checksum(
+                path,
+                expected,
+                prior,
+                &mut buffer,
+                parallelism.clippy_driver,
+            );
             if !matches!(result.as_ref(), Some(Ok(actual)) if *actual == prior) {
                 first_unconfirmed.fetch_min(index, Ordering::Relaxed);
             }
@@ -3832,6 +3854,7 @@ mod parallel_checksum_tests {
             paths.iter().map(|(path, prior)| (path, *prior)),
             true,
             Some(ChecksumParallelism {
+                clippy_driver: None,
                 jobserver: &jobserver,
                 reserved_tokens: &reserved_tokens,
                 jobs: 4,
@@ -3862,6 +3885,7 @@ mod parallel_checksum_tests {
                 &paths,
                 &mut HashMap::default(),
                 ChecksumParallelism {
+                    clippy_driver: None,
                     jobserver: &jobserver,
                     reserved_tokens: &reserved_tokens,
                     jobs: 4,

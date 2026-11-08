@@ -33,6 +33,7 @@ mod build_config;
 pub(crate) mod build_context;
 pub(crate) mod build_runner;
 mod cached_doctests;
+mod clippy_driver_checksum;
 mod compilation;
 mod compile_kind;
 mod crate_type;
@@ -2663,6 +2664,9 @@ fn prepare_rustc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
     let mut base = build_runner
         .compilation
         .rustc_process(unit, is_primary, is_workspace)?;
+    if is_workspace && let Some(driver) = &build_runner.clippy_driver_checksum {
+        driver.pass_to(&mut base);
+    }
     if unit_uses_ohm_shared_stages(build_runner, unit) {
         base.arg("-Zohm-shared-stages");
     }
