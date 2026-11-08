@@ -758,7 +758,7 @@ fn ohm_rebuilds_missing_workspace_metadata_on_the_established_check_graph() {
     p.cargo("-Zohm-reuse-built-deps -Zbuild-analysis check -p application -v")
         .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps", "build-analysis"])
         .env("CARGO_BUILD_ANALYSIS_ENABLED", "true")
-        .with_stderr_contains("[FRESH] local v0.0.1 [..]")
+        .with_stderr_contains("[FRESH] local v1.0.0 [..]")
         .with_stderr_contains("[CHECKING] application v0.0.1 [..]")
         .run();
     assert!(metadata.is_file());
@@ -777,7 +777,7 @@ fn ohm_rebuilds_missing_workspace_metadata_on_the_established_check_graph() {
     p.cargo("-Zohm-reuse-built-deps check -p application")
         .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
         .with_status(101)
-        .with_stderr_contains("[CHECKING] local v0.0.1 [..]")
+        .with_stderr_contains("[CHECKING] local v1.0.0 [..]")
         .with_stderr_contains("error[E0308]: mismatched types")
         .run();
 }
