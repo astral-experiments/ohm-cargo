@@ -187,6 +187,15 @@ pub fn get_umask() -> u32 {
     }) as u32 // it is u16 on macos
 }
 
+/// Yields canonical temporary roots for fixtures with filesystem or path-format requirements.
+#[cfg(test)]
+pub(crate) fn test_temp_parents() -> impl Iterator<Item = PathBuf> {
+    let parents = std::iter::once(std::env::temp_dir());
+    #[cfg(unix)]
+    let parents = parents.chain(std::iter::once(PathBuf::from("/tmp")));
+    parents.filter_map(|parent| parent.canonicalize().ok())
+}
+
 #[cfg(test)]
 mod test {
     use super::*;

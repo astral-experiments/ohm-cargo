@@ -3130,7 +3130,10 @@ mod shared_registry_tests {
 
     #[test]
     fn executable_resolution_uses_the_actual_absolute_child_search_path() {
-        let directory = tempfile::tempdir().expect("create isolated executable search directory");
+        let directory = crate::util::test_temp_parents()
+            .filter(|parent| std::env::join_paths([parent]).is_ok())
+            .find_map(|parent| tempfile::tempdir_in(parent).ok())
+            .expect("create a directory representable in the executable search path");
         let genuine = directory.path().join("genuine");
         let configured = directory.path().join("configured");
         std::fs::create_dir_all(&genuine).expect("create genuine executable directory");
