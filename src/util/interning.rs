@@ -1,6 +1,5 @@
 use crate::util::data_structures::HashSet;
 use serde::{Serialize, Serializer};
-use serde_untagged::UntaggedEnumVisitor;
 use std::borrow::Borrow;
 use std::borrow::Cow;
 use std::cmp::Ordering;
@@ -174,9 +173,20 @@ impl<'de> serde::Deserialize<'de> for InternedString {
     where
         D: serde::Deserializer<'de>,
     {
-        UntaggedEnumVisitor::new()
-            .expecting("an String like thing")
-            .string(|value| Ok(value.into()))
-            .deserialize(deserializer)
+        struct StringVisitor;
+        impl<'de> serde::de::Visitor<'de> for StringVisitor {
+            type Value = InternedString;
+            fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                formatter.write_str("an String like thing")
+            }
+            fn visit_str<E: serde::de::Error>(self, value: &str) -> Result<Self::Value, E> {
+                Ok(value.into())
+            }
+        }
+        if deserializer.is_human_readable() {
+            deserializer.deserialize_any(StringVisitor)
+        } else {
+            deserializer.deserialize_str(StringVisitor)
+        }
     }
 }

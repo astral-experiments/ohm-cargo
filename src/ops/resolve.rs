@@ -225,13 +225,13 @@ pub fn resolve_ws_with_opts<'gctx>(
                 });
         let cached_resolve = if can_reuse_workspace_resolve {
             ops::lockfile::load_pkg_lockfile_with(ws, |resolve, lockfile_contents| {
-                Ok(resolve_cache::cached_workspace_resolve_is_fresh(
+                Ok(resolve_cache::cached_workspace_resolve_fingerprint(
                     ws,
                     &resolve,
                     &target_data.rustc,
                     lockfile_contents,
                 )
-                .then_some(resolve))
+                .map(|fingerprint| (resolve, fingerprint)))
             })?
             .flatten()
         } else {
@@ -240,29 +240,30 @@ pub fn resolve_ws_with_opts<'gctx>(
 
         // First, resolve the root_package's *listed* dependencies, as well as
         // downloading and updating all remotes and such.
-        let (resolve, add_patches) = if let Some(resolve) = cached_resolve {
-            debug!("reusing the cached workspace resolution");
-            // The lockfile graph is sufficient for package-profile validation,
-            // but it does not contain complete dependency or feature data. The
-            // selected packages are still fully resolved below, and selected
-            // packages with required target features take the ordinary path.
-            (resolve, true)
-        } else {
-            let (resolve, encoding) =
-                resolve_with_registry(ws, &mut registry, dry_run, can_reuse_workspace_resolve)?;
-            if let Some(encoding) = encoding {
-                if let Err(error) = resolve_cache::mark_workspace_resolve_fresh(
-                    ws,
-                    &resolve,
-                    &target_data.rustc,
-                    &encoding,
-                ) {
-                    debug!("unable to cache the workspace resolution: {error}");
+        let (resolve, add_patches, fingerprint) =
+            if let Some((resolve, fingerprint)) = cached_resolve {
+                debug!("reusing the cached workspace resolution");
+                // The lockfile graph is sufficient for package-profile validation,
+                // but it does not contain complete dependency or feature data. The
+                // selected packages are still fully resolved below, and selected
+                // packages with required target features take the ordinary path.
+                (resolve, true, Some(fingerprint))
+            } else {
+                let (resolve, encoding) =
+                    resolve_with_registry(ws, &mut registry, dry_run, can_reuse_workspace_resolve)?;
+                if let Some(encoding) = encoding {
+                    if let Err(error) = resolve_cache::mark_workspace_resolve_fresh(
+                        ws,
+                        &resolve,
+                        &target_data.rustc,
+                        &encoding,
+                    ) {
+                        debug!("unable to cache the workspace resolution: {error}");
+                    }
                 }
-            }
-            // No need to add patches again; `resolve_with_registry` has done it.
-            (resolve, false)
-        };
+                // No need to add patches again; `resolve_with_registry` has done it.
+                (resolve, false, None)
+            };
 
         // Second, resolve with precisely what we're doing. Filter out
         // transitive dependencies if necessary, specify features, handle
@@ -303,7 +304,7 @@ pub fn resolve_ws_with_opts<'gctx>(
             }
         }
 
-        let resolved_with_overrides = resolve_with_previous(
+        let resolved_with_overrides = resolve_with_previous_plan(
             &mut registry,
             ws,
             cli_features,
@@ -312,6 +313,7 @@ pub fn resolve_ws_with_opts<'gctx>(
             None,
             specs,
             add_patches,
+            fingerprint,
         )?;
         (Some(resolve), resolved_with_overrides)
     } else {
@@ -493,7 +495,6 @@ fn resolve_with_registry<'gctx>(
 ///
 /// If `register_patches` is true, then entries from the `[patch]` table in
 /// the manifest will be added to the given `PackageRegistry`.
-#[tracing::instrument(skip_all)]
 pub fn resolve_with_previous<'gctx>(
     registry: &mut PackageRegistry<'gctx>,
     ws: &Workspace<'gctx>,
@@ -503,6 +504,31 @@ pub fn resolve_with_previous<'gctx>(
     keep_previous: Option<Keep<'_>>,
     specs: &[PackageIdSpec],
     register_patches: bool,
+) -> CargoResult<Resolve> {
+    resolve_with_previous_plan(
+        registry,
+        ws,
+        cli_features,
+        has_dev_units,
+        previous,
+        keep_previous,
+        specs,
+        register_patches,
+        None,
+    )
+}
+
+#[tracing::instrument(name = "resolve_with_previous", skip_all)]
+fn resolve_with_previous_plan<'gctx>(
+    registry: &mut PackageRegistry<'gctx>,
+    ws: &Workspace<'gctx>,
+    cli_features: &CliFeatures,
+    has_dev_units: HasDevUnits,
+    previous: Option<&Resolve>,
+    keep_previous: Option<Keep<'_>>,
+    specs: &[PackageIdSpec],
+    register_patches: bool,
+    workspace_fingerprint: Option<u64>,
 ) -> CargoResult<Resolve> {
     // We only want one Cargo at a time resolving a crate graph since this can
     // involve a lot of frobbing of the global caches.
@@ -600,15 +626,39 @@ pub fn resolve_with_previous<'gctx>(
 
     let replace = lock_replacements(ws, previous, &keep);
 
-    let mut resolved = resolver::resolve(
-        &summaries,
-        &replace,
-        registry,
-        &version_prefs,
-        ResolveVersion::with_rust_version(ws.lowest_rust_version()),
-        ws.gctx(),
-    )?;
-
+    let version = ResolveVersion::with_rust_version(ws.lowest_rust_version());
+    let plan = workspace_fingerprint.and_then(|key| {
+        resolve_cache::SelectedPlan::new(ws, key, cli_features, has_dev_units, specs)
+    });
+    let mut resolved = ws.gctx().selected_index.scoped(plan.is_some(), || {
+        if let Some(cached) = plan.as_ref().and_then(|plan| {
+            plan.load(
+                previous?,
+                registry,
+                &summaries,
+                version,
+                &version_prefs,
+                ws.gctx(),
+            )
+        }) {
+            debug!("reusing locked package selection");
+            Ok(cached)
+        } else {
+            resolver::resolve(
+                &summaries,
+                &replace,
+                registry,
+                &version_prefs,
+                version,
+                ws.gctx(),
+            )
+            .inspect(|resolved| {
+                if let (Some(plan), Some(previous)) = (plan.as_ref(), previous) {
+                    plan.store(previous, resolved, ws.gctx());
+                }
+            })
+        }
+    })?;
     let patches = registry.patches().values().flat_map(|v| v.iter());
     resolved.register_used_patches(patches);
 

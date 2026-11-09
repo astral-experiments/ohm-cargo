@@ -12,7 +12,7 @@ use std::sync::mpsc;
 use std::thread;
 
 use crate::prelude::*;
-use cargo_test_support::registry::Package;
+use cargo_test_support::registry::{Package, registry_path};
 use cargo_test_support::str;
 use cargo_test_support::{
     ProjectBuilder, basic_lib_manifest, basic_manifest, git, paths, project, project_in_home,
@@ -3021,6 +3021,145 @@ fn workspace_resolve_cache_command(
         .env("CARGO_EXPERIMENTAL_RESOLVE_CACHE", "1")
         .env("CARGO_LOG", "cargo::ops::resolve=debug");
     command
+}
+
+#[cfg(unix)]
+#[cargo_test]
+fn selected_resolution_honors_locked_yanked_versions() {
+    Package::new("old", "1.0.0").publish();
+    let project = project()
+        .file(
+            "Cargo.toml",
+            &format!(
+                "{}\n[dependencies]\nold = '1'\n",
+                basic_manifest("selected", "0.1.0")
+            ),
+        )
+        .file("src/lib.rs", "")
+        .build();
+    project.cargo("generate-lockfile").run();
+    fs::remove_file(registry_path().join("3/o/old")).unwrap();
+    Package::new("old", "1.0.0").yanked(true).publish();
+    project
+        .cargo("update")
+        .with_status(101)
+        .with_stderr_contains("[..]yanked[..]")
+        .run();
+    let check = || workspace_resolve_cache_command(&project, "check --locked -p selected");
+    check().run();
+    check().run();
+    check()
+        .with_stderr_contains("[..]reusing locked package selection[..]")
+        .run();
+}
+
+#[cfg(unix)]
+#[cargo_test]
+fn selected_resolution_validates_features_and_damaged_cache() {
+    Package::new("dependency", "1.0.0")
+        .feature("fast", &[])
+        .file("src/lib.rs", "#[cfg(feature = \"fast\")] pub fn fast() {}")
+        .publish();
+    let project = project()
+        .file(
+            "Cargo.toml",
+            r#"
+            [package]
+            name = "selected"
+            version = "0.1.0"
+            edition = "2021"
+            [dependencies]
+            dependency = "1"
+            [features]
+            fast = ["dependency/fast"]
+        "#,
+        )
+        .file(
+            "src/lib.rs",
+            "#[cfg(feature = \"fast\")] pub use dependency::fast;",
+        )
+        .build();
+
+    let hit = "[..]reusing locked package selection[..]";
+    let check = |cmd| workspace_resolve_cache_command(&project, cmd);
+    check("check -p selected").run();
+    check("check -p selected").run();
+    check("check -p selected").with_stderr_contains(hit).run();
+    check("check -p selected --features fast")
+        .with_stderr_does_not_contain(hit)
+        .run();
+    check("check -p selected --features fast")
+        .with_stderr_contains(hit)
+        .run();
+
+    for entry in fs::read_dir(project.root().join("target"))
+        .unwrap()
+        .flatten()
+    {
+        if entry
+            .file_name()
+            .to_string_lossy()
+            .starts_with(".cargo-locked-selection-")
+        {
+            fs::write(entry.path(), b"damaged").unwrap();
+        }
+    }
+    check("check -p selected")
+        .with_stderr_does_not_contain(hit)
+        .run();
+    check("check -p selected").with_stderr_contains(hit).run();
+
+    let secret: [u8; 32] =
+        fs::read(cargo_test_support::paths::cargo_home().join(".ohm-locked-selection/key-v2"))
+            .unwrap()
+            .try_into()
+            .unwrap();
+    // Keep the genuine selection key and serialize an empty package list and index.
+    // A restored target cannot sign its own choices. Even an authenticated record
+    // must contain the requested workspace roots.
+    for authenticated in [false, true] {
+        let mut replaced = 0;
+        for entry in fs::read_dir(project.root().join("target"))
+            .unwrap()
+            .flatten()
+        {
+            if !entry
+                .file_name()
+                .to_string_lossy()
+                .starts_with(".cargo-locked-selection-v2-")
+            {
+                continue;
+            }
+            let saved = fs::read(entry.path()).unwrap();
+            let Some((tag, body)) = saved.split_at_checked(32) else {
+                continue;
+            };
+            if tag != blake3::keyed_hash(&secret, body).as_bytes() {
+                continue;
+            }
+            let (key, _) = postcard::take_from_bytes::<u64>(body).unwrap();
+            let empty = postcard::to_allocvec(&(
+                key,
+                Vec::<()>::new(),
+                std::collections::BTreeMap::<u8, u8>::new(),
+            ))
+            .unwrap();
+            let digest = if authenticated {
+                blake3::keyed_hash(&secret, &empty)
+            } else {
+                blake3::hash(&empty)
+            };
+            let mut record = digest.as_bytes().to_vec();
+            record.extend_from_slice(&empty);
+            fs::write(entry.path(), record).unwrap();
+            replaced += 1;
+        }
+        assert!(replaced > 0);
+        check("check -p selected")
+            .with_stderr_does_not_contain(hit)
+            .run();
+        check("check -p selected").with_stderr_contains(hit).run();
+    }
 }
 
 #[cargo_test]
