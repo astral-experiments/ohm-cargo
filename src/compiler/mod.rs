@@ -33,6 +33,7 @@ mod build_config;
 pub(crate) mod build_context;
 pub(crate) mod build_runner;
 mod cached_doctests;
+mod clippy_driver_checksum;
 mod compilation;
 mod compile_kind;
 mod crate_type;
@@ -1617,6 +1618,12 @@ fn rustc(
             .as_ref()
             .is_some_and(|fingerprint| fingerprint.is_early_cutoff_candidate());
 
+    let clippy_driver_checksum = build_runner
+        .clippy_driver_checksum
+        .as_ref()
+        .filter(|_| build_runner.bcx.ws.is_member(&unit.pkg))
+        .cloned();
+
     return Ok(Work::new(move |state| {
         // Build-script outputs are only authoritative after their jobs finish.
         // An unused Rust extern can still be consumed through native linking.
@@ -2041,6 +2048,10 @@ fn rustc(
             && let Some(hint) = &check_hint
         {
             hint.clear();
+        }
+        // Attach only when the job will execute, after the graph's freshness checks.
+        if let Some(driver) = &clippy_driver_checksum {
+            driver.dispatch_to(&mut rustc, &dep_info_loc);
         }
         state.running(&rustc);
         let timestamp = paths::set_invocation_time(&fingerprint_dir)?;

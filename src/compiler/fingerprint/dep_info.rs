@@ -201,6 +201,10 @@ impl EncodedDepInfo {
         if (nfiles == 0) != (version == FILTERED_INPUTS_VERSION) {
             return None;
         }
+        // Even an empty file path needs its type, four-byte length, and checksum flag.
+        if nfiles > bytes.len() / 6 {
+            return None;
+        }
         let mut files = Vec::with_capacity(nfiles);
         for _ in 0..nfiles {
             let ty = match read_u8(bytes)? {
@@ -240,6 +244,10 @@ impl EncodedDepInfo {
         }
 
         let nenv = read_usize(bytes)?;
+        // An environment key has a four-byte length followed by a value-presence flag.
+        if nenv > bytes.len() / 5 {
+            return None;
+        }
         let mut env = Vec::with_capacity(nenv);
         for _ in 0..nenv {
             let key = str::from_utf8(read_bytes(bytes)?).ok()?.to_string();
@@ -2278,6 +2286,16 @@ mod encoded_dep_info {
         assert_eq!(EncodedDepInfo::parse(&bytes).unwrap(), info);
         let status = bytes.len() - 33;
         bytes[status] = 1;
+        assert!(EncodedDepInfo::parse(&bytes).is_none());
+    }
+
+    #[test]
+    fn impossible_record_counts_are_rejected_before_reserving_space() {
+        let mut bytes = EncodedDepInfo::default().serialize().unwrap();
+        bytes[10..14].copy_from_slice(&u32::MAX.to_le_bytes());
+        assert!(EncodedDepInfo::parse(&bytes).is_none());
+        bytes[5] = CURRENT_ENCODED_DEP_INFO_VERSION;
+        bytes[6..10].copy_from_slice(&u32::MAX.to_le_bytes());
         assert!(EncodedDepInfo::parse(&bytes).is_none());
     }
 
