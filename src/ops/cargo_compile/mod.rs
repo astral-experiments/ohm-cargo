@@ -182,6 +182,13 @@ fn compile_ws<'a>(
     exec: &Arc<dyn Executor>,
     reserve_checksum_slots: bool,
 ) -> CargoResult<Compilation<'a>> {
+    #[cfg(unix)]
+    if ws.gctx().manifests.enabled {
+        ws.gctx()
+            .manifests
+            .target
+            .get_or_init(|| ws.target_dir().as_path_unlocked().to_owned());
+    }
     let _private_lease = ws.private_build_lease()?;
     let interner = UnitInterner::new();
     let logger = BuildLogger::maybe_new(ws, &options.build_config)?;

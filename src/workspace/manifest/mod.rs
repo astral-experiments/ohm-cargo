@@ -37,6 +37,9 @@ pub const MANIFEST_PREAMBLE: &str = "\
 # See Cargo.toml.orig for the original contents.
 ";
 
+#[cfg(unix)]
+pub(crate) mod cache;
+
 pub enum EitherManifest {
     Real(Manifest),
     Virtual(VirtualManifest),
@@ -65,6 +68,8 @@ pub struct Manifest {
     // alternate forms of manifests:
     contents: Option<Rc<String>>,
     document: Option<Arc<toml::Spanned<toml::de::DeTable<'static>>>>,
+    #[cfg(unix)]
+    deferred_toml: Option<Rc<cache::StoredToml>>,
     original_toml: Option<Rc<TomlManifest>>,
     normalized_toml: Rc<TomlManifest>,
     summary: Summary,
@@ -132,7 +137,7 @@ pub struct VirtualManifest {
 /// validated by cargo itself, but rather it is up to the registry when uploaded
 /// to validate these fields. Cargo will itself accept any valid TOML
 /// specification for these values.
-#[derive(PartialEq, Clone, Debug)]
+#[derive(PartialEq, Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct ManifestMetadata {
     pub authors: Vec<String>,
     pub keywords: Vec<String>,
@@ -224,6 +229,19 @@ pub enum TargetKind {
     CustomBuild,
 }
 
+#[cfg(unix)]
+#[derive(serde::Serialize, serde::Deserialize)]
+#[serde(remote = "TargetKind")]
+enum TargetKindRecord {
+    Lib(Vec<CrateType>),
+    Bin,
+    Test,
+    ExampleLib(Vec<CrateType>),
+    ExampleBin,
+    Bench,
+    CustomBuild,
+}
+
 impl ser::Serialize for TargetKind {
     fn serialize<S>(&self, s: S) -> Result<S::Ok, S::Error>
     where
@@ -312,8 +330,10 @@ pub struct Target {
     inner: Arc<TargetInner>,
 }
 
+#[cfg_attr(unix, derive(serde::Serialize, serde::Deserialize))]
 #[derive(Clone, Hash, PartialEq, Eq, PartialOrd, Ord)]
 struct TargetInner {
+    #[cfg_attr(unix, serde(with = "TargetKindRecord"))]
     kind: TargetKind,
     name: String,
     // Whether the name was inferred by Cargo, or explicitly given.
@@ -337,7 +357,7 @@ struct TargetInner {
     doc_scrape_examples: RustdocScrapeExamples,
 }
 
-#[derive(Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, serde::Serialize, serde::Deserialize)]
 pub enum TargetSourcePath {
     Path(PathBuf),
     Metabuild,
@@ -529,6 +549,8 @@ impl Manifest {
         Manifest {
             contents,
             document,
+            #[cfg(unix)]
+            deferred_toml: None,
             original_toml,
             normalized_toml,
             summary,
@@ -568,18 +590,36 @@ impl Manifest {
         let toml = toml::to_string_pretty(self.normalized_toml())?;
         Ok(format!("{}\n{}", MANIFEST_PREAMBLE, toml))
     }
-    /// Collection of spans for the original TOML
+    fn shared_document(&self) -> Option<&Arc<toml::Spanned<toml::de::DeTable<'static>>>> {
+        #[cfg(unix)]
+        if let Some(forms) = &self.deferred_toml
+            && forms.member
+        {
+            return Some(
+                forms
+                    .document
+                    .get_or_init(|| super::parser::verified_document(self.contents().unwrap())),
+            );
+        }
+        self.document.as_ref()
+    }
+
+    /// Collection of spans for the original TOML.
     pub fn document(&self) -> Option<&toml::Spanned<toml::de::DeTable<'static>>> {
-        self.document.as_deref()
+        self.shared_document().map(Arc::as_ref)
     }
 
     /// Collection of spans for the original TOML, returned as a cloned Arc.
     pub fn document_rc(&self) -> Option<Arc<toml::Spanned<toml::de::DeTable<'static>>>> {
-        self.document.clone()
+        self.shared_document().cloned()
     }
 
     /// The [`TomlManifest`] as parsed from [`Manifest::document`]
     pub fn original_toml(&self) -> Option<&TomlManifest> {
+        #[cfg(unix)]
+        if let Some(toml) = &self.deferred_toml {
+            return Some(&toml.forms().0);
+        }
         self.original_toml.as_deref()
     }
     /// The [`TomlManifest`] with all fields expanded
@@ -589,6 +629,10 @@ impl Manifest {
     /// - workspace inheritance
     /// - target discovery
     pub fn normalized_toml(&self) -> &TomlManifest {
+        #[cfg(unix)]
+        if let Some(toml) = &self.deferred_toml {
+            return &toml.forms().1;
+        }
         &self.normalized_toml
     }
     pub fn summary(&self) -> &Summary {
@@ -638,6 +682,15 @@ impl Manifest {
     pub fn warnings(&self) -> &Warnings {
         &self.warnings
     }
+    pub(crate) fn cargo_lints(
+        &self,
+    ) -> (
+        Option<&cargo_util_schemas::manifest::TomlToolLints>,
+        Option<&cargo_util_schemas::manifest::TomlToolLints>,
+    ) {
+        self.normalized_toml.cargo_lints()
+    }
+
     pub fn profiles(&self) -> Option<&TomlProfiles> {
         self.normalized_toml.profile.as_ref()
     }

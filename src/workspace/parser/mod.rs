@@ -50,6 +50,8 @@ pub(crate) mod fast_toml;
 #[cfg(unix)]
 pub(crate) mod registry_cache;
 mod targets;
+#[cfg(unix)]
+pub(crate) use targets::inferred_manifest_inputs;
 
 use self::targets::to_targets;
 
@@ -79,6 +81,19 @@ pub fn read_manifest(
     let is_embedded = is_embedded(path);
     let contents = read_toml_string(path, is_embedded, gctx)?;
 
+    #[cfg(unix)]
+    let cached = super::manifest::cache::Entry::new(path, source_id, &contents, gctx);
+    #[cfg(unix)]
+    if let Some(manifest) = cached
+        .as_ref()
+        .and_then(|e| e.read(&contents, source_id, gctx))
+    {
+        return Ok(EitherManifest::Real(manifest));
+    }
+    #[cfg(unix)]
+    if let Some(entry) = &cached {
+        entry.before_parse();
+    }
     let keep_document = is_embedded
         || match source_id.kind() {
             SourceKind::Path | SourceKind::LocalRegistry | SourceKind::Directory => true,
@@ -104,6 +119,14 @@ pub fn read_manifest(
             to_workspace_config(&original_toml, path, is_embedded, gctx, &mut warnings)?;
         if let WorkspaceConfig::Root(ws_root_config) = &workspace_config {
             let package_root = path.parent().unwrap();
+            #[cfg(unix)]
+            if source_id.is_path() && gctx.manifests.enabled {
+                gctx.manifests
+                    .roots
+                    .lock()
+                    .unwrap()
+                    .insert(package_root.to_owned(), blake3::hash(contents.as_bytes()));
+            }
             gctx.ws_roots()
                 .insert(package_root.to_owned(), ws_root_config.clone());
         }
@@ -168,6 +191,10 @@ pub fn read_manifest(
         manifest.warnings_mut().add_critical_warning(error);
     }
 
+    #[cfg(unix)]
+    if let (Some(entry), EitherManifest::Real(value)) = (cached, &manifest) {
+        entry.store(value);
+    }
     Ok(manifest)
 }
 
@@ -218,6 +245,15 @@ where
     })?;
     document._unused_keys = unused;
     Ok(document)
+}
+
+#[cfg(unix)]
+pub(crate) fn verified_document(
+    contents: &str,
+) -> std::sync::Arc<toml::Spanned<toml::de::DeTable<'static>>> {
+    std::sync::Arc::new(make_document_owned(
+        parse_document(contents).expect("validated manifest"),
+    ))
 }
 
 fn deserialize_without_document(

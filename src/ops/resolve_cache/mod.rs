@@ -3,11 +3,10 @@ use std::hash::{Hash, Hasher};
 use std::path::PathBuf;
 
 use cargo_util::paths;
-use rustc_hash::FxHashMap as HashMap;
 
 use crate::ops::lockfile;
 use crate::resolver::Resolve;
-use crate::util::{CargoResult, ConfigValue, Rustc, StableHasher};
+use crate::util::{CargoResult, Rustc, StableHasher};
 use crate::workspace::Workspace;
 
 mod selected;
@@ -133,7 +132,7 @@ fn workspace_resolve_fingerprint(
     lockfile.hash(&mut hasher);
     lockfile_contents.as_bytes().hash(&mut hasher);
 
-    hash_config_table(workspace.gctx().values()?, &mut hasher);
+    crate::context::hash_config_table(workspace.gctx().values()?, &mut hasher);
 
     let mut environment: Vec<_> = workspace
         .gctx()
@@ -206,46 +205,6 @@ fn environment_affects_workspace_resolution(name: &str) -> bool {
                 | "CARGO_TERM_QUIET"
         )
         && !name.starts_with("CARGO_TERM_PROGRESS_")
-}
-
-fn hash_config_table(values: &HashMap<String, ConfigValue>, hasher: &mut StableHasher) {
-    let mut entries: Vec<_> = values.iter().collect();
-    entries.sort_unstable_by_key(|(key, _)| *key);
-    entries.len().hash(hasher);
-    for (key, value) in entries {
-        key.hash(hasher);
-        hash_config_value(value, hasher);
-    }
-}
-
-fn hash_config_value(value: &ConfigValue, hasher: &mut StableHasher) {
-    value.definition().to_string().hash(hasher);
-
-    match value {
-        ConfigValue::Integer(value, _) => {
-            0_u8.hash(hasher);
-            value.hash(hasher);
-        }
-        ConfigValue::String(value, _) => {
-            1_u8.hash(hasher);
-            value.hash(hasher);
-        }
-        ConfigValue::List(values, _) => {
-            2_u8.hash(hasher);
-            values.len().hash(hasher);
-            for value in values {
-                hash_config_value(value, hasher);
-            }
-        }
-        ConfigValue::Table(values, _) => {
-            3_u8.hash(hasher);
-            hash_config_table(values, hasher);
-        }
-        ConfigValue::Boolean(value, _) => {
-            4_u8.hash(hasher);
-            value.hash(hasher);
-        }
-    }
 }
 
 #[cfg(test)]

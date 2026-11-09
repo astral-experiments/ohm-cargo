@@ -464,6 +464,12 @@ pub(crate) struct PackedIndexSummary {
 
 impl PackedIndexSummary {
     pub(crate) fn pack(summary: &Summary) -> Option<Self> {
+        Self::pack_with_dependency_source(summary, summary.package_id().source_id())
+    }
+    pub(crate) fn pack_with_dependency_source(
+        summary: &Summary,
+        dependency_source: SourceId,
+    ) -> Option<Self> {
         let s = &*summary.inner;
         Some(Self {
             name: s.package_id.name(),
@@ -471,9 +477,7 @@ impl PackedIndexSummary {
             dependencies: s
                 .dependencies
                 .iter()
-                .map(|d| {
-                    super::dependency::PackedIndexDependency::pack(d, s.package_id.source_id())
-                })
+                .map(|d| super::dependency::PackedIndexDependency::pack(d, dependency_source))
                 .collect::<Option<_>>()?,
             features: (*s.features).clone(),
             checksum: s.checksum.clone(),
@@ -483,13 +487,20 @@ impl PackedIndexSummary {
         })
     }
     pub(crate) fn unpack(self, source: SourceId) -> Option<Summary> {
+        self.unpack_with_dependency_source(source, source)
+    }
+    pub(crate) fn unpack_with_dependency_source(
+        self,
+        source: SourceId,
+        dependency_source: SourceId,
+    ) -> Option<Summary> {
         Some(Summary {
             inner: Arc::new(Inner {
                 package_id: PackageId::new(self.name, self.version, source),
                 dependencies: self
                     .dependencies
                     .into_iter()
-                    .map(|d| d.unpack(source))
+                    .map(|d| d.unpack(dependency_source))
                     .collect::<Option<_>>()?,
                 features: Arc::new(self.features),
                 checksum: self.checksum,

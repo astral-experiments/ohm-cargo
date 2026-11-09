@@ -263,7 +263,9 @@ pub fn add_output_format(
 /// [`-Zrustdoc-scrape-examples`][1].
 ///
 /// [1]: https://doc.rust-lang.org/nightly/cargo/reference/unstable.html#scrape-examples
-#[derive(Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Debug, Copy)]
+#[derive(
+    Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Debug, Copy, serde::Serialize, serde::Deserialize,
+)]
 pub enum RustdocScrapeExamples {
     Enabled,
     Disabled,

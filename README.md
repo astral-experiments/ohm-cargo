@@ -11,6 +11,13 @@ Codex.
 Use Ohm only for local development, and at your own risk. Never use it for production builds or
 releases, and always verify your work with the official Rust toolchain.
 
+On Unix, `cargo check`, `cargo build`, and `cargo test` cache eligible package manifests in
+`.cargo-prepared-manifests-v1` in the target directory. Cargo records normalized dependencies,
+targets, and build settings on first use. It verifies the package and inherited workspace manifest
+contents, Cargo configuration, and automatic target discovery before reusing the record. A private
+key in Cargo home authenticates the records. Restoring a target into another Cargo home rebuilds
+them on first use.
+
 On native `x86_64-unknown-linux-gnu` development and test builds, Ohm keeps the
 `line-tables-only` debug data for Rust libraries in per-object `.dwo` files. This reduces the debug
 data the linker processes after an edit. Keep the build directory available to

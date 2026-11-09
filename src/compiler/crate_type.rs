@@ -145,3 +145,15 @@ impl serde::Serialize for CrateType {
         self.to_string().serialize(s)
     }
 }
+
+#[cfg(unix)]
+impl<'de> serde::Deserialize<'de> for CrateType {
+    fn deserialize<D: serde::Deserializer<'de>>(de: D) -> Result<Self, D::Error> {
+        let value = <String as serde::Deserialize>::deserialize(de)?;
+        Ok(if value == "proc-macro" {
+            Self::ProcMacro
+        } else {
+            Self::from(&value)
+        })
+    }
+}
