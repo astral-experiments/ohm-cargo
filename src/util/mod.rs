@@ -75,6 +75,7 @@ pub mod rustc;
 mod semver_eval_ext;
 mod semver_ext;
 pub mod sqlite;
+pub(crate) mod storage_path;
 pub mod time_span;
 mod unhashed;
 mod vcs;

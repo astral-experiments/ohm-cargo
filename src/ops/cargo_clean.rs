@@ -6,6 +6,7 @@ use crate::util::data_structures::{IndexMap, IndexSet};
 use crate::util::edit_distance;
 use crate::util::errors::CargoResult;
 use crate::util::interning::InternedString;
+use crate::util::storage_path;
 use crate::util::{Filesystem, GlobalContext, Progress, ProgressStyle};
 use crate::workspace::profiles::Profiles;
 use crate::workspace::{PackageIdSpec, PackageIdSpecQuery, TargetKind, Workspace};
@@ -55,15 +56,14 @@ pub fn clean(ws: &Workspace<'_>, opts: &CleanOptions<'_>) -> CargoResult<()> {
     let ancestors = ws.shared_cache_ancestors()?;
     if !ancestors.is_empty() {
         let target = ws.canonical_build_path(target_dir.as_path_unlocked());
-        if ancestors.iter().any(|ancestor| {
-            ancestor.build_root.starts_with(&target)
-                || ancestor.target_root.starts_with(&target)
-                || target.starts_with(&ancestor.build_root)
-                || target.starts_with(&ancestor.target_root)
-        }) {
-            bail!(
-                "nested Cargo cannot clean a directory overlapping its parent's build or target directories"
-            );
+        for ancestor in ancestors {
+            if storage_path::overlaps(&target, &ancestor.build_root)?
+                || storage_path::overlaps(&target, &ancestor.target_root)?
+            {
+                bail!(
+                    "nested Cargo cannot clean a directory overlapping its parent's build or target directories"
+                );
+            }
         }
     }
     let configured_build_dir = ws.configured_build_dir();
@@ -121,7 +121,7 @@ pub fn clean(ws: &Workspace<'_>, opts: &CleanOptions<'_>) -> CargoResult<()> {
             .unwrap_or_else(|_| paths::normalize_path(target_dir.as_path_unlocked()));
         let build_root = fs::canonicalize(configured_build_dir.as_path_unlocked())
             .unwrap_or_else(|_| paths::normalize_path(configured_build_dir.as_path_unlocked()));
-        if target_root.starts_with(&build_root) || build_root.starts_with(&target_root) {
+        if storage_path::overlaps(&target_root, &build_root)? {
             bail!(
                 "cannot safely clean overlapping target and shared registry build directories; \
                  configure a separate workspace-local target directory"

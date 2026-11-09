@@ -3408,6 +3408,19 @@ fn shared_registry_cache_allows_nested_builds_with_distinct_target_directories()
                     }
                 }
 
+                #[cfg(unix)]
+                {
+                    // A distinct target can still name a lock the waiting parent owns.
+                    let target = PathBuf::from(env::var_os("OHM_NESTED_TARGET_DIRECTORY").unwrap())
+                        .join("linked-lock");
+                    std::fs::create_dir_all(target.join("debug")).unwrap();
+                    std::fs::hard_link(
+                        PathBuf::from(&parent_target).join("debug/.cargo-lock"),
+                        target.join("debug/.cargo-lock"),
+                    ).unwrap();
+                    assert_rejected(run_nested(target.as_os_str(), "shared"));
+                }
+
                 let mut invalid = vec![shared, parent_target.clone()];
                 if let Some(alias) = env::var_os("OHM_SHARED_BUILD_ALIAS") {
                     invalid.push(alias);
