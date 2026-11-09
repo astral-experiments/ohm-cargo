@@ -3700,6 +3700,22 @@ fn prepared_manifest_rechecks_workspace_settings_and_target_discovery() {
             .run();
     }
     if option_env!("CARGO_COMMIT_HASH").is_some() {
+        p.change_file(
+            "Cargo.toml",
+            &workspace.replace("members=", "# membership\nmembers = "),
+        );
+        check()
+            .with_stderr_contains("[..]reusing prepared manifest [..]member/Cargo.toml")
+            .run();
+        p.change_file(
+            "Cargo.toml",
+            &workspace.replace("[workspace]", "[workspace]\nignored-setting = true"),
+        );
+        check()
+            .with_stderr_contains("[WARNING] [..]unused manifest key: workspace.ignored-setting")
+            .with_stderr_contains("[..]reusing prepared manifest [..]member/Cargo.toml")
+            .run();
+        p.change_file("Cargo.toml", workspace);
         // Preserve the postcard record and damage only its compressed TOML. The target's
         // previous self-checksum can be recomputed from its public header.
         let directory = p.build_dir().join(".cargo-prepared-manifests-v1");

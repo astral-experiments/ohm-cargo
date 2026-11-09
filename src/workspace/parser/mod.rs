@@ -121,11 +121,13 @@ pub fn read_manifest(
             let package_root = path.parent().unwrap();
             #[cfg(unix)]
             if source_id.is_path() && gctx.manifests.enabled {
-                gctx.manifests
-                    .roots
-                    .lock()
-                    .unwrap()
-                    .insert(package_root.to_owned(), blake3::hash(contents.as_bytes()));
+                gctx.manifests.roots.lock().unwrap().insert(
+                    package_root.to_owned(),
+                    crate::workspace::manifest::cache::workspace_root_key(
+                        &contents,
+                        document.as_ref(),
+                    ),
+                );
             }
             gctx.ws_roots()
                 .insert(package_root.to_owned(), ws_root_config.clone());
