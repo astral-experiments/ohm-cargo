@@ -19,6 +19,94 @@ struct RustdocFingerprint {
     rustc_vv: String,
 }
 
+#[cfg(any(unix, windows))]
+#[cargo_test]
+fn documentation_rejects_aliased_writer_locks() {
+    let p = project()
+        .file("src/lib.rs", "/// A documented item.\npub struct Item;")
+        .build();
+    let target = p.root().join("target");
+    std::fs::create_dir_all(&target).unwrap();
+    let lock = target.join(".ohm-rustdoc-foo.lock");
+    let unrelated = p.root().join("unrelated");
+    #[cfg(unix)]
+    {
+        std::os::unix::fs::symlink(&unrelated, &lock).unwrap();
+        p.cargo("doc --no-deps")
+            .with_status(101)
+            .with_stderr_contains("[ERROR] failed to open documentation lock [..]")
+            .run();
+        assert!(!unrelated.exists());
+        std::fs::remove_file(&lock).unwrap();
+    }
+    std::fs::write(&unrelated, "unrelated contents").unwrap();
+    std::fs::hard_link(&unrelated, &lock).unwrap();
+    p.cargo("doc --no-deps")
+        .with_status(101)
+        .with_stderr_contains("[ERROR] invalid documentation lock at [..]")
+        .run();
+    assert_eq!(
+        std::fs::read_to_string(&unrelated).unwrap(),
+        "unrelated contents"
+    );
+    std::fs::remove_file(&lock).unwrap();
+    p.cargo("doc --no-deps").run();
+    assert!(target.join("doc/foo/struct.Item.html").is_file());
+}
+
+#[cargo_test]
+fn documentation_follows_the_active_shared_build_context() {
+    let p = project()
+        .file("Cargo.toml", &basic_manifest("context-doc", "1.0.0"))
+        .file(
+            "src/lib.rs",
+            r#"
+                #![allow(unexpected_cfgs)]
+                #[cfg_attr(alternate, doc = "Second configuration.")]
+                #[cfg_attr(not(alternate), doc = "First configuration.")]
+                pub struct Item;
+            "#,
+        )
+        .build();
+    for (shared, alternate) in [
+        (true, false),
+        (true, true),
+        (true, false),
+        (false, true),
+        (true, false),
+    ] {
+        let flags = if shared {
+            "-Zohm-shared-registry-cache -Zbuild-dir-new-layout"
+        } else {
+            ""
+        };
+        let mut command = p.cargo(&format!("-Zohm-defaults=no {flags} doc --no-deps"));
+        command
+            .masquerade_as_nightly_cargo(&[
+                "ohm-defaults",
+                "ohm-shared-registry-cache",
+                "build-dir-new-layout",
+            ])
+            .env("CARGO_BUILD_BUILD_DIR", p.root().join("build"));
+        let expected = if alternate {
+            command
+                .env("RUSTC_BOOTSTRAP", "1")
+                .env("RUSTDOCFLAGS", "--cfg alternate");
+            "Second configuration."
+        } else {
+            command
+                .env_remove("RUSTC_BOOTSTRAP")
+                .env_remove("RUSTDOCFLAGS");
+            "First configuration."
+        };
+        command.run();
+        assert!(
+            p.read_file("target/doc/context_doc/struct.Item.html")
+                .contains(expected)
+        );
+    }
+}
+
 #[cargo_test]
 fn check_dependencies_keep_one_type_across_a_documented_diamond() {
     let p = project()
