@@ -208,6 +208,21 @@ fn supported(value: &toml::Value, depth: usize) -> bool {
     }
 }
 
+/// Creates a private Cargo home for tests that exercise cache hits.
+#[cfg(test)]
+pub(crate) fn private_home() -> tempfile::TempDir {
+    use std::os::unix::fs::PermissionsExt as _;
+
+    let mut builder = tempfile::Builder::new();
+    builder.permissions(fs::Permissions::from_mode(0o700));
+    [std::env::temp_dir(), PathBuf::from("/tmp")]
+        .into_iter()
+        .filter_map(|parent| parent.canonicalize().ok())
+        .filter(|parent| trusted_ancestors(parent))
+        .find_map(|parent| builder.tempdir_in(parent).ok())
+        .expect("private-cache tests need a writable temporary directory with trusted ancestors")
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -244,13 +259,6 @@ path = "src/lib.rs"
             let manifest = deserialize_toml(toml::de::Deserializer::from(document.clone())).ok()?;
             self.try_store(document, &manifest._unused_keys)
         }
-    }
-
-    fn private_home() -> tempfile::TempDir {
-        tempfile::Builder::new()
-            .permissions(fs::Permissions::from_mode(0o700))
-            .tempdir()
-            .unwrap()
     }
 
     #[test]
