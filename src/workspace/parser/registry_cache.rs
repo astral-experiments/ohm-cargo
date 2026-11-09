@@ -215,9 +215,7 @@ pub(crate) fn private_home() -> tempfile::TempDir {
 
     let mut builder = tempfile::Builder::new();
     builder.permissions(fs::Permissions::from_mode(0o700));
-    [std::env::temp_dir(), PathBuf::from("/tmp")]
-        .into_iter()
-        .filter_map(|parent| parent.canonicalize().ok())
+    crate::util::test_temp_parents()
         .filter(|parent| trusted_ancestors(parent))
         .find_map(|parent| builder.tempdir_in(parent).ok())
         .expect("private-cache tests need a writable temporary directory with trusted ancestors")
