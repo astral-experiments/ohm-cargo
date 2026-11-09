@@ -153,6 +153,8 @@ const OHM_INCREMENTAL_CODEGEN_RUSTFLAGS: [&str; 2] =
 
 /// Marks a workspace/profile namespace prepared under the current seed policy.
 pub(crate) const OHM_WORKTREE_SEED_MARKER: &str = ".ohm-worktree-seed-v7";
+/// Cargo supplies this package root for physical source paths observed in compiled code.
+pub(crate) const OHM_WORKTREE_SOURCE_PATHS: &str = "__CARGO_OHM_WORKTREE_SOURCE_PATHS";
 /// Permanently excludes a namespace with unsupported inputs from seeding.
 pub(crate) const OHM_WORKTREE_SEED_DENY_MARKER: &str = ".ohm-worktree-seed-deny-v7";
 /// Requires explicit trust at import time, including when a recipient is re-exported.
@@ -286,10 +288,12 @@ fn worktree_seed_remap(
     // only one scope, so preserve any scope already supplied by the caller.
     let mut use_object_scope = !rustdoc;
     let mut local_inputs = true;
+    let mut local_sources = true;
     let mut args = compiler_args;
     while let Some(arg) = args.next() {
         if arg == "--remap-path-scope" || arg.starts_with("--remap-path-scope=") {
             use_object_scope = false;
+            local_sources = false;
         }
         let unstable = if arg == "-Z" {
             args.next()
@@ -313,6 +317,7 @@ fn worktree_seed_remap(
     Some(WorktreeSeedRemap {
         flags,
         local_inputs,
+        local_sources: local_inputs && local_sources,
     })
 }
 
@@ -320,6 +325,7 @@ fn worktree_seed_remap(
 struct WorktreeSeedRemap {
     flags: &'static [&'static str],
     local_inputs: bool,
+    local_sources: bool,
 }
 
 fn add_worktree_seed_flags(
@@ -329,6 +335,7 @@ fn add_worktree_seed_flags(
 ) {
     const INPUT_PATHS: &str = "__CARGO_OHM_WORKTREE_INPUT_PATHS";
     cmd.env_remove(INPUT_PATHS);
+    cmd.env_remove(OHM_WORKTREE_SOURCE_PATHS);
     let Some(remap) = worktree_seed_remap(build_runner, unit) else {
         return;
     };
@@ -337,6 +344,9 @@ fn add_worktree_seed_flags(
     cmd.args(remap.flags);
     if remap.local_inputs {
         cmd.env(INPUT_PATHS, "1");
+    }
+    if remap.local_sources {
+        cmd.env(OHM_WORKTREE_SOURCE_PATHS, unit.pkg.root());
     }
 }
 

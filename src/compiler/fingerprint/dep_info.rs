@@ -595,7 +595,11 @@ pub(in crate::compiler) fn translate_dep_info_with_observer(
     // not tracked elsewhere in the fingerprint.
     //
     // For cargo#13280, We trace env vars that are defined in the `[env]` config table.
-    on_disk_info.env.retain(|(key, _)| {
+    on_disk_info.env.retain(|(key, value)| {
+        if key == crate::compiler::OHM_WORKTREE_SOURCE_PATHS {
+            // The compiler records the package root only when an artifact uses its physical path.
+            return value.is_some();
+        }
         ManifestMetadata::should_track(key)
             || (worktree_seed_namespace.is_some()
                 && matches!(key.as_str(), "CARGO_MANIFEST_DIR" | "CARGO_MANIFEST_PATH"))

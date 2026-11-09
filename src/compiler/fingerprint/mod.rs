@@ -1835,7 +1835,9 @@ impl LocalFingerprint {
                     let manifest_value = pkg.manifest().metadata().env_var(key);
                     let current = if let Some(value) = manifest_value.as_deref() {
                         Some(OsStr::new(value))
-                    } else if worktree_seed && key == "CARGO_MANIFEST_DIR" {
+                    } else if key == super::OHM_WORKTREE_SOURCE_PATHS
+                        || (worktree_seed && key == "CARGO_MANIFEST_DIR")
+                    {
                         Some(pkg.root().as_os_str())
                     } else if worktree_seed && key == "CARGO_MANIFEST_PATH" {
                         Some(pkg.manifest_path().as_os_str())
