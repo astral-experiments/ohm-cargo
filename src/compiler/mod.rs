@@ -3018,6 +3018,7 @@ fn rustdoc(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<W
 
     let crate_name = unit.target.crate_name();
     let is_json_output = build_runner.bcx.build_config.intent.wants_doc_json_output();
+    let output_marker = rustdoc_output_marker(build_runner, unit);
     let doc_dir = build_runner.files().output_dir(unit);
     // Create the documentation directory ahead of time as rustdoc currently has
     // a bug where concurrent invocations will race to create this directory if
@@ -3104,6 +3105,19 @@ fn rustdoc(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<W
             }
         }
 
+        // Different build contexts and profiles can render into the same crate directory.
+        // Serialize replacement even when the callers use different build-directory locks.
+        let _output_lock = output_marker
+            .as_ref()
+            .map(|_| {
+                let path = doc_dir.with_file_name(format!(".ohm-rustdoc-{crate_name}.lock"));
+                crate::util::flock::FileLock::for_rustdoc(&path)
+            })
+            .transpose()?;
+        #[cfg(unix)]
+        if let Some(lock) = _output_lock {
+            rustdoc.inherit_file(Arc::new(lock.into_file()));
+        }
         if !is_json_output {
             let crate_dir = doc_dir.join(&crate_name);
             if crate_dir.exists() {
@@ -3168,6 +3182,12 @@ fn rustdoc(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<W
             paths::set_file_time_no_err(dep_info_loc, timestamp);
         }
 
+        if let Some(marker) = output_marker
+            && marker.with_file_name("index.html").is_file()
+        {
+            // Replacing the crate directory removes every previous writer's marker.
+            paths::write_atomic_no_follow(&marker, b"")?;
+        }
         Ok(())
     }))
 }
@@ -4716,6 +4736,21 @@ fn scrape_output_path(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoR
     build_runner
         .outputs(unit)
         .map(|outputs| outputs[0].path.clone())
+}
+
+/// Identifies the unit whose HTML currently occupies the shared crate directory.
+fn rustdoc_output_marker(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> Option<PathBuf> {
+    if !unit.mode.is_doc() || build_runner.bcx.build_config.intent.wants_doc_json_output() {
+        return None;
+    }
+    let files = build_runner.files();
+    let owner = crate::util::short_hash(&files.fingerprint_file_path(unit, ""));
+    Some(
+        files
+            .output_dir(unit)
+            .join(unit.target.crate_name())
+            .join(format!(".ohm-doc-{owner}")),
+    )
 }
 
 /// Gets the dep-info file emitted by rustdoc.

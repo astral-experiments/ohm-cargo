@@ -2830,6 +2830,7 @@ fn calculate_normal(
         .iter()
         .filter(|output| !matches!(output.flavor, FileFlavor::DebugInfo | FileFlavor::Auxiliary))
         .map(|output| output.path.clone())
+        .chain(super::rustdoc_output_marker(build_runner, unit))
         .collect::<Vec<_>>();
     // Fill out a bunch more information that we'll be tracking typically
     // hashed to take up less space on disk as we just need to know when things
