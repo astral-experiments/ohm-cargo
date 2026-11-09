@@ -33,7 +33,16 @@ impl std::fmt::Debug for AuthKey {
 
 impl AuthKey {
     fn load(home: &Path, target: &Path) -> Option<Self> {
-        let home = home.canonicalize().ok()?;
+        let home = match home.canonicalize() {
+            Ok(home) => home,
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
+                // A first build of a dependency-free project can reach manifest loading
+                // before Cargo's package cache has created its home.
+                std::fs::create_dir_all(home).ok()?;
+                home.canonicalize().ok()?
+            }
+            Err(_) => return None,
+        };
         if home.starts_with(target.canonicalize().ok()?) {
             return None;
         }
@@ -555,6 +564,24 @@ mod tests {
         std::os::unix::fs::symlink(&moved, &path).unwrap();
         assert!(AuthKey::load(home.path(), target.path()).is_none());
         assert!(path.is_symlink());
+    }
+
+    #[test]
+    fn first_writer_creates_a_missing_cargo_home() {
+        let parent = tempfile::tempdir().unwrap();
+        let target = tempfile::tempdir().unwrap();
+        let home = parent.path().join("home/.cargo");
+        let key = AuthKey::load(&home, target.path()).unwrap();
+        assert_eq!(AuthKey::load(&home, target.path()).unwrap().0, key.0);
+        assert_eq!(
+            home.join(AUTH_FILE)
+                .metadata()
+                .unwrap()
+                .permissions()
+                .mode()
+                & 0o777,
+            0o600
+        );
     }
 
     #[test]
