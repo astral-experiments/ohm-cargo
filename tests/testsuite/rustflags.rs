@@ -3120,3 +3120,42 @@ fn worktree_seeds_keep_suggestions_editable() {
         .with_stdout_data(str!["/ohm-workspace/v7/included.rs"])
         .run();
 }
+
+#[cargo_test]
+fn worktree_seeds_mark_automatic_include_paths() {
+    let p = project()
+        .file(
+            "src/main.rs",
+            r#"
+                #[cfg(doc)]
+                #[doc = env!("__CARGO_OHM_WORKTREE_INPUT_PATHS")]
+                pub fn documented() {}
+                fn main() {
+                    println!("{}", option_env!("__CARGO_OHM_WORKTREE_INPUT_PATHS").unwrap_or("absent"));
+                }
+            "#,
+        )
+        .build();
+    for (flags, expected) in [
+        ("", "1\n"),
+        ("--remap-path-scope=debuginfo", "1\n"),
+        (
+            "--remap-path-scope=object -Zremap-cwd-prefix=/explicit",
+            "absent\n",
+        ),
+        ("--remap-path-prefix=unused=/explicit", "absent\n"),
+    ] {
+        p.cargo("run -Zohm-worktree-seeds=yes")
+            .masquerade_as_nightly_cargo(&["ohm-worktree-seeds"])
+            .env("RUSTC_BOOTSTRAP", "1")
+            .env("RUSTFLAGS", flags)
+            .env("__CARGO_OHM_WORKTREE_INPUT_PATHS", "inherited")
+            .with_stdout_data(expected)
+            .run();
+    }
+    p.cargo("doc -Zohm-worktree-seeds=yes")
+        .masquerade_as_nightly_cargo(&["ohm-worktree-seeds"])
+        .env("RUSTC_BOOTSTRAP", "1")
+        .env_remove("__CARGO_OHM_WORKTREE_INPUT_PATHS")
+        .run();
+}
