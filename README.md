@@ -13,8 +13,10 @@ releases, and always verify your work with the official Rust toolchain.
 
 On Unix, `cargo check`, `cargo build`, and `cargo test` cache eligible package manifests in
 `.cargo-prepared-manifests-v1` in the target directory. Cargo records normalized dependencies,
-targets, and build settings on first use. It verifies the package and inherited workspace manifest
-contents, Cargo configuration, and automatic target discovery before reusing the record. A private
+targets, and build settings on first use. It verifies the package contents, workspace inheritance
+and membership settings, Cargo configuration, and automatic target discovery before reuse. Cargo
+parses the workspace root on every command, so a comment edit keeps member records and reports
+diagnostics from the current root. A private
 key in Cargo home authenticates the records. Restoring a target into another Cargo home rebuilds
 them on first use.
 

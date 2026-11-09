@@ -20,6 +20,99 @@ pub(crate) struct Cache {
     pub(crate) target: OnceLock<PathBuf>,
 }
 
+/// The root itself is parsed on every command, including its diagnostics. Members receive
+/// inherited package fields, dependency definitions and lints from its workspace table.
+/// Keep discovery, resolver selection and the root's feature gates in the key as well.
+pub(crate) fn workspace_root_key(
+    contents: &str,
+    document: Option<&toml::Spanned<toml::de::DeTable<'_>>>,
+) -> blake3::Hash {
+    fn key(contents: &str, document: &toml::de::DeTable<'_>) -> Option<blake3::Hash> {
+        let workspace = document.get("workspace")?.get_ref().as_table()?;
+        let mut bytes = Vec::with_capacity(contents.len());
+        bytes.extend_from_slice(b"prepared-workspace-inputs-v1\0");
+        for value in std::iter::once(document.get("cargo-features")).chain(
+            [
+                "package",
+                "dependencies",
+                "lints",
+                "members",
+                "exclude",
+                "default-members",
+                "resolver",
+            ]
+            .map(|key| workspace.get(key)),
+        ) {
+            if let Some(value) = value {
+                bytes.push(1);
+                append_root_value(value.get_ref(), &mut bytes)?;
+            } else {
+                bytes.push(0);
+            }
+        }
+        Some(blake3::hash(&bytes))
+    }
+    if contents.len() <= MAX_RECORD
+        && let Some(hash) = document.and_then(|d| key(contents, d.get_ref()))
+    {
+        return hash;
+    }
+    blake3::hash(contents.as_bytes())
+}
+
+/// Encode the parsed TOML tree without source spans or comments. Lengths and type tags
+/// distinguish values, arrays keep their order, and workspace maps have named keys.
+fn append_root_value(value: &toml::de::DeValue<'_>, bytes: &mut Vec<u8>) -> Option<()> {
+    use toml::de::DeValue;
+    fn text(bytes: &mut Vec<u8>, s: &str) {
+        bytes.extend((s.len() as u64).to_le_bytes());
+        bytes.extend_from_slice(s.as_bytes());
+    }
+    match value {
+        DeValue::String(s) => {
+            bytes.push(0);
+            text(bytes, s);
+        }
+        DeValue::Integer(n) => {
+            bytes.push(1);
+            bytes.extend(
+                i128::from_str_radix(n.as_str(), n.radix())
+                    .ok()?
+                    .to_le_bytes(),
+            );
+        }
+        DeValue::Float(n) => {
+            bytes.push(2);
+            bytes.extend(n.as_str().parse::<f64>().ok()?.to_bits().to_le_bytes());
+        }
+        DeValue::Boolean(b) => {
+            bytes.push(3);
+            bytes.push(*b as u8);
+        }
+        DeValue::Datetime(d) => {
+            bytes.push(4);
+            text(bytes, &d.to_string());
+        }
+        DeValue::Array(a) => {
+            bytes.push(5);
+            bytes.extend((a.len() as u64).to_le_bytes());
+            for v in a {
+                append_root_value(v.get_ref(), bytes)?;
+            }
+        }
+        DeValue::Table(table) => {
+            bytes.push(6);
+            bytes.extend((table.len() as u64).to_le_bytes());
+            // A lint's arbitrary TOML configuration can retain its iteration order.
+            for (key, value) in table {
+                text(bytes, key.get_ref());
+                append_root_value(value.get_ref(), bytes)?;
+            }
+        }
+    }
+    Some(())
+}
+
 /// The target may be restored independently of this Cargo home. Only its local writer can
 /// authenticate a validated record. Never expose the key through GlobalContext's Debug output.
 #[derive(Clone, Copy)]
@@ -521,6 +614,44 @@ impl StoredToml {
 mod tests {
     use super::*;
     use std::os::unix::fs::PermissionsExt as _;
+
+    #[test]
+    fn workspace_inputs_ignore_comments_and_keep_member_configuration() {
+        fn key(s: &str) -> blake3::Hash {
+            let document = toml::de::DeTable::parse(s).unwrap();
+            workspace_root_key(s, Some(&document))
+        }
+        let s = "[workspace]\nmembers=['a']\n[workspace.package]\nversion='1.0.0'\n[workspace.dependencies]\nalias={package='thing', path='foo#bar'}\n[workspace.lints.rust]\nunused_variables={level='warn',priority=2}\n";
+        assert_eq!(
+            key(s),
+            key(&s.replace("version=", "# old comment\nversion = "))
+        );
+        assert_eq!(
+            key(s),
+            key(&format!("{s}[workspace.metadata]\nrelease=false\n"))
+        );
+        for (before, after) in [
+            ("1.0.0", "2.0.0"),
+            ("foo#bar", "foo#baz"),
+            ("thing", "new"),
+            ("priority=2", "priority=3"),
+            ("'warn'", "'deny'"),
+            ("['a']", "['b']"),
+        ] {
+            assert_ne!(key(s), key(&s.replace(before, after)));
+        }
+        let prefix = "[workspace.lints.cargo.some.options]\na=";
+        for (a, b) in [
+            ("true", "'true'"),
+            ("1", "1.0"),
+            ("0.0", "-0.0"),
+            ("['a','bc']", "['ab','c']"),
+            ("[1,2]", "[2,1]"),
+            ("1979-05-27", "'1979-05-27'"),
+        ] {
+            assert_ne!(key(&format!("{prefix}{a}")), key(&format!("{prefix}{b}")));
+        }
+    }
 
     #[test]
     fn key_creation_is_atomic_and_key_replacement_invalidates_the_tag() {
