@@ -55,6 +55,28 @@ fn documentation_rejects_aliased_writer_locks() {
 }
 
 #[cargo_test]
+fn documents_a_library_with_a_long_crate_name() {
+    let name = "a".repeat(242);
+    let p = project()
+        .file(
+            "Cargo.toml",
+            &format!(
+                "{}\n[lib]\nname = \"{name}\"\n",
+                basic_manifest("short-package", "0.1.0")
+            ),
+        )
+        .file("src/lib.rs", "pub struct Verified;")
+        .build();
+
+    p.cargo("doc --lib --no-deps").run();
+    assert!(
+        fs::read_to_string(p.root().join("target/doc").join(name).join("index.html"))
+            .unwrap()
+            .contains("struct.Verified.html")
+    );
+}
+
+#[cargo_test]
 fn documentation_follows_the_active_shared_build_context() {
     let p = project()
         .file("Cargo.toml", &basic_manifest("context-doc", "1.0.0"))
