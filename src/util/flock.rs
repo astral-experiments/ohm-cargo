@@ -44,6 +44,56 @@ pub struct FileLock {
 }
 
 impl FileLock {
+    /// Serializes writers to a shared documentation directory without following an aliased lock.
+    pub(crate) fn for_rustdoc(path: &Path) -> CargoResult<Self> {
+        let mut options = OpenOptions::new();
+        options.read(true).write(true).create(true).truncate(false);
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::OpenOptionsExt as _;
+            options.custom_flags(libc::O_NOFOLLOW | libc::O_NONBLOCK);
+        }
+        #[cfg(windows)]
+        {
+            use std::os::windows::fs::OpenOptionsExt as _;
+            use windows_sys::Win32::Storage::FileSystem::FILE_FLAG_OPEN_REPARSE_POINT;
+            options.custom_flags(FILE_FLAG_OPEN_REPARSE_POINT);
+        }
+        #[cfg(not(any(unix, windows)))]
+        if path.symlink_metadata().is_ok_and(|m| !m.is_file()) {
+            anyhow::bail!("invalid documentation lock at `{}`", path.display());
+        }
+        // Cargo has created the output directory by the time rustdoc is scheduled.
+        let file = options
+            .open(path)
+            .with_context(|| format!("failed to open documentation lock `{}`", path.display()))?;
+        let metadata = file.metadata()?;
+        #[cfg(unix)]
+        let unaliased = std::os::unix::fs::MetadataExt::nlink(&metadata) == 1;
+        #[cfg(windows)]
+        let unaliased = {
+            use std::os::windows::fs::MetadataExt as _;
+            use windows_sys::Win32::Storage::FileSystem::FILE_ATTRIBUTE_REPARSE_POINT;
+            metadata.file_attributes() & FILE_ATTRIBUTE_REPARSE_POINT == 0
+                && winapi_util::file::information(&file)?.number_of_links() == 1
+        };
+        #[cfg(not(any(unix, windows)))]
+        let unaliased = path.symlink_metadata()?.is_file();
+        anyhow::ensure!(
+            metadata.is_file() && unaliased,
+            "invalid documentation lock at `{}`: expected a regular file with one link",
+            path.display()
+        );
+        if !try_acquire(path, &|| imp::try_lock_exclusive(&file))? {
+            imp::lock_exclusive(&file)
+                .with_context(|| format!("failed to lock file: {}", path.display()))?;
+        }
+        Ok(Self {
+            f: Some(file),
+            path: path.to_owned(),
+        })
+    }
+
     /// Returns the underlying file handle of this lock.
     pub fn file(&self) -> &File {
         self.f.as_ref().unwrap()

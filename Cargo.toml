@@ -264,6 +264,7 @@ openssl-src = { workspace = true, optional = true }
 openssl-probe.workspace = true
 
 [target.'cfg(windows)'.dependencies]
+winapi-util = "0.1.11"
 cargo-credential-wincred.workspace = true
 junction = { version = "2.1.0", default-features = false }
 
