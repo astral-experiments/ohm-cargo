@@ -20,6 +20,9 @@
 //!
 //! To learn the rationale behind this multi-layer index metadata loading,
 //! see [the documentation of the on-disk index cache](cache).
+mod selected;
+pub(crate) use selected::{SelectedIndex, SelectedIndexes};
+
 use crate::sources::registry::{LoadResponse, RegistryData};
 use crate::util::IntoUrl;
 use crate::util::VersionReqMatchMode;
@@ -319,7 +322,7 @@ impl<'gctx> RegistryIndex<'gctx> {
                         match summary.borrow_mut().parse(
                             &self.summaries.raw_data,
                             self.index.source_id,
-                            self.index.gctx.cli_unstable(),
+                            self.index.gctx,
                         ) {
                             Ok(summary) => return Some(summary.clone()),
                             Err(e) => {
@@ -658,13 +661,21 @@ impl MaybeIndexSummary {
         &mut self,
         raw_data: &[u8],
         source_id: SourceId,
-        cli_unstable: &CliUnstable,
+        gctx: &GlobalContext,
     ) -> CargoResult<&IndexSummary> {
         let range = match self {
             MaybeIndexSummary::Unparsed(range) => *range,
             MaybeIndexSummary::Parsed(summary) => return Ok(summary),
         };
-        let summary = IndexSummary::parse(&raw_data[range], source_id, cli_unstable)?;
+        let raw = &raw_data[range];
+        let summary = if let Some(cache) = gctx.selected_index.current() {
+            cache
+                .lock()
+                .unwrap()
+                .parse(raw, source_id, gctx.cli_unstable())?
+        } else {
+            IndexSummary::parse(raw, source_id, gctx.cli_unstable())?
+        };
         *self = MaybeIndexSummary::Parsed(summary);
         match self {
             MaybeIndexSummary::Unparsed(_) => unreachable!(),
