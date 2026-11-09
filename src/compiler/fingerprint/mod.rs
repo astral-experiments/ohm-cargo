@@ -2890,10 +2890,10 @@ fn calculate_normal(
     if super::unit_uses_ohm_shared_stages(build_runner, unit) {
         "ohm-shared-stages-v1".hash(&mut config);
     }
-    if let Some(flags) = super::ohm_worktree_seed_flags(build_runner, unit) {
+    if let Some(remap) = super::worktree_seed_remap(build_runner, unit) {
         // An ordinary build must not appear prepared just because its outputs
         // were copied. This injected path mapping also changes rustc's output.
-        ("ohm-worktree-seeds", flags).hash(&mut config);
+        ("ohm-worktree-seeds", remap).hash(&mut config);
     }
     if unit_consumes_public_api_hash(build_runner, unit) {
         // Older generations could miss a changed link or retain diagnostics from a failed build.
