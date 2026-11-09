@@ -53,39 +53,17 @@ impl Mounts {
     #[cfg(any(target_os = "linux", test))]
     fn from_mountinfo(root: &Path, table: &[u8]) -> CargoResult<Self> {
         use anyhow::Context as _;
-        use std::ffi::OsStr;
-        use std::os::unix::ffi::OsStrExt as _;
 
         anyhow::ensure!(!table.is_empty(), "empty /proc/self/mountinfo");
         let mut mounts = Vec::new();
         for line in table.split(|b| *b == b'\n').filter(|line| !line.is_empty()) {
-            let mut field = line
+            let field = line
                 .split(|b| *b == b' ')
                 .nth(4)
-                .filter(|field| field.starts_with(b"/"))
                 .context("invalid mountpoint in /proc/self/mountinfo")?;
-            let mut name = Vec::with_capacity(field.len());
-            while let Some((byte, rest)) = field.split_first() {
-                if *byte == b'\\' {
-                    let (escape, rest) = rest
-                        .split_at_checked(3)
-                        .context("incomplete mountpoint escape in /proc/self/mountinfo")?;
-                    name.push(match escape {
-                        b"040" => b' ',
-                        b"011" => b'\t',
-                        b"012" => b'\n',
-                        b"134" => b'\\',
-                        _ => anyhow::bail!("invalid mountpoint escape in /proc/self/mountinfo"),
-                    });
-                    field = rest;
-                } else {
-                    name.push(*byte);
-                    field = rest;
-                }
-            }
-            let path = Path::new(OsStr::from_bytes(&name));
+            let path = crate::util::mountinfo::decode_path(field)?;
             if path != root && path.starts_with(root) {
-                mounts.push(path.to_owned());
+                mounts.push(path);
             }
         }
         Ok(Self(mounts))

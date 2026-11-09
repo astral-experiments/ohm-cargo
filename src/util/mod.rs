@@ -63,6 +63,8 @@ mod lockserver;
 pub mod log_message;
 pub mod logger;
 pub mod machine_message;
+#[cfg(any(target_os = "linux", all(test, target_os = "macos")))]
+pub(crate) mod mountinfo;
 pub mod network;
 mod once;
 pub mod open;
