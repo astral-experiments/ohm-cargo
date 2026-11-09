@@ -371,7 +371,9 @@ fn build_feature_map(
 }
 
 /// `FeatureValue` represents the types of dependencies a feature can have.
-#[derive(Clone, Debug, Ord, PartialOrd, Eq, PartialEq, Hash)]
+#[derive(
+    Clone, Debug, Ord, PartialOrd, Eq, PartialEq, Hash, serde::Serialize, serde::Deserialize,
+)]
 pub enum FeatureValue {
     /// A feature enabling another feature.
     Feature(InternedString),
@@ -447,3 +449,54 @@ impl fmt::Display for FeatureValue {
 }
 
 pub type FeatureMap = BTreeMap<InternedString, Vec<FeatureValue>>;
+
+#[derive(Debug, serde::Serialize, serde::Deserialize)]
+pub(crate) struct PackedIndexSummary {
+    name: InternedString,
+    version: semver::Version,
+    dependencies: Vec<super::dependency::PackedIndexDependency>,
+    features: FeatureMap,
+    checksum: Option<String>,
+    links: Option<InternedString>,
+    rust_version: Option<RustVersion>,
+    pubtime: Option<jiff::Timestamp>,
+}
+
+impl PackedIndexSummary {
+    pub(crate) fn pack(summary: &Summary) -> Option<Self> {
+        let s = &*summary.inner;
+        Some(Self {
+            name: s.package_id.name(),
+            version: s.package_id.version().clone(),
+            dependencies: s
+                .dependencies
+                .iter()
+                .map(|d| {
+                    super::dependency::PackedIndexDependency::pack(d, s.package_id.source_id())
+                })
+                .collect::<Option<_>>()?,
+            features: (*s.features).clone(),
+            checksum: s.checksum.clone(),
+            links: s.links,
+            rust_version: s.rust_version.clone(),
+            pubtime: s.pubtime,
+        })
+    }
+    pub(crate) fn unpack(self, source: SourceId) -> Option<Summary> {
+        Some(Summary {
+            inner: Arc::new(Inner {
+                package_id: PackageId::new(self.name, self.version, source),
+                dependencies: self
+                    .dependencies
+                    .into_iter()
+                    .map(|d| d.unpack(source))
+                    .collect::<Option<_>>()?,
+                features: Arc::new(self.features),
+                checksum: self.checksum,
+                links: self.links,
+                rust_version: self.rust_version,
+                pubtime: self.pubtime,
+            }),
+        })
+    }
+}
