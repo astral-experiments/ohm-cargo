@@ -3128,15 +3128,24 @@ fn rustdoc(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<W
 
         // Different build contexts and profiles can render into the same crate directory.
         // Serialize replacement even when the callers use different build-directory locks.
-        let _output_lock = output_marker
-            .as_ref()
-            .map(|_| {
-                let path = doc_dir.with_file_name(format!(".ohm-rustdoc-{crate_name}.lock"));
-                crate::util::flock::FileLock::for_rustdoc(&path)
-            })
-            .transpose()?;
+        let mut _output_locks = Vec::new();
+        if output_marker.is_some() {
+            use crate::util::flock::FileLock;
+
+            // Keep the lock name no longer than Cargo's doc-lib-<crate>.json fingerprint.
+            let path = doc_dir.with_file_name(format!(".ohm-rustdoc-{crate_name}"));
+            _output_locks.push(FileLock::for_rustdoc(&path)?);
+            // Coordinate with older Cargo processes wherever their lock name is valid.
+            match FileLock::for_rustdoc(&path.with_extension("lock")) {
+                Err(error)
+                    if error.downcast_ref::<std::io::Error>().is_some_and(|error| {
+                        error.kind() == std::io::ErrorKind::InvalidFilename
+                    }) => {}
+                lock => _output_locks.push(lock?),
+            }
+        }
         #[cfg(unix)]
-        if let Some(lock) = _output_lock {
+        for lock in _output_locks {
             rustdoc.inherit_file(Arc::new(lock.into_file()));
         }
         if !is_json_output {
