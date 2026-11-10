@@ -10,21 +10,20 @@ use crate::resolver::Resolve;
 use crate::util::{CargoResult, ConfigValue, Rustc, StableHasher};
 use crate::workspace::Workspace;
 
-/// Returns whether an earlier complete workspace resolution has identical inputs.
-pub(super) fn cached_workspace_resolve_is_fresh(
+mod selected;
+pub(super) use selected::SelectedPlan;
+
+/// Returns the fingerprint of a matching complete workspace resolution.
+pub(super) fn cached_workspace_resolve_fingerprint(
     workspace: &Workspace<'_>,
     previous: &Resolve,
     rustc: &Rustc,
     lockfile_contents: &str,
-) -> bool {
-    let Ok(cached_fingerprint) = paths::read_regular_bounded(&cache_path(workspace, rustc), 64)
-    else {
-        return false;
-    };
-
-    workspace_resolve_fingerprint(workspace, previous, rustc, lockfile_contents).is_ok_and(
-        |fingerprint| cached_fingerprint.trim_ascii() == format!("{fingerprint:016x}").as_bytes(),
-    )
+) -> Option<u64> {
+    let cached = paths::read_regular_bounded(&cache_path(workspace, rustc), 64).ok()?;
+    let fingerprint =
+        workspace_resolve_fingerprint(workspace, previous, rustc, lockfile_contents).ok()?;
+    (cached.trim_ascii() == format!("{fingerprint:016x}").as_bytes()).then_some(fingerprint)
 }
 
 /// Records the inputs that produced a complete workspace resolution.
