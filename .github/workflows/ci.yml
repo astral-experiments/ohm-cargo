@@ -199,6 +199,8 @@ jobs:
         run: rustup toolchain install "$RUST_VERSION" --profile minimal
       - name: Run workspace tests
         run: cargo +"$RUST_VERSION" test --workspace --exclude cargo --exclude benchsuite --exclude resolver-tests
+      - name: Check that Cargo.lock is unchanged
+        run: git diff --exit-code -- Cargo.lock
 
   resolver:
     name: Resolver tests
