@@ -188,10 +188,42 @@ fn context_expired(directory: &Path, context: &str, age: &GcAge) -> bool {
         .is_some_and(|modified| age.expired(modified))
 }
 
+/// Keep existing JSON string paths readable and preserve other Unix paths as bytes.
+mod stored_path {
+    use std::path::{Path, PathBuf};
+
+    use serde::{Deserialize, Deserializer, Serializer};
+
+    use crate::workspace::workspace::shared_cache_path;
+
+    pub(super) fn serialize<S: Serializer>(path: &Path, serializer: S) -> Result<S::Ok, S::Error> {
+        match path.to_str() {
+            Some(text) => serializer.serialize_str(text),
+            None => shared_cache_path::serialize(path, serializer),
+        }
+    }
+
+    pub(super) fn deserialize<'de, D: Deserializer<'de>>(
+        deserializer: D,
+    ) -> Result<PathBuf, D::Error> {
+        #[derive(Deserialize)]
+        #[serde(untagged)]
+        enum StoredPath {
+            Utf8(PathBuf),
+            Bytes(#[serde(with = "shared_cache_path")] PathBuf),
+        }
+
+        match StoredPath::deserialize(deserializer)? {
+            StoredPath::Utf8(path) | StoredPath::Bytes(path) => Ok(path),
+        }
+    }
+}
+
 /// The same concrete compiler-file identity used to partition shared artifacts.
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub(crate) struct FileIdentity {
+    #[serde(with = "stored_path")]
     pub path: PathBuf,
     pub length: u64,
     pub modified: SystemTime,
@@ -233,6 +265,7 @@ impl FileIdentity {
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 struct Anchor {
+    #[serde(with = "stored_path")]
     path: PathBuf,
     device: u64,
     inode: u64,
@@ -2957,6 +2990,51 @@ mod tests {
                     .get::<_, usize>(0))?,
             0
         );
+        Ok(())
+    }
+
+    #[test]
+    fn driver_identity_round_trips_utf8_and_byte_paths() -> CargoResult<()> {
+        use std::os::unix::ffi::OsStrExt as _;
+
+        let cache = Cache::new()?;
+        let metadata = fs::metadata(&cache.driver)?;
+        for (name, encoded_path) in [
+            (OsStr::new("driver"), serde_json::json!("driver")),
+            (
+                OsStr::from_bytes(b"driver-\xff"),
+                serde_json::json!(b"driver-\xff"),
+            ),
+        ] {
+            let identity = FileIdentity::from_metadata(PathBuf::from(name), &metadata)?;
+            let encoded = serde_json::to_value(&identity)?;
+            assert_eq!(encoded["path"], encoded_path);
+            assert_eq!(serde_json::from_value::<FileIdentity>(encoded)?, identity);
+        }
+        Ok(())
+    }
+
+    #[test]
+    fn recent_context_with_non_utf8_driver_survives_gc() -> CargoResult<()> {
+        use std::os::unix::ffi::OsStrExt as _;
+
+        let mut cache = Cache::new()?;
+        let driver = cache
+            .driver
+            .with_file_name(OsStr::from_bytes(b"driver-\xff"));
+        match fs::rename(&cache.driver, &driver) {
+            Ok(()) => {}
+            // Some filesystems, including APFS, require UTF-8 filenames.
+            Err(err) if err.raw_os_error() == Some(libc::EILSEQ) => return Ok(()),
+            Err(err) => return Err(err.into()),
+        }
+        cache.driver = driver;
+        cache.enroll()?;
+        let artifact = cache.artifact("build/registries/abcdef")?;
+
+        collect(&cache.root, false, None)?;
+        assert!(artifact.exists());
+        assert_eq!(cache.record("abcdef")?.driver.path, cache.driver);
         Ok(())
     }
 
