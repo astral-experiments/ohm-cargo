@@ -569,8 +569,20 @@ impl ProfileMaker {
             && profile.codegen_backend.is_none()
             && profile.rustflags.is_empty()
         {
-            profile.opt_level = "1".into();
+            // Inline calls in host libraries without running LLVM's optimization pipeline.
+            profile.opt_level = "0".into();
             profile.lto = Lto::Off;
+            profile.codegen_units.get_or_insert(4);
+            profile.rustflags = [
+                "-Zmir-opt-level=2",
+                "-Zinline-mir=yes",
+                "-Zinline-mir-threshold=640",
+                "-Zinline-mir-hint-threshold=800",
+                "-Zinline-mir-forwarder-threshold=240",
+            ]
+            .into_iter()
+            .map(InternedString::from)
+            .collect();
         }
         profile
     }
@@ -1315,6 +1327,12 @@ impl UnitFor {
             root_compile_kind,
             artifact_target_for_features,
         }
+    }
+
+    /// Keep the ordinary host profile for a proc-macro entry and the optimized profile for its libraries.
+    pub(crate) fn for_target_profile(mut self, target: &Target) -> Self {
+        self.proc_macro = self.proc_macro && !target.proc_macro();
+        self
     }
 
     pub fn for_custom_build(self) -> UnitFor {

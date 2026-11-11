@@ -942,7 +942,7 @@ fn new_unit_dep(
         pkg.package_id(),
         state.ws.is_member(pkg),
         is_local,
-        unit_for,
+        unit_for.for_target_profile(target),
         kind,
     );
     state
