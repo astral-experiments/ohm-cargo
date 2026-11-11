@@ -916,6 +916,11 @@ fn create_bcx_with_registry_reuse<'a, 'gctx>(
     root_units.extend(candidates.into_iter().map(|(_, native)| native));
     let shared_stages = gctx.cli_unstable().ohm_shared_stages()
         && target_data.rustc.supports_ohm_shared_stages(gctx);
+    let native_units = if profiles.optimize_dev_build_tools() {
+        host_native_units(&unit_graph, explicit_host_kind, &profiles)
+    } else {
+        HashSet::default()
+    };
     let (mut root_units, scrape_units, unit_graph) = rebuild_unit_graph_shared(
         interner,
         unit_graph,
@@ -923,6 +928,7 @@ fn create_bcx_with_registry_reuse<'a, 'gctx>(
         &scrape_units,
         host_kind_requested.then_some(explicit_host_kind),
         build_config.compile_time_deps_only,
+        &native_units,
         &|unit| {
             shared_stages
                 && (target_data.rustc.workspace_wrapper.is_none() || !ws.is_member(&unit.pkg))
@@ -1258,6 +1264,69 @@ fn validate_target_path_as_source_file(
     Ok(())
 }
 
+/// Select native libraries used by compiled build scripts and proc macros before host and
+/// target units are unified. A matching native build on the host platform can serve both roles.
+fn host_native_units(
+    graph: &UnitGraph,
+    host_target: CompileKind,
+    profiles: &Profiles,
+) -> HashSet<Unit> {
+    let mut pending: Vec<_> = graph
+        .keys()
+        .filter(|unit| {
+            unit.kind.is_host()
+                && unit.mode == CompileMode::Build
+                && unit.target.is_compile_time_dependency()
+        })
+        .collect();
+    let mut libraries = HashSet::default();
+    while let Some(unit) = pending.pop() {
+        for dep in &graph[unit] {
+            let library = &dep.unit;
+            if library.kind.is_host()
+                && library.mode == CompileMode::Build
+                && library.target.is_lib()
+                && !library.target.proc_macro()
+                && !library.artifact.is_true()
+                && libraries.insert(library)
+            {
+                pending.push(library);
+            }
+        }
+    }
+    let selected: HashSet<_> = libraries
+        .into_iter()
+        .filter_map(|unit| {
+            let pkg = unit.pkg.package_id();
+            let links = unit.pkg.manifest().links()?;
+            ((pkg.source_id().is_registry() || pkg.source_id().is_git())
+                && !unit.links_overrides.contains_key(links)
+                && unit.profile.opt_level.as_str() == "0"
+                && profiles.native_opt_level_is_implicit(pkg))
+            .then_some((pkg, unit.features.as_slice()))
+        })
+        .collect();
+    if selected.is_empty() {
+        return HashSet::default();
+    }
+    graph
+        .keys()
+        .filter(|unit| {
+            (unit.kind.is_host() || unit.kind == host_target)
+                && !unit.artifact.is_true()
+                && (unit.target.is_lib() || unit.mode.is_run_custom_build())
+                && unit.profile.opt_level.as_str() == "0"
+                && selected.contains(&(unit.pkg.package_id(), unit.features.as_slice()))
+                && unit
+                    .pkg
+                    .manifest()
+                    .links()
+                    .is_some_and(|links| !unit.links_overrides.contains_key(links))
+        })
+        .cloned()
+        .collect()
+}
+
 /// This is used to rebuild the unit graph, sharing host dependencies if possible,
 /// and applying other unit adjustments based on the whole graph.
 ///
@@ -1299,6 +1368,7 @@ fn rebuild_unit_graph_shared(
     scrape_units: &[Unit],
     to_host: Option<CompileKind>,
     compile_time_deps_only: bool,
+    native_units: &HashSet<Unit>,
     shared_stages: &impl Fn(&Unit) -> bool,
 ) -> (Vec<Unit>, Vec<Unit>, UnitGraph) {
     let mut result = UnitGraph::default();
@@ -1318,6 +1388,7 @@ fn rebuild_unit_graph_shared(
                 false,
                 to_host,
                 compile_time_deps_only,
+                native_units,
                 shared_stages,
             )
         })
@@ -1347,6 +1418,7 @@ fn traverse_and_share(
     unit_is_for_host: bool,
     to_host: Option<CompileKind>,
     compile_time_deps_only: bool,
+    native_units: &HashSet<Unit>,
     shared_stages: &impl Fn(&Unit) -> bool,
 ) -> Unit {
     if let Some(new_unit) = memo.get(unit) {
@@ -1375,6 +1447,7 @@ fn traverse_and_share(
                 // its dependencies. And if not, we should compile compile time
                 // dependencies only.
                 skip_non_compile_time_deps,
+                native_units,
                 shared_stages,
             );
             new_dep_unit.hash(&mut dep_hash);
@@ -1479,6 +1552,11 @@ fn traverse_and_share(
         }
     }
 
+    // The sharing probes above use the original profiles. The completed profile determines
+    // both the library fingerprint and the OPT_LEVEL observed by its native build script.
+    if native_units.contains(unit) {
+        profile.opt_level = "1".into();
+    }
     let new_unit = interner.intern(
         &unit.pkg,
         &unit.target,

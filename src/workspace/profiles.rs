@@ -409,6 +409,26 @@ impl Profiles {
         result
     }
 
+    /// Whether Ohm may supply optimized defaults for tools built under the requested profile.
+    pub(crate) fn optimize_dev_build_tools(&self) -> bool {
+        self.get_profile_maker(&self.requested_profile)
+            .unwrap()
+            .optimize_dev_build_tools
+    }
+
+    /// A native library shared by host tools and the final target must honor either role's overrides.
+    pub(crate) fn native_opt_level_is_implicit(&self, pkg: PackageId) -> bool {
+        let maker = self.get_profile_maker(&self.requested_profile).unwrap();
+        let Some(toml) = &maker.toml else {
+            return true;
+        };
+        let mut implicit = toml.opt_level.is_none();
+        for_each_toml_override(Some(pkg), false, true, toml, |overrides| {
+            implicit &= overrides.opt_level.is_none();
+        });
+        implicit
+    }
+
     /// This returns the base profile. This is currently used for the
     /// `[Finished]` line. It is not entirely accurate, since it doesn't
     /// select for the package that was actually built.
@@ -490,8 +510,8 @@ impl Profiles {
 struct ProfileMaker {
     /// The starting, hard-coded defaults for the profile.
     default: Profile,
-    /// Whether this profile optimizes prebuilt procedural macro dependencies.
-    optimize_proc_macros: bool,
+    /// Whether this profile optimizes prebuilt procedural macros and native libraries used by host tools.
+    optimize_dev_build_tools: bool,
     /// The TOML profile defined in `Cargo.toml` or config.
     ///
     /// This is None if the user did not specify one, in which case the
@@ -507,12 +527,12 @@ impl ProfileMaker {
     fn new(
         default: Profile,
         toml: Option<TomlProfile>,
-        optimize_proc_macros: bool,
+        optimize_dev_build_tools: bool,
     ) -> ProfileMaker {
         ProfileMaker {
             default,
             toml,
-            optimize_proc_macros,
+            optimize_dev_build_tools,
         }
     }
 
@@ -553,10 +573,14 @@ impl ProfileMaker {
         // ... and next comes any other sorts of overrides specified in
         // profiles, such as `[profile.release.build-override]` or
         // `[profile.release.package.foo]`
-        let explicit_host_level = self.toml.as_ref().is_some_and(|toml| {
-            merge_toml_overrides(pkg_id, is_member, is_for_host, &mut profile, toml)
-        });
-        if self.optimize_proc_macros
+        let mut explicit_host_level = false;
+        if let Some(toml) = &self.toml {
+            for_each_toml_override(pkg_id, is_member, is_for_host, toml, |overrides| {
+                explicit_host_level |= overrides.opt_level.is_some();
+                merge_profile(&mut profile, overrides);
+            });
+        }
+        if self.optimize_dev_build_tools
             && prebuilt_proc_macro
             && !explicit_host_level
             && self.toml.as_ref().is_none_or(|toml| {
@@ -576,19 +600,14 @@ impl ProfileMaker {
     }
 }
 
-/// Merge package and build overrides, returning whether an override chose the optimization level.
-fn merge_toml_overrides(
+/// Visit build, wildcard, and named package overrides in increasing order of precedence.
+fn for_each_toml_override(
     pkg_id: Option<PackageId>,
     is_member: bool,
     is_for_host: bool,
-    profile: &mut Profile,
     toml: &TomlProfile,
-) -> bool {
-    let mut explicit_level = false;
-    let mut apply = |overrides: &TomlProfile| {
-        explicit_level |= overrides.opt_level.is_some();
-        merge_profile(profile, overrides);
-    };
+    mut apply: impl FnMut(&TomlProfile),
+) {
     if is_for_host {
         if let Some(build_override) = &toml.build_override {
             apply(build_override);
@@ -625,7 +644,6 @@ fn merge_toml_overrides(
             }
         }
     }
-    explicit_level
 }
 
 /// Merge the given TOML profile into the given `Profile`.
