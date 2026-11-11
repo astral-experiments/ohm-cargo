@@ -1053,6 +1053,200 @@ fn ohm_proc_macro_optimization() {
 }
 
 #[cargo_test(nightly, reason = "Ohm defaults require the Ohm compiler")]
+fn ohm_native_build_dependency_optimization() {
+    let script = r#"fn main() {
+        println!("cargo:rustc-env=NATIVE_OPT={}", std::env::var("OPT_LEVEL").unwrap());
+    }"#;
+    let library = r#"pub const OPT: &str = env!("NATIVE_OPT");"#;
+    for name in ["shared", "hostonly", "targetonly", "macrodep"] {
+        Package::new(name, "1.0.0")
+            .links(name)
+            .feature("extra", &[])
+            .file("Cargo.toml", &format!(
+                "[package]\nname = '{name}'\nversion = '1.0.0'\nedition = '2024'\nlinks = '{name}'\n[features]\nextra = []"
+            ))
+            .file("build.rs", script)
+            .file("src/lib.rs", library)
+            .publish();
+    }
+    Package::new("bridge", "1.0.0")
+        .edition("2024")
+        .dep("shared", "1")
+        .dep("hostonly", "1")
+        .file(
+            "src/lib.rs",
+            "pub const OPT: (&str, &str) = (shared::OPT, hostonly::OPT);",
+        )
+        .publish();
+    Package::new("use-native", "1.0.0")
+        .edition("2024")
+        .proc_macro(true)
+        .dep("macrodep", "1")
+        .file("src/lib.rs", r#"
+            use proc_macro::TokenStream;
+            #[proc_macro]
+            pub fn level(_: TokenStream) -> TokenStream { format!("{:?}", macrodep::OPT).parse().unwrap() }
+        "#)
+        .publish();
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+        [package]
+        name = "app"
+        version = "1.0.0"
+        edition = "2024"
+        [dependencies]
+        shared = "1"
+        targetonly = "1"
+        macrodep = "1"
+        use-native = "1"
+        [build-dependencies]
+        bridge = "1"
+        local = { path = "local" }
+        [features]
+        extra = ["shared/extra"]
+        [profile.child]
+        inherits = "dev"
+    "#,
+        )
+        .file(
+            "local/Cargo.toml",
+            r#"
+        [package]
+        name = "local"
+        version = "1.0.0"
+        edition = "2024"
+        links = "local"
+    "#,
+        )
+        .file("local/build.rs", script)
+        .file("local/src/lib.rs", library)
+        .file(
+            "build.rs",
+            r#"fn main() { assert_eq!(bridge::OPT, ("1", "1")); assert_eq!(local::OPT, "0"); }"#,
+        )
+        .file(
+            "src/main.rs",
+            r#"fn main() {
+                assert_eq!(shared::OPT, "1");
+                assert_eq!(targetonly::OPT, "0");
+                assert_eq!((use_native::level!(), macrodep::OPT), ("1", "0"));
+            }"#,
+        )
+        .build();
+
+    for (command, defaults, config, shared, hostonly, targetonly) in [
+        ("build", "yes", "", vec!["1"], "1", "0"),
+        ("check", "yes", "", vec!["1"], "1", "0"),
+        (
+            "build --features extra",
+            "yes",
+            "",
+            vec!["0", "1"],
+            "1",
+            "0",
+        ),
+        ("build --profile child", "yes", "", vec!["1"], "1", "0"),
+        ("build", "no", "", vec!["0"], "0", "0"),
+        ("build --release", "yes", "", vec!["0", "3"], "0", "3"),
+        (
+            "build",
+            "yes",
+            "profile.dev.opt-level=0",
+            vec!["0"],
+            "0",
+            "0",
+        ),
+        (
+            "build --profile child",
+            "yes",
+            "profile.dev.opt-level=0",
+            vec!["0"],
+            "0",
+            "0",
+        ),
+        (
+            "build",
+            "yes",
+            "profile.dev.build-override.opt-level=0",
+            vec!["0"],
+            "0",
+            "0",
+        ),
+        (
+            "build",
+            "yes",
+            "profile.dev.package.shared.opt-level=0",
+            vec!["0"],
+            "1",
+            "0",
+        ),
+        (
+            "build",
+            "yes",
+            "profile.dev.package.shared.opt-level=2",
+            vec!["2"],
+            "1",
+            "0",
+        ),
+        (
+            "build",
+            "yes",
+            r#"profile.dev.package."*".opt-level=2"#,
+            vec!["2"],
+            "2",
+            "2",
+        ),
+        (
+            "build --target wasm32-unknown-unknown",
+            "yes",
+            "",
+            vec!["0", "1"],
+            "1",
+            "0",
+        ),
+    ] {
+        let mut cargo = p.cargo(&format!(
+            "{command} --unit-graph -Zunstable-options -Zohm-defaults={defaults}"
+        ));
+        cargo.masquerade_as_nightly_cargo(&["unit-graph", "ohm-defaults"]);
+        if !config.is_empty() {
+            cargo.arg("--config").arg(config);
+        }
+        let graph = cargo.run_json();
+        let units = graph["units"].as_array().unwrap();
+        let native_runs = |name: &str| {
+            let pkg = &units
+                .iter()
+                .find(|unit| unit["target"]["name"] == name)
+                .unwrap()["pkg_id"];
+            let mut runs: Vec<_> = units
+                .iter()
+                .filter(|unit| &unit["pkg_id"] == pkg && unit["mode"] == "run-custom-build")
+                .map(|unit| unit["profile"]["opt_level"].as_str().unwrap())
+                .collect();
+            runs.sort_unstable();
+            runs
+        };
+        assert_eq!(
+            native_runs("shared"),
+            shared,
+            "{command} {defaults} {config}"
+        );
+        assert_eq!(native_runs("hostonly"), [hostonly]);
+        assert_eq!(native_runs("targetonly"), [targetonly]);
+        if command == "build" && defaults == "yes" && config.is_empty() {
+            // The proc macro's dependency was already optimized. Its final-target copy stays at zero.
+            assert_eq!(native_runs("macrodep"), ["0", "1"]);
+        }
+    }
+    p.cargo("run -Zohm-defaults=yes")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .run();
+}
+
+#[cargo_test(nightly, reason = "Ohm defaults require the Ohm compiler")]
 fn ohm_default_debuginfo_respects_overrides() {
     Package::new("bar", "1.0.0").publish();
     let manifest = r#"
