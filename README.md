@@ -20,13 +20,13 @@ When a private build profile contains these files, `cargo worktree add` lets
 the recipient rebuild it with its own debug paths. Both worktrees can reuse
 immutable registry artifacts in their shared build directory.
 
-In dev-derived profiles, Ohm builds registry and Git procedural macros and their library
-dependencies at optimization level 1 with per-crate ThinLTO disabled. Downstream source edits
-execute this code during macro expansion. The first build pays the optimization cost, and a
-library used by both a macro and a build script may need two compiled copies. The default applies
-to profiles with an implicit optimization level or level 1 and an implicit LTO mode or `lto = "off"`.
-Matching build and package optimization overrides take precedence. Path dependencies, build scripts, and
-their ordinary dependencies keep Cargo's existing profiles.
+In dev-derived profiles, Ohm uses MIR inlining for registry and Git libraries that a procedural
+macro calls during expansion. Cargo builds these libraries at LLVM optimization level 0 with
+LTO disabled and defaults to four codegen units. Procedural macro entry crates use the ordinary
+host profile. A library also used by a build script can have a separate copy for each profile.
+
+The default applies to profiles with an implicit optimization level or level 1 and an implicit
+LTO mode or `lto = "off"`. Matching build and package optimization overrides take precedence.
 
 Ohm defaults enable native ThinLTO object caching for supported Linux builds. Cargo manages
 `<build-dir>/.ohm-thinlto-cache`, pruning it after builds to 2 GiB or 100,000 objects and expiring
