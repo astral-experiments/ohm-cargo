@@ -1769,6 +1769,9 @@ fn audited_proc_macro_checksum(name: &str, version: &semver::Version, checksum: 
         ("ptr_meta_derive", 0, 3, 1) => {
             "7347867d0a7e1208d93b46767be83e2b8f978c3dad35f775ac8d8847551d6fe1"
         }
+        ("rkyv_derive", 0, 8, 15) => {
+            "8100bb34c0a1d0f907143db3149e6b4eea3c33b9ee8b189720168e818303986f"
+        }
         ("rkyv_derive", 0, 8, 17) => {
             "c0ed1a78a1b19d184b0daa629dd9a024573173ec7d485b287cb369fb3607cc1c"
         }
@@ -1997,6 +2000,11 @@ mod audited_proc_macro_tests {
                 "ptr_meta_derive",
                 semver::Version::new(0, 3, 1),
                 "7347867d0a7e1208d93b46767be83e2b8f978c3dad35f775ac8d8847551d6fe1",
+            ),
+            (
+                "rkyv_derive",
+                semver::Version::new(0, 8, 15),
+                "8100bb34c0a1d0f907143db3149e6b4eea3c33b9ee8b189720168e818303986f",
             ),
             (
                 "rkyv_derive",
