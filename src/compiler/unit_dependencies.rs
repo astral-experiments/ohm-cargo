@@ -1820,6 +1820,9 @@ fn audited_proc_macro_checksum(name: &str, version: &semver::Version, checksum: 
         ("zerocopy-derive", 0, 8, 57) => {
             "146c01f5ab44258da43cf276c74a2763db2ff3969c9c652c3f2de07041d0b2bc"
         }
+        ("zerocopy-derive", 0, 8, 63) => {
+            "863ad3ac83293fb4d740aedbfdc9240dd8d1a50c1099acd76ce80ce7c7230c7f"
+        }
         ("zerofrom-derive", 0, 1, 6) => {
             "d71e5d6e06ab090c67b5e44993ec16b72dcbaabc526db883a360057678b48502"
         }
@@ -2035,6 +2038,11 @@ mod audited_proc_macro_tests {
                 "zerocopy-derive",
                 semver::Version::new(0, 8, 57),
                 "146c01f5ab44258da43cf276c74a2763db2ff3969c9c652c3f2de07041d0b2bc",
+            ),
+            (
+                "zerocopy-derive",
+                semver::Version::new(0, 8, 63),
+                "863ad3ac83293fb4d740aedbfdc9240dd8d1a50c1099acd76ce80ce7c7230c7f",
             ),
         ] {
             assert!(audited_proc_macro_package_identity(
