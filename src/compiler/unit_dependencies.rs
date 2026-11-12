@@ -1424,7 +1424,7 @@ impl<'a, 'gctx> State<'a, 'gctx> {
         let trusted_runtime = if !registry_source {
             true
         } else if unit.pkg.proc_macro() {
-            self.proc_macro_is_audited(unit)
+            self.proc_macro_is_audited(unit) || self.proc_macro_requires_expansion_validation(unit)
         } else if macro_runtime != MacroRuntime::None {
             self.proc_macro_runtime_dependency_is_audited(unit, effective_source_id)
         } else {
@@ -1466,6 +1466,30 @@ impl<'a, 'gctx> State<'a, 'gctx> {
             true,
             self.gctx.cli_unstable().ohm_proc_macro_trust,
         )
+    }
+
+    /// Admit this macro provisionally until the consuming compiler expansions are verified.
+    fn proc_macro_requires_expansion_validation(&self, unit: &Unit) -> bool {
+        if !cfg!(unix)
+            || !self.gctx.cli_unstable().ohm_reuse_built_deps()
+            || !matches!(self.intent, UserIntent::Check { test: false })
+            || !super::verified_macro_expansion::is_displaydoc(unit)
+        {
+            return false;
+        }
+        let package = unit.pkg.package_id();
+        self.package_set
+            .sources()
+            .get(package.source_id())
+            .is_some_and(|source| {
+                is_canonical_crates_io_source(package.source_id(), source.replaced_source_id())
+                    && self
+                        .resolve()
+                        .checksums()
+                        .get(&package)
+                        .and_then(Option::as_deref)
+                        == unit.pkg.summary().checksum()
+            })
     }
 
     /// Authenticate every ordinary library linked into an audited macro.
@@ -1834,6 +1858,9 @@ fn audited_proc_macro_checksum(name: &str, version: &semver::Version, checksum: 
         }
         ("zerovec-derive", 0, 11, 3) => {
             "625dc425cab0dca6dc3c3319506e6593dcb08a9f387ea3b284dbd52a92c40555"
+        }
+        ("zerovec-derive", 0, 11, 6) => {
+            "34df6fc39dbd26ddc9c10e6a2984476e13acce22e64e4487636ef494369225da"
         }
         _ => return false,
     };
