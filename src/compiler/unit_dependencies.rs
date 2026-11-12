@@ -1949,6 +1949,7 @@ fn audited_proc_macro_runtime_dependency_checksum(
         ("syn", 2, 0, 119) => "872831b642d1a07999a962a351ed35b955ea2cfc8f3862091e2a240a84f17297",
         ("syn", 3, 0, 3) => "53e9bae58849f64dfa4f5d5ae372c8341f7305f82a3868709269343628b659a3",
         ("syn", 3, 0, 6) => "8593e8e72159ed2257d083c7a454a85cbf854f37a0966d8d483aff8c8a3ebcee",
+        ("syn", 3, 0, 8) => "01016da373cd8f7ef12624f796309f5c31ba8d646dd08856c02cd741d823c622",
         ("synstructure", 0, 13, 2) => {
             "728a70f3dbaf5bab7f0c4b1ac8d7ae5ea60a4b5549c8a5914361c99147a709d2"
         }
@@ -2559,6 +2560,11 @@ mod audited_proc_macro_tests {
                 "syn",
                 semver::Version::new(3, 0, 6),
                 "8593e8e72159ed2257d083c7a454a85cbf854f37a0966d8d483aff8c8a3ebcee",
+            ),
+            (
+                "syn",
+                semver::Version::new(3, 0, 8),
+                "01016da373cd8f7ef12624f796309f5c31ba8d646dd08856c02cd741d823c622",
             ),
             (
                 "synstructure",
