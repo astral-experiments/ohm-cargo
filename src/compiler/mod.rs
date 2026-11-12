@@ -75,6 +75,7 @@ mod unit;
 pub mod unit_dependencies;
 pub mod unit_graph;
 pub mod unused_deps;
+mod verified_macro_expansion;
 
 use crate::util::data_structures::{HashMap, HashSet};
 use std::borrow::Cow;
