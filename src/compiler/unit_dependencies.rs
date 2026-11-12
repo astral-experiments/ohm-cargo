@@ -1748,6 +1748,9 @@ fn audited_proc_macro_checksum(name: &str, version: &semver::Version, checksum: 
         ("bytecheck_derive", 0, 8, 2) => {
             "89385e82b5d1821d2219e0b095efa2cc1f246cbf99080f3be46a1a85c0d392d9"
         }
+        ("bytecheck_derive", 0, 8, 3) => {
+            "46d07918caa9eeaaf06b7873925c53a61daac173539b4f7715090745e44e4e69"
+        }
         ("bytemuck_derive", 1, 10, 2) => {
             "f9abbd1bc6865053c427f7198e6af43bfdedc55ab791faed4fbd361d789575ff"
         }
@@ -1994,6 +1997,11 @@ mod audited_proc_macro_tests {
                 "bytecheck_derive",
                 semver::Version::new(0, 8, 2),
                 "89385e82b5d1821d2219e0b095efa2cc1f246cbf99080f3be46a1a85c0d392d9",
+            ),
+            (
+                "bytecheck_derive",
+                semver::Version::new(0, 8, 3),
+                "46d07918caa9eeaaf06b7873925c53a61daac173539b4f7715090745e44e4e69",
             ),
             (
                 "munge_macro",
