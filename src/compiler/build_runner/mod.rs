@@ -1769,9 +1769,10 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
 
         if self.bcx.gctx.cli_unstable().ohm_proc_macro_trust
             != crate::workspace::features::OhmProcMacroTrust::All
-            && registry_closure_units
-                .iter()
-                .any(super::verified_macro_expansion::is_displaydoc)
+            && registry_closure_units.iter().any(|unit| {
+                super::verified_macro_expansion::is_displaydoc(unit)
+                    || super::verified_macro_expansion::libcst::consumer(unit)
+            })
         {
             let scripts: HashMap<_, _> = registry_closure_units
                 .iter()
@@ -1787,6 +1788,13 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             let compiler = serde_json::to_vec(&expected_provenance)?;
             let mut macro_exposure = HashMap::default();
             for unit in &registry_closure_units {
+                if !stale_units.contains(unit)
+                    && super::verified_macro_expansion::libcst::consumer(unit)
+                    && (!fingerprint::existing_unit_is_fresh(self, unit)?
+                        || !super::verified_macro_expansion::libcst::verify(self, unit, &scripts))
+                {
+                    stale_units.insert(unit.clone());
+                }
                 if !stale_units.contains(unit)
                     && super::verified_macro_expansion::exposure(
                         self,
@@ -2229,11 +2237,12 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             && !unit.target.for_host()
             && unit.target.is_lib()
             && !unit.artifact.is_true()
-            && unit
+            && (unit
                 .target
                 .rustc_crate_types()
                 .iter()
                 .all(|crate_type| matches!(crate_type, CrateType::Lib | CrateType::Rlib))
+                || super::verified_macro_expansion::libcst::consumer(unit))
     }
 
     /// Returns whether this unit actually has an incoming promoted check edge.

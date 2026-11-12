@@ -29,6 +29,7 @@ use crate::compiler::build_runner::{
     OHM_RUSTC_LOG_ENVIRONMENT, resolve_effective_compiler_executable,
 };
 use crate::compiler::unit_graph::{UnitDep, UnitGraph};
+use crate::compiler::verified_macro_expansion::libcst;
 use crate::compiler::{CompileKind, CompileMode, CrateType, RustcTargetData, Unit, UnitInterner};
 use crate::ops::resolve_all_features;
 use crate::resolver::features::{FeaturesFor, ResolvedFeatures};
@@ -1243,10 +1244,11 @@ impl<'a, 'gctx> State<'a, 'gctx> {
             || self.rejected_built_registry_packages.contains(&package_id)
             || target.for_host()
             || !target.is_lib()
-            || !target
+            || (!target
                 .rustc_crate_types()
                 .iter()
                 .all(|crate_type| matches!(crate_type, CrateType::Lib | CrateType::Rlib))
+                && !libcst::target(self.get(package_id), target))
             || self.gctx.cli_unstable().bindeps
             || self.target_data.rustc.wrapper.is_some()
             || !*self.trusted_registry_reuse_compiler.get_or_init(|| {
@@ -1272,6 +1274,9 @@ impl<'a, 'gctx> State<'a, 'gctx> {
             return false;
         };
 
+        if target.is_cdylib() && !libcst::consumer(&dependency.unit) {
+            return false;
+        }
         self.registry_closure_is_immutable(
             &dependency.unit,
             unit_for,
@@ -1563,6 +1568,30 @@ impl<'a, 'gctx> State<'a, 'gctx> {
                 return false;
             };
 
+            // This exact client is additionally checked against the compiler's saved
+            // macro dependencies before reuse. Other paste consumers remain ineligible.
+            if libcst::consumer(unit)
+                && libcst::paste_dependency(&dependency.unit)
+                && [unit, &dependency.unit].iter().all(|unit| {
+                    let id = unit.pkg.package_id();
+                    self.package_set
+                        .sources()
+                        .get(id.source_id())
+                        .is_some_and(|source| {
+                            is_canonical_crates_io_source(
+                                id.source_id(),
+                                source.replaced_source_id(),
+                            ) && self
+                                .resolve()
+                                .checksums()
+                                .get(&id)
+                                .and_then(Option::as_deref)
+                                == unit.pkg.summary().checksum()
+                        })
+                })
+            {
+                continue;
+            }
             if !self.registry_closure_is_immutable(
                 &dependency.unit,
                 dependency_unit_for,
@@ -1787,6 +1816,12 @@ fn audited_proc_macro_checksum(name: &str, version: &semver::Version, checksum: 
         ("munge_macro", 0, 4, 7) => {
             "4568f25ccbd45ab5d5603dc34318c1ec56b117531781260002151b8530a9f931"
         }
+        ("libcst_derive", 1, 9, 0) => {
+            "57a1ac6fb3fbdc3408a2f138e54d11c3dd338f12c2efc3db47477cc2227d89c2"
+        }
+        ("peg-macros", 0, 8, 5) => {
+            "6298ab04c202fa5b5d52ba03269fb7b74550b150323038878fe6c372d8280f71"
+        }
         ("pin-project-internal", 1, 1, 10) => {
             "6e918e4ff8c4549eb882f14b3a4bc8c8bc93de829416eacf579f1207a8fbf861"
         }
@@ -1822,6 +1857,9 @@ fn audited_proc_macro_checksum(name: &str, version: &semver::Version, checksum: 
         }
         ("thiserror-impl", 2, 0, 19) => {
             "43cbfe0cf76104d42a574802844187e84a305e531ed54455f11fbde0f10541cd"
+        }
+        ("thiserror-impl", 2, 0, 20) => {
+            "bc04cd3e1236dd4a98afca4569f2deb3f120e5422a4023be2cb683f8486292af"
         }
         ("tokio-macros", 2, 7, 0) => {
             "385a6cb71ab9ab790c5fe8d67f1645e6c450a7ce006a33de03daa956cf70a496"
@@ -1881,6 +1919,9 @@ fn audited_proc_macro_runtime_dependency_checksum(
     let expected = match (name, version.major, version.minor, version.patch) {
         ("proc-macro2", 1, 0, 93) => {
             "60946a68e5f9d28b0dc1c21bb8a97ee7d018a8b322fa57838ba31cc878e22d99"
+        }
+        ("peg-runtime", 0, 8, 5) => {
+            "132dca9b868d927b35b5dd728167b2dee150eb1ad686008fc71ccb298b776fca"
         }
         ("proc-macro2", 1, 0, 95) => {
             "02b3e5e68a3a1a02aad3ec490a98007cbc13c37cbe84a3cd7b8e406d76e7f778"
@@ -1949,6 +1990,11 @@ mod audited_proc_macro_tests {
             &audited,
             checksum
         ));
+        assert!(audited_proc_macro_checksum(
+            "thiserror-impl",
+            &semver::Version::new(2, 0, 20),
+            "bc04cd3e1236dd4a98afca4569f2deb3f120e5422a4023be2cb683f8486292af",
+        ));
         assert!(!audited_proc_macro_checksum(
             "thiserror-impl",
             &audited,
@@ -1974,6 +2020,11 @@ mod audited_proc_macro_tests {
     #[test]
     fn macros_with_untracked_runtime_inputs_remain_untrusted() {
         for (name, version, checksum) in [
+            (
+                "paste",
+                semver::Version::new(1, 0, 15),
+                "57c0d7b74b563b49d38dae00a0c37d4d6de9b432382b2892f0574ddcae73fd0a",
+            ),
             (
                 "clap_derive",
                 semver::Version::new(4, 5, 55),
