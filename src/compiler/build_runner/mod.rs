@@ -1767,6 +1767,43 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
                 .collect());
         }
 
+        if self.bcx.gctx.cli_unstable().ohm_proc_macro_trust
+            != crate::workspace::features::OhmProcMacroTrust::All
+            && registry_closure_units
+                .iter()
+                .any(super::verified_macro_expansion::is_displaydoc)
+        {
+            let scripts: HashMap<_, _> = registry_closure_units
+                .iter()
+                .filter(|unit| unit.mode.is_run_custom_build())
+                .map(|unit| {
+                    (
+                        self.get_run_build_script_metadata(unit),
+                        !stale_units.contains(unit)
+                            && super::custom_build::script_adds_no_native_arguments(self, unit),
+                    )
+                })
+                .collect();
+            let compiler = serde_json::to_vec(&expected_provenance)?;
+            let mut macro_exposure = HashMap::default();
+            for unit in &registry_closure_units {
+                if !stale_units.contains(unit)
+                    && super::verified_macro_expansion::exposure(
+                        self,
+                        unit,
+                        &scripts,
+                        &mut macro_exposure,
+                    ) == super::verified_macro_expansion::Exposure::MayInvoke
+                    && (!fingerprint::existing_unit_is_fresh(self, unit)?
+                        || !super::verified_macro_expansion::verify(
+                            self, unit, &scripts, &compiler,
+                        ))
+                {
+                    stale_units.insert(unit.clone());
+                }
+            }
+        }
+
         if stale_units.is_empty() {
             return Ok(rejected_packages);
         }

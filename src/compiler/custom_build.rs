@@ -1719,6 +1719,39 @@ struct BuildScriptRunFiles {
     root_output: PathBuf,
 }
 
+/// Whether this saved script adds arguments or loader paths to another crate's compiler.
+/// A crate's own script may also change its environment and is excluded by the caller.
+pub(super) fn script_adds_no_native_arguments(runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
+    let empty = |output: &BuildOutput| {
+        output.library_paths.is_empty()
+            && output.library_links.is_empty()
+            && output.linker_args.is_empty()
+    };
+    let hash = runner.get_run_build_script_metadata(unit);
+    if let Some(output) = runner.build_script_outputs.lock().unwrap().get(hash) {
+        return empty(output);
+    }
+    let files = BuildScriptRunFiles::for_unit(runner, unit);
+    let Ok(bytes) = paths::read_regular_bounded(&files.stdout, 128 * 1024) else {
+        return false;
+    };
+    let out = runner.files().build_script_out_dir(unit);
+    // Relocation can change a path's spelling, but cannot turn a nonempty argument list
+    // into an empty one.
+    BuildOutput::parse(
+        &bytes,
+        unit.pkg.library().map(|target| target.crate_name()),
+        &unit.pkg.to_string(),
+        &out,
+        &out,
+        runner.bcx.gctx.nightly_features_allowed,
+        unit.pkg.targets(),
+        &unit.pkg.rust_version().cloned(),
+    )
+    .as_ref()
+    .is_ok_and(empty)
+}
+
 impl BuildScriptRunFiles {
     pub fn for_unit(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> Self {
         let root = build_runner.files().build_script_run_dir(unit);
