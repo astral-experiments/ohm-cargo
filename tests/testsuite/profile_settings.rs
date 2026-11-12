@@ -977,16 +977,24 @@ fn ohm_proc_macro_optimization() {
         .file("build.rs", "fn main() {}")
         .build();
 
-    for (defaults, flags, macro_level, macro_lto, parser_levels) in [
-        ("yes", "", "1", "off", vec!["0", "1"]),
-        ("yes", "--profile dev-no-lto", "1", "off", vec!["0", "1"]),
-        ("no", "", "0", "false", vec!["0"]),
+    for (defaults, flags, macro_level, macro_lto, parser_levels, inlined_cgus) in [
+        ("yes", "", "0", "false", vec!["0"], Some(4)),
+        (
+            "yes",
+            "--profile dev-no-lto",
+            "0",
+            "off",
+            vec!["0"],
+            Some(4),
+        ),
+        ("no", "", "0", "false", vec!["0"], None),
         (
             "yes",
             "--config profile.dev.build-override.opt-level=0",
             "0",
             "false",
             vec!["0"],
+            None,
         ),
         (
             "yes",
@@ -994,6 +1002,7 @@ fn ohm_proc_macro_optimization() {
             "0",
             "false",
             vec!["0"],
+            None,
         ),
         (
             "yes",
@@ -1001,6 +1010,7 @@ fn ohm_proc_macro_optimization() {
             "1",
             "false",
             vec!["0", "1"],
+            None,
         ),
         (
             "yes",
@@ -1008,15 +1018,25 @@ fn ohm_proc_macro_optimization() {
             "0",
             "false",
             vec!["0"],
+            None,
         ),
         (
             "yes",
             "--config profile.dev.package.derive.opt-level=2",
             "2",
             "false",
-            vec!["0", "1"],
+            vec!["0"],
+            Some(4),
         ),
-        ("yes", "--release", "0", "false", vec!["0", "3"]),
+        (
+            "yes",
+            "--config profile.dev.build-override.codegen-units=8",
+            "0",
+            "false",
+            vec!["0"],
+            Some(8),
+        ),
+        ("yes", "--release", "0", "false", vec!["0", "3"], None),
     ] {
         let graph = p
             .cargo(&format!(
@@ -1025,6 +1045,19 @@ fn ohm_proc_macro_optimization() {
             .masquerade_as_nightly_cargo(&["unit-graph", "ohm-defaults"])
             .run_json();
         let units = graph["units"].as_array().unwrap();
+        let mut inlined = units.iter().filter_map(|unit| {
+            let profile = &unit["profile"];
+            let flags = profile["rustflags"].as_array()?;
+            if flags.iter().any(|flag| flag == "-Zinline-mir=yes") {
+                assert_eq!(unit["target"]["name"], "parser");
+                assert_eq!(profile["lto"], "off");
+                Some(profile["codegen_units"].as_u64().unwrap())
+            } else {
+                None
+            }
+        });
+        assert_eq!(inlined.next(), inlined_cgus);
+        assert_eq!(inlined.next(), None);
         let levels = |target: &str| {
             let mut found: Vec<_> = units
                 .iter()
@@ -1048,7 +1081,7 @@ fn ohm_proc_macro_optimization() {
 
     p.cargo("run -v -Zohm-defaults=yes")
         .masquerade_as_nightly_cargo(&["ohm-defaults"])
-        .with_stderr_contains("[..]--crate-name parser [..]-C opt-level=1 [..]-C lto=off [..]")
+        .with_stderr_contains("[..]--crate-name parser [..]-Zinline-mir=yes [..]")
         .run();
 }
 
