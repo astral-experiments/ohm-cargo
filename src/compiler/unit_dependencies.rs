@@ -1775,6 +1775,9 @@ fn audited_proc_macro_checksum(name: &str, version: &semver::Version, checksum: 
         ("rkyv_derive", 0, 8, 17) => {
             "c0ed1a78a1b19d184b0daa629dd9a024573173ec7d485b287cb369fb3607cc1c"
         }
+        ("rkyv_derive", 0, 8, 18) => {
+            "1c25ef604ac7dd839d44d64648952ea23c97866f124ff671b0ed2cf3ad9bb06e"
+        }
         ("serde_derive", 1, 0, 219) => {
             "5b0276cf7f2c73365f7157c8123c21cd9a50fbbd844757af28ca1f5925fc2a00"
         }
@@ -1868,6 +1871,7 @@ fn audited_proc_macro_runtime_dependency_checksum(
         ("syn", 2, 0, 118) => "1b9ae57f904213ebb649ce6895b8a66c66f0203b9319718f69a5612a065b1422",
         ("syn", 2, 0, 119) => "872831b642d1a07999a962a351ed35b955ea2cfc8f3862091e2a240a84f17297",
         ("syn", 3, 0, 3) => "53e9bae58849f64dfa4f5d5ae372c8341f7305f82a3868709269343628b659a3",
+        ("syn", 3, 0, 6) => "8593e8e72159ed2257d083c7a454a85cbf854f37a0966d8d483aff8c8a3ebcee",
         ("synstructure", 0, 13, 2) => {
             "728a70f3dbaf5bab7f0c4b1ac8d7ae5ea60a4b5549c8a5914361c99147a709d2"
         }
@@ -2010,6 +2014,11 @@ mod audited_proc_macro_tests {
                 "rkyv_derive",
                 semver::Version::new(0, 8, 17),
                 "c0ed1a78a1b19d184b0daa629dd9a024573173ec7d485b287cb369fb3607cc1c",
+            ),
+            (
+                "rkyv_derive",
+                semver::Version::new(0, 8, 18),
+                "1c25ef604ac7dd839d44d64648952ea23c97866f124ff671b0ed2cf3ad9bb06e",
             ),
         ] {
             assert!(audited_proc_macro_package_identity(
@@ -2443,6 +2452,11 @@ mod audited_proc_macro_tests {
                 "syn",
                 semver::Version::new(2, 0, 119),
                 "872831b642d1a07999a962a351ed35b955ea2cfc8f3862091e2a240a84f17297",
+            ),
+            (
+                "syn",
+                semver::Version::new(3, 0, 6),
+                "8593e8e72159ed2257d083c7a454a85cbf854f37a0966d8d483aff8c8a3ebcee",
             ),
             (
                 "synstructure",
