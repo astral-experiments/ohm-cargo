@@ -15,6 +15,8 @@ use std::thread::available_parallelism;
 pub struct BuildConfig {
     /// Execution of ready test binaries during supported test builds.
     pub(crate) ready_tests: Option<crate::ops::ReadyTestOptions>,
+    /// The test runner requested cached doctest executables for this build.
+    pub(crate) cached_doctests: bool,
     /// The requested kind of compilation for this session
     pub requested_kinds: Vec<CompileKind>,
     /// Number of rustc jobs to run in parallel.
@@ -117,6 +119,7 @@ impl BuildConfig {
 
         Ok(BuildConfig {
             ready_tests: None,
+            cached_doctests: false,
             requested_kinds,
             jobs,
             keep_going,

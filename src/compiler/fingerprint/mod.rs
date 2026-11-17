@@ -718,7 +718,7 @@ const RECHECK_DEPENDENT_LINKS: &str = "/dev/null/ohm-recheck-dependent-links";
 /// consume their dependencies' public hashes without producing one themselves.
 pub fn unit_can_use_relink_only(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
     !unit.artifact.is_true()
-        && (unit.mode == CompileMode::Test
+        && (matches!(unit.mode, CompileMode::Test | CompileMode::Doctest)
             || (unit.mode == CompileMode::Build && unit.target.is_bin()))
         && matches!(
             build_runner.lto[unit],
@@ -1401,6 +1401,9 @@ pub struct Fingerprint {
     /// Whether this unit or a dependency reused assembly that still requires native link checks.
     #[serde(skip)]
     recheck_dependent_links: AtomicBool,
+    /// Whether a cached doctest was fresh before scheduling its final native link.
+    #[serde(skip)]
+    fresh_doctest_inputs: bool,
     /// Whether a procedural macro read foreign span data during the previous compile.
     #[serde(skip)]
     observes_foreign_span: bool,
@@ -1898,6 +1901,7 @@ impl Fingerprint {
             fs_status: Mutex::new(FsStatus::Stale),
             build_state: Mutex::new(BuildState::Pending),
             recheck_dependent_links: AtomicBool::new(false),
+            fresh_doctest_inputs: false,
             observes_foreign_span: false,
             early_cutoff_candidate: AtomicBool::new(false),
             previously_changed_metadata_dependency: AtomicBool::new(false),
@@ -1938,9 +1942,12 @@ impl Fingerprint {
 
     /// Native links can read inputs that are absent from an upstream rlib's dep-info.
     fn must_recheck_native_link(&self, unit: &Unit) -> bool {
-        self.recheck_dependent_links.load(Ordering::Acquire)
-            && matches!(unit.mode, CompileMode::Build | CompileMode::Test)
-            && unit.requires_upstream_objects()
+        // A doctest can link an unbundled native archive from a dependency's
+        // link attribute without any Cargo rerun-if-changed declaration.
+        unit.mode.is_doc_test()
+            || (self.recheck_dependent_links.load(Ordering::Acquire)
+                && matches!(unit.mode, CompileMode::Build | CompileMode::Test)
+                && unit.requires_upstream_objects())
     }
 
     /// Custom compilers and wrappers retain their ordinary compilation behavior.
@@ -1985,6 +1992,15 @@ impl Fingerprint {
         if marked || self.needs_native_link_driver() {
             self.recheck_dependent_links.store(true, Ordering::Release);
         }
+    }
+
+    /// Dependencies may have rebuilt since the doctest's inputs were checked.
+    pub(super) fn can_reuse_doctest_codegen(&self) -> bool {
+        self.fresh_doctest_inputs
+            && self
+                .deps
+                .iter()
+                .all(|dep| matches!(dep.fingerprint.build_state(), BuildState::Fresh))
     }
 
     /// These compilers can read bytes that are absent from the public dependency metadata.
@@ -2570,8 +2586,6 @@ fn calculate(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
     }
     let mut fingerprint = if unit.mode.is_run_custom_build() {
         calculate_run_custom_build(build_runner, unit)?
-    } else if unit.mode.is_doc_test() {
-        panic!("doc tests do not fingerprint");
     } else {
         calculate_normal(build_runner, unit)?
     };
@@ -2603,6 +2617,25 @@ fn calculate(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
     // A native input marker restricts reuse when Cargo needs to rebuild. A warm
     // unit still follows Cargo's ordinary source and build-script declarations.
     fingerprint.record_native_link_inputs(false);
+    // An extracted doctest may link an unbundled archive outside the crate's
+    // dep-info. Recheck the link while retaining fresh Rust inputs for reuse.
+    if unit.mode.is_doc_test() && fingerprint.fs_status.get_mut().unwrap().up_to_date() {
+        fingerprint.fresh_doctest_inputs = fingerprint
+            .native_recheck_can_reuse_codegen(build_runner, unit)
+            && matches!(
+                fingerprint.fs_status.get_mut().unwrap(),
+                FsStatus::UpToDate { .. }
+            )
+            && unit_has_exclusive_metadata_access(build_runner, unit)
+            && !previous_dependency_changes(&fingerprint).any
+            && short_fingerprint_matches(
+                &build_runner.files().fingerprint_file_path(unit, ""),
+                fingerprint.hash_u64(),
+            );
+        *fingerprint.fs_status.get_mut().unwrap() = FsStatus::StaleItem(StaleItem::MissingFile {
+            path: RECHECK_DEPENDENT_LINKS.into(),
+        });
+    }
 
     // A downstream library may have finished using provisional metadata before
     // this producer failed. Reverting the source can satisfy the old dep-info
@@ -2702,7 +2735,7 @@ fn calculate_normal(
     let build_root = build_runner.files().build_root(unit);
     let is_any_doc_gen = unit.mode.is_doc() || unit.mode.is_doc_scrape();
     let rustdoc_depinfo_enabled = build_runner.bcx.gctx.cli_unstable().rustdoc_depinfo;
-    let local = if is_any_doc_gen && !rustdoc_depinfo_enabled {
+    let mut local = if is_any_doc_gen && !rustdoc_depinfo_enabled {
         // rustdoc does not have dep-info files.
         let fingerprint = pkg_fingerprint(build_runner.bcx, &unit.pkg).with_context(|| {
             format!(
@@ -2720,6 +2753,15 @@ fn calculate_normal(
             fingerprint,
         }]
     };
+
+    if unit.mode.is_doc_test() {
+        let dir = build_runner.files().fingerprint_dir(unit);
+        let info = super::cached_doctests::extraction_dep_info(&dir);
+        local.push(LocalFingerprint::CheckDepInfo {
+            dep_info: info.strip_prefix(&build_root).unwrap().to_owned(),
+            fingerprint: super::unit_fingerprint_method(build_runner, unit)?,
+        });
+    }
 
     // Figure out what the outputs of our unit is, and we'll be storing them
     // into the fingerprint as well.
@@ -2741,6 +2783,14 @@ fn calculate_normal(
 
     let profile_hash = unit_profile_hash(build_runner, unit);
     let mut config = StableHasher::new();
+    if unit.mode.is_doc_test() {
+        // A different generator or rustdoc can change the executable even
+        // when the package and rustc itself are unchanged.
+        "ohm-cached-doctests-v1".hash(&mut config);
+        let rustdoc = paths::resolve_executable(build_runner.bcx.gctx.rustdoc()?)?;
+        rustdoc.hash(&mut config);
+        rustdoc.metadata()?.modified()?.hash(&mut config);
+    }
     let linker = if unit.target.for_host() && !build_runner.bcx.gctx.target_applies_to_host()? {
         build_runner.compilation.host_linker()
     } else {
@@ -2836,6 +2886,7 @@ fn calculate_normal(
         compile_kind,
         index: build_runner.bcx.unit_to_index[unit],
         recheck_dependent_links: AtomicBool::new(false),
+        fresh_doctest_inputs: false,
         observes_foreign_span: false,
         rustflags: extra_flags,
         fs_status: Mutex::new(FsStatus::Stale),
@@ -3165,8 +3216,9 @@ fn write_fingerprint_and_public_api_hash(
 pub fn prepare_init(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<()> {
     let new1 = build_runner.files().fingerprint_dir(unit);
 
-    // Doc tests have no output, thus no fingerprint.
-    if !new1.exists() && !unit.mode.is_doc_test() {
+    if !new1.exists()
+        && (!unit.mode.is_doc_test() || super::cached_doctests::enabled(build_runner.bcx, unit))
+    {
         paths::create_dir_all(&new1)?;
     }
 
