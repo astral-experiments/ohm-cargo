@@ -11,7 +11,7 @@ use crate::util::data_structures::{HashMap, HashSet};
 use anyhow::bail;
 use std::{
     fmt::{Display, Formatter},
-    path::PathBuf,
+    path::{Component, Path, PathBuf},
     sync::{OnceLock, RwLock},
 };
 #[cfg(unix)]
@@ -61,6 +61,7 @@ impl LockManager {
             return Ok(());
         }
         let mut canonical_profiles = HashMap::default();
+        let mut checked_directories = HashSet::default();
         let mut units = build_runner
             .bcx
             .unit_graph
@@ -68,7 +69,6 @@ impl LockManager {
             .filter(|unit| build_runner.files().is_shared_registry_unit(unit))
             .map(|unit| {
                 let path = build_runner.files().build_unit_lock(unit);
-                let key = LockKey(build_runner.bcx.ws.canonical_build_path(&path));
                 let profile = build_runner
                     .files()
                     .layout(unit.kind)
@@ -81,6 +81,15 @@ impl LockManager {
                     .entry(unit.kind)
                     .or_insert_with(|| build_runner.bcx.ws.canonical_build_path(profile));
                 let expected = canonical_profile.join(path.strip_prefix(profile).unwrap());
+                let key = if shared_lock_path_is_unaliased(
+                    canonical_profile,
+                    &expected,
+                    &mut checked_directories,
+                ) {
+                    LockKey(expected.clone())
+                } else {
+                    LockKey(build_runner.bcx.ws.canonical_build_path(&path))
+                };
                 if key.0 != expected {
                     bail!(
                         "shared registry unit lock escapes its locked build profile or namespace: {}; \
@@ -331,6 +340,39 @@ impl LockManager {
 
         Ok(())
     }
+}
+
+/// Checks each shared directory once while collecting a reservation's lock keys.
+/// Symlinks and unreadable components still require full canonicalization; no
+/// observations survive reservation retries or a new build runner.
+fn shared_lock_path_is_unaliased(
+    profile: &Path,
+    path: &Path,
+    checked_directories: &mut HashSet<PathBuf>,
+) -> bool {
+    let relative = path.strip_prefix(profile).unwrap();
+    if relative
+        .components()
+        .any(|component| !matches!(component, Component::Normal(_)))
+    {
+        return false;
+    }
+    let mut current = profile.to_path_buf();
+    for component in relative.components() {
+        current.push(component);
+        if checked_directories.contains(&current) {
+            continue;
+        }
+        match std::fs::symlink_metadata(&current) {
+            Ok(metadata) if metadata.is_dir() => {
+                checked_directories.insert(current.clone());
+            }
+            Ok(metadata) if metadata.is_file() => {}
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => return true,
+            _ => return false,
+        }
+    }
+    true
 }
 
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
