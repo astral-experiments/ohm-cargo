@@ -121,15 +121,12 @@ pub(super) fn open(repo: &gix::Repository, gctx: &GlobalContext) -> Option<gix::
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::workspace::parser::registry_cache::private_home;
     use std::fs;
-    use std::os::unix::fs::PermissionsExt as _;
 
     #[test]
     fn receipts_verify_exact_bytes_and_defer_split_indices_to_git() {
-        let root = tempfile::Builder::new()
-            .permissions(fs::Permissions::from_mode(0o700))
-            .tempdir()
-            .unwrap();
+        let root = private_home();
         let path = root.path().join("work");
         gix::init(&path).unwrap();
         let repo = gix::open_opts(&path, gix::open::Options::isolated()).unwrap();
