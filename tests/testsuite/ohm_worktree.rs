@@ -254,6 +254,71 @@ fn creates_a_worktree_without_a_previous_build() {
     assert!(destination.join(".git").is_file());
 }
 
+#[cargo_test]
+fn loads_registry_configuration_from_the_selected_revision() {
+    let manifest = r#"
+        [package]
+        name = "app"
+        version = "0.1.0"
+        edition = "2024"
+
+        [dependencies]
+        dep = { path = "dep", version = "0.1.0", registry = "selected" }
+    "#;
+    let (donor, repo) = git::new_repo("donor", |p| {
+        p.file("Cargo.toml", manifest)
+            .file("src/lib.rs", "")
+            .file(
+                "dep/Cargo.toml",
+                &cargo_test_support::basic_manifest("dep", "0.1.0"),
+            )
+            .file("dep/src/lib.rs", "")
+            .file(
+                ".cargo/config.toml",
+                r#"[registries.selected]
+index = "sparse+https://selected.invalid/index/"
+"#,
+            )
+    });
+    let selected = repo.head().unwrap().target().unwrap();
+    fs::write(
+        donor.root().join("Cargo.toml"),
+        cargo_test_support::basic_manifest("app", "0.1.0"),
+    )
+    .unwrap();
+    fs::remove_file(donor.root().join(".cargo/config.toml")).unwrap();
+    git::add(&repo);
+    git::commit(&repo);
+
+    let child = paths::root().join("child");
+    seeded_cargo(&donor, "worktree add --detach")
+        .arg(&child)
+        .arg(selected.to_string())
+        .run();
+    donor.cargo("check --offline").cwd(child).run();
+}
+
+#[cargo_test]
+fn discovers_worktree_configuration_from_the_calling_member() {
+    let (donor, _) = git::new_repo("donor", |p| {
+        p.file("Cargo.toml", "[workspace]\nmembers = ['app', 'dep']\nresolver = '3'\n")
+            .file("app/Cargo.toml", &format!(
+                "{}\n[dependencies]\ndep = {{ path = '../dep', version = '0.1.0', registry = 'local' }}\n",
+                cargo_test_support::basic_manifest("app", "0.1.0")
+            ))
+            .file("app/src/lib.rs", "")
+            .file("app/.cargo/config.toml", "[registries.local]\nindex = 'sparse+https://local.invalid/'\n")
+            .file("dep/Cargo.toml", &cargo_test_support::basic_manifest("dep", "0.1.0"))
+            .file("dep/src/lib.rs", "")
+    });
+    let child = paths::root().join("child");
+    seeded_cargo(&donor, "worktree add --detach")
+        .cwd(donor.root().join("app"))
+        .arg(&child)
+        .run();
+    donor.cargo("check --offline").cwd(child.join("app")).run();
+}
+
 #[cfg(unix)]
 #[cargo_test]
 fn keeps_the_package_root_of_a_symlinked_manifest() {
