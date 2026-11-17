@@ -243,7 +243,8 @@ fn unit_suppresses_default_public_api_hash(
     unit: &Unit,
 ) -> bool {
     build_runner.bcx.gctx.cli_unstable().ohm_defaults()
-        && (build_runner.is_terminal_check_unit(unit)
+        && ((build_runner.is_terminal_check_unit(unit)
+            && !unit_uses_ohm_shared_stages(build_runner, unit))
             || unit.mode == CompileMode::Test
             || (matches!(unit.mode, CompileMode::Build | CompileMode::Check { .. })
                 && unit.target.is_lib()
@@ -258,6 +259,25 @@ fn unit_suppresses_default_public_api_hash(
         && fingerprint::unit_public_api_hash_override(build_runner, unit).is_none()
 }
 
+/// Shares compiler identity across ordinary debug checks and builds, including
+/// non-incremental dependencies whose identity reaches an incremental consumer.
+/// Cargo's artifact and fingerprint identities remain distinct for each mode.
+fn unit_uses_ohm_shared_stages(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
+    let bcx = build_runner.bcx;
+    bcx.gctx.cli_unstable().ohm_shared_stages()
+        && unit.profile.root == ProfileRoot::Debug
+        && unit.profile.codegen_backend.is_none()
+        && matches!(
+            unit.mode,
+            CompileMode::Build | CompileMode::Check { test: false }
+        )
+        && !unit.is_std
+        && !unit.target.is_compile_time_dependency()
+        && !unit.artifact.is_true()
+        && bcx.rustc().workspace_wrapper.is_none()
+        && bcx.rustc().supports_ohm_shared_stages(bcx.gctx)
+}
+
 fn unit_uses_ohm_incremental_codegen(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
     let gctx = build_runner.bcx.gctx;
     if !gctx.cli_unstable().ohm_defaults()
@@ -265,7 +285,8 @@ fn unit_uses_ohm_incremental_codegen(build_runner: &BuildRunner<'_, '_>, unit: &
         || !unit.profile.incremental
         || !matches!(unit.profile.opt_level.as_str(), "0" | "1")
         || unit.profile.codegen_backend.is_some()
-        || !matches!(unit.mode, CompileMode::Build | CompileMode::Test)
+        || !(matches!(unit.mode, CompileMode::Build | CompileMode::Test)
+            || unit_uses_ohm_shared_stages(build_runner, unit))
         || unit.target.is_compile_time_dependency()
         || !build_runner.bcx.ws.is_member(&unit.pkg)
     {
@@ -1937,6 +1958,9 @@ fn prepare_rustc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
     let mut base = build_runner
         .compilation
         .rustc_process(unit, is_primary, is_workspace)?;
+    if unit_uses_ohm_shared_stages(build_runner, unit) {
+        base.arg("-Zohm-shared-stages");
+    }
     if gctx.cli_unstable().ohm_defaults() {
         base.args(&OHM_DEFAULT_RUSTFLAGS);
         if unit_uses_ohm_incremental_codegen(build_runner, unit) {
@@ -2510,6 +2534,11 @@ fn build_base_args(
 
     if unit.mode.is_check() {
         cmd.arg("--emit=dep-info,metadata");
+        if unit_uses_ohm_shared_stages(build_runner, unit)
+            && unit_uses_no_embed_metadata(build_runner, unit)
+        {
+            cmd.args(&["-Z", "embed-metadata=no"]);
+        }
     } else if !build_runner
         .bcx
         .target_data
