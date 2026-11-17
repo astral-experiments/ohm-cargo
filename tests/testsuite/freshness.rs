@@ -4259,7 +4259,6 @@ fn relink_only_reuses_root_codegen() {
         .file("dep/src/lib.rs", "pub fn value() -> i32 { 1 }")
         .build();
     let log = p.root().join("relink-wrapper.log");
-    let deps = p.root().join("target/debug/deps");
 
     // Preparation wrappers may successfully skip the root compiler invocation.
     p.cargo("-Zohm-defaults build")
@@ -6172,6 +6171,254 @@ fn early_native_integration_tests_default_and_fallback() {
                     .unwrap()
                     .lines()
                     .any(|line| line.ends_with(":integration"))
+            );
+        }
+    }
+}
+
+/// Prior proof controls warm admission; current proof controls acceptance.
+#[cargo_test]
+#[cfg(not(windows))]
+fn early_native_integration_tests_warm_evidence_and_fallback() {
+    let wrapper = relink_only_wrapper();
+    for case in [
+        "unused",
+        "used",
+        "missing-proof",
+        "missing-manifest",
+        "malformed-manifest",
+        "old-version",
+        "wrong-executable",
+        "stale-executable",
+        "opt-out",
+        "new-use",
+        "current-missing-proof",
+        "producer-error",
+        "checked-unused",
+        "checked-new-use",
+        "checked-missing-proof",
+        "checked-other-features",
+        "checked-then-unused",
+    ] {
+        let p = project()
+            .at(case)
+            .file(
+                "Cargo.toml",
+                "[package]\nname=\"app\"\nversion=\"0.1.0\"\nedition=\"2024\"\n[features]\nother = []\n",
+            )
+            .file("src/lib.rs", "pub fn value() -> u32 { 7 }")
+            .file(
+                "tests/integration.rs",
+                if case == "used" {
+                    "#[test] fn works() { assert_eq!(app::value(), 7); }"
+                } else {
+                    "#[test] fn works() { assert_eq!(2 + 2, 4); }"
+                },
+            )
+            .build();
+        let log = p.root().join("wrapper.log");
+        let mut seed = p.cargo(
+            "-Zohm-defaults -Zheadstart -Zsection-timings -Zohm-early-tests=no test --test integration -j2",
+        );
+        seed.masquerade_as_nightly_cargo(&[
+            "ohm-defaults",
+            "headstart",
+            "section-timings",
+            "ohm-early-tests",
+        ])
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RELINK_WRAPPER_LOG", &log)
+        .env("UNUSED_INTEGRATION_DEPENDENCY_PROOF", "1");
+        if case == "missing-proof" {
+            seed.env("EARLY_TEST_MISSING_PROOF", "1");
+        }
+        seed.run();
+        let manifest = p
+            .glob("target/debug/build/app/*/out/integration-*.rlink-cache.json")
+            .map(Result::unwrap)
+            .next()
+            .expect("native integration-test manifest");
+        let mut proof: serde_json::Value =
+            serde_json::from_slice(&fs::read(&manifest).unwrap()).unwrap();
+        match case {
+            "missing-manifest" => fs::remove_file(&manifest).unwrap(),
+            "malformed-manifest" => fs::write(&manifest, b"{").unwrap(),
+            "old-version" | "wrong-executable" | "stale-executable" => {
+                match case {
+                    "old-version" => proof["version"] = 0.into(),
+                    "wrong-executable" => proof["executable"]["path"] = "wrong-executable".into(),
+                    "stale-executable" => proof["executable"]["modified_nanos"] = 0.into(),
+                    _ => unreachable!(),
+                }
+                fs::write(&manifest, serde_json::to_vec(&proof).unwrap()).unwrap();
+            }
+            _ => {}
+        }
+        fs::write(&log, "").unwrap();
+        if is_coarse_mtime() {
+            sleep_ms(1000);
+        }
+        p.change_file(
+            "src/lib.rs",
+            if case == "producer-error" {
+                "compile_error!(\"intentional warm producer failure\");"
+            } else {
+                "pub fn value() -> u32 { 9 }"
+            },
+        );
+        p.change_file(
+            "tests/integration.rs",
+            if matches!(
+                case,
+                "used"
+                    | "new-use"
+                    | "checked-new-use"
+                    | "checked-missing-proof"
+                    | "checked-other-features"
+                    | "checked-then-unused"
+            ) {
+                "#[test] fn works() { assert_eq!(app::value(), 9); }"
+            } else {
+                "#[test] fn works() { assert_eq!(3 + 3, 6); }"
+            },
+        );
+        if case.starts_with("checked-") {
+            let mut check = p.cargo("-Zohm-defaults -Zheadstart check --test integration -j2");
+            check
+                .masquerade_as_nightly_cargo(&["ohm-defaults", "headstart"])
+                .env("RUSTC_WRAPPER", &wrapper)
+                .env("RELINK_WRAPPER_LOG", &log)
+                .env("UNUSED_INTEGRATION_DEPENDENCY_PROOF", "1");
+            if case == "checked-missing-proof" {
+                check.env("EARLY_TEST_MISSING_PROOF", "1");
+            }
+            if case == "checked-other-features" {
+                check.arg("--features=other");
+            }
+            check.run();
+            fs::write(&log, "").unwrap();
+            if case == "checked-then-unused" {
+                p.change_file(
+                    "tests/integration.rs",
+                    "#[test] fn works() { assert_eq!(3 + 3, 6); }",
+                );
+            }
+        }
+        let overlap = matches!(
+            case,
+            "unused"
+                | "new-use"
+                | "current-missing-proof"
+                | "producer-error"
+                | "checked-unused"
+                | "checked-missing-proof"
+                | "checked-other-features"
+        );
+        let retry = matches!(
+            case,
+            "new-use"
+                | "current-missing-proof"
+                | "checked-missing-proof"
+                | "checked-other-features"
+        );
+        let mut command =
+            p.cargo("-Zohm-defaults -Zheadstart -Zsection-timings test --test integration -j2");
+        command
+            .masquerade_as_nightly_cargo(&[
+                "ohm-defaults",
+                "headstart",
+                "section-timings",
+                "ohm-early-tests",
+            ])
+            .env("RUSTC_WRAPPER", &wrapper)
+            .env("RELINK_WRAPPER_LOG", &log)
+            .env("UNUSED_INTEGRATION_DEPENDENCY_PROOF", "1")
+            .env("EARLY_TEST_CONTROL", p.root())
+            .env("CARGO_LOG", "cargo::compiler::ohm_early_tests=info");
+        if overlap {
+            command.env("EARLY_TEST_EXPECT_OVERLAP", "1");
+        }
+        if case == "opt-out" {
+            command.arg("-Zohm-early-tests=no");
+        }
+        if case == "current-missing-proof" {
+            command.env("EARLY_TEST_MISSING_PROOF", "1");
+        }
+        if case == "producer-error" {
+            command
+                .with_status(101)
+                .with_stdout_does_not_contain("[..]1 passed[..]");
+        } else {
+            command.with_stdout_contains("[..]1 passed[..]");
+        }
+        if matches!(case, "unused" | "checked-unused") {
+            command.with_stderr_contains("[..]accepted early integration[..]");
+        } else {
+            command.with_stderr_does_not_contain("[..]accepted early integration[..]");
+        }
+        if retry {
+            command.with_stderr_contains("[..]retrying integration[..]");
+        } else {
+            command.with_stderr_does_not_contain("[..]retrying integration[..]");
+        }
+        command.run();
+        let calls = fs::read_to_string(&log).unwrap();
+        assert_eq!(
+            calls
+                .lines()
+                .filter(|line| line.ends_with(":integration"))
+                .count(),
+            if retry { 2 } else { 1 },
+            "{case}: {calls}"
+        );
+        if case == "producer-error" {
+            assert!(!manifest.exists());
+        } else if case == "new-use" {
+            let proof: serde_json::Value =
+                serde_json::from_slice(&fs::read(&manifest).unwrap()).unwrap();
+            assert!(
+                !proof["unused_extern_names"]
+                    .as_array()
+                    .unwrap()
+                    .contains(&"app".into())
+            );
+        }
+        if case == "checked-then-unused" {
+            // A stale negative check hint only defers one native compilation.
+            for marker in [
+                "library-started",
+                "library-finished",
+                "test-started",
+                "test-finished",
+            ] {
+                fs::remove_file(p.root().join(marker)).unwrap();
+            }
+            fs::write(&log, "").unwrap();
+            if is_coarse_mtime() {
+                sleep_ms(1000);
+            }
+            p.change_file("src/lib.rs", "pub fn value() -> u32 { 11 }");
+            p.change_file(
+                "tests/integration.rs",
+                "#[test] fn works() { assert_eq!(4 + 4, 8); }",
+            );
+            p.cargo("-Zohm-defaults -Zheadstart -Zsection-timings test --test integration -j2")
+                .masquerade_as_nightly_cargo(&["ohm-defaults", "headstart", "section-timings"])
+                .env("RUSTC_WRAPPER", &wrapper)
+                .env("RELINK_WRAPPER_LOG", &log)
+                .env("UNUSED_INTEGRATION_DEPENDENCY_PROOF", "1")
+                .env("EARLY_TEST_CONTROL", p.root())
+                .env("EARLY_TEST_EXPECT_OVERLAP", "1")
+                .env("CARGO_LOG", "cargo::compiler::ohm_early_tests=info")
+                .with_stderr_contains("[..]accepted early integration[..]")
+                .with_stdout_contains("[..]1 passed[..]")
+                .run();
+            assert_eq!(
+                fs::read_to_string(&log)
+                    .unwrap()
+                    .matches(":integration\n")
+                    .count(),
+                1
             );
         }
     }
