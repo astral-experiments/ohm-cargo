@@ -648,10 +648,12 @@ impl Checksum {
         Self { algo, value }
     }
 
-    pub fn compute(algo: ChecksumAlgo, contents: impl Read) -> Result<Self, io::Error> {
-        // Buffer size is the recommended amount to fully leverage SIMD instructions on AVX-512 as per
-        // blake3 documentation.
-        let mut buf = vec![0; 16 * 1024];
+    pub fn compute(
+        algo: ChecksumAlgo,
+        contents: impl Read,
+        buf: &mut [u8],
+    ) -> Result<Self, io::Error> {
+        assert!(!buf.is_empty());
         let mut ret = Self {
             algo,
             value: [0; 32],
@@ -687,7 +689,7 @@ impl Checksum {
                     },
                     |mut h, out| out.copy_from_slice(&h.finish()),
                     contents,
-                    &mut buf,
+                    buf,
                     value,
                 )?;
             }
@@ -699,7 +701,7 @@ impl Checksum {
                     },
                     |h, out| out.copy_from_slice(h.finalize().as_bytes()),
                     contents,
-                    &mut buf,
+                    buf,
                     value,
                 )?;
             }
