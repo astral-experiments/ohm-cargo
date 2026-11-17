@@ -159,6 +159,14 @@ pub use crate::version::version;
 
 pub const CARGO_ENV: &str = "CARGO";
 
+/// Carries an explicit Ohm defaults override through external Cargo subcommands.
+#[doc(hidden)]
+pub const CARGO_INHERITED_OHM_DEFAULTS_ENV: &str = "__CARGO_OHM_DEFAULTS";
+
+/// Carries an explicit relink-only override through external Cargo subcommands.
+#[doc(hidden)]
+pub const CARGO_INHERITED_RELINK_ONLY_ENV: &str = "__CARGO_RELINK_ONLY";
+
 #[macro_use]
 mod macros;
 
