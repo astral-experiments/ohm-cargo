@@ -206,6 +206,39 @@ fn creates_a_worktree_without_a_previous_build() {
 }
 
 #[cargo_test]
+fn worktree_uses_manifest_repository_with_foreign_git_environment() {
+    let (donor, donor_repo) = git::new_repo("donor", |p| p.file("src/lib.rs", "pub fn donor() {}"));
+    let (foreign, foreign_repo) =
+        git::new_repo("foreign", |p| p.file("src/lib.rs", "pub fn foreign() {}"));
+    let destination = paths::root().join("recipient");
+    let foreign_git = foreign_repo.path();
+
+    foreign
+        .cargo("-Zohm-defaults worktree add --detach")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .arg("--manifest-path")
+        .arg(donor.root().join("Cargo.toml"))
+        .arg(&destination)
+        .env("GIT_DIR", foreign_git)
+        .env("GIT_WORK_TREE", foreign.root())
+        .env("GIT_COMMON_DIR", foreign_git)
+        .env("GIT_INDEX_FILE", foreign_git.join("index"))
+        .env("GIT_OBJECT_DIRECTORY", foreign_git.join("objects"))
+        .env(
+            "GIT_ALTERNATE_OBJECT_DIRECTORIES",
+            foreign_git.join("objects"),
+        )
+        .run();
+
+    let recipient = git2::Repository::open(destination).unwrap();
+    assert_eq!(
+        recipient.head().unwrap().target(),
+        donor_repo.head().unwrap().target()
+    );
+    assert_eq!(foreign_repo.worktrees().unwrap().len(), 0);
+}
+
+#[cargo_test]
 fn existing_branches_can_be_selected_by_basename_or_operand() {
     let (donor, repo) = git::new_repo("donor", |p| p.file("src/lib.rs", "pub fn original() {}"));
     let original = repo.head().unwrap().peel_to_commit().unwrap();
