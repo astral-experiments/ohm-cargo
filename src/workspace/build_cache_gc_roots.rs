@@ -5,10 +5,11 @@ use std::io::Read as _;
 use std::path::{Path, PathBuf};
 
 use anyhow::{Context as _, ensure};
+use cargo_util_terminal::Verbosity;
 
 use super::build_cache_gc;
 use crate::compiler::Layout;
-use crate::util::{CargoResult, GlobalContext, HumanBytes};
+use crate::util::{CargoResult, GlobalContext, HumanBytes, Progress, ProgressStyle};
 
 const ROOTS: &str = ".ohm-build-roots-v1";
 
@@ -99,10 +100,36 @@ pub fn collect(gctx: &GlobalContext, root: Option<&Path>, dry_run: bool) -> Carg
     let directory = gctx.home().as_path_unlocked().join(ROOTS);
     let mut errors = Vec::new();
     let mut register_roots = !dry_run;
+    let mut counts = build_cache_gc::FileCounts::default();
+    let mut progress = Progress::with_style(
+        if dry_run { "Scanning" } else { "Cleaning" },
+        ProgressStyle::Indeterminate,
+        gctx,
+    );
+    if gctx.shell().verbosity() == Verbosity::Quiet {
+        progress.disable();
+    }
+    let show_progress = progress.is_enabled();
+    let mut progress_result = Ok(());
+    let mut update = |counts: &build_cache_gc::FileCounts| {
+        if progress_result.is_ok() && progress.update_allowed() {
+            let action = if dry_run { "eligible" } else { "removed" };
+            progress_result = progress.tick_now(
+                0,
+                0,
+                &format!(
+                    " {}, {:.1} {action}",
+                    entry_count(counts),
+                    HumanBytes(counts.bytes)
+                ),
+            );
+        }
+    };
     let roots = match root {
         Some(root) => vec![gctx.cwd().join(root).canonicalize()?],
         None => {
-            let mut roots = match registered_roots(&directory) {
+            let mut tick = || update(&counts);
+            let mut roots = match registered_roots(&directory, &mut tick) {
                 Ok(roots) => roots,
                 Err(error) => {
                     errors.push(format!(
@@ -117,7 +144,7 @@ pub fn collect(gctx: &GlobalContext, root: Option<&Path>, dry_run: bool) -> Carg
                 && !build.raw_value().contains("{workspace-")
                 && let Some(path) = gctx.build_dir(&gctx.cwd().join("Cargo.toml"))?
             {
-                discover_roots(path.as_path_unlocked(), 0, &mut roots)?;
+                discover_roots(path.as_path_unlocked(), 0, &mut roots, &mut tick)?;
             }
             let mut caches = Vec::new();
             if let Some(home) = gctx.get_env_os("HOME") {
@@ -131,7 +158,7 @@ pub fn collect(gctx: &GlobalContext, root: Option<&Path>, dry_run: bool) -> Carg
                 caches.push(PathBuf::from(cache));
             }
             for cache in caches {
-                discover_roots(&cache, 4, &mut roots)?;
+                discover_roots(&cache, 4, &mut roots, &mut tick)?;
             }
             roots.sort();
             roots.dedup();
@@ -145,7 +172,6 @@ pub fn collect(gctx: &GlobalContext, root: Option<&Path>, dry_run: bool) -> Carg
             build_cache_gc::ohm_version(&rustc.verbose_version).map(str::to_owned)
         })
     };
-    let mut counts = build_cache_gc::FileCounts::default();
     let explicit_root = root.is_some();
     for root in roots {
         gctx.shell()
@@ -161,14 +187,18 @@ pub fn collect(gctx: &GlobalContext, root: Option<&Path>, dry_run: bool) -> Carg
             )?;
             continue;
         }
-        let mut summary = build_cache_gc::Summary::default();
+        let mut summary = build_cache_gc::Summary {
+            counts,
+            progress: show_progress.then_some(&mut update),
+            ..Default::default()
+        };
         let result = collect_root(&root, dry_run, current_ohm.as_deref(), &mut summary);
         if let Err(error) = result {
             errors.push(format!("{} ({error:#})", root.display()));
         } else if register_roots && let Err(error) = register_root(gctx, &root) {
             errors.push(format!("failed to register {} ({error:#})", root.display()));
         }
-        counts.include(&summary.counts);
+        counts = summary.counts;
         errors.extend(summary.errors);
         for detail in &summary.details {
             gctx.shell()
@@ -188,12 +218,7 @@ pub fn collect(gctx: &GlobalContext, root: Option<&Path>, dry_run: bool) -> Carg
             Ok(())
         })?;
     }
-    let file_count = match (counts.files, counts.directories) {
-        (0, 1) => "1 directory".to_owned(),
-        (0, 2..) => format!("{} directories", counts.directories),
-        (1, _) => "1 file".to_owned(),
-        (files, _) => format!("{files} files"),
-    };
+    drop(progress);
     let byte_count = if counts.bytes == 0 {
         String::new()
     } else {
@@ -201,7 +226,7 @@ pub fn collect(gctx: &GlobalContext, root: Option<&Path>, dry_run: bool) -> Carg
     };
     gctx.shell().status(
         if dry_run { "Summary" } else { "Removed" },
-        format!("{file_count}{byte_count}"),
+        format!("{}{byte_count}", entry_count(&counts)),
     )?;
     if dry_run {
         gctx.shell().warn("no files deleted due to --dry-run")?;
@@ -211,12 +236,27 @@ pub fn collect(gctx: &GlobalContext, root: Option<&Path>, dry_run: bool) -> Carg
         "could not clean the following paths:\n  {}",
         errors.join("\n  ")
     );
-    Ok(())
+    progress_result.context("failed to display cleanup progress")
+}
+
+fn entry_count(counts: &build_cache_gc::FileCounts) -> String {
+    match (counts.files, counts.directories) {
+        (0, 1) => "1 directory".to_owned(),
+        (0, 2..) => format!("{} directories", counts.directories),
+        (1, _) => "1 file".to_owned(),
+        (files, _) => format!("{files} files"),
+    }
 }
 
 /// Finds marked roots near cache-directory tops without traversing artifact trees.
 /// Symlinks and inaccessible directories never expand discovery's reach.
-fn discover_roots(path: &Path, depth: usize, roots: &mut Vec<PathBuf>) -> CargoResult<()> {
+fn discover_roots(
+    path: &Path,
+    depth: usize,
+    roots: &mut Vec<PathBuf>,
+    tick: &mut dyn FnMut(),
+) -> CargoResult<()> {
+    tick();
     if !fs::symlink_metadata(path).is_ok_and(|metadata| metadata.is_dir()) {
         return Ok(());
     }
@@ -239,7 +279,7 @@ fn discover_roots(path: &Path, depth: usize, roots: &mut Vec<PathBuf>) -> CargoR
                 Some(".git" | "registry" | "node_modules")
             )
         {
-            discover_roots(&entry.path(), depth - 1, roots)?;
+            discover_roots(&entry.path(), depth - 1, roots, tick)?;
         }
     }
     Ok(())
@@ -250,19 +290,24 @@ fn collect_root(
     root: &Path,
     dry_run: bool,
     current_ohm: Option<&str>,
-    total: &mut build_cache_gc::Summary,
+    total: &mut build_cache_gc::Summary<'_>,
 ) -> CargoResult<()> {
     let mut state = build_cache_gc::CollectionState::default();
     if dry_run {
         return build_cache_gc::collect(root, true, current_ohm, &mut state, total);
     }
     loop {
-        let mut summary = build_cache_gc::Summary::default();
+        let mut summary = build_cache_gc::Summary {
+            counts: std::mem::take(&mut total.counts),
+            progress: total.progress.take(),
+            ..Default::default()
+        };
         let result = build_cache_gc::collect(root, false, current_ohm, &mut state, &mut summary);
         let progress = summary.retired > 0 || summary.deleted_entries > 0 || summary.advanced;
         total.retired += summary.retired;
         total.deleted_entries += summary.deleted_entries;
-        total.counts.include(&summary.counts);
+        total.counts = summary.counts;
+        total.progress = summary.progress;
         total.errors.extend(summary.errors);
         total.blocking_locks.extend(summary.blocking_locks);
         total.retained = summary.retained;
@@ -285,13 +330,14 @@ fn collect_root(
     }
 }
 
-fn registered_roots(directory: &Path) -> CargoResult<Vec<PathBuf>> {
+fn registered_roots(directory: &Path, tick: &mut dyn FnMut()) -> CargoResult<Vec<PathBuf>> {
     if !directory.try_exists()? {
         return Ok(Vec::new());
     }
     validate_directory(directory)?;
     let mut roots = Vec::new();
     for entry in fs::read_dir(directory)? {
+        tick();
         let entry = entry?;
         if !entry.file_type()?.is_file()
             || entry
@@ -325,6 +371,52 @@ mod tests {
     use std::os::unix::fs::symlink;
 
     #[test]
+    fn reports_payload_counts_during_each_cleanup_batch() -> CargoResult<()> {
+        let directory = tempfile::tempdir()?;
+        let root = directory.path();
+        let context = "0123456789abcdef";
+        let payload = root.join("debug/build/registries").join(context);
+        let metadata = root
+            .join(build_cache_gc::DIRECTORY)
+            .join("dependencies")
+            .join(context);
+        fs::create_dir_all(&payload)?;
+        fs::create_dir_all(&metadata)?;
+        fs::write(metadata.join("usage"), b"gc bookkeeping")?;
+        File::create(root.join(Layout::SHARED_REGISTRY_CACHE_MARKER))?;
+        File::create(root.join("debug/.cargo-build-lock"))?;
+        // Span two deletion batches and start with the totals from a previous root.
+        for i in 0..300 {
+            fs::write(payload.join(i.to_string()), b"ab")?;
+        }
+        for dry_run in [true, false] {
+            let mut readings = Vec::new();
+            let mut update = |counts: &build_cache_gc::FileCounts| {
+                readings.push((counts.files, counts.bytes));
+            };
+            let mut summary = build_cache_gc::Summary {
+                counts: build_cache_gc::FileCounts {
+                    files: 1,
+                    bytes: 10,
+                    ..Default::default()
+                },
+                progress: Some(&mut update),
+                ..Default::default()
+            };
+            collect_root(root, dry_run, None, &mut summary)?;
+            assert_eq!((summary.counts.files, summary.counts.bytes), (301, 610));
+            readings.dedup();
+            assert_eq!(
+                readings,
+                (0..=300).map(|i| (1 + i, 10 + 2 * i)).collect::<Vec<_>>()
+            );
+            assert_eq!(payload.exists(), dry_run);
+            assert_eq!(metadata.exists(), dry_run);
+        }
+        Ok(())
+    }
+
+    #[test]
     fn discovery_finds_nested_marked_roots_without_entering_profiles_or_symlinks() -> CargoResult<()>
     {
         let directory = tempfile::tempdir()?;
@@ -344,7 +436,7 @@ mod tests {
         File::create(external.path().join(Layout::SHARED_REGISTRY_CACHE_MARKER))?;
         symlink(external.path(), directory.path().join("alias"))?;
         let mut roots = Vec::new();
-        discover_roots(directory.path(), 4, &mut roots)?;
+        discover_roots(directory.path(), 4, &mut roots, &mut || {})?;
         roots.sort();
         assert_eq!(roots, [outer.canonicalize()?, nested.canonicalize()?]);
         Ok(())
