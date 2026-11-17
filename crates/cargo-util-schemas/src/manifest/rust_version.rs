@@ -1,8 +1,6 @@
 use std::fmt;
 use std::fmt::Display;
 
-use serde_untagged::UntaggedEnumVisitor;
-
 use crate::core::PartialVersion;
 use crate::core::PartialVersionError;
 
@@ -109,10 +107,21 @@ impl<'de> serde::Deserialize<'de> for RustVersion {
     where
         D: serde::Deserializer<'de>,
     {
-        UntaggedEnumVisitor::new()
-            .expecting("SemVer version")
-            .string(|value| value.parse().map_err(serde::de::Error::custom))
-            .deserialize(deserializer)
+        struct StringVisitor;
+        impl<'de> serde::de::Visitor<'de> for StringVisitor {
+            type Value = RustVersion;
+            fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                formatter.write_str("SemVer version")
+            }
+            fn visit_str<E: serde::de::Error>(self, value: &str) -> Result<Self::Value, E> {
+                value.parse().map_err(E::custom)
+            }
+        }
+        if deserializer.is_human_readable() {
+            deserializer.deserialize_any(StringVisitor)
+        } else {
+            deserializer.deserialize_str(StringVisitor)
+        }
     }
 }
 
