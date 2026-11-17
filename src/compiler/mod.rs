@@ -296,8 +296,9 @@ fn unit_checks_relink_inputs(build_runner: &BuildRunner<'_, '_>, unit: &Unit) ->
             .supports_relink_input_checks(bcx.gctx, bcx.ws.is_member(&unit.pkg))
 }
 
-/// A new checkout has new source mtimes, so seeded mutable units must validate
-/// source contents. Explicit checksum freshness still applies to every unit.
+/// Restoring an unchanged public metadata generation can preserve the mtime of a
+/// rewritten file. Units that reuse compilation or codegen must check the contents
+/// of direct inputs, including when the dependency was built by a previous command.
 fn unit_fingerprint_method(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<FingerprintMethod> {
     if unit_uses_ohm_worktree_seeds(build_runner, unit) {
         Ok(FingerprintMethod::Content)
@@ -311,6 +312,8 @@ fn unit_fingerprint_method(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> C
     } else {
         Ok(FingerprintMethod::Mtime)
     }
+        || fingerprint::unit_can_use_early_cutoff(build_runner, unit)
+        || fingerprint::unit_can_use_relink_only(build_runner, unit)
 }
 
 /// Returns the private namespace whose completed artifacts may seed another worktree.
@@ -1570,6 +1573,13 @@ fn rustc(
         let observes_foreign_span = fingerprint
             .as_ref()
             .is_some_and(|fp| fp.observes_foreign_span());
+        // An unchanged public API does not cover files read directly by the compiler,
+        // e.g. a dependency's metadata consumed by include_bytes! through a symlink.
+        let compiler_inputs_are_fresh = std::cell::LazyCell::new(|| {
+            fingerprint
+                .as_ref()
+                .is_some_and(|fp| fp.dep_info_files_are_fresh(&pkg_root, &build_dir))
+        });
         if let Some(ref fp) = fingerprint
             && !observes_foreign_span
         {
@@ -1587,6 +1597,7 @@ fn rustc(
                 && deferred_dev_names.is_empty()
                 && can_skip_compilation
                 && fingerprint::can_skip_due_to_early_cutoff(fp)
+                && *compiler_inputs_are_fresh
             {
                 let essential_outputs = outputs
                     .iter()
@@ -1657,7 +1668,8 @@ fn rustc(
             && !observes_foreign_span
             && relink_cache
                 .as_ref()
-                .is_some_and(RelinkCachePaths::is_valid);
+                .is_some_and(RelinkCachePaths::is_valid)
+            && *compiler_inputs_are_fresh;
         if can_relink_dependencies {
             tracing::info!(
                 "relink-only: cache validation for {unit_name} took {:?}",
