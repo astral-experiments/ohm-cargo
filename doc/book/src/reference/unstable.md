@@ -89,6 +89,7 @@ Each new feature described below should explain how to use it.
     * [build-std-features](#build-std-features) --- Sets features to use with the standard library.
     * [binary-dep-depinfo](#binary-dep-depinfo) --- Causes the dep-info file to track binary dependencies.
     * [checksum-freshness](#checksum-freshness) --- When passed, the decision as to whether a crate needs to be rebuilt is made using file checksums instead of the file mtime.
+    * [ohm-worktree-seeds](#ohm-worktree-seeds) --- Prepare build state for seeding new Git worktrees with Ohm.
     * [panic-abort-tests](#panic-abort-tests) --- Allows running tests with the "abort" panic strategy.
     * [host-config](#host-config) --- Allows setting `[target]`-like configuration settings for host build targets.
     * [embed-metadata](#embed-metadata) --- If set to `no`, cargo will pass `-Zembed-metadata=no` to the compiler, which avoid embedding metadata into rlib and dylib artifacts, to save disk space.
@@ -2006,6 +2007,102 @@ The following commands are available under `-Zbuild-analysis`:
   similar to `cargo build --timings` but without rebuilding.
 - `cargo report rebuilds` --- Reports why crates were rebuilt,
   helping diagnose unexpected recompilations.
+
+## ohm-worktree-seeds
+
+Ohm enables this feature by default to prepare reusable build state for
+`cargo worktree add`. Each worktree retains its own mutable artifacts and
+incremental compiler state; immutable registry artifacts remain in the shared
+build directory.
+
+First run a normal Ohm build in the donor workspace. Its prepared build state can
+then seed a new worktree without extra feature flags. The first build after
+enabling this preparation can require rebuilding existing artifacts; copying an
+unprepared build directory does not prepare compatible incremental state.
+Checksum validation reads source contents on later builds. The mode also replaces
+compiler working-directory paths with a stable virtual prefix, which can affect
+debugger source lookup and path-bearing diagnostics.
+
+Use `-Zohm-worktree-seeds=no` to disable preparation or copying for an individual
+command while retaining the other Ohm defaults. Setting
+`unstable.ohm-worktree-seeds = false` in Cargo configuration also disables it.
+`-Zohm-defaults=no` disables it together with the other Ohm defaults unless
+explicitly overridden with `-Zohm-worktree-seeds=yes`. Cargo builds without Ohm's
+packaged defaults continue to require explicit enablement.
+
+Use the same separate `CARGO_BUILD_BUILD_DIR` for both worktrees and a distinct
+`CARGO_TARGET_DIR` for each:
+
+```console
+export CARGO_BUILD_BUILD_DIR=/path/to/shared-build
+export CARGO_TARGET_DIR=/path/to/targets/source
+cargo +ohm build
+cargo +ohm worktree add -b charlie/my-change ../my-change --target-dir /path/to/targets/my-change
+cd ../my-change
+export CARGO_TARGET_DIR=/path/to/targets/my-change
+cargo +ohm build
+```
+
+The command accepts `worktree add [-b <BRANCH> | --detach] <PATH> [<COMMIT>]`
+and follows Git's branch selection. Without `-b`, `--detach`, or `<COMMIT>`, Git
+creates a branch named after the destination directory, starting at `HEAD`, or
+checks out an existing branch with that name. A branch supplied as `<COMMIT>` is
+checked out normally. Use `-b`/`--branch` to create a named branch or
+`-d`/`--detach` to explicitly detach `HEAD`; these options cannot be combined.
+
+`--manifest-path` selects the donor workspace. For this
+command, `--target-dir` selects only the destination target directory and defaults
+to the new workspace's `target` directory; the donor target still follows its
+existing environment and configuration. Use the chosen destination target for
+subsequent builds so they find the seeded state.
+
+This mode enables checksum-based freshness checks so a new checkout's timestamps
+do not determine whether copied source-dependent artifacts are reusable. Cargo
+and rustc still validate the copied state, and changed inputs or incompatible
+settings can require recompilation. Final executables are published only by that
+first validated build.
+
+Prepared build-script outputs can be copied for comparison, but the script still
+runs in the new checkout. Cargo compares its output and generated files by
+contents, then rechecks the dependent compilation's sources and environment.
+Equivalent results can retain the compiled dependent even when file timestamps
+change. Code that observes a changed checkout or output-directory path is rebuilt.
+Native linker outputs and unsupported files conservatively retain ordinary
+rebuild behavior. Saved relink recipes are not imported.
+
+By default, a build profile that has used local procedural macros is excluded
+from seeding, including its incremental state. To trust those macros' cached
+outputs for a particular import, set the existing procedural-macro trust option
+on `worktree add`:
+
+```sh
+CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST=all cargo +ohm worktree add -b charlie/my-change ../my-change --target-dir /path/to/targets/my-change
+```
+
+This opt-in is potentially unsound: a macro can read the donor's environment,
+files, or working directory without recording those inputs, and the new
+worktree can reuse the old expansion. Use it only when willing to trust those
+outputs across checkouts. Source, dependency, configuration, and tracked
+environment changes still undergo the usual validation.
+
+The donor records local-macro use regardless of its trust setting. The option
+only needs to be set on `worktree add` for this local snapshot import; subsequent
+builds do not need it to use the imported state. A later fork requires its own
+opt-in, even if the macros have since been removed from the build graph. The
+option's existing effect on authenticated registry-macro sharing during builds
+is unchanged; it does not make local macros immutable or globally shared.
+The existing conservative rebuild after a build script reruns also remains in
+place for profiles containing local macros, even when the script's outputs match.
+
+Custom compiler execution, nonshared macros from non-path sources, and
+unsupported Cargo-generated paths such as `CARGO_BIN_EXE_*` still exclude the
+whole profile, regardless of this opt-in. Copied tests must not execute a donor
+worktree's binaries. Profiles prepared under an older snapshot policy must be
+rebuilt before they can seed a new worktree.
+
+Copies are independently writable. Supported filesystems can clone their data
+blocks; other filesystems copy the bytes. Seeding is a one-time operation and does
+not share later workspace compilations or collect abandoned worktrees.
 
 ## compile-time-deps
 
