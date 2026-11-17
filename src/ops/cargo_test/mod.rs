@@ -12,6 +12,9 @@ use std::ffi::OsString;
 use std::fmt::Write;
 use std::path::{Path, PathBuf};
 
+pub(crate) mod ready_test_process;
+pub(crate) mod ready_tests;
+
 pub struct TestOptions {
     pub compile_opts: ops::CompileOptions,
     pub no_run: bool,
@@ -65,7 +68,17 @@ impl UnitTestError {
 /// On error, the returned [`CliError`] will have the appropriate process exit
 /// code that Cargo should use.
 pub fn run_tests(ws: &Workspace<'_>, options: &TestOptions, test_args: &[&str]) -> CliResult {
-    let compilation = compile_tests(ws, options)?;
+    let ready = (!options.no_run
+        && !options.compile_opts.build_config.emit_json()
+        && !options.compile_opts.build_config.dry_run
+        && !options.compile_opts.build_config.unit_graph
+        && !options.compile_opts.build_config.compile_time_deps_only
+        && ws.gctx().cli_unstable().ohm_ready_tests())
+    .then(|| ready_tests::ReadyTestOptions {
+        args: test_args.iter().map(|arg| (*arg).to_owned()).collect(),
+        no_fail_fast: options.no_fail_fast,
+    });
+    let mut compilation = compile_tests(ws, options, ready)?;
 
     if options.no_run {
         if !options.compile_opts.build_config.emit_json() {
@@ -73,7 +86,28 @@ pub fn run_tests(ws: &Workspace<'_>, options: &TestOptions, test_args: &[&str]) 
         }
         return Ok(());
     }
-    let mut errors = run_unit_tests(ws, options, test_args, &compilation, TestKind::Test)?;
+    let mut errors = Vec::new();
+    if let Some(mut ready) = compilation.ready_tests.take() {
+        for (unit, result) in ready.finish()? {
+            compilation.tests.retain(|output| output.unit != unit);
+            record_test_result(
+                ws,
+                options,
+                test_args,
+                &unit,
+                TestKind::Test,
+                result,
+                &mut errors,
+            )?;
+        }
+    }
+    errors.extend(run_unit_tests(
+        ws,
+        options,
+        test_args,
+        &compilation,
+        TestKind::Test,
+    )?);
 
     let doctest_errors = run_doc_tests(ws, options, test_args, &compilation)?;
     errors.extend(doctest_errors);
@@ -85,7 +119,7 @@ pub fn run_tests(ws: &Workspace<'_>, options: &TestOptions, test_args: &[&str]) 
 /// On error, the returned [`CliError`] will have the appropriate process exit
 /// code that Cargo should use.
 pub fn run_benches(ws: &Workspace<'_>, options: &TestOptions, args: &[&str]) -> CliResult {
-    let compilation = compile_tests(ws, options)?;
+    let compilation = compile_tests(ws, options, None)?;
 
     if options.no_run {
         if !options.compile_opts.build_config.emit_json() {
@@ -101,8 +135,14 @@ pub fn run_benches(ws: &Workspace<'_>, options: &TestOptions, args: &[&str]) -> 
     no_fail_fast_err(ws, &options.compile_opts, &errors)
 }
 
-fn compile_tests<'a>(ws: &Workspace<'a>, options: &TestOptions) -> CargoResult<Compilation<'a>> {
-    let mut compilation = ops::compile(ws, &options.compile_opts)?;
+fn compile_tests<'a>(
+    ws: &Workspace<'a>,
+    options: &TestOptions,
+    ready: Option<ready_tests::ReadyTestOptions>,
+) -> CargoResult<Compilation<'a>> {
+    let mut compile_opts = options.compile_opts.clone();
+    compile_opts.build_config.ready_tests = ready;
+    let mut compilation = ops::compile(ws, &compile_opts)?;
     compilation.tests.sort_by_key(|u| u.unit.clone());
     Ok(compilation)
 }
@@ -150,20 +190,41 @@ fn run_unit_tests(
         gctx.shell()
             .verbose(|shell| shell.status("Running", &cmd))?;
 
-        if let Err(e) = cmd.exec() {
-            let code = fail_fast_code(&e);
-            let unit_err = UnitTestError {
-                unit: unit.clone(),
-                kind: test_kind,
-            };
-            report_test_error(ws, test_args, &options.compile_opts, &unit_err, e);
-            errors.push(unit_err);
-            if !options.no_fail_fast {
-                return Err(CliError::code(code));
-            }
-        }
+        record_test_result(
+            ws,
+            options,
+            test_args,
+            unit,
+            test_kind,
+            cmd.exec(),
+            &mut errors,
+        )?;
     }
     Ok(errors)
+}
+
+fn record_test_result(
+    ws: &Workspace<'_>,
+    options: &TestOptions,
+    test_args: &[&str],
+    unit: &Unit,
+    test_kind: TestKind,
+    result: CargoResult<()>,
+    errors: &mut Vec<UnitTestError>,
+) -> CliResult {
+    if let Err(error) = result {
+        let code = fail_fast_code(&error);
+        let unit_error = UnitTestError {
+            unit: unit.clone(),
+            kind: test_kind,
+        };
+        report_test_error(ws, test_args, &options.compile_opts, &unit_error, error);
+        errors.push(unit_error);
+        if !options.no_fail_fast {
+            return Err(CliError::code(code));
+        }
+    }
+    Ok(())
 }
 
 /// Runs doc tests.

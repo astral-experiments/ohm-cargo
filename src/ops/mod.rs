@@ -27,6 +27,10 @@ pub use self::cargo_report::sessions::report_sessions;
 pub use self::cargo_report::timings::ReportTimingsOptions;
 pub use self::cargo_report::timings::report_timings;
 pub use self::cargo_run::run;
+#[cfg(unix)]
+#[doc(hidden)]
+pub use self::cargo_test::ready_test_process::run_ready_test_relay;
+pub(crate) use self::cargo_test::ready_tests::{ReadyTestOptions, ReadyTests};
 pub use self::cargo_test::{TestOptions, run_benches, run_tests};
 pub use self::cargo_uninstall::uninstall;
 pub use self::cargo_update::UpdateOptions;
