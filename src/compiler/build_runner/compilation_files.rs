@@ -600,6 +600,9 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                     OhmNativeToolTrust::BuildScripts => format!("{rustc}-native-build-scripts"),
                     OhmNativeToolTrust::All => format!("{rustc}-native-all"),
                 };
+                // Older collectors must not mistake context-scoped artifacts for
+                // legacy data protected by their root-wide lock.
+                let rustc = format!("v2-{rustc}");
 
                 let isolated_clippy = trusted_context
                     && matches!(
@@ -656,7 +659,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
         } else {
             None
         };
-        let mut files = CompilationFiles {
+        CompilationFiles {
             ws: build_runner.bcx.ws,
             host,
             target,
@@ -665,10 +668,22 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
             shared_registry_cache,
             metas,
             outputs,
-        };
+        }
+    }
 
-        if !files.shared_cache_compiler_directories_are_safe(build_runner)
-            && let Some(cache) = files.shared_registry_cache.as_mut()
+    /// Protects the context before inspecting generated compiler search paths.
+    pub(super) fn prepare_shared_context(
+        &mut self,
+        build_runner: &mut BuildRunner<'a, 'gctx>,
+    ) -> CargoResult<()> {
+        if let Some(cache) = &self.shared_registry_cache {
+            build_runner
+                .compilation
+                .scope_consumer_lease(&cache.rustc)?;
+        }
+
+        if !self.shared_cache_compiler_directories_are_safe(build_runner)
+            && let Some(cache) = self.shared_registry_cache.as_mut()
         {
             cache.immutable_units.clear();
             cache.trusted_context = false;
@@ -676,7 +691,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
             cache.workspace = Layout::shared_workspace_namespace(build_runner.bcx.ws);
         }
 
-        files
+        Ok(())
     }
 
     /// Enrolls immutable ownership and starts context usage tracking, including cache hits.
