@@ -3059,3 +3059,26 @@ Caused by:
 "#]])
         .run();
 }
+
+#[cargo_test]
+fn worktree_seeds_respect_explicit_source_remaps() {
+    let p = project()
+        .file("src/location.rs", "file!()")
+        .file(
+            "src/main.rs",
+            r#"fn main() {
+                let path = include!(concat!(env!("CARGO_MANIFEST_DIR"), "/src/location.rs"));
+                print!("{}", path.replace('\\', "/"));
+            }"#,
+        )
+        .build();
+    p.cargo("run -Zohm-worktree-seeds=yes")
+        .masquerade_as_nightly_cargo(&["ohm-worktree-seeds"])
+        .env("RUSTC_BOOTSTRAP", "1")
+        .env(
+            "CARGO_ENCODED_RUSTFLAGS",
+            format!("--remap-path-prefix={}=/user-sources", p.root().display()),
+        )
+        .with_stdout_data(str!["/user-sources/src/location.rs"])
+        .run();
+}
