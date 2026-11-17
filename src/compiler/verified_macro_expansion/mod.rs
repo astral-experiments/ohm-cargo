@@ -1,5 +1,6 @@
 #[cfg(unix)]
 mod cache;
+pub(super) mod libcst;
 #[cfg(unix)]
 use std::str::FromStr;
 
