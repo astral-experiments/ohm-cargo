@@ -43,7 +43,9 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Install Rust
-        run: rustup toolchain install "$RUST_VERSION" --profile minimal --component clippy
+        run: |
+          rustup toolchain install "$RUST_VERSION" --profile minimal --component clippy
+          rustup toolchain install stable --profile minimal
       - name: Check lints
         run: cargo +"$RUST_VERSION" clippy --workspace --all-targets --no-deps -- -D warnings
 
@@ -71,6 +73,8 @@ jobs:
           # `target` component, for Git discovery and automatic shared-build admission.
           echo "CARGO_TARGET_DIR=$RUNNER_TEMP/cargo-tests" >> "$GITHUB_ENV"
           rustup toolchain install "$RUST_VERSION" --profile minimal --component rustfmt
+          # Two global-cache tests invoke Cargo through the stable rustup channel.
+          rustup toolchain install stable --profile minimal
           rustup target add --toolchain "$RUST_VERSION" "${{ matrix.other }}" wasm32-unknown-unknown
       - name: Install system dependencies
         if: runner.os == 'Linux'
