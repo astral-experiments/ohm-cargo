@@ -36,6 +36,18 @@ const RECHECK_MARKERS: [&str; 2] = [
 const RECHECK_PROOF_VERSION: &[u8; 4] = b"LNK2";
 const BUNDLED_ARCHIVE_GUARD: &str = "/dev/null/ohm-checked-bundled-archives-v1";
 
+// Only an admitted native registry build writes this prefix. Older Cargo
+// versions reject the record and replace it on their first ordinary compile.
+const REGISTRY_OBSERVER_INCREMENTAL: &[u8; 8] = b"OHM-INC1";
+
+pub(crate) fn was_registry_observer_incremental(path: &Path) -> bool {
+    use std::io::Read;
+    let mut prefix = [0; REGISTRY_OBSERVER_INCREMENTAL.len()];
+    paths::open_regular(path).is_ok_and(|mut file| {
+        file.read_exact(&mut prefix).is_ok() && &prefix == REGISTRY_OBSERVER_INCREMENTAL
+    })
+}
+
 fn is_recheck_marker(path: &Path) -> bool {
     RECHECK_MARKERS.iter().any(|name| path == Path::new(name))
 }
@@ -167,6 +179,9 @@ impl EncodedDepInfo {
     }
 
     fn parse_inputs(mut bytes: &[u8], include_registry: bool) -> Option<EncodedDepInfo> {
+        bytes = bytes
+            .strip_prefix(REGISTRY_OBSERVER_INCREMENTAL)
+            .unwrap_or(bytes);
         let record = bytes;
         let bytes = &mut bytes;
         read_magic_marker(bytes)?;
@@ -462,11 +477,44 @@ pub fn translate_dep_info(
     worktree_seed_namespace: Option<&Path>,
     checksum_freshness: bool,
 ) -> CargoResult<bool> {
+    translate_dep_info_with_observer(
+        rustc_dep_info,
+        cargo_dep_info,
+        rustc_cwd,
+        pkg_root,
+        build_root,
+        rustc_cmd,
+        allow_package,
+        retain_registry_inputs,
+        env_config,
+        worktree_seed_namespace,
+        checksum_freshness,
+        None,
+    )
+}
+
+pub(in crate::compiler) fn translate_dep_info_with_observer(
+    rustc_dep_info: &Path,
+    cargo_dep_info: &Path,
+    rustc_cwd: &Path,
+    pkg_root: &Path,
+    build_root: &Path,
+    rustc_cmd: &ProcessBuilder,
+    allow_package: bool,
+    retain_registry_inputs: bool,
+    env_config: &Arc<HashMap<String, OsString>>,
+    worktree_seed_namespace: Option<&Path>,
+    checksum_freshness: bool,
+    registry_observer: Option<&crate::compiler::RegistryObserver>,
+) -> CargoResult<bool> {
     let mut depinfo = parse_rustc_dep_info(rustc_dep_info)?;
     if depinfo.files.is_empty() {
         // A real zero-prerequisite rule is indistinguishable from a short write after the
         // target. Accept the compilation, but leave no reusable fingerprint for any reader.
-        paths::write(cargo_dep_info, [])?;
+        let prefix = registry_observer
+            .filter(|state| state.incremental)
+            .map_or(&[][..], |_| REGISTRY_OBSERVER_INCREMENTAL.as_slice());
+        paths::write(cargo_dep_info, prefix)?;
         return Ok(false);
     }
     if !depinfo.raw_checksum_paths {
@@ -681,7 +729,17 @@ pub fn translate_dep_info(
             None,
         ));
     }
-    paths::write(cargo_dep_info, on_disk_info.serialize()?)?;
+    let mut encoded = on_disk_info.serialize()?;
+    if let Some(state) = registry_observer {
+        if state.incremental {
+            encoded.splice(..0, REGISTRY_OBSERVER_INCREMENTAL.iter().copied());
+        }
+        if on_disk_info.observer.is_some() && !state.hint.is_file() {
+            // Losing an optional learning hint leaves the normal first build in place.
+            let _ = paths::write_atomic_no_follow(&state.hint, b"1\n");
+        }
+    }
+    paths::write(cargo_dep_info, encoded)?;
     Ok(depinfo.recheck_dependent_links)
 }
 
@@ -1362,6 +1420,59 @@ mod encoded_dep_info {
              src.rs:\n{escaped}:\n{BUNDLED_ARCHIVE_GUARD}:\n{RECHECK_DEPENDENT_LINKS}:\n\
              # checksum:{sum} file_len:1 {escaped}\n"
         )
+    }
+
+    #[test]
+    fn registry_observer_history_and_native_mode_are_independent() {
+        let temp = tempfile::tempdir().unwrap();
+        let root = temp.path();
+        let raw = root.join("reader.d");
+        let dep_info = root.join("dep-lib-reader");
+        let hint = root.join("observer-history");
+        let marker = raw.join("ohm-foreign-span-bytes");
+        let translate = |incremental| {
+            let mode = crate::compiler::RegistryObserver {
+                hint: hint.clone(),
+                incremental,
+            };
+            translate_dep_info_with_observer(
+                &raw,
+                &dep_info,
+                root,
+                root,
+                root,
+                &ProcessBuilder::new("rustc"),
+                false,
+                false,
+                &Arc::default(),
+                None,
+                true,
+                Some(&mode),
+            )
+            .unwrap();
+        };
+
+        std::fs::write(&raw, "reader.rlib: src.rs\n").unwrap();
+        translate(false);
+        assert!(!hint.exists());
+        assert!(!was_registry_observer_incremental(&dep_info));
+
+        let escaped = marker.display().to_string().replace(' ', "\\ ");
+        std::fs::write(&raw, format!("reader.rlib: src.rs {escaped}\n")).unwrap();
+        translate(false);
+        assert_eq!(std::fs::read(&hint).unwrap(), b"1\n");
+        assert!(!was_registry_observer_incremental(&dep_info));
+
+        translate(true);
+        assert!(was_registry_observer_incremental(&dep_info));
+        let read = parse_dep_info(root, root, &dep_info).unwrap().unwrap();
+        assert_eq!(read.foreign_span_marker, Some(marker));
+
+        // An ordinary writer replaces the mode along with its dep-info. It
+        // keeps the independently learned history for a future new rlib.
+        translate(false);
+        assert!(!was_registry_observer_incremental(&dep_info));
+        assert!(hint.is_file());
     }
 
     #[test]
