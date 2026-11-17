@@ -306,6 +306,17 @@ impl Layout {
         util::short_hash(&(version, workspace, target))
     }
 
+    /// Identifies ordinary opt-out intermediates in an external split build directory.
+    pub(crate) fn split_workspace_namespace(ws: &Workspace<'_>) -> Option<String> {
+        let build_root = ws.build_dir();
+        (ws.gctx().cli_unstable().ohm_defaults == Some(false)
+            && ws.target_dir() != build_root
+            && !ws
+                .canonical_build_path(build_root.as_path_unlocked())
+                .starts_with(ws.canonical_build_path(ws.root())))
+        .then(|| format!(".ohm-split-{}", Self::shared_workspace_namespace(ws)))
+    }
+
     /// Calculate the paths for build output, lock the build directory, and return as a Layout.
     ///
     /// This function will block if the directory is already locked.
@@ -326,12 +337,7 @@ impl Layout {
         // The ordinary split layout uses workspace-relative package identities.
         // An external directory needs a private location for each workspace's
         // artifacts, fingerprints, and persistent build-script outputs.
-        let split_namespace = (ws.gctx().cli_unstable().ohm_defaults == Some(false)
-            && root != build_root
-            && !ws
-                .canonical_build_path(build_root.as_path_unlocked())
-                .starts_with(ws.canonical_build_path(ws.root())))
-        .then(|| format!(".ohm-split-{}", Self::shared_workspace_namespace(ws)));
+        let split_namespace = Self::split_workspace_namespace(ws);
         let mut shared_root = ws
             .shared_registry_cache_enabled()
             .then(|| ws.configured_build_dir());
