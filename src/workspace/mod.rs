@@ -8,6 +8,7 @@ pub use self::package_id_spec::PackageIdSpecQuery;
 pub use self::registry::Registry;
 pub use self::source_id::SourceId;
 pub use self::summary::{FeatureMap, FeatureValue, Summary};
+pub(crate) use self::workspace::SharedCacheAncestor;
 pub use self::workspace::{
     MaybePackage, Workspace, WorkspaceConfig, WorkspaceRootConfig, find_workspace_root,
     find_workspace_root_with_membership_check, resolve_relative_path,

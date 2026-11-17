@@ -50,6 +50,15 @@ impl FileLock {
         self.f.as_ref().unwrap()
     }
 
+    /// Transfers a lock to close-only ownership so inherited descriptors retain it.
+    ///
+    /// An explicit unlock would release a Unix flock in every process sharing its open
+    /// file description. The caller must instead keep the file open until all users exit.
+    #[cfg(unix)]
+    pub(crate) fn into_file(mut self) -> File {
+        self.f.take().unwrap()
+    }
+
     /// Returns the underlying path that this lock points to.
     ///
     /// Note that special care must be taken to ensure that the path is not
