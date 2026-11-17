@@ -235,8 +235,9 @@ fn metabuild_shared_registry_cache_keeps_target_directories_private() {
         .run();
 
     let source_files = || {
-        walkdir::WalkDir::new(shared_build.join("tmp"))
+        [first_target.join("tmp"), second_target.join("tmp")]
             .into_iter()
+            .flat_map(walkdir::WalkDir::new)
             .filter_map(Result::ok)
             .map(|entry| entry.into_path())
             .filter(|path| {
@@ -263,6 +264,7 @@ fn metabuild_shared_registry_cache_keeps_target_directories_private() {
 
     let sources = source_files();
     assert_eq!(sources.len(), 2);
+    assert!(!shared_build.join("tmp").exists());
     let second_source = sources
         .into_iter()
         .find(|source| source != &first_source)
