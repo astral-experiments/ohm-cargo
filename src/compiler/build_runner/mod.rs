@@ -352,6 +352,10 @@ pub struct BuildRunner<'a, 'gctx> {
     pub build_explicit_deps: HashMap<Unit, BuildDeps>,
     /// Fingerprints used to detect if a unit is out-of-date.
     pub fingerprints: HashMap<Unit, Arc<Fingerprint>>,
+    /// Final scheduler results awaited by provisional integration-test compilations.
+    pub(crate) early_test_completions: HashMap<Unit, Arc<super::ohm_early_tests::Completion>>,
+    /// Use the same admission decision when preparing work and scheduling it.
+    pub(crate) early_test_dependencies: HashMap<Unit, Unit>,
     /// Cache of file mtimes to reduce filesystem hits.
     pub mtime_cache: HashMap<PathBuf, FileTime>,
     /// Cache of file checksums to reduce filesystem reads.
@@ -485,6 +489,8 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             compilation: Compilation::new(bcx)?,
             build_script_outputs: Arc::new(Mutex::new(BuildScriptOutputs::default())),
             fingerprints: HashMap::default(),
+            early_test_completions: HashMap::default(),
+            early_test_dependencies: HashMap::default(),
             mtime_cache: HashMap::default(),
             checksum_cache: HashMap::default(),
             compiled: HashSet::default(),
