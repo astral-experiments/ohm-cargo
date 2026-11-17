@@ -2114,6 +2114,7 @@ fn public_api_hash_wrapper() -> PathBuf {
                                         | "-Zpublic-api-hash=no"
                                         | "-Zcache-proc-macros"
                                         | "-Zcache-proc-macros=no"
+                                        | "-Zohm-early-metadata"
                                         | "-Zthreads=8"
                                 )
                             )
@@ -2246,6 +2247,7 @@ fn conditional_metadata_pipeline_wrapper() -> PathBuf {
                                     | "-Zpublic-api-hash=no"
                                     | "-Zcache-proc-macros"
                                     | "-Zcache-proc-macros=no"
+                                    | "-Zohm-early-metadata"
                             )
                         )
                     });
@@ -3943,6 +3945,7 @@ fn relink_only_wrapper() -> PathBuf {
                                 "-Zpublic-api-hash"
                                     | "-Zpublic-api-hash=no"
                                     | "-Zcache-proc-macros"
+                                    | "-Zohm-early-metadata"
                             )
                         ) {
                             index += 1;

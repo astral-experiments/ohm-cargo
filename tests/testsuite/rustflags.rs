@@ -37,6 +37,7 @@ fn ohm_defaults_wrapper() -> PathBuf {
                     arg.starts_with("-Zpublic-api-hash")
                         || arg.starts_with("-Zpublic_api_hash")
                         || arg.starts_with("-Zcache-proc-macros")
+                        || arg.starts_with("-Zohm-early-metadata")
                         || arg.starts_with("-Zohm-caller-local-cgus")
                         || arg.starts_with("-Zohm-stable-cgu-merging")
                         || arg.starts_with("-Zohm-incremental-mono-partitions")
@@ -102,6 +103,54 @@ fn ohm_defaults_wrapper() -> PathBuf {
         .masquerade_as_nightly_cargo(&["ohm-defaults"])
         .run();
     wrapper.bin("ohm-defaults-wrapper")
+}
+
+#[cargo_test]
+fn headstart_preserves_ohm_default_suppression() {
+    let wrapper = ohm_defaults_wrapper();
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "macros"
+                version = "0.1.0"
+                edition = "2024"
+                [lib]
+                proc-macro = true
+                [dependencies]
+                dep = { path = "dep" }
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "#[proc_macro] pub fn identity(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+                let _ = dep::value(); input
+            }",
+        )
+        .file("dep/Cargo.toml", &basic_manifest("dep", "0.1.0"))
+        .file("dep/src/lib.rs", "pub fn value() -> u32 { 1 }")
+        .build();
+    let log = p.root().join("ohm-defaults.log");
+    p.cargo("-Zohm-defaults=yes check")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("OHM_DEFAULTS_LOG", &log)
+        .env("RUSTFLAGS", "-Zthreads=1")
+        .run();
+
+    let invocations = fs::read_to_string(&log).unwrap();
+    let invocation = rustc_invocation(&invocations, "macros");
+    assert!(invocation.contains(&"-Zohm-early-metadata"));
+    assert_eq!(frontend_threads(&invocation), ["8", "1"]);
+    assert_eq!(
+        ohm_rustflags(&invocation),
+        [
+            "-Zpublic-api-hash",
+            "-Zcache-proc-macros",
+            "-Zpublic-api-hash=no",
+        ]
+    );
 }
 
 #[cargo_test]
@@ -486,6 +535,12 @@ fn ohm_defaults_apply_to_host_and_target_units() {
                 use std::process::{Command, exit};
 
                 fn main() {
+                    if let Ok(expected) = env::var("EXPECTED_INHERITED_HEADSTART") {
+                        assert_eq!(
+                            env::var("__CARGO_HEADSTART").as_deref(),
+                            Ok(expected.as_str())
+                        );
+                    }
                     if let Ok(expected) = env::var("EXPECTED_INHERITED_WORKTREE_SEEDS") {
                         assert_eq!(
                             env::var("__CARGO_OHM_WORKTREE_SEEDS").as_deref(),
@@ -510,6 +565,9 @@ fn ohm_defaults_apply_to_host_and_target_units() {
                         false
                     };
                     let mut cargo = Command::new(env::var_os("CARGO").expect("CARGO path"));
+                    if let Ok(value) = env::var("NESTED_HEADSTART") {
+                        cargo.arg(format!("-Zheadstart={value}"));
+                    }
                     if let Ok(value) = env::var("NESTED_WORKTREE_SEEDS") {
                         cargo.arg(format!("-Zohm-worktree-seeds={value}"));
                     }
@@ -560,6 +618,36 @@ fn ohm_defaults_apply_to_host_and_target_units() {
     assert!(!invocations.contains("public-api-hash"));
     assert!(!invocations.contains("cache-proc-macros"));
     assert!(frontend_threads(&rustc_invocation(&invocations, "foo")).is_empty());
+
+    for (defaults, inherited, nested_override, enabled) in [
+        ("yes", "no", None, false),
+        ("no", "yes", None, true),
+        ("yes", "no", Some("yes"), true),
+        ("no", "yes", Some("no"), false),
+    ] {
+        p.cargo("clean").run();
+        fs::write(&log, "").unwrap();
+        let mut invocation = p.cargo(&format!(
+            "-Zohm-defaults={defaults} -Zheadstart={inherited} reinvoke"
+        ));
+        invocation
+            .masquerade_as_nightly_cargo(&["ohm-defaults", "headstart"])
+            .env("PATH", &path)
+            .env("EXPECTED_INHERITED_HEADSTART", inherited)
+            .env("RUSTC_WRAPPER", &wrapper)
+            .env("OHM_DEFAULTS_LOG", &log);
+        if let Some(nested_override) = nested_override {
+            invocation.env("NESTED_HEADSTART", nested_override);
+        }
+        invocation.run();
+
+        let invocations = fs::read_to_string(&log).unwrap();
+        assert_eq!(
+            rustc_invocation(&invocations, "foo").contains(&"-Zohm-early-metadata"),
+            enabled,
+            "unexpected early metadata mode for inherited={inherited:?}, nested={nested_override:?}"
+        );
+    }
 
     for (defaults, inherited, nested_override, prepared) in [
         ("yes", "no", None, false),
@@ -785,11 +873,17 @@ fn ohm_parallel_frontend_flags_are_fingerprinted() {
     assert_eq!(
         rustflags,
         [
-            vec!["-Zpublic-api-hash", "-Zcache-proc-macros", "-Zthreads=8"],
             vec![
                 "-Zpublic-api-hash",
                 "-Zcache-proc-macros",
                 "-Zthreads=8",
+                "-Zohm-early-metadata",
+            ],
+            vec![
+                "-Zpublic-api-hash",
+                "-Zcache-proc-macros",
+                "-Zthreads=8",
+                "-Zohm-early-metadata",
                 "-Zthreads=1",
             ],
         ]

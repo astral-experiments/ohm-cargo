@@ -167,7 +167,7 @@ impl<'a, 'gctx> JobState<'a, 'gctx> {
         if let Some(dedupe) = self.output {
             writeln!(dedupe.gctx.shell().out(), "{}", stdout)?;
         } else {
-            self.messages.push_bounded(Message::Stdout(stdout));
+            self.messages.push_bounded(Message::Stdout(self.id, stdout));
         }
         Ok(())
     }
@@ -178,7 +178,7 @@ impl<'a, 'gctx> JobState<'a, 'gctx> {
             shell.print_ansi_stderr(stderr.as_bytes())?;
             shell.err().write_all(b"\n")?;
         } else {
-            self.messages.push_bounded(Message::Stderr(stderr));
+            self.messages.push_bounded(Message::Stderr(self.id, stderr));
         }
         Ok(())
     }
