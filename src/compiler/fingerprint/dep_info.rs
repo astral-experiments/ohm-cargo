@@ -770,6 +770,12 @@ fn ambiguous_legacy_checksum_path(path: &Path) -> bool {
     path.contains([' ', char::REPLACEMENT_CHARACTER])
 }
 
+/// Whether a lookup path can be represented in rustc's bundled-archive claim.
+fn bundled_archive_path_supported(path: &str) -> bool {
+    path.bytes()
+        .all(|b| b.is_ascii_alphanumeric() || b"/._-+ ".contains(&b))
+}
+
 /// Read the counted prelude before any Make rule or potentially multiline filename.
 /// An empty set indicates a malformed claim whose missing guard must be retained.
 fn take_bundled_archive_claim(contents: &mut &str) -> Option<HashSet<OsString>> {
@@ -792,9 +798,7 @@ fn take_bundled_archive_claim(contents: &mut &str) -> Option<HashSet<OsString>> 
         *contents = rest;
         if let Some(path) = line.strip_prefix(ARCHIVE)
             && Path::new(path).is_absolute()
-            && path
-                .bytes()
-                .all(|b| b.is_ascii_alphanumeric() || b"/._-+ ".contains(&b))
+            && bundled_archive_path_supported(path)
             && path != BUNDLED_ARCHIVE_GUARD
             && !is_recheck_marker(Path::new(path))
         {
@@ -1404,14 +1408,25 @@ pub enum InvalidChecksum {
 mod encoded_dep_info {
     use super::*;
 
+    fn depfile_target(raw: &Path) -> String {
+        raw.display()
+            .to_string()
+            .replace(' ', "\\ ")
+            .replace(':', "\\:")
+    }
+
+    #[cfg(unix)]
+    fn link_marker_tempdir() -> tempfile::TempDir {
+        crate::util::test_temp_parents()
+            .filter(|parent| parent.to_str().is_some_and(|p| !p.contains(['\n', '\r'])))
+            .find_map(|parent| tempfile::tempdir_in(parent).ok())
+            .expect("create a single-line depfile target")
+    }
+
     #[cfg(unix)]
     fn bundled_archive_depfile(raw: &Path, path: &str, sum: &str) -> String {
         let escaped = path.replace(' ', "\\ ");
-        let target = raw
-            .display()
-            .to_string()
-            .replace(' ', "\\ ")
-            .replace(':', "\\:");
+        let target = depfile_target(raw);
         format!(
             "# ohm-raw-checksum-paths-v2\n# ohm-bundled-archives-v1:1\n\
              # ohm-bundled-archive-v1:{path}\n\
@@ -1458,7 +1473,11 @@ mod encoded_dep_info {
         assert!(!was_registry_observer_incremental(&dep_info));
 
         let escaped = marker.display().to_string().replace(' ', "\\ ");
-        std::fs::write(&raw, format!("reader.rlib: src.rs {escaped}\n")).unwrap();
+        std::fs::write(
+            &raw,
+            format!("reader.rlib: src.rs {escaped}\n\nsrc.rs:\n{escaped}:\n"),
+        )
+        .unwrap();
         translate(false);
         assert_eq!(std::fs::read(&hint).unwrap(), b"1\n");
         assert!(!was_registry_observer_incremental(&dep_info));
@@ -1599,7 +1618,10 @@ mod encoded_dep_info {
     #[cfg(unix)]
     #[test]
     fn bundled_archive_proof_preserves_the_lookup_into_a_git_package() {
-        let tmp = tempfile::tempdir().unwrap();
+        let tmp = crate::util::test_temp_parents()
+            .filter(|parent| parent.to_str().is_some_and(bundled_archive_path_supported))
+            .find_map(|parent| tempfile::tempdir_in(parent).ok())
+            .expect("create a directory representable in a bundled-archive claim");
         let root = tmp.path().canonicalize().unwrap();
         let package = root.join("git-sources");
         let build = root.join("build");
@@ -1659,7 +1681,7 @@ mod encoded_dep_info {
     #[cfg(unix)]
     #[test]
     fn earlier_compiler_keeps_mutable_aliases_out_of_immutable_source_filtering() {
-        let tmp = tempfile::tempdir().unwrap();
+        let tmp = link_marker_tempdir();
         let root = tmp.path().canonicalize().unwrap();
         let pkg = root.join("package");
         let build = root.join("target");
@@ -1717,16 +1739,23 @@ mod encoded_dep_info {
     #[cfg(unix)]
     #[test]
     fn bundled_archive_proof_rejects_incomplete_or_ambiguous_input() {
-        let tmp = tempfile::tempdir().unwrap();
+        let tmp = link_marker_tempdir();
         let raw = tmp.path().join("crate.d");
         let path = "/input/lib.a";
         let sum = format!("sha256={}", "a".repeat(64));
         let valid = bundled_archive_depfile(&raw, path, &sum);
+        std::fs::write(&raw, &valid).unwrap();
+        assert!(
+            parse_rustc_dep_info(&raw)
+                .unwrap()
+                .bundled_archives
+                .contains(OsStr::new(path))
+        );
         let header = "# ohm-bundled-archives-v1:1\n";
         let claim = format!("# ohm-bundled-archive-v1:{path}\n");
         let check = format!("# checksum:{sum} file_len:1 {path}\n");
         let guards = format!("{BUNDLED_ARCHIVE_GUARD} {RECHECK_DEPENDENT_LINKS}");
-        let own = format!("{}: src.rs {path}", raw.display());
+        let own = format!("{}: src.rs {path}", depfile_target(&raw));
         let cases = [
             valid.replacen("# ohm-raw-checksum-paths-v2\n", "", 1),
             valid.replacen(header, "", 1),
@@ -1770,14 +1799,10 @@ mod encoded_dep_info {
     #[cfg(unix)]
     #[test]
     fn recheck_links_only_for_the_compiler_generated_marker() {
-        let temp = tempfile::tempdir().unwrap();
+        let temp = link_marker_tempdir();
         let root = temp.path().canonicalize().unwrap();
         let raw = root.join("ru: st.d");
-        let target = raw
-            .to_str()
-            .unwrap()
-            .replace(' ', "\\ ")
-            .replace(':', "\\:");
+        let target = depfile_target(&raw);
         let record = root.join("cargo.d");
         let marker = RECHECK_DEPENDENT_LINKS;
         let v2 = "/dev/null/ohm-recheck-dependent-links-v2";
@@ -1924,9 +1949,10 @@ mod encoded_dep_info {
             (absolute, Some(second.as_str()), false),
             (relative, Some(second.as_str()), false),
         ] {
+            let other = other.replace(' ', "\\ ");
             let mut data = format!(
-                "{}: {relative} {other}\n\noutput: {relative} {other}\n\n{relative}:\n{other}:\n\n",
-                raw.display()
+                "# ohm-raw-checksum-paths-v2\n{}: {relative} {other}\n\noutput: {relative} {other}\n\n{relative}:\n{other}:\n",
+                depfile_target(&raw)
             );
             data.push_str(&format!("# checksum:{first} file_len:1 {relative}\n"));
             if let Some(checksum) = checksum {
@@ -2126,12 +2152,17 @@ mod encoded_dep_info {
         std::fs::write(&literal, "literal").unwrap();
         let rustc_dep_info = root.join("rustc.d");
         let cargo_dep_info = root.join("cargo.d");
+        let input = literal.display().to_string().replace(' ', "\\ ");
+        let manifest_dir = package
+            .display()
+            .to_string()
+            .replace('\\', "\\\\")
+            .replace('\n', "\\n")
+            .replace('\r', "\\r");
         std::fs::write(
             &rustc_dep_info,
             format!(
-                "result: app/src/../../shared.txt {}\n# env-dep:CARGO_MANIFEST_DIR={}\n",
-                literal.display().to_string().replace(' ', "\\ "),
-                package.display()
+                "result: app/src/../../shared.txt {input}\n\napp/src/../../shared.txt:\n{input}:\n\n# env-dep:CARGO_MANIFEST_DIR={manifest_dir}\n"
             ),
         )
         .unwrap();
