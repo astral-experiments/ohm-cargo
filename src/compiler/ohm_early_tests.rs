@@ -27,6 +27,11 @@ impl Completion {
         CompletionGuard(Arc::clone(self))
     }
 
+    /// The scheduler has accepted or rejected the producer and all of its dependencies.
+    pub(crate) fn is_finished(&self) -> bool {
+        self.result.lock().unwrap().is_some()
+    }
+
     pub(crate) fn wait(&self) -> CargoResult<()> {
         let result = self
             .ready
@@ -250,10 +255,13 @@ mod tests {
     #[test]
     fn scheduler_drop_rejects_waiting_tests() {
         let completion = Arc::new(Completion::default());
+        assert!(!completion.is_finished());
         drop(completion.guard());
+        assert!(completion.is_finished());
         assert!(completion.wait().is_err());
         let completion = Arc::new(Completion::default());
         completion.guard().finish(true);
+        assert!(completion.is_finished());
         assert!(completion.wait().is_ok());
     }
 }
