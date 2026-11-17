@@ -221,8 +221,9 @@ fn unit_rustflags_without_ohm_defaults<'a>(
 }
 
 /// Detects either spelling of the compiler's path remapping option.
-fn has_remap_path_prefix(args: &[String]) -> bool {
+fn has_remap_path_prefix(args: &[impl AsRef<str>]) -> bool {
     args.iter()
+        .map(AsRef::as_ref)
         .any(|arg| arg == "--remap-path-prefix" || arg.starts_with("--remap-path-prefix="))
 }
 
@@ -271,7 +272,8 @@ fn unit_uses_ohm_worktree_seeds(build_runner: &BuildRunner<'_, '_>, unit: &Unit)
         && !unit.is_std
         && unit.pkg.package_id().source_id().is_path()
         // The seed's cwd mapping wins over explicit rules, including rules in response files.
-        && unit.profile.trim_paths.as_ref().is_none_or(|trim| trim.is_none())
+        && unit.profile.trim_paths.is_none()
+        && !has_remap_path_prefix(&unit.profile.rustflags)
         && !has_remap_path_prefix(flags)
         && !has_remap_path_prefix(extra_args)
         && !compiler_args.clone().any(|arg| arg.starts_with('@'))
