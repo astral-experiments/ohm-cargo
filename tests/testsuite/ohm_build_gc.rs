@@ -243,6 +243,22 @@ fn timestamp(time: SystemTime) -> i64 {
         .unwrap()
 }
 
+fn set_cache_usage(context: &str, target: &Path, object: &Path, used: SystemTime) {
+    let timestamp = timestamp(used);
+    let db = tracker();
+    db.execute(
+        "UPDATE contexts SET last_used = ?1 WHERE context = ?2",
+        rusqlite::params![timestamp, context],
+    )
+    .unwrap();
+    db.execute("UPDATE dependencies SET last_used = ?1", [timestamp])
+        .unwrap();
+    let marker = target.join(".ohm-target-last-use-v1");
+    for path in [marker.as_path(), object] {
+        fs::File::open(path).unwrap().set_modified(used).unwrap();
+    }
+}
+
 fn thinlto_object(context: &str) -> PathBuf {
     let directory = shared_root()
         .join(".ohm-thinlto-cache")
@@ -252,6 +268,117 @@ fn thinlto_object(context: &str) -> PathBuf {
     let object = directory.join("1".repeat(32) + ".cache");
     fs::write(&object, b"backend").unwrap();
     object
+}
+
+#[cargo_test]
+fn max_age_applies_to_targets_contexts_dependencies_and_thinlto() {
+    let project = donor();
+    cargo(&project, "build").run();
+    let target = project.root().join("target");
+    let object = thinlto_object(&context());
+    let expired = "v2-0000000000000001";
+    let mut record = context_record();
+    record["context"] = expired.into();
+    tracker()
+        .execute(
+            "INSERT INTO contexts (context, record, last_used) VALUES (?1, ?2, 0)",
+            rusqlite::params![expired, serde_json::to_vec(&record).unwrap()],
+        )
+        .unwrap();
+    let registry = shared_root().join("debug/build/registries").join(expired);
+    fs::create_dir(&registry).unwrap();
+    fs::write(registry.join("artifact"), b"old context").unwrap();
+    let paths = [
+        target.join("debug/foo"),
+        dependency_paths().pop().unwrap(),
+        object.clone(),
+        registry,
+    ];
+    for (minutes, max_age, dry_run, label) in [
+        (45, None, true, None),
+        (120, None, true, Some("1 hour")),
+        (120, Some("1hr"), true, Some("1 hour")),
+        (120, Some("1d"), false, None),
+        (45, Some("1hr 30min"), true, None),
+        (45, Some("0months 30min"), true, Some("30 minutes")),
+        (45, Some("30min"), false, Some("30 minutes")),
+    ] {
+        let used = SystemTime::now() - Duration::from_secs(minutes * 60);
+        set_cache_usage(expired, &target, &object, used);
+        let mut gc = gc_outside_workspace(if dry_run { "gc --dry-run" } else { "gc" });
+        if let Some(age) = max_age {
+            gc.args(&["--max-age", age]);
+        }
+        if let Some(label) = label {
+            for kind in [
+                "context",
+                "dependency",
+                "ThinLTO objects for context",
+                "workspace target",
+            ] {
+                gc.with_stderr_contains(format!("[..] {kind} [..] (unused for at least {label})"));
+            }
+        } else {
+            gc.with_stderr_contains("[..] 0 files");
+        }
+        gc.run();
+        assert!(
+            paths
+                .iter()
+                .all(|path| path.exists() == (dry_run || label.is_none()))
+        );
+    }
+}
+
+#[cargo_test]
+fn zero_max_age_preserves_future_usage_and_active_leases() {
+    let project = donor();
+    cargo(&project, "build").run();
+    let target = project.root().join("target");
+    let context = context();
+    let object = thinlto_object(&context);
+    let registry = shared_root().join("debug/build/registries").join(&context);
+    let future = SystemTime::now() + Duration::from_secs(300);
+    set_cache_usage(&context, &target, &object, future);
+    for (command, summary) in [
+        ("gc --dry-run --max-age 0s", "[SUMMARY]"),
+        ("gc --max-age 0s", "[REMOVED]"),
+    ] {
+        gc_outside_workspace(command)
+            .with_stderr_contains(format!("{summary} 0 files"))
+            .run();
+    }
+    let target_lock = fs::File::open(target.join(".ohm-build-lock")).unwrap();
+    target_lock.lock_shared().unwrap();
+    let context_lock =
+        fs::File::open(shared_root().join(format!(".ohm-gc-v1/context-{context}.lock"))).unwrap();
+    context_lock.lock_shared().unwrap();
+    set_cache_usage(&context, &target, &object, SystemTime::UNIX_EPOCH);
+    for command in ["gc --dry-run --max-age 0s", "gc --max-age 0s"] {
+        gc_outside_workspace(command)
+            .with_stderr_contains("[SKIPPING] context v2-[HASH] (in use)")
+            .with_stderr_contains("[SKIPPING] [..]/target (target directory is in use)")
+            .run();
+        assert!(registry.is_dir());
+        assert!(object.is_file());
+        assert!(target.join("debug/foo").is_file());
+    }
+    drop((target_lock, context_lock));
+    gc_outside_workspace("gc --max-age 0s").run();
+    assert!(!registry.exists());
+    assert!(!object.exists());
+    assert!(!target.join("debug/foo").exists());
+}
+
+#[cargo_test]
+fn max_age_rejects_invalid_or_calendar_durations() {
+    for age in ["", "never", "-1hr", "1month", "999999999999999999999999hr"] {
+        cargo_process("gc")
+            .arg(format!("--max-age={age}"))
+            .with_status(1)
+            .with_stderr_contains("[ERROR] invalid value [..] for '--max-age <DURATION>'[..]")
+            .run();
+    }
 }
 
 #[cargo_test]
@@ -590,7 +717,7 @@ fn legacy_registry_cleanup_preserves_current_dependencies_and_warm_builds() {
     let legacy = shared_root().join("debug/build/registries/0000000000000000");
     fs::create_dir(&legacy).unwrap();
     fs::write(legacy.join("artifact"), b"old dependency").unwrap();
-    collect(&project, false);
+    cargo(&project, "gc --max-age 1d").run();
     assert!(!legacy.exists());
     cargo(&project, "run -v")
         .with_stderr_does_not_contain("[COMPILING] [..]")
@@ -774,14 +901,16 @@ fn upgrades_retire_fresh_contexts_without_removing_installed_compilers() {
     let thinlto = thinlto_object(record["context"].as_str().unwrap());
     let private = local_private_artifacts(&project.root().join("target"));
     let compiler = current_ohm_rustc();
-    cargo(&project, "gc --dry-run")
+    cargo(&project, "gc --dry-run --max-age 1d")
         .env("RUSTC", &compiler)
         .with_stderr_contains(
             "Would remove context [..] (from ohm-1.98.1-1; current is ohm-1.98.1-2)",
         )
         .run();
     assert!(registry.is_dir());
-    cargo(&project, "gc").env("RUSTC", &compiler).run();
+    cargo(&project, "gc --max-age 1d")
+        .env("RUSTC", &compiler)
+        .run();
     assert!(!registry.exists());
     assert!(!thinlto.exists());
     assert!(private.is_dir());
