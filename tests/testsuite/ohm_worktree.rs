@@ -319,6 +319,67 @@ fn discovers_worktree_configuration_from_the_calling_member() {
     donor.cargo("check --offline").cwd(child.join("app")).run();
 }
 
+#[cargo_test]
+fn rediscovers_the_workspace_from_the_selected_manifest() {
+    let (donor, repo) = git::new_repo("donor", |p| {
+        p.no_manifest()
+            .file(
+                "app/Cargo.toml",
+                &cargo_test_support::basic_manifest("app", "1.0.0"),
+            )
+            .file("app/src/lib.rs", "")
+    });
+    let standalone = repo.head().unwrap().target().unwrap();
+    fs::write(
+        donor.root().join("Cargo.toml"),
+        "[workspace]\nmembers = [\"app\"]\n",
+    )
+    .unwrap();
+    git::add(&repo);
+    let grouped = git::commit(&repo);
+    let child = paths::root().join("standalone");
+    donor
+        .cargo("-Zohm-defaults worktree add --detach --manifest-path")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .arg(donor.root().join("app/Cargo.toml"))
+        .arg(&child)
+        .arg(standalone.to_string())
+        .with_stderr_contains("[..] [ROOT]/standalone/app/target")
+        .run();
+    donor
+        .cargo("-Zohm-defaults worktree add --detach")
+        .cwd(child.join("app"))
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .arg(paths::root().join("grouped"))
+        .arg(grouped.to_string())
+        .with_stderr_contains("[..] [ROOT]/grouped/target")
+        .run();
+}
+
+#[cfg(unix)]
+#[cargo_test]
+fn accepts_an_in_tree_alias_for_the_selected_workspace_root() {
+    let (donor, repo) = git::new_repo("donor", |p| {
+        p.no_manifest()
+            .file(
+                "app/Cargo.toml",
+                "[package]\nname='app'\nversion='1.0.0'\nworkspace='../workspace'\n",
+            )
+            .file("app/src/lib.rs", "")
+            .file("group/Cargo.toml", "[workspace]\nmembers=['../app']\n")
+    });
+    std::os::unix::fs::symlink("group", donor.root().join("workspace")).unwrap();
+    git::add(&repo);
+    git::commit(&repo);
+    donor
+        .cargo("-Zohm-defaults worktree add --detach --manifest-path")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .arg(donor.root().join("app/Cargo.toml"))
+        .arg(paths::root().join("child"))
+        .with_stderr_contains("[..] [ROOT]/child/group/target")
+        .run();
+}
+
 #[cfg(unix)]
 #[cargo_test]
 fn keeps_the_package_root_of_a_symlinked_manifest() {

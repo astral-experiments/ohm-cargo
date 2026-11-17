@@ -117,22 +117,33 @@ pub fn worktree_add(gctx: &GlobalContext, opts: &WorktreeOptions) -> CargoResult
     git.exec()?;
 
     let seed = || -> CargoResult<(Seeded, PathBuf)> {
+        // The selected package can belong to a different workspace in this checkout.
+        let package_dir = directory_in_worktree(
+            opts.manifest_path.parent().unwrap(),
+            &git_root,
+            &destination,
+        )?
+        .context("package manifest is outside the source repository")?;
+        let manifest = package_dir.join(opts.manifest_path.file_name().unwrap());
+        ensure_plain_descendants(&destination, &package_dir)?;
+        // Cargo discovers configuration from the invocation directory, including a workspace member.
+        let config_dir = match directory_in_worktree(gctx.cwd(), &git_root, &destination)? {
+            Some(directory) => directory,
+            None => directory_in_worktree(donor.root(), &git_root, &destination)?
+                .context("workspace manifest is outside the source repository")?,
+        };
+        let recipient_gctx = gctx.for_worktree(&config_dir)?;
+        let mut recipient = Workspace::new(&manifest, &recipient_gctx)?;
+        let workspace_dir = recipient.root().canonicalize()?;
+        ensure_plain_descendants(&destination, &workspace_dir)
+            .context("workspace root must be a directory inside the new worktree")?;
         // The selected commit may itself contain a target directory. Do not adopt it.
-        let workspace_dir = directory_in_worktree(donor.root(), &git_root, &destination)?
-            .context("workspace manifest is outside the source repository")?;
-        let manifest = workspace_dir.join(donor.root_manifest().file_name().unwrap());
-        ensure_plain_descendants(&destination, &workspace_dir)?;
         let target = target.unwrap_or_else(|| workspace_dir.join("target"));
         ensure!(
             donor.canonical_build_path(&target) == target,
             "destination target directory changed through a checked-out symlink"
         );
         ensure_absent(&target, "destination target directory")?;
-        // Cargo discovers configuration from the invocation directory, including a workspace member.
-        let config_dir =
-            directory_in_worktree(gctx.cwd(), &git_root, &destination)?.unwrap_or(workspace_dir);
-        let recipient_gctx = gctx.for_worktree(&config_dir)?;
-        let mut recipient = Workspace::new(&manifest, &recipient_gctx)?;
         recipient.set_target_dir(Filesystem::new(target.clone()));
         if [&donor, &recipient].into_iter().all(|ws| {
             ws.gctx().cli_unstable().ohm_worktree_seeds() && ws.shared_registry_cache_enabled()
