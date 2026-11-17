@@ -4,10 +4,17 @@ use std::fs;
 use std::io::{self, Write};
 use std::os::unix::process::{CommandExt, ExitStatusExt};
 use std::path::{Path, PathBuf};
-use std::process::{Command, ExitStatus, Output};
+#[cfg(target_os = "macos")]
+use std::process::Command;
+use std::process::{ExitStatus, Output};
 
-use super::{Entry, apple};
+#[cfg(target_os = "macos")]
+use super::Entry;
+#[cfg(target_os = "macos")]
+use super::apple;
+use super::declared;
 
+#[cfg(target_os = "macos")]
 fn cc(args: &[OsString]) -> Command {
     let mut command = Command::new("cc");
     command.args(args);
@@ -33,13 +40,26 @@ pub fn run_if_driver() -> Option<i32> {
     let mut args = env::args_os();
     let alias = PathBuf::from(args.next()?);
     if !alias.is_absolute()
-        || alias.file_name()? != OsStr::new("ohm-link-cc")
+        || !matches!(
+            alias.file_name()?.to_str()?,
+            "ohm-link-cc" | "ohm-declared-cc"
+        )
         || alias.parent()?.extension()? != "rlink-objects"
     {
         return None;
     }
     let args: Vec<_> = args.collect();
-    if let Some(result) = checked(&alias, &args) {
+    let configured = alias.file_name()? == "ohm-declared-cc";
+    let driver = if configured {
+        Some(env::var_os(declared::DRIVER).unwrap_or_default())
+    } else {
+        None
+    };
+    if driver.as_deref() == Some(OsStr::new("")) {
+        eprintln!("missing configured native linker");
+        return Some(1);
+    }
+    if let Some(result) = checked(&alias, &args, driver.as_deref()) {
         return Some(match result {
             Ok(output) => {
                 if io::stdout().lock().write_all(&output.stdout).is_err()
@@ -57,7 +77,8 @@ pub fn run_if_driver() -> Option<i32> {
         });
     }
 
-    let err = cc(&args).exec();
+    let mut command = declared::command(driver.as_deref().unwrap_or(OsStr::new("cc")), &args);
+    let err = command.exec();
     eprintln!("could not run cc: {err}");
     Some(if err.kind() == io::ErrorKind::NotFound {
         127
@@ -66,7 +87,7 @@ pub fn run_if_driver() -> Option<i32> {
     })
 }
 
-fn checked(alias: &Path, args: &[OsString]) -> Option<io::Result<Output>> {
+fn checked(alias: &Path, args: &[OsString], driver: Option<&OsStr>) -> Option<io::Result<Output>> {
     let objects = alias.parent()?;
     let mut outputs = args.windows(2).filter(|pair| pair[0] == "-o");
     let output = PathBuf::from(&outputs.next()?[1]);
@@ -95,6 +116,7 @@ fn checked(alias: &Path, args: &[OsString]) -> Option<io::Result<Output>> {
         return None;
     }
     codegen.sort();
+    #[cfg(target_os = "macos")]
     let codegen: Vec<_> = codegen.iter().map(PathBuf::as_path).collect();
     let mut symbols = args
         .iter()
@@ -112,40 +134,48 @@ fn checked(alias: &Path, args: &[OsString]) -> Option<io::Result<Output>> {
         return None;
     }
 
-    let cache = Entry::open(&objects.join("native-link")).ok()?;
-    let command = cc(args);
-    let prepare = || apple::prepare(&command, &output, tempdir, &codegen);
-    let plan = prepare();
-    let before = plan.as_ref().and_then(|p| p.inputs.snapshot().ok());
-    if let Some(snapshot) = before
-        && let Some(stderr) = cache.reuse(snapshot.action, &output).ok().flatten()
+    if let Some(driver) = driver {
+        return declared::checked(driver, args, &output, tempdir, objects);
+    }
+    #[cfg(not(target_os = "macos"))]
+    return None;
+    #[cfg(target_os = "macos")]
     {
-        return Some(Ok(Output {
-            status: ExitStatus::from_raw(0),
-            stdout: vec![],
-            stderr,
-        }));
-    }
-    cache.invalidate().ok()?;
-    let (plan, before) = (plan?, before?);
-    if !plan.authorizes_cold() {
-        return None;
-    }
-    let report_dir = tempfile::tempdir_in(tempdir).ok()?;
-    let report = report_dir.path().join("inputs");
-    let namespace = super::namespace::Guard::capture(&plan.inputs).ok()?;
-    let result = cc(args).args(plan.report_args(&report)).output();
+        let cache = Entry::open(&objects.join("native-link")).ok()?;
+        let command = cc(args);
+        let prepare = || apple::prepare(&command, &output, tempdir, &codegen);
+        let plan = prepare();
+        let before = plan.as_ref().and_then(|p| p.inputs.snapshot().ok());
+        if let Some(snapshot) = before
+            && let Some(stderr) = cache.reuse(snapshot.action, &output).ok().flatten()
+        {
+            return Some(Ok(Output {
+                status: ExitStatus::from_raw(0),
+                stdout: vec![],
+                stderr,
+            }));
+        }
+        cache.invalidate().ok()?;
+        let (plan, before) = (plan?, before?);
+        if !plan.authorizes_cold() {
+            return None;
+        }
+        let report_dir = tempfile::tempdir_in(tempdir).ok()?;
+        let report = report_dir.path().join("inputs");
+        let namespace = super::namespace::Guard::capture(&plan.inputs).ok()?;
+        let result = cc(args).args(plan.report_args(&report)).output();
 
-    if let Ok(child) = &result
-        && child.status.success()
-        && child.stdout.is_empty()
-        && plan.cacheable_stderr(&child.stderr)
-        && let Some(after) = prepare()
-        && after.reconciles(&report, &output)
-        && after.inputs.snapshot().ok() == Some(before)
-        && namespace.unchanged()
-    {
-        let _ = cache.publish(before.action, &output, &child.stderr);
+        if let Ok(child) = &result
+            && child.status.success()
+            && child.stdout.is_empty()
+            && plan.cacheable_stderr(&child.stderr)
+            && let Some(after) = prepare()
+            && after.reconciles(&report, &output)
+            && after.inputs.snapshot().ok() == Some(before)
+            && namespace.unchanged()
+        {
+            let _ = cache.publish(before.action, &output, &child.stderr);
+        }
+        Some(result)
     }
-    Some(result)
 }
