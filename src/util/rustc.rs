@@ -2,7 +2,7 @@ use crate::util::data_structures::HashMap;
 use std::env;
 use std::hash::{Hash, Hasher};
 use std::path::{Path, PathBuf};
-use std::sync::Mutex;
+use std::sync::{Mutex, OnceLock};
 
 use anyhow::Context as _;
 use cargo_util::{ProcessBuilder, ProcessError, paths};
@@ -33,6 +33,7 @@ pub struct Rustc {
     /// The rustc full commit hash, this comes from `verbose_version`.
     pub commit_hash: Option<String>,
     cache: Mutex<Cache>,
+    transparent_unused_externs: OnceLock<bool>,
 }
 
 impl Rustc {
@@ -114,6 +115,26 @@ impl Rustc {
             host,
             commit_hash,
             cache: Mutex::new(cache),
+            transparent_unused_externs: OnceLock::new(),
+        })
+    }
+
+    /// Whether this compiler preserves ordinary lints while reporting unused externs.
+    ///
+    /// Probe through the configured workspace wrappers and reuse the existing
+    /// compiler-information cache, which also remembers unsupported probes.
+    pub fn supports_transparent_unused_externs(&self, gctx: &GlobalContext) -> bool {
+        *self.transparent_unused_externs.get_or_init(|| {
+            let mut process = self.workspace_process();
+            if let Err(error) = apply_env_config(gctx, &mut process) {
+                debug!("unable to configure unused-extern capability probe: {error}");
+                return false;
+            }
+            process
+                .arg("--error-format=json")
+                .arg("--json=unused-externs-transparent")
+                .arg("--print=sysroot");
+            self.cached_output(&process, 0).is_ok()
         })
     }
 
