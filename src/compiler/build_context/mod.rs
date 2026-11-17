@@ -89,6 +89,9 @@ pub struct BuildContext<'a, 'gctx> {
     /// Exact registry packages authenticated for execution inside an audited procedural macro.
     pub audited_proc_macro_packages: HashSet<PackageId>,
 
+    /// Canonical registry packages authenticated for permissive native-tool execution.
+    pub authenticated_native_tool_packages: HashSet<PackageId>,
+
     /// A map from unit to index.
     pub unit_to_index: HashMap<Unit, UnitIndex>,
 
@@ -112,6 +115,7 @@ impl<'a, 'gctx> BuildContext<'a, 'gctx> {
         roots: Vec<Unit>,
         unit_graph: UnitGraph,
         audited_proc_macro_packages: HashSet<PackageId>,
+        authenticated_native_tool_packages: HashSet<PackageId>,
         unit_to_index: HashMap<Unit, UnitIndex>,
         scrape_units: Vec<Unit>,
     ) -> CargoResult<BuildContext<'a, 'gctx>> {
@@ -135,6 +139,7 @@ impl<'a, 'gctx> BuildContext<'a, 'gctx> {
             roots,
             unit_graph,
             audited_proc_macro_packages,
+            authenticated_native_tool_packages,
             unit_to_index,
             scrape_units,
             all_kinds,
