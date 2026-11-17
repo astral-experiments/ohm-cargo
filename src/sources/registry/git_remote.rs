@@ -113,6 +113,7 @@ impl<'gctx> GitRegistry<'gctx> {
                 .gctx
                 .assert_package_cache_locked(CacheLockMode::DownloadExclusive, &self.index_path);
 
+            crate::util::ensure_git_initialized();
             self.repo.replace(Some(match git2::Repository::open(&path) {
                 Ok(repo) => repo,
                 Err(_) => {
