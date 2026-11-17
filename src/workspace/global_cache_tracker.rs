@@ -145,7 +145,7 @@ const GIT_CO_TABLE: &str = "git_checkout";
 /// As an optimization timestamps are not updated unless they are older than
 /// the given number of seconds. This helps reduce the amount of disk I/O when
 /// running cargo multiple times within a short window.
-const UPDATE_RESOLUTION: u64 = 60 * 5;
+pub(crate) const UPDATE_RESOLUTION: u64 = 60 * 5;
 
 /// Type for timestamps as stored in the database.
 ///
