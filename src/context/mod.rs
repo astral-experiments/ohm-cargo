@@ -1244,6 +1244,13 @@ impl GlobalContext {
                     _ => {}
                 }
             }
+            if let Ok(value) = self.get_env(crate::CARGO_INHERITED_OHM_WORKTREE_SEEDS_ENV) {
+                match value {
+                    "yes" => self.unstable_flags.ohm_worktree_seeds = Some(true),
+                    "no" => self.unstable_flags.ohm_worktree_seeds = Some(false),
+                    _ => {}
+                }
+            }
             if let Ok(value) = self.get_env(crate::CARGO_INHERITED_RELINK_ONLY_ENV) {
                 match value {
                     "yes" => self.unstable_flags.relink_only = Some(true),

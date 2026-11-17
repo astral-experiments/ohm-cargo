@@ -163,6 +163,10 @@ pub const CARGO_ENV: &str = "CARGO";
 #[doc(hidden)]
 pub const CARGO_INHERITED_OHM_DEFAULTS_ENV: &str = "__CARGO_OHM_DEFAULTS";
 
+/// Carries an explicit worktree-seeding override through external Cargo subcommands.
+#[doc(hidden)]
+pub const CARGO_INHERITED_OHM_WORKTREE_SEEDS_ENV: &str = "__CARGO_OHM_WORKTREE_SEEDS";
+
 /// Carries an explicit relink-only override through external Cargo subcommands.
 #[doc(hidden)]
 pub const CARGO_INHERITED_RELINK_ONLY_ENV: &str = "__CARGO_RELINK_ONLY";

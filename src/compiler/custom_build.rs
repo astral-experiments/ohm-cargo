@@ -1572,7 +1572,7 @@ pub fn build_map(build_runner: &mut BuildRunner<'_, '_>) -> CargoResult<()> {
 ///
 /// Also returns the directory containing the output, typically used later in
 /// processing.
-fn prev_build_output(
+pub(super) fn prev_build_output(
     build_runner: &mut BuildRunner<'_, '_>,
     unit: &Unit,
 ) -> (Option<BuildOutput>, PathBuf) {
