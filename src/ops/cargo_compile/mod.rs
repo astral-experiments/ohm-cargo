@@ -139,7 +139,7 @@ impl CompileOptions {
 /// This uses the [`DefaultExecutor`]. To use a custom [`Executor`], see [`compile_with_exec`].
 pub fn compile<'a>(ws: &Workspace<'a>, options: &CompileOptions) -> CargoResult<Compilation<'a>> {
     let exec: Arc<dyn Executor> = Arc::new(DefaultExecutor);
-    compile_with_exec(ws, options, &exec)
+    compile_with_exec_inner(ws, options, &exec, true)
 }
 
 /// Like [`compile`] but allows specifying a custom [`Executor`]
@@ -151,11 +151,21 @@ pub fn compile_with_exec<'a>(
     options: &CompileOptions,
     exec: &Arc<dyn Executor>,
 ) -> CargoResult<Compilation<'a>> {
+    compile_with_exec_inner(ws, options, exec, false)
+}
+
+/// Only an internally created `DefaultExecutor` leaves preparation tokens unused.
+fn compile_with_exec_inner<'a>(
+    ws: &Workspace<'a>,
+    options: &CompileOptions,
+    exec: &Arc<dyn Executor>,
+    reserve_checksum_slots: bool,
+) -> CargoResult<Compilation<'a>> {
     let parse_pass_output = crate::diagnostics::passes::emit_parse_diagnostics(
         ws,
         crate::diagnostics::rules::PARSE_PASS_RULES,
     )?;
-    let compilation = compile_ws(ws, options, exec)?;
+    let compilation = compile_ws(ws, options, exec, reserve_checksum_slots)?;
     if ws.gctx().warning_handling()? == WarningHandling::Deny
         && (compilation.lint_warning_count + parse_pass_output.lint_warning_count) > 0
     {
@@ -170,6 +180,7 @@ fn compile_ws<'a>(
     ws: &Workspace<'a>,
     options: &CompileOptions,
     exec: &Arc<dyn Executor>,
+    reserve_checksum_slots: bool,
 ) -> CargoResult<Compilation<'a>> {
     let interner = UnitInterner::new();
     let logger = BuildLogger::maybe_new(ws, &options.build_config)?;
@@ -215,7 +226,8 @@ fn compile_ws<'a>(
         )?;
         crate::workspace::gc::auto_gc(ordinary_bcx.gctx);
         if let Some(compilation) =
-            BuildRunner::new(&ordinary_bcx)?.compile_if_check_graph_is_reusable(exec)?
+            BuildRunner::new_with_checksum_reservations(&ordinary_bcx, reserve_checksum_slots)?
+                .compile_if_check_graph_is_reusable(exec)?
         {
             return Ok(compilation);
         }
@@ -230,7 +242,7 @@ fn compile_ws<'a>(
         return Compilation::new(&bcx);
     }
     crate::workspace::gc::auto_gc(bcx.gctx);
-    let build_runner = BuildRunner::new(&bcx)?;
+    let build_runner = BuildRunner::new_with_checksum_reservations(&bcx, reserve_checksum_slots)?;
     if options.build_config.dry_run {
         return build_runner.dry_run();
     }
@@ -261,8 +273,11 @@ fn compile_ws<'a>(
                     false,
                     &HashSet::default(),
                 )?;
-                if let Some(compilation) =
-                    BuildRunner::new(&ordinary_bcx)?.compile_if_check_graph_is_reusable(exec)?
+                if let Some(compilation) = BuildRunner::new_with_checksum_reservations(
+                    &ordinary_bcx,
+                    reserve_checksum_slots,
+                )?
+                .compile_if_check_graph_is_reusable(exec)?
                 {
                     record_check_graph_hint(check_graph_hint.as_deref());
                     return Ok(compilation);
@@ -278,7 +293,8 @@ fn compile_ws<'a>(
                 true,
                 &rejected_registry_packages,
             )?;
-            let fallback_runner = BuildRunner::new(&fallback_bcx)?;
+            let fallback_runner =
+                BuildRunner::new_with_checksum_reservations(&fallback_bcx, reserve_checksum_slots)?;
             ordinary_graph_selected = !fallback_runner.reuses_registry_builds();
             match fallback_runner.compile(exec, false) {
                 Err(error) if error.is::<RegistryReuseNeedsFallback>() => {
@@ -296,7 +312,8 @@ fn compile_ws<'a>(
                         &HashSet::default(),
                     )?;
                     ordinary_graph_selected = true;
-                    BuildRunner::new(&final_bcx)?.compile(exec, false)
+                    BuildRunner::new_with_checksum_reservations(&final_bcx, reserve_checksum_slots)?
+                        .compile(exec, false)
                 }
                 result => result,
             }
