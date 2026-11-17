@@ -138,6 +138,8 @@ pub struct Compilation<'gctx> {
     runners: HashMap<CompileKind, Option<(PathBuf, Vec<String>)>>,
     /// The linker to use for each host or target.
     linkers: HashMap<CompileKind, Option<PathBuf>>,
+    /// Registry build-script outputs may live outside the workspace target directory.
+    shared_registry_root: Option<PathBuf>,
 
     /// The total number of lint warnings emitted by the compilation.
     pub lint_warning_count: usize,
@@ -209,6 +211,11 @@ impl<'gctx> Compilation<'gctx> {
             primary_rustc_process,
             runners,
             linkers,
+            shared_registry_root: bcx
+                .gctx
+                .cli_unstable()
+                .ohm_shared_registry_cache
+                .then(|| bcx.ws.build_dir().into_path_unlocked()),
             lint_warning_count: 0,
         })
     }
@@ -384,6 +391,7 @@ impl<'gctx> Compilation<'gctx> {
                 search_path.extend(super::filter_dynamic_search_path(
                     self.native_dirs.iter(),
                     &self.root_output[&CompileKind::Host],
+                    self.shared_registry_root.as_deref(),
                 ));
             }
             if let Some(paths) = self.deps_output.get(&CompileKind::Host) {
@@ -394,6 +402,7 @@ impl<'gctx> Compilation<'gctx> {
                 search_path.extend(super::filter_dynamic_search_path(
                     self.native_dirs.iter(),
                     path,
+                    self.shared_registry_root.as_deref(),
                 ));
                 search_path.push(path.clone());
             }
