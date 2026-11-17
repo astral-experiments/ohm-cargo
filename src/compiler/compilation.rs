@@ -559,6 +559,14 @@ impl<'gctx> Compilation<'gctx> {
         cmd.cwd(pkg.root());
 
         apply_env_config(self.gctx, &mut cmd)?;
+        for key in [
+            super::clippy_driver_checksum::FDS_ENV,
+            super::clippy_driver_checksum::VERSION_ENV,
+        ] {
+            if cmd.get_env(key).is_some() {
+                cmd.env_remove(key);
+            }
+        }
 
         Ok(cmd)
     }
