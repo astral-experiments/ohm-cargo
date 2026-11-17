@@ -343,7 +343,7 @@ pub struct BuildRunner<'a, 'gctx> {
     /// Mostly static information about the build task.
     pub bcx: &'a BuildContext<'a, 'gctx>,
     /// Drops before Compilation's consumer lease, recording the end of cache use.
-    context_use: Option<crate::workspace::build_cache_gc::ContextUse>,
+    pub(super) context_use: Option<crate::workspace::build_cache_gc::ContextUse>,
     /// A large collection of information about the result of the entire compilation.
     pub compilation: Compilation<'gctx>,
     /// Output from build scripts, updated after each build script runs.
