@@ -104,6 +104,43 @@ pub fn exec(gctx: &mut GlobalContext, args: &ArgMatches) -> CliResult {
         compile_opts.filter = ops::CompileFilter::all_test_targets();
     }
 
+    // Focus only an explicitly selected, exact, built-in library test. The Ohm
+    // compiler's `-Ztest-harness-filter` keeps separate per-filter artifacts and
+    // may omit backend diagnostics for tests outside the focused harness.
+    if gctx.cli_unstable().ohm_focused_tests
+        && !no_run
+        && !doc
+        && compile_opts.target_rustc_args.is_none()
+        && compile_opts.build_config.requested_kinds.len() == 1
+        && test_name.is_some_and(|name| name.contains("::"))
+        && matches!(test_args.as_slice(), [_, "--exact"])
+        && matches!(
+            &compile_opts.filter,
+            ops::CompileFilter::Only {
+                all_targets: false,
+                lib: ops::LibRule::True,
+                bins: ops::FilterRule::Just(bins),
+                examples: ops::FilterRule::Just(examples),
+                tests: ops::FilterRule::Just(tests),
+                benches: ops::FilterRule::Just(benches),
+            } if bins.is_empty()
+                && examples.is_empty()
+                && tests.is_empty()
+                && benches.is_empty()
+        )
+        && matches!(&compile_opts.spec, ops::Packages::Packages(packages) if packages.len() == 1)
+        && compile_opts.spec.get_packages(&ws).is_ok_and(|packages| {
+            packages.len() == 1
+                && packages[0]
+                    .targets()
+                    .iter()
+                    .any(|target| target.is_lib() && target.harness())
+        })
+    {
+        compile_opts.target_rustc_args =
+            Some(vec![format!("-Ztest-harness-filter={}", test_args[0])]);
+    }
+
     let ops = ops::TestOptions {
         no_run,
         no_fail_fast: args.flag("no-fail-fast"),
