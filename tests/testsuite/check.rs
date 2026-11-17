@@ -727,8 +727,8 @@ fn ohm_preserves_fresh_checks_when_test_registry_features_change() {
         })
         .count();
     assert_eq!(
-        compile_spans, 2,
-        "both the speculative and selected graphs retain their compilation spans",
+        compile_spans, 1,
+        "an established check should prepare only its selected graph",
     );
 }
 

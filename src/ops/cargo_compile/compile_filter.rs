@@ -4,7 +4,7 @@ use crate::compiler::UserIntent;
 use crate::util::restricted_names::is_glob_pattern;
 use crate::workspace::{Target, TargetKind};
 
-#[derive(Debug, PartialEq, Eq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
 /// Indicates whether or not the library target gets included.
 pub enum LibRule {
     /// Include the library, fail if not present
@@ -15,7 +15,7 @@ pub enum LibRule {
     False,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Hash)]
 /// Indicates which Cargo targets will be selected to be built.
 pub enum FilterRule {
     /// All included.
@@ -33,7 +33,7 @@ pub enum FilterRule {
 ///
 /// [`generate_root_units`]: super::UnitGenerator::generate_root_units
 /// [`Packages`]: crate::ops::Packages
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Hash)]
 pub enum CompileFilter {
     /// The default set of Cargo targets.
     Default {
