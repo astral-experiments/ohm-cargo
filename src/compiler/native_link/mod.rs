@@ -17,6 +17,9 @@ use std::io::{self, Read, Write};
 use std::os::unix::fs::{MetadataExt, OpenOptionsExt};
 use std::path::{Path, PathBuf};
 
+#[cfg(target_os = "linux")]
+const MAX_DRIVER_PREFIX_ENTRIES: usize = 64;
+
 use blake3::{Hash, Hasher};
 
 #[derive(Default)]
@@ -139,12 +142,33 @@ impl Inputs {
             h.update(contents.as_bytes());
         }
         for p in &self.directories {
-            if !p.is_dir() {
+            let meta = fs::metadata(p)?;
+            if !meta.is_dir() {
                 return Err(invalid("missing search directory"));
             }
             h.update(b"D");
             field(&mut h, p.as_os_str().as_encoded_bytes());
             field(&mut h, p.canonicalize()?.as_os_str().as_encoded_bytes());
+            #[cfg(target_os = "linux")]
+            {
+                // A driver prefix must keep the same entries throughout the link.
+                h.update(&meta.dev().to_le_bytes());
+                h.update(&meta.ino().to_le_bytes());
+                h.update(&meta.ctime().to_le_bytes());
+                h.update(&meta.ctime_nsec().to_le_bytes());
+                let mut names = fs::read_dir(p)?
+                    .take(MAX_DRIVER_PREFIX_ENTRIES + 1)
+                    .map(|entry| entry.map(|entry| entry.file_name()))
+                    .collect::<io::Result<Vec<_>>>()?;
+                if names.len() > MAX_DRIVER_PREFIX_ENTRIES {
+                    return Err(invalid("unbounded driver prefix"));
+                }
+                names.sort_unstable();
+                h.update(&(names.len() as u64).to_le_bytes());
+                for name in names {
+                    field(&mut h, name.as_encoded_bytes());
+                }
+            }
         }
         for p in &self.missing {
             match fs::metadata(p) {
