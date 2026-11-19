@@ -687,7 +687,7 @@ mod tests {
     #[cfg(all(target_arch = "x86_64", target_env = "gnu"))]
     #[test]
     fn startup_objects_follow_the_drivers_current_prefix() {
-        let dir = tempfile::tempdir().unwrap();
+        let dir = crate::util::text_path_tempdir();
         let high = dir.path().join("high");
         let low = dir.path().join("low");
         fs::create_dir(&high).unwrap();

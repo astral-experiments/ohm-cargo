@@ -5079,7 +5079,7 @@ mod relink_cache_tests {
 
     #[test]
     fn incomplete_object_list_invalidates_relink_manifest() -> CargoResult<()> {
-        let dir = tempfile::tempdir()?;
+        let dir = crate::util::text_path_tempdir();
         let cache = RelinkCachePaths::new(dir.path().join("app"));
         fs::create_dir(&cache.objects)?;
         fs::write(&cache.rlink, b"recipe")?;
