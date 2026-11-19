@@ -88,7 +88,10 @@ fn workspace_resolve_fingerprint(
             .members()
             .map(|package| package.manifest_path().to_path_buf()),
     );
-    manifests.extend(previous.iter().filter_map(|package_id| {
+    let packages = previous
+        .iter()
+        .chain(previous.unused_patches().iter().copied());
+    manifests.extend(packages.filter_map(|package_id| {
         let path = package_id.source_id().local_path()?;
         Some(if path.is_file() {
             path
