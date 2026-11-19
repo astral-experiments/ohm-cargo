@@ -641,8 +641,11 @@ fn resolve_with_previous_plan<'gctx>(
     let patches = registry.patches().values().flat_map(|v| v.iter());
     resolved.register_used_patches(patches);
 
-    if register_patches && !resolved.unused_patches().is_empty() {
-        emit_warnings_of_unused_patches(ws, &resolved, registry)?;
+    // A workspace cache hit registers patches during the selected resolution.
+    // Patches used by other members still count as used across the workspace.
+    let patch_usage = workspace_fingerprint.and(previous).unwrap_or(&resolved);
+    if register_patches && !patch_usage.unused_patches().is_empty() {
+        emit_warnings_of_unused_patches(ws, patch_usage, registry)?;
     }
 
     if let Some(previous) = previous {
