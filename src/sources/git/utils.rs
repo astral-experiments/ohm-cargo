@@ -32,7 +32,8 @@ use std::time::{Duration, Instant};
 
 /// A file indicates that if present, `git reset` has been done and a repo
 /// checkout is ready to go. See [`GitCheckout::reset`] for why we need this.
-const CHECKOUT_READY_LOCK: &str = ".cargo-ok";
+pub(super) const CHECKOUT_READY_LOCK: &str = ".cargo-ok";
+pub(super) const MIN_ABBREV_LEN: usize = 7; // git/libgit2's default
 
 /// A remote repository. It gets cloned into a local [`GitDatabase`].
 #[derive(PartialEq, Clone, Debug)]
@@ -200,7 +201,6 @@ impl GitDatabase {
     /// Like [`git2::Object::short_id`]
     /// but ignores the user's `core.abbrev` git config.
     pub fn to_short_id(&self, rev: git2::Oid) -> CargoResult<String> {
-        const MIN_ABBREV_LEN: usize = 7; // this is git/libgit2's default
         let odb = self.repo.odb()?;
         let mut len = MIN_ABBREV_LEN;
         let mut hex = rev.to_string();
