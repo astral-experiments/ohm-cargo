@@ -71,7 +71,7 @@ pub(crate) fn lint_manifest(
         return Ok(());
     }
 
-    let Some(contents) = manifest.contents() else {
+    let Some(contents) = manifest.contents().filter(|text| !text.is_ascii()) else {
         return Ok(());
     };
 
