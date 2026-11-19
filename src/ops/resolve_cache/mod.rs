@@ -23,7 +23,30 @@ pub(super) fn cached_workspace_resolve_fingerprint(
     let cached = paths::read_regular_bounded(&cache_path(workspace, rustc), 64).ok()?;
     let fingerprint =
         workspace_resolve_fingerprint(workspace, previous, rustc, lockfile_contents).ok()?;
-    (cached.trim_ascii() == format!("{fingerprint:016x}").as_bytes()).then_some(fingerprint)
+    let expected = format!("{fingerprint:016x}");
+    if !cached_fingerprints(&cached).any(|entry| entry == expected.as_bytes()) {
+        return None;
+    }
+    // A checkout can replace Cargo.lock while we hold a shared lock on the
+    // old file. With multiple fingerprints, either snapshot could hit.
+    if cached.trim_ascii().contains(&b'\n') {
+        let path = workspace
+            .lock_root()
+            .as_path_unlocked()
+            .join(lockfile::LOCKFILE_NAME);
+        let current = paths::read_regular_bounded(&path, lockfile_contents.len() as u64).ok()?;
+        if current != lockfile_contents.as_bytes() {
+            return None;
+        }
+    }
+    Some(fingerprint)
+}
+
+fn cached_fingerprints(marker: &[u8]) -> impl Iterator<Item = &[u8]> {
+    marker
+        .trim_ascii()
+        .split(|byte| *byte == b'\n')
+        .filter(|entry| entry.len() == 16 && entry.iter().all(u8::is_ascii_hexdigit))
 }
 
 /// Records the inputs that produced a complete workspace resolution.
@@ -33,7 +56,7 @@ pub(super) fn mark_workspace_resolve_fresh(
     rustc: &Rustc,
     encoding: &str,
 ) -> CargoResult<()> {
-    lockfile::with_pkg_lockfile(workspace, |lockfile_contents, _path| {
+    lockfile::with_pkg_lockfile(workspace, |lockfile_contents, path| {
         // A concurrent writer may have changed the lockfile, including its preserved comments.
         if !lockfile_contents.lines().eq(encoding.lines())
             && !lockfile::lockfile_matches_resolve(lockfile_contents, resolve)
@@ -48,7 +71,19 @@ pub(super) fn mark_workspace_resolve_fresh(
             paths::create_dir_all_excluded_from_backups_atomic(parent)?;
         }
 
-        paths::write_atomic_no_follow(cache_path, format!("{fingerprint:016x}"))?;
+        // Keep one other successful resolution so switching branches can reuse
+        // the stamp when the original manifests and lockfile return.
+        let mut marker = format!("{fingerprint:016x}").into_bytes();
+        // Keep the single stamp for lockfiles that cannot be revalidated
+        // using the bounded, regular-file read above.
+        if paths::open_regular(path).is_ok()
+            && let Ok(cached) = paths::read_regular_bounded(&cache_path, 64)
+            && let Some(previous) = cached_fingerprints(&cached).find(|entry| *entry != marker)
+        {
+            marker.push(b'\n');
+            marker.extend_from_slice(previous);
+        }
+        paths::write_atomic_no_follow(cache_path, marker)?;
         Ok(())
     })?;
     Ok(())
