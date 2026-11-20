@@ -69,6 +69,9 @@ pub(crate) fn lint_workspace(
 
     let mut inherited_fields = IndexSet::default();
     for member in ws.members() {
+        if workspace_package_fields.is_subset(&inherited_fields) {
+            return Ok(());
+        }
         inherited_fields.extend(
             member
                 .manifest()

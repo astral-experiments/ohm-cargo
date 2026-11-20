@@ -107,8 +107,6 @@ pub(crate) fn lint_package(
         source,
     } = level;
 
-    let manifest_path = workspace_rel_path(ws, manifest_path);
-
     let manifest = pkg.manifest();
     let Some(package) = &manifest.normalized_toml().package else {
         return Ok(());
@@ -117,16 +115,19 @@ pub(crate) fn lint_package(
         return Ok(());
     }
 
+    let Some(dependencies) = manifest
+        .normalized_toml()
+        .build_dependencies()
+        .filter(|deps| !deps.is_empty())
+    else {
+        return Ok(());
+    };
+
+    let manifest_path = workspace_rel_path(ws, manifest_path);
     let document = manifest.document();
     let contents = manifest.contents();
 
-    for (i, dep_name) in manifest
-        .normalized_toml()
-        .build_dependencies()
-        .iter()
-        .flat_map(|m| m.keys())
-        .enumerate()
-    {
+    for (i, dep_name) in dependencies.keys().enumerate() {
         let level = lint_level.to_diagnostic_level();
         let emitted_source = LINT.emitted_source(lint_level, source);
 
