@@ -440,7 +440,8 @@ fn resolve_with_registry<'gctx>(
         if !dry_run {
             let (changed, contents) =
                 ops::lockfile::write_pkg_lockfile_with_encoding(ws, &mut resolve)?;
-            encoding = retain_lockfile_encoding.then_some(contents);
+            encoding = (retain_lockfile_encoding && !registry.has_local_registry_or_directory())
+                .then_some(contents);
             changed
         } else {
             true

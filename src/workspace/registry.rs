@@ -21,7 +21,7 @@ use crate::util::VersionReqMatchMode;
 use crate::util::errors::CargoResult;
 use crate::util::interning::InternedString;
 use crate::util::{CanonicalUrl, GlobalContext};
-use crate::workspace::{Dependency, PackageId, PackageSet, Patch, SourceId, Summary};
+use crate::workspace::{Dependency, PackageId, PackageSet, Patch, SourceId, SourceKind, Summary};
 use anyhow::Context as _;
 use cargo_util_terminal::report::Level;
 use futures::stream::FuturesUnordered;
@@ -211,6 +211,16 @@ impl<'gctx> PackageRegistry<'gctx> {
     pub fn get(self, package_ids: &[PackageId]) -> CargoResult<PackageSet<'gctx>> {
         trace!("getting packages; sources={}", self.sources.borrow().len());
         PackageSet::new(package_ids, self.sources.into_inner(), self.gctx)
+    }
+
+    /// Whether resolution consulted local source metadata outside the workspace fingerprint.
+    pub(crate) fn has_local_registry_or_directory(&self) -> bool {
+        self.sources.borrow().iter().any(|(_, source)| {
+            matches!(
+                source.replaced_source_id().kind(),
+                SourceKind::Directory | SourceKind::LocalRegistry
+            )
+        })
     }
 
     /// Ensures the [`Source`] of the given [`SourceId`] is loaded.

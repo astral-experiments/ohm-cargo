@@ -3710,6 +3710,34 @@ fn workspace_resolve_cache_invalidates_unselected_workspace_member() {
 }
 
 #[cargo_test]
+fn workspace_resolve_cache_checks_vendored_optional_dependencies() {
+    Package::new("optional", "1.0.0").publish();
+    let project = project()
+        .file(
+            "Cargo.toml",
+            &format!(
+                "{}\n[dependencies]\noptional = {{ version = '1', optional = true }}",
+                basic_manifest("app", "0.1.0")
+            ),
+        )
+        .file("src/lib.rs", "")
+        .build();
+    project.cargo("vendor --respect-source-config").run();
+    project.change_file(
+        ".cargo/config.toml",
+        "[source.crates-io]\nreplace-with = 'vendor'\n[source.vendor]\ndirectory = 'vendor'",
+    );
+
+    let check = || workspace_resolve_cache_command(&project, "check --locked");
+    check().run();
+    fs::remove_dir_all(project.root().join("vendor/optional")).unwrap();
+    check()
+        .with_status(101)
+        .with_stderr_contains("[..]no matching package named `optional` found[..]")
+        .run();
+}
+
+#[cargo_test]
 fn workspace_resolve_cache_invalidates_external_path_dependency() {
     let project = workspace_resolve_cache_project();
 
