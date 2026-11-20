@@ -1209,16 +1209,9 @@ fn unused_integration_self_dependency(
     implicit_library_dependency(build_runner, unit)
 }
 
-/// Finds the implicit library when no other dependency can link it transitively.
-/// Cargo permits development-dependency cycles for tests.
-fn implicit_library_dependency(
-    build_runner: &BuildRunner<'_, '_>,
-    unit: &Unit,
-) -> Option<(UnitIndex, InternedString)> {
-    let check = unit.mode == CompileMode::Check { test: true }
-        && build_runner.bcx.gctx.cli_unstable().ohm_early_tests();
-    if !build_runner.bcx.gctx.cli_unstable().ohm_defaults()
-        || (!matches!(unit.mode, CompileMode::Build | CompileMode::Test) && !check)
+/// External linkers and opaque arguments may use inputs absent from the report.
+fn cannot_use_extern_proof(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
+    !build_runner.bcx.gctx.cli_unstable().ohm_defaults()
         || build_runner.bcx.build_config.primary_unit_rustc.is_some()
         || matches!(unit.kind, CompileKind::Target(CompileTarget::Json { .. }))
         || build_runner.compilation.target_linker(unit.kind).is_some()
@@ -1227,6 +1220,18 @@ fn implicit_library_dependency(
             .rustc()
             .supports_transparent_unused_externs(build_runner.bcx.gctx)
         || has_opaque_integration_linker_flags(build_runner, unit)
+}
+
+/// Finds the implicit library when no other dependency can link it transitively.
+/// Cargo permits development-dependency cycles for tests.
+fn implicit_library_dependency(
+    build_runner: &BuildRunner<'_, '_>,
+    unit: &Unit,
+) -> Option<(UnitIndex, InternedString)> {
+    let check = unit.mode == CompileMode::Check { test: true }
+        && build_runner.bcx.gctx.cli_unstable().ohm_early_tests();
+    if (!matches!(unit.mode, CompileMode::Build | CompileMode::Test) && !check)
+        || cannot_use_extern_proof(build_runner, unit)
     {
         return None;
     }
@@ -1741,11 +1746,29 @@ fn rustc(
         // Build-script outputs are only authoritative after their jobs finish.
         // An unused Rust extern can still be consumed through native linking.
         let binary = binary.and_then(|mut binary| {
-            binary.start();
+            binary.start(fingerprint.as_deref()?)?;
             if let Some(scripts) = &build_scripts {
                 let outputs = build_script_outputs.lock().unwrap();
                 for (package, metadata) in &scripts.to_link {
                     let output = outputs.get(*metadata)?;
+                    if target.is_test()
+                        && (!output.linker_args.is_empty()
+                            || !output.library_links.is_empty()
+                            || output.env.iter().any(|(name, _)| {
+                                build_runner::is_sensitive_compiler_environment(name, cfg!(windows))
+                                    || matches!(
+                                        name.as_str(),
+                                        "GCC_EXEC_PREFIX"
+                                            | "COMPILER_PATH"
+                                            | "LIBRARY_PATH"
+                                            | "PATH"
+                                            | "LD_RUN_PATH"
+                                            | "CCC_OVERRIDE_OPTIONS"
+                                    )
+                            }))
+                    {
+                        return None;
+                    }
                     if !output.library_paths.is_empty() {
                         if !package.source_id().is_registry() {
                             return None;
@@ -1900,7 +1923,11 @@ fn rustc(
                         unit_name
                     );
                     if let Some((cache, inputs)) = independent_binary {
-                        tracing::info!(target: "cargo::compiler::ohm_independent_binary", "reusing binary with unused library");
+                        if target.is_test() {
+                            tracing::info!(target: "cargo::compiler::ohm_independent_binary", "reusing independent integration test");
+                        } else {
+                            tracing::info!(target: "cargo::compiler::ohm_independent_binary", "reusing binary with unused library");
+                        }
                         cache.refresh_executable(Some(inputs))?;
                     }
                     fp.set_build_state(BuildState::SkippedEarlyCutoff);

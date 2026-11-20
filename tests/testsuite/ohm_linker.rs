@@ -294,3 +294,167 @@ fn ohm_defaults_select_wild_and_allow_lld() {
     assert!(output.contains("foo "), "{output}");
     assert!(!output.contains("wild-ld"), "{output}");
 }
+
+#[cfg(all(
+    target_os = "linux",
+    target_arch = "x86_64",
+    target_env = "gnu",
+    feature = "ohm-defaults"
+))]
+#[cargo_test(requires = "cc")]
+fn independent_integration_test_revalidates_library_and_script_inputs() {
+    if !Path::new(&paths::sysroot())
+        .join("lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld/ld.bfd")
+        .is_file()
+    {
+        return;
+    }
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "app"
+                version = "0.1.0"
+                edition = "2024"
+
+                [dependencies]
+                api = { path = "api" }
+
+                [workspace]
+            "#,
+        )
+        .file("src/main.rs", "fn main() {}")
+        .file("api/Cargo.toml", &basic_manifest("api", "0.1.0"))
+        .file("api/src/lib.rs", "pub trait Answer {}")
+        .file("trigger", "a")
+        .file(
+            "build.rs",
+            r#"fn main() {
+                println!("cargo:rerun-if-changed=trigger");
+                let text = std::fs::read_to_string("trigger").unwrap();
+                println!("cargo:rustc-env=APP_MARKER={}", text.trim());
+            }"#,
+        )
+        .file(
+            "tests/cli.rs",
+            r#"#[test] fn cli() { let warning = 1; assert_eq!(env!("APP_MARKER"), "a"); }"#,
+        )
+        .build();
+    let test = || {
+        let mut cmd = p.cargo("-Zohm-defaults test --test cli");
+        cmd.masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env_remove("LIBRARY_PATH")
+            .env("CARGO_LOG", "cargo::compiler::ohm_independent_binary=info")
+            .env("CARGO_BUILD_BUILD_DIR", p.root().join("shared"));
+        cmd
+    };
+    let reused = "[..]reusing independent integration test[..]";
+    let has_impl = "pub trait Answer {} impl Answer for u8 {}";
+    test().run();
+    p.change_file("api/src/lib.rs", has_impl);
+    test()
+        .with_stderr_contains(reused)
+        .with_stderr_contains("[..]unused variable: `warning`[..]")
+        .run();
+    p.change_file("trigger", "a ");
+    test().with_stderr_contains(reused).run();
+    p.change_file("trigger", "b");
+    test()
+        .with_stderr_does_not_contain(reused)
+        .with_status(101)
+        .with_stdout_contains("[..]left: \"b\"[..]")
+        .run();
+    p.change_file(
+        "tests/cli.rs",
+        "#[test] fn cli() { fn require<T: api::Answer>() {} require::<u8>(); }",
+    );
+    test().with_stderr_does_not_contain(reused).run();
+    p.change_file("api/src/lib.rs", "pub trait Answer {}");
+    test()
+        .with_stderr_does_not_contain(reused)
+        .with_status(101)
+        .with_stderr_contains("[..]the trait bound [..] is not satisfied[..]")
+        .run();
+    p.change_file("tests/cli.rs", "#[test] fn cli() {}");
+    test().run();
+    p.change_file(
+        "build.rs",
+        r#"fn main() { println!("cargo:rustc-link-arg-tests=-lmissing_integration_lib"); }"#,
+    );
+    test()
+        .with_stderr_does_not_contain(reused)
+        .with_status(101)
+        .with_stderr_contains("[..]linking with [..] failed[..]")
+        .run();
+}
+
+#[cfg(all(
+    target_os = "linux",
+    target_arch = "x86_64",
+    target_env = "gnu",
+    feature = "ohm-defaults"
+))]
+#[cargo_test(requires = "cc")]
+fn independent_integration_test_rechecks_script_inputs_read_by_local_macro() {
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "app"
+                version = "0.1.0"
+                edition = "2024"
+
+                [dependencies]
+                api = { path = "api" }
+                probe = { path = "probe" }
+
+                [workspace]
+            "#,
+        )
+        .file("src/main.rs", "fn main() {}")
+        .file("api/Cargo.toml", &basic_manifest("api", "0.1.0"))
+        .file("api/src/lib.rs", "")
+        .file(
+            "probe/Cargo.toml",
+            r#"
+                [package]
+                name = "probe"
+                version = "0.1.0"
+                edition = "2024"
+
+                [lib]
+                proc-macro = true
+            "#,
+        )
+        .file(
+            "probe/src/lib.rs",
+            r#"#[proc_macro]
+            pub fn value(_: proc_macro::TokenStream) -> proc_macro::TokenStream {
+                std::fs::read_to_string("input").unwrap().parse().unwrap()
+            }"#,
+        )
+        .file("input", "1")
+        .file(
+            "build.rs",
+            r#"fn main() { println!("cargo:rerun-if-changed=input"); }"#,
+        )
+        .file(
+            "tests/cli.rs",
+            r#"#[test] fn cli() {
+                assert_eq!(probe::value!().to_string(), std::fs::read_to_string("input").unwrap());
+            }"#,
+        )
+        .build();
+    let test = || {
+        p.cargo("-Zohm-defaults test --test cli")
+            .masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env_remove("LIBRARY_PATH")
+            .env("CARGO_BUILD_BUILD_DIR", p.root().join("shared"))
+            .run();
+    };
+    test();
+    p.change_file("input", "22");
+    test();
+}

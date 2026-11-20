@@ -1,4 +1,4 @@
-//! An implicit package-library edge can dirty a binary that never used it.
+//! Unused libraries and build scripts with unchanged outputs can dirty an executable.
 //! Pair the compiler's usage report with the native linker's dependency file.
 use super::custom_build::BuildOutput;
 use super::fingerprint::{self, Fingerprint};
@@ -14,8 +14,9 @@ use std::path::{Path, PathBuf};
 use std::time::SystemTime;
 
 pub(super) struct IndependentBinary {
-    dependency: UnitIndex,
-    name: InternedString,
+    candidates: Vec<(UnitIndex, InternedString)>,
+    script: Option<UnitIndex>,
+    script_digest: Option<u64>,
     report: PathBuf,
     driver: PathBuf,
     dirs: BTreeSet<PathBuf>,
@@ -26,7 +27,7 @@ pub(super) struct IndependentBinary {
 
 impl IndependentBinary {
     /// Record the linker's own inputs for native workspace binaries built with
-    /// the bundled ELF linker. Only regular binaries can use this proof.
+    /// the bundled ELF linker.
     pub(super) fn new(
         runner: &BuildRunner<'_, '_>,
         unit: &Unit,
@@ -34,11 +35,11 @@ impl IndependentBinary {
         cache: &RelinkCachePaths,
     ) -> Option<Self> {
         if !cfg!(all(feature = "ohm-defaults", target_os = "linux"))
-            || !unit.target.is_bin()
-            || unit.mode != CompileMode::Build
+            || !((unit.target.is_bin() && unit.mode == CompileMode::Build)
+                || (unit.target.is_test() && unit.mode == CompileMode::Test))
             || unit.kind != CompileKind::Host
             || !runner.bcx.ws.is_member_id(unit.pkg.package_id())
-            || unit.pkg.has_custom_build()
+            || (unit.target.is_bin() && unit.pkg.has_custom_build())
             || runner.bcx.build_config.sbom
             || runner.bcx.build_config.future_incompat_report
             || runner.bcx.rustc().wrapper.is_some()
@@ -49,7 +50,40 @@ impl IndependentBinary {
         {
             return None;
         }
-        let (dependency, name) = super::implicit_library_dependency(runner, unit)?;
+        let mut script = None;
+        let candidates = if unit.target.is_test() {
+            // Packages with libraries already have scheduling and relink checks
+            // for the implicit library edge.
+            if unit.pkg.targets().iter().any(|target| target.is_lib())
+                || super::cannot_use_extern_proof(runner, unit)
+                || !macros_are_audited(runner)
+            {
+                return None;
+            }
+            let mut candidates = Vec::new();
+            for dep in runner.unit_deps(unit) {
+                let index = runner.bcx.unit_to_index[&dep.unit];
+                if dep.unit.mode.is_run_custom_build() && dep.unit.pkg == unit.pkg {
+                    script = Some(index);
+                }
+                if dep.unit.target.is_lib() && runner.bcx.ws.is_member_id(dep.unit.pkg.package_id())
+                {
+                    // All other externs count as used when checking transitive paths.
+                    let names = [dep.extern_crate_name].into_iter().collect();
+                    if super::unused_integration_workspace_dependencies(runner, unit, &names)
+                        .contains(&index)
+                    {
+                        candidates.push((index, dep.extern_crate_name));
+                    }
+                }
+            }
+            if candidates.is_empty() {
+                return None;
+            }
+            candidates
+        } else {
+            vec![super::implicit_library_dependency(runner, unit)?]
+        };
         let driver = system_cc(rustc)?;
         let report = cache.objects.join("link.d");
         let arg = format!("-Clink-arg=--dependency-file={}", report.to_str()?);
@@ -77,8 +111,9 @@ impl IndependentBinary {
             .filter_map(|dir| dir.canonicalize().ok())
             .collect();
         Some(Self {
-            dependency,
-            name,
+            candidates,
+            script,
+            script_digest: None,
             report,
             driver,
             dirs,
@@ -116,8 +151,14 @@ impl IndependentBinary {
             .then_some(())
     }
 
-    pub(super) fn start(&mut self) {
+    pub(super) fn start(&mut self, fp: &Fingerprint) -> Option<()> {
         self.started = SystemTime::now();
+        // Include the completed script's raw and parsed output and all generated
+        // files in both snapshots, even across intervening builds of other roots.
+        if let Some(index) = self.script {
+            self.script_digest = Some(fp.script_digest(index)?);
+        }
+        Some(())
     }
 
     /// Ordinary compilation removes the entire object directory first.
@@ -134,7 +175,7 @@ impl IndependentBinary {
         cache: &RelinkCachePaths,
         names: &BTreeSet<InternedString>,
     ) -> Option<u64> {
-        if !names.contains(&self.name) {
+        if !self.candidates.iter().any(|(_, name)| names.contains(name)) {
             return None;
         }
         self.snapshot(cache)
@@ -145,12 +186,15 @@ impl IndependentBinary {
         fp: &Fingerprint,
         cache: &RelinkCachePaths,
     ) -> Option<u64> {
-        if !fingerprint::only_rebuilt_dependency(fp, self.dependency) {
-            return None;
-        }
         let (names, previous) = cache.unused_proof()?;
         let previous = previous?;
-        if !names.contains(&self.name) || self.snapshot(cache)? != previous {
+        let only_unused = self.candidates.iter().any(|(index, name)| {
+            names.contains(name) && fingerprint::only_rebuilt_dependency(fp, *index)
+        });
+        let only_script = self
+            .script
+            .is_some_and(|index| fingerprint::only_rebuilt_dependency(fp, index));
+        if !(only_unused || only_script) || self.snapshot(cache)? != previous {
             return None;
         }
         Some(previous)
@@ -171,6 +215,9 @@ impl IndependentBinary {
         }
         let mut hash = std::hash::DefaultHasher::new();
         ("binary-link-v2", &bytes, &self.environment).hash(&mut hash);
+        if let Some(digest) = self.script_digest {
+            digest.hash(&mut hash);
+        }
         self.driver.hash(&mut hash);
         generation(&self.driver.metadata().ok()?, Some(self.started))?.hash(&mut hash);
         generation(&self.report.metadata().ok()?, None)?.hash(&mut hash);
@@ -227,6 +274,33 @@ impl IndependentBinary {
         }
         (symbols && saw_objects && remaining.is_empty()).then(|| hash.finish())
     }
+}
+
+/// A procedural macro can read a file that only a script tracks. A matching
+/// script result or unused-extern report cannot validate such a read. Check
+/// the runtime closure against Cargo's configured registry macro policy.
+fn macros_are_audited(runner: &BuildRunner<'_, '_>) -> bool {
+    let mut pending: Vec<_> = runner
+        .bcx
+        .unit_graph
+        .keys()
+        .filter(|unit| unit.target.proc_macro())
+        .collect();
+    let mut visited = super::HashSet::default();
+    while let Some(unit) = pending.pop() {
+        if !visited.insert(unit) {
+            continue;
+        }
+        if !runner
+            .bcx
+            .audited_proc_macro_packages
+            .contains(&unit.pkg.package_id())
+        {
+            return false;
+        }
+        pending.extend(runner.unit_deps(unit).iter().map(|dep| &dep.unit));
+    }
+    true
 }
 
 /// A custom cc shim may handle even standard driver arguments differently.

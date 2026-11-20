@@ -125,7 +125,7 @@ declared graph. This optimization is enabled by Ohm defaults; see the
 [reference](doc/book/src/reference/unstable.md#ohm-defer-dev-deps) for supported
 builds, native-input checks, and configuration options.
 
-## Reusing binaries with an unused package library
+## Reusing executables with an unused library
 
 Cargo makes a package's library available to each of its binaries. When
 only the library rebuilds and rustc reported it as unused, Ohm can keep the
@@ -136,6 +136,19 @@ built for integration tests.
 Packages with a build script and builds with a custom compiler wrapper or
 linker flags are excluded. Setting `LIBRARY_PATH`, `GCC_EXEC_PREFIX`
 or `COMPILER_PATH` also disables reuse.
+
+On the same platform, a binary-only package's integration test can use the
+same checks if rustc reported a direct workspace library as unused and the
+library rebuilt. Every other direct dependency must be fresh and its
+dependency graph must exclude that library. For packages with a build
+script, Ohm also checks Cargo's digest of the raw and parsed script output
+and generated files. When only the script ran again and its digest matches
+the one recorded at link time, the test can keep its executable. This
+requires a recorded unused library and excludes scripts with opaque native
+outputs. Procedural macros and their dependencies must satisfy Cargo's
+configured registry macro policy, since a macro can read inputs outside
+the script's output directory. The ordinary package binary and its unit
+tests build independently.
 
 Ohm checks the compiler inputs and the file identities and timestamps in
 the linker's dependency file. It also checks the environment used to locate

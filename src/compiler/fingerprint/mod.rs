@@ -1995,6 +1995,19 @@ impl LocalFingerprint {
 }
 
 impl Fingerprint {
+    /// Returns the validated result of this direct build script after it finished.
+    pub(super) fn script_digest(&self, index: UnitIndex) -> Option<u64> {
+        self.deps
+            .iter()
+            .find(|dep| dep.fingerprint.index == index)?
+            .fingerprint
+            .script_result
+            .lock()
+            .unwrap()
+            .as_ref()
+            .map(ScriptResult::dependency_hash)
+    }
+
     /// Rechecks files rustc read after prerequisites have had a chance to rewrite them.
     pub(super) fn dep_info_files_are_fresh(
         &self,
