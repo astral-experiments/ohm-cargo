@@ -4342,7 +4342,7 @@ awesome-four
 }
 
 #[cargo_test]
-fn fetch_repairs_locked_checkout_with_unsupported_extension() {
+fn vendor_repairs_locked_checkout_with_unsupported_extension() {
     let dep = git::new("dep", |project| {
         project
             .file("Cargo.toml", &basic_manifest("dep", "1.0.0"))
@@ -4375,7 +4375,7 @@ fn fetch_repairs_locked_checkout_with_unsupported_extension() {
     let source = checkout.join("src/lib.rs");
     fs::write(&source, "// stale").unwrap();
 
-    p.cargo("-Zohm-defaults fetch --locked --offline")
+    p.cargo("-Zohm-defaults vendor --locked --offline")
         .masquerade_as_nightly_cargo(&["ohm-defaults"])
         .run();
     assert_eq!(fs::read_to_string(source).unwrap(), "");
