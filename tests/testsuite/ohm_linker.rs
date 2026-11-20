@@ -388,3 +388,73 @@ fn independent_integration_test_revalidates_library_and_script_inputs() {
         .with_stderr_contains("[..]linking with [..] failed[..]")
         .run();
 }
+
+#[cfg(all(
+    target_os = "linux",
+    target_arch = "x86_64",
+    target_env = "gnu",
+    feature = "ohm-defaults"
+))]
+#[cargo_test(requires = "cc")]
+fn independent_integration_test_rechecks_script_inputs_read_by_local_macro() {
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "app"
+                version = "0.1.0"
+                edition = "2024"
+
+                [dependencies]
+                api = { path = "api" }
+                probe = { path = "probe" }
+
+                [workspace]
+            "#,
+        )
+        .file("src/main.rs", "fn main() {}")
+        .file("api/Cargo.toml", &basic_manifest("api", "0.1.0"))
+        .file("api/src/lib.rs", "")
+        .file(
+            "probe/Cargo.toml",
+            r#"
+                [package]
+                name = "probe"
+                version = "0.1.0"
+                edition = "2024"
+
+                [lib]
+                proc-macro = true
+            "#,
+        )
+        .file(
+            "probe/src/lib.rs",
+            r#"#[proc_macro]
+            pub fn value(_: proc_macro::TokenStream) -> proc_macro::TokenStream {
+                std::fs::read_to_string("input").unwrap().parse().unwrap()
+            }"#,
+        )
+        .file("input", "1")
+        .file(
+            "build.rs",
+            r#"fn main() { println!("cargo:rerun-if-changed=input"); }"#,
+        )
+        .file(
+            "tests/cli.rs",
+            r#"#[test] fn cli() {
+                assert_eq!(probe::value!().to_string(), std::fs::read_to_string("input").unwrap());
+            }"#,
+        )
+        .build();
+    let test = || {
+        p.cargo("-Zohm-defaults test --test cli")
+            .masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env_remove("LIBRARY_PATH")
+            .env("CARGO_BUILD_BUILD_DIR", p.root().join("shared"))
+            .run();
+    };
+    test();
+    p.change_file("input", "22");
+    test();
+}

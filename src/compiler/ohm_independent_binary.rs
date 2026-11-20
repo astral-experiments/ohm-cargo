@@ -56,6 +56,7 @@ impl IndependentBinary {
             // for the implicit library edge.
             if unit.pkg.targets().iter().any(|target| target.is_lib())
                 || super::cannot_use_extern_proof(runner, unit)
+                || !macros_are_audited(runner)
             {
                 return None;
             }
@@ -273,6 +274,33 @@ impl IndependentBinary {
         }
         (symbols && saw_objects && remaining.is_empty()).then(|| hash.finish())
     }
+}
+
+/// A procedural macro can read a file that only a script tracks. A matching
+/// script result or unused-extern report cannot validate such a read. Check
+/// the runtime closure against Cargo's configured registry macro policy.
+fn macros_are_audited(runner: &BuildRunner<'_, '_>) -> bool {
+    let mut pending: Vec<_> = runner
+        .bcx
+        .unit_graph
+        .keys()
+        .filter(|unit| unit.target.proc_macro())
+        .collect();
+    let mut visited = super::HashSet::default();
+    while let Some(unit) = pending.pop() {
+        if !visited.insert(unit) {
+            continue;
+        }
+        if !runner
+            .bcx
+            .audited_proc_macro_packages
+            .contains(&unit.pkg.package_id())
+        {
+            return false;
+        }
+        pending.extend(runner.unit_deps(unit).iter().map(|dep| &dep.unit));
+    }
+    true
 }
 
 /// A custom cc shim may handle even standard driver arguments differently.

@@ -145,7 +145,10 @@ script, Ohm also checks Cargo's digest of the raw and parsed script output
 and generated files. When only the script ran again and its digest matches
 the one recorded at link time, the test can keep its executable. This
 requires a recorded unused library and excludes scripts with opaque native
-outputs. The ordinary package binary and its unit tests build independently.
+outputs. Procedural macros and their dependencies must satisfy Cargo's
+configured registry macro policy, since a macro can read inputs outside
+the script's output directory. The ordinary package binary and its unit
+tests build independently.
 
 Ohm checks the compiler inputs and the file identities and timestamps in
 the linker's dependency file. It also checks the environment used to locate
