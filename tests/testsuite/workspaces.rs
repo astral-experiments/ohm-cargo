@@ -3044,9 +3044,23 @@ fn workspace_resolve_cache_command(
     command
 }
 
+/// Keep the signing key under trusted ancestors even if the target tree is group-writable.
+#[cfg(unix)]
+fn private_selection_home() -> tempfile::TempDir {
+    use std::os::unix::fs::{PermissionsExt as _, symlink};
+
+    let home = tempfile::Builder::new()
+        .permissions(fs::Permissions::from_mode(0o700))
+        .tempdir_in("/tmp")
+        .unwrap();
+    symlink(home.path(), paths::cargo_home()).unwrap();
+    home
+}
+
 #[cfg(unix)]
 #[cargo_test]
 fn selected_resolution_honors_locked_yanked_versions() {
+    let _home = private_selection_home();
     Package::new("old", "1.0.0").publish();
     let project = project()
         .file(
@@ -3077,6 +3091,7 @@ fn selected_resolution_honors_locked_yanked_versions() {
 #[cfg(unix)]
 #[cargo_test]
 fn selected_resolution_validates_features_and_damaged_cache() {
+    let _home = private_selection_home();
     Package::new("dependency", "1.0.0")
         .feature("fast", &[])
         .file("src/lib.rs", "#[cfg(feature = \"fast\")] pub fn fast() {}")
