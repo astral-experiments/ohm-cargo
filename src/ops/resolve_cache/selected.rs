@@ -353,7 +353,7 @@ fn selection_auth_key(_: &Path, _: &Path) -> Option<[u8; 32]> {
     None
 }
 
-fn selection_summary_hash(s: &Summary) -> u64 {
+pub(super) fn selection_summary_hash(s: &Summary) -> u64 {
     let mut hasher = StableHasher::new();
     (
         s.package_id(),

@@ -3613,6 +3613,51 @@ fn workspace_resolve_cache_invalidates_external_path_dependency() {
 }
 
 #[cargo_test]
+fn workspace_resolve_cache_invalidates_inherited_path_dependency_version() {
+    let project = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "app"
+                version = "0.1.0"
+                edition = "2024"
+
+                [dependencies]
+                dep = { path = "external/dep" }
+            "#,
+        )
+        .file("src/lib.rs", "pub use dep::*;")
+        .file(
+            "external/Cargo.toml",
+            "[workspace]\nmembers = ['dep']\npackage.version = '0.1.0'",
+        )
+        .file(
+            "external/dep/Cargo.toml",
+            "[package]\nname = 'dep'\nversion.workspace = true\nedition = '2024'",
+        )
+        .file("external/dep/src/lib.rs", "")
+        .build();
+
+    workspace_resolve_cache_command(&project, "check").run();
+    workspace_resolve_cache_command(&project, "check --locked")
+        .with_stderr_contains(WORKSPACE_RESOLVE_CACHE_HIT)
+        .run();
+
+    project.change_file(
+        "external/Cargo.toml",
+        "[workspace]\nmembers = ['dep']\npackage.version = '0.2.0'",
+    );
+
+    workspace_resolve_cache_command(&project, "check --locked")
+        .with_status(101)
+        .with_stderr_contains(
+            "[..]cannot update the lock file [..] because --locked was passed[..]",
+        )
+        .run();
+}
+
+#[cargo_test]
 fn workspace_resolve_cache_invalidates_configuration() {
     let project = workspace_resolve_cache_project();
 

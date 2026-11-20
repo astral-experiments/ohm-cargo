@@ -119,6 +119,11 @@ fn workspace_resolve_fingerprint(
             inputs.as_bytes().hash(&mut hasher);
         } else {
             let package = workspace.load(&manifest)?;
+            // External path dependencies may inherit resolver inputs from another
+            // workspace whose root manifest is absent from the lockfile.
+            if !workspace.is_member(&package) {
+                selected::selection_summary_hash(package.summary()).hash(&mut hasher);
+            }
             let Some(contents) = package.manifest().contents() else {
                 anyhow::bail!(
                     "package manifest `{}` has no in-memory contents",
