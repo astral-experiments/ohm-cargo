@@ -3277,6 +3277,64 @@ fn workspace_resolve_cache_survives_switching_workspace_wrappers() {
 }
 
 #[cargo_test]
+fn workspace_resolve_cache_reuses_both_branches() {
+    Package::new("external", "0.1.0").publish();
+    let project = workspace_resolve_cache_project();
+    let root = project.read_file("Cargo.toml");
+    project.change_file(
+        "Cargo.toml",
+        &format!("{root}\n[patch.crates-io]\nexternal = {{ path = \"external\" }}\n"),
+    );
+    project.change_file("selected/Cargo.toml", &basic_manifest("selected", "0.1.0"));
+    let manifest = "other/Cargo.toml";
+    let first = project.read_file(manifest);
+    let second = format!("{first}\n[dependencies]\nexternal = '0.1'\n");
+    let unused_patch = "[..]was not used in the crate graph[..]";
+    let check = || workspace_resolve_cache_command(&project, "check -p selected");
+    check().with_stderr_contains(unused_patch).run();
+    let first_lock = project.read_lockfile();
+    project.change_file(manifest, &second);
+    check()
+        .with_stderr_does_not_contain(WORKSPACE_RESOLVE_CACHE_HIT)
+        .with_stderr_does_not_contain(unused_patch)
+        .run();
+    let second_lock = project.read_lockfile();
+    assert_ne!(first_lock, second_lock);
+
+    project.change_file(manifest, &first);
+    project.change_file("Cargo.lock", &first_lock);
+    check()
+        .with_stderr_contains(WORKSPACE_RESOLVE_CACHE_HIT)
+        .with_stderr_contains(unused_patch)
+        .run();
+    project.change_file(manifest, &second);
+    project.change_file("Cargo.lock", &second_lock);
+    check()
+        .with_stderr_contains(WORKSPACE_RESOLVE_CACHE_HIT)
+        .with_stderr_does_not_contain(unused_patch)
+        .run();
+}
+
+#[cfg(unix)]
+#[cargo_test]
+fn workspace_resolve_cache_recovers_after_symlinking_lockfile() {
+    let project = workspace_resolve_cache_project();
+    let check = || workspace_resolve_cache_command(&project, "check -p selected");
+    check().run();
+    check().env("RUSTFLAGS", "--cfg=second").run();
+
+    let lockfile = project.root().join("Cargo.lock");
+    let target = project.root().join("shared.lock");
+    fs::rename(&lockfile, &target).unwrap();
+    std::os::unix::fs::symlink(target, &lockfile).unwrap();
+    check().run();
+    assert!(lockfile.is_symlink());
+    check()
+        .with_stderr_contains(WORKSPACE_RESOLVE_CACHE_HIT)
+        .run();
+}
+
+#[cargo_test]
 fn workspace_resolve_cache_applies_edited_profiles() {
     let manifest = format!(
         "{}\n[profile.dev]\ndebug-assertions = true\n",
