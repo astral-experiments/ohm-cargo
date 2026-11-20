@@ -426,6 +426,63 @@ fn unit_suppresses_default_public_api_hash(
         && fingerprint::unit_public_api_hash_override(build_runner, unit).is_none()
 }
 
+/// Only binary checks may reuse a result after a dependency's declaration locations move.
+/// Intermediates can reexport those locations in their own metadata.
+fn terminal_check_hash(runner: &BuildRunner<'_, '_>, unit: &Unit, check_messages: bool) -> bool {
+    if !runner.bcx.gctx.cli_unstable().ohm_defaults()
+        || !matches!(unit.mode, CompileMode::Check { test: false })
+        || !unit.target.is_lib()
+        || unit.target.proc_macro()
+        || unit.artifact.is_true()
+        || !unit.profile.incremental
+        || !runner.bcx.ws.is_member(&unit.pkg)
+        || runner.bcx.roots.contains(unit)
+        || fingerprint::unit_public_api_hash_override(runner, unit).is_some()
+    {
+        return false;
+    }
+
+    let mut found_consumer = false;
+    for (consumer, dependencies) in &runner.bcx.unit_graph {
+        if dependencies.iter().any(|dep| dep.unit == *unit) {
+            if !runner.is_terminal_check_unit(consumer)
+                || (check_messages && !has_no_diagnostics(runner, consumer))
+                || !consumer.target.is_bin()
+                || consumer.mode != unit.mode
+            {
+                return false;
+            }
+            found_consumer = true;
+        }
+    }
+    found_consumer
+        && runner
+            .bcx
+            .rustc()
+            .supports_metadata_hint(runner.bcx.gctx, "-Zohm-terminal-check-hash")
+}
+
+/// A moved declaration can change labels in a downstream diagnostic.
+fn has_no_diagnostics(runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
+    let path = runner.files().message_cache_path(unit);
+    if matches!(path.try_exists(), Ok(false)) {
+        return true;
+    }
+    let Ok(output) = paths::read_regular_bounded(&path, 1024 * 1024) else {
+        return false;
+    };
+    std::str::from_utf8(&output).is_ok_and(|lines| {
+        lines.lines().all(|line| {
+            serde_json::from_str::<serde_json::Value>(line).is_ok_and(|message| {
+                matches!(
+                    message["$message_type"].as_str(),
+                    Some("unused_extern" | "artifact")
+                )
+            })
+        })
+    })
+}
+
 /// Prefer whole-crate invalidation when every consumer previously ignored this library.
 ///
 /// This only selects a rustc encoding strategy. Consumers still receive the library
@@ -465,7 +522,7 @@ fn prefer_full_crate_hash(runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
         && runner
             .bcx
             .rustc()
-            .supports_full_crate_hash_hint(runner.bcx.gctx)
+            .supports_metadata_hint(runner.bcx.gctx, "-Zohm-prefer-full-crate-hash")
 }
 
 /// Shares compiler identity across ordinary debug checks and builds, including
@@ -2980,6 +3037,8 @@ fn prepare_rustc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
         }
         if unit_suppresses_default_public_api_hash(build_runner, unit) {
             base.arg("-Zpublic-api-hash=no");
+        } else if terminal_check_hash(build_runner, unit, true) {
+            base.arg("-Zohm-terminal-check-hash");
         } else if prefer_full_crate_hash(build_runner, unit) {
             base.arg("-Zohm-prefer-full-crate-hash");
         }

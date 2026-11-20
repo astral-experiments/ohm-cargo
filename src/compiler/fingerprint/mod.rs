@@ -1246,22 +1246,26 @@ pub fn prepare_target(
 
     let public_api_hash_path = loc.with_extension("public-api-hash");
     let old_public_api_hash = read_public_api_hash(&public_api_hash_path);
+    // A terminal hash covers the selected binaries. Other binaries may have
+    // cached diagnostics referring to positions in the old metadata. Keep
+    // the new mtime so those consumers go stale when selected again.
     let previous_metadata = (unit_uses_public_api_hash(build_runner, unit)
-        && has_exclusive_metadata_access)
-        .then(|| {
-            fingerprint
-                .outputs
-                .iter()
-                .find(|output| {
-                    output.extension().and_then(|extension| extension.to_str()) == Some("rmeta")
-                })
-                .and_then(|output| {
-                    paths::mtime(output)
-                        .ok()
-                        .map(|mtime| (output.clone(), mtime))
-                })
-        })
-        .flatten();
+        && has_exclusive_metadata_access
+        && !super::terminal_check_hash(build_runner, unit, false))
+    .then(|| {
+        fingerprint
+            .outputs
+            .iter()
+            .find(|output| {
+                output.extension().and_then(|extension| extension.to_str()) == Some("rmeta")
+            })
+            .and_then(|output| {
+                paths::mtime(output)
+                    .ok()
+                    .map(|mtime| (output.clone(), mtime))
+            })
+    })
+    .flatten();
 
     let check_output_unchanged =
         move |state: &super::JobState<'_, '_>,
@@ -2996,6 +3000,11 @@ fn calculate_normal(
     if unit_consumes_public_api_hash(build_runner, unit) {
         // Older generations could miss a changed link or retain diagnostics from a failed build.
         ("ohm-reduced-dependency-rebuild", 3_u8).hash(&mut config);
+    }
+    // The same producer may later be requested with an intermediate reader.
+    // Force a new artifact notification when the graph needs the exact key again.
+    if super::terminal_check_hash(build_runner, unit, false) {
+        ("ohm-terminal-declaration-hash", 2_u8).hash(&mut config);
     }
     if super::unit_suppresses_default_public_api_hash(build_runner, unit) {
         ("ohm-terminal-check-public-api-hash", 1_u8).hash(&mut config);
