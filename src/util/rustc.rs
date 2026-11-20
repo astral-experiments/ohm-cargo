@@ -232,6 +232,19 @@ impl Rustc {
         })
     }
 
+    /// Probe only after a library's consumers qualify for the hint.
+    pub fn supports_full_crate_hash_hint(&self, gctx: &GlobalContext) -> bool {
+        let mut process = self.workspace_process();
+        if let Err(error) = apply_env_config(gctx, &mut process) {
+            debug!("unable to configure metadata encoding probe: {error}");
+            return false;
+        }
+        process
+            .arg("-Zohm-prefer-full-crate-hash")
+            .arg("--print=sysroot");
+        self.cached_output(&process, 0).is_ok()
+    }
+
     /// Older compilers keep their normal backend when they lack the cache option.
     pub fn supports_ohm_thinlto_cache(&self, gctx: &GlobalContext) -> bool {
         *self.ohm_thinlto_cache.get_or_init(|| {

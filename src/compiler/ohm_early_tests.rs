@@ -189,13 +189,26 @@ impl Output {
     }
 
     pub(crate) fn proves_unused(&self, name: InternedString) -> bool {
-        !self.overflowed && proves_unused(&self.stderr, name)
+        !self.overflowed && proves_unused(self.stderr.iter().map(String::as_str), name)
     }
 }
 
-/// Require a consistent compiler notification from this invocation. Missing,
+/// Read the same notification from the cached diagnostics as a profitability hint.
+pub(super) fn previously_unused(
+    runner: &BuildRunner<'_, '_>,
+    unit: &Unit,
+    name: InternedString,
+) -> bool {
+    let cache = runner.files().message_cache_path(unit);
+    let Ok(messages) = paths::read_regular_bounded(&cache, 1024 * 1024) else {
+        return false;
+    };
+    std::str::from_utf8(&messages).is_ok_and(|lines| proves_unused(lines.lines(), name))
+}
+
+/// Require a consistent compiler notification. Missing,
 /// malformed, or conflicting records always take the ordinary compilation path.
-fn proves_unused(lines: &[String], name: InternedString) -> bool {
+fn proves_unused<'a>(lines: impl IntoIterator<Item = &'a str>, name: InternedString) -> bool {
     #[derive(serde::Deserialize, PartialEq)]
     struct UnusedExterns {
         unused_extern_names: std::collections::BTreeSet<InternedString>,
