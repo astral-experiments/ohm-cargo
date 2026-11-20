@@ -1252,20 +1252,20 @@ pub fn prepare_target(
     let previous_metadata = (unit_uses_public_api_hash(build_runner, unit)
         && has_exclusive_metadata_access
         && !super::terminal_check_hash(build_runner, unit, false))
-        .then(|| {
-            fingerprint
-                .outputs
-                .iter()
-                .find(|output| {
-                    output.extension().and_then(|extension| extension.to_str()) == Some("rmeta")
-                })
-                .and_then(|output| {
-                    paths::mtime(output)
-                        .ok()
-                        .map(|mtime| (output.clone(), mtime))
-                })
-        })
-        .flatten();
+    .then(|| {
+        fingerprint
+            .outputs
+            .iter()
+            .find(|output| {
+                output.extension().and_then(|extension| extension.to_str()) == Some("rmeta")
+            })
+            .and_then(|output| {
+                paths::mtime(output)
+                    .ok()
+                    .map(|mtime| (output.clone(), mtime))
+            })
+    })
+    .flatten();
 
     let check_output_unchanged =
         move |state: &super::JobState<'_, '_>,
