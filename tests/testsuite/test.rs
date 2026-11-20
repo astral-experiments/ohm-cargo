@@ -6082,6 +6082,78 @@ pub fn example() {}
 }
 
 #[cargo_test]
+fn cached_doctests_preserve_merged_example_identity() {
+    let p = project()
+        .file(
+            "Cargo.toml",
+            "[package]\nname = 'foo'\nversion = '0.0.1'\nedition = '2024'",
+        )
+        .file(
+            "src/lib.rs",
+            r#"
+#[macro_export]
+macro_rules! site {
+    ($ty:ty) => {{
+        let file = std::path::Path::new(file!()).file_name().unwrap();
+        let index = std::env::var("RUSTDOC_DOCTEST_RUN_NB_TEST").unwrap();
+        format!("{index} {} {:?}:{}:{}", std::any::type_name::<$ty>(), file, line!(), column!())
+    }};
+}
+/// ```
+///
+/// struct Marker;
+/// std::fs::write("site", foo::site!(Marker)).unwrap();
+/// ```
+pub fn zulu() {}
+
+/// ```ignore
+/// this is invalid Rust
+/// ```
+pub fn alpha() {}
+
+/// ```ignore
+/// panic!();
+/// ```
+pub fn beta() {}
+
+/// ```
+/// extern crate foo as alias;
+///
+/// fn main() { alias::alpha(); }
+/// ```
+pub fn middle() {}
+"#,
+        )
+        .build();
+    let run = |cached, bundled| {
+        let mut cmd = p.cargo("test --doc -v");
+        cmd.masquerade_as_nightly_cargo(&["ohm-cached-doctests"])
+            .env("CARGO_UNSTABLE_OHM_DEFAULTS", "false")
+            .env("RUSTC_BOOTSTRAP", "1");
+        if cached {
+            cmd.arg("-Zohm-cached-doctests");
+        }
+        if bundled {
+            cmd.with_stderr_does_not_contain("[RUNNING] [..]--test-run-directory[..]");
+        }
+        cmd.run();
+        let site = p.read_file("site");
+        std::fs::remove_file(p.root().join("site")).unwrap();
+        site
+    };
+    let expected = run(false, false);
+    for _ in 0..2 {
+        assert_eq!(run(true, true), expected);
+    }
+    let source = p.read_file("src/lib.rs").replace(
+        "pub fn zulu",
+        "#[doc(test(attr(allow(unused))))]\npub fn zulu",
+    );
+    p.change_file("src/lib.rs", &source);
+    assert_eq!(run(true, false), run(false, false));
+}
+
+#[cargo_test]
 fn cached_doctests_inherit_the_crate_name_at_runtime() {
     let p = project()
         .file(
