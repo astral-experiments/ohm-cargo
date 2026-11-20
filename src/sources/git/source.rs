@@ -328,8 +328,17 @@ impl<'gctx> GitSource<'gctx> {
             .git_db_path()
             .join(&self.ident)
             .into_path_unlocked();
-        let opts = gix::open::Options::isolated().bail_if_untrusted(true);
-        let db = gix::open_opts(&path, opts.clone()).ok()?;
+        let open = |path: &std::path::Path| {
+            let opts = gix::open::Options::isolated().bail_if_untrusted(true);
+            let repo = gix::open_opts(path, opts).ok()?;
+            // Cargo creates format-0 repositories. Let libgit2 validate mandatory
+            // extensions in newer formats before reusing either store.
+            let format = repo
+                .config_snapshot()
+                .integer("core.repositoryformatversion")?;
+            (format == 0).then_some(repo)
+        };
+        let db = open(&path)?;
         let prefix =
             gix::odb::store::prefix::disambiguate::Candidate::new(rev, MIN_ABBREV_LEN).ok()?;
         let short_id = db.objects.disambiguate_prefix(prefix).ok()??.to_string();
@@ -337,7 +346,7 @@ impl<'gctx> GitSource<'gctx> {
         if !path.join(CHECKOUT_READY_LOCK).is_file() {
             return None;
         }
-        let checkout = gix::open_opts(&path, opts).ok()?;
+        let checkout = open(&path)?;
         if checkout.workdir()? != path || checkout.head().ok()?.id()? != rev {
             return None;
         }
