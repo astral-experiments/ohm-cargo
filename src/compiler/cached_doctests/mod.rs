@@ -326,7 +326,7 @@ fn compile(
             // Give the linker a new inode if an earlier doctest is still running.
             paths::remove_file(output)?;
             if link.exec_with_output().is_ok() {
-                cache.refresh_executable()?;
+                cache.refresh_executable(None)?;
                 return Ok(CompileStatus::Relinked);
             }
         }

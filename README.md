@@ -109,6 +109,26 @@ declared graph. This optimization is enabled by Ohm defaults; see the
 [reference](doc/book/src/reference/unstable.md#ohm-defer-dev-deps) for supported
 builds, native-input checks, and configuration options.
 
+## Reusing binaries with an unused package library
+
+Cargo makes a package's library available to each of its binaries. When
+only the library rebuilds and rustc reported it as unused, Ohm can keep the
+binary and replay its diagnostics. The library still builds as usual.
+This applies to ordinary workspace binaries on native x86-64 GNU/Linux
+with the bundled linker and a system GCC or Clang driver, including binaries
+built for integration tests.
+Packages with a build script and builds with a custom compiler wrapper or
+linker flags are excluded.
+
+Ohm checks the compiler inputs and the file identities and timestamps in
+the linker's dependency file. It also checks the environment used to locate
+libraries and the timestamps of explicit native search directories. A
+missing report or changed input falls back to the normal build. This assumes
+a stable system toolchain and filesystem timestamps that distinguish edits.
+A compiler driver reading private configuration or a linker script adding
+its own search directories can introduce inputs outside these checks. Use
+`cargo +ohm -Zohm-defaults=no build` to opt out.
+
 ## License
 
 Cargo is primarily distributed under the terms of both the MIT license

@@ -63,6 +63,7 @@ mod native_link;
 pub mod native_link_driver;
 mod ohm_deferred_dev_deps;
 mod ohm_early_tests;
+mod ohm_independent_binary;
 mod ohm_linker;
 mod ohm_thinlto_cache;
 mod output_depinfo;
@@ -799,15 +800,20 @@ struct RelinkCacheManifest {
     objects: Vec<RelinkCacheFile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     unused_extern_names: Option<Vec<String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    deferred_inputs: Option<u64>,
+    /// Additional inputs for the unused-extern proof, scoped by consumer unit.
+    #[serde(
+        default,
+        rename = "deferred_inputs",
+        skip_serializing_if = "Option::is_none"
+    )]
+    usage_inputs: Option<u64>,
 }
 
 impl RelinkCacheManifest {
     fn input_checksum(&self) -> u64 {
         let checksum =
             crate::util::hash_u64((self.version, &self.rlink, &self.executable, &self.objects));
-        match self.deferred_inputs {
+        match self.usage_inputs {
             Some(inputs) => crate::util::hash_u64((checksum, inputs)),
             None => checksum,
         }
@@ -877,7 +883,7 @@ fn read_relink_manifest_slice(bytes: &[u8]) -> Option<CheckedRelinkManifest> {
                     },
                     objects: fields.objects.into_iter().map(file).collect(),
                     unused_extern_names: fields.unused_extern_names,
-                    deferred_inputs: fields.deferred_inputs,
+                    usage_inputs: fields.deferred_inputs,
                 },
             });
         }
@@ -977,7 +983,7 @@ impl RelinkCachePaths {
             rlink: cached_file(self.rlink.clone())?,
             executable: cached_object(self.executable.clone())?,
             objects,
-            deferred_inputs: proof.and_then(|(_, inputs)| inputs),
+            usage_inputs: proof.and_then(|(_, inputs)| inputs),
             unused_extern_names: proof.map(|(unused_externs, _)| {
                 unused_externs
                     .iter()
@@ -1027,12 +1033,12 @@ impl RelinkCachePaths {
         }
     }
 
-    fn refresh_executable(&self) -> CargoResult<()> {
+    fn refresh_executable(&self, usage_inputs: Option<u64>) -> CargoResult<()> {
         let mut manifest = self
             .read_manifest()
             .ok_or_else(|| internal("validated relink cache manifest disappeared"))?;
         manifest.executable = cached_object(self.executable.clone())?;
-        manifest.deferred_inputs = None;
+        manifest.usage_inputs = usage_inputs;
         self.write_manifest(manifest)
     }
 
@@ -1088,7 +1094,7 @@ impl RelinkCachePaths {
             .into_iter()
             .map(InternedString::from)
             .collect();
-        Some((names, manifest.deferred_inputs))
+        Some((names, manifest.usage_inputs))
     }
 
     fn invalidate(&self) -> CargoResult<()> {
@@ -1151,19 +1157,26 @@ fn object_matches(expected: &RelinkCacheObject) -> bool {
         .unwrap_or(false)
 }
 
-/// Finds an unused-self-library candidate that cannot be linked transitively.
-///
-/// Cargo permits development-dependency cycles, so a package library can still be
-/// linked through another dependency even when its direct `--extern` is unused.
 fn unused_integration_self_dependency(
+    build_runner: &BuildRunner<'_, '_>,
+    unit: &Unit,
+) -> Option<(UnitIndex, InternedString)> {
+    if !unit.target.is_test() || unit.mode == CompileMode::Build {
+        return None;
+    }
+    implicit_library_dependency(build_runner, unit)
+}
+
+/// Finds the implicit library when no other dependency can link it transitively.
+/// Cargo permits development-dependency cycles for tests.
+fn implicit_library_dependency(
     build_runner: &BuildRunner<'_, '_>,
     unit: &Unit,
 ) -> Option<(UnitIndex, InternedString)> {
     let check = unit.mode == CompileMode::Check { test: true }
         && build_runner.bcx.gctx.cli_unstable().ohm_early_tests();
     if !build_runner.bcx.gctx.cli_unstable().ohm_defaults()
-        || (unit.mode != CompileMode::Test && !check)
-        || !unit.target.is_test()
+        || (!matches!(unit.mode, CompileMode::Build | CompileMode::Test) && !check)
         || build_runner.bcx.build_config.primary_unit_rustc.is_some()
         || matches!(unit.kind, CompileKind::Target(CompileTarget::Json { .. }))
         || build_runner.compilation.target_linker(unit.kind).is_some()
@@ -1457,6 +1470,12 @@ fn rustc(
     let source_arg = path_args(build_runner.bcx.ws, unit).0;
     let relinkable_dependencies = relinkable_dependencies(build_runner, unit);
     let unused_integration_dependency = unused_integration_self_dependency(build_runner, unit);
+    let binary = relink_cache
+        .as_ref()
+        .filter(|_| check_relink_inputs)
+        .and_then(|cache| {
+            ohm_independent_binary::IndependentBinary::new(build_runner, unit, &mut rustc, cache)
+        });
     let record_dev_unused = ohm_deferred_dev_deps::supported(build_runner, unit);
     let dev_native_output_dirs = record_dev_unused
         .then(|| ohm_deferred_dev_deps::native_output_dirs(build_runner))
@@ -1679,6 +1698,16 @@ fn rustc(
     return Ok(Work::new(move |state| {
         // Build-script outputs are only authoritative after their jobs finish.
         // An unused Rust extern can still be consumed through native linking.
+        let binary = binary.and_then(|mut binary| {
+            binary.start();
+            if let Some(scripts) = &build_scripts {
+                let outputs = build_script_outputs.lock().unwrap();
+                for (_, metadata) in &scripts.to_link {
+                    binary.add_search_paths(outputs.get(*metadata)?)?;
+                }
+            }
+            Some(binary)
+        });
         let mut watch_artifacts = false;
         let record_dev_unused = record_dev_unused
             && build_scripts.as_ref().is_none_or(|scripts| {
@@ -1777,10 +1806,14 @@ fn rustc(
                     .collect::<Vec<_>>()
             );
 
+            let independent_binary = relink_cache.as_ref().filter(|_| !force).and_then(|cache| {
+                let inputs = binary.as_ref()?.reusable_inputs(fp, cache)?;
+                Some((cache, inputs))
+            });
             if early_test.is_none()
                 && deferred_dev_names.is_empty()
-                && can_skip_compilation
-                && fingerprint::can_skip_due_to_early_cutoff(fp)
+                && (independent_binary.is_some()
+                    || (can_skip_compilation && fingerprint::can_skip_due_to_early_cutoff(fp)))
                 && *compiler_inputs_are_fresh
             {
                 let essential_outputs = outputs
@@ -1818,6 +1851,10 @@ fn rustc(
                         "early cutoff: skipping compilation of {} (all deps unchanged)",
                         unit_name
                     );
+                    if let Some((cache, inputs)) = independent_binary {
+                        tracing::info!(target: "cargo::compiler::ohm_independent_binary", "reusing binary with unused library");
+                        cache.refresh_executable(Some(inputs))?;
+                    }
                     fp.set_build_state(BuildState::SkippedEarlyCutoff);
                     state.skipped_early_cutoff();
                     return Ok(());
@@ -1837,12 +1874,10 @@ fn rustc(
                 fingerprint::can_relink_due_to_early_cutoff(fingerprint, &relinkable_dependencies)
                     || reuse_codegen
                         && unused_integration_dependency.is_some_and(|(dependency, extern_name)| {
-                            fingerprint::can_relink_unused_integration_dependency(
-                                fingerprint,
-                                dependency,
-                            ) && relink_cache
-                                .as_ref()
-                                .is_some_and(|cache| cache.proves_unused_extern(extern_name))
+                            fingerprint::only_rebuilt_dependency(fingerprint, dependency)
+                                && relink_cache
+                                    .as_ref()
+                                    .is_some_and(|cache| cache.proves_unused_extern(extern_name))
                         })
             });
         let validation_started = Instant::now();
@@ -1862,6 +1897,9 @@ fn rustc(
         }
         if use_cached_relink {
             tracing::info!("relink-only: reusing cached codegen for {unit_name}");
+            if let Some(binary) = &binary {
+                binary.remove_report()?;
+            }
         } else {
             if let Some(cache) = &relink_cache {
                 cache.invalidate()?;
@@ -2089,7 +2127,7 @@ fn rustc(
                 link_started.elapsed()
             );
             let update_started = Instant::now();
-            cache.refresh_executable()?;
+            cache.refresh_executable(None)?;
             tracing::info!(
                 "relink-only: cache update for {unit_name} took {:?}",
                 update_started.elapsed()
@@ -2346,14 +2384,16 @@ fn rustc(
         }
 
         if let Some(cache) = &relink_cache {
-            let unused_externs = (unused_integration_dependency.is_some() || record_dev_unused)
-                .then(|| state.recorded_unused_externs())
-                .flatten();
-            cache.initialize(
-                unused_externs
-                    .as_ref()
-                    .map(|names| (names, deferred_inputs)),
-            )?;
+            let unused_externs =
+                (unused_integration_dependency.is_some() || record_dev_unused || binary.is_some())
+                    .then(|| state.recorded_unused_externs())
+                    .flatten();
+            cache.initialize(unused_externs.as_ref().map(|names| {
+                (
+                    names,
+                    deferred_inputs.or_else(|| binary.as_ref()?.record(cache, names)),
+                )
+            }))?;
         }
 
         if rustc_dep_info_loc.exists() {
@@ -4914,7 +4954,7 @@ mod relink_cache_tests {
             },
             objects: Vec::new(),
             unused_extern_names: Some(vec!["unused".to_owned()]),
-            deferred_inputs: None,
+            usage_inputs: None,
         };
         let input_checksum = manifest.input_checksum();
         Ok(serde_json::to_vec(&CheckedRelinkManifest {
