@@ -2515,14 +2515,23 @@ fn downgrade_lock_to_shared(lock: LockKey) -> Work {
 
 /// Publishes a directory link inside a unique workspace build directory on a cold or fresh build.
 fn workspace_output_link(source: &Path, views: &Path, name: &str) -> CargoResult<PathBuf> {
-    let entry = views.join(crate::util::short_hash(&source));
+    // A view lives at `build/<views>/<hash>/<name>`. Link within `build` using
+    // relative paths so the view follows its outputs when the tree moves.
+    let target = if cfg!(unix)
+        && let Ok(relative) = source.strip_prefix(views.parent().unwrap())
+    {
+        Path::new("../..").join(relative)
+    } else {
+        source.to_owned()
+    };
+    let entry = views.join(crate::util::short_hash(&target));
     let link = entry.join(name);
     if !same_file::is_same_file(source, &link).unwrap_or(false) {
         paths::create_dir_all(views)?;
         let staging = tempfile::tempdir_in(views)?;
         let staged_link = staging.path().join(name);
         #[cfg(unix)]
-        std::os::unix::fs::symlink(source, &staged_link)?;
+        std::os::unix::fs::symlink(&target, &staged_link)?;
         #[cfg(windows)]
         junction::create(source, &staged_link)
             .or_else(|_| std::os::windows::fs::symlink_dir(source, &staged_link))?;
