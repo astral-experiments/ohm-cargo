@@ -84,7 +84,10 @@ pub(super) fn harness(json: &[u8]) -> Option<Harness> {
                 || !attrs.error_codes.is_empty()
                 || !attrs.unknown.is_empty()
                 || (attrs.should_panic && attrs.no_run)
-                || needs_crate_root(example.original_code.parse().ok()?)
+                || needs_crate_root(
+                    example.original_code.parse().ok()?,
+                    example.original_code.contains("$crate"),
+                )
             {
                 return None;
             }
@@ -132,17 +135,21 @@ pub(super) fn harness(json: &[u8]) -> Option<Harness> {
 
 /// Location macros and crate-root items can change meaning when moved into a
 /// module. Inspect tokens so words in a string or comment don't disable a crate.
-fn needs_crate_root(tokens: TokenStream) -> bool {
+fn needs_crate_root(tokens: TokenStream, mentions_dollar_crate: bool) -> bool {
     let mut tokens = tokens.into_iter().peekable();
     while let Some(token) = tokens.next() {
         match token {
-            TokenTree::Group(group) if needs_crate_root(group.stream()) => return true,
+            TokenTree::Group(group) if needs_crate_root(group.stream(), mentions_dollar_crate) => {
+                return true;
+            }
             TokenTree::Ident(ident) => {
                 let next = match tokens.peek() {
                     Some(TokenTree::Punct(punct)) => Some(punct.as_char()),
                     _ => None,
                 };
                 match ident.to_string().trim_start_matches("r#") {
+                    // rustdoc keeps macro definitions with a textual `$crate` in a standalone crate.
+                    "macro_rules" | "macro" if mentions_dollar_crate => return true,
                     "crate" | "super" if next == Some(':') => return true,
                     "file" | "line" | "column" | "module_path" | "include" | "include_str"
                     | "include_bytes"
