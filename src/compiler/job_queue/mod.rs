@@ -161,6 +161,7 @@ use cargo_util_terminal::Shell;
 /// work and then later on the entire graph is converted to `DrainState` and
 /// executed.
 pub struct JobQueue<'gctx> {
+    pending_scripts: usize,
     queue: DependencyQueue<Unit, Artifact, Job>,
     /// Producers with dependents that can resume when their public API changes.
     conditional_metadata_units: HashSet<Unit>,
@@ -175,6 +176,8 @@ pub struct JobQueue<'gctx> {
 /// It is created from `JobQueue` when we have fully assembled the crate graph
 /// (i.e., all package dependencies are known).
 struct DrainState<'gctx> {
+    pending_scripts: usize,
+    doctest_env_ready: bool,
     // This is the length of the DependencyQueue when starting out
     total_units: usize,
 
@@ -437,6 +440,7 @@ enum Message {
 impl<'gctx> JobQueue<'gctx> {
     pub fn new(bcx: &BuildContext<'_, 'gctx>) -> JobQueue<'gctx> {
         JobQueue {
+            pending_scripts: 0,
             queue: DependencyQueue::new(),
             conditional_metadata_units: HashSet::default(),
             counts: HashMap::default(),
@@ -542,6 +546,9 @@ impl<'gctx> JobQueue<'gctx> {
         // in the future this could be used to allow users to provide hints about
         // relative expected costs of units, or this could be automatically set in
         // a smarter way using timing data from a previous compilation.
+        if unit.mode.is_run_custom_build() {
+            self.pending_scripts += 1;
+        }
         self.queue.queue(unit.clone(), job, queue_deps, 100);
         *self.counts.entry(unit.pkg.package_id()).or_insert(0) += 1;
         Ok(())
@@ -560,6 +567,8 @@ impl<'gctx> JobQueue<'gctx> {
             Progress::with_style("Building", ProgressStyle::Ratio, build_runner.bcx.gctx);
         let state = DrainState {
             total_units: self.queue.len(),
+            pending_scripts: self.pending_scripts,
+            doctest_env_ready: false,
             queue: self.queue,
             conditional_metadata_units: self.conditional_metadata_units,
             // 100 here is somewhat arbitrary. It is a few screenfulls of
@@ -637,7 +646,19 @@ impl<'gctx> DrainState<'gctx> {
         // possible that can run. Note that this is also the point where we
         // start requesting job tokens. Each job after the first needs to
         // request a token.
-        while let Some((unit, job, priority)) = self.queue.dequeue() {
+        // Rustdoc inherits native directories from every scheduled build script,
+        // including those belonging to other selected workspace packages.
+        while let Some((unit, mut job, priority)) = self
+            .queue
+            .dequeue_if(|job| self.pending_scripts == 0 || !job.has_deferred_doctest())
+        {
+            if job.has_deferred_doctest() {
+                if !self.doctest_env_ready {
+                    build_runner.collect_runtime_environment();
+                    self.doctest_env_ready = true;
+                }
+                job.prepare_doctest(build_runner, &unit)?;
+            }
             // We want to keep the pieces of work in the `pending_queue` sorted
             // by their priorities, and insert the current job at its correctly
             // sorted position: following the lower priority jobs, and the ones
@@ -1537,6 +1558,9 @@ impl<'gctx> DrainState<'gctx> {
         let unblocked = self.queue.finish(unit, &artifact);
         match artifact {
             Artifact::All => {
+                if unit.mode.is_run_custom_build() {
+                    self.pending_scripts -= 1;
+                }
                 self.timings.unit_finished(build_runner, id, unblocked);
                 crate::ops::ReadyTests::unit_finished(build_runner, unit)?;
             }

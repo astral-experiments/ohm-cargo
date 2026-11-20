@@ -253,10 +253,15 @@ impl<N: Hash + Eq + Clone, E: Eq + Hash + Clone, V> DependencyQueue<N, E, V> {
     /// A package is ready to be built when it has 0 un-built dependencies. If
     /// `None` is returned then no packages are ready to be built.
     pub fn dequeue(&mut self) -> Option<(N, V, usize)> {
+        self.dequeue_if(|_| true)
+    }
+
+    /// Dequeues the highest priority ready package satisfying the predicate.
+    pub fn dequeue_if(&mut self, eligible: impl Fn(&V) -> bool) -> Option<(N, V, usize)> {
         let (key, priority) = self
             .dep_map
             .iter()
-            .filter(|(_, (deps, _))| deps.is_empty())
+            .filter(|(_, (deps, value))| deps.is_empty() && eligible(value))
             .map(|(key, _)| (key.clone(), self.priority[key]))
             .max_by_key(|(_, priority)| *priority)?;
         let (_, data) = self.dep_map.remove(&key).unwrap();

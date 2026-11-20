@@ -677,17 +677,17 @@ fn compile<'gctx>(
             } else {
                 fingerprint::prepare_target(build_runner, unit, force)?
             };
-            job.before(if let Some(native) = &reused_test {
-                reused_test_check_work(build_runner, unit, native)?.then(link_targets(
-                    build_runner,
-                    unit,
-                    true,
-                )?)
+            if let Some(native) = &reused_test {
+                job.before(
+                    reused_test_check_work(build_runner, unit, native)?.then(link_targets(
+                        build_runner,
+                        unit,
+                        true,
+                    )?),
+                );
             } else if unit.mode.is_doc_test() {
                 if job.freshness().is_dirty() {
-                    cached_doctests::prepare(build_runner, unit, force)?
-                } else {
-                    Work::noop()
+                    job.defer_doctest(force);
                 }
             } else if job.freshness().is_dirty() {
                 let work = if unit.mode.is_doc() || unit.mode.is_doc_scrape() {
@@ -695,7 +695,7 @@ fn compile<'gctx>(
                 } else {
                     rustc(build_runner, unit, exec, force)?
                 };
-                work.then(link_targets(build_runner, unit, false)?)
+                job.before(work.then(link_targets(build_runner, unit, false)?));
             } else {
                 let output_options = OutputOptions::for_fresh(build_runner, unit);
                 let manifest = ManifestErrorContext::new(build_runner, unit);
@@ -707,8 +707,8 @@ fn compile<'gctx>(
                     output_options,
                 );
                 // Need to link targets on both the dirty and fresh.
-                work.then(link_targets(build_runner, unit, true)?)
-            });
+                job.before(work.then(link_targets(build_runner, unit, true)?));
+            }
 
             // If -Zfine-grain-locking is enabled, we wrap the job with an upgrade to exclusive
             // lock before starting, then downgrade to a shared lock after the job is finished.

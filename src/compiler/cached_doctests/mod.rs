@@ -34,12 +34,16 @@ pub(super) fn extraction_dep_info(dir: &Path) -> PathBuf {
 }
 
 /// Prepares both compiler commands with the dependencies of the doctest unit.
-/// Build-script output is added by the job once those dependencies have finished.
+/// Must run after the build scripts have completed and the runtime environment is collected.
 pub(super) fn prepare(br: &BuildRunner<'_, '_>, unit: &Unit, force: bool) -> CargoResult<Work> {
     let bcx = br.bcx;
     let dir = br.files().fingerprint_dir(unit);
     let binary = br.outputs(unit)?[0].path.clone();
-    let mut rustdoc = br.compilation.rustdoc_process(unit, None)?;
+    let scripts = br.find_build_script_metadatas(unit);
+    let mut unstable_opts = false;
+    let args = br.doctest_args(unit, scripts.as_deref(), &mut unstable_opts)?;
+    let env = super::artifact::get_env(br, unit, br.unit_deps(unit))?;
+    let mut rustdoc = br.compilation.rustdoc_process(unit, scripts.as_ref())?;
     // Rustdoc compiles examples with the sysroot compiler, independently of Cargo's wrappers.
     let compiler = bcx
         .target_data
@@ -50,14 +54,23 @@ pub(super) fn prepare(br: &BuildRunner<'_, '_>, unit: &Unit, force: bool) -> Car
         .with_extension(std::env::consts::EXE_EXTENSION);
     let mut rustc = br
         .compilation
-        .configure_rustc_process(unit, ProcessBuilder::new(compiler))?;
+        .cached_doctest_process(&compiler, unit, scripts.as_ref())?;
+    if bcx.gctx.extra_verbose() {
+        rustc.display_env_vars();
+    }
     let (_, cwd) = path_args(bcx.ws, unit);
     for cmd in [&mut rustdoc, &mut rustc] {
         cmd.cwd(&cwd).inherit_jobserver(&br.jobserver);
-        super::build_deps_args(cmd, br, unit)?;
-        cmd.args(&super::features_args(unit))
-            .args(&super::check_cfg_args(unit));
-        cmd.args(&super::lto_args(br, unit));
+        for (key, value) in &env {
+            cmd.env(key, value);
+        }
+        for path in &br.compilation.native_dirs {
+            cmd.arg("-L").arg(path);
+        }
+        cmd.args(&args);
+        if unstable_opts {
+            cmd.arg("-Zunstable-options");
+        }
         unit.kind.add_target_arg(cmd);
         if let Some(linker) = br.compilation.target_linker(unit.kind) {
             let mut flag = OsString::from("linker=");
@@ -142,11 +155,15 @@ pub(super) fn prepare(br: &BuildRunner<'_, '_>, unit: &Unit, force: bool) -> Car
     let relinkable = super::relinkable_dependencies(br, unit);
     rustc.arg(&driver_source).arg("-o").arg(&linked);
 
-    let scripts = br.find_build_script_metadatas(unit);
-    let build_scripts = br.build_scripts.get(unit).cloned();
+    // Workspace selection can change these paths without changing the unit or its
+    // dependencies. The generated sources and objects belong to this search path.
+    let search_hash = crate::util::hash_u64((
+        &br.compilation.native_dirs,
+        rustdoc.get_env(paths::dylib_path_envvar()),
+    ))
+    .to_le_bytes();
+    let search_stamp = dir.join("doctest-search-path");
     let target = unit.target.clone();
-    let mode = unit.mode;
-    let outputs = Arc::clone(&br.build_script_outputs);
     let pkg_root = unit.pkg.root().to_owned();
     let build_root = br.files().build_root(unit);
     let env_config = Arc::clone(bcx.gctx.env_config()?);
@@ -156,30 +173,6 @@ pub(super) fn prepare(br: &BuildRunner<'_, '_>, unit: &Unit, force: bool) -> Car
     let fingerprint = Arc::clone(&br.fingerprints[unit]);
 
     Ok(Work::new(move |state| {
-        {
-            let outputs = outputs.lock().unwrap();
-            for cmd in [&mut rustdoc, &mut examples, &mut rustc] {
-                super::add_custom_flags(cmd, &outputs, scripts.clone())?;
-                for meta in scripts.iter().flatten() {
-                    if let Some(output) = outputs.get(*meta) {
-                        for (kind, arg) in &output.linker_args {
-                            if kind.applies_to(&target, mode) {
-                                cmd.arg("-C").arg(format!("link-arg={arg}"));
-                            }
-                        }
-                    }
-                }
-                if let Some(scripts) = &build_scripts {
-                    for (_, key) in &scripts.to_link {
-                        if let Some(output) = outputs.get(*key) {
-                            for path in &output.library_paths {
-                                cmd.arg("-L").arg(path.as_ref());
-                            }
-                        }
-                    }
-                }
-            }
-        }
         let started = paths::set_invocation_time(&dir)?;
         let translate =
             |raw: &Path, encoded: &Path, cmd: &ProcessBuilder, timestamp| -> CargoResult<()> {
@@ -201,15 +194,11 @@ pub(super) fn prepare(br: &BuildRunner<'_, '_>, unit: &Unit, force: bool) -> Car
             };
         let staging = tempfile::tempdir_in(binary.parent().unwrap())?;
         let staged_binary = staging.path().join("doctest");
-        let publish = || -> CargoResult<()> {
-            paths::link_or_copy(&linked, &staged_binary)?;
-            std::fs::rename(&staged_binary, &binary)?;
-            Ok(())
-        };
         // The final link can read native archives outside Cargo's dependency
         // graph. Reuse the extraction and object files when Cargo has
         // validated both sets of Rust inputs, but let the linker resolve them.
         let inputs_unchanged = !force
+            && std::fs::read(&search_stamp).is_ok_and(|recorded| recorded == search_hash)
             && source.is_file()
             && driver_source.is_file()
             && examples_lib.is_file()
@@ -218,6 +207,9 @@ pub(super) fn prepare(br: &BuildRunner<'_, '_>, unit: &Unit, force: bool) -> Car
                 || (cache.is_some()
                     && fingerprint::can_relink_due_to_early_cutoff(&fingerprint, &relinkable)));
         if !inputs_unchanged {
+            if search_stamp.exists() {
+                paths::remove_file(&search_stamp)?;
+            }
             let mut extract = rustdoc.clone();
             // Make rustdoc's implicit allow(unused) explicit during extraction. An
             // item with its own doc(test(attr(allow(unused)))) then has a second
@@ -289,21 +281,24 @@ pub(super) fn prepare(br: &BuildRunner<'_, '_>, unit: &Unit, force: bool) -> Car
                 CompileStatus::Failed
             )
         {
-            publish()?;
-            return Ok(());
+            paths::link_or_copy(&linked, &staged_binary)?;
+        } else {
+            // A snippet that cannot be merged may still pass on its own.
+            // Let rustdoc diagnose it and retry extraction if the inputs change.
+            if let Some(cache) = &cache {
+                cache.invalidate()?;
+            }
+            if extracted_info.is_file() {
+                std::fs::copy(&extracted_info, &compiled_info)?;
+            }
+            // An empty output routes execution back to rustdoc, including when
+            // the previous build of this unit produced a runnable executable.
+            paths::write(&staged_binary, [])?;
         }
-        // A snippet that cannot be merged may still pass on its own.
-        // Let rustdoc diagnose it and retry extraction if the inputs change.
-        if let Some(cache) = &cache {
-            cache.invalidate()?;
-        }
-        if extracted_info.is_file() {
-            std::fs::copy(&extracted_info, &compiled_info)?;
-        }
-        // An empty output routes execution back to rustdoc, including when
-        // the previous build of this unit produced a runnable executable.
-        paths::write(&staged_binary, [])?;
         std::fs::rename(staged_binary, binary)?;
+        if !inputs_unchanged {
+            paths::write(&search_stamp, search_hash)?;
+        }
         Ok(())
     }))
 }
