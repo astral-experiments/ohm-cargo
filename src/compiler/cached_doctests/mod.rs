@@ -29,8 +29,8 @@ pub(super) fn enabled(bcx: &BuildContext<'_, '_>, unit: &Unit) -> bool {
 /// Encoded dependencies of the crate under rustdoc's cfgs, separate from the
 /// dependencies rustc reports for the extracted examples themselves.
 pub(super) fn extraction_dep_info(dir: &Path) -> PathBuf {
-    // Regenerate bundles that could contain standalone macro definitions.
-    dir.join("dep-doctest-extraction-v9")
+    // Regenerate bundles with rustdoc's module numbering and source layout.
+    dir.join("dep-doctest-extraction-v10")
 }
 
 /// Prepares both compiler commands with the dependencies of the doctest unit.
@@ -75,7 +75,7 @@ pub(super) fn prepare(br: &BuildRunner<'_, '_>, unit: &Unit, force: bool) -> Car
     rustdoc.arg("--crate-name").arg(unit.target.crate_name());
     rustdoc.args(unit.pkg.manifest().lint_rustflags());
     rustdoc.args(&["-Zunstable-options", "--cfg", "doctest"]);
-    let source = dir.join("doctests.rs");
+    let source = dir.join("doctest_bundle_2024.rs");
     let compiled_deps = dir.join("doctests.d");
     let extracted_deps = dir.join("extraction.d");
     let driver_source = dir.join("doctest-driver.rs");
@@ -84,7 +84,7 @@ pub(super) fn prepare(br: &BuildRunner<'_, '_>, unit: &Unit, force: bool) -> Car
     let mut examples = rustc.clone();
     let mut emit = OsString::from("--emit=link,dep-info=");
     emit.push(&compiled_deps);
-    examples.args(&["--crate-type=rlib", "--crate-name", "rust_out"]);
+    examples.arg("--crate-type=rlib");
     examples.arg(emit).arg(&source).arg("-o").arg(&examples_lib);
 
     // The driver sees the doctest unit's direct dependencies through the examples rlib.
@@ -219,13 +219,19 @@ pub(super) fn prepare(br: &BuildRunner<'_, '_>, unit: &Unit, force: bool) -> Car
                     && fingerprint::can_relink_due_to_early_cutoff(&fingerprint, &relinkable)));
         if !inputs_unchanged {
             let mut extract = rustdoc.clone();
-            extract.arg("--output-format=doctest");
+            // Make rustdoc's implicit allow(unused) explicit during extraction. An
+            // item with its own doc(test(attr(allow(unused)))) then has a second
+            // attribute, so we can distinguish its separate bundle in the JSON.
+            extract.args(&[
+                "--output-format=doctest",
+                "-Zcrate-attr=doc(test(attr(allow(unused))))",
+            ]);
             state.running(&extract);
             let generated = extract
                 .exec_with_output()
                 .ok()
                 .filter(|output| output.stderr.is_empty())
-                .and_then(|output| generate::harness(&output.stdout));
+                .and_then(|output| generate::harness(&output.stdout, &target.crate_name()));
 
             // The extraction JSON has no dep-info. A dependency-only rustdoc
             // invocation also sees cfg(doctest) modules, includes and tracked env.

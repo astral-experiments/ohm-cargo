@@ -19,6 +19,17 @@ struct Example {
     original_code: String,
 }
 
+impl Example {
+    /// Ignored standalone cases are listed by the driver but have no module in the bundle.
+    fn standalone(&self) -> bool {
+        let attrs = &self.doctest_attributes;
+        self.doctest_code.is_none()
+            || attrs.standalone_crate
+            || attrs.test_harness
+            || attrs.compile_fail
+    }
+}
+
 #[derive(Deserialize)]
 struct Attributes {
     ignore: Ignore,
@@ -46,6 +57,28 @@ struct Code {
     wrapper: Option<Wrapper>,
 }
 
+const PRELUDE: &str = "#![allow(unused)]\n";
+
+impl Code {
+    /// Recover rustdoc's merged declarations and untrimmed body from the standalone extraction.
+    /// Leave interleaved extern crates to rustdoc when we cannot locate the body in the input.
+    fn merged_parts<'a>(&'a self, original: &'a str, injected: &str) -> Option<(&'a str, &'a str)> {
+        let declarations = self.crate_level.strip_prefix(PRELUDE)?;
+        let declarations = if original.starts_with(declarations.trim_end()) {
+            declarations
+        } else {
+            declarations.strip_suffix(injected)?
+        }
+        .trim_end();
+        let input = original.strip_prefix(declarations)?;
+        if self.code.is_empty() {
+            return Some((declarations, ""));
+        }
+        let trailing = input.trim_start().strip_prefix(self.code.as_str())?;
+        Some((declarations, &input[..input.len() - trailing.len()]))
+    }
+}
+
 #[derive(Deserialize)]
 struct Wrapper {
     returns_result: bool,
@@ -60,66 +93,74 @@ pub(super) struct Harness {
 
 /// Generates one executable for mergeable examples. Rustdoc owns the crate if
 /// any example requires its standalone compiler or a different language mode.
-pub(super) fn harness(json: &[u8]) -> Option<Harness> {
-    let extraction: Extraction = serde_json::from_slice(json).ok()?;
+pub(super) fn harness(json: &[u8], crate_name: &str) -> Option<Harness> {
+    let mut extraction: Extraction = serde_json::from_slice(json).ok()?;
     if extraction.format_version != 2 {
         return None;
     }
-    let mut source = String::new();
+    extraction.doctests.sort_by(|a, b| {
+        a.standalone()
+            .cmp(&b.standalone())
+            .then_with(|| a.name.cmp(&b.name))
+    });
+    // Keep the bundle layout identical to librustdoc::doctest::runner so locations
+    // observed by macros in dependencies and #[track_caller] stay accurate.
+    let mut source = format!("\n{PRELUDE}");
+    let injected = format!("#[allow(unused_extern_crates)]\nextern crate r#{crate_name};\n");
     let mut arms = String::new();
     let mut driver = String::from(include_str!("harness.rs"));
     driver.push_str("\nconst CASES: &[Case] = &[\n");
     for (id, example) in extraction.doctests.into_iter().enumerate() {
+        let standalone = example.standalone();
         let attrs = example.doctest_attributes;
         let ignore = match attrs.ignore {
             Ignore::None => false,
             Ignore::All => true,
             Ignore::Some(_targets) => return None,
         };
-        if !ignore {
-            if attrs.compile_fail
-                || attrs.standalone_crate
-                || attrs.test_harness
-                || attrs.edition.is_some()
-                || !attrs.error_codes.is_empty()
-                || !attrs.unknown.is_empty()
-                || (attrs.should_panic && attrs.no_run)
-                || needs_crate_root(
-                    example.original_code.parse().ok()?,
-                    example.original_code.contains("$crate"),
-                )
-            {
-                return None;
-            }
-            let code = example.doctest_code?;
-            if code
-                .crate_level
-                .lines()
-                .any(|line| line.starts_with("#![") && line != "#![allow(unused)]")
-            {
-                return None;
-            }
-            // Match the module and entry point rustdoc generates for a merged example.
-            writeln!(source, "pub mod __doctest_{id} {{\n{}", code.crate_level).unwrap();
-            if let Some(wrapper) = code.wrapper {
-                let returns_result = if wrapper.returns_result {
-                    "-> Result<(), impl core::fmt::Debug>"
-                } else {
-                    ""
-                };
-                writeln!(source, "fn main() {returns_result} {{\n{}\n}}", code.code).unwrap();
-            } else {
-                writeln!(source, "{}", code.code).unwrap();
-            }
-            source.push_str("pub fn __main_fn() -> impl std::process::Termination { main() }\n}\n");
-            writeln!(
-                arms,
-                "{id} => test::assert_test_result(__ohm_doctest_examples::__doctest_{id}::__main_fn()).report(),"
-            )
-            .unwrap();
-        }
         writeln!(driver, "Case {{ name: {:?}, file: {:?}, line: {}, ignore: {ignore}, no_run: {}, should_panic: {} }},",
             example.name, example.file, example.line, attrs.no_run, attrs.should_panic).unwrap();
+        if ignore && standalone {
+            continue;
+        }
+        if standalone
+            || attrs.edition.is_some()
+            || !attrs.error_codes.is_empty()
+            || !attrs.unknown.is_empty()
+            || (attrs.should_panic && attrs.no_run)
+            || needs_crate_root(
+                example.original_code.parse().ok()?,
+                example.original_code.contains("$crate"),
+            )
+        {
+            return None;
+        }
+        let code = example.doctest_code?;
+        let (declarations, body) = code.merged_parts(&example.original_code, &injected)?;
+        if ignore {
+            writeln!(source, "pub mod __doctest_{id} {{}}\n").unwrap();
+            continue;
+        }
+        writeln!(source, "pub mod __doctest_{id} {{\n{declarations}").unwrap();
+        if let Some(wrapper) = &code.wrapper {
+            let returns_result = if wrapper.returns_result {
+                "-> Result<(), impl core::fmt::Debug>"
+            } else {
+                ""
+            };
+            writeln!(source, "fn main() {returns_result} {{\n{body}\n}}").unwrap();
+        } else {
+            writeln!(source, "{body}").unwrap();
+        }
+        source.push_str("pub fn __main_fn() -> impl std::process::Termination { main() } \n}\n\n");
+        writeln!(
+            arms,
+            "{id} => test::assert_test_result(__ohm_doctest_examples::__doctest_{id}::__main_fn()).report(),"
+        )
+        .unwrap();
+    }
+    if arms.is_empty() {
+        return None;
     }
     driver.push_str("];\n");
     writeln!(
