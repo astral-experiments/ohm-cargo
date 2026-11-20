@@ -4342,6 +4342,46 @@ awesome-four
 }
 
 #[cargo_test]
+fn fetch_repairs_locked_checkout_with_unsupported_extension() {
+    let dep = git::new("dep", |project| {
+        project
+            .file("Cargo.toml", &basic_manifest("dep", "1.0.0"))
+            .file("src/lib.rs", "")
+    });
+    let p = project()
+        .file(
+            "Cargo.toml",
+            &format!(
+                "{}\n[dependencies]\ndep = {{ git = '{}' }}",
+                basic_manifest("foo", "1.0.0"),
+                dep.url()
+            ),
+        )
+        .file("src/lib.rs", "")
+        .build();
+    p.cargo("fetch").run();
+
+    let pattern = paths::home().join(".cargo/git/checkouts/dep-*/*");
+    let checkout = glob::glob(pattern.to_str().unwrap())
+        .unwrap()
+        .next()
+        .unwrap()
+        .unwrap();
+    fs::write(
+        checkout.join(".git/config"),
+        "[core]\nrepositoryformatversion = 1\n[extensions]\nfuture = true\n",
+    )
+    .unwrap();
+    let source = checkout.join("src/lib.rs");
+    fs::write(&source, "// stale").unwrap();
+
+    p.cargo("-Zohm-defaults fetch --locked --offline")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .run();
+    assert_eq!(fs::read_to_string(source).unwrap(), "");
+}
+
+#[cargo_test]
 fn corrupted_checkout() {
     // Test what happens if the checkout is corrupted somehow.
     _corrupted_checkout(false);
