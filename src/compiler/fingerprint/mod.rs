@@ -2997,6 +2997,11 @@ fn calculate_normal(
         // Older generations could miss a changed link or retain diagnostics from a failed build.
         ("ohm-reduced-dependency-rebuild", 3_u8).hash(&mut config);
     }
+    // The same producer may later be requested with an intermediate reader.
+    // Force a new artifact notification when the graph needs the exact key again.
+    if super::terminal_check_hash(build_runner, unit, false) {
+        ("ohm-terminal-declaration-hash", 1_u8).hash(&mut config);
+    }
     if super::unit_suppresses_default_public_api_hash(build_runner, unit) {
         ("ohm-terminal-check-public-api-hash", 1_u8).hash(&mut config);
     }

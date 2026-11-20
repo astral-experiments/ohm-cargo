@@ -7346,3 +7346,88 @@ fn whole_crate_hash_hint_follows_binary_usage_and_current_graph() {
     build("-p app", false).run();
     p.process(p.bin("app")).with_stdout_contains("5").run();
 }
+
+#[cfg(feature = "ohm-defaults")]
+#[cargo_test]
+fn terminal_declaration_hash_follows_the_graph_and_cached_diagnostics() {
+    let rustc = std::env::var_os("RUSTC").unwrap_or_else(|| "rustc".into());
+    if cargo_test_support::process(rustc)
+        .args(&["-Zohm-terminal-check-hash", "--print=sysroot"])
+        .exec_with_output()
+        .is_err()
+    {
+        return;
+    }
+    let manifest = |name| {
+        format!(
+            r#"
+                [package]
+                name = "{name}"
+                version = "0.1.0"
+                edition = "2024"
+                [dependencies]
+                dep = {{ path = "../dep" }}
+            "#
+        )
+    };
+    let source =
+        "fn internal() {}\n/// Copy a number.\npub fn value(n: u8) -> u8 { internal(); n }";
+    let shifted = source.replace("internal() {}", "internal() {\n    let _ = 0;\n}");
+    let client = "fn main() { let _: u8 = dep::value(1); }";
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+            [workspace]
+            members = ["dep", "client", "reader"]
+            resolver = "3"
+            "#,
+        )
+        .file("dep/Cargo.toml", &basic_manifest("dep", "0.1.0"))
+        .file("dep/src/lib.rs", source)
+        .file("client/Cargo.toml", &manifest("client"))
+        .file("client/src/main.rs", client)
+        .file("reader/Cargo.toml", &manifest("reader"))
+        .file("reader/src/lib.rs", "pub use dep::value;")
+        .build();
+    let check = |selection: &str, hinted| {
+        let mut cmd = p.cargo(&format!("-Zohm-defaults check -v -p client {selection}"));
+        cmd.masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("CARGO_INCREMENTAL", "1")
+            .env_remove("LIBRARY_PATH");
+        let hint = "[..]-Zohm-terminal-check-hash[..]";
+        if hinted {
+            cmd.with_stderr_contains(hint);
+        } else {
+            cmd.with_stderr_does_not_contain(hint);
+        }
+        cmd
+    };
+    check("", true).run();
+    p.change_file("dep/src/lib.rs", &shifted);
+    check("", true)
+        .with_stderr_does_not_contain("[..]--crate-name client [..]")
+        .run();
+    check("-p reader", false)
+        .with_stderr_contains("[..]--crate-name dep [..]")
+        .run();
+    check("", true).run();
+    p.change_file(
+        "client/src/main.rs",
+        "fn main() { let unused: u8 = dep::value(1); }",
+    );
+    check("", false)
+        .with_stderr_contains("[WARNING] unused variable: `unused`")
+        .run();
+    p.change_file("dep/src/lib.rs", source);
+    check("", false)
+        .with_stderr_contains("[..]--crate-name client [..]")
+        .run();
+    p.change_file("client/src/main.rs", client);
+    check("", false).run();
+    p.change_file("dep/src/lib.rs", &source.replace("u8", "u32"));
+    check("", true)
+        .with_status(101)
+        .with_stderr_contains("error[E0308]: mismatched types")
+        .run();
+}
