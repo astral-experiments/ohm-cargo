@@ -3658,6 +3658,44 @@ fn workspace_resolve_cache_invalidates_inherited_path_dependency_version() {
 }
 
 #[cargo_test]
+fn workspace_resolve_cache_invalidates_unused_path_patch() {
+    Package::new("dep", "1.0.0").publish();
+    let project = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "app"
+                version = "0.1.0"
+                edition = "2024"
+
+                [dependencies]
+                dep = "1"
+
+                [patch.crates-io]
+                dep = { path = "dep" }
+            "#,
+        )
+        .file("src/lib.rs", "pub use dep;")
+        .file("dep/Cargo.toml", &basic_manifest("dep", "0.1.0"))
+        .file("dep/src/lib.rs", "")
+        .build();
+
+    workspace_resolve_cache_command(&project, "check").run();
+    workspace_resolve_cache_command(&project, "check --locked")
+        .with_stderr_contains(WORKSPACE_RESOLVE_CACHE_HIT)
+        .run();
+
+    project.change_file("dep/Cargo.toml", &basic_manifest("dep", "1.0.0"));
+    workspace_resolve_cache_command(&project, "check --locked")
+        .with_status(101)
+        .with_stderr_contains(
+            "[..]cannot update the lock file [..] because --locked was passed[..]",
+        )
+        .run();
+}
+
+#[cargo_test]
 fn workspace_resolve_cache_invalidates_configuration() {
     let project = workspace_resolve_cache_project();
 
