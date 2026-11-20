@@ -6011,6 +6011,37 @@ this is intentionally not Rust
 }
 
 #[cargo_test]
+fn cached_doctests_report_returned_errors_through_termination() {
+    let p = project()
+        .file(
+            "Cargo.toml",
+            "[package]\nname = 'foo'\nversion = '1.0.0'\nedition = '2024'",
+        )
+        .file(
+            "src/lib.rs",
+            r#"
+                /// ```
+                /// std::panic::set_hook(Box::new(|_| std::process::exit(0)));
+                /// Err("example failed")?;
+                /// Ok::<(), &str>(())
+                /// ```
+                pub fn documented() {}
+            "#,
+        )
+        .build();
+    for _ in 0..2 {
+        p.cargo("test --doc -Zohm-cached-doctests -v")
+            .masquerade_as_nightly_cargo(&["ohm-cached-doctests"])
+            .env("CARGO_UNSTABLE_OHM_DEFAULTS", "false")
+            .env("RUSTC_BOOTSTRAP", "1")
+            .with_stderr_contains("[RUNNING] [..]doctest-run-[..]")
+            .with_status(101)
+            .with_stdout_contains("Error: \"example failed\"")
+            .run();
+    }
+}
+
+#[cargo_test]
 fn cached_doctests_report_child_output_only_on_failure() {
     let p = project()
         .file(

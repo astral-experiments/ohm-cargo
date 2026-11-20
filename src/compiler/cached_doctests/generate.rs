@@ -48,8 +48,7 @@ struct Code {
 
 #[derive(Deserialize)]
 struct Wrapper {
-    before: String,
-    after: String,
+    returns_result: bool,
 }
 
 /// Sources for the example library and its libtest executable.
@@ -100,14 +99,19 @@ pub(super) fn harness(json: &[u8]) -> Option<Harness> {
             // Match the module and entry point rustdoc generates for a merged example.
             writeln!(source, "pub mod __doctest_{id} {{\n{}", code.crate_level).unwrap();
             if let Some(wrapper) = code.wrapper {
-                writeln!(source, "{}{}{}", wrapper.before, code.code, wrapper.after).unwrap();
+                let returns_result = if wrapper.returns_result {
+                    "-> Result<(), impl core::fmt::Debug>"
+                } else {
+                    ""
+                };
+                writeln!(source, "fn main() {returns_result} {{\n{}\n}}", code.code).unwrap();
             } else {
                 writeln!(source, "{}", code.code).unwrap();
             }
             source.push_str("pub fn __main_fn() -> impl std::process::Termination { main() }\n}\n");
             writeln!(
                 arms,
-                "{id} => __ohm_doctest_examples::__doctest_{id}::__main_fn().report(),"
+                "{id} => test::assert_test_result(__ohm_doctest_examples::__doctest_{id}::__main_fn()).report(),"
             )
             .unwrap();
         }
