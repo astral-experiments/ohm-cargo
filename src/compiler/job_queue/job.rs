@@ -5,6 +5,7 @@ use std::mem;
 
 use super::JobState;
 use crate::compiler::fingerprint::DirtyReason;
+use crate::compiler::{BuildRunner, Unit, cached_doctests};
 use crate::util::CargoResult;
 
 /// Represents a unit of [`Work`] with a [`Freshness`] for caller
@@ -12,6 +13,12 @@ use crate::util::CargoResult;
 pub struct Job {
     work: Work,
     fresh: Freshness,
+    doctest: Option<Box<DeferredDoctest>>,
+}
+
+struct DeferredDoctest {
+    force: bool,
+    before: Work,
 }
 
 /// The basic unit of work.
@@ -56,6 +63,7 @@ impl Job {
         Job {
             work: Work::noop(),
             fresh: Freshness::Fresh,
+            doctest: None,
         }
     }
 
@@ -64,7 +72,32 @@ impl Job {
         Job {
             work,
             fresh: Freshness::Dirty(dirty_reason),
+            doctest: None,
         }
+    }
+
+    /// Delay constructing the compiler commands until the build scripts have run.
+    pub fn defer_doctest(&mut self, force: bool) {
+        self.doctest = Some(Box::new(DeferredDoctest {
+            force,
+            before: Work::noop(),
+        }));
+    }
+
+    pub(super) fn has_deferred_doctest(&self) -> bool {
+        self.doctest.is_some()
+    }
+
+    pub(super) fn prepare_doctest(
+        &mut self,
+        build: &BuildRunner<'_, '_>,
+        unit: &Unit,
+    ) -> CargoResult<()> {
+        if let Some(doctest) = self.doctest.take() {
+            let work = cached_doctests::prepare(build, unit, doctest.force)?;
+            self.before(doctest.before.then(work));
+        }
+        Ok(())
     }
 
     /// Consumes this job by running it, returning the result of the
@@ -82,8 +115,12 @@ impl Job {
 
     /// Chains the given work by putting it in front of our own unit of work.
     pub fn before(&mut self, next: Work) {
-        let prev = mem::replace(&mut self.work, Work::noop());
-        self.work = next.then(prev);
+        let before = match &mut self.doctest {
+            Some(doctest) => &mut doctest.before,
+            None => &mut self.work,
+        };
+        let prev = mem::replace(before, Work::noop());
+        *before = next.then(prev);
     }
 
     /// Chains the given work by putting it after of our own unit of work.

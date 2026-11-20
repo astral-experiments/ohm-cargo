@@ -6154,6 +6154,85 @@ pub fn middle() {}
 }
 
 #[cargo_test]
+fn cached_doctests_compile_with_rustdocs_package_environment() {
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"[package]
+name = 'foo'
+version = '1.0.0'
+edition = '2024'
+description = '''
+```
+assert_eq!(env!("CARGO_PKG_NAME"), "foo");
+```
+'''
+"#,
+        )
+        .file(
+            "build.rs",
+            r#"fn main() {
+                println!("cargo::rustc-env=CARGO_PKG_NAME=script");
+                println!("cargo::rustc-env=CARGO_PKG_DESCRIPTION=No examples");
+            }"#,
+        )
+        .file(
+            "src/lib.rs",
+            r#"/// ```
+/// assert!(true);
+/// ```
+#[doc = env!("CARGO_PKG_DESCRIPTION")]
+pub fn example() {}
+"#,
+        )
+        .build();
+    for _ in 0..2 {
+        p.cargo("test --doc -Zohm-cached-doctests -v")
+            .masquerade_as_nightly_cargo(&["ohm-cached-doctests"])
+            .env("CARGO_UNSTABLE_OHM_DEFAULTS", "false")
+            .env("RUSTC_BOOTSTRAP", "1")
+            .with_stdout_contains("[..]2 passed; 0 failed[..]")
+            .with_stderr_does_not_contain("[RUNNING] [..]--test-run-directory[..]")
+            .run();
+    }
+}
+
+#[cfg(target_os = "linux")]
+#[cargo_test]
+fn cached_doctests_track_native_directories_from_selected_packages() {
+    let p = project()
+        .file(
+            "Cargo.toml",
+            "[package]\nname = 'foo'\nversion = '1.0.0'\nedition = '2024'\n[workspace]\nmembers = ['bar']",
+        )
+        .file(
+            "src/lib.rs",
+            r#"/// ```
+/// let compiled = option_env!("LD_LIBRARY_PATH").unwrap_or("");
+/// let runtime = std::env::var("LD_LIBRARY_PATH").unwrap_or_default();
+/// assert_eq!(compiled.contains("from-bar"), runtime.contains("from-bar"));
+/// ```
+pub fn example() {}
+"#,
+        )
+        .file("bar/Cargo.toml", "[package]\nname = 'bar'\nversion = '1.0.0'\nedition = '2024'")
+        .file("bar/src/lib.rs", "")
+        .file("bar/build.rs", r#"fn main() {
+            println!("cargo::rustc-link-search=native={}/from-bar", std::env::var("OUT_DIR").unwrap());
+        }"#)
+        .build();
+    for selection in ["-p foo", "--workspace", "--workspace", "-p foo"] {
+        p.cargo(&format!("test --doc -Zohm-cached-doctests -v {selection}"))
+            .masquerade_as_nightly_cargo(&["ohm-cached-doctests"])
+            .env("CARGO_UNSTABLE_OHM_DEFAULTS", "false")
+            .env("RUSTC_BOOTSTRAP", "1")
+            .with_stdout_contains("[..]1 passed; 0 failed[..]")
+            .with_stderr_does_not_contain("[RUNNING] [..]--crate-name foo --test [..]")
+            .run();
+    }
+}
+
+#[cargo_test]
 fn cached_doctests_inherit_the_crate_name_at_runtime() {
     let p = project()
         .file(

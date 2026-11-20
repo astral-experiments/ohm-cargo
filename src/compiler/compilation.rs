@@ -278,22 +278,13 @@ impl<'gctx> Compilation<'gctx> {
         is_primary: bool,
         is_workspace: bool,
     ) -> CargoResult<ProcessBuilder> {
-        let rustc = if is_primary && self.primary_rustc_process.is_some() {
+        let mut rustc = if is_primary && self.primary_rustc_process.is_some() {
             self.primary_rustc_process.clone().unwrap()
         } else if is_workspace {
             self.rustc_workspace_wrapper_process.clone()
         } else {
             self.rustc_process.clone()
         };
-        self.configure_rustc_process(unit, rustc)
-    }
-
-    /// Sets the unit's compiler environment for the selected executable.
-    pub(super) fn configure_rustc_process(
-        &self,
-        unit: &Unit,
-        mut rustc: ProcessBuilder,
-    ) -> CargoResult<ProcessBuilder> {
         if self.gctx.extra_verbose() {
             rustc.display_env_vars();
         }

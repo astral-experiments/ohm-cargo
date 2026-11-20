@@ -972,35 +972,9 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             // Collect information for `rustdoc --test`.
             if unit.mode.is_doc_test() {
                 let mut unstable_opts = false;
-                let mut args = compiler::extern_args(&self, unit, &mut unstable_opts)?;
-                args.extend(compiler::lib_search_paths(&self, unit)?);
-                args.extend(compiler::lto_args(&self, unit));
-                args.extend(compiler::features_args(unit));
-                args.extend(compiler::check_cfg_args(unit));
-
                 let script_metas = self.find_build_script_metadatas(unit);
-                if let Some(meta_vec) = script_metas.clone() {
-                    for meta in meta_vec {
-                        if let Some(output) = self.build_script_outputs.lock().unwrap().get(meta) {
-                            for cfg in &output.cfgs {
-                                args.push("--cfg".into());
-                                args.push(cfg.into());
-                            }
-
-                            for check_cfg in &output.check_cfgs {
-                                args.push("--check-cfg".into());
-                                args.push(check_cfg.into());
-                            }
-
-                            for (lt, arg) in &output.linker_args {
-                                if lt.applies_to(&unit.target, unit.mode) {
-                                    args.push("-C".into());
-                                    args.push(format!("link-arg={}", arg).into());
-                                }
-                            }
-                        }
-                    }
-                }
+                let mut args =
+                    self.doctest_args(unit, script_metas.as_deref(), &mut unstable_opts)?;
                 args.extend(unit.rustdocflags.iter().map(Into::into));
 
                 use super::MessageFormat;
@@ -1039,6 +1013,45 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         super::output_depinfo(&self)?;
 
         Ok(self.compilation)
+    }
+
+    /// Dependencies and package flags shared by rustdoc and cached example compilation.
+    pub(super) fn doctest_args(
+        &self,
+        unit: &Unit,
+        scripts: Option<&[UnitHash]>,
+        unstable_opts: &mut bool,
+    ) -> CargoResult<Vec<OsString>> {
+        let mut args = compiler::extern_args(self, unit, unstable_opts)?;
+        args.extend(compiler::lib_search_paths(self, unit)?);
+        args.extend(compiler::lto_args(self, unit));
+        args.extend(compiler::features_args(unit));
+        args.extend(compiler::check_cfg_args(unit));
+
+        if let Some(scripts) = scripts {
+            let outputs = self.build_script_outputs.lock().unwrap();
+            for meta in scripts {
+                if let Some(output) = outputs.get(*meta) {
+                    for cfg in &output.cfgs {
+                        args.push("--cfg".into());
+                        args.push(cfg.into());
+                    }
+
+                    for check_cfg in &output.check_cfgs {
+                        args.push("--check-cfg".into());
+                        args.push(check_cfg.into());
+                    }
+
+                    for (lt, arg) in &output.linker_args {
+                        if lt.applies_to(&unit.target, unit.mode) {
+                            args.push("-C".into());
+                            args.push(format!("link-arg={}", arg).into());
+                        }
+                    }
+                }
+            }
+        }
+        Ok(args)
     }
 
     /// Collect the same runtime environment for early and ordinary test execution.
