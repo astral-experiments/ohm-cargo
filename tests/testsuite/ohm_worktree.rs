@@ -28,6 +28,43 @@ fn seeded_cargo(project: &Project, command: &str) -> Execs {
     cargo
 }
 
+#[cfg(all(target_arch = "x86_64", target_os = "linux", target_env = "gnu"))]
+#[cargo_test]
+fn limited_library_debug_info_respects_worktree_storage_and_explicit_profiles() {
+    if !crate::build_dir::selected_compiler_supports_ohm_defaults() {
+        return;
+    }
+    let p = project()
+        .file("src/lib.rs", "pub fn answer() -> u8 { 42 }")
+        .build();
+    let tmp = tempfile::tempdir_in(paths::root()).unwrap();
+    let source = tmp.path().join("source");
+    fs::write(&source, [0x42; 4096]).unwrap();
+    let cloneable = paths::clone_file(&source, &tmp.path().join("clone"));
+    let build = || {
+        let mut cargo = seeded_cargo(&p, "build --lib -v");
+        cargo.env("CARGO_PROFILE_DEV_DEBUG", "limited");
+        cargo
+    };
+    build()
+        .with_stderr_does_not_contain("[..]split-debuginfo=unpacked[..]")
+        .run();
+    let target = tmp.path().join("target");
+    let mut command = build();
+    command.env("CARGO_TARGET_DIR", &target);
+    if cloneable {
+        command.with_stderr_does_not_contain("[..]split-debuginfo=unpacked[..]");
+    } else {
+        command.with_stderr_contains("[..]split-debuginfo=unpacked[..]");
+    }
+    command.run();
+    build()
+        .env("CARGO_TARGET_DIR", &target)
+        .env("CARGO_PROFILE_DEV_SPLIT_DEBUGINFO", "off")
+        .with_stderr_contains("[..]split-debuginfo=off[..]")
+        .run();
+}
+
 #[cargo_test]
 fn coverage_uses_source_paths_from_the_checkout() {
     let p = project()
