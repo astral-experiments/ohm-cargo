@@ -8,13 +8,13 @@ use rustc_hash::FxHashMap as HashMap;
 use std::hash::{Hash, Hasher};
 use std::path::{Path, PathBuf};
 
-use crate::resolver::{CliFeatures, HasDevUnits, ResolveOpts, ResolveVersion};
+use crate::resolver::{ResolveOpts, ResolveVersion};
 use crate::sources::{IndexSummary, source::QueryKind};
 use crate::util::data_structures::HashSet;
 use crate::util::interning::InternedString;
 use crate::util::{Graph, OptVersionReq, VersionReqMatchMode};
 use crate::workspace::registry::{PackageRegistry, Registry};
-use crate::workspace::{Dependency, PackageId, PackageIdSpec, Summary};
+use crate::workspace::{Dependency, PackageId, Summary};
 
 #[derive(serde::Serialize, serde::Deserialize)]
 struct Selection {
@@ -66,9 +66,7 @@ impl SelectedPlan {
     pub(in crate::ops) fn new(
         ws: &Workspace<'_>,
         fingerprint: u64,
-        features: &CliFeatures,
-        dev: HasDevUnits,
-        specs: &[PackageIdSpec],
+        roots: &[(Summary, ResolveOpts)],
     ) -> Option<Self> {
         if !cfg!(unix)
             || !ws.root_patch().ok()?.is_empty()
@@ -82,12 +80,12 @@ impl SelectedPlan {
             return None;
         }
         let mut hasher = StableHasher::new();
+        // Resolver 1 applies some CLI flags only to the current member. Key the plan
+        // by the package IDs and feature requests passed to the resolver.
         (
-            2u32,
+            3u32,
             fingerprint,
-            features,
-            dev == HasDevUnits::Yes,
-            specs,
+            roots,
             ws.root(),
             ws.gctx().home().as_path_unlocked(),
             ws.gctx().network_allowed(),

@@ -606,9 +606,8 @@ fn resolve_with_previous_plan<'gctx>(
     let replace = lock_replacements(ws, previous, &keep);
 
     let version = ResolveVersion::with_rust_version(ws.lowest_rust_version());
-    let plan = workspace_fingerprint.and_then(|key| {
-        resolve_cache::SelectedPlan::new(ws, key, cli_features, has_dev_units, specs)
-    });
+    let plan =
+        workspace_fingerprint.and_then(|key| resolve_cache::SelectedPlan::new(ws, key, &summaries));
     let mut resolved = ws.gctx().selected_index.scoped(plan.is_some(), || {
         if let Some(cached) = plan.as_ref().and_then(|plan| {
             plan.load(

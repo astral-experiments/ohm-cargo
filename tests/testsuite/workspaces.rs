@@ -3059,6 +3059,50 @@ fn private_selection_home() -> tempfile::TempDir {
 
 #[cfg(unix)]
 #[cargo_test]
+fn selected_resolution_tracks_member_specific_feature_requests() {
+    let _home = private_selection_home();
+    let project = project()
+        .file(
+            "Cargo.toml",
+            "[workspace]\nresolver = '1'\nmembers = ['app', 'dep']",
+        )
+        .file(
+            "app/Cargo.toml",
+            r#"
+                [package]
+                name = "app"
+                version = "0.1.0"
+                edition = "2018"
+
+                [dependencies]
+                dep = { path = "../dep", optional = true }
+
+                [features]
+                default = ["dep"]
+            "#,
+        )
+        .file("app/src/lib.rs", "#[cfg(feature = \"dep\")] pub use dep;")
+        .file("dep/Cargo.toml", &basic_manifest("dep", "0.1.0"))
+        .file("dep/src/lib.rs", "")
+        .build();
+
+    let check = |member| {
+        workspace_resolve_cache_command(
+            &project,
+            &format!("check --workspace --no-default-features --manifest-path {member}/Cargo.toml"),
+        )
+    };
+    check("app").run();
+    check("app").run();
+    check("app")
+        .with_stderr_contains("[..]reusing locked package selection[..]")
+        .run();
+    // With resolver 1 the flag now disables dep's defaults, so app needs its dep edge.
+    check("dep").run();
+}
+
+#[cfg(unix)]
+#[cargo_test]
 fn selected_resolution_honors_locked_yanked_versions() {
     let _home = private_selection_home();
     Package::new("old", "1.0.0").publish();
