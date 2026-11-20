@@ -7269,3 +7269,80 @@ fn checked_bundled_archive_reopens_the_git_dependency_search_path() {
     std::os::unix::fs::symlink(next, lookup).unwrap();
     run().with_stdout_data("9\n").run();
 }
+
+#[cfg(feature = "ohm-defaults")]
+#[cargo_test]
+fn whole_crate_hash_hint_follows_binary_usage_and_current_graph() {
+    let rustc = std::env::var_os("RUSTC").unwrap_or_else(|| "rustc".into());
+    if cargo_test_support::process(rustc)
+        .args(&["-Zohm-prefer-full-crate-hash", "--print=sysroot"])
+        .exec_with_output()
+        .is_err()
+    {
+        return;
+    }
+    let main = r#"fn main() { println!("{}", app::value()); }"#;
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+            [package]
+            name = "app"
+            version = "0.1.0"
+            edition = "2024"
+            [workspace]
+            members = ["client"]
+        "#,
+        )
+        .file("src/lib.rs", "pub fn value() -> u8 { 1 }")
+        .file("src/main.rs", "fn main() {}")
+        .file(
+            "client/Cargo.toml",
+            r#"
+            [package]
+            name = "client"
+            version = "0.1.0"
+            edition = "2024"
+            [dependencies]
+            app = { path = ".." }
+        "#,
+        )
+        .file("client/src/main.rs", main)
+        .build();
+    let invoke = |op: &str, selection: &str, hinted| {
+        let mut cmd = p.cargo(&format!("-Zohm-defaults {op} -v {selection}"));
+        cmd.masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("CARGO_INCREMENTAL", "1")
+            .env_remove("LIBRARY_PATH");
+        let hint = "[..]-Zohm-prefer-full-crate-hash[..]";
+        if hinted {
+            cmd.with_stderr_contains(hint);
+        } else {
+            cmd.with_stderr_does_not_contain(hint);
+        }
+        cmd
+    };
+    invoke("check", "-p app", false).run();
+    p.change_file("src/lib.rs", "pub fn value() -> u8 { 0 }");
+    invoke("check", "-p app", true).run();
+    let build = |selection: &str, hinted| invoke("build", selection, hinted);
+    build("-p app", false).run();
+    p.change_file("src/lib.rs", "pub fn value() -> u8 { 2 }");
+    build("-p app", true).run();
+    build("--workspace", false)
+        .with_stderr_does_not_contain("[..]--crate-name app [..]")
+        .run();
+    p.process(p.bin("client")).with_stdout_contains("2").run();
+    p.change_file("src/lib.rs", "pub fn value() -> u8 { 3 }");
+    build("--workspace", false).run();
+    p.process(p.bin("client")).with_stdout_contains("3").run();
+
+    // The previous receipt can be stale. Compile the new consumer as usual.
+    p.change_file("src/main.rs", main);
+    p.change_file("src/lib.rs", "pub fn value() -> u8 { 4 }");
+    build("-p app", true).run();
+    p.process(p.bin("app")).with_stdout_contains("4").run();
+    p.change_file("src/lib.rs", "pub fn value() -> u8 { 5 }");
+    build("-p app", false).run();
+    p.process(p.bin("app")).with_stdout_contains("5").run();
+}
