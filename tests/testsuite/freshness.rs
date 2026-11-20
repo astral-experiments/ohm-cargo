@@ -7348,14 +7348,18 @@ fn whole_crate_hash_hint_follows_binary_usage_and_current_graph() {
 }
 
 #[cfg(feature = "ohm-defaults")]
-#[cargo_test]
-fn terminal_declaration_hash_follows_the_graph_and_cached_diagnostics() {
+fn supports_terminal_declaration_hash() -> bool {
     let rustc = std::env::var_os("RUSTC").unwrap_or_else(|| "rustc".into());
-    if cargo_test_support::process(rustc)
+    cargo_test_support::process(rustc)
         .args(&["-Zohm-terminal-check-hash", "--print=sysroot"])
         .exec_with_output()
-        .is_err()
-    {
+        .is_ok()
+}
+
+#[cfg(feature = "ohm-defaults")]
+#[cargo_test]
+fn terminal_declaration_hash_follows_the_graph_and_cached_diagnostics() {
+    if !supports_terminal_declaration_hash() {
         return;
     }
     let manifest = |name| {
@@ -7430,4 +7434,59 @@ fn terminal_declaration_hash_follows_the_graph_and_cached_diagnostics() {
         .with_status(101)
         .with_stderr_contains("error[E0308]: mismatched types")
         .run();
+}
+
+#[cfg(feature = "ohm-defaults")]
+#[cargo_test]
+fn terminal_declaration_hash_refreshes_unselected_binary_diagnostics() {
+    if !supports_terminal_declaration_hash() {
+        return;
+    }
+    let source = "pub fn f<'a, 'b: 'a, 'c>(x: &'a str, _: &'b str, _: &'c str) -> &'a str { x }";
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [workspace]
+                [package]
+                name = "app"
+                version = "0.1.0"
+                edition = "2024"
+                [dependencies]
+                dep = { path = "dep" }
+            "#,
+        )
+        .file("dep/Cargo.toml", &basic_manifest("dep", "0.1.0"))
+        .file("dep/src/lib.rs", source)
+        .file(
+            "src/bin/a.rs",
+            r#"fn main() { dep::f::<'static, 'static>("", "", ""); }"#,
+        )
+        .file("src/bin/b.rs", r#"fn main() { dep::f("", "", ""); }"#)
+        .build();
+    let check = |binary: &str| {
+        let mut cmd = p.cargo(&format!("-Zohm-defaults check -v --bin {binary}"));
+        cmd.masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("CARGO_INCREMENTAL", "1")
+            .env_remove("LIBRARY_PATH");
+        cmd
+    };
+    check("a").with_stderr_contains("[..]lib.rs:1:22").run();
+    check("b")
+        .with_stderr_does_not_contain("[..]--crate-name dep [..]")
+        .run();
+    p.change_file("dep/src/lib.rs", &format!("{0}{source}", "\n".repeat(10)));
+    check("b")
+        .with_stderr_contains("[..]-Zohm-terminal-check-hash[..]")
+        .with_stderr_does_not_contain("[..]--crate-name b [..]")
+        .run();
+    check("a")
+        .with_stderr_contains("[..]lib.rs:11:22")
+        .with_stderr_does_not_contain("[..]--crate-name dep [..]")
+        .run();
+    for bin in ["b", "a"] {
+        check(bin)
+            .with_stderr_does_not_contain("[..]--crate-name [..]")
+            .run();
+    }
 }
