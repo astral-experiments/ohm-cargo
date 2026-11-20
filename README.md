@@ -118,15 +118,20 @@ This applies to ordinary workspace binaries on native x86-64 GNU/Linux
 with the bundled linker and a system GCC or Clang driver, including binaries
 built for integration tests.
 Packages with a build script and builds with a custom compiler wrapper or
-linker flags are excluded.
+linker flags are excluded. Setting `LIBRARY_PATH`, `GCC_EXEC_PREFIX`
+or `COMPILER_PATH` also disables reuse.
 
 Ohm checks the compiler inputs and the file identities and timestamps in
 the linker's dependency file. It also checks the environment used to locate
 libraries and the timestamps of explicit native search directories. A
 missing report or changed input falls back to the normal build. This assumes
-a stable system toolchain and filesystem timestamps that distinguish edits.
-A compiler driver reading private configuration or a linker script adding
-its own search directories can introduce inputs outside these checks. Use
+filesystem timestamps that distinguish edits. Build scripts can contribute
+search paths only from registry dependencies, and those paths must resolve
+under system libraries, the toolchain, registry sources, or registry script
+outputs. Reuse assumes these locations stay stable between Cargo builds.
+Manually changing nested search paths, symlink targets or thin archives
+in managed directories can escape detection. Driver configuration, linker
+scripts and verbatim paths can also refer to untracked locations. Use
 `cargo +ohm -Zohm-defaults=no build` to opt out.
 
 ## License

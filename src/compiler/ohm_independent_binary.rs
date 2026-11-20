@@ -19,6 +19,7 @@ pub(super) struct IndependentBinary {
     report: PathBuf,
     driver: PathBuf,
     dirs: BTreeSet<PathBuf>,
+    native_roots: BTreeSet<PathBuf>,
     environment: Vec<Option<OsString>>,
     started: SystemTime,
 }
@@ -55,9 +56,6 @@ impl IndependentBinary {
         rustc.arg("-Clink-arg=-Xlinker").arg(arg);
         let environment = [
             "PATH",
-            "LIBRARY_PATH",
-            "GCC_EXEC_PREFIX",
-            "COMPILER_PATH",
             "LD_LIBRARY_PATH",
             "LD_RUN_PATH",
             "SOURCE_DATE_EPOCH",
@@ -65,41 +63,57 @@ impl IndependentBinary {
         .into_iter()
         .map(|k| rustc.get_env(k))
         .collect();
-        let mut dirs = BTreeSet::new();
-        if let Some(v) = rustc.get_env("LIBRARY_PATH") {
-            dirs.extend(std::env::split_paths(&v));
-        }
-        dirs.extend(
-            [
-                "/lib",
-                "/usr/lib",
-                "/usr/local/lib",
-                "/lib64",
-                "/usr/lib64",
-                "/usr/local/lib64",
-            ]
-            .map(PathBuf::from),
-        );
+        let dirs: BTreeSet<_> = ["/lib", "/usr/lib", "/lib64", "/usr/lib64"]
+            .map(PathBuf::from)
+            .into_iter()
+            .collect();
+        let native_roots = dirs
+            .iter()
+            .cloned()
+            .chain([
+                runner.bcx.gctx.registry_source_path().into_path_unlocked(),
+                runner.bcx.target_data.info(unit.kind).sysroot.clone(),
+            ])
+            .filter_map(|dir| dir.canonicalize().ok())
+            .collect();
         Some(Self {
             dependency,
             name,
             report,
             driver,
             dirs,
+            native_roots,
             environment,
             started: SystemTime::now(),
         })
     }
 
-    /// Also observe explicit search directories, including absent ones, so
-    /// inserting a native library ahead of a previous match invalidates reuse.
-    pub(super) fn add_search_paths(&mut self, output: &BuildOutput) -> Option<()> {
+    /// A directory timestamp misses nested additions, symlink targets and
+    /// in-place thin archive updates. Admit only native paths managed by
+    /// the toolchain or immutable registry dependencies.
+    pub(super) fn add_search_paths(
+        &mut self,
+        output: &BuildOutput,
+        registry_out: &Path,
+    ) -> Option<()> {
+        if let Ok(dir) = registry_out.canonicalize() {
+            self.native_roots.insert(dir);
+        }
         for path in &output.library_paths {
             let path = path.as_ref().to_str()?;
             let path = path.split_once('=').map_or(path, |(_, path)| path);
+            self.managed_native_input(Path::new(path))?;
             self.dirs.insert(path.into());
         }
         Some(())
+    }
+
+    fn managed_native_input(&self, path: &Path) -> Option<()> {
+        let canonical = path.canonicalize().ok()?;
+        self.native_roots
+            .iter()
+            .any(|root| canonical.starts_with(root))
+            .then_some(())
     }
 
     pub(super) fn start(&mut self) {
@@ -156,7 +170,7 @@ impl IndependentBinary {
             return None;
         }
         let mut hash = std::hash::DefaultHasher::new();
-        ("binary-link-v1", &bytes, &self.environment).hash(&mut hash);
+        ("binary-link-v2", &bytes, &self.environment).hash(&mut hash);
         self.driver.hash(&mut hash);
         generation(&self.driver.metadata().ok()?, Some(self.started))?.hash(&mut hash);
         generation(&self.report.metadata().ok()?, None)?.hash(&mut hash);
@@ -183,6 +197,8 @@ impl IndependentBinary {
             }
             if parent == cache.objects {
                 saw_objects = true;
+            } else if path.extension().is_none_or(|s| s != "rlib") {
+                self.managed_native_input(path)?;
             }
             if path.extension().is_none_or(|s| s != "o" && s != "rlib") {
                 dirs.insert(parent.to_owned());
@@ -216,7 +232,11 @@ impl IndependentBinary {
 /// A custom cc shim may handle even standard driver arguments differently.
 /// Leave it alone unless it resolves directly to the system GCC or Clang.
 fn system_cc(rustc: &ProcessBuilder) -> Option<PathBuf> {
-    if rustc.get_env("GCC_EXEC_PREFIX").is_some() || rustc.get_env("COMPILER_PATH").is_some() {
+    // Drivers can expand LIBRARY_PATH with multilib and multiarch directories.
+    if ["GCC_EXEC_PREFIX", "COMPILER_PATH", "LIBRARY_PATH"]
+        .iter()
+        .any(|name| rustc.get_env(name).is_some())
+    {
         return None;
     }
     for dir in std::env::split_paths(&rustc.get_env("PATH")?) {

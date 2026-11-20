@@ -28,14 +28,7 @@ fn binary_with_unused_library_keeps_its_link_until_an_input_changes() {
         .file("src/lib.rs", "pub struct Original;")
         .file(
             "src/main.rs",
-            r#"
-                #[link(name="answer", kind="static", modifiers="-bundle")]
-                unsafe extern "C" { fn answer() -> i32; }
-                fn main() {
-                    let warning = 1;
-                    println!("{}", unsafe { answer() });
-                }
-            "#,
+            r#"fn main() { let warning = 1; println!("17"); }"#,
         )
         .file("vendor/answer.c", "int answer(void) { return 17; }")
         .build();
@@ -50,11 +43,10 @@ fn binary_with_unused_library_keeps_its_link_until_an_input_changes() {
     let build = || {
         let mut cmd = p.cargo("-Zohm-defaults build -v");
         cmd.masquerade_as_nightly_cargo(&["ohm-defaults"])
-            .env("LIBRARY_PATH", p.root().join("vendor"))
+            .env_remove("LIBRARY_PATH")
             .env("CARGO_LOG", "cargo::compiler::ohm_independent_binary=info");
         cmd
     };
-    archive();
     build().run();
     for edit in ["pub struct First;", "pub struct Second;"] {
         p.change_file("src/lib.rs", edit);
@@ -65,9 +57,31 @@ fn binary_with_unused_library_keeps_its_link_until_an_input_changes() {
         p.process(p.bin("app")).with_stdout_contains("17").run();
     }
     build().with_stderr_contains("[FRESH] app[..]").run();
+
+    // LIBRARY_PATH can expose multilib directories, thin archives and
+    // dangling symlinks. Relink when only the Rust library changed.
+    let native_build = || {
+        let mut cmd = build();
+        cmd.env("LIBRARY_PATH", p.root().join("vendor"))
+            .with_stderr_does_not_contain("[..]reusing binary with unused library[..]");
+        cmd
+    };
+    p.change_file(
+        "src/main.rs",
+        r#"
+            #[link(name="answer", kind="static", modifiers="-bundle")]
+            unsafe extern "C" { fn answer() -> i32; }
+            fn main() { println!("{}", unsafe { answer() }); }
+        "#,
+    );
+    archive();
+    native_build().run();
+    p.change_file("src/lib.rs", "pub struct Native;");
+    native_build().run();
+    p.process(p.bin("app")).with_stdout_contains("17").run();
     p.change_file("vendor/libanswer.a", "invalid archive");
     p.change_file("src/lib.rs", "pub struct Third;");
-    build()
+    native_build()
         .with_status(101)
         .with_stderr_contains("[..]linking with [..] failed[..]")
         .run();
@@ -75,7 +89,7 @@ fn binary_with_unused_library_keeps_its_link_until_an_input_changes() {
     p.change_file("vendor/answer.c", "int answer(void) { return 29; }");
     archive();
     p.change_file("src/lib.rs", "pub fn value() -> i32 { 31 }");
-    build().run();
+    native_build().run();
     p.process(p.bin("app")).with_stdout_contains("29").run();
     p.change_file(
         "src/main.rs",

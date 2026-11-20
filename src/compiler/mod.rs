@@ -1477,7 +1477,7 @@ fn rustc(
             ohm_independent_binary::IndependentBinary::new(build_runner, unit, &mut rustc, cache)
         });
     let record_dev_unused = ohm_deferred_dev_deps::supported(build_runner, unit);
-    let dev_native_output_dirs = record_dev_unused
+    let dev_native_output_dirs = (record_dev_unused || binary.is_some())
         .then(|| ohm_deferred_dev_deps::native_output_dirs(build_runner))
         .unwrap_or_default();
     let previous_dev_unused = record_dev_unused
@@ -1702,8 +1702,14 @@ fn rustc(
             binary.start();
             if let Some(scripts) = &build_scripts {
                 let outputs = build_script_outputs.lock().unwrap();
-                for (_, metadata) in &scripts.to_link {
-                    binary.add_search_paths(outputs.get(*metadata)?)?;
+                for (package, metadata) in &scripts.to_link {
+                    let output = outputs.get(*metadata)?;
+                    if !output.library_paths.is_empty() {
+                        if !package.source_id().is_registry() {
+                            return None;
+                        }
+                        binary.add_search_paths(output, dev_native_output_dirs.get(metadata)?)?;
+                    }
                 }
             }
             Some(binary)
