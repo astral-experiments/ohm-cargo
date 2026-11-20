@@ -29,8 +29,8 @@ pub(super) fn enabled(bcx: &BuildContext<'_, '_>, unit: &Unit) -> bool {
 /// Encoded dependencies of the crate under rustdoc's cfgs, separate from the
 /// dependencies rustc reports for the extracted examples themselves.
 pub(super) fn extraction_dep_info(dir: &Path) -> PathBuf {
-    // Regenerate merged entry points that unwrapped Result examples.
-    dir.join("dep-doctest-extraction-v8")
+    // Regenerate bundles that could contain standalone macro definitions.
+    dir.join("dep-doctest-extraction-v9")
 }
 
 /// Prepares both compiler commands with the dependencies of the doctest unit.

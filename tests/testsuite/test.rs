@@ -6334,6 +6334,10 @@ fn cached_doctests_keep_the_dispatcher_out_of_examples() {
             "use crate as root; let _ = Option::<root::Example<0>>::None;",
             "cannot find type `Example` in module `root`",
         ),
+        (
+            "macro_rules! callback { () => { use $crate as root; let _ = root::__doctest_0::__main_fn; } } callback!();",
+            "error[E0433]",
+        ),
     ] {
         p.change_file("example.md", &format!("```\n{code}\n```\n"));
         p.cargo("test --doc -Zohm-cached-doctests")
