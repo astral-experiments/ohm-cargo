@@ -2,9 +2,10 @@
 
 use crate::sources::IndexSummary;
 use crate::sources::RecursivePathSource;
+use crate::sources::git::utils::CHECKOUT_READY_LOCK;
 use crate::sources::git::utils::GitDatabase;
 use crate::sources::git::utils::GitRemote;
-use crate::sources::git::utils::rev_to_oid;
+use crate::sources::git::utils::MIN_ABBREV_LEN;
 use crate::sources::source::MaybePackage;
 use crate::sources::source::QueryKind;
 use crate::sources::source::Source;
@@ -21,6 +22,7 @@ use anyhow::Context as _;
 use cargo_util::paths::exclude_from_backups_and_indexing;
 use std::cell::RefCell;
 use std::fmt::{self, Debug, Formatter};
+use std::path::PathBuf;
 use tracing::trace;
 use url::Url;
 
@@ -191,7 +193,12 @@ impl<'gctx> GitSource<'gctx> {
         let (db, actual_rev) = match (&*self.locked_rev.borrow(), db) {
             // If we have a locked revision, and we have a preexisting database
             // which has that revision, then no update needs to happen.
-            (Revision::Locked(oid), Some(db)) if db.contains(*oid) => (db, *oid),
+            (Revision::Locked(oid), Some(db))
+                if let Ok(oid) = git2::Oid::from_bytes(oid.as_slice())
+                    && db.contains(oid) =>
+            {
+                (db, oid)
+            }
 
             // If we're in offline mode, we're not locked, and we have a
             // database, then try to resolve our reference with the preexisting
@@ -268,24 +275,16 @@ impl<'gctx> GitSource<'gctx> {
         // exists.
         exclude_from_backups_and_indexing(&git_path);
 
-        let (db, actual_rev) = self.fetch_db(false)?;
-
-        // Don’t use the full hash, in order to contribute less to reaching the
-        // path length limit on Windows. See
-        // <https://github.com/servo/servo/pull/14397>.
-        let short_id = db.to_short_id(actual_rev)?;
-
-        // Check out `actual_rev` from the database to a scoped location on the
-        // filesystem. This will use hard links and such to ideally make the
-        // checkout operation here pretty fast.
-        let checkout_path = self
-            .gctx
-            .git_checkouts_path()
-            .join(&self.ident)
-            .join(short_id.as_str());
-        let checkout_path = checkout_path.into_path_unlocked();
-        db.copy_to(actual_rev, &checkout_path, self.gctx, self.quiet)?;
-
+        let (actual_rev, short_id) = match self.existing_locked_checkout() {
+            Some(cached) => cached,
+            None => {
+                let (db, rev) = self.fetch_db(false)?;
+                let short_id = db.to_short_id(rev)?;
+                db.copy_to(rev, &self.checkout_path(&short_id), self.gctx, self.quiet)?;
+                (gix::ObjectId::try_from(rev.as_bytes())?, short_id)
+            }
+        };
+        let checkout_path = self.checkout_path(&short_id);
         let source_id = self
             .source_id
             .borrow()
@@ -300,6 +299,58 @@ impl<'gctx> GitSource<'gctx> {
         self.mark_used()?;
         Ok(())
     }
+
+    /// Use a short hash to stay within Windows path length limits
+    /// (<https://github.com/servo/servo/pull/14397>).
+    fn checkout_path(&self, short_id: &str) -> PathBuf {
+        self.gctx
+            .git_checkouts_path()
+            .join(&self.ident)
+            .join(short_id)
+            .into_path_unlocked()
+    }
+
+    /// Locate a completed checkout of the locked commit using local reads.
+    ///
+    /// Even parsing an OID with libgit2 initializes its HTTPS backend and
+    /// can load the entire CA bundle. Use gitoxide for the read-only checks
+    /// in `fetch_db`, `to_short_id` and `copy_to` while holding the same
+    /// package cache lock. Delegate misses and repairs to those methods.
+    fn existing_locked_checkout(&self) -> Option<(gix::ObjectId, String)> {
+        if !self.gctx.cli_unstable().ohm_defaults() {
+            return None;
+        }
+        let Revision::Locked(rev) = *self.locked_rev.borrow() else {
+            return None;
+        };
+        let path = self
+            .gctx
+            .git_db_path()
+            .join(&self.ident)
+            .into_path_unlocked();
+        let opts = gix::open::Options::isolated().bail_if_untrusted(true);
+        let db = gix::open_opts(&path, opts.clone()).ok()?;
+        let prefix =
+            gix::odb::store::prefix::disambiguate::Candidate::new(rev, MIN_ABBREV_LEN).ok()?;
+        let short_id = db.objects.disambiguate_prefix(prefix).ok()??.to_string();
+        let path = self.checkout_path(&short_id);
+        if !path.join(CHECKOUT_READY_LOCK).is_file() {
+            return None;
+        }
+        let checkout = gix::open_opts(&path, opts).ok()?;
+        if checkout.workdir()? != path || checkout.head().ok()?.id()? != rev {
+            return None;
+        }
+        // Match libgit2's strict verification on object reads in both stores.
+        for repo in [db, checkout] {
+            let commit = repo.find_commit(rev).ok()?;
+            commit.decode().ok()?;
+            gix::objs::Data::new(&commit.data, gix::objs::Kind::Commit, rev.kind())
+                .verify_checksum(&rev)
+                .ok()?;
+        }
+        Some((rev, short_id))
+    }
 }
 
 /// Indicates a [Git revision] that might be locked or deferred to be resolved.
@@ -312,14 +363,14 @@ enum Revision {
     /// [Git reference]: https://git-scm.com/book/en/v2/Git-Internals-Git-References
     Deferred(GitReference),
     /// A locked revision of the actual Git commit object ID.
-    Locked(git2::Oid),
+    Locked(gix::ObjectId),
 }
 
 impl Revision {
     fn new(rev: &str) -> Revision {
-        match rev_to_oid(rev) {
-            Some(oid) => Revision::Locked(oid),
-            None => Revision::Deferred(GitReference::Rev(rev.to_string())),
+        match gix::ObjectId::from_hex(rev.as_bytes()) {
+            Ok(oid) => Revision::Locked(oid),
+            Err(_) => Revision::Deferred(GitReference::Rev(rev.to_string())),
         }
     }
 }
