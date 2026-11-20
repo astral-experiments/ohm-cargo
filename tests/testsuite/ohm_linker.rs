@@ -5,6 +5,119 @@ use cargo_test_support::{Execs, Project, basic_manifest, paths, project};
 use std::path::{Path, PathBuf};
 use std::{env, fs};
 
+#[cfg(all(
+    target_os = "linux",
+    target_arch = "x86_64",
+    target_env = "gnu",
+    feature = "ohm-defaults"
+))]
+#[cargo_test(requires = "cc", requires = "ar")]
+fn binary_with_unused_library_keeps_its_link_until_an_input_changes() {
+    // Exercise the native dependency file alongside the real compiler's usage report.
+    if !Path::new(&paths::sysroot())
+        .join("lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld/ld.bfd")
+        .is_file()
+    {
+        return;
+    }
+    let p = project()
+        .file(
+            "Cargo.toml",
+            "[package]\nname=\"app\"\nversion=\"0.1.0\"\nedition=\"2024\"\n",
+        )
+        .file("src/lib.rs", "pub struct Original;")
+        .file(
+            "src/main.rs",
+            r#"fn main() { let warning = 1; println!("17"); }"#,
+        )
+        .file("vendor/answer.c", "int answer(void) { return 17; }")
+        .build();
+    let archive = || {
+        p.process("cc")
+            .args(&["-c", "vendor/answer.c", "-o", "vendor/answer.o"])
+            .run();
+        p.process("ar")
+            .args(&["crs", "vendor/libanswer.a", "vendor/answer.o"])
+            .run();
+    };
+    let build = || {
+        let mut cmd = p.cargo("-Zohm-defaults build -v");
+        cmd.masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env_remove("LIBRARY_PATH")
+            .env("CARGO_LOG", "cargo::compiler::ohm_independent_binary=info");
+        cmd
+    };
+    build().run();
+    for edit in ["pub struct First;", "pub struct Second;"] {
+        p.change_file("src/lib.rs", edit);
+        build()
+            .with_stderr_contains("[..]reusing binary with unused library[..]")
+            .with_stderr_contains("[..]unused variable: `warning`[..]")
+            .run();
+        p.process(p.bin("app")).with_stdout_contains("17").run();
+    }
+    build().with_stderr_contains("[FRESH] app[..]").run();
+
+    // LIBRARY_PATH can expose multilib directories, thin archives and
+    // dangling symlinks. Relink when only the Rust library changed.
+    let native_build = || {
+        let mut cmd = build();
+        cmd.env("LIBRARY_PATH", p.root().join("vendor"))
+            .with_stderr_does_not_contain("[..]reusing binary with unused library[..]");
+        cmd
+    };
+    p.change_file(
+        "src/main.rs",
+        r#"
+            #[link(name="answer", kind="static", modifiers="-bundle")]
+            unsafe extern "C" { fn answer() -> i32; }
+            fn main() { println!("{}", unsafe { answer() }); }
+        "#,
+    );
+    archive();
+    native_build().run();
+    p.change_file("src/lib.rs", "pub struct Native;");
+    native_build().run();
+    p.process(p.bin("app")).with_stdout_contains("17").run();
+    p.change_file("vendor/libanswer.a", "invalid archive");
+    p.change_file("src/lib.rs", "pub struct Third;");
+    native_build()
+        .with_status(101)
+        .with_stderr_contains("[..]linking with [..] failed[..]")
+        .run();
+    fs::remove_file(p.root().join("vendor/libanswer.a")).unwrap();
+    p.change_file("vendor/answer.c", "int answer(void) { return 29; }");
+    archive();
+    p.change_file("src/lib.rs", "pub fn value() -> i32 { 31 }");
+    native_build().run();
+    p.process(p.bin("app")).with_stdout_contains("29").run();
+    p.change_file(
+        "src/main.rs",
+        "fn main() { println!(\"{}\", app::value()); }",
+    );
+    build().run();
+    p.process(p.bin("app")).with_stdout_contains("31").run();
+    p.change_file("src/lib.rs", "pub fn value() -> i32 { 37 }");
+    build().run();
+    p.process(p.bin("app")).with_stdout_contains("37").run();
+
+    // Respect cc shims that do not understand dependency reporting.
+    use std::os::unix::fs::PermissionsExt;
+    let bin = p.root().join("driver");
+    fs::create_dir(&bin).unwrap();
+    fs::write(
+        bin.join("cc"),
+        "#!/bin/sh\ncase \"$*\" in *--dependency-file=*) exit 1;; esac\nexec /usr/bin/cc \"$@\"\n",
+    )
+    .unwrap();
+    fs::set_permissions(bin.join("cc"), fs::Permissions::from_mode(0o755)).unwrap();
+    let path = env::var_os("PATH").unwrap();
+    let path = env::join_paths(std::iter::once(bin).chain(env::split_paths(&path))).unwrap();
+    p.change_file("src/main.rs", "fn main() { println!(\"shim\"); }");
+    build().env("PATH", path).run();
+    p.process(p.bin("app")).with_stdout_contains("shim").run();
+}
+
 // Exercise Cargo's routing and fingerprinting without requiring Wild in the
 // test compiler. The devbox smoke test separately exercises the real linker.
 fn mock_toolchain() -> PathBuf {

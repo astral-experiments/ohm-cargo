@@ -804,14 +804,11 @@ pub fn can_skip_due_to_early_cutoff(fingerprint: &Fingerprint) -> bool {
     found_rebuilt_unchanged
 }
 
-/// Returns whether an integration test can reuse codegen after its unused library changed.
+/// Returns whether the given dependency was the only reason to rebuild this unit.
 ///
 /// The caller separately verifies compiler-reported direct extern usage and rules out
 /// transitive paths through cyclic development dependencies.
-pub fn can_relink_unused_integration_dependency(
-    fingerprint: &Fingerprint,
-    unused_dependency: UnitIndex,
-) -> bool {
+pub fn only_rebuilt_dependency(fingerprint: &Fingerprint, unused_dependency: UnitIndex) -> bool {
     if !fingerprint.is_early_cutoff_candidate() {
         return false;
     }
@@ -4647,14 +4644,8 @@ mod early_cutoff_tests {
         let dependency =
             make_indexed_fingerprint(UnitIndex(1), FsStatus::Stale, BuildState::BuiltChanged);
         fingerprint.deps.push(make_dep_fingerprint(dependency));
-        assert!(can_relink_unused_integration_dependency(
-            &fingerprint,
-            UnitIndex(1)
-        ));
-        assert!(!can_relink_unused_integration_dependency(
-            &fingerprint,
-            UnitIndex(2)
-        ));
+        assert!(only_rebuilt_dependency(&fingerprint, UnitIndex(1)));
+        assert!(!only_rebuilt_dependency(&fingerprint, UnitIndex(2)));
 
         let other = make_indexed_fingerprint(
             UnitIndex(2),
@@ -4662,10 +4653,7 @@ mod early_cutoff_tests {
             BuildState::SkippedEarlyCutoff,
         );
         fingerprint.deps.push(make_dep_fingerprint(other));
-        assert!(!can_relink_unused_integration_dependency(
-            &fingerprint,
-            UnitIndex(1)
-        ));
+        assert!(!only_rebuilt_dependency(&fingerprint, UnitIndex(1)));
     }
 
     fn fresh_relink_dependency(metadata_mtime: FileTime) -> Arc<Fingerprint> {

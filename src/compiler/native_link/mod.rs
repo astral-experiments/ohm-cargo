@@ -43,7 +43,7 @@ fn invalid(reason: &'static str) -> io::Error {
     io::Error::new(io::ErrorKind::InvalidData, reason)
 }
 
-fn stamp(meta: &Metadata) -> (u64, u64, u64, u32, i64, i64, i64, i64) {
+pub(super) fn stamp(meta: &Metadata) -> (u64, u64, u64, u32, i64, i64, i64, i64) {
     (
         meta.dev(),
         meta.ino(),
