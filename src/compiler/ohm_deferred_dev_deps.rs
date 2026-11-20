@@ -20,7 +20,59 @@ pub(crate) struct State {
     pub(crate) disabled: bool,
     /// Only direct edges from the selected root; retained transitive edges still build.
     pub(crate) dependencies: HashSet<Unit>,
+    /// Jobs behind deferred edges with effects on the test beyond a Rust extern.
+    pub(crate) retained: Vec<Unit>,
+    pub(super) skipped_artifacts: Vec<PathBuf>,
+    pub(super) inputs: Option<u64>,
     pub(crate) retry: Arc<AtomicBool>,
+}
+
+/// Monitor the skipped files themselves when a registry build script adds
+/// system native search paths. A linker script or a hard link can refer to
+/// one of these files without any Rust use of its crate.
+pub(super) struct ArtifactWatch {
+    #[cfg(target_os = "linux")]
+    fd: std::os::fd::OwnedFd,
+}
+
+impl ArtifactWatch {
+    #[cfg(target_os = "linux")]
+    pub(super) fn start(paths: &[PathBuf]) -> Option<Self> {
+        use rustix::fs::inotify::{self, CreateFlags, WatchFlags};
+        if paths.is_empty() {
+            return None;
+        }
+        let fd = inotify::init(CreateFlags::NONBLOCK | CreateFlags::CLOEXEC).ok()?;
+        for path in paths {
+            if !path.symlink_metadata().ok()?.is_file() {
+                return None;
+            }
+            let flags = WatchFlags::OPEN
+                | WatchFlags::MODIFY
+                | WatchFlags::ATTRIB
+                | WatchFlags::DELETE_SELF
+                | WatchFlags::MOVE_SELF;
+            inotify::add_watch(&fd, path, flags).ok()?;
+        }
+        Some(Self { fd })
+    }
+
+    #[cfg(target_os = "linux")]
+    pub(super) fn untouched(&self) -> bool {
+        // Require an empty queue. An open through an alias, a change to an
+        // inode, a dropped watch, an overflow or a read error forces a retry.
+        rustix::io::read(&self.fd, &mut [0u8; 64][..]) == Err(rustix::io::Errno::AGAIN)
+    }
+
+    #[cfg(not(target_os = "linux"))]
+    pub(super) fn start(_paths: &[PathBuf]) -> Option<Self> {
+        None
+    }
+
+    #[cfg(not(target_os = "linux"))]
+    pub(super) fn untouched(&self) -> bool {
+        false
+    }
 }
 
 impl State {
@@ -33,8 +85,8 @@ impl State {
 #[error("retrying with the complete development dependency graph")]
 pub(crate) struct Retry;
 
-/// Identify each script's output directory before its job runs. `plan` rejects
-/// removing any script, so every directory admitted here is still produced by
+/// Identify each script's output directory before its job runs. `plan` retains
+/// all scripts, so every directory admitted here is still produced by
 /// the ordinary dependency graph before the test compiler starts.
 pub(crate) fn native_output_dirs(runner: &BuildRunner<'_, '_>) -> HashMap<UnitHash, PathBuf> {
     runner
@@ -257,19 +309,41 @@ pub(crate) fn supported(runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
         )
 }
 
+/// Called after Cargo verifies the local sources, outputs and configuration
+/// of a test that is stale solely due to a dependency.
+pub(super) fn reuse(runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> bool {
+    if !supported(runner, unit) {
+        return false;
+    }
+    let proof = || {
+        let outputs = runner.outputs(unit).ok()?;
+        let path = &outputs
+            .iter()
+            .find(|o| o.flavor == super::FileFlavor::Normal)?
+            .path;
+        super::RelinkCachePaths::new(path.clone()).unused_proof()
+    };
+    let Some((names, Some(inputs))) = proof() else {
+        return false;
+    };
+    !plan(runner, unit, Some(&names), Some(inputs)).is_empty()
+}
+
 /// Remove only scheduling edges. The original graph remains authoritative for
 /// feature resolution, metadata hashes, rustc arguments, and fingerprints.
 pub(crate) fn plan(
     runner: &mut BuildRunner<'_, '_>,
     unit: &Unit,
     previous_unused: Option<&HashSet<InternedString>>,
+    expected: Option<u64>,
 ) -> Vec<InternedString> {
     if runner.deferred_dev_deps.disabled
         || !runner.bcx.gctx.cli_unstable().ohm_defer_dev_deps()
         || !supported(runner, unit)
         || runner.fingerprints.get(unit).is_none_or(|fp| {
             fp.is_early_cutoff_candidate()
-                || !matches!(fp.fs_status(), super::fingerprint::FsStatus::StaleItem(_))
+                || (expected.is_none()
+                    && !matches!(fp.fs_status(), super::fingerprint::FsStatus::StaleItem(_)))
         })
     {
         return Vec::new();
@@ -280,7 +354,7 @@ pub(crate) fn plan(
     let candidates =
         super::unused_integration_workspace_dependencies(runner, unit, previous_unused);
     let dependencies = runner.unit_deps(unit);
-    let deferred = dependencies
+    let mut deferred = dependencies
         .iter()
         .filter(|dep| {
             candidates.contains(&runner.bcx.unit_to_index[&dep.unit])
@@ -304,7 +378,7 @@ pub(crate) fn plan(
         }
         visited
     };
-    let retained = closure(
+    let mut retained = closure(
         dependencies
             .iter()
             .filter(|dep| !deferred.contains(&dep.unit))
@@ -312,23 +386,80 @@ pub(crate) fn plan(
             .collect(),
     );
     let removed = closure(deferred.iter().cloned().collect());
-    // Build scripts, proc macros, artifact dependencies and native links can
-    // contribute effects beyond a direct --extern. Do not speculate over them.
-    if removed.difference(&retained).any(|dep| {
-        dep.mode != CompileMode::Build
-            || !dep.target.is_lib()
-            || dep.target.proc_macro()
-            || dep.artifact.is_true()
-            || dep.pkg.manifest().links().is_some()
-            || runner.find_build_script_units(dep).is_some()
-            || super::has_opaque_integration_linker_flags(runner, dep)
-            || dep
-                .target
-                .rustc_crate_types()
-                .iter()
-                .any(|kind| !matches!(kind, super::CrateType::Lib | super::CrateType::Rlib))
-    }) {
+    // Schedule the units with effects beyond an ordinary --extern as
+    // additional dependencies of the test, with all their inputs.
+    let mut extra: Vec<_> = removed
+        .difference(&retained)
+        .filter(|dep| {
+            dep.mode != CompileMode::Build
+                || !dep.target.is_lib()
+                || dep.target.proc_macro()
+                || dep.artifact.is_true()
+                || dep.pkg.manifest().links().is_some()
+                || super::has_opaque_integration_linker_flags(runner, dep)
+                || dep
+                    .target
+                    .rustc_crate_types()
+                    .iter()
+                    .any(|kind| !matches!(kind, super::CrateType::Lib | super::CrateType::Rlib))
+        })
+        .cloned()
+        .collect();
+    retained.extend(closure(extra.clone()));
+    if !extra.is_empty() {
+        // Keep fresh side dependencies in the ordinary queue as well.
+        // Watching these files could cause spurious retries when another
+        // compiler reads shared artifacts whose producers have no new work.
+        let fresh: Vec<_> = removed
+            .difference(&retained)
+            .filter(|dep| {
+                runner.fingerprints.get(*dep).is_some_and(|fp| {
+                    matches!(
+                        fp.fs_status(),
+                        super::fingerprint::FsStatus::UpToDate { .. }
+                    )
+                })
+            })
+            .cloned()
+            .collect();
+        retained.extend(closure(fresh.clone()));
+        extra.extend(fresh);
+    }
+    deferred.retain(|dep| !retained.contains(dep));
+    if deferred.is_empty() {
         return Vec::new();
+    }
+    let snapshot = || {
+        let mut units = Vec::new();
+        for dep in retained.iter() {
+            units.push(super::fingerprint::deferred_input(runner, dep, false)?);
+        }
+        for dep in removed.difference(&retained) {
+            units.push(super::fingerprint::deferred_input(runner, dep, true)?);
+        }
+        units.sort_unstable();
+        Some(crate::util::hash_u64(units))
+    };
+    let inputs = snapshot();
+    if expected.is_some() && inputs != expected {
+        return Vec::new();
+    }
+    let mut skipped_artifacts = Vec::new();
+    for dep in removed.difference(&retained) {
+        let Ok(outputs) = runner.outputs(dep) else {
+            return Vec::new();
+        };
+        let mut has_rlib = false;
+        for output in outputs.iter() {
+            let extension = output.path.extension().and_then(|s| s.to_str());
+            if matches!(extension, Some("rlib" | "rmeta")) {
+                has_rlib |= extension == Some("rlib");
+                skipped_artifacts.push(output.path.clone());
+            }
+        }
+        if !has_rlib {
+            return Vec::new();
+        }
     }
     let names = dependencies
         .iter()
@@ -336,6 +467,25 @@ pub(crate) fn plan(
         .map(|dep| dep.extern_crate_name)
         .collect::<Vec<_>>();
     tracing::info!(target: "cargo::compiler::ohm_deferred_dev_deps", ?names, "deferring unused dev dependencies");
+    if expected.is_none() {
+        runner.deferred_dev_deps.inputs = inputs;
+    }
     runner.deferred_dev_deps.dependencies = deferred;
+    runner.deferred_dev_deps.retained = extra;
+    runner.deferred_dev_deps.skipped_artifacts = skipped_artifacts;
     names
+}
+
+#[cfg(all(target_os = "linux", test))]
+#[test]
+fn detects_a_native_input_opened_through_an_alias() {
+    let dir = tempfile::tempdir().unwrap();
+    let archive = dir.path().join("libhelper.rlib");
+    let native = dir.path().join("libhelper.a");
+    fs::write(&archive, b"!<arch>\n").unwrap();
+    fs::hard_link(&archive, &native).unwrap();
+    let watch = ArtifactWatch::start(&[archive]).unwrap();
+    assert!(watch.untouched());
+    fs::File::open(native).unwrap();
+    assert!(!watch.untouched());
 }

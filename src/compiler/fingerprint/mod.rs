@@ -942,6 +942,78 @@ pub(crate) fn existing_unit_is_fresh(
     ))
 }
 
+/// Identify the exact inputs of a deferred test. Retained units must already
+/// pass ordinary freshness checks. For skipped units the source edited before
+/// the test can still be stale against the ordinary library, so also identify
+/// all files in that library's last successful dep-info.
+pub(super) fn deferred_input(
+    runner: &BuildRunner<'_, '_>,
+    unit: &Unit,
+    skipped: bool,
+) -> Option<u64> {
+    let fp = runner.fingerprints.get(unit)?;
+    let loc = runner.files().fingerprint_file_path(unit, "");
+    let hash = fp.hash_u64();
+    if !short_fingerprint_matches(&loc, hash) {
+        return None;
+    }
+    let mut files = Vec::new();
+    match &*fp.fs_status.lock().unwrap() {
+        FsStatus::UpToDate { mtimes, link_mtime } => {
+            let script = fp
+                .script_result
+                .lock()
+                .unwrap()
+                .as_ref()
+                .map(|r| r.generation);
+            files.push(crate::util::hash_u64((link_mtime, script)));
+            for (path, mtime) in mtimes {
+                files.push(crate::util::hash_u64((path, mtime)));
+            }
+        }
+        FsStatus::StaleItem(
+            StaleItem::ChangedFile { .. }
+            | StaleItem::ChangedChecksum { .. }
+            | StaleItem::FileSizeChanged { .. },
+        )
+        | FsStatus::StaleDepFingerprint { .. }
+        | FsStatus::StaleDependency { .. }
+            if skipped =>
+        {
+            let dep_info = dep_info_loc(runner, unit);
+            let info = parse_dep_info(unit.pkg.root(), &runner.files().build_root(unit), &dep_info)
+                .ok()??;
+            for path in info
+                .files
+                .keys()
+                .chain(fp.outputs.iter())
+                .chain([&dep_info])
+            {
+                let metadata = std::fs::metadata(path).ok()?;
+                if !metadata.is_file() {
+                    return None;
+                }
+                #[cfg(unix)]
+                let generation = {
+                    use std::os::unix::fs::MetadataExt;
+                    (
+                        metadata.dev(),
+                        metadata.ino(),
+                        metadata.ctime(),
+                        metadata.ctime_nsec(),
+                    )
+                };
+                #[cfg(not(unix))]
+                let generation = metadata.modified().ok()?;
+                files.push(crate::util::hash_u64((path, metadata.len(), generation)));
+            }
+        }
+        _ => return None,
+    }
+    files.sort_unstable();
+    Some(crate::util::hash_u64((loc, hash, skipped, files)))
+}
+
 /// Whether an existing check root can keep its established dependency graph.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub(crate) enum ExistingCheckRoot {
@@ -1046,8 +1118,20 @@ pub fn prepare_target(
     // information about failed comparisons to aid in debugging.
     let fingerprint = calculate(build_runner, unit)?;
     let mtime_on_use = build_runner.bcx.gctx.cli_unstable().mtime_on_use;
-    let dirty_reason = match compare_old_fingerprint(unit, &loc, &*fingerprint, mtime_on_use, force)
+    let comparison = if !force
+        && unit.mode == CompileMode::Test
+        && matches!(
+            fingerprint.fs_status(),
+            FsStatus::StaleDepFingerprint { .. }
+        )
+        && short_fingerprint_matches(&loc, fingerprint.hash_u64())
+        && super::ohm_deferred_dev_deps::reuse(build_runner, unit)
     {
+        FingerprintComparison::Fresh
+    } else {
+        compare_old_fingerprint(unit, &loc, &*fingerprint, mtime_on_use, force)
+    };
+    let dirty_reason = match comparison {
         FingerprintComparison::Fresh => None,
         FingerprintComparison::Dirty { reason } => Some(reason),
     };

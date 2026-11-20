@@ -734,6 +734,11 @@ fn compile<'gctx>(
     }
 
     // Be sure to compile all dependencies of this target as well.
+    if build_runner.bcx.roots.first() == Some(unit) {
+        for dep in build_runner.deferred_dev_deps.retained.clone() {
+            compile(build_runner, jobs, &dep, exec, false)?;
+        }
+    }
     let deps = Vec::from(build_runner.unit_deps(unit)); // Create vec due to mutable borrow.
     for dep in deps {
         if build_runner
@@ -794,11 +799,18 @@ struct RelinkCacheManifest {
     objects: Vec<RelinkCacheFile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     unused_extern_names: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    deferred_inputs: Option<u64>,
 }
 
 impl RelinkCacheManifest {
     fn input_checksum(&self) -> u64 {
-        crate::util::hash_u64((self.version, &self.rlink, &self.executable, &self.objects))
+        let checksum =
+            crate::util::hash_u64((self.version, &self.rlink, &self.executable, &self.objects));
+        match self.deferred_inputs {
+            Some(inputs) => crate::util::hash_u64((checksum, inputs)),
+            None => checksum,
+        }
     }
 }
 
@@ -837,6 +849,8 @@ fn read_relink_manifest_slice(bytes: &[u8]) -> Option<CheckedRelinkManifest> {
         objects: Vec<File>,
         #[serde(default)]
         unused_extern_names: Option<Vec<String>>,
+        #[serde(default)]
+        deferred_inputs: Option<u64>,
     }
 
     fn file(value: File) -> RelinkCacheFile {
@@ -863,6 +877,7 @@ fn read_relink_manifest_slice(bytes: &[u8]) -> Option<CheckedRelinkManifest> {
                     },
                     objects: fields.objects.into_iter().map(file).collect(),
                     unused_extern_names: fields.unused_extern_names,
+                    deferred_inputs: fields.deferred_inputs,
                 },
             });
         }
@@ -941,7 +956,7 @@ impl RelinkCachePaths {
 
     fn initialize(
         &self,
-        unused_externs: Option<&std::collections::BTreeSet<InternedString>>,
+        proof: Option<(&std::collections::BTreeSet<InternedString>, Option<u64>)>,
     ) -> CargoResult<()> {
         let mut objects = Vec::new();
         for path in self.codegen_temps()? {
@@ -962,7 +977,8 @@ impl RelinkCachePaths {
             rlink: cached_file(self.rlink.clone())?,
             executable: cached_object(self.executable.clone())?,
             objects,
-            unused_extern_names: unused_externs.map(|unused_externs| {
+            deferred_inputs: proof.and_then(|(_, inputs)| inputs),
+            unused_extern_names: proof.map(|(unused_externs, _)| {
                 unused_externs
                     .iter()
                     .map(|unused_extern| unused_extern.as_str().to_owned())
@@ -1016,6 +1032,7 @@ impl RelinkCachePaths {
             .read_manifest()
             .ok_or_else(|| internal("validated relink cache manifest disappeared"))?;
         manifest.executable = cached_object(self.executable.clone())?;
+        manifest.deferred_inputs = None;
         self.write_manifest(manifest)
     }
 
@@ -1054,10 +1071,11 @@ impl RelinkCachePaths {
     }
 
     fn unused_extern_names(&self) -> Option<HashSet<InternedString>> {
-        let Some(manifest) = self.read_manifest() else {
-            return None;
-        };
+        self.unused_proof().map(|(names, _)| names)
+    }
 
+    fn unused_proof(&self) -> Option<(HashSet<InternedString>, Option<u64>)> {
+        let manifest = self.read_manifest()?;
         if manifest.version != RELINK_CACHE_VERSION
             || manifest.executable.path != self.executable
             || !object_matches(&manifest.executable)
@@ -1065,13 +1083,12 @@ impl RelinkCachePaths {
             return None;
         }
 
-        Some(
-            manifest
-                .unused_extern_names?
-                .into_iter()
-                .map(InternedString::from)
-                .collect(),
-        )
+        let names = manifest
+            .unused_extern_names?
+            .into_iter()
+            .map(InternedString::from)
+            .collect();
+        Some((names, manifest.deferred_inputs))
     }
 
     fn invalidate(&self) -> CargoResult<()> {
@@ -1259,9 +1276,6 @@ fn unused_integration_workspace_dependencies(
             && dependency.manifest_deps.0.is_some()
             && dependency.extern_crate_name.as_str() == dependency.unit.target.crate_name()
             && dependency.unit.pkg.manifest().links().is_none()
-            && build_runner
-                .find_build_script_units(&dependency.unit)
-                .is_none()
             && !has_opaque_integration_linker_flags(build_runner, &dependency.unit)
             && dependency
                 .unit
@@ -1455,8 +1469,10 @@ fn rustc(
         })
         .flatten();
     let deferred_dev_names =
-        ohm_deferred_dev_deps::plan(build_runner, unit, previous_dev_unused.as_ref());
+        ohm_deferred_dev_deps::plan(build_runner, unit, previous_dev_unused.as_ref(), None);
+    let deferred_inputs = build_runner.deferred_dev_deps.inputs.take();
     let deferred_dev_retry = build_runner.deferred_dev_deps.retry.clone();
+    let skipped_artifacts = std::mem::take(&mut build_runner.deferred_dev_deps.skipped_artifacts);
     let workspace_integration_proof = unused_integration_dependency
         .and_then(|_| relink_cache.as_ref())
         .and_then(RelinkCachePaths::unused_extern_names);
@@ -1663,6 +1679,7 @@ fn rustc(
     return Ok(Work::new(move |state| {
         // Build-script outputs are only authoritative after their jobs finish.
         // An unused Rust extern can still be consumed through native linking.
+        let mut watch_artifacts = false;
         let record_dev_unused = record_dev_unused
             && build_scripts.as_ref().is_none_or(|scripts| {
                 let script_outputs = build_script_outputs.lock().unwrap();
@@ -1682,12 +1699,20 @@ fn rustc(
                         }
                         // Dependency -l flags belong to their retained Rust
                         // libraries; only their -L paths reach this compiler.
-                        *package != current_id
+                        if *package != current_id
                             && dev_native_output_dirs.get(metadata).is_some_and(|out_dir| {
                                 ohm_deferred_dev_deps::native_search_paths_supported(
                                     output, out_dir,
                                 )
                             })
+                        {
+                            return true;
+                        }
+                        if cfg!(target_os = "linux") && package.source_id().is_registry() {
+                            watch_artifacts = true;
+                            return true;
+                        }
+                        false
                     })
                 })
             });
@@ -2108,6 +2133,17 @@ fn rustc(
 
         let mut accepted_early_test = false;
         if !deferred_dev_names.is_empty() || early_test.is_some() {
+            let artifact_watch = if watch_artifacts {
+                let Some(watch) = ohm_deferred_dev_deps::ArtifactWatch::start(&skipped_artifacts)
+                else {
+                    tracing::info!(target: "cargo::compiler::ohm_deferred_dev_deps", "cannot observe skipped artifacts");
+                    deferred_dev_retry.store(true, std::sync::atomic::Ordering::Relaxed);
+                    return Err(ohm_deferred_dev_deps::Retry.into());
+                };
+                Some(watch)
+            } else {
+                None
+            };
             let output = std::cell::RefCell::new(ohm_early_tests::Output::default());
             let result = exec.exec(
                 &rustc,
@@ -2160,6 +2196,7 @@ fn rustc(
                 }
             } else {
                 if result.is_err()
+                    || artifact_watch.is_some_and(|watch| !watch.untouched())
                     || !deferred_dev_names
                         .iter()
                         .all(|name| output.proves_unused(*name))
@@ -2312,7 +2349,11 @@ fn rustc(
             let unused_externs = (unused_integration_dependency.is_some() || record_dev_unused)
                 .then(|| state.recorded_unused_externs())
                 .flatten();
-            cache.initialize(unused_externs.as_ref())?;
+            cache.initialize(
+                unused_externs
+                    .as_ref()
+                    .map(|names| (names, deferred_inputs)),
+            )?;
         }
 
         if rustc_dep_info_loc.exists() {
@@ -4873,6 +4914,7 @@ mod relink_cache_tests {
             },
             objects: Vec::new(),
             unused_extern_names: Some(vec!["unused".to_owned()]),
+            deferred_inputs: None,
         };
         let input_checksum = manifest.input_checksum();
         Ok(serde_json::to_vec(&CheckedRelinkManifest {

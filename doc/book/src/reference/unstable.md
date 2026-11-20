@@ -2084,22 +2084,30 @@ warnings in skipped dependencies are omitted. A successful targeted test does
 not establish that every declared dev dependency compiles. Disable this
 optimization when validating the complete declared dependency graph.
 
-Prior unused-dependency evidence is bound to the previous executable. It permits
-only a provisional compilation: a fresh, successful compiler invocation must
-prove all deferred externs unused before Cargo publishes its results or runs
-tests. Missing, malformed, conflicting, or excessive output, compiler diagnostics,
+Prior unused-dependency evidence is bound to the previous executable. After
+an edit, a fresh, successful compiler invocation must prove all deferred
+externs unused before Cargo publishes its results or runs tests. Missing,
+malformed, conflicting, or excessive output, compiler diagnostics,
 and newly used dependencies discard provisional outputs and retry once with the
 complete graph. Interruption, crashes, and compiler launch failures stop the
 command instead. Fallback can therefore cost an additional test compilation.
 
-Only rebuilds requiring a fresh test compilation with prior native evidence are
-eligible. Initial, up-to-date, and dependency-only builds, multiple roots,
-explicit targets, custom linker inputs, unsupported compilers, and LTO retain
-ordinary scheduling. Every exclusively skipped unit must be a pure Rust library;
-build scripts, proc macros, artifact dependencies, and native links prevent
-deferral. Dependencies also needed by a retained edge continue to build. Explicit
-Cargo linting, SBOM generation, and future-incompatibility reporting retain the
-complete build path.
+Only a local test edit with prior native evidence can start deferring libraries.
+After a successful compilation, Cargo can reuse the executable when repeating
+the command. This requires the same deferred inputs and the same generations
+of the retained dependencies. Cargo checks the regular test fingerprint and
+test inputs, and checks the skipped units' previous dep-info and files. On
+Unix it identifies those files by device, inode, length and change time.
+Changes to the inputs or missing evidence can trigger an ordinary rebuild,
+including the deferred libraries. Each subsequent test edit needs fresh proof.
+
+Initial builds, multiple roots, explicit targets, custom linker inputs,
+unsupported compilers and LTO retain ordinary scheduling. Cargo skips only
+ordinary Rust library compilations. It schedules build scripts, proc macros, artifact
+dependencies and packages declaring native links behind deferred edges, together
+with all their inputs. Dependencies also needed by a retained edge continue
+to build. Explicit Cargo linting, SBOM generation, and future-incompatibility
+reporting retain the complete build path.
 
 Cargo checks current retained build-script outputs before invoking a deferred
 test compiler. On Linux, dependency scripts may contribute ordinary static
@@ -2107,11 +2115,19 @@ archives and ELF objects through native search directories inside their own
 `OUT_DIR`; their producing dependencies still build normally. Bounded trees of
 auxiliary C sources, headers, and templates, plus extensionless ELF object probes,
 are also supported. Auxiliary files must not be aliases, renamed archives, or
-text that can load files through linker-script directives. Root-package
-native inputs, applicable linker arguments, external search directories, Rust
-or thin archive paths, file aliases, and unsupported files retry the complete graph
-before compilation and prevent recording unused-extern evidence for subsequent
-rebuilds. Configuration and environment outputs alone remain supported.
+text that can load files through linker-script directives.
+
+For additional native inputs from registry build scripts on Linux, Cargo uses
+inotify to watch each deferred library's existing `.rlib` and `.rmeta` files
+during the provisional compilation and link. An open through a file alias,
+including a hard link, triggers an ordinary build. A concurrent reader of the
+same file can also trigger that retry. This check requires regular files on a
+filesystem that reports local opens through inotify. Missing files, watch
+errors, changes and queue overflows trigger the same retry.
+
+Root-package native inputs, applicable linker arguments and unsupported paths
+from local scripts require the complete graph. Configuration and environment
+outputs alone remain supported.
 
 Use `-Zohm-defer-dev-deps=no`, `[unstable] ohm-defer-dev-deps = false`, or
 `CARGO_UNSTABLE_OHM_DEFER_DEV_DEPS=false` to opt out. Explicit overrides propagate
