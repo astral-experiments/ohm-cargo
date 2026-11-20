@@ -816,6 +816,11 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                 (unit.target.proc_macro()
                     && !unit.pkg.package_id().source_id().is_path()
                     && !self.is_shared_registry_unit(unit))
+                    // A private DWO is referenced by its donor path. The
+                    // filesystem might support cloning after this build.
+                    || (cfg!(target_os = "linux")
+                        && unit.profile.split_debuginfo.is_some_and(|split| split == "unpacked")
+                        && !self.is_shared_registry_unit(unit))
                     || unit_uses_custom_codegen_backend(
                         unit,
                         build_runner,

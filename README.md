@@ -22,6 +22,22 @@ Use `cargo +ohm -Zohm-thinlto-cache=no build --release` to disable automatic cac
 same targeted opt-out in Cargo configuration. An explicit rustc `-Zthinlto-cache=PATH` keeps its own
 directory and eviction policy.
 
+## Limited debug information on Linux
+
+On native x86-64 GNU/Linux, Ohm can keep library debug information in separate
+`.dwo` files. Each executable carries references to the files, so linking an
+updated program or test avoids processing the same debug records again.
+The debugger needs the matching files at their original paths. Cleaning the
+build directory or rebuilding a library can remove or replace them. Explicit
+path remapping must leave the sidecar paths accessible.
+
+This default applies to ordinary Rust libraries in unoptimized development
+profiles with `debug = "limited"` when the private build directory is outside
+the workspace and its filesystem lacks the copy-on-write operation used to
+seed worktrees. In-tree builds use path remapping, and worktree imports move
+the build directory. Both cases need embedded records for valid debug paths.
+Set `split-debuginfo = "off"` in the profile to embed all debug information.
+
 ## Shared frontend stages
 
 Ohm defaults enable frontend query reuse for compatible debug checks and builds

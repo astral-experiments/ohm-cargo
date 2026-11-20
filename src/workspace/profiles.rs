@@ -21,7 +21,7 @@
 //! The precedence is explained in [`ProfileMaker`].
 //! The algorithm happens within [`ProfileMaker::get_profile`].
 
-use crate::compiler::{CompileKind, CompileTarget, Unit};
+use crate::compiler::{CompileKind, CompileMode, CompileTarget, CrateType, Unit};
 use crate::context;
 use crate::resolver::Resolve;
 use crate::resolver::features::FeaturesFor;
@@ -30,7 +30,9 @@ use crate::util::interning::InternedString;
 use crate::util::{CargoResult, GlobalContext, closest_msg};
 use crate::workspace::dependency::Artifact;
 use crate::workspace::parser::validate_profile;
-use crate::workspace::{PackageId, PackageIdSpec, PackageIdSpecQuery, Target, Workspace};
+use crate::workspace::{
+    PackageId, PackageIdSpec, PackageIdSpecQuery, Target, TargetKind, Workspace,
+};
 use anyhow::{Context as _, bail};
 use cargo_util::is_ci;
 use cargo_util_schemas::manifest::TomlTrimPaths;
@@ -40,6 +42,8 @@ use cargo_util_schemas::manifest::{
 use cargo_util_terminal::Shell;
 use std::collections::BTreeMap;
 use std::hash::Hash;
+use std::path::PathBuf;
+use std::sync::OnceLock;
 use std::{cmp, fmt, hash};
 
 /// Collection of all profiles.
@@ -66,6 +70,8 @@ pub struct Profiles {
     requested_profile: InternedString,
     /// The host target for rustc being used by this `Profiles`.
     rustc_host: InternedString,
+    /// Cache the worktree import capability of the private build directory.
+    linux_library_debug: Option<(PathBuf, OnceLock<bool>)>,
 }
 
 impl Profiles {
@@ -80,6 +86,7 @@ impl Profiles {
         };
         let mut profiles = merge_config_profiles(ws, requested_profile)?;
         let rustc_host = ws.gctx().load_global_rustc(Some(ws))?.host;
+        let ohm_defaults = gctx.cli_unstable().ohm_defaults();
 
         let mut profile_makers = Profiles {
             incremental,
@@ -88,13 +95,17 @@ impl Profiles {
             original_profiles: profiles.clone(),
             requested_profile,
             rustc_host,
+            linux_library_debug: (ohm_defaults
+                && !ws.is_ephemeral()
+                && rustc_host.as_str() == "x86_64-unknown-linux-gnu")
+                .then(|| ws.build_dir().into_path_unlocked())
+                // The worktree seed's cwd remapping would rewrite references to
+                // in-tree sidecars. Keep those line tables in the executable.
+                .filter(|dir| !dir.starts_with(ws.root()))
+                .map(|dir| (dir, OnceLock::new())),
         };
 
-        Self::add_root_profiles(
-            &mut profile_makers,
-            &profiles,
-            gctx.cli_unstable().ohm_defaults(),
-        );
+        Self::add_root_profiles(&mut profile_makers, &profiles, ohm_defaults);
 
         // Merge with predefined profiles.
         use std::collections::btree_map::Entry;
@@ -309,11 +320,7 @@ impl Profiles {
             PanicSetting::ReadProfile => {}
         }
 
-        // Default macOS debug information to being stored in the "unpacked"
-        // split-debuginfo format. At the time of this writing that's the only
-        // platform which has a stable `-Csplit-debuginfo` option for rustc,
-        // and it's typically much faster than running `dsymutil` on all builds
-        // in incremental cases.
+        // Unpacked debug information avoids running dsymutil on macOS.
         if profile.debuginfo.is_turned_on() && profile.split_debuginfo.is_none() {
             let target = match &kind {
                 CompileKind::Host => self.rustc_host.as_str(),
@@ -340,6 +347,41 @@ impl Profiles {
         }
         profile.name = self.requested_profile;
         profile
+    }
+
+    /// Split limited debug information for unoptimized native Rust libraries.
+    ///
+    /// Each library can keep its sidecars next to its codegen units across
+    /// relinks. Executables use temporary object paths. Imported worktree
+    /// snapshots need embedded data because their build directory changes.
+    pub(crate) fn split_library_debug_info(
+        &self,
+        profile: &mut Profile,
+        target: &Target,
+        kind: CompileKind,
+        mode: CompileMode,
+    ) {
+        if let Some((dir, can_clone)) = &self.linux_library_debug
+            && profile.split_debuginfo.is_none()
+            && profile.root == ProfileRoot::Debug
+            && profile.debuginfo.into_inner() == TomlDebugInfo::Limited
+            && profile.opt_level == "0"
+            && profile.trim_paths.is_none()
+            && profile.codegen_backend.is_none()
+            && matches!(
+                mode,
+                CompileMode::Build | CompileMode::Check { test: false }
+            )
+            && matches!(target.kind(), TargetKind::Lib(kinds)
+                if kinds.iter().all(|k| matches!(k, CrateType::Lib | CrateType::Rlib)))
+            && match kind {
+                CompileKind::Host => true,
+                CompileKind::Target(target) => target.rustc_target() == self.rustc_host,
+            }
+            && !can_clone.get_or_init(|| crate::util::file_clone::supported_between(dir, dir))
+        {
+            profile.split_debuginfo = Some("unpacked".into());
+        }
     }
 
     /// The profile for *running* a `build.rs` script is only used for setting
