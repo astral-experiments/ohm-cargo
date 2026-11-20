@@ -161,6 +161,82 @@ fn default_preserves_features_and_opt_out_checks_unused_helpers() {
 }
 
 #[cargo_test]
+fn deferring_an_unused_library_preserves_its_build_script_and_inputs() {
+    let wrapper = relink_only_wrapper();
+    let p = fixture("retained-build-script");
+    p.change_file(
+        "side/Cargo.toml",
+        "[package]\nname = \"side\"\nversion = \"0.1.0\"\nedition = \"2024\"\n",
+    );
+    p.change_file("side/src/lib.rs", "");
+    let helper = log(&p, "helper/Cargo.toml");
+    p.change_file(
+        "helper/Cargo.toml",
+        &format!("{helper}\nside = {{ path = \"../side\" }}\n"),
+    );
+    p.change_file(
+        "helper/build.rs",
+        r#"fn main() {
+            println!("cargo:rerun-if-changed=input");
+            std::fs::copy("input", "observed").unwrap();
+        }"#,
+    );
+    p.change_file("helper/input", "first");
+    seed(&p, &wrapper);
+    assert_eq!(log(&p, "helper/observed"), "first");
+    p.change_file("helper/input", "second");
+    p.change_file("app/src/lib.rs", &source(2, false));
+    let output = command(&p, &wrapper, "--message-format=json")
+        .with_stderr_contains("[..]accepted current unused-dependency proof[..]")
+        .run();
+    assert!(String::from_utf8_lossy(&output.stdout).lines().any(|line| {
+        serde_json::from_str::<serde_json::Value>(line)
+            .is_ok_and(|msg| msg["target"]["name"] == "side" && msg["fresh"] == true)
+    }));
+    assert_eq!(log(&p, "helper/observed"), "second");
+    assert_eq!(log(&p, "compiler.log"), "compile-link:app\n");
+
+    clear(&p);
+    p.change_file("app/src/lib.rs", &source(3, true));
+    command(&p, &wrapper, "")
+        .with_stderr_contains("[..]retrying complete graph[..]")
+        .run();
+    assert!(log(&p, "compiler.log").contains("compile:helper\n"));
+    assert_eq!(log(&p, "runs.log"), "ran\n");
+}
+
+#[cargo_test]
+fn unchanged_rerun_reuses_a_deferred_test_until_its_inputs_change() {
+    let wrapper = relink_only_wrapper();
+    let p = fixture("deferred-rerun");
+    p.change_file("helper/build.rs", "fn main() {}");
+    // Only the deferred ordinary library sees this file.
+    let app = |value| format!("#[cfg(not(test))] mod ordinary;\n{}", source(value, false));
+    p.change_file("app/src/lib.rs", &app(1));
+    p.change_file("app/src/ordinary.rs", "");
+    seed(&p, &wrapper);
+    p.change_file("app/src/lib.rs", &app(2));
+    command(&p, &wrapper, "")
+        .with_stderr_contains("[..]accepted current unused-dependency proof[..]")
+        .run();
+    clear(&p);
+    command(&p, &wrapper, "").run();
+    assert_eq!(log(&p, "compiler.log"), "");
+    assert_eq!(log(&p, "runs.log"), "ran\n");
+
+    clear(&p);
+    p.change_file(
+        "app/src/ordinary.rs",
+        "compile_error!(\"ordinary source changed\");",
+    );
+    command(&p, &wrapper, "")
+        .with_status(101)
+        .with_stderr_contains("[..]ordinary source changed[..]")
+        .run();
+    assert_eq!(log(&p, "runs.log"), "");
+}
+
+#[cargo_test]
 fn native_link_inputs_rebuild_unused_archives_before_running_tests() {
     let wrapper = relink_only_wrapper();
     let p = fixture("native-link-inputs");

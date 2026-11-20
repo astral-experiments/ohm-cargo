@@ -518,6 +518,12 @@ impl<'gctx> JobQueue<'gctx> {
             for dep in dependencies {
                 depend_on_deps_of_deps(build_runner, &mut queue_deps, dep.unit.clone());
             }
+            if build_runner.bcx.roots.first() == Some(unit) {
+                for dep in &build_runner.deferred_dev_deps.retained {
+                    queue_deps.insert(dep.clone(), Artifact::All);
+                    depend_on_deps_of_deps(build_runner, &mut queue_deps, dep.clone());
+                }
+            }
 
             fn depend_on_deps_of_deps(
                 build_runner: &BuildRunner<'_, '_>,
