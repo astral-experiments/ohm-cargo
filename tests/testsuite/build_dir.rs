@@ -1848,6 +1848,14 @@ fn shared_registry_test_executable_identifies_the_dylib_profile() {
             profile.display(),
             exe.display()
         );
+        #[cfg(unix)]
+        {
+            let snapshot = profile.with_file_name("snapshot");
+            std::fs::rename(profile, &snapshot).unwrap();
+            let moved = snapshot.join(exe.strip_prefix(profile).unwrap());
+            assert!(moved.is_file(), "missing test binary {}", moved.display());
+            std::fs::rename(&snapshot, profile).unwrap();
+        }
     }
 }
 
