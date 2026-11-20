@@ -1728,6 +1728,7 @@ fn build_env_value_invalidates_legacy_null() {
 
 /// See [`FsStatus::StaleItem`].
 #[derive(Clone, Debug, Serialize, Deserialize)]
+#[cfg_attr(test, derive(PartialEq))]
 #[serde(tag = "stale_item", rename_all = "kebab-case")]
 pub enum StaleItem {
     MissingFile {
@@ -3881,10 +3882,7 @@ mod parallel_checksum_tests {
                 workers_started: Some(&workers_started),
             }),
         );
-        assert_eq!(
-            serde_json::to_value(&actual).unwrap(),
-            serde_json::to_value(&expected).unwrap()
-        );
+        assert_eq!(actual, expected);
         assert_eq!(parallel, serial);
         assert!(workers_started.load(Ordering::Relaxed) > 0);
         assert_eq!(jobserver.available().unwrap(), 0);

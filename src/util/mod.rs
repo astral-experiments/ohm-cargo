@@ -197,6 +197,15 @@ pub(crate) fn test_temp_parents() -> impl Iterator<Item = PathBuf> {
     parents.filter_map(|parent| parent.canonicalize().ok())
 }
 
+/// Creates a directory for fixtures that encode an absolute path in a text record.
+#[cfg(test)]
+pub(crate) fn text_path_tempdir() -> tempfile::TempDir {
+    test_temp_parents()
+        .filter(|parent| parent.to_str().is_some_and(|p| !p.contains(['\n', '\r'])))
+        .find_map(|parent| tempfile::tempdir_in(parent).ok())
+        .expect("create a temporary directory with a single-line UTF-8 path")
+}
+
 #[cfg(test)]
 mod test {
     use super::*;

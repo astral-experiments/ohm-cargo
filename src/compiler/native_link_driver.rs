@@ -217,7 +217,7 @@ mod tests {
 
     #[test]
     fn native_driver_requires_an_archive_declaration_and_keeps_private_inputs() {
-        let dir = tempfile::tempdir().unwrap();
+        let dir = crate::util::text_path_tempdir();
         let root = dir.path();
         let linker = Path::new("cc");
         fs::write(root.join("libengine.a"), b"!<arch>\n").unwrap();

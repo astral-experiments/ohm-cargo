@@ -1428,14 +1428,6 @@ mod encoded_dep_info {
     }
 
     #[cfg(unix)]
-    fn link_marker_tempdir() -> tempfile::TempDir {
-        crate::util::test_temp_parents()
-            .filter(|parent| parent.to_str().is_some_and(|p| !p.contains(['\n', '\r'])))
-            .find_map(|parent| tempfile::tempdir_in(parent).ok())
-            .expect("create a single-line depfile target")
-    }
-
-    #[cfg(unix)]
     fn bundled_archive_depfile(raw: &Path, path: &str, sum: &str) -> String {
         let escaped = path.replace(' ', "\\ ");
         let target = depfile_target(raw);
@@ -1451,7 +1443,7 @@ mod encoded_dep_info {
 
     #[test]
     fn registry_observer_history_and_native_mode_are_independent() {
-        let temp = tempfile::tempdir().unwrap();
+        let temp = crate::util::text_path_tempdir();
         let root = temp.path();
         let raw = root.join("reader.d");
         let dep_info = root.join("dep-lib-reader");
@@ -1693,7 +1685,7 @@ mod encoded_dep_info {
     #[cfg(unix)]
     #[test]
     fn earlier_compiler_keeps_mutable_aliases_out_of_immutable_source_filtering() {
-        let tmp = link_marker_tempdir();
+        let tmp = crate::util::text_path_tempdir();
         let root = tmp.path().canonicalize().unwrap();
         let pkg = root.join("package");
         let build = root.join("target");
@@ -1751,7 +1743,7 @@ mod encoded_dep_info {
     #[cfg(unix)]
     #[test]
     fn bundled_archive_proof_rejects_incomplete_or_ambiguous_input() {
-        let tmp = link_marker_tempdir();
+        let tmp = crate::util::text_path_tempdir();
         let raw = tmp.path().join("crate.d");
         let path = "/input/lib.a";
         let sum = format!("sha256={}", "a".repeat(64));
@@ -1811,7 +1803,7 @@ mod encoded_dep_info {
     #[cfg(unix)]
     #[test]
     fn recheck_links_only_for_the_compiler_generated_marker() {
-        let temp = link_marker_tempdir();
+        let temp = crate::util::text_path_tempdir();
         let root = temp.path().canonicalize().unwrap();
         let raw = root.join("ru: st.d");
         let target = depfile_target(&raw);
@@ -1942,7 +1934,7 @@ mod encoded_dep_info {
 
     #[test]
     fn freshness_requires_agreement_between_equivalent_input_paths() {
-        let dir = tempfile::tempdir().unwrap();
+        let dir = crate::util::text_path_tempdir();
         let root = dir.path();
         std::fs::create_dir(root.join("src")).unwrap();
         std::fs::write(root.join("src/value"), b"x").unwrap();
@@ -2153,7 +2145,7 @@ mod encoded_dep_info {
 
     #[test]
     fn seed_translation_preserves_absolute_inputs_and_relative_spelling() {
-        let temp = tempfile::tempdir().unwrap();
+        let temp = crate::util::text_path_tempdir();
         let root = temp.path().canonicalize().unwrap();
         let package = root.join("app");
         let namespace = root.join("namespace");
