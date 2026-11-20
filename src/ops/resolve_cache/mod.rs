@@ -106,6 +106,7 @@ fn workspace_resolve_fingerprint(
     lockfile_contents: &str,
 ) -> CargoResult<u64> {
     let mut hasher = StableHasher::new();
+    2u32.hash(&mut hasher); // Invalidate stamps that could depend on mutable local sources.
     env!("CARGO_PKG_VERSION").hash(&mut hasher);
     option_env!("CARGO_COMMIT_HASH").hash(&mut hasher);
     rustc.version.hash(&mut hasher);
