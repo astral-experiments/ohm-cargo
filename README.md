@@ -11,6 +11,14 @@ Codex.
 Use Ohm only for local development, and at your own risk. Never use it for production builds or
 releases, and always verify your work with the official Rust toolchain.
 
+Ohm defaults group each registry library used by a procedural macro into one codegen unit
+and opt it into a short LLVM optimization pipeline. The library retains its host debug checks.
+This applies to level-1 development profiles on x86-64 GNU/Linux. The first build can cost
+more, but subsequent macro expansions reuse the compiled helpers. A build script using the
+same library may need a separate copy. Build and matching package overrides take
+precedence. Ohm also passes an explicit `lto = "off"` through to the macro and its
+dependencies, so rustc skips local ThinLTO. Use `-Zohm-defaults=no` to opt out.
+
 Ohm defaults enable native ThinLTO object caching for supported Linux builds. Cargo manages
 `<build-dir>/.ohm-thinlto-cache`, pruning it after builds to 2 GiB or 100,000 objects and expiring
 entries unused for 30 days. Concurrent builds can temporarily exceed these limits. Compiler

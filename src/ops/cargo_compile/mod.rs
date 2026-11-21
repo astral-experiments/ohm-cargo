@@ -1426,6 +1426,8 @@ fn traverse_and_share(
         let canonical_debuginfo = profile.debuginfo.finalize();
         let mut canonical_profile = profile.clone();
         canonical_profile.debuginfo = canonical_debuginfo;
+        // Runtime units are outside the proc-macro helper tree.
+        let runtime_dep_hash = 0;
         let unit_probe = interner.intern(
             &unit.pkg,
             &unit.target,
@@ -1437,7 +1439,7 @@ fn traverse_and_share(
             unit.rustdocflags.clone(),
             unit.links_overrides.clone(),
             unit.is_std,
-            unit.dep_hash,
+            runtime_dep_hash,
             unit.artifact,
             unit.artifact_target_for_features,
             unit.skip_non_compile_time_dep,
@@ -1460,7 +1462,7 @@ fn traverse_and_share(
                 unit.rustdocflags.clone(),
                 unit.links_overrides.clone(),
                 unit.is_std,
-                unit.dep_hash,
+                runtime_dep_hash,
                 unit.artifact,
                 unit.artifact_target_for_features,
                 unit.skip_non_compile_time_dep,
