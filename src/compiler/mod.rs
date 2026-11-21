@@ -1290,10 +1290,10 @@ fn may_set_rustc_option(
 }
 
 /// Visits possible options, including `-C` and `-Z` suboptions. Returns true on a
-/// match or an opaque response file. The last callback argument is true when
+/// match or opaque input. The last callback argument is true when
 /// the token could be the value of a preceding option, such as a search path.
-fn may_have_compiler_option<'a>(
-    arguments: impl Iterator<Item = &'a str>,
+fn may_have_compiler_option<'a, S: AsRef<OsStr> + ?Sized + 'a>(
+    arguments: impl Iterator<Item = &'a S>,
     mut matches: impl FnMut(&str, &str, bool) -> bool,
 ) -> bool {
     may_have_compiler_flag(arguments, |name, value, possible_operand| {
@@ -1308,14 +1308,17 @@ fn may_have_compiler_option<'a>(
 
 /// Scans rustc flags before splitting codegen and unstable options. Inspect
 /// every possible flag, including those in groups and those following a
-/// potential operand. A response file can contain any flag.
-fn may_have_compiler_flag<'a>(
-    arguments: impl Iterator<Item = &'a str>,
+/// potential operand. Treat response files and non-UTF-8 flags as opaque.
+fn may_have_compiler_flag<'a, S: AsRef<OsStr> + ?Sized + 'a>(
+    arguments: impl Iterator<Item = &'a S>,
     mut matches: impl FnMut(&str, &str, bool) -> bool,
 ) -> bool {
-    let mut arguments = arguments.peekable();
+    let mut arguments = arguments.map(|arg| arg.as_ref().to_str()).peekable();
     let mut may_take_value = false;
     while let Some(argument) = arguments.next() {
+        let Some(argument) = argument else {
+            return true;
+        };
         if argument.starts_with('@') {
             return true;
         }
@@ -1340,7 +1343,7 @@ fn may_have_compiler_flag<'a>(
         };
         may_take_value = value.is_empty() && !argument.ends_with('=');
         let value = if may_take_value {
-            arguments.peek().copied().unwrap_or_default()
+            arguments.peek().copied().flatten().unwrap_or_default()
         } else {
             value
         };
