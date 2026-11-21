@@ -120,6 +120,9 @@ pub struct Compilation<'gctx> {
     /// Libraries to test with rustdoc.
     pub to_doc_test: Vec<Doctest>,
 
+    /// Owns the executable snapshots in `to_doc_test` until testing finishes.
+    doctest_run_dirs: Vec<tempfile::TempDir>,
+
     /// Rustdoc fingerprint files to determine whether we need to run `rustdoc --read-doc-meta-dir`.
     ///
     /// See `-Zrustdoc-mergeable-info` for more.
@@ -222,6 +225,7 @@ impl<'gctx> Compilation<'gctx> {
             root_crate_names: Vec::new(),
             extra_env: HashMap::default(),
             to_doc_test: Vec::new(),
+            doctest_run_dirs: Vec::new(),
             rustdoc_fingerprints: None,
             rustdocflags,
             gctx: bcx.gctx,
@@ -240,6 +244,42 @@ impl<'gctx> Compilation<'gctx> {
             lint_warning_count: 0,
             ready_tests: None,
         })
+    }
+
+    /// Records a doctest while the build locks still protect its cached harness.
+    /// Each harness reopens itself for every example, so it needs a path that
+    /// survives a rebuild or clean during this or an earlier package's tests.
+    pub(super) fn add_doctest(&mut self, mut test: Doctest) -> CargoResult<()> {
+        if let Some(source) = &test.executable {
+            let mut builder = tempfile::Builder::new();
+            builder.prefix("doctest-run-");
+            #[cfg(unix)]
+            {
+                use std::os::unix::fs::PermissionsExt;
+                builder.permissions(std::fs::Permissions::from_mode(0o700));
+            }
+            let snapshot_in = |parent: &Path| -> CargoResult<_> {
+                let dir = builder.tempdir_in(parent)?;
+                let path = dir
+                    .path()
+                    .join(format!("rust_out{}", std::env::consts::EXE_SUFFIX));
+                // The libtest driver reads argv[0] through std::env::args().
+                anyhow::ensure!(path.to_str().is_some(), "non-UTF-8 doctest path: {path:?}");
+                paths::link_or_copy(source, &path)?;
+                #[cfg(unix)]
+                rustix::fs::access(&path, rustix::fs::Access::EXEC_OK)?;
+                Ok((dir, path))
+            };
+            // Use the system temp directory like rustdoc. A warm cache can still
+            // run with an unusable TMPDIR, including one on a noexec mount.
+            let (dir, path) = snapshot_in(&std::env::temp_dir())
+                .or_else(|_| snapshot_in(self.gctx.home().as_path_unlocked()))
+                .or_else(|_| snapshot_in(source.parent().unwrap()))?;
+            self.doctest_run_dirs.push(dir);
+            test.executable = Some(path);
+        }
+        self.to_doc_test.push(test);
+        Ok(())
     }
 
     /// Acquires protection once the context is known, before inspecting its artifacts.
