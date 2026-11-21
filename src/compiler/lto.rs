@@ -115,7 +115,16 @@ fn calculate(
         // Disable LTO for host builds since we only really want to perform LTO
         // for the final binary, and LTO on plugins/build scripts/proc macros is
         // largely not desired.
-        Lto::OnlyObject
+        // Object-only output can still run local ThinLTO. Respect an
+        // explicit opt-out on the macro and its library dependencies.
+        if unit.target.proc_macro()
+            && unit.profile.lto == profiles::Lto::Off
+            && bcx.gctx.cli_unstable().ohm_defaults()
+        {
+            Lto::Off
+        } else {
+            Lto::OnlyObject
+        }
     } else if all_lto_types {
         // Note that this ignores the `parent_lto` because this isn't a
         // linkable crate type; this unit is not being embedded in the parent.

@@ -16,7 +16,8 @@ and opt it into a short LLVM optimization pipeline. The library retains its host
 This applies to level-1 development profiles on x86-64 GNU/Linux. The first build can cost
 more, but subsequent macro expansions reuse the compiled helpers. A build script using the
 same library may need a separate copy. Build and matching package overrides take
-precedence. Use `-Zohm-defaults=no` to opt out.
+precedence. Ohm also passes an explicit `lto = "off"` through to the macro and its
+dependencies, so rustc skips local ThinLTO. Use `-Zohm-defaults=no` to opt out.
 
 Ohm defaults enable native ThinLTO object caching for supported Linux builds. Cargo manages
 `<build-dir>/.ohm-thinlto-cache`, pruning it after builds to 2 GiB or 100,000 objects and expiring

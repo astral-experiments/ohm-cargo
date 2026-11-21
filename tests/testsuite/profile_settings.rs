@@ -905,6 +905,7 @@ fn ohm_proc_macro_helpers() {
 
         [profile.dev]
         opt-level = 1
+        lto = "off"
     "#;
     let p = project()
         .file("Cargo.toml", manifest)
@@ -1007,7 +1008,9 @@ fn ohm_proc_macro_helpers() {
     check("yes", "release", "", &[]);
     check("no", "dev", "", &[]);
 
-    p.cargo("build -Zohm-defaults=yes")
+    p.cargo("build -v -Zohm-defaults=yes")
+        .with_stderr_contains("[..]--crate-name macros [..]-C lto=off [..]")
+        .with_stderr_contains("[..]--crate-name helper [..]-C lto=off [..]")
         .masquerade_as_nightly_cargo(&["ohm-defaults"])
         .run();
     p.cargo("build -Zohm-defaults=yes")
