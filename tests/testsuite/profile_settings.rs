@@ -882,6 +882,141 @@ fn debug_options_valid() {
 }
 
 #[cargo_test(nightly, reason = "Ohm defaults require the Ohm compiler")]
+fn ohm_proc_macro_helpers() {
+    Package::new("leaf", "1.0.0")
+        .file("src/lib.rs", "pub fn number() -> u8 { 42 }")
+        .publish();
+    Package::new("helper", "1.0.0")
+        .dep("leaf", "1")
+        .file("src/lib.rs", "pub fn number() -> u8 { leaf::number() }")
+        .publish();
+    let manifest = r#"
+        [package]
+        name = "foo"
+        version = "0.1.0"
+        edition = "2024"
+
+        [dependencies]
+        macros = { path = "macros" }
+        helper = "1"
+
+        [profile.custom]
+        inherits = "dev"
+
+        [profile.dev]
+        opt-level = 1
+    "#;
+    let p = project()
+        .file("Cargo.toml", manifest)
+        .file("src/lib.rs", "const _: [(); 42] = [(); macros::number!()];")
+        .file(
+            "macros/Cargo.toml",
+            r#"
+                [package]
+                name = "macros"
+                version = "0.1.0"
+                edition = "2024"
+
+                [lib]
+                proc-macro = true
+
+                [dependencies]
+                local = { path = "../local" }
+                helper = "1"
+
+                [build-dependencies]
+                helper = "1"
+            "#,
+        )
+        .file(
+            "macros/src/lib.rs",
+            r#"
+                use proc_macro::TokenStream;
+
+                #[proc_macro]
+                pub fn number(_: TokenStream) -> TokenStream {
+                    helper::number().to_string().parse().unwrap()
+                }
+            "#,
+        )
+        .file("macros/build.rs", "fn main() {}")
+        .file(
+            "local/Cargo.toml",
+            "[package]\nname = 'local'\nversion = '0.1.0'\nedition = '2024'",
+        )
+        .file("local/src/lib.rs", "")
+        .build();
+
+    let check = |defaults: &str, profile: &str, settings: &str, expected: &[&str]| {
+        p.change_file("Cargo.toml", &format!("{manifest}\n{settings}"));
+        let graph = p
+            .cargo(&format!(
+                "build --profile {profile} --unit-graph -Zunstable-options -Zohm-defaults={defaults}"
+            ))
+            .masquerade_as_nightly_cargo(&["unit-graph", "ohm-defaults"])
+            .run_json();
+        let units = graph["units"].as_array().unwrap();
+        let mut marked = Vec::new();
+        for unit in units {
+            if let Some(flags) = unit["profile"]["rustflags"].as_array() {
+                assert_eq!(
+                    flags,
+                    &["-Zllvm-module-flag=ohm.proc-macro-helper:u32:1:max"]
+                );
+                assert_eq!(unit["profile"]["codegen_units"], 1);
+                assert_eq!(unit["profile"]["opt_level"], "0");
+                marked.push(unit["target"]["name"].as_str().unwrap());
+            }
+        }
+        marked.sort();
+        if rustc_host() == "x86_64-unknown-linux-gnu" {
+            assert_eq!(marked, expected, "{graph}");
+            if expected.contains(&"helper") {
+                // The target library and the macro's build script each use
+                // their ordinary copy of helper.
+                let plain = units.iter().filter(|u| {
+                    u["target"]["name"] == "helper" && u["profile"]["rustflags"].is_null()
+                });
+                assert_eq!(plain.count(), 2, "{graph}");
+            }
+        } else {
+            assert!(marked.is_empty(), "{graph}");
+        }
+    };
+    check("yes", "dev", "", &["helper", "leaf"]);
+    check("yes", "custom", "", &["helper", "leaf"]);
+    check(
+        "yes",
+        "dev",
+        "[profile.dev.package.leaf]\ndebug = 1",
+        &["helper"],
+    );
+    check(
+        "yes",
+        "dev",
+        "[profile.dev.build-override]\nopt-level = 0",
+        &[],
+    );
+    check("yes", "dev", "codegen-units = 8", &[]);
+    check(
+        "yes",
+        "dev",
+        "[profile.dev.package.'*']\nopt-level = 1",
+        &[],
+    );
+    check("yes", "release", "", &[]);
+    check("no", "dev", "", &[]);
+
+    p.cargo("build -Zohm-defaults=yes")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .run();
+    p.cargo("build -Zohm-defaults=yes")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .with_stderr_does_not_contain("[COMPILING] [..]")
+        .run();
+}
+
+#[cargo_test(nightly, reason = "Ohm defaults require the Ohm compiler")]
 fn ohm_default_debuginfo() {
     Package::new("bar", "1.0.0").publish();
     let p = project()

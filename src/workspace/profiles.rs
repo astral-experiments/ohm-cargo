@@ -66,6 +66,8 @@ pub struct Profiles {
     requested_profile: InternedString,
     /// The host target for rustc being used by this `Profiles`.
     rustc_host: InternedString,
+    /// Whether this compiler host can use Ohm's LLVM profile for proc-macro helpers.
+    ohm_macro_helpers: bool,
 }
 
 impl Profiles {
@@ -88,6 +90,8 @@ impl Profiles {
             original_profiles: profiles.clone(),
             requested_profile,
             rustc_host,
+            ohm_macro_helpers: gctx.cli_unstable().ohm_defaults()
+                && rustc_host == "x86_64-unknown-linux-gnu",
         };
 
         Self::add_root_profiles(
@@ -301,6 +305,24 @@ impl Profiles {
     ) -> Profile {
         let maker = self.get_profile_maker(&self.requested_profile).unwrap();
         let mut profile = maker.get_profile(Some(pkg_id), is_member, unit_for.is_for_host());
+        if self.ohm_macro_helpers
+            && unit_for.proc_macro_helper
+            && unit_for.is_for_host()
+            && !is_local
+            && pkg_id.source_id().is_registry()
+            && profile.root == ProfileRoot::Debug
+            && profile.rustflags.is_empty()
+            && profile.codegen_backend.is_none()
+            && matches!(profile.lto, Lto::Off | Lto::Bool(false))
+            && maker.can_group_macro_helper(pkg_id)
+        {
+            // Keep the host profile's level and debug checks. A single module exposes
+            // callees to LLVM and the tracked flag opts this unit into simplification.
+            profile.codegen_units = Some(1);
+            profile
+                .rustflags
+                .push("-Zllvm-module-flag=ohm.proc-macro-helper:u32:1:max".into());
+        }
 
         // Dealing with `panic=abort` and `panic=unwind` requires some special
         // treatment. Be sure to process all the various options here.
@@ -451,6 +473,24 @@ impl ProfileMaker {
     /// Note that this does not process `inherits`, the caller is responsible for that.
     fn new(default: Profile, toml: Option<TomlProfile>) -> ProfileMaker {
         ProfileMaker { default, toml }
+    }
+
+    /// Use the helper profile only in level-1 dev builds without user overrides.
+    fn can_group_macro_helper(&self, pkg_id: PackageId) -> bool {
+        let Some(toml) = &self.toml else {
+            return false;
+        };
+        toml.opt_level
+            .as_ref()
+            .is_some_and(|level| level.0.as_str() == "1")
+            && toml.codegen_units.is_none()
+            && toml.build_override.is_none()
+            && toml.package.as_ref().is_none_or(|overrides| {
+                !overrides.keys().any(|key| match key {
+                    ProfilePackageSpec::All => true,
+                    ProfilePackageSpec::Spec(spec) => spec.matches(pkg_id),
+                })
+            })
     }
 
     /// Generates a new `Profile`.
@@ -1050,6 +1090,8 @@ pub struct UnitFor {
     /// build.rs` is `HOST=true`, `HOST_FEATURES=false` for the same reasons that
     /// foo's build script is set that way.
     host_features: bool,
+    /// A normal library dependency of a proc-macro, possibly through other libraries.
+    proc_macro_helper: bool,
     /// How Cargo processes the `panic` setting or profiles.
     panic_setting: PanicSetting,
 
@@ -1095,6 +1137,7 @@ impl UnitFor {
     /// proc macro/plugin, or test/bench).
     pub fn new_normal(root_compile_kind: CompileKind) -> UnitFor {
         UnitFor {
+            proc_macro_helper: false,
             host: false,
             host_features: false,
             panic_setting: PanicSetting::ReadProfile,
@@ -1111,6 +1154,7 @@ impl UnitFor {
     /// they want to use the features of the package they are running for.
     pub fn new_host(host_features: bool, root_compile_kind: CompileKind) -> UnitFor {
         UnitFor {
+            proc_macro_helper: false,
             host: true,
             host_features,
             // Force build scripts to always use `panic=unwind` for now to
@@ -1124,6 +1168,7 @@ impl UnitFor {
     /// A unit for a compiler plugin or their dependencies.
     pub fn new_compiler(root_compile_kind: CompileKind) -> UnitFor {
         UnitFor {
+            proc_macro_helper: false,
             host: false,
             // The feature resolver doesn't know which dependencies are
             // plugins, so for now plugins don't split features. Since plugins
@@ -1146,6 +1191,7 @@ impl UnitFor {
     /// compiler flag.
     pub fn new_test(gctx: &GlobalContext, root_compile_kind: CompileKind) -> UnitFor {
         UnitFor {
+            proc_macro_helper: false,
             host: false,
             host_features: false,
             // We're testing out an unstable feature (`-Zpanic-abort-tests`)
@@ -1214,6 +1260,9 @@ impl UnitFor {
         UnitFor {
             host: self.host || dep_for_host,
             host_features,
+            proc_macro_helper: (parent.target.proc_macro() || self.proc_macro_helper)
+                && dep_target.is_lib()
+                && !dep_target.proc_macro(),
             panic_setting,
             root_compile_kind,
             artifact_target_for_features,
@@ -1222,6 +1271,7 @@ impl UnitFor {
 
     pub fn for_custom_build(self) -> UnitFor {
         UnitFor {
+            proc_macro_helper: false,
             host: true,
             host_features: self.host_features,
             // Force build scripts to always use `panic=unwind` for now to
@@ -1234,6 +1284,7 @@ impl UnitFor {
 
     /// Set the artifact compile target for use in features using the given `artifact`.
     pub(crate) fn with_artifact_features(mut self, artifact: &Artifact) -> UnitFor {
+        self.proc_macro_helper = false;
         self.artifact_target_for_features = artifact.target().and_then(|t| t.to_compile_target());
         self
     }
@@ -1243,6 +1294,7 @@ impl UnitFor {
         mut self,
         kind: Option<CompileKind>,
     ) -> UnitFor {
+        self.proc_macro_helper = false;
         self.artifact_target_for_features = kind.and_then(|kind| match kind {
             CompileKind::Host => None,
             CompileKind::Target(triple) => Some(triple),
