@@ -4344,6 +4344,27 @@ fn shared_registry_cache_rejects_global_compiler_wrappers() {
 }
 
 #[cargo_test]
+fn shared_registry_cache_produces_requested_assembly_in_each_workspace() {
+    Package::new("assembly-provider", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+    let assembly = paths::root().join("output.s");
+    for workspace in ["first", "second"] {
+        let p = project_in(workspace)
+            .file("Cargo.toml", "[package]\nname='app'\nversion='1.0.0'\nedition='2021'\n[dependencies]\nassembly-provider='1.0.0'\n")
+            .file("src/lib.rs", "")
+            .build();
+        p.shared_registry_cargo("-Zohm-shared-registry-cache rustc -p assembly-provider --")
+            .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+            .env("CARGO_BUILD_BUILD_DIR", paths::root().join("shared"))
+            .arg(format!("--emit=asm={}", assembly.display()))
+            .run();
+        assert!(std::fs::metadata(&assembly).unwrap().len() > 0);
+        std::fs::remove_file(&assembly).unwrap();
+    }
+}
+
+#[cargo_test]
 fn shared_registry_cache_rejects_hidden_codegen_backends() {
     Package::new("backend-registry", "1.0.0")
         .file("src/lib.rs", "pub fn value() -> u32 { 37 }")
