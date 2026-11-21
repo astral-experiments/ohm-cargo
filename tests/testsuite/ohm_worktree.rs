@@ -50,6 +50,14 @@ fn coverage_uses_source_paths_from_the_checkout() {
     for (profile, flags, remapped) in [
         ("dev", "-Cinstrument-coverage", false),
         ("dev", "--codegen instrument_coverage=yes", false),
+        ("dev", "-gCinstrument-coverage", false),
+        ("dev", "--C=instrument_coverage", false),
+        ("dev", "-L -C -Cinstrument-coverage", false),
+        (
+            "dev",
+            "-Cinstrument-coverage -L -Cinstrument-coverage=no",
+            false,
+        ),
         (
             "dev",
             "-Cinstrument-coverage -C instrument-coverage=no",
