@@ -748,7 +748,27 @@ fn make_failed_scrape_diagnostic(
     )
 }
 
-const RELINK_CACHE_VERSION: u32 = 5;
+const RELINK_CACHE_VERSION: u32 = 6;
+
+/// Hashes the explicit extern paths that rustc resolves when writing an rlink.
+/// The recipe can outlive a symlink target even if its own bytes still match.
+fn relink_extern_paths_hash(command: &ProcessBuilder) -> Option<u64> {
+    use std::hash::{Hash, Hasher};
+
+    let mut hash = crate::util::StableHasher::new();
+    let cwd = command.get_cwd().unwrap_or(Path::new(""));
+    let opaque = may_have_compiler_flag(command.get_args(), |name, value, _| {
+        if name == "extern"
+            && let Some((_, path)) = value.split_once('=')
+        {
+            let path = cwd.join(path);
+            let resolved = crate::util::try_canonicalize(&path).unwrap_or(path);
+            (value, resolved).hash(&mut hash);
+        }
+        false
+    });
+    (!opaque).then(|| Hasher::finish(&hash))
+}
 
 #[derive(Hash, serde::Deserialize, serde::Serialize)]
 struct RelinkCacheFile {
@@ -766,6 +786,7 @@ struct RelinkCacheObject {
 #[derive(serde::Deserialize, serde::Serialize)]
 struct RelinkCacheManifest {
     version: u32,
+    extern_paths_hash: Option<u64>,
     rlink: RelinkCacheFile,
     executable: RelinkCacheObject,
     objects: Vec<RelinkCacheFile>,
@@ -775,7 +796,13 @@ struct RelinkCacheManifest {
 
 impl RelinkCacheManifest {
     fn input_checksum(&self) -> u64 {
-        crate::util::hash_u64((self.version, &self.rlink, &self.executable, &self.objects))
+        crate::util::hash_u64((
+            self.version,
+            self.extern_paths_hash,
+            &self.rlink,
+            &self.executable,
+            &self.objects,
+        ))
     }
 }
 
@@ -809,6 +836,7 @@ fn read_relink_manifest_slice(bytes: &[u8]) -> Option<CheckedRelinkManifest> {
         input_checksum: u64,
         proof_checksum: u64,
         version: u32,
+        extern_paths_hash: Option<u64>,
         rlink: File,
         executable: Object,
         objects: Vec<File>,
@@ -832,6 +860,7 @@ fn read_relink_manifest_slice(bytes: &[u8]) -> Option<CheckedRelinkManifest> {
                 proof_checksum: fields.proof_checksum,
                 manifest: RelinkCacheManifest {
                     version: fields.version,
+                    extern_paths_hash: fields.extern_paths_hash,
                     rlink: file(fields.rlink),
                     executable: RelinkCacheObject {
                         path: fields.executable.path,
@@ -901,12 +930,14 @@ impl RelinkCachePaths {
         rustc.arg("-Z").arg(temps_dir);
     }
 
-    fn is_valid(&self) -> bool {
+    fn is_valid(&self, extern_paths_hash: Option<u64>) -> bool {
         let manifest = self.read_manifest();
         let Some(manifest) = manifest else {
             return false;
         };
         manifest.version == RELINK_CACHE_VERSION
+            && manifest.extern_paths_hash.is_some()
+            && manifest.extern_paths_hash == extern_paths_hash
             && manifest.rlink.path == self.rlink
             && manifest.executable.path == self.executable
             && self.has_object_directory()
@@ -918,6 +949,7 @@ impl RelinkCachePaths {
 
     fn initialize(
         &self,
+        extern_paths_hash: Option<u64>,
         unused_externs: Option<&std::collections::BTreeSet<InternedString>>,
     ) -> CargoResult<()> {
         let mut objects = Vec::new();
@@ -936,6 +968,7 @@ impl RelinkCachePaths {
         }
         let manifest = RelinkCacheManifest {
             version: RELINK_CACHE_VERSION,
+            extern_paths_hash,
             rlink: cached_file(self.rlink.clone())?,
             executable: cached_object(self.executable.clone())?,
             objects,
@@ -1847,13 +1880,16 @@ fn rustc(
                         })
             });
         let validation_started = Instant::now();
+        let extern_paths_hash = relink_cache
+            .as_ref()
+            .and_then(|_| relink_extern_paths_hash(&rustc));
         let use_cached_relink = early_test.is_none()
             && deferred_dev_names.is_empty()
             && can_relink_dependencies
             && !observes_foreign_span
             && relink_cache
                 .as_ref()
-                .is_some_and(RelinkCachePaths::is_valid)
+                .is_some_and(|cache| cache.is_valid(extern_paths_hash))
             && *compiler_inputs_are_fresh;
         if can_relink_dependencies {
             tracing::info!(
@@ -2338,7 +2374,7 @@ fn rustc(
             let unused_externs = (unused_integration_dependency.is_some() || record_dev_unused)
                 .then(|| state.recorded_unused_externs())
                 .flatten();
-            cache.initialize(unused_externs.as_ref())?;
+            cache.initialize(extern_paths_hash, unused_externs.as_ref())?;
         }
 
         if rustc_dep_info_loc.exists() {
@@ -4888,6 +4924,7 @@ mod relink_cache_tests {
     fn manifest_json() -> CargoResult<Vec<u8>> {
         let manifest = RelinkCacheManifest {
             version: RELINK_CACHE_VERSION,
+            extern_paths_hash: Some(17),
             rlink: RelinkCacheFile {
                 path: PathBuf::from("quoted-\"-雪.rlink"),
                 blake3: "hash".to_owned(),
@@ -5113,6 +5150,38 @@ mod relink_cache_tests {
     }
 
     #[test]
+    #[cfg(unix)]
+    fn retargeting_an_extern_invalidates_the_relink_manifest() -> CargoResult<()> {
+        use std::os::unix::fs::symlink;
+
+        let dir = crate::util::text_path_tempdir();
+        let cache = RelinkCachePaths::new(dir.path().join("app"));
+        fs::create_dir(&cache.objects)?;
+        fs::write(cache.objects.join("a.o"), b"codegen")?;
+        fs::write(&cache.rlink, b"recipe")?;
+        fs::write(&cache.executable, b"exe")?;
+        fs::write(dir.path().join("old"), b"library")?;
+        fs::write(dir.path().join("new"), b"library")?;
+        let alias = dir.path().join("libdep.rlib");
+        for args in [
+            &["--extern", "dep=libdep.rlib"][..],
+            &["--extern=dep=libdep.rlib"],
+        ] {
+            symlink("old", &alias)?;
+            let mut rustc = ProcessBuilder::new("rustc");
+            rustc.cwd(dir.path()).args(args);
+            let hash = || relink_extern_paths_hash(&rustc);
+            cache.initialize(hash(), None)?;
+            assert!(cache.is_valid(hash()));
+            fs::remove_file(&alias)?;
+            symlink("new", &alias)?;
+            assert!(!cache.is_valid(hash()));
+            fs::remove_file(&alias)?;
+        }
+        Ok(())
+    }
+
+    #[test]
     fn incomplete_object_list_invalidates_relink_manifest() -> CargoResult<()> {
         let dir = crate::util::text_path_tempdir();
         let cache = RelinkCachePaths::new(dir.path().join("app"));
@@ -5122,14 +5191,15 @@ mod relink_cache_tests {
         for name in ["a.o", "b.o"] {
             fs::write(cache.objects.join(name), b"codegen")?;
         }
-        cache.initialize(None)?;
-        assert!(cache.is_valid());
+        let hash = relink_extern_paths_hash(&ProcessBuilder::new("rustc"));
+        cache.initialize(hash, None)?;
+        assert!(cache.is_valid(hash));
 
         let mut manifest: serde_json::Value = serde_json::from_slice(&fs::read(&cache.manifest)?)?;
         manifest["objects"].as_array_mut().unwrap().pop();
         fs::write(&cache.manifest, serde_json::to_vec(&manifest)?)?;
         fs::remove_file(cache.objects.join("b.o"))?;
-        assert!(!cache.is_valid());
+        assert!(!cache.is_valid(hash));
         Ok(())
     }
 
