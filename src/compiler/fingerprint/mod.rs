@@ -3026,7 +3026,7 @@ See https://doc.rust-lang.org/cargo/reference/build-scripts.html#rerun-if-change
             .collect::<CargoResult<Vec<_>>>()?
     };
 
-    let rustflags = unit.rustflags.to_vec();
+    let rustflags = build_runner.configured_rustflags(unit).to_vec();
     let script_result =
         if !overridden && super::unit_worktree_seed_namespace(build_runner, unit).is_some() {
             let (previous, _) = super::custom_build::prev_build_output(build_runner, unit);

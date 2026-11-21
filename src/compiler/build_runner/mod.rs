@@ -2083,20 +2083,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
     /// Native artifacts cannot provide check-specific assembly, IR, or tracing
     /// output. Ordinary checking must handle these options itself.
     fn test_check_has_unsupported_flags(&self, unit: &Unit) -> bool {
-        let gctx = self.bcx.gctx;
-        let mut rustflags = super::unit_rustflags_without_ohm_defaults(
-            gctx,
-            self.rustflags_for_cache_admission(unit),
-        );
-        // Remove only Cargo's ordered prefixes. Explicit copies of these flags
-        // remain subject to the same policy as any other user-supplied option.
-        if gctx.cli_unstable().headstart()
-            && rustflags
-                .first()
-                .is_some_and(|flag| flag == super::OHM_EARLY_METADATA_RUSTFLAG)
-        {
-            rustflags = &rustflags[1..];
-        }
+        let rustflags = self.configured_rustflags(unit);
         let extra_args = self
             .bcx
             .extra_args_for(unit)
@@ -2240,6 +2227,25 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             &target_info.rustflags,
             target_info.ohm_linker_flags,
         )
+    }
+
+    /// Returns the configured flags before Cargo adds its Ohm defaults and bundled linker options.
+    pub(super) fn configured_rustflags<'u>(&self, unit: &'u Unit) -> &'u [String] {
+        let gctx = self.bcx.gctx;
+        let mut rustflags = super::unit_rustflags_without_ohm_defaults(
+            gctx,
+            self.rustflags_for_cache_admission(unit),
+        );
+        // Remove only Cargo's ordered prefixes. Explicit copies of these flags
+        // remain subject to the same policy as any other user-supplied option.
+        if gctx.cli_unstable().headstart()
+            && rustflags
+                .first()
+                .is_some_and(|flag| flag == super::OHM_EARLY_METADATA_RUSTFLAG)
+        {
+            rustflags = &rustflags[1..];
+        }
+        rustflags
     }
 
     /// Returns whether a unit has the shape of a promotable owned or registry library.

@@ -330,6 +330,12 @@ fn custom_build_env_var_encoded_rustflags() {
         .file("src/lib.rs", "")
         .build();
 
+    p.cargo("-Zohm-defaults check")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("RUSTC_WRAPPER", super::rustflags::ohm_defaults_wrapper())
+        .env("OHM_DEFAULTS_LOG", p.root().join("compiler.log"))
+        .run();
+
     p.cargo("check").run();
 }
 
