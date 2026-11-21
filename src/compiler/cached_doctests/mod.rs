@@ -318,8 +318,9 @@ fn compile(
     cache: Option<&RelinkCachePaths>,
     reuse: bool,
 ) -> CargoResult<CompileStatus> {
+    let extern_paths_hash = cache.and_then(|_| super::relink_extern_paths_hash(command));
     if let Some(cache) = cache {
-        if reuse && cache.is_valid() {
+        if reuse && cache.is_valid(extern_paths_hash) {
             let mut link = command.clone();
             assert!(link.replace_arg(source, &cache.rlink));
             link.arg("-Zlink-only");
@@ -342,7 +343,7 @@ fn compile(
         return Ok(CompileStatus::Failed);
     }
     if let Some(cache) = cache {
-        cache.initialize(None)?;
+        cache.initialize(extern_paths_hash, None)?;
     }
     Ok(CompileStatus::Compiled)
 }

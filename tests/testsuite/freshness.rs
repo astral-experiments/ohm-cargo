@@ -4872,7 +4872,7 @@ fn relink_only_reuses_root_codegen() {
         .next()
         .unwrap();
     let cache: serde_json::Value = serde_json::from_slice(&fs::read(&manifest).unwrap()).unwrap();
-    assert_eq!(cache["version"], 5);
+    assert_eq!(cache["version"], 6);
     let executable = Path::new(cache["executable"]["path"].as_str().unwrap());
     let objects = executable.with_extension("rlink-objects");
     assert!(objects.is_dir());
@@ -4938,7 +4938,7 @@ fn relink_only_reuses_root_codegen() {
 
     let rebuilt_cache: serde_json::Value =
         serde_json::from_slice(&fs::read(&manifest).unwrap()).unwrap();
-    assert_eq!(rebuilt_cache["version"], 5);
+    assert_eq!(rebuilt_cache["version"], 6);
     let rebuilt_objects = rebuilt_cache["objects"].as_array().unwrap();
     assert!(!rebuilt_objects.is_empty());
     assert!(
