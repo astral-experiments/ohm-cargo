@@ -2914,8 +2914,8 @@ fn calculate_normal(
         ("ohm-worktree-seeds", remap).hash(&mut config);
     }
     if unit_consumes_public_api_hash(build_runner, unit) {
-        // Older generations could miss a changed link or retain diagnostics from a failed build.
-        ("ohm-reduced-dependency-rebuild", 3_u8).hash(&mut config);
+        // Older generations could reuse metadata across changes to generated Rust libraries.
+        ("ohm-reduced-dependency-rebuild", 4_u8).hash(&mut config);
     }
     if super::unit_suppresses_default_public_api_hash(build_runner, unit) {
         ("ohm-terminal-check-public-api-hash", 1_u8).hash(&mut config);

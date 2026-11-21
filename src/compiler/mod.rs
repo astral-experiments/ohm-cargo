@@ -1396,6 +1396,11 @@ fn has_custom_link_output(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bo
     })
 }
 
+/// Whether rustc can resolve Rust crates from a `-L` search directory.
+fn can_supply_rust_crates(path: &str) -> bool {
+    !path.starts_with("native=") && !path.starts_with("framework=")
+}
+
 /// Whether user-controlled compiler arguments can add untracked linker inputs.
 fn has_opaque_integration_linker_flags(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
     may_set_rustc_option(build_runner, unit, |name, _| {
@@ -1708,6 +1713,11 @@ fn rustc(
         && fingerprint
             .as_ref()
             .is_some_and(|fp| fp.native_recheck_can_reuse_codegen(build_runner, unit));
+    let user_crate_inputs = may_set_rustc_option(build_runner, unit, |name, value| match name {
+        "extern" => true,
+        "L" | "library-path" => can_supply_rust_crates(value),
+        _ => false,
+    });
     let can_skip_compilation = fingerprint::unit_can_use_early_cutoff(build_runner, unit)
         && fingerprint
             .as_ref()
@@ -1788,9 +1798,28 @@ fn rustc(
         } else {
             early_test
         };
-        let observes_foreign_span = fingerprint
-            .as_ref()
-            .is_some_and(|fp| fp.observes_foreign_span());
+        // This package's build scripts can expose separate Rust libraries to its
+        // dependents. Rebuilding the publisher must advance its metadata even
+        // when the published search paths and its own public hash are unchanged.
+        let extra_crate_inputs = user_crate_inputs
+            || script_metadatas.as_ref().is_some_and(|scripts| {
+                let outputs = build_script_outputs.lock().unwrap();
+                scripts.iter().any(|metadata| {
+                    outputs.get(*metadata).is_none_or(|output| {
+                        output
+                            .library_paths
+                            .iter()
+                            .any(|path| path.as_ref().to_str().is_none_or(can_supply_rust_crates))
+                    })
+                })
+            });
+        if extra_crate_inputs {
+            state.invalid_public_api_hash();
+        }
+        let can_reuse_inputs = !extra_crate_inputs
+            && !fingerprint
+                .as_ref()
+                .is_some_and(|fp| fp.observes_foreign_span());
         // An unchanged public API does not cover files read directly by the compiler,
         // e.g. a dependency's metadata consumed by include_bytes! through a symlink.
         let compiler_inputs_are_fresh = std::cell::LazyCell::new(|| {
@@ -1799,7 +1828,7 @@ fn rustc(
             })
         });
         if let Some(ref fp) = fingerprint
-            && !observes_foreign_span
+            && can_reuse_inputs
         {
             tracing::info!(
                 "early cutoff check for {}: fs_status={:?}, outputs={:?}",
@@ -1886,7 +1915,7 @@ fn rustc(
         let use_cached_relink = early_test.is_none()
             && deferred_dev_names.is_empty()
             && can_relink_dependencies
-            && !observes_foreign_span
+            && can_reuse_inputs
             && relink_cache
                 .as_ref()
                 .is_some_and(|cache| cache.is_valid(extern_paths_hash))
@@ -1988,7 +2017,7 @@ fn rustc(
             (fingerprint.as_ref(), worktree_seed_namespace.as_deref())
             && early_test.is_none()
             && deferred_dev_names.is_empty()
-            && !observes_foreign_span
+            && can_reuse_inputs
             && fingerprint::can_reuse_after_scripts(
                 fingerprint,
                 &pkg_root,

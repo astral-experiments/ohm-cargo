@@ -3289,6 +3289,54 @@ fn early_cutoff_rechecks_included_dependency_metadata() {
 }
 
 #[cargo_test]
+fn early_cutoff_rechecks_generated_rust_library() {
+    let wrapper = public_api_hash_wrapper();
+    let p = project()
+        .file(
+            "Cargo.toml",
+            "[package]\nname = 'app'\nversion = '0.1.0'\nedition = '2024'\n[dependencies]\ndep = { path = 'dep' }",
+        )
+        .file(
+            "src/lib.rs",
+            "extern crate generated; const _: () = assert!(generated::VALUE == 1);",
+        )
+        .file("dep/Cargo.toml", &basic_manifest("dep", "0.1.0"))
+        .file("dep/src/lib.rs", "")
+        .file("dep/generated.rs", "pub const VALUE: u32 = 1;")
+        .file(
+            "dep/build.rs",
+            r#"
+                use std::{env, process::Command};
+                fn main() {
+                    let out = env::var("OUT_DIR").unwrap();
+                    println!("cargo::rerun-if-changed=generated.rs");
+                    println!("cargo::rustc-link-search={out}");
+                    assert!(Command::new(env::var_os("RUSTC").unwrap())
+                        .args(["--crate-type=rlib", "generated.rs", "--out-dir", &out])
+                        .status().unwrap().success());
+                }
+            "#,
+        )
+        .build();
+    let check = || {
+        let mut cmd = p.cargo("check");
+        cmd.env("RUSTC_WRAPPER", &wrapper)
+            .env("RUSTFLAGS", "-Zpublic-api-hash");
+        cmd
+    };
+
+    check().run();
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    p.change_file("dep/generated.rs", "pub const VALUE: u32 = 2;");
+    check()
+        .with_status(101)
+        .with_stderr_contains("error[E0080]: [..]")
+        .run();
+}
+
+#[cargo_test]
 fn early_cutoff_skips_check_dependents() {
     assert_early_cutoff_checks_dependents("check", Some("-Zpublic-api-hash"), "dep\n");
 }

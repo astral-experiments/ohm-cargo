@@ -291,7 +291,7 @@ impl<'a, 'gctx> JobState<'a, 'gctx> {
         }
     }
 
-    /// Marks rustc's public API hash notification as malformed.
+    /// Disables reuse based on this job's public API hash.
     pub(crate) fn invalid_public_api_hash(&self) {
         *self.public_api_hash.lock().unwrap() = PublicApiHashState::Invalid;
         if let Some(conditional) = &self.conditional_metadata {
