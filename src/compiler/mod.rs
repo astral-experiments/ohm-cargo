@@ -1283,8 +1283,13 @@ fn unused_integration_workspace_dependencies(
     unused_dependencies
 }
 
-/// Whether user-controlled compiler arguments can add untracked linker inputs.
-fn has_opaque_integration_linker_flags(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
+/// Conservatively checks for an option in the user-supplied rustc arguments.
+/// Response files may supply any option. For `-C` and `-Z`, inspect the named suboption.
+fn may_set_rustc_option(
+    build_runner: &BuildRunner<'_, '_>,
+    unit: &Unit,
+    matches: impl Fn(&str, &str) -> bool,
+) -> bool {
     let arguments = unit
         .profile
         .rustflags
@@ -1305,57 +1310,69 @@ fn has_opaque_integration_linker_flags(build_runner: &BuildRunner<'_, '_>, unit:
                 .map(String::as_str),
         );
     let mut arguments = arguments.peekable();
-
     while let Some(argument) = arguments.next() {
-        if argument.starts_with('@')
-            || argument == "-l"
-            || argument.starts_with("-l")
-            || argument == "-L"
-            || argument.starts_with("-L")
-            || argument == "--extern"
-            || argument.starts_with("--extern=")
-            || argument == "--library-path"
-            || argument.starts_with("--library-path=")
-        {
+        if argument.starts_with('@') {
             return true;
         }
-
-        let codegen_option = if argument == "-C" || argument == "--codegen" {
-            arguments.next()
+        let (name, value) = if let Some(long) = argument.strip_prefix("--") {
+            long.split_once('=').unwrap_or((long, ""))
+        } else if let Some(short) = argument.strip_prefix('-') {
+            // rustc accepts grouped short options such as `-gochosen`.
+            let Some(pair) = short
+                .trim_start_matches(['g', 'O', 'v'])
+                .split_at_checked(1)
+            else {
+                continue;
+            };
+            pair
         } else {
-            argument
-                .strip_prefix("-C")
-                .or_else(|| argument.strip_prefix("--codegen="))
+            continue;
         };
-        if codegen_option.is_some_and(|option| {
-            option.split_once('=').is_some_and(|(name, _)| {
-                matches!(
-                    name,
-                    "link-arg" | "link_arg" | "link-args" | "link_args" | "linker"
-                )
-            })
-        }) {
-            return true;
-        }
-
-        let unstable_option = if argument == "-Z" {
-            arguments.next()
+        let value = if value.is_empty() {
+            arguments.peek().copied().unwrap_or_default()
         } else {
-            argument.strip_prefix("-Z")
+            value
         };
-        if unstable_option.is_some_and(|option| {
-            option.split_once('=').is_some_and(|(name, _)| {
-                matches!(
-                    name,
-                    "pre-link-arg" | "pre_link_arg" | "pre-link-args" | "pre_link_args"
-                )
-            })
-        }) {
+        let (name, value) = if matches!(name, "C" | "codegen" | "Z") {
+            value.split_once('=').unwrap_or((value, ""))
+        } else {
+            (name, value)
+        };
+        if matches(name, value) {
             return true;
         }
     }
-
     false
+}
+
+/// The relink cache expects both the executable and its rlink at Cargo's planned paths.
+fn has_custom_link_output(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
+    may_set_rustc_option(build_runner, unit, |name, value| match name {
+        "o" | "extra-filename" | "extra_filename" | "no-link" | "no_link" => true,
+        "emit" => value.split(',').any(|kind| kind.starts_with("link=")),
+        _ => false,
+    })
+}
+
+/// Whether user-controlled compiler arguments can add untracked linker inputs.
+fn has_opaque_integration_linker_flags(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
+    may_set_rustc_option(build_runner, unit, |name, _| {
+        matches!(
+            name,
+            "l" | "L"
+                | "extern"
+                | "library-path"
+                | "linker"
+                | "link-arg"
+                | "link_arg"
+                | "link-args"
+                | "link_args"
+                | "pre-link-arg"
+                | "pre_link_arg"
+                | "pre-link-args"
+                | "pre_link_args"
+        )
+    })
 }
 
 /// Dependency artifacts whose unchanged public metadata permits reusing consumer codegen.
