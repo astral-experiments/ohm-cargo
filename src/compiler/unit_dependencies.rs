@@ -338,7 +338,9 @@ fn deps_of(unit: &Unit, state: &mut State<'_, '_>, unit_for: UnitFor) -> CargoRe
     // flag, and you'll never ask for a `unit` with `panic` set as a
     // `TestDependency`. `CustomBuild` should also be fine since if the
     // requested unit's settings are the same as `Any`, `CustomBuild` can't
-    // affect anything else in the hierarchy.
+    // affect anything else in the hierarchy. A proc-macro helper can have
+    // different dependencies even when its own profile is unchanged, so
+    // new_unit_dep_with_profile gives it a distinct initial dep_hash.
     if !state.unit_dependencies.contains_key(unit) {
         let unit_deps = compute_deps(unit, state, unit_for)?;
         state
@@ -1019,7 +1021,10 @@ fn new_unit_dep_with_profile(
             .links_overrides
             .clone(),
         state.is_std,
-        /*dep_hash*/ 0,
+        // Keep even unmarked intermediates (e.g. path dependencies) separate
+        // from build script dependencies until traverse_and_share hashes the
+        // actual dependencies and can safely merge identical subtrees.
+        u64::from(state.profiles.in_macro_helper_tree(unit_for)),
         artifact.map_or(IsArtifact::No, |_| IsArtifact::Yes),
         artifact_target,
         false,
