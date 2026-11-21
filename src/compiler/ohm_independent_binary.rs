@@ -3,19 +3,47 @@
 use super::custom_build::BuildOutput;
 use super::fingerprint::{self, Fingerprint};
 use super::{
-    BuildRunner, CompileKind, CompileMode, InternedString, RelinkCachePaths, Unit, UnitIndex,
+    BuildRunner, BuildScriptOutputs, CompileKind, CompileMode, InternedString, RelinkCachePaths,
+    Unit, UnitHash, UnitIndex,
 };
+use crate::util::data_structures::HashMap;
 use cargo_util::{ProcessBuilder, paths};
 use std::collections::BTreeSet;
 use std::ffi::OsString;
 use std::fs::Metadata;
 use std::hash::{Hash, Hasher};
 use std::path::{Path, PathBuf};
+use std::sync::Mutex;
 use std::time::SystemTime;
+
+struct PackageScript {
+    index: UnitIndex,
+    metadata: UnitHash,
+    stdout: PathBuf,
+}
+
+impl PackageScript {
+    fn local_digest(&self, outputs: &Mutex<BuildScriptOutputs>, dir: &Path) -> Option<u64> {
+        let mut outputs = outputs.lock().unwrap();
+        let cell = outputs
+            .integration_test_digests
+            .entry(self.metadata)
+            .or_default()
+            .clone();
+        if let Some(digest) = cell.get() {
+            return *digest;
+        }
+        let output = outputs.get(self.metadata)?.clone();
+        drop(outputs);
+        // Several test executables can share this script. Read its generated
+        // files once, outside the lock used to publish other scripts' outputs.
+        *cell.get_or_init(|| fingerprint::current_script_digest(&self.stdout, dir, &output))
+    }
+}
 
 pub(super) struct IndependentBinary {
     candidates: Vec<(UnitIndex, InternedString)>,
-    script: Option<UnitIndex>,
+    script: Option<PackageScript>,
     script_digest: Option<u64>,
     report: PathBuf,
     driver: PathBuf,
@@ -64,7 +92,15 @@ impl IndependentBinary {
             for dep in runner.unit_deps(unit) {
                 let index = runner.bcx.unit_to_index[&dep.unit];
                 if dep.unit.mode.is_run_custom_build() && dep.unit.pkg == unit.pkg {
-                    script = Some(index);
+                    script = Some(PackageScript {
+                        index,
+                        metadata: runner.get_run_build_script_metadata(&dep.unit),
+                        stdout: runner
+                            .build_explicit_deps
+                            .get(&dep.unit)?
+                            .build_script_output
+                            .clone(),
+                    });
                 }
                 if dep.unit.target.is_lib() && runner.bcx.ws.is_member_id(dep.unit.pkg.package_id())
                 {
@@ -151,12 +187,22 @@ impl IndependentBinary {
             .then_some(())
     }
 
-    pub(super) fn start(&mut self, fp: &Fingerprint) -> Option<()> {
+    pub(super) fn start(
+        &mut self,
+        fp: &Fingerprint,
+        outputs: &Mutex<BuildScriptOutputs>,
+        dirs: &HashMap<UnitHash, PathBuf>,
+    ) -> Option<()> {
         self.started = SystemTime::now();
         // Include the completed script's raw and parsed output and all generated
         // files in both snapshots, even across intervening builds of other roots.
-        if let Some(index) = self.script {
-            self.script_digest = Some(fp.script_digest(index)?);
+        if let Some(script) = &self.script {
+            // The shared registry cache already computed this digest for worktree seeding.
+            // For a local build, validate the same bytes when preparing the test.
+            self.script_digest = Some(
+                fp.script_digest(script.index)
+                    .or_else(|| script.local_digest(outputs, dirs.get(&script.metadata)?))?,
+            );
         }
         Some(())
     }
@@ -193,7 +239,8 @@ impl IndependentBinary {
         });
         let only_script = self
             .script
-            .is_some_and(|index| fingerprint::only_rebuilt_dependency(fp, index));
+            .as_ref()
+            .is_some_and(|script| fingerprint::only_rebuilt_dependency(fp, script.index));
         if !(only_unused || only_script) || self.snapshot(cache)? != previous {
             return None;
         }

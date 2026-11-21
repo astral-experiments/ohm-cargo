@@ -351,15 +351,28 @@ fn independent_integration_test_revalidates_library_and_script_inputs() {
     };
     let reused = "[..]reusing independent integration test[..]";
     let has_impl = "pub trait Answer {} impl Answer for u8 {}";
+    let local = || {
+        let mut cmd = test();
+        cmd.env_remove("CARGO_BUILD_BUILD_DIR")
+            .env("CARGO_TARGET_DIR", p.root().join("local-target"));
+        cmd
+    };
+    local().run();
     test().run();
     p.change_file("api/src/lib.rs", has_impl);
+    local().with_stderr_contains(reused).run();
     test()
         .with_stderr_contains(reused)
         .with_stderr_contains("[..]unused variable: `warning`[..]")
         .run();
     p.change_file("trigger", "a ");
+    local().with_stderr_contains(reused).run();
     test().with_stderr_contains(reused).run();
     p.change_file("trigger", "b");
+    local()
+        .with_stderr_does_not_contain(reused)
+        .with_status(101)
+        .run();
     test()
         .with_stderr_does_not_contain(reused)
         .with_status(101)
