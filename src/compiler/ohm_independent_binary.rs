@@ -326,7 +326,7 @@ impl IndependentBinary {
 /// A procedural macro can read a file that only a script tracks. A matching
 /// script result or unused-extern report cannot validate such a read. Check
 /// the runtime closure against Cargo's configured registry macro policy.
-fn macros_are_audited(runner: &BuildRunner<'_, '_>) -> bool {
+pub(super) fn macros_are_audited(runner: &BuildRunner<'_, '_>) -> bool {
     let mut pending: Vec<_> = runner
         .bcx
         .unit_graph

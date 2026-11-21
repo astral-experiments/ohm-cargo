@@ -3373,6 +3373,76 @@ fn shared_registry_cache_preserves_private_check_early_cutoff() {
     );
 }
 
+#[cfg(feature = "ohm-defaults")]
+#[cargo_test]
+fn early_cutoff_combines_script_results_and_metadata_for_binary_checks() {
+    let rustc = std::env::var_os("RUSTC").unwrap_or_else(|| "rustc".into());
+    if cargo_test_support::process(rustc)
+        .args(&["-Zpublic-api-hash", "--print=sysroot"])
+        .exec_with_output()
+        .is_err()
+    {
+        return;
+    }
+    for shared in [false, true] {
+        let p = project()
+            .at(if shared { "shared" } else { "private" })
+            .file(
+                "Cargo.toml",
+                &format!("{}\n[dependencies]\ndep = {{ path = \"dep\" }}\n[workspace]\n", basic_manifest("app", "0.1.0")),
+            )
+            .file("dep/Cargo.toml", &basic_manifest("dep", "0.1.0"))
+            .file("dep/src/lib.rs", "pub fn value() -> u8 { 1 }")
+            .file("trigger", "seed")
+            .file(
+                "build.rs",
+                r#"
+                fn main() {
+                    println!("cargo::rerun-if-changed=trigger");
+                    let input = std::fs::read_to_string("trigger").unwrap();
+                    let name = if input.starts_with("new") { "new" } else { "old" };
+                    println!("cargo::rustc-env=NAME={name}");
+                    let expr = if input.ends_with("bad") { "true" } else { "0u8" };
+                    std::fs::write("expr.rs", expr).unwrap();
+                }
+                "#,
+            )
+            .file(
+                "src/main.rs",
+                r#"fn main() { let _: u8 = include!("../expr.rs"); let _ = (env!("NAME"), dep::value()); }"#,
+            )
+            .build();
+        let check = || {
+            let mut cmd = p.cargo("-Zohm-defaults check -vv -p app");
+            cmd.masquerade_as_nightly_cargo(&["ohm-defaults", "ohm-shared-registry-cache"])
+                .env("CARGO_INCREMENTAL", "1")
+                .env_remove("LIBRARY_PATH");
+            if shared {
+                cmd.env("CARGO_BUILD_BUILD_DIR", paths::root().join("registry"));
+            }
+            cmd
+        };
+        let app = "[..]--crate-name app [..]";
+        check().with_stderr_contains(app).run();
+        p.change_file("trigger", "again");
+        p.change_file("dep/src/lib.rs", "pub fn value() -> u8 { 2 }");
+        check()
+            .with_stdout_contains("[..]cargo::rustc-env=NAME=old")
+            .with_stderr_contains("[..]--crate-name dep [..]")
+            .with_stderr_does_not_contain(app)
+            .run();
+        check().with_stderr_does_not_contain(app).run();
+        p.change_file("trigger", "new");
+        check().with_stderr_contains(app).run();
+        // The script's stdout and OUT_DIR match, but a tracked include has changed.
+        p.change_file("trigger", "new-bad");
+        check()
+            .with_status(101)
+            .with_stderr_contains("error[E0308]: mismatched types")
+            .run();
+    }
+}
+
 #[cargo_test]
 fn shared_registry_cache_rechecks_dependents_when_public_api_changes() {
     assert_early_cutoff_checks_dependents_with_build_directory(
