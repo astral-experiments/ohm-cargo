@@ -23,7 +23,9 @@ fn main() -> ExitCode {
         return run_example(id.parse().expect("doctest index"));
     }
 
-    let exe = std::env::current_exe().expect("doctest executable path");
+    // Cargo launches this driver directly at an absolute path. Use that same
+    // path for children, including when a symlink hides a non-UTF-8 component.
+    let exe = &args[0];
     let tests: Vec<_> = CASES
         .iter()
         .enumerate()

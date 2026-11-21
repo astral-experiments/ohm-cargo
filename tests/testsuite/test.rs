@@ -6583,6 +6583,36 @@ fn cached_doctests_keep_running_the_original_examples() {
 }
 
 #[cargo_test]
+#[cfg(target_os = "linux")]
+fn cached_doctests_relaunch_through_the_original_path() {
+    use std::os::unix::ffi::OsStrExt;
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            "[package]\nname = 'foo'\nversion = '0.0.1'\nedition = '2024'",
+        )
+        .file(
+            "src/lib.rs",
+            "/// ```\n/// assert!(std::env::args().next().is_some());\n/// ```\npub fn example() {}",
+        )
+        .build();
+    let physical = p.root().join(std::ffi::OsStr::from_bytes(b"store-\xff"));
+    fs::create_dir(&physical).unwrap();
+    let logical = p.root().join("store");
+    std::os::unix::fs::symlink(&physical, &logical).unwrap();
+    p.cargo("test --doc -Zohm-cached-doctests -v")
+        .masquerade_as_nightly_cargo(&["ohm-cached-doctests"])
+        .env("CARGO_UNSTABLE_OHM_DEFAULTS", "false")
+        .env("RUSTC_BOOTSTRAP", "1")
+        .env("CARGO_TARGET_DIR", logical.join("target"))
+        .env("TMPDIR", logical)
+        .with_stderr_contains("[RUNNING] [..]doctest-run-[..]")
+        .with_stdout_contains("[..]1 passed; 0 failed[..]")
+        .run();
+}
+
+#[cargo_test]
 fn cached_doctests_survive_clean_during_a_workspace_run() {
     let examples = r#"
         /// ```
