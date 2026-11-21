@@ -1911,6 +1911,17 @@ fn unit_uses_custom_codegen_backend(
                 .map(String::as_str),
         );
 
+    // A registry rlib can bundle an archive selected by #[link] from a caller's
+    // native search path. Only cross-workspace artifact reuse needs this check.
+    // A check reusing the rlib's metadata does not consume the bundled code.
+    if matches!(unit.mode, CompileMode::Build | CompileMode::Test)
+        && crate::compiler::may_have_compiler_flag(flags.clone(), |flag, path, _| {
+            flag == "L" && path.starts_with("native=")
+        })
+    {
+        return true;
+    }
+
     unit_compiler_arguments_use_opaque_execution(unit, host.as_str(), target_sysroot, flags)
 }
 

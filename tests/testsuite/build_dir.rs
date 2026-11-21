@@ -4364,6 +4364,52 @@ fn shared_registry_cache_produces_requested_assembly_in_each_workspace() {
     }
 }
 
+#[cfg(unix)]
+#[cargo_test(requires = "cc", requires = "ar")]
+fn shared_registry_cache_validates_external_archive_searches() {
+    Package::new("archive-provider", "1.0.0")
+        .file(
+            "src/lib.rs",
+            r#"
+                #[link(name = "choice", kind = "static")]
+                unsafe extern "C" { fn choice() -> i32; }
+                pub fn value() -> i32 { unsafe { choice() } }
+            "#,
+        )
+        .publish();
+    let directory = paths::root().join("native");
+    std::fs::create_dir(&directory).unwrap();
+    for (workspace, value) in [("first", 17), ("second", 42)] {
+        let p = project_in(workspace)
+            .file("Cargo.toml", "[package]\nname='app'\nversion='1.0.0'\nedition='2021'\n[dependencies]\narchive-provider='1.0.0'\n")
+            .file("src/main.rs", "fn main() { println!(\"{}\", archive_provider::value()); }")
+            .file("choice.c", &format!("int choice(void) {{ return {value}; }}"))
+            .build();
+        p.process("cc").args(&["-c", "choice.c"]).run();
+        p.process("ar")
+            .arg("crs")
+            .arg(directory.join("libchoice.a"))
+            .arg("choice.o")
+            .run();
+        let cargo = |op| {
+            let mut cmd = p.shared_registry_cargo(&format!("-Zohm-shared-registry-cache {op}"));
+            cmd.masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+                .env("CARGO_BUILD_BUILD_DIR", paths::root().join("shared"))
+                .env(
+                    "CARGO_ENCODED_RUSTFLAGS",
+                    format!("-Lnative={}", directory.display()),
+                );
+            cmd
+        };
+        let mut check = cargo("check");
+        if workspace == "second" {
+            check.with_stderr_does_not_contain("[CHECKING] archive-provider v1.0.0");
+        }
+        check.run();
+        cargo("run").with_stdout_data(format!("{value}\n")).run();
+    }
+}
+
 #[cargo_test]
 fn shared_registry_cache_rejects_hidden_codegen_backends() {
     Package::new("backend-registry", "1.0.0")
