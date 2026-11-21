@@ -1830,7 +1830,7 @@ fn is_immutable_registry_unit(
     eligible
 }
 
-/// Rejects compiler options and target specifications that can execute opaque external code.
+/// Rejects compiler options and target specifications that need workspace-local execution.
 ///
 /// Response files, dynamic LLVM extensions, custom targets, and linker overrides remain private.
 fn unit_uses_custom_codegen_backend(
@@ -2024,7 +2024,7 @@ fn apple_executable_profile_uses_external_tools(
         || (debuginfo_enabled && split_debuginfo == Some("packed"))
 }
 
-/// Recognizes every spelling that can inject native code or opaque compiler tools.
+/// Checks for native inputs, compiler tools and outputs outside Cargo's artifact set.
 fn compiler_arguments_use_opaque_execution<'a>(
     flags: impl IntoIterator<Item = &'a str>,
     executable_unit: bool,
@@ -2035,6 +2035,7 @@ fn compiler_arguments_use_opaque_execution<'a>(
     crate::compiler::may_have_compiler_flag(flags.into_iter(), |flag, value, _| match flag {
         "g" => apple_executable && !profile_debuginfo_enabled,
         "l" | "target" | "sysroot" | "extern" | "library-path" => true,
+        "emit" | "o" | "out-dir" | "print" => true,
         "L" => {
             executable_unit || (!value.starts_with("native=") && !value.starts_with("framework="))
         }
@@ -2067,38 +2068,48 @@ fn compiler_option_uses_apple_auxiliary_tools(
     }
 }
 
-/// Executable compiler extensions and command-line linker overrides bypass toolchain identity.
+/// Compiler extensions, linker overrides and side outputs require local execution.
 fn compiler_option_uses_opaque_execution(option: &str) -> bool {
-    option.starts_with('@')
+    let name = option.split_once('=').map_or(option, |(name, _)| name);
+    let normalized = name.contains('_').then(|| name.replace('_', "-"));
+    let name = normalized.as_deref().unwrap_or(name);
+    name.starts_with('@')
         || matches!(
-            option.split('=').next(),
-            Some(
-                "codegen-backend"
-                    | "codegen_backend"
-                    | "llvm-plugins"
-                    | "llvm_plugins"
-                    | "autodiff"
-                    | "default-linker-libraries"
-                    | "default_linker_libraries"
-                    | "link-self-contained"
-                    | "link_self_contained"
-                    | "linker"
-                    | "linker-flavor"
-                    | "linker_flavor"
-                    | "linker-features"
-                    | "linker_features"
-                    | "dlltool"
-                    | "link-arg"
-                    | "link_arg"
-                    | "link-args"
-                    | "link_args"
-                    | "pre-link-arg"
-                    | "pre_link_arg"
-                    | "pre-link-args"
-                    | "pre_link_args"
-                    | "linker-plugin-lto"
-                    | "linker_plugin_lto"
-            )
+            name,
+            "codegen-backend"
+                | "llvm-plugins"
+                | "autodiff"
+                | "default-linker-libraries"
+                | "link-self-contained"
+                | "linker"
+                | "linker-flavor"
+                | "linker-features"
+                | "dlltool"
+                | "link-arg"
+                | "link-args"
+                | "pre-link-arg"
+                | "pre-link-args"
+                | "linker-plugin-lto"
+        )
+        // A cache hit restores Cargo's artifacts. Files and reports explicitly
+        // requested from rustc must be produced by the current workspace.
+        || name.starts_with("dump-")
+        || name.starts_with("print-")
+        || matches!(
+            name,
+            "incremental"
+                | "save-temps"
+                | "temps-dir"
+                | "llvm-args"
+                | "llvm-time-trace"
+                | "metrics-dir"
+                | "nll-facts"
+                | "remark"
+                | "remark-dir"
+                | "self-profile"
+                | "split-dwarf-out-dir"
+                | "thinlto-cache"
+                | "unpretty"
         )
 }
 
@@ -3248,6 +3259,12 @@ mod shared_registry_tests {
             &["-gZ", "codegen-backend=llvm"],
             &["--C=linker=custom"],
             &["-o", "-C", "-lstatic=injected"],
+            &["--emit", "llvm-ir=report.ll"],
+            &["-gooutput"],
+            &["-Zdump_mir=all"],
+            &["--Z=self-profile=reports"],
+            &["-gC", "incremental=custom"],
+            &["--codegen=save-temps"],
             &["--library-path", "/opaque/libraries"],
             &["--library-path=/opaque/libraries"],
             &["@opaque-response-file"],
