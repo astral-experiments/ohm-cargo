@@ -177,12 +177,14 @@ pub(super) fn harness(json: &[u8], crate_name: &str) -> Option<Harness> {
 /// Location macros and crate-root items can change meaning when moved into a
 /// module. Inspect tokens so words in a string or comment don't disable a crate.
 fn needs_crate_root(tokens: TokenStream, mentions_dollar_crate: bool) -> bool {
-    let mut tokens = tokens.into_iter().peekable();
-    while let Some(token) = tokens.next() {
+    let mut streams = vec![tokens.into_iter().peekable()];
+    while let Some(tokens) = streams.last_mut() {
+        let Some(token) = tokens.next() else {
+            streams.pop();
+            continue;
+        };
         match token {
-            TokenTree::Group(group) if needs_crate_root(group.stream(), mentions_dollar_crate) => {
-                return true;
-            }
+            TokenTree::Group(group) => streams.push(group.stream().into_iter().peekable()),
             TokenTree::Ident(ident) => {
                 let next = match tokens.peek() {
                     Some(TokenTree::Punct(punct)) => Some(punct.as_char()),
@@ -216,4 +218,10 @@ fn needs_crate_root(tokens: TokenStream, mentions_dollar_crate: bool) -> bool {
         }
     }
     false
+}
+
+#[test]
+fn finds_location_macro_inside_deeply_nested_groups() {
+    let code = format!("{}line!(){}", "(".repeat(16_384), ")".repeat(16_384));
+    assert!(needs_crate_root(code.parse().unwrap(), false));
 }
