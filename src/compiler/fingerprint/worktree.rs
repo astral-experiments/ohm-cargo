@@ -215,15 +215,7 @@ pub(in crate::compiler) fn can_reuse_after_scripts(
             {
                 unchanged_dependency = true;
             }
-            BuildState::BuiltChanged
-                if dependency
-                    .fingerprint
-                    .script_result
-                    .lock()
-                    .unwrap()
-                    .as_ref()
-                    .is_some_and(|result| result.unchanged_after_run) =>
-            {
+            BuildState::BuiltChanged if dependency.fingerprint.script_result_unchanged() => {
                 unchanged_dependency = true;
             }
             // BuiltUnchanged and ordinary SkippedEarlyCutoff only prove metadata

@@ -740,6 +740,61 @@ pub fn is_stale_due_to_dependency(fingerprint: &Fingerprint) -> bool {
     )
 }
 
+/// A binary check exports no metadata and consumes no native objects. A
+/// procedural macro can still read an input tracked only by the build script.
+fn can_check_script_result(runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
+    unit.target.is_bin()
+        && matches!(unit.mode, CompileMode::Check { test: false })
+        && unit.pkg.has_custom_build()
+        && runner.bcx.gctx.cli_unstable().ohm_defaults()
+        && runner.bcx.rustc().wrapper.is_none()
+        && runner.bcx.rustc().workspace_wrapper.is_none()
+        && runner.bcx.build_config.primary_unit_rustc.is_none()
+        && !super::has_opaque_integration_linker_flags(runner, unit)
+        && super::ohm_independent_binary::macros_are_audited(runner)
+}
+
+struct ScriptRecord {
+    directory: PathBuf,
+    out_dir: PathBuf,
+    worktree: bool,
+}
+
+impl ScriptRecord {
+    fn new(runner: &BuildRunner<'_, '_>, unit: &Unit) -> Option<Self> {
+        let worktree = super::unit_worktree_seed_namespace(runner, unit).is_some();
+        if !worktree
+            && (unit.pkg.targets().iter().any(|target| target.is_lib())
+                || !runner
+                    .bcx
+                    .roots
+                    .iter()
+                    .any(|root| root.pkg == unit.pkg && can_check_script_result(runner, root)))
+        {
+            return None;
+        }
+        let out_dir = if runner.bcx.gctx.cli_unstable().build_dir_new_layout {
+            runner.files().out_dir_new_layout(unit)
+        } else {
+            runner.files().build_script_out_dir(unit)
+        };
+        Some(Self {
+            directory: runner.files().fingerprint_dir(unit),
+            out_dir,
+            worktree,
+        })
+    }
+
+    /// Worktree seeding already hashes generated trees. A private check
+    /// should not acquire this cost on every subsequent no-op.
+    fn path(&self) -> Option<PathBuf> {
+        if !self.worktree && self.out_dir.read_dir().ok()?.next().is_some() {
+            return None;
+        }
+        Some(self.directory.join(OHM_WORKTREE_SCRIPT_RESULT))
+    }
+}
+
 /// Checks if early cutoff applies for a unit.
 ///
 /// Early cutoff means: a dependency was rebuilt, but its output (.rmeta) didn't
@@ -760,6 +815,7 @@ pub fn can_skip_due_to_early_cutoff(fingerprint: &Fingerprint) -> bool {
     }
 
     let mut found_rebuilt_unchanged = false;
+    let mut script_reran = false;
 
     for dep in &fingerprint.deps {
         let dep_build_state = dep.fingerprint.build_state.lock().unwrap();
@@ -778,6 +834,11 @@ pub fn can_skip_due_to_early_cutoff(fingerprint: &Fingerprint) -> bool {
             BuildState::BuiltUnchanged | BuildState::SkippedEarlyCutoff => {
                 found_rebuilt_unchanged = true;
             }
+            BuildState::BuiltChanged
+                if fingerprint.check_script && dep.fingerprint.script_result_unchanged() =>
+            {
+                script_reran = true;
+            }
             BuildState::Fresh => {}
             BuildState::Pending | BuildState::BuiltChanged => {
                 info!(
@@ -789,6 +850,13 @@ pub fn can_skip_due_to_early_cutoff(fingerprint: &Fingerprint) -> bool {
         }
     }
 
+    if script_reran {
+        // A script's action fingerprint can change during execution. Verify
+        // that this consumer last used the same completed dependency results.
+        fingerprint.clear_memoized();
+        return fingerprint.worktree_reuse_hash.lock().unwrap().as_ref()
+            == Some(&util::to_hex(fingerprint.hash_u64()));
+    }
     if found_rebuilt_unchanged {
         info!(
             "early_cutoff: unit {:?} CAN skip - all deps allow early cutoff",
@@ -1180,7 +1248,7 @@ pub fn prepare_target(
             && !previous_dependency_changes.any
             && has_exclusive_metadata_access,
     );
-    if fingerprint.ohm_worktree_namespace.is_some()
+    if (fingerprint.ohm_worktree_namespace.is_some() || fingerprint.check_script)
         && !fingerprint.must_recheck_native_link(unit)
         && !force
         && !unit.artifact.is_true()
@@ -1331,14 +1399,7 @@ pub fn prepare_target(
         let output_path = build_runner.build_explicit_deps[unit]
             .build_script_output
             .clone();
-        let result_paths = super::unit_worktree_seed_namespace(build_runner, unit).map(|_| {
-            let out_dir = if build_runner.bcx.gctx.cli_unstable().build_dir_new_layout {
-                build_runner.files().out_dir_new_layout(unit)
-            } else {
-                build_runner.files().build_script_out_dir(unit)
-            };
-            (build_runner.files().fingerprint_dir(unit), out_dir)
-        });
+        let record = ScriptRecord::new(build_runner, unit);
         Work::new(move |state| {
             let outputs = build_script_outputs.lock().unwrap();
             let output = outputs
@@ -1354,15 +1415,19 @@ pub fn prepare_target(
                 *fingerprint.local.lock().unwrap() = new_local;
             }
 
-            if let Some((directory, out_dir)) = &result_paths {
+            if let Some(record) = &record {
                 let mut result = fingerprint.script_result.lock().unwrap();
-                *result = worktree::record_script_result(
-                    &directory.join(OHM_WORKTREE_SCRIPT_RESULT),
-                    &output_path,
-                    out_dir,
-                    output,
-                    result.as_ref(),
-                )?;
+                *result = if let Some(path) = record.path() {
+                    worktree::record_script_result(
+                        &path,
+                        &output_path,
+                        &record.out_dir,
+                        output,
+                        result.as_ref(),
+                    )?
+                } else {
+                    None
+                };
             }
 
             // Check if output changed and update fs_status
@@ -1374,8 +1439,8 @@ pub fn prepare_target(
                 &public_api_hash_path,
                 public_api_hash_update,
             )?;
-            if let Some((directory, _)) = result_paths {
-                let rerun = directory.join(OHM_WORKTREE_SCRIPT_RERUN);
+            if let Some(record) = record.filter(|record| record.worktree) {
+                let rerun = record.directory.join(OHM_WORKTREE_SCRIPT_RERUN);
                 if rerun.symlink_metadata().is_ok() {
                     paths::remove_file(&rerun)?;
                 }
@@ -1521,6 +1586,9 @@ pub struct Fingerprint {
     /// Whether the unit is dirty only because one of its dependencies changed.
     #[serde(skip)]
     early_cutoff_candidate: AtomicBool,
+    /// Whether a rerun build script with unchanged outputs can satisfy this check.
+    #[serde(skip)]
+    check_script: bool,
     /// Whether metadata used by this unit had already changed in an earlier
     /// Cargo invocation before its current dependencies were prepared.
     #[serde(skip)]
@@ -1995,6 +2063,15 @@ impl LocalFingerprint {
 }
 
 impl Fingerprint {
+    /// The record must match the generated bytes both before and after this run.
+    fn script_result_unchanged(&self) -> bool {
+        self.script_result
+            .lock()
+            .unwrap()
+            .as_ref()
+            .is_some_and(|result| result.unchanged_after_run)
+    }
+
     /// Returns the validated result of this direct build script after it finished.
     pub(super) fn script_digest(&self, index: UnitIndex) -> Option<u64> {
         self.deps
@@ -2072,6 +2149,7 @@ impl Fingerprint {
             fresh_doctest_inputs: false,
             observes_foreign_span: false,
             early_cutoff_candidate: AtomicBool::new(false),
+            check_script: false,
             previously_changed_metadata_dependency: AtomicBool::new(false),
             outputs: Vec::new(),
         }
@@ -2829,7 +2907,8 @@ fn calculate(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
 
     if unit.mode.is_run_custom_build()
         && !fingerprint.outputs.is_empty()
-        && super::unit_worktree_seed_namespace(build_runner, unit).is_some()
+        && (fingerprint.script_result.get_mut().unwrap().is_some()
+            || super::unit_worktree_seed_namespace(build_runner, unit).is_some())
     {
         let loc = build_runner.files().fingerprint_file_path(unit, "");
         let rerun = build_runner
@@ -3062,6 +3141,7 @@ fn calculate_normal(
         fs_status: Mutex::new(FsStatus::Stale),
         build_state: Mutex::new(BuildState::Pending),
         early_cutoff_candidate: AtomicBool::new(false),
+        check_script: can_check_script_result(build_runner, unit),
         previously_changed_metadata_dependency: AtomicBool::new(false),
         outputs,
     })
@@ -3120,28 +3200,15 @@ See https://doc.rust-lang.org/cargo/reference/build-scripts.html#rerun-if-change
     };
 
     let rustflags = unit.rustflags.to_vec();
-    let script_result =
-        if !overridden && super::unit_worktree_seed_namespace(build_runner, unit).is_some() {
+    let script_result = if overridden {
+        None
+    } else {
+        ScriptRecord::new(build_runner, unit).and_then(|record| {
+            let path = record.path()?;
             let (previous, _) = super::custom_build::prev_build_output(build_runner, unit);
-            previous.and_then(|previous| {
-                let out_dir = if build_runner.bcx.gctx.cli_unstable().build_dir_new_layout {
-                    build_runner.files().out_dir_new_layout(unit)
-                } else {
-                    build_runner.files().build_script_out_dir(unit)
-                };
-                worktree::load_script_result(
-                    &build_runner
-                        .files()
-                        .fingerprint_dir(unit)
-                        .join(OHM_WORKTREE_SCRIPT_RESULT),
-                    &output,
-                    &out_dir,
-                    &previous,
-                )
-            })
-        } else {
-            None
-        };
+            worktree::load_script_result(&path, &output, &record.out_dir, &previous?)
+        })
+    };
 
     Ok(Fingerprint {
         local: Mutex::new(local),
