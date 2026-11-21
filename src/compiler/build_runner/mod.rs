@@ -2089,7 +2089,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             .extra_args_for(unit)
             .map(Vec::as_slice)
             .unwrap_or_default();
-        let mut flags = unit
+        let flags = unit
             .pkg
             .manifest()
             .lint_rustflags()
@@ -2098,32 +2098,14 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             .chain(unit.profile.rustflags.iter().map(|flag| flag.as_str()))
             .chain(extra_args.iter().map(String::as_str))
             .chain(rustflags.iter().map(String::as_str));
-        while let Some(flag) = flags.next() {
-            if flag.starts_with("-Z")
-                || flag.starts_with("-o")
-                || matches!(
-                    flag.split('=').next(),
-                    Some("--emit" | "--print" | "--out-dir")
-                )
-            {
-                return true;
-            }
-            let codegen = if matches!(flag, "-C" | "--codegen") {
-                flags.next()
-            } else {
-                flag.strip_prefix("-C")
-                    .or_else(|| flag.strip_prefix("--codegen="))
-            };
-            if codegen.is_some_and(|option| {
-                matches!(
-                    option.split('=').next(),
-                    Some("save-temps" | "save_temps" | "llvm-args" | "llvm_args")
-                )
-            }) {
-                return true;
-            }
-        }
-        false
+        super::may_have_compiler_flag(flags, |flag, value, _| match flag {
+            "Z" | "o" | "emit" | "print" | "out-dir" => true,
+            "C" | "codegen" => matches!(
+                value.split('=').next(),
+                Some("save-temps" | "save_temps" | "llvm-args" | "llvm_args")
+            ),
+            _ => false,
+        })
     }
 
     /// Returns the native compilation supplying this terminal test check.

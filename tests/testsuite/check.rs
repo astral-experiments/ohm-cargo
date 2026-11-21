@@ -2247,6 +2247,9 @@ fn ohm_test_target_reuse_with_defaults() {
         Some("--emit=asm"),
         Some("-Zthreads=8"),
         Some("-Zohm-early-metadata"),
+        Some("-gZthreads=8"),
+        Some("--Z=threads=8"),
+        Some("-gZtime-passes"),
     ] {
         for command in [
             "test --no-run --test integration",
@@ -2267,6 +2270,9 @@ fn ohm_test_target_reuse_with_defaults() {
                     // Explicit flags must survive removal of Cargo's defaults,
                     // even when their text matches an automatically added flag.
                     assert_ohm_metadata_only_check(&output, "integration");
+                    if flags == Some("-gZtime-passes") {
+                        assert_ohm_metadata_only_check(&output, "foo");
+                    }
                 }
             }
         }

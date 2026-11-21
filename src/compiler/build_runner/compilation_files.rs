@@ -2118,6 +2118,8 @@ fn compiler_option_uses_opaque_execution(option: &str) -> bool {
                 | "remark"
                 | "remark-dir"
                 | "self-profile"
+                | "time-llvm-passes"
+                | "time-passes"
                 | "split-dwarf-out-dir"
                 | "thinlto-cache"
                 | "unpretty"
