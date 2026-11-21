@@ -231,26 +231,6 @@ fn has_remap_path_prefix(args: &[impl AsRef<str>]) -> bool {
         .any(|arg| arg == "--remap-path-prefix" || arg.starts_with("--remap-path-prefix="))
 }
 
-/// Checks whether the effective codegen options produce a source-based coverage map.
-fn instruments_coverage<'a>(mut args: impl Iterator<Item = &'a str>) -> bool {
-    let mut coverage = false;
-    while let Some(arg) = args.next() {
-        let option = match arg {
-            "-C" | "--codegen" => args.next(),
-            _ => arg
-                .strip_prefix("-C")
-                .or_else(|| arg.strip_prefix("--codegen=")),
-        };
-        if let Some(option) = option {
-            let (name, value) = option.split_once('=').unwrap_or((option, "yes"));
-            if matches!(name, "instrument-coverage" | "instrument_coverage") {
-                coverage = !matches!(value, "0" | "n" | "no" | "off" | "false");
-            }
-        }
-    }
-    coverage
-}
-
 /// Keeps source identities in compiled artifacts stable across seeded worktrees.
 fn worktree_seed_remap(
     build_runner: &BuildRunner<'_, '_>,
@@ -277,14 +257,7 @@ fn worktree_seed_remap(
     let enabled = build_runner.bcx.gctx.cli_unstable().ohm_worktree_seeds()
         && !unit.is_std
         && unit.pkg.package_id().source_id().is_path()
-        // The seed's cwd mapping wins over explicit rules, including rules in response files.
-        && unit.profile.trim_paths.is_none()
-        && !has_remap_path_prefix(&unit.profile.rustflags)
-        && !has_remap_path_prefix(flags)
-        && !has_remap_path_prefix(extra_args)
-        && !compiler_args.clone().any(|arg| arg.starts_with('@'))
-        // llvm-cov opens the source filenames embedded in instrumented artifacts.
-        && !instruments_coverage(compiler_args.clone());
+        && unit.profile.trim_paths.is_none();
     if !enabled {
         return None;
     }
@@ -293,25 +266,29 @@ fn worktree_seed_remap(
     let mut use_object_scope = !rustdoc;
     let mut local_inputs = true;
     let mut local_sources = true;
-    let mut args = compiler_args;
-    while let Some(arg) = args.next() {
-        if arg == "--remap-path-scope" || arg.starts_with("--remap-path-scope=") {
-            use_object_scope = false;
-            local_sources = false;
+    let mut coverage = false;
+    let skip_remap = may_have_compiler_option(compiler_args, |name, value, possible_operand| {
+        match name {
+            // The seed's cwd mapping wins over explicit rules.
+            "remap-path-prefix" => return true,
+            "remap-path-scope" => {
+                use_object_scope = false;
+                local_sources = false;
+            }
+            "remap-cwd-prefix" | "remap_cwd_prefix" => {
+                use_object_scope = false;
+                local_inputs = false;
+            }
+            // llvm-cov opens the source filenames embedded in instrumented artifacts.
+            "instrument-coverage" | "instrument_coverage" => {
+                coverage = !matches!(value, "0" | "n" | "no" | "off" | "false");
+            }
+            _ => return false,
         }
-        let unstable = if arg == "-Z" {
-            args.next()
-        } else {
-            arg.strip_prefix("-Z")
-        };
-        if matches!(
-            unstable.and_then(|opt| opt.split('=').next()),
-            Some("remap-cwd-prefix" | "remap_cwd_prefix")
-        ) {
-            use_object_scope = false;
-            local_inputs = false;
-            break;
-        }
+        possible_operand
+    });
+    if skip_remap || coverage {
+        return None;
     }
     let flags: &'static [&str] = if use_object_scope {
         &[OHM_WORKTREE_SEED_RUSTFLAG, "--remap-path-scope=object"]
@@ -1309,11 +1286,23 @@ fn may_set_rustc_option(
                 .iter()
                 .map(String::as_str),
         );
+    may_have_compiler_option(arguments, |name, value, _| matches(name, value))
+}
+
+/// Visits possible options, including `-C` and `-Z` suboptions. Returns true on a
+/// match or an opaque response file. The last callback argument is true when
+/// the token could be the value of a preceding option, such as a search path.
+fn may_have_compiler_option<'a>(
+    arguments: impl Iterator<Item = &'a str>,
+    mut matches: impl FnMut(&str, &str, bool) -> bool,
+) -> bool {
     let mut arguments = arguments.peekable();
+    let mut may_take_value = false;
     while let Some(argument) = arguments.next() {
         if argument.starts_with('@') {
             return true;
         }
+        let possible_operand = std::mem::take(&mut may_take_value);
         let (name, value) = if let Some(long) = argument.strip_prefix("--") {
             long.split_once('=').unwrap_or((long, ""))
         } else if let Some(short) = argument.strip_prefix('-') {
@@ -1328,7 +1317,8 @@ fn may_set_rustc_option(
         } else {
             continue;
         };
-        let value = if value.is_empty() {
+        may_take_value = value.is_empty() && !argument.ends_with('=');
+        let value = if may_take_value {
             arguments.peek().copied().unwrap_or_default()
         } else {
             value
@@ -1338,7 +1328,7 @@ fn may_set_rustc_option(
         } else {
             (name, value)
         };
-        if matches(name, value) {
+        if matches(name, value, possible_operand) {
             return true;
         }
     }

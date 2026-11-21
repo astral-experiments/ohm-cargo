@@ -3084,6 +3084,8 @@ fn worktree_seeds_mark_automatic_source_paths() {
             "--remap-path-scope=object -Zremap-cwd-prefix=/explicit",
             "None None\n",
         ),
+        ("-gZremap-cwd-prefix=/explicit", "None None\n"),
+        ("--Z remap_cwd_prefix=/explicit", "None None\n"),
         ("--remap-path-prefix=unused=/explicit", "None None\n"),
     ] {
         p.cargo("run -Zohm-worktree-seeds=yes")
