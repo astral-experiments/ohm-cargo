@@ -2032,68 +2032,24 @@ fn compiler_arguments_use_opaque_execution<'a>(
     profile_debuginfo_enabled: bool,
     trusted_objcopy: impl Fn() -> bool,
 ) -> bool {
-    let mut flags = flags.into_iter();
-    while let Some(flag) = flags.next() {
-        if apple_executable && !profile_debuginfo_enabled && flag == "-g" {
-            return true;
+    crate::compiler::may_have_compiler_flag(flags.into_iter(), |flag, value, _| match flag {
+        "g" => apple_executable && !profile_debuginfo_enabled,
+        "l" | "target" | "sysroot" | "extern" | "library-path" => true,
+        "L" => {
+            executable_unit || (!value.starts_with("native=") && !value.starts_with("framework="))
         }
-        if flag.starts_with('@')
-            || flag.starts_with("-l")
-            || matches!(
-                flag,
-                "--target" | "--sysroot" | "--extern" | "--library-path"
-            )
-            || flag.starts_with("--target=")
-            || flag.starts_with("--sysroot=")
-            || flag.starts_with("--extern=")
-            || flag.starts_with("--library-path=")
-        {
-            return true;
-        }
-        if flag == "-L" {
-            let Some(search_path) = flags.next() else {
-                return true;
-            };
-            if executable_unit
-                || (!search_path.starts_with("native=") && !search_path.starts_with("framework="))
-            {
-                return true;
-            }
-            continue;
-        }
-        if let Some(search_path) = flag.strip_prefix("-L") {
-            if executable_unit
-                || (!search_path.starts_with("native=") && !search_path.starts_with("framework="))
-            {
-                return true;
-            }
-            continue;
-        }
-        let option = if matches!(flag, "-C" | "-Z" | "--codegen") {
-            let Some(option) = flags.next() else {
-                return true;
-            };
-            Some(option)
-        } else {
-            flag.strip_prefix("-C")
-                .or_else(|| flag.strip_prefix("-Z"))
-                .or_else(|| flag.strip_prefix("--codegen="))
-        };
-        if option.is_some_and(|option| {
-            option.is_empty()
-                || compiler_option_uses_opaque_execution(option)
+        "C" | "Z" | "codegen" => {
+            value.is_empty()
+                || compiler_option_uses_opaque_execution(value)
                 || (apple_executable
                     && compiler_option_uses_apple_auxiliary_tools(
-                        option,
+                        value,
                         profile_debuginfo_enabled,
                         &trusted_objcopy,
                     ))
-        }) {
-            return true;
         }
-    }
-
-    false
+        _ => false,
+    })
 }
 
 /// Apple links spawn auxiliary tools for nontrivial stripping and packed debug data.
@@ -3285,6 +3241,13 @@ mod shared_registry_tests {
             &["-Z", "llvm-plugins="],
             &["-l", "injected"],
             &["-linjected"],
+            &["-glstatic=injected"],
+            &["--l", "static=injected"],
+            &["-vOgL/opaque/libraries"],
+            &["--L=/opaque/libraries"],
+            &["-gZ", "codegen-backend=llvm"],
+            &["--C=linker=custom"],
+            &["-o", "-C", "-lstatic=injected"],
             &["--library-path", "/opaque/libraries"],
             &["--library-path=/opaque/libraries"],
             &["@opaque-response-file"],
@@ -3395,6 +3358,8 @@ mod shared_registry_tests {
 
         for flags in [
             &["-g"][..],
+            &["-OgCopt-level=1"][..],
+            &["--g"][..],
             &["-Cdebuginfo=1"][..],
             &["-C", "debuginfo=2"][..],
             &["--codegen=debuginfo=full"][..],

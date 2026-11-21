@@ -1296,6 +1296,23 @@ fn may_have_compiler_option<'a>(
     arguments: impl Iterator<Item = &'a str>,
     mut matches: impl FnMut(&str, &str, bool) -> bool,
 ) -> bool {
+    may_have_compiler_flag(arguments, |name, value, possible_operand| {
+        let (name, value) = if matches!(name, "C" | "codegen" | "Z") {
+            value.split_once('=').unwrap_or((value, ""))
+        } else {
+            (name, value)
+        };
+        matches(name, value, possible_operand)
+    })
+}
+
+/// Scans rustc flags before splitting codegen and unstable options. Inspect
+/// every possible flag, including those in groups and those following a
+/// potential operand. A response file can contain any flag.
+fn may_have_compiler_flag<'a>(
+    arguments: impl Iterator<Item = &'a str>,
+    mut matches: impl FnMut(&str, &str, bool) -> bool,
+) -> bool {
     let mut arguments = arguments.peekable();
     let mut may_take_value = false;
     while let Some(argument) = arguments.next() {
@@ -1305,12 +1322,16 @@ fn may_have_compiler_option<'a>(
         let possible_operand = std::mem::take(&mut may_take_value);
         let (name, value) = if let Some(long) = argument.strip_prefix("--") {
             long.split_once('=').unwrap_or((long, ""))
-        } else if let Some(short) = argument.strip_prefix('-') {
-            // rustc accepts grouped short options such as `-gochosen`.
-            let Some(pair) = short
-                .trim_start_matches(['g', 'O', 'v'])
-                .split_at_checked(1)
-            else {
+        } else if let Some(mut short) = argument.strip_prefix('-') {
+            // In `-vglstatic=number`, only `-l` takes a value.
+            while short.starts_with(['g', 'O', 'v']) {
+                let (flag, rest) = short.split_at(1);
+                if matches(flag, "", possible_operand) {
+                    return true;
+                }
+                short = rest;
+            }
+            let Some(pair) = short.split_at_checked(1) else {
                 continue;
             };
             pair
@@ -1322,11 +1343,6 @@ fn may_have_compiler_option<'a>(
             arguments.peek().copied().unwrap_or_default()
         } else {
             value
-        };
-        let (name, value) = if matches!(name, "C" | "codegen" | "Z") {
-            value.split_once('=').unwrap_or((value, ""))
-        } else {
-            (name, value)
         };
         if matches(name, value, possible_operand) {
             return true;
