@@ -6583,6 +6583,47 @@ fn cached_doctests_keep_running_the_original_examples() {
 }
 
 #[cargo_test]
+fn cached_doctests_survive_clean_during_a_workspace_run() {
+    let examples = r#"
+        /// ```
+        /// let cargo = std::env::var_os("CLEAN_CARGO").unwrap();
+        /// let status = std::process::Command::new(cargo).arg("clean").status().unwrap();
+        /// assert!(status.success());
+        /// ```
+        pub fn alpha() {}
+
+        /// ```
+        /// std::fs::write("finished", b"yes").unwrap();
+        /// ```
+        pub fn zulu() {}
+    "#;
+    let mut p = project().file(
+        "Cargo.toml",
+        "[workspace]\nmembers = ['a', 'b']\nresolver = '3'",
+    );
+    for name in ["a", "b"] {
+        p = p
+            .file(
+                format!("{name}/Cargo.toml"),
+                &format!("[package]\nname = '{name}'\nversion = '0.1.0'\nedition = '2024'"),
+            )
+            .file(format!("{name}/src/lib.rs"), examples);
+    }
+    let p = p.build();
+    p.cargo("test --doc -Zohm-cached-doctests -v")
+        .masquerade_as_nightly_cargo(&["ohm-cached-doctests"])
+        .env("CARGO_UNSTABLE_OHM_DEFAULTS", "false")
+        .env("RUSTC_BOOTSTRAP", "1")
+        .env("RUST_TEST_THREADS", "1")
+        .env("CLEAN_CARGO", cargo_exe())
+        .with_stderr_contains("[RUNNING] [..]doctest-run-[..]")
+        .run();
+    for name in ["a", "b"] {
+        assert!(p.root().join(name).join("finished").is_file());
+    }
+}
+
+#[cargo_test]
 fn cached_doctests_fall_back_when_a_crate_gains_a_compile_fail_example() {
     let wrapper = crate::rustflags::ohm_defaults_wrapper();
     let p = project()
