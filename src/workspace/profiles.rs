@@ -66,7 +66,7 @@ pub struct Profiles {
     requested_profile: InternedString,
     /// The host target for rustc being used by this `Profiles`.
     rustc_host: InternedString,
-    /// Whether this compiler host can use Ohm's LLVM profile for proc-macro helpers.
+    /// Whether the compiler host and requested profile allow grouping proc-macro helpers.
     ohm_macro_helpers: bool,
 }
 
@@ -90,8 +90,7 @@ impl Profiles {
             original_profiles: profiles.clone(),
             requested_profile,
             rustc_host,
-            ohm_macro_helpers: gctx.cli_unstable().ohm_defaults()
-                && rustc_host == "x86_64-unknown-linux-gnu",
+            ohm_macro_helpers: false,
         };
 
         Self::add_root_profiles(
@@ -122,7 +121,10 @@ impl Profiles {
         // Verify that the requested profile is defined *somewhere*.
         // This simplifies the API (no need for CargoResult), and enforces
         // assumptions about how config profiles are loaded.
-        profile_makers.get_profile_maker(&requested_profile)?;
+        let maker = profile_makers.get_profile_maker(&requested_profile)?;
+        profile_makers.ohm_macro_helpers = gctx.cli_unstable().ohm_defaults()
+            && rustc_host == "x86_64-unknown-linux-gnu"
+            && maker.can_group_macro_helpers();
         Ok(profile_makers)
     }
 
@@ -292,6 +294,11 @@ impl Profiles {
         })
     }
 
+    /// Whether this unit is in a host subtree where Ohm may group registry libraries.
+    pub(crate) fn in_macro_helper_tree(&self, unit_for: UnitFor) -> bool {
+        self.ohm_macro_helpers && unit_for.proc_macro_helper && unit_for.is_for_host()
+    }
+
     /// Retrieves the profile for a target.
     /// `is_member` is whether or not this package is a member of the
     /// workspace.
@@ -305,16 +312,10 @@ impl Profiles {
     ) -> Profile {
         let maker = self.get_profile_maker(&self.requested_profile).unwrap();
         let mut profile = maker.get_profile(Some(pkg_id), is_member, unit_for.is_for_host());
-        if self.ohm_macro_helpers
-            && unit_for.proc_macro_helper
-            && unit_for.is_for_host()
+        if self.in_macro_helper_tree(unit_for)
             && !is_local
             && pkg_id.source_id().is_registry()
-            && profile.root == ProfileRoot::Debug
-            && profile.rustflags.is_empty()
-            && profile.codegen_backend.is_none()
-            && matches!(profile.lto, Lto::Off | Lto::Bool(false))
-            && maker.can_group_macro_helper(pkg_id)
+            && !maker.has_package_override(pkg_id)
         {
             // Keep the host profile's level and debug checks. A single module exposes
             // callees to LLVM and the tracked flag opts this unit into simplification.
@@ -475,21 +476,36 @@ impl ProfileMaker {
         ProfileMaker { default, toml }
     }
 
-    /// Use the helper profile only in level-1 dev builds without user overrides.
-    fn can_group_macro_helper(&self, pkg_id: PackageId) -> bool {
+    /// Only group helpers in level-1 dev profiles without global build overrides.
+    fn can_group_macro_helpers(&self) -> bool {
         let Some(toml) = &self.toml else {
             return false;
         };
-        toml.opt_level
-            .as_ref()
-            .is_some_and(|level| level.0.as_str() == "1")
+        let profile = self.get_profile(None, false, true);
+        profile.root == ProfileRoot::Debug
+            && profile.rustflags.is_empty()
+            && profile.codegen_backend.is_none()
+            && matches!(profile.lto, Lto::Off | Lto::Bool(false))
+            && toml
+                .opt_level
+                .as_ref()
+                .is_some_and(|level| level.0.as_str() == "1")
             && toml.codegen_units.is_none()
             && toml.build_override.is_none()
-            && toml.package.as_ref().is_none_or(|overrides| {
-                !overrides.keys().any(|key| match key {
-                    ProfilePackageSpec::All => true,
-                    ProfilePackageSpec::Spec(spec) => spec.matches(pkg_id),
-                })
+            && toml
+                .package
+                .as_ref()
+                .is_none_or(|overrides| !overrides.contains_key(&ProfilePackageSpec::All))
+    }
+
+    fn has_package_override(&self, pkg_id: PackageId) -> bool {
+        self.toml
+            .as_ref()
+            .and_then(|toml| toml.package.as_ref())
+            .is_some_and(|overrides| {
+                overrides.keys().any(
+                    |key| matches!(key, ProfilePackageSpec::Spec(spec) if spec.matches(pkg_id)),
+                )
             })
     }
 

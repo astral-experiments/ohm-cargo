@@ -884,11 +884,11 @@ fn debug_options_valid() {
 #[cargo_test(nightly, reason = "Ohm defaults require the Ohm compiler")]
 fn ohm_proc_macro_helpers() {
     Package::new("leaf", "1.0.0")
-        .file("src/lib.rs", "pub fn number() -> u8 { 42 }")
+        .file("src/lib.rs", "pub struct Number(pub u8);")
         .publish();
     Package::new("helper", "1.0.0")
         .dep("leaf", "1")
-        .file("src/lib.rs", "pub fn number() -> u8 { leaf::number() }")
+        .file("src/lib.rs", "extern crate leaf; pub use leaf::Number;")
         .publish();
     let manifest = r#"
         [package]
@@ -923,10 +923,11 @@ fn ohm_proc_macro_helpers() {
 
                 [dependencies]
                 local = { path = "../local" }
-                helper = "1"
+                leaf = "1"
 
                 [build-dependencies]
-                helper = "1"
+                local = { path = "../local" }
+                leaf = "1"
             "#,
         )
         .file(
@@ -936,16 +937,31 @@ fn ohm_proc_macro_helpers() {
 
                 #[proc_macro]
                 pub fn number(_: TokenStream) -> TokenStream {
-                    helper::number().to_string().parse().unwrap()
+                    let number: leaf::Number = local::number();
+                    number.0.to_string().parse().unwrap()
                 }
             "#,
         )
-        .file("macros/build.rs", "fn main() {}")
+        .file(
+            "macros/build.rs",
+            "fn main() { let _: leaf::Number = local::number(); }",
+        )
         .file(
             "local/Cargo.toml",
-            "[package]\nname = 'local'\nversion = '0.1.0'\nedition = '2024'",
+            r#"
+                [package]
+                name = "local"
+                version = "0.1.0"
+                edition = "2024"
+
+                [dependencies]
+                helper = "1"
+            "#,
         )
-        .file("local/src/lib.rs", "")
+        .file(
+            "local/src/lib.rs",
+            "pub fn number() -> helper::Number { helper::Number(42) }",
+        )
         .build();
 
     let check = |defaults: &str, profile: &str, settings: &str, expected: &[&str]| {
@@ -1016,6 +1032,19 @@ fn ohm_proc_macro_helpers() {
     p.cargo("build -Zohm-defaults=yes")
         .masquerade_as_nightly_cargo(&["ohm-defaults"])
         .with_stderr_does_not_contain("[COMPILING] [..]")
+        .run();
+
+    // Both host subtrees have an unmarked path library and an overridden
+    // registry library in common. Each must see its own copy of leaf through
+    // both the direct dependency and local -> helper -> leaf.
+    check(
+        "yes",
+        "dev",
+        "[profile.dev.package.helper]\nopt-level = 0",
+        &["leaf"],
+    );
+    p.cargo("build -Zohm-defaults=yes")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
         .run();
 }
 

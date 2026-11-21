@@ -121,8 +121,8 @@ pub struct UnitInner {
     /// dependencies. See `rebuild_unit_graph_shared` for more on why this is
     /// done.
     ///
-    /// This value initially starts as 0, and then is filled in via a
-    /// second-pass after all the unit dependencies have been computed.
+    /// Initially 1 inside an Ohm proc-macro helper tree and 0 elsewhere.
+    /// A second pass replaces it with the hash of the computed dependencies.
     pub dep_hash: u64,
 
     /// This is used for target-dependent feature resolution and is copied from
