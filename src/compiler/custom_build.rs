@@ -50,7 +50,7 @@ use std::collections::BTreeSet;
 use std::collections::hash_map::Entry;
 use std::path::{Path, PathBuf};
 use std::str;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Mutex, OnceLock};
 
 /// A build script instruction that tells Cargo to display an error after the
 /// build script has finished running. Read [the doc] for more.
@@ -198,6 +198,7 @@ pub struct BuildOutput {
 #[derive(Default)]
 pub struct BuildScriptOutputs {
     outputs: HashMap<UnitHash, BuildOutput>,
+    pub(super) integration_test_digests: HashMap<UnitHash, Arc<OnceLock<Option<u64>>>>,
 }
 
 /// Linking information for a `Unit`.

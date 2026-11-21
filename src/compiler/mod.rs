@@ -1746,7 +1746,11 @@ fn rustc(
         // Build-script outputs are only authoritative after their jobs finish.
         // An unused Rust extern can still be consumed through native linking.
         let binary = binary.and_then(|mut binary| {
-            binary.start(fingerprint.as_deref()?)?;
+            binary.start(
+                fingerprint.as_deref()?,
+                &build_script_outputs,
+                &dev_native_output_dirs,
+            )?;
             if let Some(scripts) = &build_scripts {
                 let outputs = build_script_outputs.lock().unwrap();
                 for (package, metadata) in &scripts.to_link {
