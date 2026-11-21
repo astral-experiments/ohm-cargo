@@ -436,8 +436,8 @@ pub use self::dep_info::translate_dep_info;
 pub use self::dirty_reason::DirtyReason;
 pub use self::rustdoc::RustdocFingerprint;
 use self::worktree::ScriptResult;
-pub(super) use self::worktree::{can_reuse_after_scripts, current_script_digest};
 pub(crate) use self::worktree::{OHM_WORKTREE_SCRIPT_RERUN, OHM_WORKTREE_SCRIPT_RESULT};
+pub(super) use self::worktree::{can_reuse_after_scripts, current_script_digest};
 
 fn parse_unstable_bool(value: Option<&str>) -> Option<bool> {
     match value {
