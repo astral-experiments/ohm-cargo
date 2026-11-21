@@ -996,7 +996,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
                             .is_ok_and(|metadata| metadata.len() > 0)
                     })
                     .map(|output| output.path.clone());
-                self.compilation.to_doc_test.push(compilation::Doctest {
+                self.compilation.add_doctest(compilation::Doctest {
                     executable,
                     unit: unit.clone(),
                     args,
@@ -1007,7 +1007,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
                         .map(|p| p.to_path_buf()),
                     script_metas,
                     env: artifact::get_env(&self, unit, self.unit_deps(unit))?,
-                });
+                })?;
             }
         }
         super::output_depinfo(&self)?;
