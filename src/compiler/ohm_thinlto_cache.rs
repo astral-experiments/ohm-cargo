@@ -74,44 +74,24 @@ pub(super) fn configure(runner: &BuildRunner<'_, '_>, unit: &Unit, command: &mut
 /// Inspect the final arguments, including profile and `cargo rustc` overrides.
 /// Rustc remains responsible for rejecting unsupported backend configurations.
 fn eligible_args<'a>(args: impl IntoIterator<Item = &'a OsString>) -> bool {
-    let mut lto = None;
+    let mut explicit_thin_lto = None;
     let mut optimized = false;
     let mut single_cgu = false;
-    let mut args = args.into_iter();
-    while let Some(arg) = args.next() {
-        let Some(arg) = arg.to_str() else {
-            return false;
-        };
-        if arg.starts_with('@') {
-            return false;
-        }
-        let (unstable, option) = if matches!(arg, "-C" | "--codegen" | "-Z") {
-            (arg == "-Z", args.next().and_then(|arg| arg.to_str()))
-        } else if let Some(option) = arg.strip_prefix("-Z") {
-            (true, Some(option))
-        } else {
-            (
-                false,
-                arg.strip_prefix("-C")
-                    .or_else(|| arg.strip_prefix("--codegen=")),
-            )
-        };
-        let Some(option) = option else { continue };
-        let (name, value) = option.split_once('=').unwrap_or((option, ""));
-        match (unstable, name.replace('_', "-").as_str()) {
-            (true, "thinlto-cache" | "thinlto" | "codegen-backend") => return false,
-            (false, "incremental" | "linker-plugin-lto") => return false,
-            (false, "lto") => lto = Some(value),
-            (false, "opt-level") => optimized = value != "0",
-            (false, "codegen-units") => single_cgu = value == "1",
-            _ => {}
-        }
-    }
-    match lto {
-        Some("thin") => true,
-        None => optimized && !single_cgu,
-        _ => false,
-    }
+    let skip_cache =
+        super::may_have_compiler_option(args.into_iter(), |name, value, possible_operand| {
+            match name {
+                "thinlto-cache" | "thinlto_cache" | "thinlto" | "codegen-backend"
+                | "codegen_backend" | "incremental" | "linker-plugin-lto" | "linker_plugin_lto" => {
+                    return true;
+                }
+                "lto" => explicit_thin_lto = Some(value == "thin"),
+                "opt-level" | "opt_level" => optimized = value != "0",
+                "codegen-units" | "codegen_units" => single_cgu = value == "1",
+                _ => return false,
+            }
+            possible_operand
+        });
+    !skip_cache && explicit_thin_lto.unwrap_or(optimized && !single_cgu)
 }
 
 impl Drop for Cache {
@@ -241,6 +221,11 @@ mod tests {
             ("-Clto=thin -Clinker-plugin-lto", false),
             ("-Clto=thin -Zthinlto-cache=mine", false),
             ("-Clto=thin -Z thinlto_cache=mine", false),
+            ("-Clto=thin -gZthinlto-cache=mine", false),
+            ("-Clto=thin --Z thinlto_cache=mine", false),
+            ("-Clto=thin -L -Z -Zthinlto-cache=mine", false),
+            ("-Clto=thin -gClto=off", false),
+            ("-gClto=thin", true),
             ("-Clto=thin @arguments", false),
         ] {
             let args = args
