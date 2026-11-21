@@ -4794,6 +4794,22 @@ fn switching_relink_cache_collection_runs_the_matching_binary() {
 
 #[cargo_test]
 #[cfg(not(windows))]
+fn relink_cache_respects_redirected_executables() {
+    let wrapper = relink_only_wrapper();
+    let p = project().file("src/main.rs", "fn main() {}").build();
+    for args in ["-o chosen", "--emit=link=chosen"] {
+        p.cargo(&format!("-Zohm-defaults rustc -- {args}"))
+            .masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("RUSTC_WRAPPER", &wrapper)
+            .env("RELINK_WRAPPER_LOG", p.root().join("compiler.log"))
+            .run();
+        fs::remove_file(p.root().join("chosen")).unwrap();
+        assert!(!p.root().join("chosen.rlink").exists());
+    }
+}
+
+#[cargo_test]
+#[cfg(not(windows))]
 fn relink_only_reuses_root_codegen() {
     let wrapper = relink_only_wrapper();
     let p = project()

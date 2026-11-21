@@ -725,6 +725,7 @@ pub fn unit_can_use_relink_only(build_runner: &BuildRunner<'_, '_>, unit: &Unit)
             super::lto::Lto::Off | super::lto::Lto::OnlyObject
         )
         && unit_consumes_public_api_hash(build_runner, unit)
+        && !super::has_custom_link_output(build_runner, unit)
 }
 
 fn is_early_cutoff_candidate(fingerprint: &Fingerprint, dirty_reason: &DirtyReason) -> bool {
