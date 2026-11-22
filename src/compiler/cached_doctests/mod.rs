@@ -11,6 +11,7 @@ use super::{
     BuildContext, BuildRunner, FingerprintMethod, JobState, RelinkCachePaths, Unit, Work,
     fingerprint,
 };
+use crate::util::data_structures::HashSet;
 use crate::util::{CargoResult, add_path_args, path_args};
 use crate::workspace::{Edition, profiles::PanicStrategy};
 
@@ -24,6 +25,30 @@ pub(super) fn enabled(bcx: &BuildContext<'_, '_>, unit: &Unit) -> bool {
         && unit.rustdocflags.is_empty()
         && super::compilation::host_tests_run_directly(bcx)
         && super::build_runner::uses_toolchain_rustdoc(bcx)
+}
+
+/// Checks whether rustdoc or an example can expand a macro with untracked inputs.
+/// A Rust library can re-export another crate's macro. A build script cannot.
+fn has_untrusted_proc_macro(br: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
+    let mut pending = vec![unit];
+    let mut visited = HashSet::default();
+    while let Some(unit) = pending.pop() {
+        // Shared registry units have already passed Cargo's macro trust checks
+        // for the whole dependency graph below them.
+        if !visited.insert(unit) || br.is_immutable_shared_registry_unit(unit) {
+            continue;
+        }
+        if unit.target.proc_macro() {
+            return true;
+        }
+        pending.extend(
+            br.unit_deps(unit)
+                .iter()
+                .filter(|dep| dep.unit.target.is_linkable() && !dep.unit.artifact.is_true())
+                .map(|dep| &dep.unit),
+        );
+    }
+    false
 }
 
 /// Encoded dependencies of the crate under rustdoc's cfgs, separate from the
@@ -47,6 +72,7 @@ pub(super) fn prepare(br: &BuildRunner<'_, '_>, unit: &Unit, force: bool) -> Car
         .native_dirs
         .iter()
         .any(|path| path.to_str().is_none_or(super::can_supply_rust_crates))
+        || has_untrusted_proc_macro(br, unit)
     {
         return Ok(Work::new(move |_| {
             if search_stamp.exists() {

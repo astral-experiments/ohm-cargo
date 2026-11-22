@@ -2138,8 +2138,14 @@ with `-Zohm-cached-doctests`.
 Requests with name filters, `--exact`, or `--list` can use the cache. Other
 test arguments and custom rustdoc flags use ordinary rustdoc. A library with a
 `compile_fail`, standalone, or otherwise unmergeable example also runs through
-rustdoc. Generated code retains the original test names. Panic locations in
-merged examples can refer to the generated source.
+rustdoc. Cargo also uses rustdoc if a build script adds a search path for
+external Rust crates or if an example or doc attribute could invoke a procedural
+macro outside the trusted shared registry cache. This includes macros
+re-exported by a dependency. Such macros can read files and environment
+variables that are absent from the compiler's dependency information.
+
+Generated code retains the original test names. Panic locations in merged
+examples can refer to the generated source.
 
 ## ohm-ready-tests
 
