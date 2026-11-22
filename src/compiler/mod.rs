@@ -402,6 +402,48 @@ fn unit_suppresses_default_public_api_hash(
         && fingerprint::unit_public_api_hash_override(build_runner, unit).is_none()
 }
 
+/// Prefer whole-crate invalidation when every consumer previously ignored this library.
+///
+/// This only selects a rustc encoding strategy. Consumers still receive the library
+/// and all the usual freshness and link checks, even if their usage has since changed.
+/// Keep the unit identity so a wider graph may use either fresh representation.
+fn prefer_full_crate_hash(runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
+    if !matches!(
+        unit.mode,
+        CompileMode::Build | CompileMode::Check { test: false }
+    ) || !unit.target.is_lib()
+        || unit.target.proc_macro()
+        || unit.artifact.is_true()
+        || !unit.profile.incremental
+        || !runner.is_primary_package(unit)
+        || !runner.bcx.roots.contains(unit)
+        || runner.bcx.roots.iter().any(|root| root.pkg != unit.pkg)
+        || fingerprint::unit_public_api_hash_override(runner, unit).is_some()
+    {
+        return false;
+    }
+
+    let mut found_consumer = false;
+    for (consumer, dependencies) in &runner.bcx.unit_graph {
+        for dep in dependencies.iter().filter(|dep| dep.unit == *unit) {
+            if consumer.pkg != unit.pkg
+                || !consumer.target.is_bin()
+                || consumer.mode != unit.mode
+                || dep.manifest_deps.0.is_some()
+                || !ohm_early_tests::previously_unused(runner, consumer, dep.extern_crate_name)
+            {
+                return false;
+            }
+            found_consumer = true;
+        }
+    }
+    found_consumer
+        && runner
+            .bcx
+            .rustc()
+            .supports_full_crate_hash_hint(runner.bcx.gctx)
+}
+
 /// Shares compiler identity across ordinary debug checks and builds, including
 /// non-incremental dependencies whose identity reaches an incremental consumer.
 /// Cargo's artifact and fingerprint identities remain distinct for each mode.
@@ -2942,6 +2984,8 @@ fn prepare_rustc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
         }
         if unit_suppresses_default_public_api_hash(build_runner, unit) {
             base.arg("-Zpublic-api-hash=no");
+        } else if prefer_full_crate_hash(build_runner, unit) {
+            base.arg("-Zohm-prefer-full-crate-hash");
         }
     }
     add_worktree_seed_flags(build_runner, unit, &mut base);
