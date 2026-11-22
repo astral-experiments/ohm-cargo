@@ -64,11 +64,12 @@ fn has_competing_module(path: &Path) -> bool {
     if path.extension().is_none_or(|ext| ext != "rs") {
         return false;
     }
-    path.with_extension("").join("mod.rs").is_file()
+    // Match rustc's existence check even when a candidate is a directory.
+    path.with_extension("").join("mod.rs").exists()
         || (path.ends_with("mod.rs")
             && path
                 .parent()
-                .is_some_and(|dir| dir.with_extension("rs").is_file()))
+                .is_some_and(|dir| dir.with_extension("rs").exists()))
 }
 
 /// Prepares both compiler commands with the dependencies of the doctest unit.

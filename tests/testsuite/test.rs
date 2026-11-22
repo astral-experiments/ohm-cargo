@@ -6043,6 +6043,13 @@ fn cached_doctests_detect_a_competing_module_file() {
             .run();
         std::fs::remove_file(alternate).unwrap();
         run().run();
+
+        std::fs::create_dir(alternate).unwrap();
+        run()
+            .with_status(1)
+            .with_stderr_contains("error[E0761]: [..]")
+            .run();
+        std::fs::remove_dir(alternate).unwrap();
         std::fs::remove_file(source).unwrap();
     }
 }
