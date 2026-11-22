@@ -6198,6 +6198,50 @@ pub fn middle() {}
 }
 
 #[cargo_test]
+fn cached_doctests_follow_a_moved_package() {
+    let p = project()
+        .file(
+            "Cargo.toml",
+            "[package]\nname = 'foo'\nversion = '1.0.0'\nedition = '2024'",
+        )
+        .file(
+            "src/lib.rs",
+            r##"/// ```
+/// assert_eq!(env!("CARGO_MANIFEST_DIR"), std::env::var("CARGO_MANIFEST_DIR").unwrap());
+/// ```
+pub fn example() {}
+
+#[cfg(doctest)]
+#[doc = concat!(
+    "```\nassert!(std::path::Path::new(r#\"",
+    env!("CARGO_MANIFEST_PATH"),
+    "\"#).is_file());\n```",
+)]
+pub struct Docs;
+"##,
+        )
+        .build();
+    let first = p.root();
+    let second = first.with_file_name("moved");
+    let run = |dir: &std::path::Path| {
+        let mut cmd = p.cargo("test --doc -Zohm-cached-doctests -v");
+        cmd.masquerade_as_nightly_cargo(&["ohm-cached-doctests"])
+            .env("CARGO_UNSTABLE_OHM_DEFAULTS", "false")
+            .env("RUSTC_BOOTSTRAP", "1")
+            .env("CARGO_TARGET_DIR", first.with_file_name("artifacts"))
+            .cwd(dir)
+            .with_stdout_contains("[..]2 passed; 0 failed[..]");
+        cmd
+    };
+    run(&first).run();
+    std::fs::rename(&first, &second).unwrap();
+    run(&second).run();
+    run(&second)
+        .with_stderr_does_not_contain("[RUNNING] [..]--output-format=doctest[..]")
+        .run();
+}
+
+#[cargo_test]
 fn cached_doctests_compile_with_rustdocs_package_environment() {
     let p = project()
         .file(
