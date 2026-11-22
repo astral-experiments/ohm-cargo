@@ -158,22 +158,25 @@ pub(crate) fn dependency(
 }
 
 /// An unused `--extern` does not rule out an `include_bytes!` of the library.
-/// Check the current compilation's inputs, including aliases of artifacts that
-/// a deferred or concurrent dependency could replace.
-pub(super) fn has_independent_inputs(dep_info: &Path, cwd: &Path) -> bool {
+/// A producer can also replace dep-info and extra compiler outputs such as MIR.
+/// Reject inputs in the build directory, including aliases through symlinked directories.
+pub(super) fn has_independent_inputs(dep_info: &Path, cwd: &Path, build_dir: &Path) -> bool {
     let Ok(info) = super::fingerprint::parse_rustc_dep_info(dep_info) else {
         return false;
     };
-    let is_library = |path: &Path| {
-        path.extension().is_some_and(|ext| {
-            ext.eq_ignore_ascii_case("rlib") || ext.eq_ignore_ascii_case("rmeta")
-        })
+    let Ok(build_dir) = build_dir.canonicalize() else {
+        return false;
+    };
+    let is_artifact = |path: &Path| {
+        path.starts_with(&build_dir)
+            || path.extension().is_some_and(|ext| {
+                ext.eq_ignore_ascii_case("rlib") || ext.eq_ignore_ascii_case("rmeta")
+            })
     };
     !info.files.is_empty()
         && info.files.keys().all(|file| {
             let path = cwd.join(file);
-            !is_library(&path)
-                && (!path.is_symlink() || path.canonicalize().is_ok_and(|p| !is_library(&p)))
+            !is_artifact(&path) && path.canonicalize().is_ok_and(|p| !is_artifact(&p))
         })
 }
 

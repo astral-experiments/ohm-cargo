@@ -2313,7 +2313,7 @@ fn rustc(
         }
 
         let independent_inputs =
-            || ohm_early_tests::has_independent_inputs(&rustc_dep_info_loc, &cwd);
+            || ohm_early_tests::has_independent_inputs(&rustc_dep_info_loc, &cwd, &build_dir);
         let mut accepted_early_test = false;
         if !deferred_dev_names.is_empty() || early_test.is_some() {
             let output = std::cell::RefCell::new(ohm_early_tests::Output::default());
@@ -2523,7 +2523,7 @@ fn rustc(
             let unused_externs = (unused_integration_dependency.is_some() || record_dev_unused)
                 .then(|| state.recorded_unused_externs())
                 .flatten()
-                // Avoid speculating again when the last test embedded a library.
+                // Avoid speculating again when the last test embedded a build artifact.
                 .filter(|names| names.is_empty() || accepted_early_test || independent_inputs());
             cache.initialize(extern_paths_hash, unused_externs.as_ref())?;
         }
