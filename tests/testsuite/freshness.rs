@@ -3603,6 +3603,7 @@ fn disabled_ohm_defaults_preserve_explicit_public_api_hash() {
 fn assert_early_cutoff_rechecks_transitive_trait_implementations(
     command: &str,
     rebuild_producer_separately: bool,
+    producer_type: &str,
 ) {
     let wrapper = public_api_hash_wrapper();
     let p = project()
@@ -3658,15 +3659,20 @@ fn assert_early_cutoff_rechecks_transitive_trait_implementations(
         )
         .file(
             "producer/Cargo.toml",
-            r#"
+            &format!(
+                r#"
                 [package]
                 name = "producer"
                 version = "0.1.0"
                 edition = "2024"
 
+                [lib]
+                crate-type = ['{producer_type}']
+
                 [dependencies]
-                helper = { path = "../helper" }
-            "#,
+                helper = {{ path = "../helper" }}
+            "#
+            ),
         )
         .file(
             "producer/src/lib.rs",
@@ -3769,22 +3775,27 @@ error[E0034]: multiple applicable items in scope
 
 #[cargo_test]
 fn early_cutoff_rechecks_transitive_trait_implementations() {
-    assert_early_cutoff_rechecks_transitive_trait_implementations("check", false);
+    assert_early_cutoff_rechecks_transitive_trait_implementations("check", false, "rlib");
 }
 
 #[cargo_test]
 fn early_cutoff_rechecks_previously_rebuilt_transitive_trait_implementations_in_checks() {
-    assert_early_cutoff_rechecks_transitive_trait_implementations("check", true);
+    assert_early_cutoff_rechecks_transitive_trait_implementations("check", true, "rlib");
 }
 
 #[cargo_test]
 fn early_cutoff_rechecks_transitive_trait_implementations_in_builds() {
-    assert_early_cutoff_rechecks_transitive_trait_implementations("build", false);
+    assert_early_cutoff_rechecks_transitive_trait_implementations("build", false, "rlib");
 }
 
 #[cargo_test]
 fn early_cutoff_rechecks_previously_rebuilt_transitive_trait_implementations_in_builds() {
-    assert_early_cutoff_rechecks_transitive_trait_implementations("build", true);
+    assert_early_cutoff_rechecks_transitive_trait_implementations("build", true, "rlib");
+}
+
+#[cargo_test]
+fn early_cutoff_rechecks_transitive_dylib_implementations() {
+    assert_early_cutoff_rechecks_transitive_trait_implementations("build", false, "dylib");
 }
 
 fn assert_early_cutoff_rechecks_previously_changed_dependency(
@@ -3916,6 +3927,74 @@ fn early_cutoff_rechecks_fresh_dependency_changed_by_previous_check() {
 #[cargo_test]
 fn early_cutoff_rechecks_unchanged_dependency_changed_by_previous_check() {
     assert_early_cutoff_rechecks_previously_changed_dependency("check", true);
+}
+
+#[cargo_test]
+fn early_cutoff_rechecks_reexported_proc_macro() {
+    let wrapper = public_api_hash_wrapper();
+    let p = project()
+        .file(
+            "Cargo.toml",
+            "[package]\nname = 'app'\nversion = '0.1.0'\nedition = '2024'\n[dependencies]\nfacade = { path = 'facade' }",
+        )
+        .file("src/lib.rs", "const _: () = assert!(facade::value!() == 1);")
+        .file(
+            "facade/Cargo.toml",
+            "[package]\nname = 'facade'\nversion = '0.1.0'\nedition = '2024'\n[dependencies]\nmac = { path = '../mac' }",
+        )
+        .file("facade/src/lib.rs", "pub use mac::value;")
+        .file(
+            "mac/Cargo.toml",
+            "[package]\nname = 'mac'\nversion = '0.1.0'\nedition = '2024'\n[lib]\nproc-macro = true",
+        )
+        .file(
+            "mac/build.rs",
+            r#"
+                fn main() {
+                    println!("cargo::rerun-if-changed=value");
+                    let dir = std::env::var_os("OUT_DIR").unwrap();
+                    std::fs::copy("value", std::path::Path::new(&dir).join("value")).unwrap();
+                }
+            "#,
+        )
+        .file(
+            "mac/src/lib.rs",
+            r#"
+                use proc_macro::TokenStream;
+                #[proc_macro]
+                pub fn value(_: TokenStream) -> TokenStream {
+                    std::fs::read_to_string(concat!(env!("OUT_DIR"), "/value"))
+                        .unwrap().parse().unwrap()
+                }
+            "#,
+        )
+        .file("mac/value", "1")
+        .build();
+    let cargo = |command: &str| {
+        let mut cmd = p.cargo(command);
+        cmd.env("RUSTC_WRAPPER", &wrapper)
+            .env("RUSTFLAGS", "-Zpublic-api-hash");
+        cmd
+    };
+
+    for separate in [false, true] {
+        cargo("check").run();
+        if is_coarse_mtime() {
+            sleep_ms(1000);
+        }
+        p.change_file("mac/value", "2");
+        if separate {
+            cargo("build -p mac").run();
+        }
+        cargo("check")
+            .with_status(101)
+            .with_stderr_contains("error[E0080]: [..]")
+            .run();
+        if is_coarse_mtime() {
+            sleep_ms(1000);
+        }
+        p.change_file("mac/value", "1");
+    }
 }
 
 fn assert_early_cutoff_rechecks_proc_macro_changed_by_previous_build(command: &str) {
