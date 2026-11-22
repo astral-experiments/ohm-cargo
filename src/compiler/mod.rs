@@ -2312,6 +2312,8 @@ fn rustc(
             }
         }
 
+        let independent_inputs =
+            || ohm_early_tests::has_independent_inputs(&rustc_dep_info_loc, &cwd, &build_dir);
         let mut accepted_early_test = false;
         if !deferred_dev_names.is_empty() || early_test.is_some() {
             let output = std::cell::RefCell::new(ohm_early_tests::Output::default());
@@ -2339,8 +2341,10 @@ fn rustc(
             if let Some((completion, extern_name)) = &early_test {
                 // Wait for the producer before publishing provisional output.
                 let producer_result = completion.wait();
-                accepted_early_test =
-                    producer_result.is_ok() && result.is_ok() && output.proves_unused(*extern_name);
+                accepted_early_test = producer_result.is_ok()
+                    && result.is_ok()
+                    && output.proves_unused(*extern_name)
+                    && independent_inputs();
                 if accepted_early_test {
                     // Linking may have finished before the producer. Record the
                     // acceptance time so the next build sees a fresh executable.
@@ -2369,6 +2373,7 @@ fn rustc(
                     || !deferred_dev_names
                         .iter()
                         .all(|name| output.proves_unused(*name))
+                    || !independent_inputs()
                 {
                     if let Some(cache) = &relink_cache {
                         cache.clear_codegen_temps()?;
@@ -2517,7 +2522,9 @@ fn rustc(
         if let Some(cache) = &relink_cache {
             let unused_externs = (unused_integration_dependency.is_some() || record_dev_unused)
                 .then(|| state.recorded_unused_externs())
-                .flatten();
+                .flatten()
+                // Avoid speculating again when the last test embedded a build artifact.
+                .filter(|names| names.is_empty() || accepted_early_test || independent_inputs());
             cache.initialize(extern_paths_hash, unused_externs.as_ref())?;
         }
 

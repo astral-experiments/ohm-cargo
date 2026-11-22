@@ -1,6 +1,6 @@
 use std::collections::BTreeSet;
 use std::fs;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::sync::{Arc, Condvar, Mutex};
 
 use cargo_util::paths;
@@ -155,6 +155,29 @@ pub(crate) fn dependency(
         .iter()
         .find(|dependency| runner.bcx.unit_to_index[&dependency.unit] == index)?;
     Some((dependency.unit.clone(), name))
+}
+
+/// An unused `--extern` does not rule out an `include_bytes!` of the library.
+/// A producer can also replace dep-info and extra compiler outputs such as MIR.
+/// Reject inputs in the build directory, including aliases through symlinked directories.
+pub(super) fn has_independent_inputs(dep_info: &Path, cwd: &Path, build_dir: &Path) -> bool {
+    let Ok(info) = super::fingerprint::parse_rustc_dep_info(dep_info) else {
+        return false;
+    };
+    let Ok(build_dir) = build_dir.canonicalize() else {
+        return false;
+    };
+    let is_artifact = |path: &Path| {
+        path.starts_with(&build_dir)
+            || path.extension().is_some_and(|ext| {
+                ext.eq_ignore_ascii_case("rlib") || ext.eq_ignore_ascii_case("rmeta")
+            })
+    };
+    !info.files.is_empty()
+        && info.files.keys().all(|file| {
+            let path = cwd.join(file);
+            !is_artifact(&path) && path.canonicalize().is_ok_and(|p| !is_artifact(&p))
+        })
 }
 
 /// Keep speculative diagnostics bounded. On overflow, discard them and retry

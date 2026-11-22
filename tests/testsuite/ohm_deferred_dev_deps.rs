@@ -384,6 +384,45 @@ unsigned native_value(void);
 }
 
 #[cargo_test]
+fn embedding_unused_dev_artifacts_retries_with_current_bytes() {
+    let wrapper = relink_only_wrapper();
+    for (dir, prefix, suffix) in [
+        ("embedded-library", "libhelper-", ".rlib"),
+        ("embedded-dep-info", "helper-", ".d"),
+    ] {
+        let p = fixture(dir);
+        seed(&p, &wrapper);
+        let artifact = walkdir::WalkDir::new(p.root().join("target"))
+            .into_iter()
+            .map(|entry| entry.unwrap().into_path())
+            .find(|path| {
+                path.file_name()
+                    .unwrap()
+                    .to_str()
+                    .is_some_and(|name| name.starts_with(prefix) && name.ends_with(suffix))
+            })
+            .unwrap();
+        let src = p.root().join("app/src");
+        fs::copy(&artifact, src.join("old.bin")).unwrap();
+        std::os::unix::fs::symlink(&artifact, src.join("current.bin")).unwrap();
+        p.change_file("helper/src/value.rs", "pub fn value() -> u32 { 42 }");
+        p.change_file("helper/src/lib.rs", "mod value; pub use value::value;");
+        p.change_file(
+            "app/src/lib.rs",
+            &source(2, false).replace(
+                "fn selected() {",
+                r#"fn selected() {
+                assert!(include_bytes!("old.bin")[..] != include_bytes!("current.bin")[..]);"#,
+            ),
+        );
+        command(&p, &wrapper, "")
+            .with_stderr_contains("[..]retrying complete graph[..]")
+            .run();
+        assert_eq!(log(&p, "runs.log"), "ran\n");
+    }
+}
+
+#[cargo_test]
 fn new_usage_retries_even_when_stale_artifacts_compile_successfully() {
     let wrapper = relink_only_wrapper();
     let p = fixture("new-usage");
