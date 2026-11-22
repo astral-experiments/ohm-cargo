@@ -2807,6 +2807,18 @@ fn calculate_normal(
             .filter(|dep| !dep.unit.target.is_bin() || dep.unit.artifact.is_true())
             .map(|dep| DepFingerprint::new(build_runner, unit, &dep))
             .collect::<CargoResult<Vec<_>>>()?;
+        // A producer built in an earlier invocation may have advanced its
+        // rlib while preserving its rmeta. Either can signal a change to
+        // a library supplied separately through -L or --extern.
+        if unit.mode == CompileMode::Build
+            && deps.iter().any(|dep| dep.only_requires_rmeta)
+            && super::has_external_crate_inputs(build_runner, unit)
+            && unit_consumes_public_api_hash(build_runner, unit)
+        {
+            for dep in &mut deps {
+                dep.only_requires_rmeta = false;
+            }
+        }
         deps.sort_by(|a, b| a.pkg_id.cmp(&b.pkg_id));
         deps
     };

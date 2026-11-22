@@ -3290,12 +3290,59 @@ fn early_cutoff_rechecks_included_dependency_metadata() {
 
 #[cargo_test]
 fn early_cutoff_rechecks_generated_rust_library() {
+    check_generated_rust_library(GeneratedCratePath::Producer, false);
+}
+
+#[cargo_test]
+fn early_cutoff_rechecks_library_published_by_sibling() {
+    check_generated_rust_library(GeneratedCratePath::Sibling, false);
+}
+
+#[cargo_test]
+fn early_cutoff_rechecks_library_rebuilt_before_consumer() {
+    check_generated_rust_library(GeneratedCratePath::Sibling, true);
+}
+
+#[cargo_test]
+fn early_cutoff_rechecks_separately_rebuilt_extern() {
+    check_generated_rust_library(GeneratedCratePath::Rustc, true);
+}
+
+#[derive(PartialEq)]
+enum GeneratedCratePath {
+    Producer,
+    Sibling,
+    Rustc,
+}
+
+/// Changes the library without changing the API hash of the package that built it.
+fn check_generated_rust_library(path: GeneratedCratePath, split_build: bool) {
     let wrapper = public_api_hash_wrapper();
-    let p = project()
-        .file(
-            "Cargo.toml",
-            "[package]\nname = 'app'\nversion = '0.1.0'\nedition = '2024'\n[dependencies]\ndep = { path = 'dep' }",
-        )
+    let mut manifest = String::from(
+        "[package]\nname = 'app'\nversion = '0.1.0'\nedition = '2024'\n[dependencies]\ndep = { path = 'dep' }\n",
+    );
+    let mut app = project();
+    if path == GeneratedCratePath::Sibling {
+        manifest.push_str("publisher = { path = 'publisher' }\n");
+        app = app
+            .file(
+                "publisher/Cargo.toml",
+                &basic_manifest("publisher", "0.1.0"),
+            )
+            .file("publisher/src/lib.rs", "")
+            .file(
+                "publisher/build.rs",
+                r#"
+                    fn main() {
+                        let path = std::env::var("GENERATED_DIR").unwrap();
+                        println!("cargo::rerun-if-env-changed=GENERATED_DIR");
+                        println!("cargo::rustc-link-search={path}");
+                    }
+                "#,
+            );
+    }
+    let p = app
+        .file("Cargo.toml", &manifest)
         .file(
             "src/lib.rs",
             "extern crate generated; const _: () = assert!(generated::VALUE == 1);",
@@ -3310,7 +3357,9 @@ fn early_cutoff_rechecks_generated_rust_library() {
                 fn main() {
                     let out = env::var("OUT_DIR").unwrap();
                     println!("cargo::rerun-if-changed=generated.rs");
-                    println!("cargo::rustc-link-search={out}");
+                    if env::var_os("PUBLISH_SELF").is_some() {
+                        println!("cargo::rustc-link-search={out}");
+                    }
                     assert!(Command::new(env::var_os("RUSTC").unwrap())
                         .args(["--crate-type=rlib", "generated.rs", "--out-dir", &out])
                         .status().unwrap().success());
@@ -3318,18 +3367,57 @@ fn early_cutoff_rechecks_generated_rust_library() {
             "#,
         )
         .build();
-    let check = || {
-        let mut cmd = p.cargo("check");
+    let cargo = |command: &str| {
+        let mut cmd = p.cargo(command);
         cmd.env("RUSTC_WRAPPER", &wrapper)
             .env("RUSTFLAGS", "-Zpublic-api-hash");
+        if path == GeneratedCratePath::Producer {
+            cmd.env("PUBLISH_SELF", "1");
+        }
         cmd
     };
+    let command = if split_build {
+        "build --release"
+    } else {
+        "check"
+    };
+    let generate = || {
+        cargo(command).args(&["-p", "dep"]).run();
+    };
 
+    if path != GeneratedCratePath::Producer {
+        generate();
+    }
+    let check = || {
+        let library = || {
+            p.glob("target/**/out/libgenerated.rlib")
+                .next()
+                .unwrap()
+                .unwrap()
+        };
+        match path {
+            GeneratedCratePath::Producer => cargo(command),
+            GeneratedCratePath::Sibling => {
+                let mut cmd = cargo(command);
+                cmd.env("GENERATED_DIR", library().parent().unwrap());
+                cmd
+            }
+            GeneratedCratePath::Rustc => {
+                let mut cmd = cargo("rustc --release --lib -- --extern");
+                cmd.arg(format!("generated={}", library().display()));
+                cmd
+            }
+        }
+    };
     check().run();
     if is_coarse_mtime() {
         sleep_ms(1000);
     }
     p.change_file("dep/generated.rs", "pub const VALUE: u32 = 2;");
+    if split_build {
+        // The producer can preserve its old .rmeta timestamp across invocations.
+        generate();
+    }
     check()
         .with_status(101)
         .with_stderr_contains("error[E0080]: [..]")
