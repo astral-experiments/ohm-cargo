@@ -7751,3 +7751,61 @@ fn terminal_declaration_hash_refreshes_unselected_binary_diagnostics() {
         .with_stderr_contains("[..]lib.rs:1:22")
         .run();
 }
+
+#[cfg(feature = "ohm-defaults")]
+#[cargo_test]
+fn terminal_declaration_hash_replays_local_warnings() {
+    if !supports_terminal_declaration_hash() {
+        return;
+    }
+    let source = "#[deprecated(note = \"use other\")]\npub fn f() {}";
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [workspace]
+                [package]
+                name = "app"
+                version = "0.1.0"
+                edition = "2024"
+                [dependencies]
+                dep = { path = "dep" }
+            "#,
+        )
+        .file("dep/Cargo.toml", &basic_manifest("dep", "0.1.0"))
+        .file("dep/src/lib.rs", source)
+        .file("src/main.rs", "fn main() { dep::f(); }")
+        .build();
+    let check = || {
+        let mut cmd = p.cargo("-Zohm-defaults check -v -p app");
+        cmd.masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("CARGO_INCREMENTAL", "1")
+            .env_remove("LIBRARY_PATH");
+        cmd
+    };
+    let warning = "[WARNING] use of deprecated function `dep::f`: use other";
+    check().with_stderr_contains(warning).run();
+    // Move just the declaration. Rustc still hashes the attribute's location.
+    p.change_file("dep/src/lib.rs", &source.replace("pub fn", "\npub fn"));
+    check()
+        .with_stderr_contains(warning)
+        .with_stderr_contains("[..]-Zohm-terminal-check-hash[..]")
+        .with_stderr_does_not_contain("[..]--crate-name app [..]")
+        .run();
+    p.change_file("dep/src/lib.rs", &source.replace("use other", "use new"));
+    check()
+        .with_stderr_contains("[WARNING] use of deprecated function `dep::f`: use new")
+        .with_stderr_contains("[..]--crate-name app [..]")
+        .run();
+
+    p.change_file(
+        "src/main.rs",
+        "macro_rules! m { () => { dep::f() }; } fn main() { m!(); }",
+    );
+    check().run();
+    p.change_file("dep/src/lib.rs", source);
+    check()
+        .with_stderr_contains(warning)
+        .with_stderr_does_not_contain("[..]-Zohm-terminal-check-hash[..]")
+        .run();
+}
