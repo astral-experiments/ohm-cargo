@@ -1506,6 +1506,20 @@ fn can_supply_rust_crates(path: &str) -> bool {
     !path.starts_with("native=") && !path.starts_with("framework=")
 }
 
+/// Whether another package can replace a Rust library without rebuilding the
+/// script or changing the compiler arguments that expose it to this unit.
+fn has_external_crate_inputs(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
+    build_runner
+        .build_scripts
+        .get(unit)
+        .is_some_and(|s| s.previous_external_crate_path)
+        || may_set_rustc_option(build_runner, unit, |name, value| match name {
+            "extern" => true,
+            "L" | "library-path" => can_supply_rust_crates(value),
+            _ => false,
+        })
+}
+
 /// Whether user-controlled compiler arguments can add untracked linker inputs.
 fn has_opaque_integration_linker_flags(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
     may_set_rustc_option(build_runner, unit, |name, _| {
@@ -1818,11 +1832,7 @@ fn rustc(
         && fingerprint
             .as_ref()
             .is_some_and(|fp| fp.native_recheck_can_reuse_codegen(build_runner, unit));
-    let user_crate_inputs = may_set_rustc_option(build_runner, unit, |name, value| match name {
-        "extern" => true,
-        "L" | "library-path" => can_supply_rust_crates(value),
-        _ => false,
-    });
+    let external_crate_inputs = has_external_crate_inputs(build_runner, unit);
     let can_skip_compilation = fingerprint::unit_can_use_early_cutoff(build_runner, unit)
         && fingerprint
             .as_ref()
@@ -1906,10 +1916,7 @@ fn rustc(
         // This package's build scripts can expose separate Rust libraries to its
         // dependents. Rebuilding the publisher must advance its metadata even
         // when the published search paths and its own public hash are unchanged.
-        let extra_crate_inputs = user_crate_inputs
-            // A sibling can regenerate a library on an inherited external path
-            // while the script that published that path is still fresh.
-            || build_scripts.as_ref().is_some_and(|s| s.previous_external_crate_path)
+        let extra_crate_inputs = external_crate_inputs
             || script_metadatas.as_ref().is_some_and(|scripts| {
                 let outputs = build_script_outputs.lock().unwrap();
                 scripts.iter().any(|metadata| {

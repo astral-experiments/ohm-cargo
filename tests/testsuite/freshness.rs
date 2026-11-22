@@ -3290,27 +3290,39 @@ fn early_cutoff_rechecks_included_dependency_metadata() {
 
 #[cargo_test]
 fn early_cutoff_rechecks_generated_rust_library() {
-    check_generated_rust_library("check", false);
+    check_generated_rust_library(GeneratedCratePath::Producer, false);
 }
 
 #[cargo_test]
 fn early_cutoff_rechecks_library_published_by_sibling() {
-    check_generated_rust_library("check", true);
+    check_generated_rust_library(GeneratedCratePath::Sibling, false);
 }
 
 #[cargo_test]
 fn early_cutoff_rechecks_library_rebuilt_before_consumer() {
-    check_generated_rust_library("build --release", true);
+    check_generated_rust_library(GeneratedCratePath::Sibling, true);
+}
+
+#[cargo_test]
+fn early_cutoff_rechecks_separately_rebuilt_extern() {
+    check_generated_rust_library(GeneratedCratePath::Rustc, true);
+}
+
+#[derive(PartialEq)]
+enum GeneratedCratePath {
+    Producer,
+    Sibling,
+    Rustc,
 }
 
 /// Changes the library without changing the API hash of the package that built it.
-fn check_generated_rust_library(command: &str, separate_publisher: bool) {
+fn check_generated_rust_library(path: GeneratedCratePath, split_build: bool) {
     let wrapper = public_api_hash_wrapper();
     let mut manifest = String::from(
         "[package]\nname = 'app'\nversion = '0.1.0'\nedition = '2024'\n[dependencies]\ndep = { path = 'dep' }\n",
     );
     let mut app = project();
-    if separate_publisher {
+    if path == GeneratedCratePath::Sibling {
         manifest.push_str("publisher = { path = 'publisher' }\n");
         app = app
             .file(
@@ -3345,7 +3357,7 @@ fn check_generated_rust_library(command: &str, separate_publisher: bool) {
                 fn main() {
                     let out = env::var("OUT_DIR").unwrap();
                     println!("cargo::rerun-if-changed=generated.rs");
-                    if env::var_os("SEPARATE_PUBLISHER").is_none() {
+                    if env::var_os("PUBLISH_SELF").is_some() {
                         println!("cargo::rustc-link-search={out}");
                     }
                     assert!(Command::new(env::var_os("RUSTC").unwrap())
@@ -3355,30 +3367,56 @@ fn check_generated_rust_library(command: &str, separate_publisher: bool) {
             "#,
         )
         .build();
-    let check = || {
+    let cargo = |command: &str| {
         let mut cmd = p.cargo(command);
         cmd.env("RUSTC_WRAPPER", &wrapper)
             .env("RUSTFLAGS", "-Zpublic-api-hash");
-        if separate_publisher {
-            cmd.env("SEPARATE_PUBLISHER", "1");
-            if let Some(generated) = p.glob("target/**/out/libgenerated.rlib").next() {
-                cmd.env("GENERATED_DIR", generated.unwrap().parent().unwrap());
-            }
+        if path == GeneratedCratePath::Producer {
+            cmd.env("PUBLISH_SELF", "1");
         }
         cmd
     };
+    let command = if split_build {
+        "build --release"
+    } else {
+        "check"
+    };
+    let generate = || {
+        cargo(command).args(&["-p", "dep"]).run();
+    };
 
-    if separate_publisher {
-        check().args(&["-p", "dep"]).run();
+    if path != GeneratedCratePath::Producer {
+        generate();
     }
+    let check = || {
+        let library = || {
+            p.glob("target/**/out/libgenerated.rlib")
+                .next()
+                .unwrap()
+                .unwrap()
+        };
+        match path {
+            GeneratedCratePath::Producer => cargo(command),
+            GeneratedCratePath::Sibling => {
+                let mut cmd = cargo(command);
+                cmd.env("GENERATED_DIR", library().parent().unwrap());
+                cmd
+            }
+            GeneratedCratePath::Rustc => {
+                let mut cmd = cargo("rustc --release --lib -- --extern");
+                cmd.arg(format!("generated={}", library().display()));
+                cmd
+            }
+        }
+    };
     check().run();
     if is_coarse_mtime() {
         sleep_ms(1000);
     }
     p.change_file("dep/generated.rs", "pub const VALUE: u32 = 2;");
-    if command == "build --release" {
+    if split_build {
         // The producer can preserve its old .rmeta timestamp across invocations.
-        check().args(&["-p", "dep"]).run();
+        generate();
     }
     check()
         .with_status(101)

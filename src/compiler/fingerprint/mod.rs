@@ -2808,13 +2808,11 @@ fn calculate_normal(
             .map(|dep| DepFingerprint::new(build_runner, unit, &dep))
             .collect::<CargoResult<Vec<_>>>()?;
         // A producer built in an earlier invocation may have advanced its
-        // rlib while preserving its rmeta. Either generation can correspond
-        // to a new library on another script's external search path.
+        // rlib while preserving its rmeta. Either can signal a change to
+        // a library supplied separately through -L or --extern.
         if unit.mode == CompileMode::Build
-            && build_runner
-                .build_scripts
-                .get(unit)
-                .is_some_and(|s| s.previous_external_crate_path)
+            && deps.iter().any(|dep| dep.only_requires_rmeta)
+            && super::has_external_crate_inputs(build_runner, unit)
             && unit_consumes_public_api_hash(build_runner, unit)
         {
             for dep in &mut deps {
