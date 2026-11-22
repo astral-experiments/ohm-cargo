@@ -27,10 +27,12 @@ use crate::resolver::Resolve;
 use crate::resolver::features::FeaturesFor;
 use crate::util::data_structures::{HashMap, HashSet};
 use crate::util::interning::InternedString;
-use crate::util::{CargoResult, GlobalContext, closest_msg};
-use crate::workspace::dependency::Artifact;
+use crate::util::{CargoResult, GlobalContext, VersionReqMatchMode, closest_msg};
+use crate::workspace::dependency::{Artifact, DepKind};
 use crate::workspace::parser::validate_profile;
-use crate::workspace::{PackageId, PackageIdSpec, PackageIdSpecQuery, Target, Workspace};
+use crate::workspace::{
+    Dependency, PackageId, PackageIdSpec, PackageIdSpecQuery, SourceId, Target, Workspace,
+};
 use anyhow::{Context as _, bail};
 use cargo_util::is_ci;
 use cargo_util_schemas::manifest::TomlTrimPaths;
@@ -68,7 +70,12 @@ pub struct Profiles {
     rustc_host: InternedString,
     /// Whether the compiler host and requested profile allow grouping proc-macro helpers.
     ohm_macro_helpers: bool,
+    /// Registry dependencies declared by procedural macros in this workspace.
+    workspace_macro_deps: HashMap<(SourceId, InternedString), Vec<Dependency>>,
 }
+
+pub(crate) const OHM_MACRO_HELPER: &str = "-Zllvm-module-flag=ohm.proc-macro-helper:u32:1:max";
+pub(crate) const OHM_MACRO_HELPER_OFF: &str = "-Zllvm-module-flag=ohm.proc-macro-helper:u32:0:max";
 
 impl Profiles {
     pub fn new(ws: &Workspace<'_>, requested_profile: InternedString) -> CargoResult<Profiles> {
@@ -91,6 +98,7 @@ impl Profiles {
             requested_profile,
             rustc_host,
             ohm_macro_helpers: false,
+            workspace_macro_deps: HashMap::default(),
         };
 
         Self::add_root_profiles(
@@ -125,6 +133,19 @@ impl Profiles {
         profile_makers.ohm_macro_helpers = gctx.cli_unstable().ohm_defaults()
             && rustc_host == "x86_64-unknown-linux-gnu"
             && maker.can_group_macro_helpers();
+        if profile_makers.ohm_macro_helpers {
+            for member in ws.members().filter(|p| p.proc_macro()) {
+                for dep in member.dependencies() {
+                    if dep.kind() == DepKind::Normal && dep.source_id().is_registry() {
+                        profile_makers
+                            .workspace_macro_deps
+                            .entry((dep.source_id(), dep.package_name()))
+                            .or_default()
+                            .push(dep.clone());
+                    }
+                }
+            }
+        }
         Ok(profile_makers)
     }
 
@@ -317,12 +338,23 @@ impl Profiles {
             && pkg_id.source_id().is_registry()
             && !maker.has_package_override(pkg_id)
         {
-            // Keep the host profile's level and debug checks. A single module exposes
-            // callees to LLVM and the tracked flag opts this unit into simplification.
+            // Keep grouping helpers to avoid local ThinLTO. When a workspace
+            // macro declares a dependency on this library, reserve the extra
+            // optimization for compatible versions. Use the same decision for
+            // all consumers, including macros outside the workspace.
             profile.codegen_units = Some(1);
-            profile
-                .rustflags
-                .push("-Zllvm-module-flag=ohm.proc-macro-helper:u32:1:max".into());
+            let key = (pkg_id.source_id(), pkg_id.name());
+            let optimize = self.workspace_macro_deps.get(&key).is_none_or(|deps| {
+                // A compatible prerelease may have been selected with -Zprerelease.
+                deps.iter()
+                    .any(|dep| dep.matches_id(pkg_id, VersionReqMatchMode::Prerelease))
+            });
+            let flag = if optimize {
+                OHM_MACRO_HELPER
+            } else {
+                OHM_MACRO_HELPER_OFF
+            };
+            profile.rustflags.push(flag.into());
         }
 
         // Dealing with `panic=abort` and `panic=unwind` requires some special

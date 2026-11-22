@@ -24,7 +24,7 @@ use crate::util::{self, CargoResult, OnceExt, StableHasher};
 use crate::workspace::build_cache_gc::worktrees::provenance;
 use crate::workspace::build_cache_gc::{self, FileIdentity};
 use crate::workspace::features::{OhmNativeToolTrust, OhmProcMacroTrust};
-use crate::workspace::profiles::StripInner;
+use crate::workspace::profiles::{OHM_MACRO_HELPER, OHM_MACRO_HELPER_OFF, StripInner};
 use crate::workspace::{Target, TargetKind, Workspace};
 
 /// This is a generic version number that can be changed to make
@@ -2654,7 +2654,19 @@ fn compute_metadata(
     // Throw in the profile we're compiling with. This helps caching
     // `panic=abort` and `panic=unwind` artifacts, additionally with various
     // settings like debuginfo and whatnot.
-    unit.profile.hash(&mut shared_hasher);
+    let unoptimized_helper = matches!(unit.profile.rustflags.as_slice(),
+        [flag] if flag.as_str() == OHM_MACRO_HELPER_OFF)
+        && bcx.gctx.cli_unstable().ohm_defaults();
+    if unoptimized_helper {
+        // Changing a proc macro's optimization budget should leave symbol
+        // names in every downstream crate unchanged. Preserve the original
+        // level-1 marker for -Cmetadata and distinguish the real flag below.
+        let mut symbol_profile = unit.profile.clone();
+        symbol_profile.rustflags[0] = OHM_MACRO_HELPER.into();
+        symbol_profile.hash(&mut shared_hasher);
+    } else {
+        unit.profile.hash(&mut shared_hasher);
+    }
     let shared_stages = crate::compiler::unit_uses_ohm_shared_stages(build_runner, unit);
     if shared_stages {
         // A stable compiler identity also selects the same rustc incremental
@@ -2738,6 +2750,9 @@ fn compute_metadata(
     dep_c_metadata_hashes.hash(&mut c_metadata_hasher);
 
     let mut unit_id_hasher = shared_hasher.clone();
+    if unoptimized_helper {
+        OHM_MACRO_HELPER_OFF.hash(&mut unit_id_hasher);
+    }
     if shared_stages {
         unit.mode.hash(&mut unit_id_hasher);
     }
