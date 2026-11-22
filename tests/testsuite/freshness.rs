@@ -7182,6 +7182,7 @@ fn early_native_integration_tests_warm_evidence_and_fallback() {
         "stale-executable",
         "opt-out",
         "new-use",
+        "embedded-metadata",
         "current-missing-proof",
         "producer-error",
         "checked-unused",
@@ -7252,6 +7253,8 @@ fn early_native_integration_tests_warm_evidence_and_fallback() {
             "src/lib.rs",
             if case == "producer-error" {
                 "compile_error!(\"intentional warm producer failure\");"
+            } else if case == "embedded-metadata" {
+                "pub const ADDED: u8 = 9;"
             } else {
                 "pub fn value() -> u32 { 9 }"
             },
@@ -7268,6 +7271,11 @@ fn early_native_integration_tests_warm_evidence_and_fallback() {
                     | "checked-then-unused"
             ) {
                 "#[test] fn works() { assert_eq!(app::value(), 9); }"
+            } else if case == "embedded-metadata" {
+                r#"#[test] fn works() {
+                    let bytes = include_bytes!(env!("APP_METADATA"));
+                    assert!(bytes[..] == std::fs::read(env!("APP_METADATA")).unwrap()[..]);
+                }"#
             } else {
                 "#[test] fn works() { assert_eq!(3 + 3, 6); }"
             },
@@ -7298,6 +7306,7 @@ fn early_native_integration_tests_warm_evidence_and_fallback() {
             case,
             "unused"
                 | "new-use"
+                | "embedded-metadata"
                 | "current-missing-proof"
                 | "producer-error"
                 | "checked-unused"
@@ -7307,6 +7316,7 @@ fn early_native_integration_tests_warm_evidence_and_fallback() {
         let retry = matches!(
             case,
             "new-use"
+                | "embedded-metadata"
                 | "current-missing-proof"
                 | "checked-missing-proof"
                 | "checked-other-features"
@@ -7330,6 +7340,14 @@ fn early_native_integration_tests_warm_evidence_and_fallback() {
         }
         if case == "opt-out" {
             command.arg("-Zohm-early-tests=no");
+        }
+        if case == "embedded-metadata" {
+            let metadata = p
+                .glob("target/debug/build/app/*/out/libapp-*.rmeta")
+                .map(Result::unwrap)
+                .next()
+                .expect("package library metadata");
+            command.env("APP_METADATA", metadata);
         }
         if case == "current-missing-proof" {
             command.env("EARLY_TEST_MISSING_PROOF", "1");

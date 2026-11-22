@@ -1,6 +1,6 @@
 use std::collections::BTreeSet;
 use std::fs;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::sync::{Arc, Condvar, Mutex};
 
 use cargo_util::paths;
@@ -155,6 +155,26 @@ pub(crate) fn dependency(
         .iter()
         .find(|dependency| runner.bcx.unit_to_index[&dependency.unit] == index)?;
     Some((dependency.unit.clone(), name))
+}
+
+/// An unused `--extern` does not rule out an `include_bytes!` of the library.
+/// Check the current compilation's inputs, including aliases of artifacts that
+/// a deferred or concurrent dependency could replace.
+pub(super) fn has_independent_inputs(dep_info: &Path, cwd: &Path) -> bool {
+    let Ok(info) = super::fingerprint::parse_rustc_dep_info(dep_info) else {
+        return false;
+    };
+    let is_library = |path: &Path| {
+        path.extension().is_some_and(|ext| {
+            ext.eq_ignore_ascii_case("rlib") || ext.eq_ignore_ascii_case("rmeta")
+        })
+    };
+    !info.files.is_empty()
+        && info.files.keys().all(|file| {
+            let path = cwd.join(file);
+            !is_library(&path)
+                && (!path.is_symlink() || path.canonicalize().is_ok_and(|p| !is_library(&p)))
+        })
 }
 
 /// Keep speculative diagnostics bounded. On overflow, discard them and retry
