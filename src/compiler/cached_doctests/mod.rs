@@ -39,6 +39,23 @@ pub(super) fn prepare(br: &BuildRunner<'_, '_>, unit: &Unit, force: bool) -> Car
     let bcx = br.bcx;
     let dir = br.files().fingerprint_dir(unit);
     let binary = br.outputs(unit)?[0].path.clone();
+    let search_stamp = dir.join("doctest-search-path");
+    // Both extraction and the examples can load Rust crates outside the unit
+    // graph. Even a fresh build script can expose a new or conflicting library.
+    if br
+        .compilation
+        .native_dirs
+        .iter()
+        .any(|path| path.to_str().is_none_or(super::can_supply_rust_crates))
+    {
+        return Ok(Work::new(move |_| {
+            if search_stamp.exists() {
+                paths::remove_file(&search_stamp)?;
+            }
+            // An empty output selects ordinary rustdoc for this invocation.
+            paths::write_atomic_no_follow(&binary, [])
+        }));
+    }
     let scripts = br.find_build_script_metadatas(unit);
     let mut unstable_opts = false;
     let args = br.doctest_args(unit, scripts.as_deref(), &mut unstable_opts)?;
@@ -162,7 +179,6 @@ pub(super) fn prepare(br: &BuildRunner<'_, '_>, unit: &Unit, force: bool) -> Car
         rustdoc.get_env(paths::dylib_path_envvar()),
     ))
     .to_le_bytes();
-    let search_stamp = dir.join("doctest-search-path");
     let target = unit.target.clone();
     let pkg_root = unit.pkg.root().to_owned();
     let build_root = br.files().build_root(unit);

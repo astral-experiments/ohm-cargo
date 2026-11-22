@@ -6233,6 +6233,53 @@ pub fn example() {}
 }
 
 #[cargo_test]
+fn cached_doctests_recheck_external_rust_libraries() {
+    let p = project()
+        .file(
+            "Cargo.toml",
+            "[package]\nname = 'foo'\nversion = '1.0.0'\nedition = '2024'",
+        )
+        .file(
+            "build.rs",
+            r#"fn main() {
+                println!("cargo::rerun-if-changed=build.rs");
+                println!("cargo::rustc-link-search={}/ext", env!("CARGO_MANIFEST_DIR"));
+            }"#,
+        )
+        .file(
+            "src/lib.rs",
+            r#"
+                #[cfg(doctest)]
+                extern crate examples;
+                #[cfg(doctest)]
+                #[doc = examples::example!()]
+                pub fn example() {}
+            "#,
+        )
+        .build();
+    fs::create_dir(p.root().join("ext")).unwrap();
+    for value in [1, 2, 1] {
+        let example = format!("```\nassert_eq!(1, {value});\n```");
+        p.change_file(
+            "examples.rs",
+            &format!("#[macro_export] macro_rules! example {{ () => {{ {example:?} }} }}"),
+        );
+        p.process("rustc")
+            .args(&["--crate-type=rlib", "examples.rs", "--out-dir", "ext"])
+            .run();
+        let mut test = p.cargo("test --doc -Zohm-cached-doctests");
+        test.masquerade_as_nightly_cargo(&["ohm-cached-doctests"])
+            .env("CARGO_UNSTABLE_OHM_DEFAULTS", "false")
+            .env("RUSTC_BOOTSTRAP", "1");
+        if value == 2 {
+            test.with_status(101)
+                .with_stdout_contains("[..] ... FAILED");
+        }
+        test.run();
+    }
+}
+
+#[cargo_test]
 fn cached_doctests_inherit_the_crate_name_at_runtime() {
     let p = project()
         .file(
