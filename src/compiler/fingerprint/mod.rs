@@ -655,7 +655,7 @@ fn previous_dependency_changes(fingerprint: &Fingerprint) -> PreviousDependencyC
             metadata: fingerprint
                 .deps
                 .iter()
-                .any(|dependency| dependency.only_requires_rmeta),
+                .any(|dependency| dependency.carries_metadata),
         };
     };
 
@@ -664,7 +664,7 @@ fn previous_dependency_changes(fingerprint: &Fingerprint) -> PreviousDependencyC
         let dependency_modified = dependency.previous_output_mtime();
         if dependency_modified.is_none_or(|modified| modified > parent_modified) {
             changes.any = true;
-            changes.metadata |= dependency.only_requires_rmeta;
+            changes.metadata |= dependency.carries_metadata;
         }
     }
 
@@ -679,7 +679,7 @@ fn metadata_dependency_may_have_changed(fingerprint: &Fingerprint) -> bool {
         .previously_changed_metadata_dependency
         .load(Ordering::Acquire)
         || fingerprint.deps.iter().any(|dependency| {
-            dependency.only_requires_rmeta
+            dependency.carries_metadata
                 && matches!(
                     dependency.fingerprint.build_state(),
                     BuildState::Pending | BuildState::BuiltChanged
@@ -1339,6 +1339,9 @@ struct DepFingerprint {
     /// actually requires the rmeta from what we depend on, so when checking
     /// mtime information all files other than the rmeta can be ignored.
     only_requires_rmeta: bool,
+    /// Rust libraries and proc macros can expose metadata to dependents even
+    /// when rustc needs the full artifact instead of a standalone rmeta file.
+    carries_metadata: bool,
     /// The dependency's fingerprint we recursively point to, containing all the
     /// other hash information we'd otherwise need.
     fingerprint: Arc<Fingerprint>,
@@ -1624,10 +1627,9 @@ impl<'de> Deserialize<'de> for DepFingerprint {
                 memoized_hash: Mutex::new(Some(MemoizedHash::new(hash))),
                 ..Fingerprint::new()
             }),
-            // This field is never read since it's only used in
-            // `check_filesystem` which isn't used by fingerprints loaded from
-            // disk.
+            // Scheduling uses the dependency edges from the live unit graph.
             only_requires_rmeta: false,
+            carries_metadata: false,
         })
     }
 }
@@ -2574,12 +2576,15 @@ impl DepFingerprint {
             util::hash_u64(dep.unit.pkg.package_id())
         };
 
+        let only_requires_rmeta = build_runner.only_requires_rmeta(parent, &dep.unit);
         Ok(DepFingerprint {
             pkg_id,
             name: dep.extern_crate_name,
             public: dep.public,
             fingerprint,
-            only_requires_rmeta: build_runner.only_requires_rmeta(parent, &dep.unit),
+            only_requires_rmeta,
+            carries_metadata: only_requires_rmeta
+                || (dep.unit.target.is_linkable() && !dep.unit.artifact.is_true()),
         })
     }
 }
@@ -4215,6 +4220,7 @@ mod early_cutoff_tests {
             name: InternedString::new("test_dep"),
             public: false,
             only_requires_rmeta: true,
+            carries_metadata: true,
             fingerprint: fp,
         }
     }
@@ -4515,10 +4521,11 @@ mod early_cutoff_tests {
     }
 
     #[test]
-    fn changed_full_artifact_dependency_does_not_propagate_metadata_only_state() {
+    fn changed_non_rust_dependency_does_not_propagate_metadata() {
         let dependency = make_fingerprint(FsStatus::Stale, BuildState::BuiltChanged);
         let mut dependency = make_dep_fingerprint(dependency);
         dependency.only_requires_rmeta = false;
+        dependency.carries_metadata = false;
         let mut fingerprint = make_stale_due_to_dep();
         fingerprint.deps.push(dependency);
 
