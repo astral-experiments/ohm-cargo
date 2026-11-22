@@ -6011,6 +6011,50 @@ this is intentionally not Rust
 }
 
 #[cargo_test]
+fn cached_doctests_detect_a_competing_module_file() {
+    let p = project()
+        .file(
+            "Cargo.toml",
+            "[package]\nname = 'foo'\nversion = '1.0.0'\nedition = '2024'",
+        )
+        .file("src/lib.rs", "#[cfg(doctest)] mod extra;")
+        .build();
+    let run = || {
+        let mut cmd = p.cargo("test --doc -Zohm-cached-doctests -v");
+        cmd.masquerade_as_nightly_cargo(&["ohm-cached-doctests"])
+            .env("CARGO_UNSTABLE_OHM_DEFAULTS", "false")
+            .env("RUSTC_BOOTSTRAP", "1");
+        cmd
+    };
+    std::fs::create_dir(p.root().join("src/extra")).unwrap();
+    let flat = p.root().join("src/extra.rs");
+    let nested = p.root().join("src/extra/mod.rs");
+    for (source, alternate) in [(&flat, &nested), (&nested, &flat)] {
+        std::fs::write(source, "//! ```\n//! assert!(true);\n//! ```\n").unwrap();
+        run().run();
+        run()
+            .with_stderr_does_not_contain("[RUNNING] [..]--output-format=doctest[..]")
+            .run();
+        // Rustdoc's dep-info still names the same unchanged files.
+        std::fs::write(alternate, "").unwrap();
+        run()
+            .with_status(1)
+            .with_stderr_contains("error[E0761]: [..]")
+            .run();
+        std::fs::remove_file(alternate).unwrap();
+        run().run();
+
+        std::fs::create_dir(alternate).unwrap();
+        run()
+            .with_status(1)
+            .with_stderr_contains("error[E0761]: [..]")
+            .run();
+        std::fs::remove_dir(alternate).unwrap();
+        std::fs::remove_file(source).unwrap();
+    }
+}
+
+#[cargo_test]
 fn cached_doctests_report_returned_errors_through_termination() {
     let p = project()
         .file(
