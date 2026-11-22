@@ -6233,6 +6233,61 @@ pub fn example() {}
 }
 
 #[cargo_test]
+fn cached_doctests_reexpand_reexported_proc_macros() {
+    let p = project()
+        .file(
+            "Cargo.toml",
+            "[package]\nname = 'app'\nversion = '1.0.0'\nedition = '2024'\n\
+             [dev-dependencies]\nfacade.path = 'facade'",
+        )
+        .file(
+            "src/lib.rs",
+            r#"
+                #[cfg(doctest)]
+                #[doc = facade::example!()]
+                pub fn sample() {}
+            "#,
+        )
+        .file(
+            "facade/Cargo.toml",
+            "[package]\nname = 'facade'\nversion = '1.0.0'\nedition = '2024'\n\
+             [dependencies]\nprobe.path = '../probe'",
+        )
+        .file("facade/src/lib.rs", "pub use probe::example;")
+        .file(
+            "probe/Cargo.toml",
+            "[package]\nname = 'probe'\nversion = '1.0.0'\nedition = '2024'\n\
+             [lib]\nproc-macro = true",
+        )
+        .file(
+            "probe/src/lib.rs",
+            r#"
+                use proc_macro::{Literal, TokenStream, TokenTree};
+
+                #[proc_macro]
+                pub fn example(_: TokenStream) -> TokenStream {
+                    let value = std::env::var("EXAMPLE_VALUE").unwrap();
+                    let source = format!("```\nassert_eq!(1, {value});\n```");
+                    TokenTree::Literal(Literal::string(&source)).into()
+                }
+            "#,
+        )
+        .build();
+    for value in ["1", "2", "1"] {
+        let mut test = p.cargo("test --doc -Zohm-cached-doctests");
+        test.masquerade_as_nightly_cargo(&["ohm-cached-doctests"])
+            .env("CARGO_UNSTABLE_OHM_DEFAULTS", "false")
+            .env("RUSTC_BOOTSTRAP", "1")
+            .env("EXAMPLE_VALUE", value);
+        if value == "2" {
+            test.with_status(101)
+                .with_stdout_contains("[..] ... FAILED");
+        }
+        test.run();
+    }
+}
+
+#[cargo_test]
 fn cached_doctests_recheck_external_rust_libraries() {
     let p = project()
         .file(
