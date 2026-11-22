@@ -222,6 +222,8 @@ pub struct BuildScripts {
     ///
     /// For more information, see #2354.
     pub to_link: Vec<(PackageId, UnitHash)>,
+    /// A previous script or override exposed Rust crates outside its own `OUT_DIR`.
+    pub(super) previous_external_crate_path: bool,
     /// This is only used while constructing `to_link` to avoid duplicates.
     seen_to_link: HashSet<(PackageId, UnitHash)>,
     /// Host-only dependencies that have build scripts. Each element is an
@@ -1569,20 +1571,6 @@ pub fn build_map(build_runner: &mut BuildRunner<'_, '_>) -> CargoResult<()> {
             return Ok(&out[unit]);
         }
 
-        // If there is a build script override, pre-fill the build output.
-        if unit.mode.is_run_custom_build() {
-            if let Some(links) = unit.pkg.manifest().links() {
-                if let Some(output) = unit.links_overrides.get(links) {
-                    let metadata = build_runner.get_run_build_script_metadata(unit);
-                    build_runner.build_script_outputs.lock().unwrap().insert(
-                        unit.pkg.package_id(),
-                        metadata,
-                        output.clone(),
-                    );
-                }
-            }
-        }
-
         let mut ret = BuildScripts::default();
 
         // If a package has a build script, add itself as something to inspect for linking.
@@ -1596,7 +1584,7 @@ pub fn build_map(build_runner: &mut BuildRunner<'_, '_>) -> CargoResult<()> {
         }
 
         if unit.mode.is_run_custom_build() {
-            parse_previous_explicit_deps(build_runner, unit);
+            prepare_script_output(build_runner, unit, &mut ret);
         }
 
         // We want to invoke the compiler deterministically to be cache-friendly
@@ -1613,9 +1601,13 @@ pub fn build_map(build_runner: &mut BuildRunner<'_, '_>) -> CargoResult<()> {
         for dep_unit in dependencies.iter() {
             let dep_scripts = build(out, build_runner, dep_unit)?;
 
+            if dep_unit.mode.is_run_custom_build() && dep_unit.pkg == unit.pkg {
+                ret.previous_external_crate_path |= dep_scripts.previous_external_crate_path;
+            }
             if dep_unit.target.for_host() {
                 ret.plugins.extend(dep_scripts.to_link.iter().cloned());
             } else if dep_unit.target.is_linkable() {
+                ret.previous_external_crate_path |= dep_scripts.previous_external_crate_path;
                 for &(pkg, metadata) in dep_scripts.to_link.iter() {
                     add_to_link(&mut ret, pkg, metadata);
                 }
@@ -1636,12 +1628,43 @@ pub fn build_map(build_runner: &mut BuildRunner<'_, '_>) -> CargoResult<()> {
         }
     }
 
-    /// Load any dependency declarations from a previous build script run.
-    fn parse_previous_explicit_deps(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) {
+    /// Loads previous dependency declarations and records which search paths
+    /// can supply crates from outside the publisher's output directory.
+    fn prepare_script_output(
+        build_runner: &mut BuildRunner<'_, '_>,
+        unit: &Unit,
+        scripts: &mut BuildScripts,
+    ) {
         let run_files = BuildScriptRunFiles::for_unit(build_runner, unit);
         let (prev_output, _) = prev_build_output(build_runner, unit);
         let deps = BuildDeps::new(&run_files.stdout, prev_output.as_ref());
         build_runner.build_explicit_deps.insert(unit.clone(), deps);
+
+        let override_output = unit
+            .pkg
+            .manifest()
+            .links()
+            .and_then(|links| unit.links_overrides.get(links));
+        if let Some(output) = override_output {
+            let metadata = build_runner.get_run_build_script_metadata(unit);
+            build_runner.build_script_outputs.lock().unwrap().insert(
+                unit.pkg.package_id(),
+                metadata,
+                output.clone(),
+            );
+        }
+        scripts.previous_external_crate_path = override_output
+            .or(prev_output.as_ref())
+            .is_some_and(|output| {
+                output.library_paths.iter().any(|path| {
+                    let dir = path.as_ref();
+                    dir.to_str().is_none_or(super::can_supply_rust_crates)
+                        && (matches!(path, LibraryPath::External(_))
+                            || dir
+                                .components()
+                                .any(|part| part == std::path::Component::ParentDir))
+                })
+            });
     }
 }
 

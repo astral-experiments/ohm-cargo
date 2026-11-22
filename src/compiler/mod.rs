@@ -1907,6 +1907,9 @@ fn rustc(
         // dependents. Rebuilding the publisher must advance its metadata even
         // when the published search paths and its own public hash are unchanged.
         let extra_crate_inputs = user_crate_inputs
+            // A sibling can regenerate a library on an inherited external path
+            // while the script that published that path is still fresh.
+            || build_scripts.as_ref().is_some_and(|s| s.previous_external_crate_path)
             || script_metadatas.as_ref().is_some_and(|scripts| {
                 let outputs = build_script_outputs.lock().unwrap();
                 scripts.iter().any(|metadata| {
