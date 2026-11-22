@@ -1049,6 +1049,130 @@ fn ohm_proc_macro_helpers() {
 }
 
 #[cargo_test(nightly, reason = "Ohm defaults require the Ohm compiler")]
+fn ohm_prefers_helper_versions_used_by_workspace_macros() {
+    cargo_test_support::registry::alt_init();
+    for (macro_name, version) in [
+        ("older", "1.0.0"),
+        ("newer", "2.0.0"),
+        ("future", "3.1.0-beta"),
+    ] {
+        Package::new("helper", version).publish();
+        Package::new(macro_name, "1.0.0")
+            .proc_macro(true)
+            .dep("helper", version)
+            .publish();
+    }
+    Package::new("helper", "4.0.0").alternative(true).publish();
+    Package::new("unrelated", "1.0.0")
+        .registry_dep("helper", "4")
+        .alternative(true)
+        .publish();
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [workspace]
+                members = ["macros"]
+                [package]
+                name = "app"
+                version = "0.1.0"
+                edition = "2024"
+                [dependencies]
+                older = "1"
+                newer = "1"
+                future = "1"
+                macros = { path = "macros" }
+                [profile.dev]
+                opt-level = 1
+                lto = "off"
+            "#,
+        )
+        .file("src/lib.rs", "")
+        .file("macros/src/lib.rs", "")
+        .build();
+    let mut hashes = Vec::new();
+    for (requirement, preferred) in [
+        ("1", &["1.0.0"][..]),
+        ("2", &["2.0.0"]),
+        ("3.1.0-beta", &["3.1.0-beta"]),
+        // A broad requirement can also select a compatible prerelease.
+        (">=1, <4", &["1.0.0", "2.0.0", "3.1.0-beta"]),
+    ] {
+        p.change_file(
+            "macros/Cargo.toml",
+            &format!(
+                r#"
+                    [package]
+                    name = "macros"
+                    version = "0.1.0"
+                    edition = "2024"
+                    [lib]
+                    proc-macro = true
+                    [dependencies]
+                    renamed = {{ package = "helper", version = "{requirement}" }}
+                    unrelated = {{ registry = "alternative", version = "1" }}
+                "#
+            ),
+        );
+        let graph = p
+            .cargo("build --unit-graph -Zunstable-options -Zohm-defaults=yes")
+            .masquerade_as_nightly_cargo(&["unit-graph", "ohm-defaults"])
+            .run_json();
+        let helpers: Vec<_> = graph["units"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .filter(|unit| unit["target"]["name"] == "helper")
+            .collect();
+        // The workspace and registry macros continue to share a single helper
+        // per version, even when the workspace changes its preference.
+        assert_eq!(helpers.len(), 4, "{graph}");
+        if rustc_host() == "x86_64-unknown-linux-gnu" {
+            for unit in helpers {
+                assert_eq!(unit["profile"]["codegen_units"], 1);
+                let id = unit["pkg_id"].as_str().unwrap();
+                let (_, version) = id.rsplit_once('@').unwrap();
+                // Version 4 belongs to the other registry and is always marked.
+                let flag = if preferred.contains(&version) || version == "4.0.0" {
+                    "-Zllvm-module-flag=ohm.proc-macro-helper:u32:1:max"
+                } else {
+                    "-Zllvm-module-flag=ohm.proc-macro-helper:u32:0:max"
+                };
+                assert_eq!(unit["profile"]["rustflags"].as_array().unwrap(), &[flag]);
+            }
+
+            // The dependency tree of older stays the same as the workspace
+            // changes its preference. Its helper's flag goes from 1 to 0,
+            // then stays at 0, then goes back to 1.
+            let output = p
+                .cargo("build -v -p older -Zohm-defaults=yes")
+                .masquerade_as_nightly_cargo(&["ohm-defaults"])
+                .run();
+            let stderr = String::from_utf8(output.stderr).unwrap();
+            if matches!(requirement, "1" | "2") {
+                let cmd = stderr
+                    .lines()
+                    .find(|l| l.contains("--crate-name older "))
+                    .unwrap();
+                let value = |key: &str| {
+                    cmd.split_whitespace()
+                        .find_map(|arg| arg.strip_prefix(key))
+                        .unwrap()
+                        .to_string()
+                };
+                hashes.push((value("metadata="), value("extra-filename=")));
+            } else {
+                assert!(!stderr.contains("--crate-name "), "{stderr}");
+            }
+        }
+    }
+    if rustc_host() == "x86_64-unknown-linux-gnu" {
+        assert_eq!(hashes[0].0, hashes[1].0);
+        assert_ne!(hashes[0].1, hashes[1].1);
+    }
+}
+
+#[cargo_test(nightly, reason = "Ohm defaults require the Ohm compiler")]
 fn ohm_default_debuginfo() {
     Package::new("bar", "1.0.0").publish();
     let p = project()
