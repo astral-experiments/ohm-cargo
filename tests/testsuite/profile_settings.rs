@@ -980,7 +980,7 @@ fn ohm_proc_macro_helpers() {
                     flags,
                     &["-Zllvm-module-flag=ohm.proc-macro-helper:u32:1:max"]
                 );
-                assert_eq!(unit["profile"]["codegen_units"], 1);
+                assert_eq!(unit["profile"]["codegen_units"], 2);
                 assert_eq!(unit["profile"]["opt_level"], "0");
                 marked.push(unit["target"]["name"].as_str().unwrap());
             }
@@ -1129,11 +1129,15 @@ fn ohm_prefers_helper_versions_used_by_workspace_macros() {
         assert_eq!(helpers.len(), 4, "{graph}");
         if rustc_host() == "x86_64-unknown-linux-gnu" {
             for unit in helpers {
-                assert_eq!(unit["profile"]["codegen_units"], 1);
                 let id = unit["pkg_id"].as_str().unwrap();
                 let (_, version) = id.rsplit_once('@').unwrap();
                 // Version 4 belongs to the other registry and is always marked.
-                let flag = if preferred.contains(&version) || version == "4.0.0" {
+                let optimize = preferred.contains(&version) || version == "4.0.0";
+                assert_eq!(
+                    unit["profile"]["codegen_units"],
+                    if optimize { 2 } else { 1 }
+                );
+                let flag = if optimize {
                     "-Zllvm-module-flag=ohm.proc-macro-helper:u32:1:max"
                 } else {
                     "-Zllvm-module-flag=ohm.proc-macro-helper:u32:0:max"
@@ -1640,4 +1644,138 @@ fn profile_hint_mostly_unused_nightly() {
             "[RUNNING] `rustc --crate-name foo [..] -Zhint-mostly-unused [..]",
         )
         .run();
+}
+
+#[cargo_test(nightly, reason = "Ohm defaults require the Ohm compiler")]
+fn ohm_inlines_workspace_build_helpers() {
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "app"
+                version = "0.1.0"
+                edition = "2024"
+                [workspace]
+                members = ["generator", "util"]
+                [profile.dev]
+                opt-level = 1
+                [build-dependencies]
+                genlib = { package = "generator", path = "generator" }
+            "#,
+        )
+        .file(
+            "build.rs",
+            r#"fn main() { println!("cargo:rustc-env=VALUE={}", genlib::value()); }"#,
+        )
+        .file(
+            "src/lib.rs",
+            r#"const _: () = assert!(env!("VALUE").len() == 2);"#,
+        )
+        .file(
+            "generator/Cargo.toml",
+            r#"
+                [package]
+                name = "generator"
+                version = "0.1.0"
+                edition = "2024"
+                [dependencies]
+                util = { path = "../util" }
+            "#,
+        )
+        .file(
+            "generator/src/lib.rs",
+            "pub fn value() -> u32 { util::number() }",
+        )
+        .file(
+            "util/Cargo.toml",
+            "[package]\nname='util'\nversion='0.1.0'\nedition='2024'",
+        )
+        .file("util/src/lib.rs", "pub fn number() -> u32 { 42 }")
+        .build();
+    let run = |command: &str, options: &str| {
+        let output = p
+            .cargo(&format!("{command} -v -p app -Zohm-defaults=yes {options}"))
+            .masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .run();
+        String::from_utf8(output.stderr).unwrap()
+    };
+    let initial = run("check", "");
+    if rustc_host() != "x86_64-unknown-linux-gnu" {
+        assert!(!initial.contains("ohm.build-script-helper"), "{initial}");
+        return;
+    }
+    let command = |stderr: &str| {
+        stderr
+            .lines()
+            .find(|l| l.contains("--crate-name generator "))
+            .unwrap()
+            .to_owned()
+    };
+    let tuned = command(&initial);
+    assert_eq!(
+        initial.matches("ohm.build-script-helper").count(),
+        1,
+        "{initial}"
+    );
+    assert!(
+        tuned.contains("-Zllvm-module-flag=ohm.build-script-helper:u32:1:max"),
+        "{tuned}"
+    );
+    assert!(tuned.contains("-Ccodegen-units=1"), "{tuned}");
+    assert!(!run("build", "").contains("--crate-name generator "));
+
+    // An explicit level 0 has the same profile and symbol metadata, but
+    // disables the extra passes. Both versions should survive in the cache.
+    let options = "--config profile.dev.package.generator.opt-level=0";
+    let plain = command(&run("check", options));
+    assert!(!plain.contains("ohm.build-script-helper"), "{plain}");
+    let value = |cmd: &str, key: &str| {
+        cmd.split_whitespace()
+            .find_map(|arg| arg.strip_prefix(key))
+            .unwrap()
+            .to_owned()
+    };
+    assert_eq!(value(&tuned, "metadata="), value(&plain, "metadata="));
+    assert_ne!(
+        value(&tuned, "extra-filename="),
+        value(&plain, "extra-filename=")
+    );
+    for opts in ["", options] {
+        assert!(!run("build", opts).contains("--crate-name generator "));
+    }
+
+    let override_flags = p
+        .cargo("check -v -p app -Zohm-defaults=yes")
+        .env("RUSTFLAGS", "-Ccodegen-units=4")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .run();
+    let explicit = command(&String::from_utf8(override_flags.stderr).unwrap());
+    assert!(!explicit.contains("ohm.build-script-helper"), "{explicit}");
+    assert!(explicit.contains("-Ccodegen-units=4"), "{explicit}");
+
+    // A dynamic library may not have a hashed output filename.
+    let generator = p.read_file("generator/Cargo.toml");
+    p.change_file(
+        "generator/Cargo.toml",
+        &format!("{generator}\n[lib]\ncrate-type = ['rlib', 'cdylib']"),
+    );
+    let shared = command(&run("check", ""));
+    assert!(!shared.contains("ohm.build-script-helper"), "{shared}");
+    p.change_file("generator/Cargo.toml", &generator);
+
+    // A dev dependency need not be active to change the helper's role.
+    let manifest = p.read_file("Cargo.toml");
+    p.change_file(
+        "Cargo.toml",
+        &format!(
+            "{manifest}\n[dev-dependencies]\ngenlib = {{ package='generator', path='generator' }}"
+        ),
+    );
+    p.change_file(
+        "generator/src/lib.rs",
+        "pub fn value() -> u32 { util::number() + 1 }",
+    );
+    let mixed = command(&run("check", ""));
+    assert!(!mixed.contains("ohm.build-script-helper"), "{mixed}");
 }
