@@ -7532,6 +7532,35 @@ fn checked_bundled_archive_reopens_the_git_dependency_search_path() {
     run().with_stdout_data("9\n").run();
 }
 
+#[cargo_test]
+fn early_cutoff_rechecks_module_lookup_after_a_library_edit() {
+    let wrapper = public_api_hash_wrapper();
+    let p = project()
+        .file("src/main.rs", "mod data; fn main() { foo::value(); }")
+        .file("src/data.rs", "")
+        .file("src/lib.rs", "pub fn value() -> u8 { 1 }")
+        .build();
+    let check = || {
+        let mut cmd = p.cargo("-Zohm-defaults check");
+        cmd.masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("RUSTC_WRAPPER", &wrapper);
+        cmd
+    };
+    check().run();
+
+    // Moving the implementation leaves the library API unchanged, but makes
+    // the binary's module ambiguous. Its old dep-info names only data.rs.
+    p.change_file("src/data/mod.rs", "pub(super) fn item() -> u8 { 2 }");
+    p.change_file(
+        "src/lib.rs",
+        "pub fn value() -> u8 { helper::item() }\n#[path = \"data/mod.rs\"] mod helper;",
+    );
+    check()
+        .with_status(101)
+        .with_stderr_contains("[..]E0761[..]")
+        .run();
+}
+
 #[cfg(feature = "ohm-defaults")]
 #[cargo_test]
 fn whole_crate_hash_hint_follows_binary_usage_and_current_graph() {

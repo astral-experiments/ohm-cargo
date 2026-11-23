@@ -958,24 +958,19 @@ pub(super) fn module_paths_unambiguous(
     build_root: &Path,
     dep_info: &Path,
 ) -> bool {
-    let Some(paths) = dep_info_paths(pkg_root, build_root, dep_info) else {
-        return false;
-    };
-    for path in paths {
-        if path.extension().is_none_or(|ext| ext != "rs") {
-            continue;
-        }
-        // Match rustc's existence check even when a candidate is a directory.
-        if path.with_extension("").join("mod.rs").exists()
+    dep_info_paths(pkg_root, build_root, dep_info)
+        .is_some_and(|mut paths| paths.all(|path| !has_competing_module_path(&path)))
+}
+
+/// Whether rustc could see both `foo.rs` and `foo/mod.rs` for a recorded input.
+fn has_competing_module_path(path: &Path) -> bool {
+    // Match rustc's existence check even when a candidate is a directory.
+    path.extension().is_some_and(|ext| ext == "rs")
+        && (path.with_extension("").join("mod.rs").exists()
             || (path.ends_with("mod.rs")
                 && path
                     .parent()
-                    .is_some_and(|dir| dir.with_extension("rs").exists()))
-        {
-            return false;
-        }
-    }
-    true
+                    .is_some_and(|dir| dir.with_extension("rs").exists())))
 }
 
 /// Whether an existing check root can keep its established dependency graph.
@@ -1991,6 +1986,12 @@ impl Fingerprint {
                 // file from the package itself. Recompile once before relying on such a record.
                 (!registry_inputs || info.retained_registry_inputs)
                     && !info.files.is_empty()
+                    // A rebuilt dependency can introduce an alternative module without
+                    // changing any of the checksummed files. Registry sources are immutable.
+                    && info.files.iter().all(|(path, _)| {
+                        (registry_inputs && path.starts_with(pkg_root))
+                            || !has_competing_module_path(path)
+                    })
                     && find_stale_file(
                         &mut mtimes,
                         &mut checksums,
