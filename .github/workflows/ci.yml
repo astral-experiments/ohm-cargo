@@ -164,6 +164,7 @@ jobs:
           # Include tests marked ignored when the testsuite is built with stable Rust.
           for test in \
             build_dir::shared_registry_cache_defaults_preserve_ordinary_layout_without_build_directory \
+            freshness_checksum::rebuild_sub_package_then_while_package \
             profile_settings::ohm_default_debuginfo \
             profile_settings::ohm_default_debuginfo_respects_overrides; do
             "$OHM_CARGO_TESTSUITE" "$test" --exact --include-ignored --list | grep -Fx "$test: test"
