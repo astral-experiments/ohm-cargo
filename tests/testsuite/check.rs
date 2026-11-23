@@ -3119,6 +3119,71 @@ fn ohm_own_library_reuse_revalidates_build_script_inputs() {
 }
 
 #[cargo_test]
+fn ohm_reports_a_built_workspace_library_once_when_checking_it_and_its_dependent() {
+    let project = ohm_workspace_project();
+    project.change_file(
+        "local/src/lib.rs",
+        "pub fn value() -> u32 { dependency::value() }\nfn unused() {}",
+    );
+    project.change_file("local/src/main.rs", "fn main() { local::value(); }");
+    let local_events = |output: &cargo_test_support::RawOutput| {
+        std::str::from_utf8(&output.stdout)
+            .unwrap()
+            .lines()
+            .map(|line| serde_json::from_str::<serde_json::Value>(line).unwrap())
+            .filter(|event| {
+                event["target"]["name"] == "local"
+                    && event["target"]["kind"] == serde_json::json!(["lib"])
+            })
+            .collect::<Vec<_>>()
+    };
+    for profile in ["--release", ""] {
+        let build = ohm_own_library_cargo(
+            &project,
+            &format!("build -p local --lib {profile} --message-format=json"),
+        )
+        .run();
+        let built = local_events(&build)
+            .into_iter()
+            .find(|event| event["reason"] == "compiler-artifact")
+            .unwrap();
+
+        for selection in [
+            "--workspace --lib",
+            "--workspace",
+            "--workspace",
+            "-p application",
+        ] {
+            let output = ohm_own_library_cargo(
+                &project,
+                &format!("check {selection} {profile} --message-format=json"),
+            )
+            .run();
+            let events = local_events(&output);
+            assert_eq!(events.len(), 2, "{events:?}");
+            assert!(
+                events
+                    .iter()
+                    .any(|e| e["message"]["code"]["code"] == "dead_code")
+            );
+            let checked = events
+                .iter()
+                .find(|e| e["reason"] == "compiler-artifact")
+                .unwrap();
+            // The application refers to the native crate identity. A separate release
+            // check of local can produce incompatible metadata (E0460).
+            let files = checked["filenames"].as_array().unwrap();
+            assert_eq!(files.len(), 1);
+            assert!(
+                built["filenames"].as_array().unwrap().contains(&files[0]),
+                "{built} {checked}"
+            );
+            assert_ohm_reused_library(&output, "local");
+        }
+    }
+}
+
+#[cargo_test]
 fn ohm_reuses_fresh_built_workspace_members_during_checks() {
     let project = ohm_workspace_project();
 

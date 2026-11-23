@@ -422,6 +422,8 @@ pub struct BuildRunner<'a, 'gctx> {
     /// Registry units that actually occupy a metadata-only check dependency
     /// edge after being promoted to an already-built library.
     reused_registry_units: HashSet<Unit>,
+    /// Library check roots and the equivalent native units used by their dependents.
+    paired_library_units: HashSet<Unit>,
     /// Reused registry units which also have a consumer that genuinely needs
     /// their object code and therefore must retain their full JSON artifact.
     object_required_registry_units: HashSet<Unit>,
@@ -582,6 +584,8 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             }
         }
 
+        let paired_library_units = Self::pair_library_checks(&bcx.roots, &reused_registry_units);
+
         Ok(Self {
             bcx,
             context_use: None,
@@ -605,6 +609,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             terminal_check_units,
             execution_units,
             reused_test_checks: HashMap::default(),
+            paired_library_units,
             reused_registry_units,
             object_required_registry_units,
             compiler_driver_identity: OnceLock::new(),
@@ -2306,6 +2311,42 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
     /// Returns whether this unit actually has an incoming promoted check edge.
     pub(crate) fn is_reused_registry_dependency(&self, unit: &Unit) -> bool {
         self.reused_registry_units.contains(unit)
+    }
+
+    /// Find library check roots that also appear as native dependencies. The root
+    /// supplies diagnostics, but consumers need the native unit's metadata identity.
+    fn pair_library_checks(checks: &[Unit], promoted: &HashSet<Unit>) -> HashSet<Unit> {
+        let mut paired = HashSet::default();
+        if promoted.is_empty() || checks.len() < 2 {
+            return paired;
+        }
+        let roots: HashMap<_, _> = checks
+            .iter()
+            .filter(|unit| {
+                unit.target.is_lib() && matches!(unit.mode, CompileMode::Check { test: false })
+            })
+            .map(|unit| ((unit.pkg.package_id(), unit.kind), unit))
+            .collect();
+        if roots.is_empty() {
+            return paired;
+        }
+        for native in promoted {
+            if let Some(&root) = roots.get(&(native.pkg.package_id(), native.kind))
+                && root.target == native.target
+                && root.profile == native.profile
+                && root.features == native.features
+                && root.rustflags == native.rustflags
+            {
+                paired.insert(root.clone());
+                paired.insert(native.clone());
+            }
+        }
+        paired
+    }
+
+    /// Whether a check root and a promoted library share one check artifact.
+    pub(super) fn shares_library_report(&self, unit: &Unit) -> bool {
+        self.paired_library_units.contains(unit)
     }
 
     /// Returns whether a promoted unit has no consumer requiring object code.
