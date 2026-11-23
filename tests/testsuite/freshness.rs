@@ -3530,6 +3530,12 @@ fn ohm_defaults_reuse_terminal_and_dependency_check_artifacts() {
     let wrapper = public_api_hash_wrapper();
     let p = project()
         .at("terminal-check-artifacts")
+        // Shared stages keep the public API hash on terminal libraries too.
+        // Exercise the separate artifacts even when rustc supports sharing.
+        .file(
+            ".cargo/config.toml",
+            "[unstable]\nohm-shared-stages = false\n",
+        )
         .file(
             "Cargo.toml",
             r#"
