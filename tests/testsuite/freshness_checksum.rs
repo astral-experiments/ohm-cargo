@@ -1502,11 +1502,11 @@ directory sources are not intended to be edited, if modifications are required t
 }
 
 #[cargo_test(nightly, reason = "requires -Zchecksum-hash-algorithm")]
-fn skip_checksum_check_in_selected_cargo_home_subdirs() {
+fn check_path_package_in_cargo_home_registry() {
     let p = project()
         .at("cargo_home/registry/foo")
         .file("Cargo.toml", &basic_lib_manifest("foo"))
-        .file("src/lib.rs", "")
+        .file("src/lib.rs", "// valid input")
         .build();
     let project_root = p.root();
     let cargo_home = project_root.parent().unwrap().parent().unwrap();
@@ -1528,10 +1528,14 @@ fn skip_checksum_check_in_selected_cargo_home_subdirs() {
         .arg("-Zchecksum-freshness")
         .masquerade_as_nightly_cargo(&["checksum-freshness"])
         .env("CARGO_HOME", &cargo_home)
+        .with_status(101)
         .with_stderr_data(str![[r#"
-[FRESH] foo v0.5.0 ([ROOT]/cargo_home/registry/foo)
-[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
-
+[DIRTY] foo v0.5.0 ([ROOT]/cargo_home/registry/foo): the file `src/lib.rs` has changed (checksum didn't match, [..])
+[CHECKING] foo v0.5.0 ([ROOT]/cargo_home/registry/foo)
+[RUNNING] `rustc --crate-name foo [..] src/lib.rs [..]`
+...
+[ERROR] could not compile `foo` (lib) due to 1 previous error
+...
 "#]])
         .run();
 }
