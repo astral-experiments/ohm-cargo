@@ -86,20 +86,6 @@ pub(super) fn extraction_dep_info(dir: &Path) -> PathBuf {
     dir.join("dep-doctest-extraction-v11")
 }
 
-/// Dep-info records the file loaded for `mod foo;` but omits the other
-/// possible source. Let rustdoc resolve the module again if both exist.
-fn has_competing_module(path: &Path) -> bool {
-    if path.extension().is_none_or(|ext| ext != "rs") {
-        return false;
-    }
-    // Match rustc's existence check even when a candidate is a directory.
-    path.with_extension("").join("mod.rs").exists()
-        || (path.ends_with("mod.rs")
-            && path
-                .parent()
-                .is_some_and(|dir| dir.with_extension("rs").exists()))
-}
-
 /// Prepares both compiler commands with the dependencies of the doctest unit.
 /// Must run after the build scripts have completed and the runtime environment is collected.
 pub(super) fn prepare(br: &BuildRunner<'_, '_>, unit: &Unit, force: bool) -> CargoResult<Work> {
@@ -292,10 +278,9 @@ pub(super) fn prepare(br: &BuildRunner<'_, '_>, unit: &Unit, force: bool) -> Car
             && (fingerprint.can_reuse_doctest_codegen()
                 || (cache.is_some()
                     && fingerprint::can_relink_due_to_early_cutoff(&fingerprint, &relinkable)))
-            && [&extracted_info, &compiled_info].into_iter().all(|info| {
-                fingerprint::dep_info_paths(&pkg_root, &build_root, info)
-                    .is_some_and(|mut paths| !paths.any(|path| has_competing_module(&path)))
-            });
+            && [&extracted_info, &compiled_info]
+                .into_iter()
+                .all(|info| fingerprint::module_paths_unambiguous(&pkg_root, &build_root, info));
         if !inputs_unchanged {
             if search_stamp.exists() {
                 paths::remove_file(&search_stamp)?;

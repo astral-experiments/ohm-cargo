@@ -1746,7 +1746,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             };
             if !has_output("rlib")
                 || !has_output("rmeta")
-                || !fingerprint::existing_unit_is_fresh(self, unit)?
+                || !self.native_unit_is_fresh_for_check(unit)?
             {
                 stale_units.insert(unit.clone());
             }
@@ -1964,6 +1964,18 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         .then_some(provenance)
     }
 
+    /// Before substituting a build for a check, revalidate module lookup in
+    /// mutable workspace sources. Registry sources are immutable.
+    fn native_unit_is_fresh_for_check(&mut self, unit: &Unit) -> CargoResult<bool> {
+        Ok(fingerprint::existing_unit_is_fresh(self, unit)?
+            && (unit.pkg.package_id().source_id().is_remote_registry()
+                || fingerprint::module_paths_unambiguous(
+                    unit.pkg.root(),
+                    &self.files().build_root(unit),
+                    &fingerprint::dep_info_loc(self, unit),
+                )))
+    }
+
     /// Validates native roots without scheduling any of their additional units.
     /// A missing proof simply leaves the requested metadata-only job unchanged.
     fn validate_test_check_reuse(&mut self) -> CargoResult<()> {
@@ -2024,7 +2036,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             let Some(provenance) = self.matching_message_provenance(&native, &expected) else {
                 continue;
             };
-            if !fingerprint::existing_unit_is_fresh(self, &native)? {
+            if !self.native_unit_is_fresh_for_check(&native)? {
                 continue;
             }
             if closure
