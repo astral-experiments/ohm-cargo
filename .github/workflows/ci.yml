@@ -161,8 +161,9 @@ jobs:
           export PATH="$toolchain_bin:$rustup_bin:/usr/bin:/bin:/usr/sbin:/sbin"
           rustc -Vv
           clippy-driver -V
-          # The stable-built testsuite marks these nightly tests ignored at compile time.
+          # Include tests marked ignored when the testsuite is built with stable Rust.
           for test in \
+            build_dir::shared_registry_cache_defaults_preserve_ordinary_layout_without_build_directory \
             profile_settings::ohm_default_debuginfo \
             profile_settings::ohm_default_debuginfo_respects_overrides; do
             "$OHM_CARGO_TESTSUITE" "$test" --exact --include-ignored --list | grep -Fx "$test: test"
