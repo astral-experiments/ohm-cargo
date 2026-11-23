@@ -21,7 +21,8 @@
 //! The precedence is explained in [`ProfileMaker`].
 //! The algorithm happens within [`ProfileMaker::get_profile`].
 
-use crate::compiler::{CompileKind, CompileTarget, Unit};
+use crate::compiler::unit_graph::UnitGraph;
+use crate::compiler::{CompileKind, CompileMode, CompileTarget, Unit};
 use crate::context;
 use crate::resolver::Resolve;
 use crate::resolver::features::FeaturesFor;
@@ -72,8 +73,8 @@ pub struct Profiles {
     ohm_host_helpers: bool,
     /// Registry dependencies declared by procedural macros in this workspace.
     workspace_macro_deps: HashMap<(SourceId, InternedString), Vec<Dependency>>,
-    /// Path dependencies named by a workspace build script and no other workspace target.
-    workspace_build_deps: HashSet<SourceId>,
+    /// Workspace and registry libraries used exclusively by related build scripts.
+    build_helpers: HashSet<PackageId>,
 }
 
 pub(crate) const OHM_MACRO_HELPER: &str = "-Zllvm-module-flag=ohm.proc-macro-helper:u32:1:max";
@@ -101,7 +102,7 @@ impl Profiles {
             rustc_host,
             ohm_host_helpers: false,
             workspace_macro_deps: HashMap::default(),
-            workspace_build_deps: HashSet::default(),
+            build_helpers: HashSet::default(),
         };
 
         Self::add_root_profiles(
@@ -140,19 +141,23 @@ impl Profiles {
             // Keep the same budget across commands and across direct and transitive
             // uses of a library. Exclude paths that also appear as normal or dev
             // dependencies, even if those declarations happen to be inactive.
+            let mut build_paths = HashSet::default();
             let mut other_paths = HashSet::default();
             for dep in ws.members().flat_map(|member| member.dependencies()) {
                 if dep.source_id().is_path() {
                     if dep.kind() == DepKind::Build {
-                        profile_makers.workspace_build_deps.insert(dep.source_id());
+                        build_paths.insert(dep.source_id());
                     } else {
                         other_paths.insert(dep.source_id());
                     }
                 }
             }
-            profile_makers
-                .workspace_build_deps
-                .retain(|s| !other_paths.contains(s));
+            for pkg in ws.members().map(|m| m.package_id()) {
+                if build_paths.contains(&pkg.source_id()) && !other_paths.contains(&pkg.source_id())
+                {
+                    profile_makers.build_helpers.insert(pkg);
+                }
+            }
 
             for member in ws.members().filter(|p| p.proc_macro()) {
                 for dep in member.dependencies() {
@@ -340,9 +345,61 @@ impl Profiles {
         self.ohm_host_helpers && unit_for.proc_macro_helper && unit_for.is_for_host()
     }
 
-    /// Whether the level-1 dev profile permits grouping this workspace build helper.
-    pub(crate) fn is_workspace_build_helper(&self, pkg: PackageId) -> bool {
-        self.workspace_build_deps.contains(&pkg.source_id())
+    /// Find registry libraries used only by build scripts from the same release.
+    /// The manifest repository is a hint for code generation and confers no trust.
+    pub(crate) fn select_registry_build_helpers(&mut self, graph: &UnitGraph, roots: &[Unit]) {
+        if !self.ohm_host_helpers {
+            return;
+        }
+        self.build_helpers
+            .retain(|pkg| !pkg.source_id().is_registry());
+
+        let same_release = |script: &Unit, dep: &Unit| {
+            let parent = script.pkg.package_id();
+            let helper = dep.pkg.package_id();
+            let repository = &script.pkg.manifest().metadata().repository;
+            parent != helper
+                && parent.source_id() == helper.source_id()
+                && parent.version() == helper.version()
+                && repository.as_deref().is_some_and(|s| !s.trim().is_empty())
+                && repository == &dep.pkg.manifest().metadata().repository
+        };
+        let script = |u: &Unit| {
+            u.target.is_custom_build()
+                && u.mode == CompileMode::Build
+                && u.pkg.package_id().source_id().is_registry()
+        };
+        let mut helpers = HashSet::default();
+        for (parent, deps) in graph.iter().filter(|(u, _)| script(u)) {
+            for dep in deps {
+                if same_release(parent, &dep.unit) {
+                    helpers.insert(dep.unit.pkg.package_id());
+                }
+            }
+        }
+        if helpers.is_empty() {
+            return;
+        }
+
+        // A package can have several units. Exclude it if requested directly
+        // or if any unit in this graph also uses it for another purpose.
+        for root in roots {
+            helpers.remove(&root.pkg.package_id());
+        }
+        for (parent, deps) in graph {
+            for dep in deps {
+                let pkg = dep.unit.pkg.package_id();
+                if helpers.contains(&pkg) && !(script(parent) && same_release(parent, &dep.unit)) {
+                    helpers.remove(&pkg);
+                }
+            }
+        }
+        self.build_helpers.extend(helpers);
+    }
+
+    /// Whether the level-1 dev profile permits grouping this build helper.
+    pub(crate) fn is_build_helper(&self, pkg: PackageId) -> bool {
+        self.build_helpers.contains(&pkg)
             && !self
                 .get_profile_maker(&self.requested_profile)
                 .unwrap()

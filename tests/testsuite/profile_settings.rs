@@ -1779,3 +1779,86 @@ fn ohm_inlines_workspace_build_helpers() {
     let mixed = command(&run("check", ""));
     assert!(!mixed.contains("ohm.build-script-helper"), "{mixed}");
 }
+
+#[cargo_test(nightly, reason = "Ohm defaults require the Ohm compiler")]
+fn ohm_inlines_a_registry_build_helper_published_with_its_consumer() {
+    let metadata = |name, version, repo| {
+        format!(
+            r#"
+            [package]
+            name = "{name}"
+            version = "{version}"
+            repository = "https://example.com/{repo}"
+            edition = "2024"
+            "#
+        )
+    };
+    for (name, version, repo) in [
+        ("tables", "1.0.0", "data"),
+        ("common", "1.0.0", "other"),
+        ("older", "0.9.0", "data"),
+    ] {
+        Package::new(name, version)
+            .file("Cargo.toml", &metadata(name, version, repo))
+            .file("src/lib.rs", "pub fn value() -> u32 { 14 }")
+            .publish();
+    }
+    Package::new("data", "1.0.0")
+        .build_dep("tables", "1")
+        .build_dep("common", "1")
+        .build_dep("older", "0.9")
+        .file(
+            "Cargo.toml",
+            &(metadata("data", "1.0.0", "data")
+                + "\n[build-dependencies]\ntables = '1'\ncommon = '1'\nolder = '0.9'\n"),
+        )
+        .file("src/lib.rs", "")
+        .file(
+            "build.rs",
+            "fn main() { assert_eq!(tables::value() + common::value() + older::value(), 42); }",
+        )
+        .publish();
+    let app = project()
+        .file(
+            "Cargo.toml",
+            r#"
+            [package]
+            name = "app"
+            version = "0.1.0"
+            edition = "2024"
+            [profile.dev]
+            opt-level = 1
+            [dependencies]
+            data = "1"
+            tables = { version = "1", optional = true }
+            "#,
+        )
+        .file("src/lib.rs", "")
+        .build();
+    let run = |args: &str| {
+        let result = app
+            .cargo(&format!("{args} -v -Zohm-defaults=yes"))
+            .masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .run();
+        String::from_utf8(result.stderr).unwrap()
+    };
+    let first = run("check");
+    let marker = "ohm.build-script-helper";
+    if rustc_host() != "x86_64-unknown-linux-gnu" {
+        assert!(!first.contains(marker), "{first}");
+        return;
+    }
+    assert_eq!(first.matches(marker).count(), 1, "{first}");
+    assert!(
+        first
+            .lines()
+            .any(|line| line.contains("--crate-name tables ") && line.contains(marker)),
+        "{first}"
+    );
+    assert!(!run("build").contains("--crate-name tables "));
+    // An unrelated consumer must get a separate, unmarked copy.
+    let shared = run("check --features tables");
+    assert!(shared.contains("--crate-name tables "), "{shared}");
+    assert!(!shared.contains(marker), "{shared}");
+    assert!(!run("check").contains("--crate-name tables "));
+}

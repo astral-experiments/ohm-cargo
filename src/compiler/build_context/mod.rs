@@ -113,7 +113,7 @@ impl<'a, 'gctx> BuildContext<'a, 'gctx> {
         packages: PackageSet<'gctx>,
         build_config: &'a BuildConfig,
         selected_dep_kinds: DepKindSet,
-        profiles: Profiles,
+        mut profiles: Profiles,
         extra_compiler_args: HashMap<Unit, Vec<String>>,
         target_data: RustcTargetData<'gctx>,
         roots: Vec<Unit>,
@@ -130,6 +130,8 @@ impl<'a, 'gctx> BuildContext<'a, 'gctx> {
             .chain(build_config.requested_kinds.iter().copied())
             .chain(std::iter::once(CompileKind::Host))
             .collect();
+
+        profiles.select_registry_build_helpers(&unit_graph, &roots);
 
         Ok(BuildContext {
             ws,

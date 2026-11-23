@@ -660,7 +660,7 @@ fn registry_observer_history(
     build_runner.files().registry_observer_hint(unit)
 }
 
-/// Workspace generators run during a cold check as well as a build. Limit the
+/// Generators run during a cold check as well as a build. Limit the
 /// extra LLVM work to their level-0 host libraries under an unmodified profile.
 fn unit_uses_ohm_build_helper(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
     let bcx = build_runner.bcx;
@@ -678,10 +678,7 @@ fn unit_uses_ohm_build_helper(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -
             .rustc_crate_types()
             .iter()
             .all(|ty| matches!(ty, CrateType::Lib | CrateType::Rlib))
-        && bcx
-            .profiles
-            .is_workspace_build_helper(unit.pkg.package_id())
-        && bcx.ws.is_member(&unit.pkg)
+        && bcx.profiles.is_build_helper(unit.pkg.package_id())
         && bcx.extra_args_for(unit).is_none_or(|args| args.is_empty())
         && build_runner.configured_rustflags(unit).is_empty()
 }
