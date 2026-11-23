@@ -590,7 +590,7 @@ fn has_build_script_result(unit: &Path) -> CargoResult<bool> {
     }
 }
 
-/// Rebases generated-file dependencies into the recipient's private namespace.
+/// Marks imported inputs for revalidation and rebases generated-file dependencies.
 fn relocate_dep_info(path: &Path, old_prefix: &Path, new_prefix: &Path) -> CargoResult<bool> {
     let Some(mut info) = EncodedDepInfo::parse(&fs::read(path)?) else {
         // Unknown formats cannot certify source contents in the recipient.
@@ -598,7 +598,8 @@ fn relocate_dep_info(path: &Path, old_prefix: &Path, new_prefix: &Path) -> Cargo
         return Ok(false);
     };
     // Rewrite older observer records as incomplete even when no paths need rebasing.
-    let mut changed = info.observer.is_some();
+    let mut changed = !info.worktree_import || info.observer.is_some();
+    info.worktree_import = true;
     for (kind, path, _) in &mut info.files {
         if matches!(
             kind,
@@ -719,6 +720,29 @@ fn plain_directory(path: &Path) -> CargoResult<bool> {
 mod tests {
     use super::*;
     use crate::compiler::{OHM_WORKTREE_SEED_LOCAL_PROC_MACRO_MARKER, OHM_WORKTREE_SEED_MARKER};
+
+    #[test]
+    fn imported_dep_info_rechecks_module_paths_in_the_recipient() -> CargoResult<()> {
+        use crate::compiler::fingerprint::dep_info::parse_dep_info;
+
+        let root = tempfile::tempdir()?;
+        let pkg = root.path().join("app");
+        let dep = root.path().join("dep-lib-app");
+        fs::create_dir_all(pkg.join("src/data"))?;
+        fs::write(pkg.join("src/data/mod.rs"), "")?;
+        let mut info = EncodedDepInfo::default();
+        info.files.push((
+            DepInfoPathType::PackageRootRelative,
+            "src/data/mod.rs".into(),
+            None,
+        ));
+        fs::write(&dep, info.serialize()?)?;
+        assert!(relocate_dep_info(&dep, Path::new("from"), Path::new("to"))?);
+        assert!(parse_dep_info(&pkg, root.path(), &dep)?.is_some());
+        fs::write(pkg.join("src/data.rs"), "")?;
+        assert!(parse_dep_info(&pkg, root.path(), &dep)?.is_none());
+        Ok(())
+    }
 
     #[test]
     fn unsupported_clone_discards_both_stages_and_their_counts() -> CargoResult<()> {
