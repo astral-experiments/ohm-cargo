@@ -3127,23 +3127,35 @@ fn ohm_release_check_metadata_survives_a_private_dependency_edit() {
         .file(
             "Cargo.toml",
             &format!(
-                "{}\n[dependencies]\norigin = {{ path = 'origin' }}",
+                "{}\n[workspace]\n[dependencies]\norigin = {{ path = 'origin' }}",
                 basic_manifest("relay", "0.1.0"),
             ),
         )
-        .file("origin/Cargo.toml", &basic_manifest("origin", "0.1.0"))
+        .file(
+            "origin/Cargo.toml",
+            &format!(
+                "{}\n[[example]]\nname = 'adapter'\ncrate-type = ['rlib']",
+                basic_manifest("origin", "0.1.0"),
+            ),
+        )
         .file(
             "origin/src/lib.rs",
             "pub struct Data; fn hidden() -> u8 { 1 }",
         )
         .file("src/lib.rs", "extern crate origin; pub use origin::Data;")
         .file(
+            "origin/examples/adapter.rs",
+            "extern crate origin; pub use origin::Data;",
+        )
+        .file(
             "consumer.rs",
-            "fn main() { let _: origin::Data = relay::Data; }",
+            "fn main() { let _: [origin::Data; 2] = [relay::Data, adapter::Data]; }",
         )
         .build();
     let check = || {
-        let mut cmd = project.cargo("-Zohm-defaults check --release -v --message-format=json");
+        let mut cmd = project.cargo(
+            "-Zohm-defaults check --workspace --lib --examples --release -v --message-format=json",
+        );
         cmd.masquerade_as_nightly_cargo(&["ohm-defaults"]);
         cmd
     };
@@ -3154,6 +3166,7 @@ fn ohm_release_check_metadata_survives_a_private_dependency_edit() {
     );
     let output = check()
         .with_stderr_does_not_contain("[..]--crate-name relay [..]")
+        .with_stderr_does_not_contain("[..]--crate-name adapter [..]")
         .run();
     let mut consumer = cargo_test_support::process("rustc");
     consumer

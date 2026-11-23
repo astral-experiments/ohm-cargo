@@ -395,16 +395,26 @@ fn unit_worktree_seed_namespace(
     .then(|| build_runner.files().worktree_seed_namespace(unit))
 }
 
+/// Whether rustc can report nonempty Rust library metadata for this target.
+/// This includes library examples, but excludes binaries and native-only libraries.
+fn has_rust_library_metadata(unit: &Unit) -> bool {
+    let (TargetKind::Lib(types) | TargetKind::ExampleLib(types)) = unit.target.kind() else {
+        return false;
+    };
+    types
+        .iter()
+        .any(|ty| matches!(ty, CrateType::Lib | CrateType::Rlib | CrateType::Dylib))
+}
+
 /// A library's reported metadata can have readers outside the current graph.
 /// Its dependency references must survive edits that leave public hashes unchanged.
 fn check_references_dependency_metadata(runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
     matches!(unit.mode, CompileMode::Check { test: false })
-        && unit.target.is_lib()
-        && !unit.target.proc_macro()
+        && has_rust_library_metadata(unit)
         && runner
             .unit_deps(unit)
             .iter()
-            .any(|dep| dep.unit.target.is_lib() && !dep.unit.target.proc_macro())
+            .any(|dep| has_rust_library_metadata(&dep.unit))
 }
 
 /// Skips public API production when an output cannot expose a reusable changed interface.
@@ -607,8 +617,7 @@ fn prefer_full_crate_hash(runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
     if !matches!(
         unit.mode,
         CompileMode::Build | CompileMode::Check { test: false }
-    ) || !unit.target.is_lib()
-        || unit.target.proc_macro()
+    ) || !has_rust_library_metadata(unit)
         || unit.artifact.is_true()
     {
         return false;
@@ -625,7 +634,8 @@ fn prefer_full_crate_hash(runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
 
 /// Whether this package's binaries are the only consumers and previously ignored the library.
 fn only_unused_binary_consumers(runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
-    if !unit.profile.incremental
+    if !unit.target.is_lib()
+        || !unit.profile.incremental
         || !runner.is_primary_package(unit)
         || !runner.bcx.roots.contains(unit)
         || runner.bcx.roots.iter().any(|root| root.pkg != unit.pkg)
