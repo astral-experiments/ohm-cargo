@@ -176,6 +176,14 @@ pub(super) fn has_independent_inputs(dep_info: &Path, cwd: &Path, build_dir: &Pa
     !info.files.is_empty()
         && info.files.keys().all(|file| {
             let path = cwd.join(file);
+            // A hard link can name a compiler output even after canonicalization.
+            #[cfg(unix)]
+            if !path
+                .metadata()
+                .is_ok_and(|metadata| std::os::unix::fs::MetadataExt::nlink(&metadata) == 1)
+            {
+                return false;
+            }
             !is_artifact(&path) && path.canonicalize().is_ok_and(|p| !is_artifact(&p))
         })
 }
