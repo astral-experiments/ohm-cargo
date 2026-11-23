@@ -81,6 +81,8 @@ pub(crate) struct RegistryMessageProvenance {
     compiler_search_directories: Vec<PathBuf>,
     effective_policy_context: u64,
     loader_injected: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    diagnostic_rendering: Option<DiagnosticRendering>,
     messages: Option<CachedCompilerMessages>,
 }
 
@@ -244,6 +246,14 @@ fn effective_compiler_environment(
     compiler.get_env(name)
 }
 
+/// The layout rustc embeds in the `rendered` field of each JSON diagnostic.
+#[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
+pub(super) enum DiagnosticRendering {
+    Full,
+    Short,
+    Unicode,
+}
+
 /// Bind cacheable diagnostics to the successful compiler invocation.
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 #[serde(deny_unknown_fields)]
@@ -288,6 +298,9 @@ impl RegistryMessageProvenance {
     /// have no message file and therefore never read compiler output.
     pub(crate) fn capture_messages(&mut self, path: &Path) -> CargoResult<()> {
         self.messages = Self::read_messages(path)?;
+        if self.messages.is_none() {
+            self.diagnostic_rendering = None;
+        }
         Ok(())
     }
 
@@ -318,13 +331,23 @@ impl RegistryMessageProvenance {
         }))
     }
 
-    /// Recheck both message presence and contents before replaying a cached build.
-    fn messages_match(&self, path: &Path) -> bool {
+    /// Check the contents and, for rendered diagnostics, the requested layout.
+    fn messages_match(&self, path: &Path, rendering: Option<DiagnosticRendering>) -> bool {
         match (&self.messages, std::fs::metadata(path)) {
             (None, Err(error)) if error.kind() == std::io::ErrorKind::NotFound => true,
             (Some(expected), Ok(metadata))
                 if metadata.is_file() && metadata.len() == expected.length =>
             {
+                if self.diagnostic_rendering != rendering {
+                    // A build with no diagnostics can still cache an unused-extern
+                    // notification. Accept it even if an older record has no layout.
+                    let Ok(bytes) = paths::read_regular_bounded(path, 1024 * 1024) else {
+                        return false;
+                    };
+                    return Sha256::new().update(&bytes).finish_hex() == expected.sha256
+                        && serde_json::from_slice::<serde_json::Value>(&bytes)
+                            .is_ok_and(|message| message["$message_type"] == "unused_extern");
+                }
                 Self::read_messages(path)
                     .ok()
                     .flatten()
@@ -1484,6 +1507,21 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             .fingerprint_file_path(unit, "ohm-message-provenance-")
     }
 
+    /// Cargo can strip color at replay time, but rustc must choose the layout at compile time.
+    pub(super) fn diagnostic_rendering(&self) -> DiagnosticRendering {
+        use super::MessageFormat;
+        let gctx = self.bcx.gctx;
+        match self.bcx.build_config.message_format {
+            MessageFormat::Short | MessageFormat::Json { short: true, .. } => {
+                DiagnosticRendering::Short
+            }
+            _ if gctx.cli_unstable().rustc_unicode && gctx.shell().err_unicode() => {
+                DiagnosticRendering::Unicode
+            }
+            _ => DiagnosticRendering::Full,
+        }
+    }
+
     /// Capture compiler inputs that an ordinary same-mode Cargo fingerprint
     /// does not track but that cross-mode reuse must validate.
     pub(crate) fn registry_message_provenance(
@@ -1548,6 +1586,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             compiler_search_directories: Vec::new(),
             effective_policy_context: Hasher::finish(&policy),
             loader_injected: false,
+            diagnostic_rendering: Some(self.diagnostic_rendering()),
             messages: None,
         }))
     }
@@ -1960,7 +1999,10 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             && provenance.compiler_driver == expected.compiler_driver
             && provenance.effective_policy_context == expected.effective_policy_context
             && !provenance.loader_injected
-            && provenance.messages_match(&self.files().message_cache_path(unit)))
+            && provenance.messages_match(
+                &self.files().message_cache_path(unit),
+                expected.diagnostic_rendering,
+            ))
         .then_some(provenance)
     }
 

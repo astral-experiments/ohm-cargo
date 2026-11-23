@@ -2738,6 +2738,24 @@ fn ohm_native_root_reuse_preserves_library_metadata_and_warnings() {
 }
 
 #[cargo_test]
+fn ohm_native_root_reuse_respects_short_diagnostics() {
+    let project = ohm_own_library_project();
+    ohm_own_library_cargo(&project, "build --lib").run();
+    ohm_own_library_cargo(&project, "check --lib --message-format=short")
+        .with_stderr_contains("[..]lib.rs:1:4: [WARNING] function `unused` is never used")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_native_root_reuse_can_change_rendering_without_warnings() {
+    let project = ohm_own_library_project();
+    project.change_file("src/lib.rs", "pub fn value() -> u32 { 42 }");
+    ohm_own_library_cargo(&project, "build --lib --message-format=short").run();
+    let output = ohm_own_library_cargo(&project, "check --lib --message-format=json").run();
+    assert_ohm_reused_root(&output, "foo", "lib", false);
+}
+
+#[cargo_test]
 fn ohm_native_root_reuse_covers_executables_and_unit_tests() {
     for (build, check, source, name, kind, test) in [
         (
