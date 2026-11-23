@@ -248,6 +248,8 @@ fn ohm_defaults_apply_to_host_and_target_units() {
     };
     p.cargo(default_check)
         .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        // Only a terminal check that cannot share stages drops its public API hash.
+        .env("CARGO_UNSTABLE_OHM_SHARED_STAGES", "false")
         .arg(rustc_host())
         .env("RUSTC_WRAPPER", &wrapper)
         .env("OHM_DEFAULTS_LOG", &log)
