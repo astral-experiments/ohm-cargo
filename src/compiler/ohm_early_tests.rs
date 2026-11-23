@@ -201,7 +201,12 @@ pub(super) fn has_only_library_outputs(dep_info: &Path) -> bool {
 /// An unused `--extern` does not rule out an `include_bytes!` of the library.
 /// A producer can also replace dep-info and extra compiler outputs such as MIR.
 /// Reject inputs in the build directory, including aliases through symlinked directories.
-pub(super) fn has_independent_inputs(dep_info: &Path, cwd: &Path, build_dir: &Path) -> bool {
+pub(super) fn has_independent_inputs(
+    dep_info: &Path,
+    cwd: &Path,
+    build_dir: &Path,
+    test_cwd: Option<&Path>,
+) -> bool {
     let Ok(info) = super::fingerprint::parse_rustc_dep_info(dep_info) else {
         return false;
     };
@@ -214,9 +219,16 @@ pub(super) fn has_independent_inputs(dep_info: &Path, cwd: &Path, build_dir: &Pa
                 ext.eq_ignore_ascii_case("rlib") || ext.eq_ignore_ascii_case("rmeta")
             })
     };
+    // An early integration test waits for its library before running, but a
+    // deferred dependency can still be stale when a test passes an env! path
+    // to a subprocess. Resolve those paths from the package where tests run.
+    let runtime_inputs = info.env.iter().filter_map(|(_, value)| {
+        let path = test_cwd?.join(value.as_deref()?);
+        (is_artifact(&path) || path.is_file()).then_some(path)
+    });
+    let files = info.files.keys().map(|file| cwd.join(file));
     !info.files.is_empty()
-        && info.files.keys().all(|file| {
-            let path = cwd.join(file);
+        && files.chain(runtime_inputs).all(|path| {
             // A hard link can name a compiler output even after canonicalization.
             #[cfg(unix)]
             if !path
