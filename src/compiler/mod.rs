@@ -920,7 +920,11 @@ fn compile<'gctx>(
                     rustc(build_runner, unit, exec, force)?
                 };
                 job.before(work.then(link_targets(build_runner, unit, false)?));
-            } else {
+            } else if !(build_runner.is_metadata_only_reused_registry_dependency(unit)
+                && build_runner.has_separate_check_root(unit))
+            {
+                // A fresh metadata-only dependency has nothing to publish when its
+                // check root already reports the library's diagnostics and artifact.
                 let output_options = OutputOptions::for_fresh(build_runner, unit);
                 let manifest = ManifestErrorContext::new(build_runner, unit);
                 let work = replay_output_cache(
@@ -2945,7 +2949,8 @@ fn link_targets(
         && build_runner.is_metadata_only_reused_registry_dependency(unit);
     let additional_check_artifact = matches!(bcx.build_config.intent, UserIntent::Check { .. })
         && build_runner.is_reused_registry_dependency(unit)
-        && !metadata_only_artifact;
+        && !metadata_only_artifact
+        && !build_runner.has_separate_check_root(unit);
     let features = unit.features.iter().map(|s| s.to_string()).collect();
     let json_messages = bcx.build_config.emit_json()
         && !(fresh && build_runner.deferred_dev_deps.already_reported(unit));

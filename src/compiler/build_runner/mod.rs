@@ -422,6 +422,8 @@ pub struct BuildRunner<'a, 'gctx> {
     /// Registry units that actually occupy a metadata-only check dependency
     /// edge after being promoted to an already-built library.
     reused_registry_units: HashSet<Unit>,
+    /// Library check roots that may also be reported through a promoted dependency.
+    library_check_roots: HashMap<(PackageId, CompileKind), Unit>,
     /// Reused registry units which also have a consumer that genuinely needs
     /// their object code and therefore must retain their full JSON artifact.
     object_required_registry_units: HashSet<Unit>,
@@ -582,6 +584,15 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             }
         }
 
+        let mut library_check_roots = HashMap::default();
+        if !reused_registry_units.is_empty() {
+            for root in &bcx.roots {
+                if root.target.is_lib() && matches!(root.mode, CompileMode::Check { test: false }) {
+                    library_check_roots.insert((root.pkg.package_id(), root.kind), root.clone());
+                }
+            }
+        }
+
         Ok(Self {
             bcx,
             context_use: None,
@@ -605,6 +616,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             terminal_check_units,
             execution_units,
             reused_test_checks: HashMap::default(),
+            library_check_roots,
             reused_registry_units,
             object_required_registry_units,
             compiler_driver_identity: OnceLock::new(),
@@ -2306,6 +2318,18 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
     /// Returns whether this unit actually has an incoming promoted check edge.
     pub(crate) fn is_reused_registry_dependency(&self, unit: &Unit) -> bool {
         self.reused_registry_units.contains(unit)
+    }
+
+    /// Whether a separate check root reports this promoted library with the same settings.
+    pub(super) fn has_separate_check_root(&self, native: &Unit) -> bool {
+        self.library_check_roots
+            .get(&(native.pkg.package_id(), native.kind))
+            .is_some_and(|root| {
+                root.target == native.target
+                    && root.profile == native.profile
+                    && root.features == native.features
+                    && root.rustflags == native.rustflags
+            })
     }
 
     /// Returns whether a promoted unit has no consumer requiring object code.

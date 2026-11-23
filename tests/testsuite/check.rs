@@ -3119,6 +3119,42 @@ fn ohm_own_library_reuse_revalidates_build_script_inputs() {
 }
 
 #[cargo_test]
+fn ohm_reports_a_built_workspace_library_once_when_checking_it_and_its_dependent() {
+    let project = ohm_workspace_project();
+    project.change_file(
+        "local/src/lib.rs",
+        "pub fn value() -> u32 { dependency::value() }\nfn unused() {}",
+    );
+    for profile in ["", "--release"] {
+        ohm_own_library_cargo(
+            &project,
+            &format!("build -p local {profile} --message-format=json"),
+        )
+        .run();
+
+        for selection in ["--workspace", "--workspace", "-p application"] {
+            let output = ohm_own_library_cargo(
+                &project,
+                &format!("check {selection} {profile} --message-format=json"),
+            )
+            .run();
+            if profile.is_empty() || selection == "-p application" {
+                assert_ohm_reused_library(&output, "local");
+            }
+            let mut reasons = std::str::from_utf8(&output.stdout)
+                .unwrap()
+                .lines()
+                .map(|line| serde_json::from_str::<serde_json::Value>(line).unwrap())
+                .filter(|event| event["target"]["name"] == "local")
+                .map(|event| event["reason"].as_str().unwrap().to_owned())
+                .collect::<Vec<_>>();
+            reasons.sort();
+            assert_eq!(reasons, ["compiler-artifact", "compiler-message"]);
+        }
+    }
+}
+
+#[cargo_test]
 fn ohm_reuses_fresh_built_workspace_members_during_checks() {
     let project = ohm_workspace_project();
 
