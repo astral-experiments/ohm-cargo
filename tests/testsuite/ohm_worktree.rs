@@ -1480,6 +1480,33 @@ fn dirty_donor_does_not_override_the_requested_commit() {
     nightly,
     reason = "worktree seeds use checksum freshness and cwd remapping"
 )]
+fn seeded_build_rechecks_competing_module_in_child() {
+    let donor = git::new("donor", |p| {
+        p.file("src/lib.rs", "pub mod data;")
+            .file("src/data.rs", "")
+            .file("src/data/mod.rs", "")
+    });
+    // Only the donor has removed the competing file. All inputs rustc
+    // actually reads are identical to those committed in HEAD.
+    fs::remove_file(donor.root().join("src/data/mod.rs")).unwrap();
+    seeded_cargo(&donor, "build").run();
+
+    let child = paths::root().join("child");
+    let output = seeded_cargo(&donor, "worktree add -b charlie/child")
+        .arg(&child)
+        .run();
+    seed_was_imported(&output);
+    seeded_cargo(&donor, "build")
+        .cwd(&child)
+        .with_status(101)
+        .with_stderr_contains("[..]E0761[..]")
+        .run();
+}
+
+#[cargo_test(
+    nightly,
+    reason = "worktree seeds use checksum freshness and cwd remapping"
+)]
 fn sibling_source_file_is_revalidated_in_the_requested_commit() {
     let (donor, repo) = git::new_repo("donor", |p| {
         p.file(".gitignore", "/target\n/Cargo.lock\n")
