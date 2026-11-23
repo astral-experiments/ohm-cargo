@@ -212,9 +212,11 @@ pub(super) fn prepare(br: &BuildRunner<'_, '_>, unit: &Unit, force: bool) -> Car
     let relinkable = super::relinkable_dependencies(br, unit);
     rustc.arg(&driver_source).arg("-o").arg(&linked);
 
-    // Workspace selection can change these paths without changing the unit or its
-    // dependencies. The generated sources and objects belong to this search path.
+    // Both rustdoc and the examples can embed CARGO_MANIFEST_DIR or CARGO_MANIFEST_PATH.
+    // A package move can preserve the unit and its inputs, just as a change in workspace
+    // selection can preserve them while changing the library search paths.
     let search_hash = crate::util::hash_u64((
+        unit.pkg.manifest_path(),
         &br.compilation.native_dirs,
         rustdoc.get_env(paths::dylib_path_envvar()),
     ))
