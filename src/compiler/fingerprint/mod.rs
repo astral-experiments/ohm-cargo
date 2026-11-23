@@ -950,6 +950,34 @@ pub(crate) fn existing_unit_is_fresh(
     ))
 }
 
+/// Checks both source locations for modules in an encoded dep-info record.
+/// Rustc records the path it read for `mod foo;` but not the missing alternative.
+/// If both exist, let the compiler resolve the module for the requested command.
+pub(super) fn module_paths_unambiguous(
+    pkg_root: &Path,
+    build_root: &Path,
+    dep_info: &Path,
+) -> bool {
+    let Some(paths) = dep_info_paths(pkg_root, build_root, dep_info) else {
+        return false;
+    };
+    for path in paths {
+        if path.extension().is_none_or(|ext| ext != "rs") {
+            continue;
+        }
+        // Match rustc's existence check even when a candidate is a directory.
+        if path.with_extension("").join("mod.rs").exists()
+            || (path.ends_with("mod.rs")
+                && path
+                    .parent()
+                    .is_some_and(|dir| dir.with_extension("rs").exists()))
+        {
+            return false;
+        }
+    }
+    true
+}
+
 /// Whether an existing check root can keep its established dependency graph.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub(crate) enum ExistingCheckRoot {

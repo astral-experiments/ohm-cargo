@@ -2847,6 +2847,26 @@ fn ohm_native_root_reuse_rechecks_source_dependencies_and_configuration() {
     }
 }
 
+/// Both a terminal root and a promoted dependency must resolve new module candidates.
+#[cargo_test]
+fn ohm_native_check_reuse_rejects_competing_module_paths() {
+    for (original, added, target) in [
+        ("src/data.rs", "src/data/mod.rs", "--lib"),
+        ("src/data/mod.rs", "src/data.rs", "--bin foo"),
+    ] {
+        let p = ohm_own_library_project();
+        p.change_file("src/lib.rs", "mod data; pub use data::value;");
+        p.change_file(original, "pub fn value() -> u32 { 42 }");
+        ohm_own_library_cargo(&p, &format!("build {target}")).run();
+
+        p.change_file(added, "");
+        ohm_own_library_cargo(&p, &format!("check {target}"))
+            .with_status(101)
+            .with_stderr_contains("[..]E0761[..]")
+            .run();
+    }
+}
+
 #[cargo_test]
 fn ohm_native_root_reuse_recovers_after_source_changes() {
     for (build, check, test) in [
