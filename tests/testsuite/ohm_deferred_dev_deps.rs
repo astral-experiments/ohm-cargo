@@ -386,9 +386,10 @@ unsigned native_value(void);
 #[cargo_test]
 fn embedding_unused_dev_artifacts_retries_with_current_bytes() {
     let wrapper = relink_only_wrapper();
-    for (dir, prefix, suffix) in [
-        ("embedded-library", "libhelper-", ".rlib"),
-        ("embedded-dep-info", "helper-", ".d"),
+    for (dir, prefix, suffix, hard_link) in [
+        ("embedded-library", "libhelper-", ".rlib", false),
+        ("embedded-dep-info", "helper-", ".d", false),
+        ("hard-linked-dep-info", "helper-", ".d", true),
     ] {
         let p = fixture(dir);
         seed(&p, &wrapper);
@@ -404,7 +405,11 @@ fn embedding_unused_dev_artifacts_retries_with_current_bytes() {
             .unwrap();
         let src = p.root().join("app/src");
         fs::copy(&artifact, src.join("old.bin")).unwrap();
-        std::os::unix::fs::symlink(&artifact, src.join("current.bin")).unwrap();
+        if hard_link {
+            fs::hard_link(&artifact, src.join("current.bin")).unwrap();
+        } else {
+            std::os::unix::fs::symlink(&artifact, src.join("current.bin")).unwrap();
+        }
         p.change_file("helper/src/value.rs", "pub fn value() -> u32 { 42 }");
         p.change_file("helper/src/lib.rs", "mod value; pub use value::value;");
         p.change_file(
