@@ -5,9 +5,12 @@
 
 use super::cmd_builds;
 use super::ready_test_process::{ProcessGroup, Signals};
-use crate::compiler::{BuildRunner, Compilation, CompileKind, CompileMode, Unit, UnitOutput};
+use crate::compiler::{
+    BuildRunner, Compilation, CompileKind, CompileMode, CrateType, Unit, UnitOutput,
+};
 use crate::util::data_structures::HashSet;
 use crate::util::{CargoResult, GlobalContext};
+use crate::workspace::TargetKind;
 use cargo_util::{ProcessBuilder, ProcessError};
 use std::collections::VecDeque;
 use std::process::{Child, ExitStatus};
@@ -27,6 +30,19 @@ pub(crate) struct ReadyTests {
     results: Vec<(Unit, CargoResult<()>)>,
     stopped: bool,
     signals: Signals,
+}
+
+/// Tests can link or load a native library without a Rust dependency on its target.
+fn produces_runtime_library(kind: &TargetKind) -> bool {
+    match kind {
+        TargetKind::Lib(types) | TargetKind::ExampleLib(types) => types.iter().any(|ty| {
+            matches!(
+                ty,
+                CrateType::Staticlib | CrateType::Cdylib | CrateType::Dylib
+            )
+        }),
+        _ => false,
+    }
 }
 
 impl ReadyTests {
@@ -60,8 +76,7 @@ impl ReadyTests {
                     && !unit.mode.is_doc_test()
                     && (unit.mode.is_run_custom_build()
                         || unit.target.is_executable()
-                        || unit.target.is_dylib()
-                        || unit.target.is_cdylib())
+                        || produces_runtime_library(unit.target.kind()))
             })
             .cloned()
             .collect();
@@ -241,5 +256,25 @@ impl Drop for ActiveTest {
             let _ = self.child.kill();
             let _ = self.child.wait();
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn native_libraries_are_runtime_inputs_even_as_examples() {
+        for ty in [CrateType::Staticlib, CrateType::Cdylib, CrateType::Dylib] {
+            let types = vec![CrateType::Rlib, ty];
+            assert!(produces_runtime_library(&TargetKind::Lib(types.clone())));
+            assert!(produces_runtime_library(&TargetKind::ExampleLib(types)));
+        }
+        assert!(!produces_runtime_library(&TargetKind::Lib(vec![
+            CrateType::Rlib
+        ])));
+        assert!(!produces_runtime_library(&TargetKind::ExampleLib(vec![
+            CrateType::Lib
+        ])));
     }
 }
