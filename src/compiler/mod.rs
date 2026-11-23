@@ -422,9 +422,9 @@ fn terminal_check_hash(runner: &BuildRunner<'_, '_>, unit: &Unit, check_messages
     for (consumer, dependencies) in &runner.bcx.unit_graph {
         if dependencies.iter().any(|dep| dep.unit == *unit) {
             if !runner.is_terminal_check_unit(consumer)
-                || (check_messages && !has_no_diagnostics(runner, consumer))
                 || !consumer.target.is_bin()
                 || consumer.mode != unit.mode
+                || (check_messages && !can_replay_terminal_diagnostics(runner, unit, consumer))
             {
                 return false;
             }
@@ -438,8 +438,13 @@ fn terminal_check_hash(runner: &BuildRunner<'_, '_>, unit: &Unit, check_messages
             .supports_metadata_hint(runner.bcx.gctx, "-Zohm-terminal-check-hash")
 }
 
-/// A moved declaration can change labels in a downstream diagnostic.
-fn has_no_diagnostics(runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
+/// A declaration can move without changing a terminal hash. Replay a warning
+/// only if its locations all come from a file checked for freshness by the binary.
+fn can_replay_terminal_diagnostics(
+    runner: &BuildRunner<'_, '_>,
+    producer: &Unit,
+    unit: &Unit,
+) -> bool {
     let path = runner.files().message_cache_path(unit);
     if matches!(path.try_exists(), Ok(false)) {
         // A new binary will be checked anyway. For an existing binary, a removed
@@ -453,16 +458,97 @@ fn has_no_diagnostics(runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
     if !output.ends_with(b"\n") {
         return false;
     }
+    let inputs = OnceCell::new();
+    let is_local = |name: &str| {
+        if !Path::new(name)
+            .components()
+            .all(|c| matches!(c, std::path::Component::Normal(_)))
+        {
+            return false;
+        }
+        let inputs = inputs.get_or_init(|| {
+            // Do not infer source identity from remapped diagnostic paths.
+            let rustc = runner.bcx.rustc();
+            if rustc.wrapper.is_some()
+                || rustc.workspace_wrapper.is_some()
+                || runner.bcx.build_config.primary_unit_rustc.is_some()
+                || !worktree_seed_remap(runner, producer)?.local_sources
+                || !worktree_seed_remap(runner, unit)?.local_sources
+            {
+                return None;
+            }
+            fingerprint::parse_dep_info(
+                unit.pkg.root(),
+                &runner.files().build_root(unit),
+                &fingerprint::dep_info_loc(runner, unit),
+            )
+            .ok()?
+        });
+        let path = runner.bcx.ws.root().join(name);
+        path.starts_with(unit.pkg.root())
+            && inputs.as_ref().is_some_and(|info| {
+                info.foreign_span_marker.is_none() && info.files.contains_key(&path)
+            })
+    };
     std::str::from_utf8(&output).is_ok_and(|lines| {
         lines.lines().all(|line| {
             serde_json::from_str::<serde_json::Value>(line).is_ok_and(|message| {
-                matches!(
-                    message["$message_type"].as_str(),
-                    Some("unused_extern" | "artifact")
-                )
+                match message["$message_type"].as_str() {
+                    Some("unused_extern" | "artifact") => true,
+                    Some("diagnostic") => local_terminal_warning(&message, &is_local),
+                    _ => false,
+                }
             })
         })
     })
+}
+
+/// A diagnostic can also refer to declaration locations in its message text.
+/// Limit reuse to known lints and check every label and suggestion, including
+/// notes. An expansion may refer to another crate even when the call is local.
+fn local_terminal_warning(message: &serde_json::Value, is_local: impl Fn(&str) -> bool) -> bool {
+    use serde_json::Value;
+    if message["level"] != "warning" {
+        return false;
+    }
+    let (Some(spans), Some(children)) =
+        (message["spans"].as_array(), message["children"].as_array())
+    else {
+        return false;
+    };
+    if spans.is_empty() {
+        return message.get("code").is_some_and(Value::is_null)
+            && children.is_empty()
+            && message["message"].as_str().is_some_and(|text| {
+                text == "1 warning emitted"
+                    || text
+                        .strip_suffix(" warnings emitted")
+                        .is_some_and(|n| n.parse::<usize>().is_ok_and(|n| n >= 2))
+            });
+    }
+    if !matches!(
+        message["code"]["code"].as_str(),
+        Some("dead_code" | "deprecated" | "mismatched_lifetime_syntaxes" | "unexpected_cfgs")
+    ) {
+        return false;
+    }
+    let Some(name) = spans[0]["file_name"].as_str() else {
+        return false;
+    };
+    let local = |span: &Value| {
+        span["file_name"] == name && span.get("expansion").is_some_and(Value::is_null)
+    };
+    spans.iter().any(|span| span["is_primary"] == true)
+        && spans.iter().all(local)
+        && children.iter().all(|child| {
+            matches!(child["level"].as_str(), Some("note" | "help"))
+                && child.get("code").is_some_and(Value::is_null)
+                && child["children"].as_array().is_some_and(Vec::is_empty)
+                && child["spans"]
+                    .as_array()
+                    .is_some_and(|s| s.iter().all(local))
+        })
+        && is_local(name)
 }
 
 /// Prefer whole-crate invalidation when every consumer previously ignored this library.
