@@ -166,6 +166,7 @@ jobs:
             build_dir::shared_registry_cache_defaults_preserve_ordinary_layout_without_build_directory \
             freshness_checksum::check_path_package_in_cargo_home_registry \
             freshness_checksum::rebuild_sub_package_then_while_package \
+            ohm_worktree::full_debug_info_keeps_the_checkout_path_by_default \
             profile_settings::ohm_default_debuginfo \
             profile_settings::ohm_default_debuginfo_respects_overrides; do
             "$OHM_CARGO_TESTSUITE" "$test" --exact --include-ignored --list | grep -Fx "$test: test"
