@@ -426,6 +426,7 @@ use super::PublicApiHash;
 use super::Unit;
 use super::UnitIndex;
 use super::Work;
+use super::build_runner::{DiagnosticRendering, is_unused_extern_notification};
 use super::custom_build::BuildDeps;
 
 pub use self::dep_info::Checksum;
@@ -931,7 +932,16 @@ enum FingerprintComparison {
     Dirty {
         /// The reason why the unit is dirty.
         reason: DirtyReason,
+        /// The layout used when rustc last built this unit.
+        previous_rendering: Option<DiagnosticRendering>,
     },
+}
+
+/// Whether a dirty unit has no compiler diagnostics that would replay in the old layout.
+fn no_rendered_diagnostics(path: &Path) -> bool {
+    matches!(path.try_exists(), Ok(false))
+        || paths::read_regular_bounded(path, 1024 * 1024)
+            .is_ok_and(|bytes| is_unused_extern_notification(&bytes))
 }
 
 /// Checks an existing unit without truncating, updating, or otherwise changing
@@ -1018,6 +1028,7 @@ pub(crate) fn existing_check_root(
                     DirtyReason::FsStatusOutdated(FsStatus::StaleItem(
                         StaleItem::FailedToReadMetadata { path },
                     )),
+                ..
             }) if unit.pkg.package_id().source_id().is_path()
                 && path.extension() == Some(OsStr::new("rmeta"))
                 && fingerprint.outputs.contains(&path)
@@ -1038,6 +1049,7 @@ pub(crate) fn existing_check_root(
                         | FsStatus::StaleDependency { .. }
                         | FsStatus::StaleDepFingerprint { .. },
                     ),
+                ..
             }) => Some(ExistingCheckRoot::WorkspaceChanged),
             _ => None,
         },
@@ -1077,11 +1089,14 @@ pub fn prepare_target(
     // information about failed comparisons to aid in debugging.
     let fingerprint = calculate(build_runner, unit)?;
     let mtime_on_use = build_runner.bcx.gctx.cli_unstable().mtime_on_use;
-    let dirty_reason = match compare_old_fingerprint(unit, &loc, &*fingerprint, mtime_on_use, force)
-    {
-        FingerprintComparison::Fresh => None,
-        FingerprintComparison::Dirty { reason } => Some(reason),
-    };
+    let (dirty_reason, previous_rendering) =
+        match compare_old_fingerprint(unit, &loc, &*fingerprint, mtime_on_use, force) {
+            FingerprintComparison::Fresh => (None, None),
+            FingerprintComparison::Dirty {
+                reason,
+                previous_rendering,
+            } => (Some(reason), previous_rendering),
+        };
 
     if dirty_reason.is_some() {
         build_runner.require_shared_cache_write_access(unit)?;
@@ -1128,7 +1143,9 @@ pub fn prepare_target(
     fingerprint.set_early_cutoff_candidate(
         is_early_cutoff_candidate(&fingerprint, &dirty_reason)
             && !previous_dependency_changes.any
-            && has_exclusive_metadata_access,
+            && has_exclusive_metadata_access
+            && (fingerprint.ohm_diagnostic_rendering == previous_rendering
+                || no_rendered_diagnostics(&build_runner.files().message_cache_path(unit))),
     );
     if fingerprint.ohm_worktree_namespace.is_some()
         && !fingerprint.must_recheck_native_link(unit)
@@ -1437,6 +1454,10 @@ pub struct Fingerprint {
     /// identity. Filesystem checks must keep using the original paths above.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     ohm_worktree_namespace: Option<PathBuf>,
+    /// Checked only when skipping a dirty unit. Like ordinary Cargo, keep a
+    /// change of message format out of the hash used for normal freshness.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    ohm_diagnostic_rendering: Option<DiagnosticRendering>,
     /// Cached hash of the [`Fingerprint`] struct. Used to improve performance
     /// for hashing.
     #[serde(skip)]
@@ -2014,6 +2035,7 @@ impl Fingerprint {
             deps: Vec::new(),
             local: Mutex::new(Vec::new()),
             ohm_worktree_namespace: None,
+            ohm_diagnostic_rendering: None,
             memoized_hash: Mutex::new(None),
             script_result: Mutex::new(None),
             worktree_reuse_hash: Mutex::new(None),
@@ -2977,7 +2999,8 @@ fn calculate_normal(
         // were copied. This injected path mapping also changes rustc's output.
         ("ohm-worktree-seeds", remap).hash(&mut config);
     }
-    if unit_consumes_public_api_hash(build_runner, unit) {
+    let consumes_public_api_hash = unit_consumes_public_api_hash(build_runner, unit);
+    if consumes_public_api_hash {
         // Older generations could reuse metadata across changes to generated Rust libraries.
         ("ohm-reduced-dependency-rebuild", 4_u8).hash(&mut config);
     }
@@ -3027,6 +3050,8 @@ fn calculate_normal(
         deps,
         local: Mutex::new(local),
         ohm_worktree_namespace,
+        ohm_diagnostic_rendering: consumes_public_api_hash
+            .then(|| build_runner.diagnostic_rendering()),
         memoized_hash: Mutex::new(None),
         script_result: Mutex::new(None),
         worktree_reuse_hash: Mutex::new(None),
@@ -3402,7 +3427,7 @@ fn compare_old_fingerprint(
 
     match compare.as_ref() {
         Ok(FingerprintComparison::Fresh) => {}
-        Ok(FingerprintComparison::Dirty { reason }) => {
+        Ok(FingerprintComparison::Dirty { reason, .. }) => {
             info!(
                 "fingerprint dirty for {}/{:?}/{:?}",
                 unit.pkg, unit.mode, unit.target,
@@ -3421,10 +3446,12 @@ fn compare_old_fingerprint(
     match compare {
         Ok(FingerprintComparison::Fresh) if forced => FingerprintComparison::Dirty {
             reason: DirtyReason::Forced,
+            previous_rendering: None,
         },
         Ok(cmp) => cmp,
         Err(_) => FingerprintComparison::Dirty {
             reason: DirtyReason::FreshBuild,
+            previous_rendering: None,
         },
     }
 }
@@ -3474,7 +3501,10 @@ fn _compare_old_fingerprint(
         reason = DirtyReason::PreviousBuildIncomplete;
     }
 
-    Ok(FingerprintComparison::Dirty { reason })
+    Ok(FingerprintComparison::Dirty {
+        reason,
+        previous_rendering: old_fingerprint.ohm_diagnostic_rendering,
+    })
 }
 
 /// Calculates the fingerprint of a unit thats contains no dep-info files.
@@ -4291,7 +4321,8 @@ mod early_cutoff_tests {
         assert!(matches!(
             _compare_old_fingerprint(&path, &current).unwrap(),
             FingerprintComparison::Dirty {
-                reason: DirtyReason::PreviousBuildIncomplete
+                reason: DirtyReason::PreviousBuildIncomplete,
+                ..
             }
         ));
     }

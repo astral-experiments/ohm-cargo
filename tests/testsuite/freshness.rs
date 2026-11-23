@@ -7539,6 +7539,54 @@ fn checked_bundled_archive_reopens_the_git_dependency_search_path() {
 }
 
 #[cargo_test]
+fn early_cutoff_respects_the_requested_warning_format() {
+    let wrapper = public_api_hash_wrapper();
+    let p = project()
+        .file(
+            "Cargo.toml",
+            &format!(
+                "{}\n[dependencies]\ndep = {{ path = \"dep\" }}",
+                basic_manifest("foo", "0.1.0"),
+            ),
+        )
+        .file("dep/Cargo.toml", &basic_manifest("dep", "0.1.0"))
+        .file("dep/src/lib.rs", "pub fn n() -> u8 { 1 }")
+        .file("src/lib.rs", "fn unused() { dep::n(); }")
+        .build();
+    let check = || {
+        let mut cmd = p.cargo("-Zohm-defaults check -v");
+        cmd.masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("RUSTC_WRAPPER", &wrapper);
+        cmd
+    };
+    check().run();
+
+    p.change_file("dep/src/lib.rs", "pub fn n() -> u8 { 2 }");
+    let short = "[..]lib.rs:1:4: [WARNING] function `unused` is never used";
+    check()
+        .arg("--message-format=short")
+        .with_stderr_contains(short)
+        .run();
+
+    // A second edit can still reuse the warning now that the layout matches.
+    p.change_file("dep/src/lib.rs", "pub fn n() -> u8 { 3 }");
+    check()
+        .arg("--message-format=short")
+        .with_stderr_contains(short)
+        .with_stderr_does_not_contain("[..]--crate-name foo [..]")
+        .run();
+
+    // Without a warning, either layout can reuse the same output.
+    p.change_file("src/lib.rs", "pub fn used() { dep::n(); }");
+    check().run();
+    p.change_file("dep/src/lib.rs", "pub fn n() -> u8 { 4 }");
+    check()
+        .arg("--message-format=short")
+        .with_stderr_does_not_contain("[..]--crate-name foo [..]")
+        .run();
+}
+
+#[cargo_test]
 fn early_cutoff_rechecks_module_lookup_after_a_library_edit() {
     let wrapper = public_api_hash_wrapper();
     let p = project()
