@@ -6563,9 +6563,9 @@ fn embed_metadata_no() {
         .run();
 }
 
-// Make sure that cargo passes --extern=<dep>.rmeta even if <dep>
-// is compiled as a dylib.
-#[cargo_test(nightly, reason = "-Zembed-metadata is nightly only")]
+/// Both policies pass separate metadata to the consumer, but only an explicit
+/// `-Zembed-metadata=no` strips metadata from a registry dylib.
+#[cargo_test]
 fn embed_metadata_no_dylib_dep() {
     let p = project()
         .file(
@@ -6606,17 +6606,22 @@ fn embed_metadata_no_dylib_dep() {
         )
         .publish();
 
-    p.cargo("build")
-        .arg("-Zembed-metadata=no")
+    let metadata = "[RUNNING] `[..]--extern bar=[ROOT]/foo/target/debug/build/bar/[HASH]/out/libbar.rmeta[..]`";
+    p.cargo("build -Zembed-metadata=no -v")
         .masquerade_as_nightly_cargo(&["-Z embed-metadata"])
-        .arg("-v")
+        .env("RUSTC_BOOTSTRAP", "1")
+        .with_stderr_contains("[RUNNING] `[..]--crate-name bar[..]-Z embed-metadata=no[..]`")
+        .with_stderr_contains(metadata)
+        .run();
+
+    p.cargo("build -Zno-embed-metadata -v")
+        .masquerade_as_nightly_cargo(&["no-embed-metadata"])
+        .env("RUSTC_BOOTSTRAP", "1")
         .with_stderr_line_without(
             &["[RUNNING]", "--crate-name bar"],
             &["-Z embed-metadata=no"],
         )
-        .with_stderr_contains(
-    "[RUNNING] `[..]--extern bar=[ROOT]/foo/target/debug/build/bar/[HASH]/out/libbar-[HASH].rmeta[..]`",
-        )
+        .with_stderr_contains(metadata)
         .run();
 }
 
