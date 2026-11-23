@@ -10,6 +10,7 @@ use filetime::FileTime;
 
 use crate::CargoResult;
 use crate::compiler::Layout;
+use crate::compiler::build_runner::is_unused_extern_notification;
 use crate::compiler::fingerprint::dep_info::{DepInfoPathType, EncodedDepInfo};
 use crate::compiler::fingerprint::{OHM_WORKTREE_SCRIPT_RERUN, OHM_WORKTREE_SCRIPT_RESULT};
 use crate::compiler::layout::PrivateBuildLease;
@@ -502,8 +503,8 @@ fn clone_tree(
         let source = entry.path();
         let destination = destination.join(&name);
         if ty.is_dir() {
-            let build_script = has_build_script_execution(&source)?;
-            if build_script && !has_build_script_result(&source)? {
+            let action = seed_action(&source)?;
+            if matches!(action, SeedAction::Skip) {
                 continue;
             }
             if !clone_tree(
@@ -517,7 +518,7 @@ fn clone_tree(
             )? {
                 return Ok(false);
             }
-            if build_script {
+            if matches!(action, SeedAction::RerunScript) {
                 // A snapshot is evidence for comparing the next execution,
                 // never permission to skip a script in a different checkout.
                 fs::write(
@@ -565,21 +566,39 @@ fn clone_tree(
     Ok(true)
 }
 
-fn has_build_script_execution(unit: &Path) -> CargoResult<bool> {
+enum SeedAction {
+    Clone,
+    RerunScript,
+    Skip,
+}
+
+/// Decides whether a private unit can be imported before the recipient's first command.
+fn seed_action(unit: &Path) -> CargoResult<SeedAction> {
     let fingerprint = unit.join("fingerprint");
     if !plain_directory(&fingerprint)? {
-        return Ok(false);
+        return Ok(SeedAction::Clone);
     }
+    let mut action = SeedAction::Clone;
     for entry in fs::read_dir(fingerprint)? {
-        if entry?
-            .file_name()
-            .to_string_lossy()
-            .starts_with("run-build-script-")
+        let entry = entry?;
+        let name = entry.file_name();
+        let name = name.to_string_lossy();
+        if name.starts_with("run-build-script-") {
+            if !has_build_script_result(unit)? {
+                return Ok(SeedAction::Skip);
+            }
+            action = SeedAction::RerunScript;
+        }
+        // The recipient hasn't chosen a message format yet. A fresh unit
+        // would replay the donor's rendered warnings even for a short check.
+        if name.starts_with("output-")
+            && !cargo_util::paths::read_regular_bounded(&entry.path(), 1024 * 1024)
+                .is_ok_and(|bytes| is_unused_extern_notification(&bytes))
         {
-            return Ok(true);
+            return Ok(SeedAction::Skip);
         }
     }
-    Ok(false)
+    Ok(action)
 }
 
 fn has_build_script_result(unit: &Path) -> CargoResult<bool> {
@@ -741,6 +760,21 @@ mod tests {
         assert!(parse_dep_info(&pkg, root.path(), &dep)?.is_some());
         fs::write(pkg.join("src/data.rs"), "")?;
         assert!(parse_dep_info(&pkg, root.path(), &dep)?.is_none());
+        Ok(())
+    }
+
+    #[test]
+    fn only_layout_independent_messages_can_be_seeded() -> CargoResult<()> {
+        let unit = tempfile::tempdir()?;
+        let fingerprint = unit.path().join("fingerprint");
+        fs::create_dir(&fingerprint)?;
+        let output = fingerprint.join("output-lib-foo");
+        let unused = r#"{"$message_type":"unused_extern","unused_extern_names":[]}"#;
+        let warning = r#"{"$message_type":"diagnostic","rendered":"warning"}"#;
+        fs::write(&output, format!("{unused}\n"))?;
+        assert!(matches!(seed_action(unit.path())?, SeedAction::Clone));
+        fs::write(&output, format!("{unused}\n{warning}\n"))?;
+        assert!(matches!(seed_action(unit.path())?, SeedAction::Skip));
         Ok(())
     }
 

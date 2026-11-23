@@ -254,6 +254,12 @@ pub(super) enum DiagnosticRendering {
     Unicode,
 }
 
+/// Whether rustc cached only an unused-extern notification, with no rendered diagnostics.
+pub(crate) fn is_unused_extern_notification(bytes: &[u8]) -> bool {
+    serde_json::from_slice::<serde_json::Value>(bytes)
+        .is_ok_and(|message| message["$message_type"] == "unused_extern")
+}
+
 /// Bind cacheable diagnostics to the successful compiler invocation.
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 #[serde(deny_unknown_fields)]
@@ -345,8 +351,7 @@ impl RegistryMessageProvenance {
                         return false;
                     };
                     return Sha256::new().update(&bytes).finish_hex() == expected.sha256
-                        && serde_json::from_slice::<serde_json::Value>(&bytes)
-                            .is_ok_and(|message| message["$message_type"] == "unused_extern");
+                        && is_unused_extern_notification(&bytes);
                 }
                 Self::read_messages(path)
                     .ok()

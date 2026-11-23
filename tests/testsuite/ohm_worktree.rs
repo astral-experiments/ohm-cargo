@@ -1480,6 +1480,29 @@ fn dirty_donor_does_not_override_the_requested_commit() {
     nightly,
     reason = "worktree seeds use checksum freshness and cwd remapping"
 )]
+fn seeded_check_uses_the_recipients_warning_format() {
+    let donor = git::new("donor", |p| {
+        p.file("src/lib.rs", "pub fn call() { let unused = (); }")
+    });
+    seeded_cargo(&donor, "check")
+        .with_stderr_contains("[WARNING] unused variable: `unused`")
+        .run();
+
+    let child = paths::root().join("child");
+    let output = seeded_cargo(&donor, "worktree add -b charlie/child")
+        .arg(&child)
+        .run();
+    seed_was_imported(&output);
+    seeded_cargo(&donor, "check --message-format=short")
+        .cwd(&child)
+        .with_stderr_contains("src/lib.rs:1:21: [WARNING] unused variable: `unused`[..]")
+        .run();
+}
+
+#[cargo_test(
+    nightly,
+    reason = "worktree seeds use checksum freshness and cwd remapping"
+)]
 fn seeded_build_rechecks_competing_module_in_child() {
     let donor = git::new("donor", |p| {
         p.file("src/lib.rs", "pub mod data;")
