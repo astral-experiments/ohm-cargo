@@ -818,6 +818,7 @@ fn build_work(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResul
     // Now that we've prepared our work-to-do, we need to prepare the fresh work
     // itself to run when we actually end up just discarding what we calculated
     // above.
+    let report_fresh = json_messages && !build_runner.deferred_dev_deps.already_reported(unit);
     let fresh = Work::new(move |state| {
         let (id, library_name, pkg_descr, build_script_outputs, output_file, script_out_dir) = all;
         let output = match prev_output {
@@ -841,7 +842,7 @@ fn build_work(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResul
             shared_registry_implicit_native_tools_fresh.as_deref(),
         )?;
 
-        if json_messages {
+        if report_fresh {
             emit_build_output(
                 state,
                 &output,

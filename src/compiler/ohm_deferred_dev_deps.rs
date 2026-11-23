@@ -3,9 +3,11 @@
 //! omits previously unused pure-Rust dev dependencies. Fresh proof is mandatory
 //! before accepting any output, and an inconclusive attempt retries once normally.
 
+use std::cell::RefCell;
 use std::fs;
 use std::io::Read;
 use std::path::{Path, PathBuf};
+use std::rc::Rc;
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
 
@@ -15,15 +17,23 @@ use crate::util::data_structures::{HashMap, HashSet};
 use crate::util::interning::InternedString;
 use crate::workspace::dependency::DepKind;
 
-#[derive(Default)]
+#[derive(Clone, Default)]
 pub(crate) struct State {
     pub(crate) disabled: bool,
     /// Only direct edges from the selected root; retained transitive edges still build.
     pub(crate) dependencies: HashSet<Unit>,
     pub(crate) retry: Arc<AtomicBool>,
+    /// Completed units shared across attempts so the retry can skip replaying
+    /// their artifacts and diagnostics. Only the job queue thread records them.
+    pub(super) reported: Rc<RefCell<HashSet<Unit>>>,
 }
 
 impl State {
+    /// Whether a fresh job would replay messages from the provisional build.
+    pub(super) fn already_reported(&self, unit: &Unit) -> bool {
+        self.disabled && self.reported.borrow().contains(unit)
+    }
+
     pub(crate) fn retry_requested(&self) -> bool {
         self.retry.load(Ordering::Relaxed)
     }

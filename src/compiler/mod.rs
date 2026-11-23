@@ -2919,7 +2919,8 @@ fn link_targets(
         && build_runner.is_reused_registry_dependency(unit)
         && !metadata_only_artifact;
     let features = unit.features.iter().map(|s| s.to_string()).collect();
-    let json_messages = bcx.build_config.emit_json();
+    let json_messages = bcx.build_config.emit_json()
+        && !(fresh && build_runner.deferred_dev_deps.already_reported(unit));
     let executable = build_runner.get_executable(unit)?;
     let test_output_views = (json_messages
         && unit_mode.is_any_test()
@@ -4514,7 +4515,8 @@ impl OutputOptions {
 
         // We always replay the output cache,
         // since it might contain future-incompat-report messages
-        let show_diagnostics = unit.show_warnings(build_runner.bcx.gctx);
+        let show_diagnostics = unit.show_warnings(build_runner.bcx.gctx)
+            && !build_runner.deferred_dev_deps.already_reported(unit);
 
         let format = build_runner.bcx.build_config.message_format;
 
