@@ -443,6 +443,24 @@ fn terminal_check_hash(runner: &BuildRunner<'_, '_>, unit: &Unit, check_messages
             .supports_metadata_hint(runner.bcx.gctx, "-Zohm-terminal-check-hash")
 }
 
+/// Ask rustc to account for metadata inherited through this library, including
+/// foreign trait implementations which are visible without an explicit reexport.
+fn supports_transitive_check_hash(runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
+    let rustc = runner.bcx.rustc();
+    rustc.wrapper.is_none()
+        && rustc.workspace_wrapper.is_none()
+        && runner.bcx.build_config.primary_unit_rustc.is_none()
+        && unit.profile.rustflags.is_empty()
+        && runner.bcx.extra_args_for(unit).is_none_or(Vec::is_empty)
+        && unit_rustflags_without_ohm_defaults(
+            runner.bcx.gctx,
+            runner.rustflags_for_cache_admission(unit),
+        )
+        .iter()
+        .all(|flag| flag == OHM_EARLY_METADATA_RUSTFLAG)
+        && rustc.supports_metadata_hint(runner.bcx.gctx, "-Zohm-transitive-check-hash")
+}
+
 /// A declaration can move without changing a terminal hash. Replay a warning
 /// only if its locations all come from a file checked for freshness by the binary.
 fn can_replay_terminal_diagnostics(
@@ -3197,6 +3215,9 @@ fn prepare_rustc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
             base.arg("-Zpublic-api-hash=no");
         } else if terminal_check_hash(build_runner, unit, true) {
             base.arg("-Zohm-terminal-check-hash");
+            if supports_transitive_check_hash(build_runner, unit) {
+                base.arg("-Zohm-transitive-check-hash");
+            }
         } else if prefer_full_crate_hash(build_runner, unit) {
             base.arg("-Zohm-prefer-full-crate-hash");
         }

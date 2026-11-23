@@ -7620,6 +7620,104 @@ fn supports_terminal_declaration_hash() -> bool {
 
 #[cfg(feature = "ohm-defaults")]
 #[cargo_test]
+fn terminal_check_can_cut_off_a_transitive_change_only_for_current_consumers() {
+    let rustc = std::env::var_os("RUSTC").unwrap_or_else(|| "rustc".into());
+    if cargo_test_support::process(rustc)
+        .args(&["-Zohm-transitive-check-hash", "--print=sysroot"])
+        .exec_with_output()
+        .is_err()
+    {
+        return;
+    }
+    let source = "pub struct Value; pub const SIZE: usize = 1; pub const OTHER: usize = 1;";
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [workspace]
+                [package]
+                name = "app"
+                version = "0.1.0"
+                edition = "2024"
+                [dependencies]
+                middle = { path = "middle" }
+            "#,
+        )
+        .file(
+            "middle/Cargo.toml",
+            r#"
+                [package]
+                name = "middle"
+                version = "0.1.0"
+                edition = "2024"
+                [dependencies]
+                dep = { path = "../dep" }
+            "#,
+        )
+        .file("middle/src/lib.rs", "pub use dep::{SIZE, Value};")
+        .file("dep/Cargo.toml", &basic_manifest("dep", "0.1.0"))
+        .file("dep/src/lib.rs", source)
+        .file(
+            "src/bin/other.rs",
+            "fn main() { let _: [(); 1] = [(); middle::SIZE]; }",
+        )
+        .file(
+            "src/bin/app.rs",
+            r#"
+                trait Local { fn clone(&self); }
+                impl Local for middle::Value { fn clone(&self) {} }
+                fn main() { middle::Value.clone(); }
+            "#,
+        )
+        .build();
+    let check = |selection: &str| {
+        let mut cmd = p.cargo(&format!("-Zohm-defaults check -v {selection}"));
+        cmd.masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("CARGO_INCREMENTAL", "1")
+            .env_remove("LIBRARY_PATH");
+        cmd
+    };
+    check("--bins").run();
+    // The selected app sees a new interface. The other binary stays stale.
+    let changed = source.replace("SIZE: usize = 1", "SIZE: usize = 2");
+    p.change_file("dep/src/lib.rs", &changed);
+    check("--bin app")
+        .with_stderr_contains("[..]--crate-name app [..]")
+        .run();
+    let unrelated = changed.replace("OTHER: usize = 1", "OTHER: usize = 2");
+    p.change_file("dep/src/lib.rs", &unrelated);
+    check("--bin app")
+        .with_stderr_contains("[..]-Zohm-transitive-check-hash [..]--crate-name middle [..]")
+        .with_stderr_does_not_contain("[..]--crate-name app [..]")
+        .run();
+    check("--bin app")
+        .with_stderr_does_not_contain("[..]--crate-name [..]")
+        .run();
+    // An equal key from the latest two builds cannot validate an older consumer.
+    p.change_file("dep/src/lib.rs", &changed);
+    check("--bin other")
+        .with_status(101)
+        .with_stderr_contains("error[E0308]: mismatched types")
+        .run();
+    check("--bin app")
+        .env("RUSTFLAGS", "--cfg extra")
+        .with_stderr_contains("[..]--crate-name app [..]")
+        .with_stderr_does_not_contain("[..]-Zohm-transitive-check-hash[..]")
+        .run();
+    check("--bin app").run();
+    // The new foreign implementation is visible without an explicit reexport.
+    p.change_file(
+        "dep/src/lib.rs",
+        &format!("{changed} impl Clone for Value {{ fn clone(&self) -> Self {{ Value }} }}"),
+    );
+    check("--bin app")
+        .with_status(101)
+        .with_stderr_contains("error[E0034]: multiple applicable items in scope")
+        .run();
+}
+
+#[cfg(feature = "ohm-defaults")]
+#[cargo_test]
 fn terminal_declaration_hash_follows_the_graph_and_cached_diagnostics() {
     if !supports_terminal_declaration_hash() {
         return;
