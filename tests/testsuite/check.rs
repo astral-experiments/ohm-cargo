@@ -3119,6 +3119,62 @@ fn ohm_own_library_reuse_revalidates_build_script_inputs() {
 }
 
 #[cargo_test]
+fn ohm_release_check_metadata_survives_a_private_dependency_edit() {
+    if !ohm_compiler_supports_defaults() {
+        return;
+    }
+    let project = project()
+        .file(
+            "Cargo.toml",
+            &format!(
+                "{}\n[dependencies]\norigin = {{ path = 'origin' }}",
+                basic_manifest("relay", "0.1.0"),
+            ),
+        )
+        .file("origin/Cargo.toml", &basic_manifest("origin", "0.1.0"))
+        .file(
+            "origin/src/lib.rs",
+            "pub struct Data; fn hidden() -> u8 { 1 }",
+        )
+        .file("src/lib.rs", "extern crate origin; pub use origin::Data;")
+        .file(
+            "consumer.rs",
+            "fn main() { let _: origin::Data = relay::Data; }",
+        )
+        .build();
+    let check = || {
+        let mut cmd = project.cargo("-Zohm-defaults check --release -v --message-format=json");
+        cmd.masquerade_as_nightly_cargo(&["ohm-defaults"]);
+        cmd
+    };
+    check().run();
+    project.change_file(
+        "origin/src/lib.rs",
+        "pub struct Data; fn hidden() -> u8 { 2 }",
+    );
+    let output = check()
+        .with_stderr_does_not_contain("[..]--crate-name relay [..]")
+        .run();
+    let mut consumer = cargo_test_support::process("rustc");
+    consumer
+        .cwd(project.root())
+        .args(&["--edition=2021", "--emit=metadata", "consumer.rs"]);
+    for line in std::str::from_utf8(&output.stdout).unwrap().lines() {
+        let event: serde_json::Value = serde_json::from_str(line).unwrap();
+        if event["reason"] == "compiler-artifact" {
+            let name = event["target"]["name"].as_str().unwrap();
+            let path = event["filenames"][0].as_str().unwrap();
+            let dir = std::path::Path::new(path).parent().unwrap();
+            consumer.arg("--extern").arg(format!("{name}={path}"));
+            consumer
+                .arg("-L")
+                .arg(format!("dependency={}", dir.display()));
+        }
+    }
+    consumer.exec().unwrap();
+}
+
+#[cargo_test]
 fn ohm_reports_a_built_workspace_library_once_when_checking_it_and_its_dependent() {
     let project = ohm_workspace_project();
     project.change_file(
