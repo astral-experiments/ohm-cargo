@@ -469,6 +469,37 @@ fn wrapped_compiler_outputs_of_unused_dev_dependencies_stay_current() {
 }
 
 #[cargo_test]
+fn a_test_can_pass_a_dev_dependency_to_rustc_at_runtime() {
+    let wrapper = relink_only_wrapper();
+    let p = fixture("runtime-metadata");
+    p.change_file("helper/src/lib.rs", "pub fn value() {}");
+    seed(&p, &wrapper);
+    let metadata = p
+        .glob("target/**/libhelper-*.rmeta")
+        .next()
+        .unwrap()
+        .unwrap();
+    p.change_file("helper/src/lib.rs", "pub fn added() {}");
+    p.change_file("app/probe.rs", "fn main() { helper::added(); }");
+    p.change_file(
+        "app/src/lib.rs",
+        &source(2, false).replace(
+            "fn selected() {",
+            r#"fn selected() {
+                assert!(std::process::Command::new("rustc")
+                    .args(["probe.rs", "--emit=metadata", "--extern",
+                           concat!("helper=", env!("HELPER_RMETA"))])
+                    .status().unwrap().success());"#,
+        ),
+    );
+    command(&p, &wrapper, "")
+        .env("HELPER_RMETA", metadata)
+        .with_stderr_contains("[..]retrying complete graph[..]")
+        .run();
+    assert_eq!(log(&p, "runs.log"), "ran\n");
+}
+
+#[cargo_test]
 fn new_usage_retries_even_when_stale_artifacts_compile_successfully() {
     let wrapper = relink_only_wrapper();
     let p = fixture("new-usage");

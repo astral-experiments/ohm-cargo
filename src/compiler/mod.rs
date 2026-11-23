@@ -2430,8 +2430,14 @@ fn rustc(
             }
         }
 
-        let independent_inputs =
-            || ohm_early_tests::has_independent_inputs(&rustc_dep_info_loc, &cwd, &build_dir);
+        let independent_inputs = || {
+            ohm_early_tests::has_independent_inputs(
+                &rustc_dep_info_loc,
+                &cwd,
+                &build_dir,
+                record_dev_unused.then_some(pkg_root.as_path()),
+            )
+        };
         let mut accepted_early_test = false;
         if !deferred_dev_names.is_empty() || early_test.is_some() {
             let output = std::cell::RefCell::new(ohm_early_tests::Output::default());
