@@ -157,6 +157,47 @@ pub(crate) fn dependency(
     Some((dependency.unit.clone(), name))
 }
 
+/// Locates the producer's output rules when a wrapper can add arguments Cargo cannot see.
+pub(super) fn wrapped_library_dep_info(
+    runner: &BuildRunner<'_, '_>,
+    unit: &Unit,
+) -> Option<PathBuf> {
+    let rustc = runner.bcx.rustc();
+    (rustc.wrapper.is_some()
+        || (rustc.workspace_wrapper.is_some() && runner.bcx.ws.is_member_id(unit.pkg.package_id())))
+    .then(|| {
+        runner
+            .files()
+            .output_dir(unit)
+            .join(super::rustc_dep_info_name(runner, unit))
+    })
+}
+
+/// Accept only the three ordinary output rules of an rlib compilation.
+/// A wrapper can request additional files anywhere, including in the source tree.
+pub(super) fn has_only_library_outputs(dep_info: &Path) -> bool {
+    let Ok(bytes) = paths::read_regular_bounded(dep_info, 4 * 1024 * 1024) else {
+        return false;
+    };
+    let Ok(contents) = std::str::from_utf8(&bytes) else {
+        return false;
+    };
+    let Some(stem) = dep_info.file_stem().and_then(|s| s.to_str()) else {
+        return false;
+    };
+    let rlib = dep_info.with_file_name(format!("lib{stem}.rlib"));
+    let rmeta = dep_info.with_file_name(format!("lib{stem}.rmeta"));
+    let mut expected = BTreeSet::from([dep_info, rlib.as_path(), rmeta.as_path()]);
+    // Only nonempty rustc rules have the ": " separator. Unfamiliar target
+    // spellings (including escaped paths) take the ordinary build path.
+    for (target, _) in contents.lines().filter_map(|line| line.split_once(": ")) {
+        if !expected.remove(Path::new(target)) {
+            return false;
+        }
+    }
+    expected.is_empty()
+}
+
 /// An unused `--extern` does not rule out an `include_bytes!` of the library.
 /// A producer can also replace dep-info and extra compiler outputs such as MIR.
 /// Reject inputs in the build directory, including aliases through symlinked directories.

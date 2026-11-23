@@ -1675,6 +1675,15 @@ fn relinkable_dependencies(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> H
         .collect()
 }
 
+/// Returns the raw depfile name that rustc writes alongside the unit's artifacts.
+fn rustc_dep_info_name(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> String {
+    if let Some(extra) = build_runner.files().metadata(unit).c_extra_filename() {
+        format!("{}-{extra}.d", unit.target.crate_name())
+    } else {
+        format!("{}.d", unit.target.crate_name())
+    }
+}
+
 /// Creates a unit of work invoking `rustc` for building the `unit`.
 #[tracing::instrument(skip_all)]
 fn rustc(
@@ -1767,6 +1776,7 @@ fn rustc(
         check_hint.as_ref(),
     )
     .map(|(dependency, name)| {
+        let dep_info = ohm_early_tests::wrapped_library_dep_info(build_runner, &dependency);
         build_runner
             .early_test_dependencies
             .insert(unit.clone(), dependency.clone());
@@ -1775,7 +1785,7 @@ fn rustc(
             .entry(dependency)
             .or_default()
             .clone();
-        (completion, name)
+        (completion, name, dep_info)
     });
     if let Some(cache) = &relink_cache {
         cache.preserve_codegen(&mut rustc);
@@ -1819,13 +1829,7 @@ fn rustc(
     // don't pass the `-l` flags.
     let pass_l_flag = unit.target.is_lib() || !unit.pkg.targets().iter().any(|t| t.is_lib());
 
-    let dep_info_name =
-        if let Some(c_extra_filename) = build_runner.files().metadata(unit).c_extra_filename() {
-            format!("{}-{}.d", unit.target.crate_name(), c_extra_filename)
-        } else {
-            format!("{}.d", unit.target.crate_name())
-        };
-    let rustc_dep_info_loc = root.join(dep_info_name);
+    let rustc_dep_info_loc = root.join(rustc_dep_info_name(build_runner, unit));
     let dep_info_loc = fingerprint::dep_info_loc(build_runner, unit);
 
     let mut output_options = OutputOptions::for_dirty(build_runner, unit);
@@ -2018,7 +2022,7 @@ fn rustc(
                 })
             })
         });
-        let early_test = if let Some((completion, _)) = &early_test
+        let early_test = if let Some((completion, ..)) = &early_test
             && (unused_integration_dependency.is_none() || completion.is_finished())
         {
             // A test that starts after its library finished can compile against it normally.
@@ -2452,12 +2456,15 @@ fn rustc(
                 },
             );
             let output = output.into_inner();
-            if let Some((completion, extern_name)) = &early_test {
+            if let Some((completion, extern_name, dep_info)) = &early_test {
                 // Wait for the producer before publishing provisional output.
                 let producer_result = completion.wait();
                 accepted_early_test = producer_result.is_ok()
                     && result.is_ok()
                     && output.proves_unused(*extern_name)
+                    && dep_info
+                        .as_deref()
+                        .is_none_or(ohm_early_tests::has_only_library_outputs)
                     && independent_inputs();
                 if accepted_early_test {
                     // Linking may have finished before the producer. Record the

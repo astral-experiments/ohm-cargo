@@ -322,6 +322,8 @@ pub(crate) fn plan(
             || dep.pkg.manifest().links().is_some()
             || runner.find_build_script_units(dep).is_some()
             || runner.may_require_extra_outputs(dep)
+            || super::ohm_early_tests::wrapped_library_dep_info(runner, dep)
+                .is_some_and(|path| !super::ohm_early_tests::has_only_library_outputs(&path))
             || super::has_opaque_integration_linker_flags(runner, dep)
             || dep
                 .target
