@@ -321,6 +321,7 @@ pub(crate) fn plan(
             || dep.artifact.is_true()
             || dep.pkg.manifest().links().is_some()
             || runner.find_build_script_units(dep).is_some()
+            || runner.may_require_extra_outputs(dep)
             || super::has_opaque_integration_linker_flags(runner, dep)
             || dep
                 .target
