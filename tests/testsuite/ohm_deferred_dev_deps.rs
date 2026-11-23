@@ -447,6 +447,28 @@ fn requested_outputs_of_unused_dev_dependencies_stay_current() {
 }
 
 #[cargo_test]
+fn wrapped_compiler_outputs_of_unused_dev_dependencies_stay_current() {
+    let wrapper = relink_only_wrapper();
+    let p = fixture("wrapped-mir");
+    p.change_file(
+        ".cargo/config.toml",
+        "[env]\nWRAPPED_MIR_CRATE = 'helper'\n",
+    );
+    p.change_file("helper/src/lib.rs", "pub fn value() -> u32 { 12345 }");
+    seed(&p, &wrapper);
+    p.change_file("helper/src/lib.rs", "pub fn value() -> u32 { 67890 }");
+    p.change_file(
+        "app/src/lib.rs",
+        &source(2, false).replace(
+            "fn selected() {",
+            r#"fn selected() { assert!(include_str!("../../wrapped.mir").contains("67890"));"#,
+        ),
+    );
+    command(&p, &wrapper, "").run();
+    assert_eq!(log(&p, "runs.log"), "ran\n");
+}
+
+#[cargo_test]
 fn new_usage_retries_even_when_stale_artifacts_compile_successfully() {
     let wrapper = relink_only_wrapper();
     let p = fixture("new-usage");

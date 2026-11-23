@@ -4534,6 +4534,9 @@ pub(super) fn relink_only_wrapper() -> PathBuf {
                     {
                         command.arg("--force-warn=unused_crate_dependencies");
                     }
+                    if env::var("WRAPPED_MIR_CRATE").is_ok_and(|name| Some(name.as_str()) == crate_name(args)) {
+                        command.arg("--emit=mir=wrapped.mir");
+                    }
                     let mut output = command.output().expect("rustc should run");
                     // Model rustc's link-only marker on a dependency of an otherwise fresh binary.
                     if output.status.success() && crate_name(args) == Some("dep")
@@ -7183,6 +7186,7 @@ fn early_native_integration_tests_warm_evidence_and_fallback() {
         "opt-out",
         "new-use",
         "embedded-metadata",
+        "wrapped-mir",
         "current-missing-proof",
         "producer-error",
         "checked-unused",
@@ -7220,6 +7224,9 @@ fn early_native_integration_tests_warm_evidence_and_fallback() {
         .env("RUSTC_WRAPPER", &wrapper)
         .env("RELINK_WRAPPER_LOG", &log)
         .env("UNUSED_INTEGRATION_DEPENDENCY_PROOF", "1");
+        if case == "wrapped-mir" {
+            seed.env("WRAPPED_MIR_CRATE", "app");
+        }
         if case == "missing-proof" {
             seed.env("EARLY_TEST_MISSING_PROOF", "1");
         }
@@ -7271,7 +7278,7 @@ fn early_native_integration_tests_warm_evidence_and_fallback() {
                     | "checked-then-unused"
             ) {
                 "#[test] fn works() { assert_eq!(app::value(), 9); }"
-            } else if case == "embedded-metadata" {
+            } else if matches!(case, "embedded-metadata" | "wrapped-mir") {
                 r#"#[test] fn works() {
                     let bytes = include_bytes!(env!("APP_METADATA"));
                     assert!(bytes[..] == std::fs::read(env!("APP_METADATA")).unwrap()[..]);
@@ -7307,6 +7314,7 @@ fn early_native_integration_tests_warm_evidence_and_fallback() {
             "unused"
                 | "new-use"
                 | "embedded-metadata"
+                | "wrapped-mir"
                 | "current-missing-proof"
                 | "producer-error"
                 | "checked-unused"
@@ -7317,6 +7325,7 @@ fn early_native_integration_tests_warm_evidence_and_fallback() {
             case,
             "new-use"
                 | "embedded-metadata"
+                | "wrapped-mir"
                 | "current-missing-proof"
                 | "checked-missing-proof"
                 | "checked-other-features"
@@ -7348,6 +7357,10 @@ fn early_native_integration_tests_warm_evidence_and_fallback() {
                 .next()
                 .expect("package library metadata");
             command.env("APP_METADATA", metadata);
+        } else if case == "wrapped-mir" {
+            command
+                .env("WRAPPED_MIR_CRATE", "app")
+                .env("APP_METADATA", p.root().join("wrapped.mir"));
         }
         if case == "current-missing-proof" {
             command.env("EARLY_TEST_MISSING_PROOF", "1");
