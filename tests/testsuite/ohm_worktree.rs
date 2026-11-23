@@ -1296,6 +1296,12 @@ fn clippy_wrapper_scripts_still_deny_the_whole_seed() {
 fn metadata_only_cutoff_does_not_reuse_a_stale_executable() {
     let donor = git::new("donor", |p| {
         p.file(".gitignore", "/target\n/Cargo.lock\n")
+            // A local source path can change A's public hash across checkouts.
+            // Keep remapped paths identical so B can skip recompilation.
+            .file(
+                ".cargo/config.toml",
+                "[build]\nrustflags = ['--remap-path-scope=all']\n",
+            )
             .file(
                 "Cargo.toml",
                 r#"

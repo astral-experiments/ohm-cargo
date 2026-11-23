@@ -169,6 +169,7 @@ jobs:
             "$OHM_CARGO_TESTSUITE" "$test" --exact --include-ignored --nocapture
           done
           for test in \
+            metadata_only_cutoff_does_not_reuse_a_stale_executable \
             seeded_build_rechecks_competing_module_in_child \
             seeded_check_uses_the_recipients_warning_format \
             worktree_import_requires_cloning \
