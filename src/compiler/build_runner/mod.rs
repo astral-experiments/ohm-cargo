@@ -1985,7 +1985,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
                 self.lock_manager.lock_shared(self, &check)?;
             }
             if fingerprint::existing_unit_is_fresh(self, &check)?
-                || self.test_check_has_unsupported_flags(&check)
+                || self.may_require_extra_outputs(&check)
                 // Native metadata retains its native crate identity. Do not
                 // expose it to a consumer planned with the check identity.
                 || !self.is_terminal_check_unit(&check)
@@ -2079,10 +2079,9 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         Ok(())
     }
 
-    /// Rejects requested compiler outputs and unaudited user-supplied unstable options.
-    /// Native artifacts cannot provide check-specific assembly, IR, or tracing
-    /// output. Ordinary checking must handle these options itself.
-    fn test_check_has_unsupported_flags(&self, unit: &Unit) -> bool {
+    /// Whether skipping this compiler invocation could omit requested outputs.
+    /// Treat user-supplied unstable options conservatively.
+    pub(super) fn may_require_extra_outputs(&self, unit: &Unit) -> bool {
         let rustflags = self.configured_rustflags(unit);
         let extra_args = self
             .bcx

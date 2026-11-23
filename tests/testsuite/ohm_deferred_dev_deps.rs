@@ -428,6 +428,25 @@ fn embedding_unused_dev_artifacts_retries_with_current_bytes() {
 }
 
 #[cargo_test]
+fn requested_outputs_of_unused_dev_dependencies_stay_current() {
+    let wrapper = relink_only_wrapper();
+    let p = fixture("emit-mir");
+    p.change_file(
+        ".cargo/config.toml",
+        "[build]\nrustflags = ['--emit=mir']\n",
+    );
+    p.change_file("helper/src/lib.rs", "pub fn value() -> u32 { 12345 }");
+    seed(&p, &wrapper);
+    let mir = p.glob("target/**/helper-*.mir").next().unwrap().unwrap();
+    assert!(fs::read_to_string(&mir).unwrap().contains("12345"));
+    p.change_file("helper/src/lib.rs", "pub fn value() -> u32 { 67890 }");
+    p.change_file("app/src/lib.rs", &source(2, false));
+    command(&p, &wrapper, "").run();
+    assert!(fs::read_to_string(&mir).unwrap().contains("67890"));
+    assert_eq!(log(&p, "runs.log"), "ran\n");
+}
+
+#[cargo_test]
 fn new_usage_retries_even_when_stale_artifacts_compile_successfully() {
     let wrapper = relink_only_wrapper();
     let p = fixture("new-usage");
