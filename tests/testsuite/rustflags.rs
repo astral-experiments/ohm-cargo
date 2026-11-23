@@ -248,7 +248,7 @@ fn ohm_defaults_apply_to_host_and_target_units() {
     };
     p.cargo(default_check)
         .masquerade_as_nightly_cargo(&["ohm-defaults"])
-        // Only a terminal check that cannot share stages drops its public API hash.
+        // Even without shared stages, the terminal library needs stable references to dep.
         .env("CARGO_UNSTABLE_OHM_SHARED_STAGES", "false")
         .arg(rustc_host())
         .env("RUSTC_WRAPPER", &wrapper)
@@ -269,7 +269,7 @@ fn ohm_defaults_apply_to_host_and_target_units() {
     );
     assert_eq!(
         ohm_rustflags(&rustc_invocation(&invocations, "foo")),
-        ["-Zpublic-api-hash", "-Zpublic-api-hash=no",]
+        ["-Zpublic-api-hash"]
     );
 
     p.cargo("clean").run();

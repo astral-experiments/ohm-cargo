@@ -395,6 +395,28 @@ fn unit_worktree_seed_namespace(
     .then(|| build_runner.files().worktree_seed_namespace(unit))
 }
 
+/// Whether rustc can report nonempty Rust library metadata for this target.
+/// This includes library examples, but excludes binaries and native-only libraries.
+fn has_rust_library_metadata(unit: &Unit) -> bool {
+    let (TargetKind::Lib(types) | TargetKind::ExampleLib(types)) = unit.target.kind() else {
+        return false;
+    };
+    types
+        .iter()
+        .any(|ty| matches!(ty, CrateType::Lib | CrateType::Rlib | CrateType::Dylib))
+}
+
+/// A library's reported metadata can have readers outside the current graph.
+/// Its dependency references must survive edits that leave public hashes unchanged.
+fn check_references_dependency_metadata(runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
+    matches!(unit.mode, CompileMode::Check { test: false })
+        && has_rust_library_metadata(unit)
+        && runner
+            .unit_deps(unit)
+            .iter()
+            .any(|dep| has_rust_library_metadata(&dep.unit))
+}
+
 /// Skips public API production when an output cannot expose a reusable changed interface.
 fn unit_suppresses_default_public_api_hash(
     build_runner: &BuildRunner<'_, '_>,
@@ -402,7 +424,8 @@ fn unit_suppresses_default_public_api_hash(
 ) -> bool {
     build_runner.bcx.gctx.cli_unstable().ohm_defaults()
         && ((build_runner.is_terminal_check_unit(unit)
-            && !unit_uses_ohm_shared_stages(build_runner, unit))
+            && !unit_uses_ohm_shared_stages(build_runner, unit)
+            && !check_references_dependency_metadata(build_runner, unit))
             || matches!(unit.mode, CompileMode::Test | CompileMode::Doctest)
             || (matches!(unit.mode, CompileMode::Build | CompileMode::Check { .. })
                 && unit.target.is_lib()
@@ -584,7 +607,8 @@ fn local_terminal_warning(message: &serde_json::Value, is_local: impl Fn(&str) -
         && is_local(name)
 }
 
-/// Prefer whole-crate invalidation when every consumer previously ignored this library.
+/// Prefer whole-crate invalidation when the library still needs stable dependency
+/// references but no consumer needs a fine-grained public API hash.
 ///
 /// This only selects a rustc encoding strategy. Consumers still receive the library
 /// and all the usual freshness and link checks, even if their usage has since changed.
@@ -593,14 +617,28 @@ fn prefer_full_crate_hash(runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
     if !matches!(
         unit.mode,
         CompileMode::Build | CompileMode::Check { test: false }
-    ) || !unit.target.is_lib()
-        || unit.target.proc_macro()
+    ) || !has_rust_library_metadata(unit)
         || unit.artifact.is_true()
+    {
+        return false;
+    }
+    let terminal =
+        runner.is_terminal_check_unit(unit) && !unit_uses_ohm_shared_stages(runner, unit);
+    (terminal || only_unused_binary_consumers(runner, unit))
+        && fingerprint::unit_public_api_hash_override(runner, unit).is_none()
+        && runner
+            .bcx
+            .rustc()
+            .supports_metadata_hint(runner.bcx.gctx, "-Zohm-prefer-full-crate-hash")
+}
+
+/// Whether this package's binaries are the only consumers and previously ignored the library.
+fn only_unused_binary_consumers(runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
+    if !unit.target.is_lib()
         || !unit.profile.incremental
         || !runner.is_primary_package(unit)
         || !runner.bcx.roots.contains(unit)
         || runner.bcx.roots.iter().any(|root| root.pkg != unit.pkg)
-        || fingerprint::unit_public_api_hash_override(runner, unit).is_some()
     {
         return false;
     }
@@ -620,10 +658,6 @@ fn prefer_full_crate_hash(runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
         }
     }
     found_consumer
-        && runner
-            .bcx
-            .rustc()
-            .supports_metadata_hint(runner.bcx.gctx, "-Zohm-prefer-full-crate-hash")
 }
 
 /// Shares compiler identity across ordinary debug checks and builds, including
