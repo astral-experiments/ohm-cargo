@@ -673,17 +673,24 @@ fn previous_dependency_changes(fingerprint: &Fingerprint) -> PreviousDependencyC
 
 /// An unchanged crate-local API hash cannot hide changed metadata inherited
 /// from a dependency, such as a newly available foreign trait implementation.
-/// A pipelined check can finish before its dependency finalizes that metadata.
-fn metadata_dependency_may_have_changed(fingerprint: &Fingerprint) -> bool {
+/// A transitive terminal key can cover that change only in the current graph.
+/// Still fail closed if a pipelined dependency hasn't finished or a dependency
+/// was rebuilt separately before this invocation.
+fn metadata_dependency_may_have_changed(fingerprint: &Fingerprint, transitive_check: bool) -> bool {
     fingerprint
         .previously_changed_metadata_dependency
         .load(Ordering::Acquire)
         || fingerprint.deps.iter().any(|dependency| {
             dependency.carries_metadata
-                && matches!(
-                    dependency.fingerprint.build_state(),
-                    BuildState::Pending | BuildState::BuiltChanged
-                )
+                && match dependency.fingerprint.build_state() {
+                    BuildState::Pending => true,
+                    BuildState::BuiltChanged => {
+                        !transitive_check || !dependency.only_requires_rmeta
+                    }
+                    BuildState::BuiltUnchanged
+                    | BuildState::SkippedEarlyCutoff
+                    | BuildState::Fresh => false,
+                }
         })
 }
 
@@ -1169,23 +1176,28 @@ pub fn prepare_target(
     // A terminal hash covers the selected binaries. Other binaries may have
     // cached diagnostics referring to positions in the old metadata. Keep
     // the new mtime so those consumers go stale when selected again.
+    let terminal = super::terminal_check_hash(build_runner, unit, false);
+    let transitive_check = terminal
+        && has_exclusive_metadata_access
+        && super::supports_transitive_check_hash(build_runner, unit)
+        && super::terminal_check_hash(build_runner, unit, true);
     let previous_metadata = (unit_uses_public_api_hash(build_runner, unit)
         && has_exclusive_metadata_access
-        && !super::terminal_check_hash(build_runner, unit, false))
-    .then(|| {
-        fingerprint
-            .outputs
-            .iter()
-            .find(|output| {
-                output.extension().and_then(|extension| extension.to_str()) == Some("rmeta")
-            })
-            .and_then(|output| {
-                paths::mtime(output)
-                    .ok()
-                    .map(|mtime| (output.clone(), mtime))
-            })
-    })
-    .flatten();
+        && !terminal)
+        .then(|| {
+            fingerprint
+                .outputs
+                .iter()
+                .find(|output| {
+                    output.extension().and_then(|extension| extension.to_str()) == Some("rmeta")
+                })
+                .and_then(|output| {
+                    paths::mtime(output)
+                        .ok()
+                        .map(|mtime| (output.clone(), mtime))
+                })
+        })
+        .flatten();
 
     let check_output_unchanged =
         move |state: &super::JobState<'_, '_>,
@@ -1212,7 +1224,9 @@ pub fn prepare_target(
 
             let unchanged_public_api_hash =
                 old_public_api_hash.as_ref() == Some(&new_public_api_hash);
-            if unchanged_public_api_hash && !metadata_dependency_may_have_changed(fingerprint) {
+            if unchanged_public_api_hash
+                && !metadata_dependency_may_have_changed(fingerprint, transitive_check)
+            {
                 preserve_metadata_generation(fingerprint, previous_metadata.as_ref());
                 *fingerprint.fs_status.lock().unwrap() = FsStatus::OutputUnchanged {
                     unit: fingerprint.index,
@@ -2942,6 +2956,9 @@ fn calculate_normal(
     // Force a new artifact notification when the graph needs the exact key again.
     if super::terminal_check_hash(build_runner, unit, false) {
         ("ohm-terminal-declaration-hash", 2_u8).hash(&mut config);
+        if super::supports_transitive_check_hash(build_runner, unit) {
+            "ohm-transitive-check-hash-v1".hash(&mut config);
+        }
     }
     if super::unit_suppresses_default_public_api_hash(build_runner, unit) {
         ("ohm-terminal-check-public-api-hash", 1_u8).hash(&mut config);
@@ -4494,11 +4511,16 @@ mod early_cutoff_tests {
     #[test]
     fn changed_or_pending_metadata_dependency_propagates_through_unchanged_public_api() {
         for state in [BuildState::BuiltChanged, BuildState::Pending] {
+            let pending = matches!(state, BuildState::Pending);
             let dependency = make_fingerprint(FsStatus::Stale, state);
             let mut fingerprint = make_stale_due_to_dep();
             fingerprint.deps.push(make_dep_fingerprint(dependency));
 
-            assert!(metadata_dependency_may_have_changed(&fingerprint));
+            assert!(metadata_dependency_may_have_changed(&fingerprint, false));
+            assert_eq!(
+                metadata_dependency_may_have_changed(&fingerprint, true),
+                pending
+            );
         }
     }
 
@@ -4517,7 +4539,8 @@ mod early_cutoff_tests {
             .previously_changed_metadata_dependency
             .store(true, Ordering::Release);
 
-        assert!(metadata_dependency_may_have_changed(&fingerprint));
+        assert!(metadata_dependency_may_have_changed(&fingerprint, false));
+        assert!(metadata_dependency_may_have_changed(&fingerprint, true));
     }
 
     #[test]
@@ -4529,7 +4552,7 @@ mod early_cutoff_tests {
         let mut fingerprint = make_stale_due_to_dep();
         fingerprint.deps.push(dependency);
 
-        assert!(!metadata_dependency_may_have_changed(&fingerprint));
+        assert!(!metadata_dependency_may_have_changed(&fingerprint, false));
     }
 
     #[test]
@@ -4538,7 +4561,7 @@ mod early_cutoff_tests {
         let mut fingerprint = make_stale_due_to_dep();
         fingerprint.deps.push(make_dep_fingerprint(dependency));
 
-        assert!(!metadata_dependency_may_have_changed(&fingerprint));
+        assert!(!metadata_dependency_may_have_changed(&fingerprint, false));
     }
 
     #[test]
