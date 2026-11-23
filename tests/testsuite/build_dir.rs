@@ -3785,7 +3785,12 @@ fn shared_registry_cache_defaults_preserve_ordinary_layout_without_build_directo
         .run();
 
     let target = project.root().join("target");
-    assert!(target.join("debug/.fingerprint").is_dir());
+    let fingerprint = if target.join("debug/.fingerprint").is_dir() {
+        "debug/.fingerprint/ordinary-registry-*/lib-ordinary_registry"
+    } else {
+        "debug/build/ordinary-registry/*/fingerprint/lib-ordinary_registry"
+    };
+    assert_exists_patterns_with_base_dir(&target, &[fingerprint]);
     assert!(!target.join(".ohm-shared-registry-cache-v1").exists());
     assert!(!target.join("debug/build/registries").exists());
 }
