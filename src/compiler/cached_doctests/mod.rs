@@ -13,6 +13,7 @@ use super::{
 };
 use crate::util::data_structures::HashSet;
 use crate::util::{CargoResult, add_path_args, path_args};
+use crate::workspace::features::OhmProcMacroTrust;
 use crate::workspace::{Edition, profiles::PanicStrategy};
 
 /// Rustdoc handles requests whose arguments can change which snippets get compiled.
@@ -30,6 +31,7 @@ pub(super) fn enabled(bcx: &BuildContext<'_, '_>, unit: &Unit) -> bool {
 /// Checks whether rustdoc or an example can expand a macro with untracked inputs.
 /// A Rust library can re-export another crate's macro. A build script cannot.
 fn has_untrusted_proc_macro(br: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
+    let mut macros = Vec::new();
     let mut pending = vec![unit];
     let mut visited = HashSet::default();
     while let Some(unit) = pending.pop() {
@@ -39,7 +41,11 @@ fn has_untrusted_proc_macro(br: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
             continue;
         }
         if unit.target.proc_macro() {
-            return true;
+            if br.bcx.gctx.cli_unstable().ohm_proc_macro_trust != OhmProcMacroTrust::All {
+                return true;
+            }
+            macros.push((unit, true));
+            continue;
         }
         pending.extend(
             br.unit_deps(unit)
@@ -47,6 +53,28 @@ fn has_untrusted_proc_macro(br: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
                 .filter(|dep| dep.unit.target.is_linkable() && !dep.unit.artifact.is_true())
                 .map(|dep| &dep.unit),
         );
+    }
+
+    // Helpers run inside the macro too. Workspace macros may use workspace
+    // libraries, but a registry macro cannot inherit trust for a local patch.
+    let mut checked = HashSet::default();
+    while let Some((unit, allow_workspace)) = macros.pop() {
+        if !checked.insert((unit, allow_workspace)) {
+            continue;
+        }
+        let workspace = allow_workspace && br.bcx.ws.is_member(&unit.pkg);
+        if workspace {
+            if unit.target.is_custom_build() {
+                return true;
+            }
+        } else if !br
+            .bcx
+            .audited_proc_macro_packages
+            .contains(&unit.pkg.package_id())
+        {
+            return true;
+        }
+        macros.extend(br.unit_deps(unit).iter().map(|dep| (&dep.unit, workspace)));
     }
     false
 }

@@ -157,7 +157,7 @@ pub enum OhmProcMacroTrust {
     Audited,
     /// Trust every authenticated crates.io macro, even when expansion observes untracked inputs.
     /// Also allow local procedural-macro outputs when importing a workspace snapshot
-    /// or reusing built workspace dependencies during checks.
+    /// or reusing built workspace dependencies and compiled doctests.
     ///
     /// This explicit opt-in is potentially unsound: macros can inspect files, environment
     /// variables, randomness, or emit observable output without recording those dependencies.
