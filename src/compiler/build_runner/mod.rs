@@ -826,14 +826,15 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
     ) -> CargoResult<Compilation<'gctx>> {
         let bcx = self.bcx;
         let reserve_checksum_slots = self.reserve_checksum_slots;
-        let retry = self.deferred_dev_deps.retry.clone();
+        let attempt = self.deferred_dev_deps.clone();
         let result = self.retry_with_shared_cache_write_locks(|runner| {
             runner.compile_inner(exec, preserve_existing_check_graph)
         });
-        if result.is_err() && retry.load(std::sync::atomic::Ordering::Relaxed) {
+        if result.is_err() && attempt.retry_requested() {
             tracing::info!(target: "cargo::compiler::ohm_deferred_dev_deps", "retrying complete graph");
             let mut runner = Self::new_with_checksum_reservations(bcx, reserve_checksum_slots)?;
             runner.deferred_dev_deps.disabled = true;
+            runner.deferred_dev_deps.reported = attempt.reported;
             return runner.retry_with_shared_cache_write_locks(|runner| {
                 runner.compile_inner(exec, preserve_existing_check_graph)
             });
@@ -848,8 +849,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
     ) -> CargoResult<T> {
         let bcx = self.bcx;
         let reserve_checksum_slots = self.reserve_checksum_slots;
-        let deferred_disabled = self.deferred_dev_deps.disabled;
-        let deferred_retry = self.deferred_dev_deps.retry.clone();
+        let deferred = self.deferred_dev_deps.clone();
         let mut exclusive = self.exclusive_shared_cache_units.clone();
         let mut runner = self;
         loop {
@@ -862,8 +862,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
                         bail!("shared registry writer reservation did not make progress");
                     }
                     runner = Self::new_with_checksum_reservations(bcx, reserve_checksum_slots)?;
-                    runner.deferred_dev_deps.disabled = deferred_disabled;
-                    runner.deferred_dev_deps.retry = deferred_retry.clone();
+                    runner.deferred_dev_deps = deferred.clone();
                     runner.exclusive_shared_cache_units = exclusive.clone();
                 }
                 result => return result,

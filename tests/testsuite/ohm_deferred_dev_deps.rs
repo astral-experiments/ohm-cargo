@@ -546,6 +546,62 @@ fn new_usage_retries_even_when_stale_artifacts_compile_successfully() {
 }
 
 #[cargo_test]
+fn retry_reports_retained_artifacts_and_diagnostics_once() {
+    let wrapper = relink_only_wrapper();
+    let p = fixture("retained-messages");
+    let manifest = fs::read_to_string(p.root().join("app/Cargo.toml")).unwrap();
+    p.change_file(
+        "app/Cargo.toml",
+        &format!("{manifest}\n[dependencies]\nbase = {{ path = \"../base\" }}\n"),
+    );
+    fs::create_dir_all(p.root().join("base/src")).unwrap();
+    p.change_file(
+        "base/Cargo.toml",
+        &cargo_test_support::basic_manifest("base", "0.1.0"),
+    );
+    p.change_file(
+        "base/build.rs",
+        r#"fn main() {
+            println!("cargo:rerun-if-changed=build.rs");
+            println!("cargo:warning=retained script");
+        }"#,
+    );
+    p.change_file("base/src/lib.rs", "pub fn base() {}");
+    seed(&p, &wrapper);
+
+    p.change_file("base/src/lib.rs", "pub fn base() { let unused = 2; }");
+    p.change_file("app/src/lib.rs", &source(2, true));
+    let output = command(&p, &wrapper, "--message-format=json")
+        .with_stderr_contains("[..]retrying complete graph[..]")
+        .run();
+    let mut fresh = Vec::new();
+    let mut scripts = 0;
+    let mut warnings = 0;
+    for line in String::from_utf8_lossy(&output.stdout).lines() {
+        let Ok(message) = serde_json::from_str::<serde_json::Value>(line) else {
+            continue;
+        };
+        match message["reason"].as_str() {
+            Some("compiler-artifact") if message["target"]["name"] == "base" => {
+                fresh.push(message["fresh"].as_bool().unwrap());
+            }
+            Some("build-script-executed") => scripts += 1,
+            Some("compiler-message")
+                if message["message"]["code"]["code"] == "unused_variables" =>
+            {
+                warnings += 1
+            }
+            _ => {}
+        }
+    }
+    assert_eq!(fresh, [false]);
+    assert_eq!(scripts, 1);
+    assert_eq!(warnings, 1);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(stderr.matches("retained script").count(), 1);
+}
+
+#[cargo_test]
 fn invalid_prior_proof_and_changed_configuration_keep_the_complete_graph() {
     let wrapper = relink_only_wrapper();
     for case in [

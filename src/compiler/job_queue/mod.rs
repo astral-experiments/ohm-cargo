@@ -806,7 +806,8 @@ impl<'gctx> DrainState<'gctx> {
                     }
                     Err(error) => {
                         self.settle(build_runner, id, false);
-                        let show_warnings = true;
+                        // Reserve failure diagnostics for errors that reach the caller.
+                        let show_warnings = !error.is::<super::ohm_deferred_dev_deps::Retry>();
                         self.emit_log_messages(&unit, build_runner, show_warnings)?;
                         self.back_compat_notice(build_runner, &unit)?;
                         return Err(ErrorToHandle {
@@ -1549,17 +1550,23 @@ impl<'gctx> DrainState<'gctx> {
         build_runner: &mut BuildRunner<'_, '_>,
     ) -> CargoResult<()> {
         if unit.mode.is_run_custom_build() {
-            self.emit_log_messages(
-                unit,
-                build_runner,
-                unit.show_warnings(build_runner.bcx.gctx),
-            )?;
+            let replay = build_runner.deferred_dev_deps.already_reported(unit)
+                && matches!(
+                    build_runner.fingerprints[unit].build_state(),
+                    super::fingerprint::BuildState::Fresh
+                );
+            let show_warnings = unit.show_warnings(build_runner.bcx.gctx) && !replay;
+            self.emit_log_messages(unit, build_runner, show_warnings)?;
         }
         let unblocked = self.queue.finish(unit, &artifact);
         match artifact {
             Artifact::All => {
                 if unit.mode.is_run_custom_build() {
                     self.pending_scripts -= 1;
+                }
+                let deferred = &build_runner.deferred_dev_deps;
+                if !deferred.dependencies.is_empty() {
+                    deferred.reported.borrow_mut().insert(unit.clone());
                 }
                 self.timings.unit_finished(build_runner, id, unblocked);
                 crate::ops::ReadyTests::unit_finished(build_runner, unit)?;
