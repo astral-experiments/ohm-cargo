@@ -920,11 +920,13 @@ fn compile<'gctx>(
                     rustc(build_runner, unit, exec, force)?
                 };
                 job.before(work.then(link_targets(build_runner, unit, false)?));
-            } else if !(build_runner.is_metadata_only_reused_registry_dependency(unit)
-                && build_runner.has_separate_check_root(unit))
+            } else if build_runner.shares_library_report(unit)
+                && build_runner.is_metadata_only_reused_registry_dependency(unit)
             {
-                // A fresh metadata-only dependency has nothing to publish when its
-                // check root already reports the library's diagnostics and artifact.
+                // The check root already emits the diagnostics. Report the metadata
+                // used by its dependents without replaying those diagnostics again.
+                job.before(link_targets(build_runner, unit, true)?);
+            } else {
                 let output_options = OutputOptions::for_fresh(build_runner, unit);
                 let manifest = ManifestErrorContext::new(build_runner, unit);
                 let work = replay_output_cache(
@@ -2927,7 +2929,10 @@ fn link_targets(
 ) -> CargoResult<Work> {
     let bcx = build_runner.bcx;
     let outputs = build_runner.outputs(unit)?;
-    if !bcx.build_config.emit_json() && outputs.iter().all(|output| output.hardlink.is_none()) {
+    let json_messages = bcx.build_config.emit_json()
+        && !(fresh && build_runner.deferred_dev_deps.already_reported(unit))
+        && !(unit.mode.is_check() && build_runner.shares_library_report(unit));
+    if !json_messages && outputs.iter().all(|output| output.hardlink.is_none()) {
         return Ok(Work::noop());
     }
     let export_dir = build_runner.files().export_dir();
@@ -2949,11 +2954,8 @@ fn link_targets(
         && build_runner.is_metadata_only_reused_registry_dependency(unit);
     let additional_check_artifact = matches!(bcx.build_config.intent, UserIntent::Check { .. })
         && build_runner.is_reused_registry_dependency(unit)
-        && !metadata_only_artifact
-        && !build_runner.has_separate_check_root(unit);
+        && !metadata_only_artifact;
     let features = unit.features.iter().map(|s| s.to_string()).collect();
-    let json_messages = bcx.build_config.emit_json()
-        && !(fresh && build_runner.deferred_dev_deps.already_reported(unit));
     let executable = build_runner.get_executable(unit)?;
     let test_output_views = (json_messages
         && unit_mode.is_any_test()
