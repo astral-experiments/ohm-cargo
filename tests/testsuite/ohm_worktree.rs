@@ -28,6 +28,38 @@ fn seeded_cargo(project: &Project, command: &str) -> Execs {
     cargo
 }
 
+#[cargo_test(nightly, reason = "Ohm defaults require the Ohm compiler")]
+fn full_debug_info_keeps_the_checkout_path_by_default() {
+    let p = project()
+        .file("src/lib.rs", "pub fn answer() -> u8 { 42 }")
+        .build();
+
+    for (debug, flags, remapped) in [
+        ("full", "", false),
+        ("line-tables-only", "", true),
+        ("limited", "", true),
+        ("line-tables-only", "-g", false),
+        ("line-tables-only", "-C debuginfo=2", false),
+        ("full", "-Cdebuginfo=0", true),
+    ] {
+        let mut build = seeded_cargo(&p, "build -v");
+        build
+            .env("CARGO_PROFILE_DEV_DEBUG", debug)
+            .env("RUSTFLAGS", flags);
+        if remapped {
+            build.with_stderr_contains("[..]-Zremap-cwd-prefix=[..]");
+        } else {
+            build.with_stderr_does_not_contain("[..]-Zremap-cwd-prefix=[..]");
+        }
+        build.run();
+    }
+
+    seeded_cargo(&p, "-Zohm-worktree-seeds=yes build -v")
+        .env("CARGO_PROFILE_DEV_DEBUG", "full")
+        .with_stderr_contains("[..]-Zremap-cwd-prefix=[..]")
+        .run();
+}
+
 #[cargo_test]
 fn coverage_uses_source_paths_from_the_checkout() {
     let p = project()

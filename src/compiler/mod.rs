@@ -259,7 +259,8 @@ fn worktree_seed_remap(
         .map(|arg| arg.as_str())
         .chain(extra_args.iter().map(String::as_str))
         .chain(flags.iter().map(String::as_str));
-    let enabled = build_runner.bcx.gctx.cli_unstable().ohm_worktree_seeds()
+    let unstable = build_runner.bcx.gctx.cli_unstable();
+    let enabled = unstable.ohm_worktree_seeds()
         && !unit.is_std
         && unit.pkg.package_id().source_id().is_path()
         && unit.profile.trim_paths.is_none();
@@ -272,6 +273,7 @@ fn worktree_seed_remap(
     let mut local_inputs = true;
     let mut local_sources = true;
     let mut coverage = false;
+    let mut full_debug_info = unit.profile.debuginfo.into_inner() == TomlDebugInfo::Full;
     let skip_remap = may_have_compiler_option(compiler_args, |name, value, possible_operand| {
         match name {
             // The seed's cwd mapping wins over explicit rules.
@@ -284,6 +286,8 @@ fn worktree_seed_remap(
                 use_object_scope = false;
                 local_inputs = false;
             }
+            "g" => full_debug_info = true,
+            "debuginfo" => full_debug_info = matches!(value, "2" | "full"),
             // llvm-cov opens the source filenames embedded in instrumented artifacts.
             "instrument-coverage" | "instrument_coverage" => {
                 coverage = !matches!(value, "0" | "n" | "no" | "off" | "false");
@@ -293,6 +297,12 @@ fn worktree_seed_remap(
         possible_operand
     });
     if skip_remap || coverage {
+        return None;
+    }
+    // With a synthetic compilation directory, a debugger can silently open
+    // source in the wrong checkout. Prefer real paths for full debuginfo
+    // unless the user explicitly requested worktree seeding.
+    if full_debug_info && !rustdoc && unstable.ohm_worktree_seeds.is_none() {
         return None;
     }
     let flags: &'static [&str] = if use_object_scope {
