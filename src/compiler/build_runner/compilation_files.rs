@@ -2657,11 +2657,19 @@ fn compute_metadata(
     let unoptimized_helper = matches!(unit.profile.rustflags.as_slice(),
         [flag] if flag.as_str() == OHM_MACRO_HELPER_OFF)
         && bcx.gctx.cli_unstable().ohm_defaults();
-    if unoptimized_helper {
+    let split_helper = matches!(unit.profile.rustflags.as_slice(),
+        [flag] if flag.as_str() == OHM_MACRO_HELPER)
+        && unit.profile.codegen_units == Some(2)
+        && bcx.gctx.cli_unstable().ohm_defaults();
+    if unoptimized_helper || split_helper {
         // Changing a proc macro's optimization budget should leave symbol
         // names in every downstream crate unchanged. Preserve the original
-        // level-1 marker for -Cmetadata and distinguish the real flag below.
+        // single-unit, level-1 profile for -Cmetadata and distinguish
+        // the actual settings in the artifact identity below.
         let mut symbol_profile = unit.profile.clone();
+        if split_helper {
+            symbol_profile.codegen_units = Some(1);
+        }
         symbol_profile.rustflags[0] = OHM_MACRO_HELPER.into();
         symbol_profile.hash(&mut shared_hasher);
     } else {
@@ -2752,6 +2760,8 @@ fn compute_metadata(
     let mut unit_id_hasher = shared_hasher.clone();
     if unoptimized_helper {
         OHM_MACRO_HELPER_OFF.hash(&mut unit_id_hasher);
+    } else if split_helper {
+        (OHM_MACRO_HELPER, unit.profile.codegen_units).hash(&mut unit_id_hasher);
     }
     if shared_stages {
         unit.mode.hash(&mut unit_id_hasher);
@@ -2791,6 +2801,9 @@ fn compute_metadata(
     // metadata, so switching between those roles does not evict either cache.
     if crate::compiler::unit_suppresses_default_public_api_hash(build_runner, unit) {
         "ohm-terminal-check-no-public-api-hash".hash(&mut unit_id_hasher);
+    }
+    if crate::compiler::unit_uses_ohm_build_helper(build_runner, unit) {
+        crate::compiler::OHM_BUILD_HELPER_RUSTFLAGS.hash(&mut unit_id_hasher);
     }
     if crate::compiler::unit_uses_ohm_incremental_codegen(build_runner, unit) {
         "ohm-incremental-codegen-defaults".hash(&mut unit_id_hasher);

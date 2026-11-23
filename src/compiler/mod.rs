@@ -152,6 +152,11 @@ use rustfix::diagnostics::Applicability;
 const RUSTDOC_CRATE_VERSION_FLAG: &str = "--crate-version";
 const OHM_DEFAULT_RUSTFLAGS: [&str; 2] = ["-Zpublic-api-hash", "-Zthreads=8"];
 const OHM_EARLY_METADATA_RUSTFLAG: &str = "-Zohm-early-metadata";
+// Allow rustc's short level-0 inlining pipeline to see the entire build helper.
+const OHM_BUILD_HELPER_RUSTFLAGS: [&str; 2] = [
+    "-Ccodegen-units=1",
+    "-Zllvm-module-flag=ohm.build-script-helper:u32:1:max",
+];
 const OHM_INCREMENTAL_CODEGEN_RUSTFLAGS: [&str; 2] =
     ["-Zohm-caller-local-cgus", "-Zohm-stable-cgu-merging"];
 
@@ -653,6 +658,32 @@ fn registry_observer_history(
         return None;
     }
     build_runner.files().registry_observer_hint(unit)
+}
+
+/// Workspace generators run during a cold check as well as a build. Limit the
+/// extra LLVM work to their level-0 host libraries under an unmodified profile.
+fn unit_uses_ohm_build_helper(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
+    let bcx = build_runner.bcx;
+    unit.kind == CompileKind::Host
+        && unit.mode == CompileMode::Build
+        && unit.profile.opt_level.as_str() == "0"
+        && unit.profile.codegen_units.is_none()
+        && unit.profile.codegen_backend.is_none()
+        && unit.profile.debuginfo.into_inner() == TomlDebugInfo::None
+        && unit.profile.rustflags.is_empty()
+        && unit.target.is_lib()
+        && !unit.artifact.is_true()
+        && unit
+            .target
+            .rustc_crate_types()
+            .iter()
+            .all(|ty| matches!(ty, CrateType::Lib | CrateType::Rlib))
+        && bcx
+            .profiles
+            .is_workspace_build_helper(unit.pkg.package_id())
+        && bcx.ws.is_member(&unit.pkg)
+        && bcx.extra_args_for(unit).is_none_or(|args| args.is_empty())
+        && build_runner.configured_rustflags(unit).is_empty()
 }
 
 fn unit_uses_ohm_incremental_codegen(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
@@ -3141,6 +3172,9 @@ fn prepare_rustc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
                 .is_ok_and(|info| info.is_file() && info.len() <= 16 * 1024)
         {
             base.arg("-Zthreads=1");
+        }
+        if unit_uses_ohm_build_helper(build_runner, unit) {
+            base.args(&OHM_BUILD_HELPER_RUSTFLAGS);
         }
         if unit_uses_ohm_incremental_codegen(build_runner, unit) {
             base.args(&OHM_INCREMENTAL_CODEGEN_RUSTFLAGS);

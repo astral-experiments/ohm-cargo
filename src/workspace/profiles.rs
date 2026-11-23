@@ -68,10 +68,12 @@ pub struct Profiles {
     requested_profile: InternedString,
     /// The host target for rustc being used by this `Profiles`.
     rustc_host: InternedString,
-    /// Whether the compiler host and requested profile allow grouping proc-macro helpers.
-    ohm_macro_helpers: bool,
+    /// Whether the compiler host and requested profile allow grouping host helpers.
+    ohm_host_helpers: bool,
     /// Registry dependencies declared by procedural macros in this workspace.
     workspace_macro_deps: HashMap<(SourceId, InternedString), Vec<Dependency>>,
+    /// Path dependencies named by a workspace build script and no other workspace target.
+    workspace_build_deps: HashSet<SourceId>,
 }
 
 pub(crate) const OHM_MACRO_HELPER: &str = "-Zllvm-module-flag=ohm.proc-macro-helper:u32:1:max";
@@ -97,8 +99,9 @@ impl Profiles {
             original_profiles: profiles.clone(),
             requested_profile,
             rustc_host,
-            ohm_macro_helpers: false,
+            ohm_host_helpers: false,
             workspace_macro_deps: HashMap::default(),
+            workspace_build_deps: HashSet::default(),
         };
 
         Self::add_root_profiles(
@@ -130,10 +133,27 @@ impl Profiles {
         // This simplifies the API (no need for CargoResult), and enforces
         // assumptions about how config profiles are loaded.
         let maker = profile_makers.get_profile_maker(&requested_profile)?;
-        profile_makers.ohm_macro_helpers = gctx.cli_unstable().ohm_defaults()
+        profile_makers.ohm_host_helpers = gctx.cli_unstable().ohm_defaults()
             && rustc_host == "x86_64-unknown-linux-gnu"
-            && maker.can_group_macro_helpers();
-        if profile_makers.ohm_macro_helpers {
+            && maker.can_group_host_helpers();
+        if profile_makers.ohm_host_helpers {
+            // Keep the same budget across commands and across direct and transitive
+            // uses of a library. Exclude paths that also appear as normal or dev
+            // dependencies, even if those declarations happen to be inactive.
+            let mut other_paths = HashSet::default();
+            for dep in ws.members().flat_map(|member| member.dependencies()) {
+                if dep.source_id().is_path() {
+                    if dep.kind() == DepKind::Build {
+                        profile_makers.workspace_build_deps.insert(dep.source_id());
+                    } else {
+                        other_paths.insert(dep.source_id());
+                    }
+                }
+            }
+            profile_makers
+                .workspace_build_deps
+                .retain(|s| !other_paths.contains(s));
+
             for member in ws.members().filter(|p| p.proc_macro()) {
                 for dep in member.dependencies() {
                     if dep.kind() == DepKind::Normal && dep.source_id().is_registry() {
@@ -317,7 +337,16 @@ impl Profiles {
 
     /// Whether this unit is in a host subtree where Ohm may group registry libraries.
     pub(crate) fn in_macro_helper_tree(&self, unit_for: UnitFor) -> bool {
-        self.ohm_macro_helpers && unit_for.proc_macro_helper && unit_for.is_for_host()
+        self.ohm_host_helpers && unit_for.proc_macro_helper && unit_for.is_for_host()
+    }
+
+    /// Whether the level-1 dev profile permits grouping this workspace build helper.
+    pub(crate) fn is_workspace_build_helper(&self, pkg: PackageId) -> bool {
+        self.workspace_build_deps.contains(&pkg.source_id())
+            && !self
+                .get_profile_maker(&self.requested_profile)
+                .unwrap()
+                .has_package_override(pkg)
     }
 
     /// Retrieves the profile for a target.
@@ -338,17 +367,18 @@ impl Profiles {
             && pkg_id.source_id().is_registry()
             && !maker.has_package_override(pkg_id)
         {
-            // Keep grouping helpers to avoid local ThinLTO. When a workspace
-            // macro declares a dependency on this library, reserve the extra
-            // optimization for compatible versions. Use the same decision for
-            // all consumers, including macros outside the workspace.
-            profile.codegen_units = Some(1);
+            // When a workspace macro declares a dependency on this library,
+            // reserve the extra optimization for compatible versions. Use the
+            // same decision for all consumers, including other macros.
             let key = (pkg_id.source_id(), pkg_id.name());
             let optimize = self.workspace_macro_deps.get(&key).is_none_or(|deps| {
                 // A compatible prerelease may have been selected with -Zprerelease.
                 deps.iter()
                     .any(|dep| dep.matches_id(pkg_id, VersionReqMatchMode::Prerelease))
             });
+            // Allow rustc to separate token processing from the rest of a
+            // large helper. Smaller helpers still fit in one codegen unit.
+            profile.codegen_units = Some(if optimize { 2 } else { 1 });
             let flag = if optimize {
                 OHM_MACRO_HELPER
             } else {
@@ -509,7 +539,7 @@ impl ProfileMaker {
     }
 
     /// Only group helpers in level-1 dev profiles without global build overrides.
-    fn can_group_macro_helpers(&self) -> bool {
+    fn can_group_host_helpers(&self) -> bool {
         let Some(toml) = &self.toml else {
             return false;
         };
