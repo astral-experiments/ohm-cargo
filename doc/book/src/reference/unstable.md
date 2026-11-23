@@ -2139,10 +2139,15 @@ Requests with name filters, `--exact`, or `--list` can use the cache. Other
 test arguments and custom rustdoc flags use ordinary rustdoc. A library with a
 `compile_fail`, standalone, or otherwise unmergeable example also runs through
 rustdoc. Cargo also uses rustdoc if a build script adds a search path for
-external Rust crates or if an example or doc attribute could invoke a procedural
-macro outside the trusted shared registry cache. This includes macros
-re-exported by a dependency. Such macros can read files and environment
-variables that are absent from the compiler's dependency information.
+external Rust crates. Under the default macro policy, an example or doc
+attribute that could invoke a procedural macro outside the trusted shared
+registry cache also runs through rustdoc. This includes re-exported macros.
+
+[Setting macro trust to `all`](#ohm-proc-macro-trust) allows reuse with
+workspace macros and authenticated crates.io macros even in a private target
+directory. If a macro reads an untracked file or environment variable, Cargo
+may run a stale example. Use `-Zohm-proc-macro-trust=audited` to restore the
+default or `-Zohm-cached-doctests=no` to bypass the cache altogether.
 
 Generated code retains the original test names. Panic locations in merged
 examples can refer to the generated source.
@@ -2214,7 +2219,8 @@ Ohm defaults to `audited`, which permits registry-macro reuse only for audited
 macro and helper releases. Set `CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST=all` to trust
 all authenticated crates.io macro and helper releases, allow importing
 [worktree snapshots](#ohm-worktree-seeds) containing local-macro outputs, and
-allow build-to-check reuse through workspace procedural macros.
+allow build-to-check and [doctest](#ohm-cached-doctests) reuse through workspace
+procedural macros.
 
 When checking a package after a native build, Ohm can reuse compatible built
 dependencies. By default, this excludes workspace libraries whose compilation

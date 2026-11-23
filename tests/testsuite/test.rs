@@ -6326,7 +6326,7 @@ fn cached_doctests_reexpand_reexported_proc_macros() {
         .file(
             "Cargo.toml",
             "[package]\nname = 'app'\nversion = '1.0.0'\nedition = '2024'\n\
-             [dev-dependencies]\nfacade.path = 'facade'",
+             [workspace]\n[dev-dependencies]\nfacade.path = 'facade'",
         )
         .file(
             "src/lib.rs",
@@ -6361,18 +6361,45 @@ fn cached_doctests_reexpand_reexported_proc_macros() {
             "#,
         )
         .build();
-    for value in ["1", "2", "1"] {
-        let mut test = p.cargo("test --doc -Zohm-cached-doctests");
-        test.masquerade_as_nightly_cargo(&["ohm-cached-doctests"])
+    let run = |value: &str| {
+        let mut test = p.cargo("test --doc -p app -v -Zohm-cached-doctests");
+        test.masquerade_as_nightly_cargo(&["ohm-cached-doctests", "ohm-proc-macro-trust"])
             .env("CARGO_UNSTABLE_OHM_DEFAULTS", "false")
             .env("RUSTC_BOOTSTRAP", "1")
+            .env_remove("CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST")
             .env("EXAMPLE_VALUE", value);
         if value == "2" {
             test.with_status(101)
                 .with_stdout_contains("[..] ... FAILED");
         }
-        test.run();
+        test
+    };
+    for value in ["1", "2", "1"] {
+        run(value).run();
     }
+    let trusted = |value: &str| {
+        let mut test = run(value);
+        test.env("CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST", "all");
+        test
+    };
+    trusted("1").run();
+    trusted("1")
+        .with_stderr_does_not_contain("[RUNNING] [..]--output-format=doctest[..]")
+        .with_stderr_does_not_contain("[RUNNING] [..]--test-run-directory[..]")
+        .run();
+    // Tightening trust must bypass and invalidate the cached passing example.
+    trusted("2").arg("-Zohm-proc-macro-trust=audited").run();
+    trusted("2").run();
+
+    // Excluding the macro turns it into a nonmember path dependency.
+    let manifest = std::fs::read_to_string(p.root().join("Cargo.toml")).unwrap();
+    p.change_file(
+        "Cargo.toml",
+        &manifest.replace("[workspace]", "[workspace]\nexclude = ['probe']"),
+    );
+    trusted("1")
+        .with_stderr_contains("[RUNNING] [..]--test-run-directory[..]")
+        .run();
 }
 
 #[cargo_test]

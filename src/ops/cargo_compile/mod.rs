@@ -1082,7 +1082,10 @@ where `<compatible-ver>` is the latest version supporting rustc {rustc_version}"
 
     // Keep only authenticated executable-package identities after the resolver is dropped;
     // ordinary builds do not need to retain or copy the full resolved dependency graph.
-    let audited_proc_macro_packages = if ws.shared_registry_cache_enabled() {
+    let trust_doctest_macros = build_config.cached_doctests
+        && gctx.cli_unstable().ohm_proc_macro_trust == OhmProcMacroTrust::All;
+    let audited_proc_macro_packages = if ws.shared_registry_cache_enabled() || trust_doctest_macros
+    {
         unit_graph
             .keys()
             .filter_map(|unit| {
