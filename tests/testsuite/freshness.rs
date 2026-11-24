@@ -7016,6 +7016,15 @@ fn early_native_integration_tests_default_and_fallback() {
     for (case, flags, extra_env, used, fails, overlap, invocations) in [
         ("unused", "", None, false, false, true, 1),
         ("used", "", None, true, false, true, 2),
+        (
+            "sbom",
+            "-Zsbom --config build.sbom=true",
+            None,
+            true,
+            false,
+            true,
+            2,
+        ),
         ("built-library", "", None, true, false, false, 1),
         (
             "missing-proof",
@@ -7075,7 +7084,15 @@ fn early_native_integration_tests_default_and_fallback() {
             )
             .file(
                 "tests/integration.rs",
-                if used {
+                if case == "sbom" {
+                    r#"
+                        #[test]
+                        fn works() {
+                            assert_eq!(app::value(), 7);
+                            assert!(!include_str!(env!("CARGO_SBOM_PATH")).is_empty());
+                        }
+                    "#
+                } else if used {
                     "#[test] fn works() { assert_eq!(app::value(), 7); }"
                 } else {
                     "#[test] fn works() { assert_eq!(2 + 2, 4); }"
@@ -7093,7 +7110,7 @@ fn early_native_integration_tests_default_and_fallback() {
                 .run();
         }
         let mut command = p.cargo(&format!(
-            "-Zohm-defaults -Zheadstart -Zsection-timings test --test integration -j{jobs} {flags}"
+            "-Zohm-defaults -Zheadstart -Zsection-timings {flags} test --test integration -j{jobs}"
         ));
         if case == "denied-warning" {
             command.arg("--config").arg(r#"build.warnings="deny""#);
@@ -7104,6 +7121,7 @@ fn early_native_integration_tests_default_and_fallback() {
                 "headstart",
                 "ohm-early-tests",
                 "section-timings",
+                "sbom",
             ])
             .env("RUSTC_WRAPPER", &wrapper)
             .env("RELINK_WRAPPER_LOG", &log)
