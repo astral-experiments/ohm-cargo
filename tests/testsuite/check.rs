@@ -1015,6 +1015,43 @@ fn ohm_rebuilds_missing_check_output_without_probing_the_same_graph_twice() {
 }
 
 #[cargo_test]
+fn ohm_check_graph_retries_report_manifest_warnings_once() {
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2024"
+
+                [[example]]
+                name = "demo"
+                required-features = ["missing"]
+
+                [profile.dev.package.removed]
+                opt-level = 2
+            "#,
+        )
+        .file("src/lib.rs", "")
+        .file("examples/demo.rs", "fn main() {}")
+        .build();
+
+    p.cargo("build").run();
+    for _ in 0..2 {
+        let output = ohm_own_library_cargo(&p, "check --examples").run();
+        let stderr = std::str::from_utf8(&output.stderr).unwrap();
+        for warning in [
+            "profile package spec `removed`",
+            "invalid feature `missing`",
+            "no targets matched",
+        ] {
+            assert_eq!(stderr.matches(warning).count(), 1, "{stderr}");
+        }
+    }
+}
+
+#[cargo_test]
 fn ohm_skips_cold_ordinary_check_graphs_after_test_builds() {
     Package::new("stable", "1.0.0")
         .file("src/lib.rs", "pub fn value() -> u32 { 19 }")

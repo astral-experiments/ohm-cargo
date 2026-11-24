@@ -58,6 +58,8 @@ pub struct UnitGenerator<'a, 'gctx> {
     pub intent: UserIntent,
     pub resolve: &'a Resolve,
     pub workspace_resolve: &'a Option<Resolve>,
+    /// Validate required features and target filters on the first graph for this resolution.
+    pub validate_targets: bool,
     pub resolved_features: &'a features::ResolvedFeatures,
     pub package_set: &'a PackageSet<'gctx>,
     pub profiles: &'a Profiles,
@@ -724,7 +726,9 @@ Rustdoc did not scrape the following examples because they require dev-dependenc
         {
             let unavailable_features = match target.required_features() {
                 Some(rf) => {
-                    self.validate_required_features(target.name(), rf, pkg.summary())?;
+                    if self.validate_targets {
+                        self.validate_required_features(target.name(), rf, pkg.summary())?;
+                    }
 
                     let features = features_map.entry(pkg).or_insert_with(|| {
                         super::resolve_all_features(
@@ -762,7 +766,9 @@ Rustdoc did not scrape the following examples because they require dev-dependenc
             // else, silently skip target.
         }
         let mut units: Vec<_> = units.into_iter().collect();
-        self.unmatched_target_filters(&units)?;
+        if self.validate_targets {
+            self.unmatched_target_filters(&units)?;
+        }
 
         // Keep the roots in a consistent order, which helps with checking test output.
         units.sort_unstable();
