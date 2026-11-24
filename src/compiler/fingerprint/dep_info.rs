@@ -1154,7 +1154,7 @@ pub(super) fn parse_dep_info_inputs(
     ret.env = info.env;
     ret.foreign_span_marker = info.observer.map(|index| {
         let (ty, path, _) = &info.files[index];
-        make_absolute_path(*ty, pkg_root, build_root, path.clone())
+        make_absolute_path(*ty, pkg_root, build_root, path)
     });
     ret.recheck_dependent_links = info.recheck_dependent_links.is_some();
     for (index, (ty, path, checksum_info)) in info.files.into_iter().enumerate() {
@@ -1165,7 +1165,7 @@ pub(super) fn parse_dep_info_inputs(
             }
         }
         if Some(index) != info.recheck_dependent_links {
-            let path = make_absolute_path(ty, pkg_root, build_root, path);
+            let path = make_absolute_path(ty, pkg_root, build_root, &path);
             // The donor recorded the module it read, but not the other path
             // rustc tried. Recheck it against the recipient's package root.
             if info.worktree_import && super::has_competing_module_path(&path) {
@@ -1198,7 +1198,23 @@ pub(crate) fn dep_info_paths<'a>(
         info.files
             .into_iter()
             .filter(|(ty, _, _)| !ty.after_prerequisites())
-            .map(move |(ty, path, _)| make_absolute_path(ty, pkg_root, build_root, path)),
+            .map(move |(ty, path, _)| {
+                let mut root = pkg_root;
+                let mut input = path.as_path();
+                if ty == DepInfoPathType::PackageRootRelative {
+                    // Worktree records walk back to rustc's working directory. Make
+                    // needs the original name to match a rule for a generated input.
+                    // read_dep_info verified the package root. Leave any later ".."
+                    // intact because it may follow a symlink in the source path.
+                    while let Ok(rest) = input.strip_prefix("..")
+                        && let Some(parent) = root.parent()
+                    {
+                        root = parent;
+                        input = rest;
+                    }
+                }
+                make_absolute_path(ty, root, build_root, input)
+            }),
     )
 }
 
@@ -1233,7 +1249,7 @@ fn make_absolute_path(
     ty: DepInfoPathType,
     pkg_root: &Path,
     build_root: &Path,
-    path: PathBuf,
+    path: &Path,
 ) -> PathBuf {
     let relative_to = match ty {
         DepInfoPathType::PackageRootRelative | DepInfoPathType::RegistryPackageRelative => pkg_root,
@@ -2168,6 +2184,8 @@ mod encoded_dep_info {
         std::fs::create_dir_all(package.join("src")).unwrap();
         std::fs::create_dir(&namespace).unwrap();
         std::fs::write(root.join("shared.txt"), "shared").unwrap();
+        let generated = package.join("src/generated.rs");
+        std::fs::write(&generated, "").unwrap();
         let literal = package.join("literal.txt");
         std::fs::write(&literal, "literal").unwrap();
         let rustc_dep_info = root.join("rustc.d");
@@ -2182,7 +2200,9 @@ mod encoded_dep_info {
         std::fs::write(
             &rustc_dep_info,
             format!(
-                "result: app/src/../../shared.txt {input}\n\napp/src/../../shared.txt:\n{input}:\n\n# env-dep:CARGO_MANIFEST_DIR={manifest_dir}\n"
+                "result: app/src/generated.rs app/src/../../shared.txt {input}\n\n\
+                 app/src/generated.rs:\napp/src/../../shared.txt:\n{input}:\n\n\
+                 # env-dep:CARGO_MANIFEST_DIR={manifest_dir}\n"
             ),
         )
         .unwrap();
@@ -2218,6 +2238,15 @@ mod encoded_dep_info {
                     None,
                 )));
                 assert_eq!(info.env.len(), 1);
+
+                // Make must match a generator rule by name. Only the leading parent
+                // from Cargo's worktree prefix should disappear from the external file.
+                let inputs = dep_info_paths(&package, &root, &cargo_dep_info)
+                    .unwrap()
+                    .collect::<Vec<_>>();
+                assert!(inputs.contains(&generated), "{inputs:?}");
+                assert!(inputs.contains(&root.join("app/src/../../shared.txt")));
+                assert!(inputs.contains(&literal));
             } else {
                 // The original translation still canonicalizes source paths
                 // and filters Cargo's injected manifest environment.
