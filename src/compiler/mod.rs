@@ -2483,6 +2483,7 @@ fn rustc(
         }
         state.running(&rustc);
         let timestamp = paths::set_invocation_time(&fingerprint_dir)?;
+        let wrote_sbom = sbom.is_some();
         if let Some(sbom) = sbom {
             for file in sbom_files {
                 tracing::debug!("writing sbom to {}", file.display());
@@ -2708,7 +2709,7 @@ fn rustc(
             cache.initialize(extern_paths_hash, unused_externs.as_ref())?;
         }
 
-        let mut independent_of_bin_exe = false;
+        let mut independent_of_build_paths = false;
         if rustc_dep_info_loc.exists() {
             let summary = fingerprint::dep_info::translate_dep_info_with_observer(
                 &rustc_dep_info_loc,
@@ -2734,7 +2735,7 @@ fn rustc(
             if let Some(fp) = &fingerprint {
                 fp.record_native_link_inputs(summary.recheck_dependent_links);
             }
-            independent_of_bin_exe = summary.independent_of_bin_exe;
+            independent_of_build_paths = summary.independent_of_build_paths;
             // This mtime shift allows Cargo to detect if a source file was
             // modified in the middle of the build.
             paths::set_file_time_no_err(dep_info_loc, timestamp);
@@ -2742,8 +2743,8 @@ fn rustc(
 
         if let Some((path, provenance)) = &message_provenance {
             let mut provenance = provenance.clone();
-            provenance.independent_of_bin_exe =
-                (target.is_test() || target.is_bench()) && independent_of_bin_exe;
+            provenance.independent_of_build_paths =
+                (is_local || wrote_sbom).then_some(independent_of_build_paths);
             provenance.capture_messages(&cached_output_path)?;
             paths::write_atomic_no_follow(path, serde_json::to_vec(&provenance)?)?;
 

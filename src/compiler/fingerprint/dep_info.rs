@@ -517,7 +517,7 @@ pub fn translate_dep_info(
 #[derive(Default)]
 pub(in crate::compiler) struct DepInfoSummary {
     pub recheck_dependent_links: bool,
-    pub independent_of_bin_exe: bool,
+    pub independent_of_build_paths: bool,
 }
 
 pub(in crate::compiler) fn translate_dep_info_with_observer(
@@ -622,10 +622,12 @@ pub(in crate::compiler) fn translate_dep_info_with_observer(
     // not tracked elsewhere in the fingerprint.
     //
     // For cargo#13280, We trace env vars that are defined in the `[env]` config table.
-    let mut independent_of_bin_exe = true;
+    let mut independent_of_build_paths = true;
     on_disk_info.env.retain(|(key, value)| {
-        if key.starts_with("CARGO_BIN_EXE_") && rustc_cmd.get_envs().contains_key(key) {
-            independent_of_bin_exe = false;
+        if (key.starts_with("CARGO_BIN_EXE_") || key == "CARGO_SBOM_PATH")
+            && rustc_cmd.get_envs().contains_key(key)
+        {
+            independent_of_build_paths = false;
         }
         if key == crate::compiler::OHM_WORKTREE_SOURCE_PATHS {
             // The compiler records the package root only when an artifact uses its physical path.
@@ -777,7 +779,7 @@ pub(in crate::compiler) fn translate_dep_info_with_observer(
     paths::write(cargo_dep_info, encoded)?;
     Ok(DepInfoSummary {
         recheck_dependent_links: depinfo.recheck_dependent_links,
-        independent_of_bin_exe,
+        independent_of_build_paths,
     })
 }
 

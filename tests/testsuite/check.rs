@@ -2554,6 +2554,39 @@ fn ohm_test_target_reuse_keeps_independent_targets_reusable() {
 }
 
 #[cargo_test]
+fn ohm_native_reuse_respects_the_sbom_path() {
+    let project = ohm_own_library_project();
+    let cargo = |command: &str| {
+        let mut cargo = project.cargo(&format!("-Zohm-reuse-built-deps -Zsbom {command}"));
+        cargo
+            .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps", "sbom"])
+            .env("CARGO_BUILD_SBOM", "true");
+        cargo
+    };
+    let reader = r#"const _: () = assert!(option_env!("CARGO_SBOM_PATH").is_some());"#;
+    project.change_file("tests/cli.rs", reader);
+    cargo("test --no-run --test cli --test integration").run();
+    let output = cargo("check --test cli --test integration --keep-going -v --message-format=json")
+        .with_status(101)
+        .with_stdout_contains("[..]E0080[..]")
+        .run();
+    assert_ohm_metadata_only_check(&output, "cli");
+    assert_ohm_reused_test(&output, "integration");
+    assert_ohm_reused_library(&output, "foo");
+
+    // A checked binary can also reuse its library, even after SBOM generation is turned off.
+    project.change_file(
+        "src/lib.rs",
+        &format!("{reader}\npub fn value() -> u32 {{ 42 }}"),
+    );
+    cargo("build --lib").run();
+    ohm_own_library_cargo(&project, "check --bin foo --message-format=json")
+        .with_status(101)
+        .with_stdout_contains("[..]E0080[..]")
+        .run();
+}
+
+#[cargo_test]
 fn ohm_test_target_reuse_respects_the_executable_path_seen_by_the_test() {
     let project = ohm_own_library_project();
     project.change_file(

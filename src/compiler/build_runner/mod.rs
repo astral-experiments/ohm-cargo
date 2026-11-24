@@ -81,9 +81,9 @@ pub(crate) struct RegistryMessageProvenance {
     compiler_search_directories: Vec<PathBuf>,
     effective_policy_context: u64,
     loader_injected: bool,
-    /// Rustc did not read a binary path that Cargo replaces with a placeholder during checks.
-    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
-    pub(super) independent_of_bin_exe: bool,
+    /// Whether rustc used neither a Cargo-supplied executable path nor an SBOM path.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub(super) independent_of_build_paths: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     diagnostic_rendering: Option<DiagnosticRendering>,
     messages: Option<CachedCompilerMessages>,
@@ -1599,7 +1599,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             compiler_search_directories: Vec::new(),
             effective_policy_context: Hasher::finish(&policy),
             loader_injected: false,
-            independent_of_bin_exe: false,
+            independent_of_build_paths: None,
             diagnostic_rendering: Some(self.diagnostic_rendering()),
             messages: None,
         }))
@@ -2013,6 +2013,11 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             && provenance.compiler_driver == expected.compiler_driver
             && provenance.effective_policy_context == expected.effective_policy_context
             && !provenance.loader_injected
+            // Older workspace records cannot tell us whether a build read the
+            // SBOM path, even if the current check has SBOM generation off.
+            && provenance
+                .independent_of_build_paths
+                .unwrap_or_else(|| unit.pkg.package_id().source_id().is_remote_registry())
             && provenance.messages_match(
                 &self.files().message_cache_path(unit),
                 expected.diagnostic_rendering,
@@ -2092,12 +2097,6 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             let Some(provenance) = self.matching_message_provenance(&native, &expected) else {
                 continue;
             };
-            // Older records cannot tell us if the test read CARGO_BIN_EXE_*.
-            if (check.target.is_test() || check.target.is_bench())
-                && !provenance.independent_of_bin_exe
-            {
-                continue;
-            }
             if !self.native_unit_is_fresh_for_check(&native)? {
                 continue;
             }
