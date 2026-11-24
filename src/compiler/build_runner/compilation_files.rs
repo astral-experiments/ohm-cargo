@@ -579,7 +579,8 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                     }
                 }
                 let rustc = util::short_hash(&(
-                    "ohm-ordered-shared-unit-locks-v2",
+                    // Older writers do not take the directory lock during publication.
+                    "ohm-ordered-shared-unit-locks-v3",
                     (
                         &compiler.verbose_version,
                         &compiler.path,
