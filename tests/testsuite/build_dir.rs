@@ -2528,15 +2528,28 @@ fn concurrent_shared_registry_independent_leaves(command: &str, different_inputs
 
 #[cargo_test]
 fn shared_registry_cache_unrelated_cold_writer_overlaps_private_compilation() {
-    shared_registry_writer_overlaps_private_compilation(false);
+    shared_registry_writer_overlaps_private_compilation(OverlapSetup::ColdExtra);
 }
 
 #[cargo_test]
 fn shared_registry_cache_unrelated_stale_writer_overlaps_private_compilation() {
-    shared_registry_writer_overlaps_private_compilation(true);
+    shared_registry_writer_overlaps_private_compilation(OverlapSetup::StaleExtra);
 }
 
-fn shared_registry_writer_overlaps_private_compilation(stale: bool) {
+#[cfg(any(target_os = "linux", target_os = "macos"))]
+#[cargo_test]
+fn shared_registry_cache_publishes_finished_dependency_during_build() {
+    shared_registry_writer_overlaps_private_compilation(OverlapSetup::RebuildCommon);
+}
+
+#[derive(PartialEq)]
+enum OverlapSetup {
+    ColdExtra,
+    StaleExtra,
+    RebuildCommon,
+}
+
+fn shared_registry_writer_overlaps_private_compilation(setup: OverlapSetup) {
     Package::new("overlap-common", "1.0.0")
         .file("src/lib.rs", "pub const VALUE: &str = \"common\";")
         .publish();
@@ -2607,7 +2620,7 @@ fn shared_registry_writer_overlaps_private_compilation(stale: bool) {
             cargo
         };
         cargo(&projects[0], "before").run();
-        if stale {
+        if setup == OverlapSetup::StaleExtra {
             cargo(&projects[1], "before").run();
         }
         let registries = shared.join("debug/build/registries");
@@ -2625,6 +2638,11 @@ fn shared_registry_writer_overlaps_private_compilation(stale: bool) {
             .join(".lock");
         let common_fingerprint = std::fs::read(&fingerprint).unwrap();
         assert!(!common_fingerprint.is_empty());
+        if setup == OverlapSetup::RebuildCommon {
+            // The first build must recreate the common artifact. The second
+            // must reuse it while the first is still compiling its private root.
+            std::fs::remove_dir_all(common_lock.parent().unwrap().join("out")).unwrap();
+        }
 
         if is_coarse_mtime() {
             sleep_ms(1000);
@@ -2704,11 +2722,13 @@ fn shared_registry_writer_overlaps_private_compilation(stale: bool) {
         assert_eq!(unchanged.unwrap(), common_fingerprint);
 
         let mut shared_writes = 0;
-        for output in &outputs {
-            assert!(
-                !String::from_utf8_lossy(&output.stderr).lines().any(|line| {
-                    line.contains("Running") && line.contains("--crate-name overlap_common ")
-                })
+        for (index, output) in outputs.iter().enumerate() {
+            let compiled_common = String::from_utf8_lossy(&output.stderr).lines().any(|line| {
+                line.contains("Running") && line.contains("--crate-name overlap_common ")
+            });
+            assert_eq!(
+                compiled_common,
+                index == 0 && setup == OverlapSetup::RebuildCommon
             );
             for line in String::from_utf8_lossy(&output.stdout).lines() {
                 let message: serde_json::Value = serde_json::from_str(line).unwrap();

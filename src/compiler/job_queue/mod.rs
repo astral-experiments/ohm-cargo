@@ -789,6 +789,15 @@ impl<'gctx> DrainState<'gctx> {
                 match result {
                     Ok(()) => {
                         let result = self.finish(id, &unit, artifact, build_runner);
+                        #[cfg(any(target_os = "linux", target_os = "macos"))]
+                        let result = result.and_then(|()| {
+                            if artifact == Artifact::All {
+                                build_runner
+                                    .lock_manager
+                                    .unit_finished(build_runner.bcx.unit_to_index[&unit])?;
+                            }
+                            Ok(())
+                        });
                         if artifact == Artifact::All {
                             self.settle(build_runner, id, result.is_ok());
                         }
@@ -1008,6 +1017,12 @@ impl<'gctx> DrainState<'gctx> {
             return;
         };
         let result = self.report_warnings(build_runner, id, &unit).and(result);
+        #[cfg(any(target_os = "linux", target_os = "macos"))]
+        let result = result.and_then(|()| {
+            build_runner
+                .lock_manager
+                .unit_finished(build_runner.bcx.unit_to_index[&unit])
+        });
         match result {
             Ok(()) => self.settle(build_runner, id, true),
             Err(error) => {
