@@ -3003,6 +3003,14 @@ fn calculate_normal(
     if consumes_public_api_hash {
         // Older generations could reuse metadata across changes to generated Rust libraries.
         ("ohm-reduced-dependency-rebuild", 4_u8).hash(&mut config);
+        // For these checks the package binaries aren't dependencies. Their names
+        // determine which CARGO_BIN_EXE_* placeholders the compiler can read.
+        if unit.mode.is_check() && (unit.target.is_test() || unit.target.is_bench()) {
+            for bin in unit.pkg.manifest().targets().iter().filter(|t| t.is_bin()) {
+                let filename = bin.binary_filename();
+                ("CARGO_BIN_EXE", filename.as_deref().unwrap_or(bin.name())).hash(&mut config);
+            }
+        }
     }
     // The same producer may later be requested with an intermediate reader.
     // Force a new artifact notification when the graph needs the exact key again.

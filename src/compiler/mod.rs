@@ -2694,26 +2694,6 @@ fn rustc(
             }
         }
 
-        if let Some((path, provenance)) = &message_provenance {
-            let mut provenance = provenance.clone();
-            provenance.capture_messages(&cached_output_path)?;
-            paths::write_atomic_no_follow(path, serde_json::to_vec(&provenance)?)?;
-
-            if let Some(readiness_path) = &registry_reuse_readiness_path
-                && let Err(error) = fs::OpenOptions::new()
-                    .write(true)
-                    .create_new(true)
-                    .open(readiness_path)
-                && error.kind() != std::io::ErrorKind::AlreadyExists
-            {
-                debug!(
-                    path = %readiness_path.display(),
-                    %error,
-                    "could not record registry build readiness"
-                );
-            }
-        }
-
         if let Some(cache) = &relink_cache {
             let unused_externs = (unused_integration_dependency.is_some() || record_dev_unused)
                 .then(|| state.recorded_unused_externs())
@@ -2723,8 +2703,9 @@ fn rustc(
             cache.initialize(extern_paths_hash, unused_externs.as_ref())?;
         }
 
+        let mut independent_of_bin_exe = false;
         if rustc_dep_info_loc.exists() {
-            let marked = fingerprint::dep_info::translate_dep_info_with_observer(
+            let summary = fingerprint::dep_info::translate_dep_info_with_observer(
                 &rustc_dep_info_loc,
                 &dep_info_loc,
                 &cwd,
@@ -2746,11 +2727,34 @@ fn rustc(
                 ))
             })?;
             if let Some(fp) = &fingerprint {
-                fp.record_native_link_inputs(marked);
+                fp.record_native_link_inputs(summary.recheck_dependent_links);
             }
+            independent_of_bin_exe = summary.independent_of_bin_exe;
             // This mtime shift allows Cargo to detect if a source file was
             // modified in the middle of the build.
             paths::set_file_time_no_err(dep_info_loc, timestamp);
+        }
+
+        if let Some((path, provenance)) = &message_provenance {
+            let mut provenance = provenance.clone();
+            provenance.independent_of_bin_exe =
+                (target.is_test() || target.is_bench()) && independent_of_bin_exe;
+            provenance.capture_messages(&cached_output_path)?;
+            paths::write_atomic_no_follow(path, serde_json::to_vec(&provenance)?)?;
+
+            if let Some(readiness_path) = &registry_reuse_readiness_path
+                && let Err(error) = fs::OpenOptions::new()
+                    .write(true)
+                    .create_new(true)
+                    .open(readiness_path)
+                && error.kind() != std::io::ErrorKind::AlreadyExists
+            {
+                debug!(
+                    path = %readiness_path.display(),
+                    %error,
+                    "could not record registry build readiness"
+                );
+            }
         }
 
         // This mtime shift for .rmeta is a workaround as rustc incremental build

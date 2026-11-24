@@ -2554,6 +2554,60 @@ fn ohm_test_target_reuse_keeps_independent_targets_reusable() {
 }
 
 #[cargo_test]
+fn ohm_test_target_reuse_respects_the_executable_path_seen_by_the_test() {
+    let project = ohm_own_library_project();
+    project.change_file(
+        "tests/cli.rs",
+        r#"
+            const BIN: &str = env!("CARGO_BIN_EXE_foo");
+            const _: () = assert!(!matches!(BIN.as_bytes(), b"placeholder:foo"));
+        "#,
+    );
+    ohm_own_library_cargo(&project, "test --no-run --test cli --test integration").run();
+    let output = ohm_own_library_cargo(
+        &project,
+        "check --test cli --test integration --keep-going -v --message-format=json",
+    )
+    .with_status(101)
+    .with_stdout_contains("[..]E0080[..]")
+    .run();
+    assert_ohm_metadata_only_check(&output, "cli");
+    assert_ohm_reused_test(&output, "integration");
+    assert_ohm_reused_library(&output, "foo");
+}
+
+#[cargo_test]
+fn ohm_test_target_reuse_tracks_binary_names_across_library_edits() {
+    if !ohm_compiler_supports_defaults() {
+        return;
+    }
+    let project = ohm_own_library_project();
+    project.change_file("src/lib.rs", "pub fn value() -> u32 { 1 }");
+    project.change_file(
+        "tests/cli.rs",
+        r#"const _: &str = env!("CARGO_BIN_EXE_foo");"#,
+    );
+    let check = || {
+        let mut cmd = project.cargo("-Zohm-defaults check --test cli");
+        cmd.masquerade_as_nightly_cargo(&["ohm-defaults"]);
+        cmd
+    };
+    check().run();
+    project.change_file(
+        "Cargo.toml",
+        &format!(
+            "{}\n[[bin]]\nname = 'renamed'\npath = 'src/main.rs'\n",
+            project.read_file("Cargo.toml"),
+        ),
+    );
+    project.change_file("src/lib.rs", "pub fn value() -> u32 { 2 }");
+    check()
+        .with_status(101)
+        .with_stderr_contains("[..]CARGO_BIN_EXE_foo[..]not defined at compile time[..]")
+        .run();
+}
+
+#[cargo_test]
 fn ohm_test_target_reuse_does_not_build_package_binaries() {
     let project = ohm_own_library_project();
     ohm_own_library_cargo(&project, "test --no-run --test integration").run();
