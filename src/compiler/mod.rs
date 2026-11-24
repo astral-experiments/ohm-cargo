@@ -2902,9 +2902,25 @@ fn reused_test_check_work(
         // the sole proof for this result.
         paths::write(&fingerprint_path, b"")?;
         for output in outputs.iter() {
-            paths::create_dir_all(output.path.parent().unwrap())?;
+            let dir = output.path.parent().unwrap();
+            paths::create_dir_all(dir)?;
             if let Some(metadata) = &metadata {
-                paths::copy(metadata, &output.path)?;
+                // rustc may have hard-linked the previous check output into its incremental
+                // cache. Avoid staging a new file on every check once the output is private.
+                let replace = match output.path.symlink_metadata() {
+                    #[cfg(unix)]
+                    Ok(m) if m.is_file() => std::os::unix::fs::MetadataExt::nlink(&m) != 1,
+                    Err(e) if e.kind() == std::io::ErrorKind::NotFound => false,
+                    _ => true,
+                };
+                if replace {
+                    let staging = tempfile::tempdir_in(dir)?;
+                    let staged = staging.path().join("metadata");
+                    paths::copy(metadata, &staged)?;
+                    std::fs::rename(staged, &output.path)?;
+                } else {
+                    paths::copy(metadata, &output.path)?;
+                }
             } else {
                 paths::write(&output.path, b"")?;
             }
