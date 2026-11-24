@@ -171,6 +171,8 @@ pub(crate) const OHM_WORKTREE_SEED_LOCAL_PROC_MACRO_MARKER: &str =
     ".ohm-worktree-seed-local-proc-macro-v7";
 /// Private Clippy state is retained locally but never imported into another worktree.
 pub(crate) const OHM_WORKTREE_CLIPPY_DIRECTORY: &str = ".ohm-clippy-v1";
+/// Marks SBOM precursors generated from this checkout's dependency graph.
+pub(crate) const OHM_WORKTREE_LOCAL_SBOM: &str = ".ohm-worktree-local-sbom";
 // Version the compiler-visible prefix too: changing only Cargo's fingerprint
 // cannot invalidate an older incremental session containing untracked macro output.
 const OHM_WORKTREE_SEED_RUSTFLAG: &str = "-Zremap-cwd-prefix=/ohm-workspace/v7";
@@ -2490,6 +2492,9 @@ fn rustc(
                 let outfile = BufWriter::new(paths::create(&file)?);
                 serde_json::to_writer(outfile, &sbom)?;
             }
+            if worktree_seed_namespace.is_some() {
+                paths::write_atomic_no_follow(&fingerprint_dir.join(OHM_WORKTREE_LOCAL_SBOM), b"")?;
+            }
         }
 
         if let Some(content) = &unremap_content {
@@ -2980,9 +2985,52 @@ fn workspace_output_link(source: &Path, views: &Path, name: &str) -> CargoResult
     Ok(link)
 }
 
+/// Refresh any SBOMs imported from another worktree before publishing the outputs.
+fn link_targets(
+    build_runner: &mut BuildRunner<'_, '_>,
+    unit: &Unit,
+    fresh: bool,
+) -> CargoResult<Work> {
+    let publish = link_and_report_outputs(build_runner, unit, fresh)?;
+    if !build_runner.bcx.build_config.sbom
+        || unit_worktree_seed_namespace(build_runner, unit).is_none()
+    {
+        return Ok(publish);
+    }
+    // Native outputs can be shared, but path package IDs are checkout-specific.
+    // A worktree seed copies the precursors without their local marker.
+    let marker = build_runner
+        .files()
+        .fingerprint_dir(unit)
+        .join(OHM_WORKTREE_LOCAL_SBOM);
+    if marker.try_exists()? {
+        return Ok(publish);
+    }
+    let files = build_runner.sbom_output_files(unit)?;
+    if !files.iter().any(|file| file.is_file()) {
+        return Ok(publish);
+    }
+    let sbom = build_sbom(build_runner, unit)?;
+    let refresh = Work::new(move |_| {
+        // A dirty job may already have generated the precursors while running rustc.
+        if !marker.try_exists()? {
+            let bytes = serde_json::to_vec(&sbom)?;
+            for file in files {
+                // Changing package IDs must not make the dependency look newer.
+                let mtime = filetime::FileTime::from_last_modification_time(&file.metadata()?);
+                paths::write_atomic_no_follow(&file, &bytes)?;
+                filetime::set_file_mtime(&file, mtime)?;
+            }
+            paths::write_atomic_no_follow(&marker, b"")?;
+        }
+        Ok(())
+    });
+    Ok(refresh.then(publish))
+}
+
 /// Link the compiled target (often of form `foo-{metadata_hash}`) to the
 /// final target. This must happen during both "Fresh" and "Compile".
-fn link_targets(
+fn link_and_report_outputs(
     build_runner: &mut BuildRunner<'_, '_>,
     unit: &Unit,
     fresh: bool,

@@ -493,6 +493,7 @@ fn clone_tree(
         let ty = entry.file_type()?;
         if text.ends_with("-working")
             || text == crate::compiler::OHM_WORKTREE_CLIPPY_DIRECTORY
+            || text == crate::compiler::OHM_WORKTREE_LOCAL_SBOM
             || text == ".cargo-workspace-lock"
             || text == ".lock"
             || text.ends_with(".rlink")
