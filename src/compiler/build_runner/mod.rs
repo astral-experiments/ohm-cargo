@@ -11,7 +11,7 @@ use std::sync::{Arc, Mutex, OnceLock};
 use std::os::unix::fs::MetadataExt;
 
 use crate::compiler::compilation::{self, UnitOutput};
-use crate::compiler::locking::LockManager;
+use crate::compiler::locking::{LockManager, WriterMode};
 use crate::compiler::{self, CrateType, Unit, UserIntent, artifact};
 use crate::util::cache_lock::CacheLockMode;
 use crate::util::errors::CargoResult;
@@ -462,7 +462,7 @@ pub struct BuildRunner<'a, 'gctx> {
     pub lock_manager: Arc<LockManager>,
 
     /// Readers never upgrade in place: a dirty shared cache needs a fresh runner.
-    exclusive_shared_cache_units: HashSet<UnitIndex>,
+    shared_cache_writers: HashMap<UnitIndex, WriterMode>,
 }
 
 /// Reserves checksum slots while a newly created jobserver is still private.
@@ -622,7 +622,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             failed_scrape_units: Arc::new(Mutex::new(HashSet::default())),
             unused_dep_state: UnusedDepState::new(bcx),
             lock_manager: Arc::new(LockManager::new()),
-            exclusive_shared_cache_units: HashSet::default(),
+            shared_cache_writers: HashMap::default(),
         })
     }
 
@@ -883,20 +883,25 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         let bcx = self.bcx;
         let reserve_checksum_slots = self.reserve_checksum_slots;
         let deferred = self.deferred_dev_deps.clone();
-        let mut exclusive = self.exclusive_shared_cache_units.clone();
+        let mut writers = self.shared_cache_writers.clone();
         let mut runner = self;
         loop {
             match compile(runner) {
                 Err(error) if error.is::<SharedCacheNeedsExclusiveLocks>() => {
                     let request = error.downcast::<SharedCacheNeedsExclusiveLocks>().unwrap();
-                    let previous = exclusive.len();
-                    exclusive.extend(request.units);
-                    if exclusive.len() == previous {
-                        bail!("shared registry writer reservation did not make progress");
+                    for unit in request.units {
+                        let mode = match writers.get(&unit) {
+                            None => WriterMode::Try,
+                            Some(WriterMode::Try) => WriterMode::Wait,
+                            Some(WriterMode::Wait) => {
+                                bail!("shared registry writer reservation did not make progress");
+                            }
+                        };
+                        writers.insert(unit, mode);
                     }
                     runner = Self::new_with_checksum_reservations(bcx, reserve_checksum_slots)?;
                     runner.deferred_dev_deps = deferred.clone();
-                    runner.exclusive_shared_cache_units = exclusive.clone();
+                    runner.shared_cache_writers = writers.clone();
                 }
                 result => return result,
             }
@@ -1415,7 +1420,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         files.prepare_shared_context(self)?;
         self.files = Some(files);
         self.lock_manager
-            .reserve_shared_cache(self, &self.exclusive_shared_cache_units)?;
+            .reserve_shared_cache(self, &self.shared_cache_writers)?;
         if !self
             .files()
             .shared_cache_compiler_directories_are_safe(self)
