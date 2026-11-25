@@ -26,7 +26,7 @@ pub struct LockManager {
 
 enum UnitLock {
     Dynamic(FileLock),
-    /// A shared-cache lease is acquired before preparation and never converted.
+    /// A shared-cache lease is acquired before preparation and retained by consumers.
     Reserved {
         #[cfg(unix)]
         file: Arc<File>,
@@ -37,7 +37,25 @@ enum UnitLock {
         )]
         file: FileLock,
         exclusive: bool,
+        #[cfg(any(target_os = "linux", target_os = "macos"))]
+        writer: Option<Writer>,
     },
+}
+
+/// Another build may have finished the artifact since our freshness check.
+/// Recheck a contended unit once before waiting for all its readers to exit.
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+pub(super) enum WriterMode {
+    Try,
+    Wait,
+}
+
+/// Serialize writers across the non-atomic flock downgrade. Readers only need the
+/// unit file, so they can join as soon as the last unit sharing that file finishes.
+#[cfg(any(target_os = "linux", target_os = "macos"))]
+struct Writer {
+    directory: Arc<File>,
+    remaining: usize,
 }
 
 impl LockManager {
@@ -50,12 +68,12 @@ impl LockManager {
 
     /// Reserves the complete shared graph in canonical path order before observing outputs.
     ///
-    /// Requests never change mode while held. If preparation discovers another writer, the
+    /// Locks are never upgraded in place. If preparation discovers another writer, the
     /// caller must discard the runner and reserve a new set, preserving this global order.
     pub(super) fn reserve_shared_cache(
         &self,
         build_runner: &BuildRunner<'_, '_>,
-        exclusive: &HashSet<UnitIndex>,
+        writers: &HashMap<UnitIndex, WriterMode>,
     ) -> CargoResult<()> {
         if !build_runner.bcx.ws.shared_registry_cache_enabled() {
             return Ok(());
@@ -104,37 +122,80 @@ impl LockManager {
             .iter()
             .map(|(unit, key)| (build_runner.bcx.unit_to_index[unit], key.clone()))
             .collect::<HashMap<_, _>>();
-        let exclusive = keys
-            .iter()
-            .filter(|(index, _)| exclusive.contains(index))
-            .map(|(_, key)| key)
-            .collect::<HashSet<_>>();
         units.sort_unstable_by(|(_, left), (_, right)| left.cmp(right));
-        units.dedup_by(|(_, left), (_, right)| left == right);
 
         #[cfg(unix)]
-        Self::reserve_descriptor_budget(build_runner.bcx.unit_graph.len());
+        Self::reserve_descriptor_budget(
+            build_runner
+                .bcx
+                .unit_graph
+                .len()
+                .saturating_add(writers.len()),
+        );
         let mut locks = self.locks.write().unwrap();
         assert!(
             locks.is_empty(),
             "shared leases must precede other unit locks"
         );
-        for (unit, key) in units {
+        for group in units.chunk_by(|(_, left), (_, right)| left == right) {
+            let (unit, key) = &group[0];
+            let mode = group
+                .iter()
+                .filter_map(|(unit, _)| writers.get(&build_runner.bcx.unit_to_index[unit]))
+                .max();
             let fs = Filesystem::new(key.0.clone());
             let lock_msg = format!(
                 "{} ({})",
                 unit.pkg.name(),
                 build_runner.files().unit_hash(unit)
             );
-            let exclusive = exclusive.contains(&key);
-            let file = if exclusive {
-                fs.open_rw_exclusive_create(&key.0, build_runner.bcx.gctx, &lock_msg)?
+            let gctx = build_runner.bcx.gctx;
+            #[cfg(any(target_os = "linux", target_os = "macos"))]
+            let guard = if mode.is_some() {
+                // Lock the directory before its .lock file, in the same order
+                // for every writer. Readers never need the directory lock.
+                let path = key.0.parent().unwrap();
+                cargo_util::paths::create_dir_all(path)?;
+                let directory = File::open(path)?;
+                match flock::try_lock_exclusive(&directory) {
+                    Ok(()) => {}
+                    Err(std::fs::TryLockError::WouldBlock) => {
+                        gctx.shell()
+                            .status("Blocking", format!("waiting for file lock on {lock_msg}"))?;
+                        flock::lock_exclusive(&directory)?;
+                    }
+                    Err(std::fs::TryLockError::Error(error)) => return Err(error.into()),
+                }
+                Some(directory)
             } else {
-                fs.open_ro_shared_create(&key.0, build_runner.bcx.gctx, &lock_msg)?
+                None
+            };
+            let writer_lock = match mode {
+                None => None,
+                Some(WriterMode::Try) => fs.try_open_rw_exclusive_create(&key.0)?,
+                Some(WriterMode::Wait) => {
+                    Some(fs.open_rw_exclusive_create(&key.0, gctx, &lock_msg)?)
+                }
+            };
+            let exclusive = writer_lock.is_some();
+            let file = match writer_lock {
+                Some(file) => file,
+                None => fs.open_ro_shared_create(&key.0, gctx, &lock_msg)?,
             };
             #[cfg(unix)]
             let file = Arc::new(file.into_file());
-            locks.insert(key, UnitLock::Reserved { file, exclusive });
+            locks.insert(
+                key.clone(),
+                UnitLock::Reserved {
+                    file,
+                    exclusive,
+                    #[cfg(any(target_os = "linux", target_os = "macos"))]
+                    writer: guard.filter(|_| exclusive).map(|directory| Writer {
+                        directory: Arc::new(directory),
+                        remaining: group.len(),
+                    }),
+                },
+            );
         }
         self.shared_unit_keys
             .set(keys)
@@ -161,12 +222,54 @@ impl LockManager {
         )
     }
 
+    /// Publish only complete, successful units. Several units can share a physical
+    /// output directory, so keep it exclusive until all of them have finished.
+    #[cfg(any(target_os = "linux", target_os = "macos"))]
+    pub(super) fn unit_finished(&self, index: UnitIndex) -> CargoResult<()> {
+        let Some(key) = self
+            .shared_unit_keys
+            .get()
+            .and_then(|keys| keys.get(&index))
+        else {
+            return Ok(());
+        };
+        let mut locks = self.locks.write().unwrap();
+        let Some(UnitLock::Reserved {
+            file,
+            exclusive,
+            writer,
+        }) = locks.get_mut(key)
+        else {
+            return Ok(());
+        };
+        let Some(guard) = writer else { return Ok(()) };
+        guard.remaining -= 1;
+        if guard.remaining == 0 {
+            // flock may drop the exclusive lock before granting the shared one.
+            // Both descriptors are inherited, so even if Cargo exits in that
+            // interval, surviving workers still exclude other writers.
+            flock::lock_shared(file)?;
+            *exclusive = false;
+            flock::unlock(&guard.directory)?;
+            *writer = None;
+        }
+        Ok(())
+    }
+
     /// Retains the same unit leases in workers that can outlive the Cargo process.
     #[cfg(unix)]
     pub(super) fn inherit_shared_cache_locks(&self, command: &mut cargo_util::ProcessBuilder) {
         for lock in self.locks.read().unwrap().values() {
             if let UnitLock::Reserved { file, .. } = lock {
                 command.inherit_file(Arc::clone(file));
+            }
+            #[cfg(any(target_os = "linux", target_os = "macos"))]
+            if let UnitLock::Reserved {
+                writer: Some(writer),
+                ..
+            } = lock
+            {
+                command.inherit_file(Arc::clone(&writer.directory));
             }
         }
     }
@@ -176,7 +279,7 @@ impl LockManager {
     /// this build unit.
     ///
     /// This function returns a [`LockKey`] which can be used to upgrade/unlock a dynamic
-    /// lock. Reserved shared-cache locks keep their preparation-time mode throughout.
+    /// lock. Reserved shared-cache locks are managed separately from dynamic job locks.
     #[instrument(skip_all, fields(key))]
     pub fn lock_shared(
         &self,
@@ -243,7 +346,7 @@ impl LockManager {
         get_limit: impl FnOnce() -> std::io::Result<libc::rlimit>,
         set_limit: impl FnOnce(&libc::rlimit) -> std::io::Result<()>,
     ) {
-        // Fine-grained locking retains one descriptor for each compilation unit. Leave room
+        // The caller counts unit locks and any additional writer descriptors. Leave room
         // for Cargo's other files, compiler pipes, and the jobserver in the same process.
         const RESERVED_DESCRIPTORS: libc::rlim_t = 128;
 
@@ -318,7 +421,7 @@ impl LockManager {
         Ok(())
     }
 
-    /// Downgrades a dynamic lock; reserved shared-cache leases retain their original mode.
+    /// Downgrades a dynamic lock. Shared-cache publication waits for confirmed job completion.
     #[instrument(skip(self))]
     pub fn downgrade_to_shared(&self, key: &LockKey) -> CargoResult<()> {
         let locks = self.locks.read().unwrap();
