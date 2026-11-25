@@ -17,6 +17,14 @@ impl<N: Eq + Ord + Clone, E: Default + Clone> Graph<N, E> {
         self.nodes.entry(node).or_insert_with(im_rc::OrdMap::new);
     }
 
+    /// Adds the node even if it has no children. Existing edge values are preserved.
+    pub(crate) fn add_with_children(&mut self, node: N, children: impl IntoIterator<Item = N>) {
+        let edges = self.nodes.entry(node).or_insert_with(im_rc::OrdMap::new);
+        for child in children {
+            edges.entry(child).or_default();
+        }
+    }
+
     pub fn link(&mut self, node: N, child: N) -> &mut E {
         self.nodes
             .entry(node)
@@ -299,5 +307,25 @@ impl<N: Eq + Ord + Clone, E: Clone> Clone for Graph<N, E> {
         Graph {
             nodes: self.nodes.clone(),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::Graph;
+
+    #[test]
+    fn adding_children_in_bulk_matches_individual_links() {
+        let mut graph = Graph::new();
+        *graph.link(0, 1) = 42;
+        let mut expected = graph.clone();
+        for (parent, children) in [(0, &[1, 2, 2][..]), (1, &[]), (2, &[0])] {
+            expected.add(parent);
+            for &child in children {
+                expected.link(parent, child);
+            }
+            graph.add_with_children(parent, children.iter().copied());
+        }
+        assert_eq!(graph, expected);
     }
 }

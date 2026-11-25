@@ -1082,6 +1082,14 @@ impl GlobalContext {
         Ok(false)
     }
 
+    /// Check conservatively without parsing patches or repeating warnings, even
+    /// for a misspelled environment key or a patch supplied via advanced-env.
+    pub(crate) fn may_have_config_patches(&self) -> bool {
+        let key = ConfigKey::from_parts(["patch"]);
+        self.env.get_normalized(key.as_env_key()).is_some()
+            || self.has_key(&key, true).unwrap_or(true)
+    }
+
     fn check_environment_key_case_mismatch(&self, key: &ConfigKey) {
         if let Some(env_key) = self.env.get_normalized(key.as_env_key()) {
             let _ = self.shell().warn(format!(

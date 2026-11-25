@@ -459,7 +459,7 @@ pub(crate) struct PackedIndexSummary {
     name: InternedString,
     version: semver::Version,
     dependencies: Vec<super::dependency::PackedIndexDependency>,
-    features: FeatureMap,
+    features: Arc<FeatureMap>,
     checksum: Option<String>,
     links: Option<InternedString>,
     rust_version: Option<RustVersion>,
@@ -479,7 +479,7 @@ impl PackedIndexSummary {
                     super::dependency::PackedIndexDependency::pack(d, s.package_id.source_id())
                 })
                 .collect::<Option<_>>()?,
-            features: (*s.features).clone(),
+            features: Arc::clone(&s.features),
             checksum: s.checksum.clone(),
             links: s.links,
             rust_version: s.rust_version.clone(),
@@ -495,13 +495,40 @@ impl PackedIndexSummary {
                     .into_iter()
                     .map(|d| d.unpack(source))
                     .collect::<Option<_>>()?,
-                features: Arc::new(self.features),
+                features: self.features,
                 checksum: self.checksum,
                 links: self.links,
                 rust_version: self.rust_version,
                 pubtime: self.pubtime,
             }),
         })
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn packed_index_features_preserve_cache_format() {
+        let source = SourceId::for_registry(&"https://example.org".parse().unwrap()).unwrap();
+        let id = PackageId::new("example".into(), Version::new(1, 0, 0), source);
+        let features = BTreeMap::from([
+            ("default".into(), vec!["enabled".into()]),
+            ("enabled".into(), vec![]),
+        ]);
+        let summary = Summary::new(id, vec![], &features, None::<&str>, None).unwrap();
+        let packed = PackedIndexSummary::pack(&summary).unwrap();
+        assert!(Arc::ptr_eq(&packed.features, &summary.inner.features));
+
+        let owned = postcard::to_allocvec(summary.features()).unwrap();
+        assert_eq!(postcard::to_allocvec(&packed.features).unwrap(), owned);
+        let bytes = postcard::to_allocvec(&packed).unwrap();
+        let readback: PackedIndexSummary = postcard::from_bytes(&bytes).unwrap();
+        assert_eq!(
+            readback.unpack(source).unwrap().features(),
+            summary.features()
+        );
     }
 }
 

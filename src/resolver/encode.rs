@@ -218,19 +218,49 @@ pub fn into_resolve(
     // is used to find package ids even if dependencies have missing
     // information. This map is from name to version to source to actual
     // package ID. (various levels to drill down step by step)
-    let mut map = HashMap::default();
-    for (id, _) in &live_pkgs {
-        map.entry(id.name().as_str())
-            .or_insert_with(HashMap::default)
+    // Most names occur just once and are referenced without a version
+    // or source. Only build the nested index when we need to disambiguate.
+    type Versions = HashMap<String, HashMap<SourceId, PackageId>>;
+
+    struct Candidates {
+        first: PackageId,
+        versions: Option<Box<Versions>>,
+    }
+
+    fn insert(versions: &mut Versions, id: PackageId) {
+        versions
             .entry(id.version().to_string())
-            .or_insert_with(HashMap::default)
-            .insert(id.source_id(), *id);
+            .or_default()
+            .insert(id.source_id(), id);
+    }
+
+    impl Candidates {
+        fn versions(&mut self) -> &mut Versions {
+            self.versions.get_or_insert_with(|| {
+                let mut versions = Box::default();
+                insert(&mut versions, self.first);
+                versions
+            })
+        }
+    }
+
+    let mut map = HashMap::with_capacity_and_hasher(live_pkgs.len(), Default::default());
+    for &(id, _) in &live_pkgs {
+        map.entry(id.name().as_str())
+            .and_modify(|ids: &mut Candidates| insert(ids.versions(), id))
+            .or_insert(Candidates {
+                first: id,
+                versions: None,
+            });
     }
 
     let mut lookup_id = |enc_id: &TomlLockfilePackageId| -> Option<PackageId> {
-        // The name of this package should always be in the larger list of
-        // all packages.
-        let by_version = map.get(enc_id.name.as_str())?;
+        let ids = map.get_mut(enc_id.name.as_str())?;
+        if ids.versions.is_none() && enc_id.version.is_none() && enc_id.source.is_none() {
+            version = version.max(ResolveVersion::V2);
+            return Some(ids.first);
+        }
+        let by_version = ids.versions();
 
         // If the version is provided, look that up. Otherwise if the
         // version isn't provided this is a V2 manifest and we should only
@@ -289,20 +319,9 @@ pub fn into_resolve(
 
     let mut g = Graph::new();
 
-    for (id, _) in &live_pkgs {
-        g.add(*id);
-    }
-
-    for &(ref id, pkg) in &live_pkgs {
-        let Some(ref deps) = pkg.dependencies else {
-            continue;
-        };
-
-        for edge in deps.iter() {
-            if let Some(to_depend_on) = lookup_id(edge) {
-                g.link(*id, to_depend_on);
-            }
-        }
+    for (id, pkg) in &live_pkgs {
+        let deps = pkg.dependencies.iter().flatten().filter_map(&mut lookup_id);
+        g.add_with_children(*id, deps);
     }
 
     let replacements = {

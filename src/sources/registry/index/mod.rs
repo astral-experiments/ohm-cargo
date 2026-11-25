@@ -148,6 +148,15 @@ pub enum IndexSummary {
     Invalid(Summary),
 }
 
+/// Validate UTF-8 once for the entire record instead of once per JSON string.
+/// Keep byte parsing for malformed input, including bytes in ignored fields.
+fn parse_index_package(line: &[u8]) -> serde_json::Result<IndexPackage<'_>> {
+    match std::str::from_utf8(line) {
+        Ok(s) => serde_json::from_str(s),
+        Err(_) => serde_json::from_slice(line),
+    }
+}
+
 impl IndexSummary {
     /// Extract the summary from any variant.
     ///
@@ -438,65 +447,35 @@ impl<'gctx> RegistryIndex<'gctx> {
         load: &dyn RegistryData,
         f: &mut dyn FnMut(IndexSummary),
     ) -> CargoResult<()> {
-        if !self.gctx.network_allowed() {
-            // This should only return `Ok(())` if there is at least 1 match.
-            //
-            // If there are 0 matches it should fall through and try again with online.
-            // This is necessary for dependencies that are not used (such as
-            // target-cfg or optional), but are not downloaded. Normally the
-            // build should succeed if they are not downloaded and not used,
-            // but they still need to resolve. If they are actually needed
-            // then cargo will fail to download and an error message
-            // indicating that the required dependency is unavailable while
-            // offline will be displayed.
-            let mut called = false;
-            let callback = &mut |s: IndexSummary| {
-                if !s.is_offline() {
-                    called = true;
-                    f(s);
-                }
-            };
-            self.query_inner_with_online(name, req, load, callback, false)
-                .await?;
-            if called {
-                return Ok(());
+        let mut matches = self.summaries(name, req, load).await?;
+        if self.gctx.network_allowed() {
+            matches.for_each(f);
+            return Ok(());
+        }
+
+        // Offline resolution prefers downloaded versions. If none are downloaded,
+        // it still needs to resolve unused dependencies (e.g. optional or for
+        // another target). Downloading a needed but missing crate will fail later.
+        let Some(first) = matches.next() else {
+            return Ok(());
+        };
+        let Some(second) = matches.next() else {
+            // A single match wins either way. This is common with a lockfile
+            // and saves a filesystem lookup for each registry dependency.
+            f(first);
+            return Ok(());
+        };
+
+        let mut found = false;
+        for summary in [first, second].into_iter().chain(matches) {
+            if load.is_crate_downloaded(summary.package_id()) {
+                found = true;
+                f(summary);
             }
         }
-        self.query_inner_with_online(name, req, load, f, true).await
-    }
-
-    /// Inner implementation of [`Self::query_inner`]. Returns the number of
-    /// summaries we've got.
-    ///
-    /// The `online` controls whether Cargo can access the network when needed.
-    async fn query_inner_with_online(
-        &self,
-        name: InternedString,
-        req: &OptVersionReq,
-        load: &dyn RegistryData,
-        f: &mut dyn FnMut(IndexSummary),
-        online: bool,
-    ) -> CargoResult<()> {
-        self.summaries(name, &req, load)
-            .await?
-            // First filter summaries for `--offline`. If we're online then
-            // everything is a candidate, otherwise if we're offline we're only
-            // going to consider candidates which are actually present on disk.
-            //
-            // Note: This particular logic can cause problems with
-            // optional dependencies when offline. If at least 1 version
-            // of an optional dependency is downloaded, but that version
-            // does not satisfy the requirements, then resolution will
-            // fail. Unfortunately, whether or not something is optional
-            // is not known here.
-            .map(|s| {
-                if online || load.is_crate_downloaded(s.package_id()) {
-                    s.clone()
-                } else {
-                    IndexSummary::Offline(s.as_summary_unchecked().clone())
-                }
-            })
-            .for_each(f);
+        if !found {
+            self.summaries(name, req, load).await?.for_each(f);
+        }
         Ok(())
     }
 }
@@ -715,7 +694,7 @@ impl IndexSummary {
         // Make sure to consider the INDEX_V_MAX and CURRENT_CACHE_VERSION
         // values carefully when making changes here.
         let index_summary = (|| {
-            let index = serde_json::from_slice::<IndexPackage<'_>>(line)?;
+            let index = parse_index_package(line)?;
             let subset = IndexSubset {
                 v: index.v,
                 yanked: index.yanked,
@@ -886,4 +865,33 @@ fn split(haystack: &[u8], needle: u8) -> impl Iterator<Item = &[u8]> {
     }
 
     Split { haystack, needle }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn index_package_matches_byte_parser() {
+        // Exercise literal and escaped Unicode, then invalid bytes in both a
+        // known and an unknown field. Preserve errors as well as successes.
+        let line = r#"{"name":"pkg","vers":"1.0.0","deps":[],"features":{"π":["\u03c0"]},"cksum":"abc","extra":"!"}"#.as_bytes();
+        assert!(parse_index_package(line).is_ok());
+        for marker in [None, Some(b'p'), Some(b'!')] {
+            let mut input = line.to_vec();
+            if let Some(marker) = marker {
+                let pos = input.iter().position(|b| *b == marker).unwrap();
+                input[pos] = 0xff;
+            }
+            let render = |result: serde_json::Result<IndexPackage<'_>>| {
+                result
+                    .map(|pkg| serde_json::to_value(pkg).unwrap())
+                    .map_err(|err| err.to_string())
+            };
+            assert_eq!(
+                render(parse_index_package(&input)),
+                render(serde_json::from_slice(&input)),
+            );
+        }
+    }
 }
