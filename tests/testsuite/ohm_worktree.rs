@@ -1679,6 +1679,51 @@ fn retargeted_source_symlinks_are_revalidated_in_the_new_worktree() {
     nightly,
     reason = "worktree seeds use checksum freshness and cwd remapping"
 )]
+fn seeded_sbom_uses_the_recipients_package_ids() {
+    let donor = git::new("donor", |p| {
+        p.file("src/lib.rs", "pub fn read() {}").file(
+            "src/main.rs",
+            "extern crate foo; fn main() { foo::read(); }",
+        )
+    });
+    let build = |root: &Path| {
+        let mut cargo = seeded_cargo(&donor, "-Zsbom build -v");
+        cargo
+            .masquerade_as_nightly_cargo(&["ohm-defaults", "sbom"])
+            .env("CARGO_BUILD_SBOM", "true")
+            .env("CARGO_PROFILE_DEV_DEBUG", "0")
+            .cwd(root);
+        cargo
+    };
+    build(&donor.root()).run();
+    let child = paths::root().join("child");
+    let output = seeded_cargo(&donor, "worktree add -b charlie/child")
+        .arg(&child)
+        .run();
+    let seeded = seed_was_imported(&output);
+    for root in [&child, &child, &donor.root()] {
+        let mut cargo = build(root);
+        if seeded {
+            cargo.with_stderr_does_not_contain("[COMPILING] foo [..]");
+        }
+        cargo.run();
+        let mut file = binary(root).into_os_string();
+        file.push(".cargo-sbom.json");
+        let sbom: serde_json::Value = serde_json::from_slice(&fs::read(file).unwrap()).unwrap();
+        let prefix = format!("path+{}#", url::Url::from_file_path(root).unwrap());
+        for krate in sbom["crates"].as_array().unwrap() {
+            assert!(
+                krate["id"].as_str().unwrap().starts_with(&prefix),
+                "{krate}"
+            );
+        }
+    }
+}
+
+#[cargo_test(
+    nightly,
+    reason = "worktree seeds use checksum freshness and cwd remapping"
+)]
 fn cargo_manifest_environment_is_revalidated_without_a_build_script() {
     let donor = git::new("donor", |p| {
         p.file(".gitignore", "/target\n/Cargo.lock\n").file(
