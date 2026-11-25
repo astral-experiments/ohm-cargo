@@ -721,7 +721,7 @@ impl<'gctx> DrainState<'gctx> {
                     .unit_start(build_runner, id, self.active[&id].clone());
             }
             Message::Stdout(_, out) => {
-                writeln!(build_runner.bcx.gctx.shell().out(), "{}", out)?;
+                build_runner.bcx.gctx.shell().print_stdout_line(&out)?;
             }
             Message::Stderr(_, err) => {
                 let mut shell = build_runner.bcx.gctx.shell();

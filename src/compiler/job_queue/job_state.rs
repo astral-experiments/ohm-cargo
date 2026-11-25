@@ -165,7 +165,7 @@ impl<'a, 'gctx> JobState<'a, 'gctx> {
 
     pub fn stdout(&self, stdout: String) -> CargoResult<()> {
         if let Some(dedupe) = self.output {
-            writeln!(dedupe.gctx.shell().out(), "{}", stdout)?;
+            dedupe.gctx.shell().print_stdout_line(&stdout)?;
         } else {
             self.messages.push_bounded(Message::Stdout(self.id, stdout));
         }
