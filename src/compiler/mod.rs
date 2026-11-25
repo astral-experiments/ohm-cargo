@@ -1253,6 +1253,34 @@ struct RelinkCachePaths {
     objects: PathBuf,
 }
 
+/// Keeps the last executable's unpacked debug objects until rustc replaces it.
+struct PreviousDebugObjects<'a> {
+    cache: &'a RelinkCachePaths,
+    backup: tempfile::TempDir,
+    replaced: bool,
+}
+
+impl Drop for PreviousDebugObjects<'_> {
+    fn drop(&mut self) {
+        if self.replaced {
+            return;
+        }
+
+        let previous = self.backup.path().join("objects");
+        let restore = self
+            .cache
+            .clear_codegen_temps()
+            .and_then(|()| fs::rename(&previous, &self.cache.objects).map_err(Into::into));
+        if let Err(err) = restore {
+            self.backup.disable_cleanup(true);
+            tracing::warn!(
+                "could not restore debug objects from `{}`: {err}",
+                previous.display()
+            );
+        }
+    }
+}
+
 impl RelinkCachePaths {
     fn new(executable: PathBuf) -> Self {
         let rlink = executable.with_extension("rlink");
@@ -1353,6 +1381,30 @@ impl RelinkCachePaths {
                 )
             })
             .collect())
+    }
+
+    /// Give rustc an empty directory without losing the last executable's split
+    /// debug info on failure. The old relink recipe must stay invalid either way.
+    fn begin_rebuild(
+        &self,
+        rustc: &ProcessBuilder,
+    ) -> CargoResult<Option<PreviousDebugObjects<'_>>> {
+        self.invalidate()?;
+        let unpacked = may_have_compiler_option(rustc.get_args(), |name, value, _| {
+            matches!(name, "split-debuginfo" | "split_debuginfo") && value == "unpacked"
+        });
+        if !unpacked || !self.has_object_directory() {
+            self.clear_codegen_temps()?;
+            return Ok(None);
+        }
+
+        let backup = tempfile::tempdir_in(self.objects.parent().unwrap())?;
+        fs::rename(&self.objects, backup.path().join("objects"))?;
+        Ok(Some(PreviousDebugObjects {
+            cache: self,
+            backup,
+            replaced: false,
+        }))
     }
 
     fn clear_codegen_temps(&self) -> CargoResult<()> {
@@ -2297,12 +2349,12 @@ fn rustc(
                 validation_started.elapsed()
             );
         }
+        let mut previous_debug_objects = None;
         if use_cached_relink {
             tracing::info!("relink-only: reusing cached codegen for {unit_name}");
         } else {
             if let Some(cache) = &relink_cache {
-                cache.invalidate()?;
-                cache.clear_codegen_temps()?;
+                previous_debug_objects = cache.begin_rebuild(&rustc)?;
             }
             output_options.prepare_for_compiler();
         }
@@ -2760,6 +2812,10 @@ fn rustc(
             }
 
             return Err(e);
+        }
+
+        if let Some(mut previous) = previous_debug_objects {
+            previous.replaced = true;
         }
 
         // Exec should never return with success *and* generate an error.

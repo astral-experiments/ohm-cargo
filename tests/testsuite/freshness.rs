@@ -5086,6 +5086,60 @@ fn relink_cache_respects_redirected_executables() {
 }
 
 #[cargo_test]
+#[cfg(target_os = "linux")]
+fn failed_rebuild_preserves_unpacked_debug_objects() {
+    let wrapper = relink_only_wrapper();
+    let p = project()
+        .file(
+            "Cargo.toml",
+            &format!(
+                "{}\n[profile.dev]\nsplit-debuginfo = 'unpacked'\n",
+                basic_manifest("app", "0.1.0")
+            ),
+        )
+        .file("src/main.rs", "fn main() {}")
+        .build();
+    let build = || {
+        let mut cmd = p.cargo("-Zohm-defaults build");
+        cmd.masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("RUSTC_WRAPPER", &wrapper)
+            .env("RELINK_WRAPPER_LOG", p.root().join("compiler.log"));
+        cmd
+    };
+    build().run();
+    let manifest = p
+        .glob("target/debug/build/app/*/out/*.rlink-cache.json")
+        .map(Result::unwrap)
+        .next()
+        .unwrap();
+    let cache: serde_json::Value = serde_json::from_slice(&fs::read(&manifest).unwrap()).unwrap();
+    let executable = Path::new(cache["executable"]["path"].as_str().unwrap());
+    // The wrapper simulates relinking on stock rustc. Stand in for an object
+    // referenced by the previous executable's split DWARF.
+    let debug = executable.with_extension("rlink-objects").join("app.dwo");
+    fs::write(&debug, b"previous").unwrap();
+
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    p.change_file("src/main.rs", "fn main() { let _: u8 = false; }");
+    for _ in 0..2 {
+        build()
+            .with_status(101)
+            .with_stderr_contains("[..]mismatched types[..]")
+            .run();
+        assert!(p.bin("app").exists());
+        assert_eq!(fs::read(&debug).unwrap(), b"previous");
+        assert!(!manifest.exists());
+    }
+    p.change_file("src/main.rs", "fn main() { println!(\"fixed\"); }");
+    build().run();
+    assert!(manifest.exists());
+    assert!(!debug.exists());
+    p.process(&p.bin("app")).with_stdout_data("fixed\n").run();
+}
+
+#[cargo_test]
 #[cfg(not(windows))]
 fn relink_only_reuses_root_codegen() {
     let wrapper = relink_only_wrapper();
