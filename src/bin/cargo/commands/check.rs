@@ -51,9 +51,10 @@ pub fn exec(gctx: &mut GlobalContext, args: &ArgMatches) -> CliResult {
         Some("test")
     );
     let intent = UserIntent::Check { test };
-    let compile_opts =
+    let mut compile_opts =
         args.compile_options(gctx, intent, Some(&ws), ProfileChecking::LegacyTestOnly)?;
 
+    compile_opts.build_config.allow_terminal_check = !test;
     ops::compile(&ws, &compile_opts)?;
     Ok(())
 }

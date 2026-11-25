@@ -2933,6 +2933,15 @@ fn calculate_normal(
         .filter(|output| !matches!(output.flavor, FileFlavor::DebugInfo | FileFlavor::Auxiliary))
         .map(|output| output.path.clone())
         .chain(super::rustdoc_output_marker(build_runner, unit))
+        // A successful terminal check records Cargo's translated dep-info.
+        // Use it for output freshness without advertising a nonexistent rmeta.
+        .chain(
+            build_runner
+                .files()
+                .metadata(unit)
+                .check_only
+                .then(|| dep_info_loc(build_runner, unit)),
+        )
         .collect::<Vec<_>>();
     // Fill out a bunch more information that we'll be tracking typically
     // hashed to take up less space on disk as we just need to know when things

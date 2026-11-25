@@ -27,6 +27,8 @@ pub struct BuildConfig {
     pub requested_profile: InternedString,
     /// The intent we are compiling in.
     pub intent: UserIntent,
+    /// Plain `cargo check` allows Ohm to omit unused terminal library metadata.
+    pub allow_terminal_check: bool,
     /// `true` to print stdout in JSON format (for machine reading).
     pub message_format: MessageFormat,
     /// Force Cargo to do a full rebuild and treat each target as changed.
@@ -125,6 +127,7 @@ impl BuildConfig {
             keep_going,
             requested_profile: "dev".into(),
             intent,
+            allow_terminal_check: false,
             message_format: MessageFormat::Human,
             force_rebuild: false,
             unit_graph: false,
