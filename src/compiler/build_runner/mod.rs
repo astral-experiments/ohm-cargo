@@ -392,6 +392,8 @@ pub struct BuildRunner<'a, 'gctx> {
     /// Use the same admission decision when preparing work and scheduling it.
     pub(crate) early_test_dependencies: HashMap<Unit, Unit>,
     pub(crate) deferred_dev_deps: super::ohm_deferred_dev_deps::State,
+    /// Latest check contributing metadata to each library during `cargo doc`.
+    pub(super) rustdoc_input_mtimes: HashMap<UnitIndex, FileTime>,
     /// Cache of file mtimes to reduce filesystem hits.
     pub mtime_cache: HashMap<PathBuf, FileTime>,
     /// Cache of file checksums to reduce filesystem reads.
@@ -598,6 +600,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             early_test_completions: HashMap::default(),
             early_test_dependencies: HashMap::default(),
             deferred_dev_deps: super::ohm_deferred_dev_deps::State::default(),
+            rustdoc_input_mtimes: HashMap::default(),
             mtime_cache: HashMap::default(),
             checksum_cache: HashMap::default(),
             clippy_driver_checksum: super::clippy_driver_checksum::ClippyDriverChecksum::new(bcx)
