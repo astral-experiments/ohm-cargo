@@ -18,7 +18,7 @@ use crate::util::Queue;
 use crate::util::interning::InternedString;
 use crate::{CargoResult, compiler::locking::LockManager};
 
-use super::{Artifact, DiagDedupe, Job, JobId, Message};
+use super::{Artifact, DiagDedupe, Job, JobId, JobOutputOptions, Message};
 
 #[derive(Clone, Debug, Eq, PartialEq, serde::Deserialize, serde::Serialize)]
 pub(crate) struct PublicApiHash {
@@ -118,7 +118,7 @@ pub struct JobState<'a, 'gctx> {
     /// Manages locks for build units when fine grain locking is enabled.
     lock_manager: Arc<LockManager>,
 
-    warning_handling: WarningHandling,
+    output_options: JobOutputOptions,
 
     // Historical versions of Cargo made use of the `'a` argument here, so to
     // leave the door open to future refactorings keep it here.
@@ -133,7 +133,7 @@ impl<'a, 'gctx> JobState<'a, 'gctx> {
         rmeta_required: bool,
         conditional_metadata: Option<(Arc<Fingerprint>, PathBuf, Option<PublicApiHash>)>,
         lock_manager: Arc<LockManager>,
-        warning_handling: WarningHandling,
+        output_options: JobOutputOptions,
     ) -> Self {
         Self {
             id,
@@ -154,13 +154,15 @@ impl<'a, 'gctx> JobState<'a, 'gctx> {
             ),
             unused_externs: Mutex::new(UnusedExternsState::Missing),
             lock_manager,
-            warning_handling,
+            output_options,
             _marker: marker::PhantomData,
         }
     }
 
     pub fn running(&self, cmd: &ProcessBuilder) {
-        self.messages.push(Message::Run(self.id, cmd.to_string()));
+        // Timings need the start event even when the command isn't displayed.
+        let description = self.output_options.verbose.then(|| cmd.to_string());
+        self.messages.push(Message::Run(self.id, description));
     }
 
     pub fn stdout(&self, stdout: String) -> CargoResult<()> {
@@ -191,7 +193,10 @@ impl<'a, 'gctx> JobState<'a, 'gctx> {
         lint: bool,
         fixable: bool,
     ) -> CargoResult<()> {
-        if level == "warning" && lint && self.warning_handling == WarningHandling::Allow {
+        if level == "warning"
+            && lint
+            && self.output_options.warning_handling == WarningHandling::Allow
+        {
             tracing::warn!("{diag}");
         } else if let Some(dedupe) = self.output {
             let emitted = dedupe.emit_diag(&diag)?;

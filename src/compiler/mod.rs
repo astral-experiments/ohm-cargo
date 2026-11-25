@@ -4805,6 +4805,19 @@ fn on_stderr_line(
     Ok(())
 }
 
+/// rustc emits this notification even for units with no unused externs. It is
+/// also replayed on fresh builds. Recognize only the complete, unambiguous
+/// envelope so that all other messages retain the usual dispatch order (and
+/// malformed usage proofs still take the usual invalidation path).
+fn rustc_unused_externs(line: &str) -> Option<std::collections::BTreeSet<InternedString>> {
+    let names = line
+        .strip_prefix(
+            r#"{"$message_type":"unused_extern","lint_level":"force-warn","unused_extern_names":"#,
+        )?
+        .strip_suffix('}')?;
+    serde_json::from_str(names).ok()
+}
+
 /// Returns true if the line should be cached.
 fn on_stderr_line_inner(
     state: &JobState<'_, '_>,
@@ -4821,6 +4834,12 @@ fn on_stderr_line_inner(
     // JSON message.
     if !line.starts_with('{') {
         state.stderr(line.to_string())?;
+        return Ok(true);
+    }
+
+    if let Some(names) = rustc_unused_externs(line) {
+        trace!("obtained unused externs list from rustc: {names:?}");
+        state.unused_externs(names);
         return Ok(true);
     }
 
@@ -5412,6 +5431,30 @@ fn rustdoc_dep_info_loc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> Path
     let mut loc = build_runner.files().fingerprint_file_path(unit, "");
     loc.set_extension("d");
     loc
+}
+
+#[test]
+fn unused_extern_fast_path_requires_the_entire_report() {
+    let report = |names: &str| {
+        rustc_unused_externs(&format!(
+            r#"{{"$message_type":"unused_extern","lint_level":"force-warn","unused_extern_names":{names}}}"#
+        ))
+    };
+    assert!(report("[]").unwrap().is_empty());
+    assert_eq!(
+        report(r#"["dep","dep"]"#).unwrap(),
+        [InternedString::new("dep")].into()
+    );
+    for invalid in [
+        "null",
+        "[",
+        "[true]",
+        r#"[],"unused_extern_names":["dep"]"#,
+        r#"[],"artifact":"output.rmeta""#,
+    ] {
+        assert!(report(invalid).is_none());
+    }
+    assert!(rustc_unused_externs(r#"{"$message_type":"diagnostic"}"#).is_none());
 }
 
 #[cfg(test)]

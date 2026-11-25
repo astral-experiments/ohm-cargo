@@ -272,6 +272,14 @@ struct CachedCompilerMessages {
 }
 
 impl RegistryMessageProvenance {
+    fn parse(bytes: Vec<u8>, previous: &mut Option<(Vec<u8>, Self)>) -> Option<&Self> {
+        if previous.as_ref().is_none_or(|(last, _)| *last != bytes) {
+            let record = serde_json::from_slice(&bytes).ok()?;
+            *previous = Some((bytes, record));
+        }
+        previous.as_ref().map(|(_, record)| record)
+    }
+
     /// Capture the actual child environment after build scripts override it.
     pub(crate) fn capture_compiler_environment(
         &mut self,
@@ -1786,12 +1794,16 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         };
         // Equal provenance records share their authenticated driver and loader paths.
         let mut compiler_search_directories = HashSet::default();
+        let mut previous = None;
         for unit in registry_closure_units
             .iter()
             .filter(|unit| Self::is_promotable_registry_dependency(self.bcx, unit))
         {
-            if let Some(provenance) = self.matching_message_provenance(unit, &expected_provenance) {
-                compiler_search_directories.extend(provenance.compiler_search_directories);
+            if let Some(provenance) =
+                self.matching_message_provenance(unit, &expected_provenance, &mut previous)
+            {
+                compiler_search_directories
+                    .extend(provenance.compiler_search_directories.iter().cloned());
             } else {
                 stale_units.insert(unit.clone());
             }
@@ -2007,15 +2019,18 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
     }
 
     /// Authenticates the compiler context and the exact cached diagnostics.
-    fn matching_message_provenance(
+    fn matching_message_provenance<'p>(
         &self,
         unit: &Unit,
         expected: &RegistryMessageProvenance,
-    ) -> Option<RegistryMessageProvenance> {
+        previous: &'p mut Option<(Vec<u8>, RegistryMessageProvenance)>,
+    ) -> Option<&'p RegistryMessageProvenance> {
         let bytes =
             paths::read_regular_bounded(&self.registry_message_provenance_path(unit), 1024 * 1024)
                 .ok()?;
-        let provenance: RegistryMessageProvenance = serde_json::from_slice(&bytes).ok()?;
+        // Many libraries emit identical compiler records. Only share the parse
+        // for byte-identical inputs. Message files are still checked per unit.
+        let provenance = RegistryMessageProvenance::parse(bytes, previous)?;
         (provenance.version == expected.version
             && provenance.compiler_context == expected.compiler_context
             && provenance.compiler_driver == expected.compiler_driver
@@ -2060,6 +2075,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             .iter()
             .map(|(check, native)| (check.clone(), native.clone()))
             .collect::<Vec<_>>();
+        let mut previous = None;
         for (check, native) in candidates {
             if self.bcx.gctx.cli_unstable().fine_grain_locking {
                 self.lock_manager.lock_shared(self, &check)?;
@@ -2102,7 +2118,9 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             }) {
                 continue;
             }
-            let Some(provenance) = self.matching_message_provenance(&native, &expected) else {
+            let Some(provenance) =
+                self.matching_message_provenance(&native, &expected, &mut previous)
+            else {
                 continue;
             };
             if !self.native_unit_is_fresh_for_check(&native)? {
@@ -2713,6 +2731,34 @@ mod tests {
         configured_compiler_environment_has_case_alias, effective_compiler_environment,
         is_sensitive_compiler_environment, sysroot_has_external_codegen_backends,
     };
+
+    #[test]
+    fn provenance_parse_tracks_the_contents_of_each_record() {
+        use super::RegistryMessageProvenance;
+        let mut driver = serde_json::json!({
+            "path": "driver", "length": 1, "modified": [1, 0], "created": null
+        });
+        if cfg!(unix) {
+            driver["changed"] = serde_json::json!([1, 0]);
+            driver["device"] = 1.into();
+            driver["inode"] = 1.into();
+        }
+        let mut record = serde_json::json!({
+            "version": 3, "compiler_context": 1, "compiler_driver": driver,
+            "compiler_search_directories": [], "effective_policy_context": 2,
+            "loader_injected": false, "messages": null,
+        });
+        let mut previous = None;
+        for context in [1u64, 1, 2, 1] {
+            record["compiler_context"] = context.into();
+            let bytes = serde_json::to_vec(&record).unwrap();
+            let parsed = RegistryMessageProvenance::parse(bytes, &mut previous).unwrap();
+            assert_eq!(parsed.compiler_context, context);
+        }
+        record["unknown_field"] = true.into();
+        let invalid = serde_json::to_vec(&record).unwrap();
+        assert!(RegistryMessageProvenance::parse(invalid, &mut previous).is_none());
+    }
 
     #[test]
     fn detects_opaque_default_codegen_backend_directories() {

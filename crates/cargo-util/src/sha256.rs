@@ -2,7 +2,7 @@ use super::paths;
 use anyhow::{Context, Result};
 use sha2::{Digest, Sha256 as Sha2_sha256};
 use std::fs::File;
-use std::io::{self, Read};
+use std::io::{self, BufRead, BufReader};
 use std::path::Path;
 
 pub struct Sha256(Sha2_sha256);
@@ -18,14 +18,18 @@ impl Sha256 {
         self
     }
 
-    pub fn update_file(&mut self, mut file: &File) -> io::Result<&mut Sha256> {
-        let mut buf = [0; 64 * 1024];
+    pub fn update_file(&mut self, file: &File) -> io::Result<&mut Sha256> {
+        // Let File fill the buffer without first zeroing 64 KiB for each
+        // small input, such as a cached compiler message.
+        let mut reader = BufReader::with_capacity(64 * 1024, file);
         loop {
-            let n = file.read(&mut buf)?;
-            if n == 0 {
-                break Ok(self);
+            let bytes = reader.fill_buf()?;
+            if bytes.is_empty() {
+                return Ok(self);
             }
-            self.update(&buf[..n]);
+            self.update(bytes);
+            let n = bytes.len();
+            reader.consume(n);
         }
     }
 
@@ -49,5 +53,25 @@ impl Sha256 {
 impl Default for Sha256 {
     fn default() -> Self {
         Self::new()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::Sha256;
+    use std::io::{Seek, SeekFrom, Write};
+
+    #[test]
+    fn hashes_from_the_current_offset_through_eof() {
+        let bytes: Vec<_> = (0..2 * 64 * 1024 + 7).map(|i| i as u8).collect();
+        let mut file = tempfile::tempfile().unwrap();
+        file.write_all(&bytes).unwrap();
+        for len in [0, 1, 85, 64 * 1024, 64 * 1024 + 1, bytes.len()] {
+            let offset = bytes.len() - len;
+            file.seek(SeekFrom::Start(offset as u64)).unwrap();
+            let expected = Sha256::new().update(&bytes[offset..]).finish();
+            assert_eq!(Sha256::new().update_file(&file).unwrap().finish(), expected);
+            assert_eq!(file.stream_position().unwrap(), bytes.len() as u64);
+        }
     }
 }
