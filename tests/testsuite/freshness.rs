@@ -4791,6 +4791,10 @@ fn check_native_relink(marker: &str) {
         fs::read_to_string(&log).unwrap()
     };
     assert_eq!(build(), "compile:dep\ncompile-link:app\n");
+    let depinfo = fs::read_to_string(p.bin("app").with_extension("d")).unwrap();
+    let mut rules = depinfo.lines();
+    assert!(rules.next().unwrap().contains(marker));
+    assert!(rules.any(|line| line.strip_suffix(':') == Some(marker)));
     assert_eq!(build(), "");
     p.change_file("dep/src/lib.rs", "pub fn value() -> i32 { 18 }");
     assert_eq!(build(), "compile:dep\nlink:app\n");

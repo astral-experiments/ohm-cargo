@@ -189,15 +189,22 @@ pub fn output_depinfo(build_runner: &BuildRunner<'_, '_>) -> CargoResult<()> {
             .collect::<Vec<_>>();
         deps.sort_by_key(|&id| ranks[id]);
         deps.dedup_by_key(|id| ranks[*id]);
+        let mut marker_rules = String::new();
         let deps = deps
             .into_iter()
             .map(|id| {
-                rendered[id]
-                    .try_borrow_with(|| render_filename(Path::new(&paths[id]), basedir))
-                    .map(String::as_str)
+                let path = &paths[id];
+                let name = rendered[id].try_borrow_with(|| render_filename(path, basedir))?;
+                // Rustc uses children of /dev/null to force native input checks. Keep
+                // its empty rules so Make invokes Cargo instead of rejecting the input.
+                if cfg!(unix) && path.as_encoded_bytes().starts_with(b"/dev/null/ohm-") {
+                    marker_rules.push_str(name);
+                    marker_rules.push_str(":\n");
+                }
+                Ok(name.as_str())
             })
             .collect::<CargoResult<Vec<_>>>()?;
-        write_depinfo(&outputs, &deps, basedir, success)?;
+        write_depinfo(&outputs, &deps, &marker_rules, basedir, success)?;
     }
     Ok(())
 }
@@ -205,6 +212,7 @@ pub fn output_depinfo(build_runner: &BuildRunner<'_, '_>) -> CargoResult<()> {
 fn write_depinfo(
     outputs: &[PathBuf],
     deps: &[&str],
+    marker_rules: &str,
     basedir: Option<&str>,
     success: bool,
 ) -> CargoResult<()> {
@@ -215,16 +223,24 @@ fn write_depinfo(
         if success {
             let target_fn = render_filename(link_dst, basedir)?;
 
-            if single_output {
+            if single_output || !marker_rules.is_empty() {
                 let mut contents = Vec::new();
                 write!(contents, "{}:", target_fn)?;
                 for dep in deps {
                     write!(contents, " {}", dep)?;
                 }
                 writeln!(contents)?;
+                contents.extend_from_slice(marker_rules.as_bytes());
 
-                // Preserve the mtime when the complete rendered dep-info is unchanged.
-                if paths::read_bytes(&output_path).is_ok_and(|previous| previous == contents) {
+                // Compare the empty rules too, even when several crate types share
+                // this depfile and we can retain the previous target name.
+                if paths::read_bytes(&output_path).is_ok_and(|previous| {
+                    if single_output {
+                        previous == contents
+                    } else {
+                        previous.ends_with(&contents[target_fn.len()..])
+                    }
+                }) {
                     continue;
                 }
                 paths::write(output_path, contents)?;
