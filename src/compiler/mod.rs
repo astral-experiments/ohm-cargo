@@ -2556,6 +2556,11 @@ fn rustc(
                         cache.clear_codegen_temps()?;
                     }
                     for output in outputs.iter() {
+                        // Cargo wrote the SBOM before the first attempt. The retry
+                        // invokes only rustc, which may also read it via CARGO_SBOM_PATH.
+                        if output.flavor == FileFlavor::Sbom && producer_result.is_ok() {
+                            continue;
+                        }
                         if output.path.exists() {
                             paths::remove_file(&output.path)?;
                         }
