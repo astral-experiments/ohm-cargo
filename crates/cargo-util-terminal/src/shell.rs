@@ -23,6 +23,8 @@ pub struct Shell {
     /// Flag that indicates the current line needs to be cleared before
     /// printing. Used when a progress bar is currently displayed.
     needs_clear: bool,
+    /// The stdout adapter may retain a partial escape sequence after writing.
+    stdout_adapter_used: bool,
 }
 
 impl fmt::Debug for Shell {
@@ -62,6 +64,7 @@ impl Shell {
             },
             verbosity: Verbosity::Verbose,
             needs_clear: false,
+            stdout_adapter_used: false,
         }
     }
 
@@ -71,6 +74,7 @@ impl Shell {
             output: ShellOut::Write(AutoStream::never(out)), // strip all formatting on write
             verbosity: Verbosity::Verbose,
             needs_clear: false,
+            stdout_adapter_used: false,
         }
     }
 
@@ -140,6 +144,7 @@ impl Shell {
         if self.needs_clear {
             self.err_erase_line();
         }
+        self.stdout_adapter_used = true;
         self.output.stdout()
     }
 
@@ -259,6 +264,7 @@ impl Shell {
             *color_choice = cfg;
             let stdout_choice = cfg.to_anstream_color_choice();
             let stderr_choice = cfg.to_anstream_color_choice();
+            self.stdout_adapter_used = false;
             *stdout = AutoStream::new(std::io::stdout(), stdout_choice);
             *stderr = AutoStream::new(std::io::stderr(), stderr_choice);
         }
@@ -417,11 +423,29 @@ impl Shell {
         Ok(())
     }
 
+    /// Write a line to stdout, avoiding terminal escape parsing for plain text.
+    pub fn print_stdout_line(&mut self, line: &str) -> std::io::Result<()> {
+        if self.needs_clear {
+            self.err_erase_line();
+        }
+        // Machine-readable output can be several megabytes. For valid UTF-8
+        // without ASCII controls, a fresh stripping adapter passes the bytes
+        // through unchanged and remains in its initial state.
+        if !self.stdout_adapter_used
+            && let ShellOut::Stream { stdout, .. } = &self.output
+            && stdout.current_choice() == anstream::ColorChoice::Never
+            && !has_ascii_control(line)
+        {
+            return writeln!(stdout.as_inner().lock(), "{line}");
+        }
+        writeln!(self.out(), "{line}")
+    }
+
     pub fn print_json<T: serde::ser::Serialize>(&mut self, obj: &T) -> CargoResult<()> {
         // Path may fail to serialize to JSON ...
         let encoded = serde_json::to_string(obj)?;
         // ... but don't fail due to a closed pipe.
-        drop(writeln!(self.out(), "{}", encoded));
+        drop(self.print_stdout_line(&encoded));
         Ok(())
     }
 
@@ -450,6 +474,20 @@ impl Shell {
         self.err().write_all(rendered.as_bytes())?;
         self.err().write_all(b"\n")?;
         Ok(())
+    }
+}
+
+// Use a non-short-circuiting reduction so LLVM can vectorize the scan.
+fn has_ascii_control(line: &str) -> bool {
+    line.bytes()
+        .fold(false, |found, byte| found | (byte < b' ') | (byte == 0x7f))
+}
+
+#[test]
+fn matches_ascii_controls() {
+    for byte in 0..=u8::MAX {
+        let line = format!("{}{}🦀", " ".repeat(64), char::from(byte));
+        assert_eq!(has_ascii_control(&line), byte.is_ascii_control());
     }
 }
 

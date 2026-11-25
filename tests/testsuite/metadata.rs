@@ -5022,3 +5022,34 @@ fn resolve_ids_preserve_renamed_package_versions() {
         assert_eq!(root["dependencies"][j], packages[i]["id"]);
     }
 }
+
+#[cargo_test]
+fn metadata_preserves_unicode_and_color_handling() {
+    for (description, expected) in [
+        (r"🦀\u001b[32m", "🦀\x1b[32m"),
+        (r"🦀\u001b[32m\u007f", "🦀\x1b[32m"),
+    ] {
+        let p = project()
+            .file(
+                "Cargo.toml",
+                &format!(
+                    r#"
+                    [package]
+                    name = "foo"
+                    version = "0.1.0"
+                    description = "{description}"
+                    "#
+                ),
+            )
+            .file("src/lib.rs", "")
+            .build();
+        // ESC is escaped in JSON. DEL is not, so the color-stripping
+        // adapter should still remove it.
+        let output = p
+            .cargo("metadata --color never --format-version 1 --no-deps")
+            .exec_with_output()
+            .unwrap();
+        let metadata: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+        assert_eq!(metadata["packages"][0]["description"], expected);
+    }
+}
