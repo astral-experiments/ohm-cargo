@@ -510,6 +510,14 @@ pub fn translate_dep_info(
         checksum_freshness,
         None,
     )
+    .map(|summary| summary.recheck_dependent_links)
+}
+
+/// Compiler inputs needed for reuse after translation removes command-specific values.
+#[derive(Default)]
+pub(in crate::compiler) struct DepInfoSummary {
+    pub recheck_dependent_links: bool,
+    pub independent_of_bin_exe: bool,
 }
 
 pub(in crate::compiler) fn translate_dep_info_with_observer(
@@ -525,7 +533,7 @@ pub(in crate::compiler) fn translate_dep_info_with_observer(
     worktree_seed_namespace: Option<&Path>,
     checksum_freshness: bool,
     registry_observer: Option<&crate::compiler::RegistryObserver>,
-) -> CargoResult<bool> {
+) -> CargoResult<DepInfoSummary> {
     let mut depinfo = parse_rustc_dep_info(rustc_dep_info)?;
     if depinfo.files.is_empty() {
         // A real zero-prerequisite rule is indistinguishable from a short write after the
@@ -534,7 +542,7 @@ pub(in crate::compiler) fn translate_dep_info_with_observer(
             .filter(|state| state.incremental)
             .map_or(&[][..], |_| REGISTRY_OBSERVER_INCREMENTAL.as_slice());
         paths::write(cargo_dep_info, prefix)?;
-        return Ok(false);
+        return Ok(DepInfoSummary::default());
     }
     if !depinfo.raw_checksum_paths {
         // Older rustc hashed Make-escaped paths and could merge distinct lossy filenames.
@@ -614,7 +622,11 @@ pub(in crate::compiler) fn translate_dep_info_with_observer(
     // not tracked elsewhere in the fingerprint.
     //
     // For cargo#13280, We trace env vars that are defined in the `[env]` config table.
+    let mut independent_of_bin_exe = true;
     on_disk_info.env.retain(|(key, value)| {
+        if key.starts_with("CARGO_BIN_EXE_") && rustc_cmd.get_envs().contains_key(key) {
+            independent_of_bin_exe = false;
+        }
         if key == crate::compiler::OHM_WORKTREE_SOURCE_PATHS {
             // The compiler records the package root only when an artifact uses its physical path.
             return value.is_some();
@@ -763,7 +775,10 @@ pub(in crate::compiler) fn translate_dep_info_with_observer(
         }
     }
     paths::write(cargo_dep_info, encoded)?;
-    Ok(depinfo.recheck_dependent_links)
+    Ok(DepInfoSummary {
+        recheck_dependent_links: depinfo.recheck_dependent_links,
+        independent_of_bin_exe,
+    })
 }
 
 /// Cargo supplies these paths from the current unit, not from package metadata.
