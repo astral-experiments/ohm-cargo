@@ -7676,8 +7676,15 @@ fn terminal_library_check_does_not_satisfy_a_metadata_consumer() {
         .with_stderr_does_not_contain(terminal)
         .with_stderr_contains("[..]--crate-type lib [..]--emit=dep-info,metadata[..]")
         .run();
+    // An ordinary package check needed metadata for the binary. Keep
+    // producing it so checking the binary again can reuse the library.
     p.change_file("src/lib.rs", "pub fn value() -> u8 { 3 }");
-    run("check --lib").with_stderr_contains(terminal).run();
+    run("check --lib")
+        .with_stderr_contains("[..]--emit=dep-info,metadata[..]")
+        .run();
+    run("rustc --profile check --lib")
+        .with_stderr_does_not_contain("[..]--crate-name foo [..]")
+        .run();
     run("check")
         .with_status(101)
         .with_stderr_contains("[..]mismatched types[..]")
@@ -7697,6 +7704,38 @@ fn terminal_library_check_does_not_satisfy_a_metadata_consumer() {
         .with_stderr_does_not_contain(terminal)
         .with_stderr_contains("[..]--emit=dep-info,metadata[..]")
         .run();
+    // One request buys one edit. Repeated no-ops must stay fresh, and
+    // only another actual metadata request should extend the policy.
+    p.change_file("src/lib.rs", "pub fn value() -> u32 { 4 }");
+    run("check --lib")
+        .with_stderr_contains("[..]--emit=dep-info,metadata[..]")
+        .run();
+    for _ in 0..2 {
+        run("check --lib")
+            .with_stderr_does_not_contain("[..]--crate-name foo [..]")
+            .run();
+    }
+    run("rustc --profile check --lib")
+        .with_stderr_does_not_contain("[..]--crate-name foo [..]")
+        .run();
+    p.change_file("src/lib.rs", "pub fn value() -> u32 { 5 }");
+    run("check --lib")
+        .with_stderr_contains("[..]--emit=dep-info,metadata[..]")
+        .run();
+    p.change_file("src/lib.rs", "pub fn value() -> u32 { 6 }");
+    run("check --lib").with_stderr_contains(terminal).run();
+    run("rustc --profile check --lib")
+        .with_stderr_contains("[..]--emit=dep-info,metadata[..]")
+        .run();
+
+    // A binary-only check uses a different public API hash even though
+    // the regular library artifact has exactly the same path.
+    if supports_terminal_declaration_hash() {
+        run("check --bin foo").run();
+        run("check --lib")
+            .with_stderr_does_not_contain("[..]--crate-name foo [..]")
+            .run();
+    }
     // Even with omission enabled, JSON clients must receive current metadata.
     p.change_file("src/lib.rs", "pub fn value() -> u32 { 7 }");
     run("check --lib --message-format=json")

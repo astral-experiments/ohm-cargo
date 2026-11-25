@@ -105,6 +105,8 @@ impl fmt::Debug for UnitHash {
 pub struct Metadata {
     /// The terminal check emits dep-info and has no metadata artifact.
     pub(in crate::compiler) check_only: bool,
+    /// A terminal check supplying metadata for a likely follow-up request.
+    pub(in crate::compiler) anticipates_metadata: bool,
     unit_id: UnitHash,
     c_metadata: UnitHash,
     c_extra_filename: bool,
@@ -684,7 +686,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
         } else {
             None
         };
-        CompilationFiles {
+        let mut files = CompilationFiles {
             ws: build_runner.bcx.ws,
             host,
             target,
@@ -695,7 +697,95 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
             unit_paths,
             dependency_search_args: RefCell::default(),
             outputs,
+        };
+
+        for unit in &build_runner.bcx.roots {
+            if files.metas[unit].check_only {
+                files.prefer_requested_metadata(build_runner, unit);
+            }
         }
+        files
+    }
+
+    /// Keep producing metadata after a terminal check followed by a compatible
+    /// request for this library's rmeta. Only terminal roots can change identity
+    /// here, so no consumer's hash embeds the original unit ID.
+    fn prefer_requested_metadata(&mut self, runner: &BuildRunner<'a, 'gctx>, unit: &Unit) {
+        let terminal = self.fingerprint_file_path(unit, "");
+        let Ok(checked_at) = paths::mtime(&terminal) else {
+            return;
+        };
+        let mut regular = compute_metadata(unit, runner, &mut self.metas, false);
+        regular.anticipates_metadata = true;
+        let original = self.metas.insert(unit.clone(), regular).unwrap();
+        let original_paths = std::mem::take(self.unit_paths.get_mut(unit).unwrap());
+        let requested = self.fingerprint_file_path(unit, "");
+
+        // Dependency-only checks can share the output name but request a
+        // different public API hash. Alternating between those configurations
+        // would repeatedly invalidate both commands.
+        #[derive(serde::Deserialize)]
+        struct Check {
+            config: u64,
+        }
+        let config = |fingerprint: &Path| {
+            if std::fs::metadata(fingerprint).ok()?.len() == 0 {
+                return None;
+            }
+            let bytes =
+                paths::read_regular_bounded(&fingerprint.with_extension("json"), 1024 * 1024)
+                    .ok()?;
+            serde_json::from_slice::<Check>(&bytes)
+                .ok()
+                .map(|check| check.config)
+        };
+        // These files are only a hint for output selection. Normal Cargo
+        // freshness checks validate the selected unit even if the hint raced.
+        if paths::mtime(&requested).is_ok_and(|time| time > checked_at)
+            && config(&requested).is_some_and(|value| Some(value) == config(&terminal))
+            && (!self.unrequested_metadata_marker(unit).exists() || !self.has_newer_inputs(unit))
+            && self
+                .calc_outputs_rustc(unit, runner.bcx)
+                .is_ok_and(|outputs| {
+                    outputs.iter().any(|output| {
+                        output.path.extension().is_some_and(|ext| ext == "rmeta")
+                            && output
+                                .path
+                                .metadata()
+                                .is_ok_and(|m| m.is_file() && m.len() > 0)
+                    })
+                })
+        {
+            return;
+        }
+        self.metas.insert(unit.clone(), original);
+        self.unit_paths.insert(unit.clone(), original_paths);
+    }
+
+    /// This is present after an edit was checked with anticipatory metadata
+    /// until a command that requests that metadata succeeds.
+    pub(in crate::compiler) fn unrequested_metadata_marker(&self, unit: &Unit) -> PathBuf {
+        self.fingerprint_file_path(unit, "unrequested-")
+    }
+
+    /// Keep the stronger check fresh on no-ops, but go back to skipping
+    /// metadata on the next source edit if nobody needed the previous one.
+    /// Timestamps affect only this choice. Cargo still checks the fingerprint.
+    fn has_newer_inputs(&self, unit: &Unit) -> bool {
+        let dep_info = self.fingerprint_file_path(unit, "dep-");
+        let Ok(checked_at) = paths::mtime(&dep_info) else {
+            return true;
+        };
+        let Ok(Some(info)) = crate::compiler::fingerprint::dep_info::parse_dep_info(
+            unit.pkg.root(),
+            &self.build_root(unit),
+            &dep_info,
+        ) else {
+            return true;
+        };
+        info.files
+            .keys()
+            .any(|path| paths::mtime(path).is_ok_and(|time| time > checked_at))
     }
 
     /// Protects the context before inspecting generated compiler search paths.
@@ -2591,7 +2681,8 @@ fn metadata_of<'a>(
     metas: &'a mut HashMap<Unit, Metadata>,
 ) -> &'a Metadata {
     if !metas.contains_key(unit) {
-        let meta = compute_metadata(unit, build_runner, metas);
+        let terminal = crate::compiler::terminal_library_check(build_runner, unit);
+        let meta = compute_metadata(unit, build_runner, metas, terminal);
         metas.insert(unit.clone(), meta);
         for dep in build_runner.unit_deps(unit) {
             metadata_of(&dep.unit, build_runner, metas);
@@ -2605,6 +2696,7 @@ fn compute_metadata(
     unit: &Unit,
     build_runner: &BuildRunner<'_, '_>,
     metas: &mut HashMap<Unit, Metadata>,
+    check_only: bool,
 ) -> Metadata {
     let bcx = &build_runner.bcx;
     let deps_metadata = build_runner
@@ -2809,7 +2901,6 @@ fn compute_metadata(
     if crate::compiler::unit_uses_ohm_build_helper(build_runner, unit) {
         crate::compiler::OHM_BUILD_HELPER_RUSTFLAGS.hash(&mut unit_id_hasher);
     }
-    let check_only = crate::compiler::terminal_library_check(build_runner, unit);
     if check_only {
         // A later dependency check needs real metadata. Give it a different
         // fingerprint and output directory while preserving crate identity.
@@ -2827,6 +2918,7 @@ fn compute_metadata(
 
     Metadata {
         check_only,
+        anticipates_metadata: false,
         unit_id,
         c_metadata,
         c_extra_filename,
