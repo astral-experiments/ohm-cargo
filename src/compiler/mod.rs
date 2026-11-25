@@ -1005,6 +1005,32 @@ fn compile<'gctx>(
                 job.before(work.then(link_targets(build_runner, unit, true)?));
             }
 
+            // Record only a change in demand. I/O failures or races affect
+            // output selection and can never make a stale unit fresh.
+            if matches!(unit.mode, CompileMode::Check { test: false })
+                && unit.target.is_lib()
+                && build_runner.bcx.ws.is_member(&unit.pkg)
+                && build_runner.bcx.gctx.cli_unstable().ohm_defaults()
+            {
+                let files = build_runner.files();
+                let metadata = files.metadata(unit);
+                if metadata.anticipates_metadata && job.freshness().is_dirty() {
+                    let marker = files.unrequested_metadata_marker(unit);
+                    job.after(Work::new(move |_| {
+                        let _ = std::fs::File::create_new(&marker);
+                        Ok(())
+                    }));
+                } else if !metadata.check_only && !metadata.anticipates_metadata {
+                    let marker = files.unrequested_metadata_marker(unit);
+                    if marker.exists() {
+                        job.after(Work::new(move |_| {
+                            let _ = std::fs::remove_file(&marker);
+                            Ok(())
+                        }));
+                    }
+                }
+            }
+
             // If -Zfine-grain-locking is enabled, we wrap the job with an upgrade to exclusive
             // lock before starting, then downgrade to a shared lock after the job is finished.
             if build_runner.bcx.gctx.cli_unstable().fine_grain_locking

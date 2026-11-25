@@ -2048,6 +2048,11 @@ separate fingerprint when a later command needs metadata. JSON artifact
 messages, explicit compiler requests, wrappers, and checks with extra
 compiler flags keep their usual outputs.
 
+After a compatible request for the same library's metadata, the next
+opted-in check can write metadata even without a consumer. If nothing
+requests it, a subsequent source edit with a newer timestamp restores
+the cheaper check. Cargo validates freshness in either case.
+
 ## ohm-clippy-seed-isolation
 
 When worktree preparation is enabled, Ohm automatically keeps the selected
