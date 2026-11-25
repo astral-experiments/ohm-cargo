@@ -2697,6 +2697,29 @@ fn ohm_native_root_reuse_with_shared_build_directories() {
 }
 
 #[cargo_test]
+fn ohm_native_root_reuse_preserves_hard_linked_check_metadata() {
+    let project = project()
+        .file("Cargo.toml", &basic_manifest("foo", "0.0.1"))
+        .file("src/lib.rs", "pub const LEN: usize = 1;")
+        .build();
+    let build_and_check = || {
+        ohm_own_library_cargo(&project, "build --lib").run();
+        let output = ohm_own_library_cargo(&project, "check --lib --message-format=json").run();
+        assert_ohm_reused_root(&output, "foo", "lib", false)
+    };
+    let metadata = build_and_check();
+    // rustc can keep a hard link to this output as an incremental work product.
+    let saved = project.root().join("saved.rmeta");
+    std::fs::hard_link(&metadata, &saved).unwrap();
+    let original = std::fs::read(&saved).unwrap();
+
+    project.change_file("src/lib.rs", "pub const LEN: usize = 2;");
+    assert_eq!(build_and_check(), metadata);
+    assert!(std::fs::read(&metadata).unwrap() != original);
+    assert!(std::fs::read(&saved).unwrap() == original);
+}
+
+#[cargo_test]
 fn ohm_native_root_reuse_preserves_library_metadata_and_warnings() {
     let project = ohm_own_library_project();
     ohm_own_library_cargo(&project, "build --lib").run();
