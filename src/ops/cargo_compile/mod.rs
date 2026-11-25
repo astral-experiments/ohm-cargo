@@ -546,6 +546,8 @@ struct BuildResolution<'a, 'gctx> {
 
 /// The selected graph owns these resources while its fingerprints are checked.
 struct BuildResources<'gctx> {
+    /// Present when an earlier graph for this resolution validated the profiles and targets.
+    validated_profiles: Option<Profiles>,
     packages: PackageSet<'gctx>,
     target_data: RustcTargetData<'gctx>,
 }
@@ -553,6 +555,7 @@ struct BuildResources<'gctx> {
 impl<'gctx> From<BuildContext<'_, 'gctx>> for BuildResources<'gctx> {
     fn from(context: BuildContext<'_, 'gctx>) -> Self {
         Self {
+            validated_profiles: Some(context.profiles),
             packages: context.packages,
             target_data: context.target_data,
         }
@@ -680,6 +683,7 @@ fn resolve_for_build<'a, 'gctx>(
             std_resolve_features,
         },
         BuildResources {
+            validated_profiles: None,
             packages: pkg_set,
             target_data,
         },
@@ -719,6 +723,7 @@ fn create_bcx_with_registry_reuse<'a, 'gctx>(
     } = *options;
     let gctx = ws.gctx();
     let BuildResources {
+        validated_profiles,
         packages: pkg_set,
         target_data,
     } = resources;
@@ -765,12 +770,21 @@ fn create_bcx_with_registry_reuse<'a, 'gctx>(
         );
     }
 
-    let profiles = Profiles::new(ws, build_config.requested_profile)?;
-    profiles.validate_packages(
-        ws.profiles(),
-        &mut gctx.shell(),
-        workspace_resolve.as_ref().unwrap_or(resolve),
-    )?;
+    // All attempts select the same targets and features. Validate them once so
+    // retrying a check doesn't repeat manifest warnings. BuildContext::new
+    // reselects registry build helpers for each graph.
+    let validate_targets = validated_profiles.is_none();
+    let profiles = if let Some(profiles) = validated_profiles {
+        profiles
+    } else {
+        let profiles = Profiles::new(ws, build_config.requested_profile)?;
+        profiles.validate_packages(
+            ws.profiles(),
+            &mut gctx.shell(),
+            workspace_resolve.as_ref().unwrap_or(resolve),
+        )?;
+        profiles
+    };
 
     // If `--target` has not been specified, then the unit graph is built
     // assuming `--target $HOST` was specified. See
@@ -826,6 +840,7 @@ fn create_bcx_with_registry_reuse<'a, 'gctx>(
             intent: build_config.intent,
             resolve,
             workspace_resolve,
+            validate_targets,
             resolved_features: &resolved_features,
             package_set: &pkg_set,
             profiles: &profiles,
