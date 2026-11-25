@@ -55,6 +55,7 @@
 //! [future-incompat lint]: https://rustc-dev-guide.rust-lang.org/diagnostics.html#future-incompatible-lints
 
 use cargo_util_schemas::manifest::RustVersion;
+use cargo_util_schemas::manifest::TomlLints;
 use cargo_util_schemas::manifest::TomlToolLints;
 
 use crate::CargoResult;
@@ -73,6 +74,11 @@ pub use report::{
     AsIndex, TomlSpan, cwd_rel_path, get_key_value, get_key_value_span, workspace_rel_path,
 };
 pub use rules::{LINT_GROUPS, LINTS};
+
+fn cargo_lints(lints: Option<&TomlLints>) -> &TomlToolLints {
+    static EMPTY: TomlToolLints = TomlToolLints::new();
+    lints.and_then(|l| l.get("cargo")).unwrap_or(&EMPTY)
+}
 
 pub struct PassOutput {
     pub lint_warning_count: usize,

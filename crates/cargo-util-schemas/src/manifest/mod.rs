@@ -699,9 +699,42 @@ impl<'de> de::Deserialize<'de> for InheritableDependency {
     {
         let value = serde_value::Value::deserialize(deserializer)?;
 
-        if let Ok(w) = TomlInheritedDependency::deserialize(serde_value::ValueDeserializer::<
-            D::Error,
-        >::new(value.clone()))
+        // This common spelling has no overrides or extra keys. Avoid
+        // cloning the table and decoding it a second time.
+        use serde_value::Value;
+        if let Value::Map(fields) = &value
+            && fields.len() == 1
+            && let Some((Value::String(key), Value::Bool(true))) = fields.first_key_value()
+            && key == "workspace"
+        {
+            return Ok(Self::Inherit(TomlInheritedDependency {
+                workspace: true,
+                features: None,
+                default_features: None,
+                default_features2: None,
+                optional: None,
+                public: None,
+                _unused_keys: BTreeMap::new(),
+            }));
+        }
+
+        // A plain version is already owned. Tables without the required
+        // `workspace` field need no speculative clone and failed parse.
+        let may_inherit = match &value {
+            serde_value::Value::Map(fields) => fields.keys().any(|key| match key {
+                serde_value::Value::String(key) => key == "workspace",
+                _ => true,
+            }),
+            _ => true,
+        };
+        if let serde_value::Value::String(version) = value {
+            return Ok(Self::Value(TomlDependency::Simple(version)));
+        }
+
+        if may_inherit
+            && let Ok(w) = TomlInheritedDependency::deserialize(serde_value::ValueDeserializer::<
+                D::Error,
+            >::new(value.clone()))
         {
             if w._unused_keys.get("builtin").is_some() {
                 return Err(de::Error::custom(
@@ -736,6 +769,20 @@ pub struct TomlInheritedDependency {
     #[serde(flatten)]
     #[cfg_attr(feature = "unstable-schema", schemars(skip))]
     pub _unused_keys: BTreeMap<String, toml::Value>,
+}
+
+#[test]
+fn workspace_only_dependency_matches_inherited_table() {
+    let input = r#"{"workspace":true}"#;
+    let InheritableDependency::Inherit(actual) = serde_json::from_str(input).unwrap() else {
+        panic!("expected an inherited dependency");
+    };
+    let expected: TomlInheritedDependency = serde_json::from_str(input).unwrap();
+    assert_eq!(actual._unused_keys, expected._unused_keys);
+    assert_eq!(
+        serde_json::to_value(actual).unwrap(),
+        serde_json::to_value(expected).unwrap()
+    );
 }
 
 impl TomlInheritedDependency {
@@ -1855,4 +1902,28 @@ fn dump_manifest_schema() {
     let schema = schemars::schema_for!(crate::manifest::TomlManifest);
     let dump = serde_json::to_string_pretty(&schema).unwrap();
     snapbox::assert_data_eq!(dump, snapbox::file!("../../manifest.schema.json").raw());
+}
+
+#[test]
+fn dependency_inheritance_requires_workspace() {
+    use serde_json::{from_value, json};
+
+    let parse = from_value::<InheritableDependency>;
+    assert!(matches!(
+        parse(json!("1.0")).unwrap(),
+        InheritableDependency::Value(TomlDependency::Simple(v)) if v == "1.0"
+    ));
+    let dep = parse(json!({"version": "2", "features": ["a"], "other": 1})).unwrap();
+    let InheritableDependency::Value(TomlDependency::Detailed(dep)) = dep else {
+        panic!("expected a detailed dependency");
+    };
+    assert_eq!(dep.features.unwrap(), ["a"]);
+    assert!(dep._unused_keys.contains_key("other"));
+    assert!(matches!(
+        parse(json!({"workspace": true, "optional": true})).unwrap(),
+        InheritableDependency::Inherit(dep) if dep.optional == Some(true)
+    ));
+    assert!(parse(json!({"workspace": false})).is_err());
+    assert!(parse(json!({"workspace": true, "builtin": true})).is_err());
+    assert!(parse(json!({"version": 1})).is_err());
 }

@@ -483,6 +483,18 @@ fn cargo_compile_with_invalid_manifest3() {
 }
 
 #[cargo_test]
+fn distinct_build_targets_with_same_filename() {
+    let p = project()
+        .file("src/main.rs", "fn main() {}")
+        .file("src/bin/other/main.rs", "fn main() {}")
+        .build();
+
+    p.cargo("check --bins")
+        .with_stderr_does_not_contain("[..]found to be present in multiple build targets:[..]")
+        .run();
+}
+
+#[cargo_test]
 fn cargo_compile_duplicate_build_targets() {
     let p = project()
         .file(

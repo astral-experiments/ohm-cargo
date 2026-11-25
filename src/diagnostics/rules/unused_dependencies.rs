@@ -2,7 +2,6 @@ use std::collections::VecDeque;
 use std::path::Path;
 
 use crate::util::data_structures::{HashSet, IndexMap};
-use cargo_util_schemas::manifest;
 use cargo_util_schemas::manifest::TomlPackageBuild;
 use cargo_util_terminal::report::AnnotationKind;
 use cargo_util_terminal::report::Group;
@@ -172,19 +171,15 @@ pub fn lint_build_results(
         let Some(pkg) = get_package(&build_runner.unused_dep_state, pkg_id) else {
             continue;
         };
-        let toml_lints = pkg
-            .manifest()
-            .normalized_toml()
-            .lints
-            .clone()
-            .map(|lints| lints.lints)
-            .unwrap_or(manifest::TomlLints::default());
-        let cargo_lints = toml_lints
-            .get("cargo")
-            .cloned()
-            .unwrap_or(manifest::TomlToolLints::default());
+        let cargo_lints = crate::diagnostics::cargo_lints(
+            pkg.manifest()
+                .normalized_toml()
+                .lints
+                .as_ref()
+                .map(|l| &l.lints),
+        );
         let level = LINT.level(
-            &cargo_lints,
+            cargo_lints,
             pkg.rust_version(),
             pkg.manifest().unstable_features(),
             build_runner.bcx.gctx,

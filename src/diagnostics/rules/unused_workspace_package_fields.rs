@@ -1,6 +1,7 @@
 use std::path::Path;
 
 use crate::util::data_structures::IndexSet;
+use cargo_util_schemas::manifest::{InheritablePackage, TomlPackage};
 use cargo_util_terminal::report::AnnotationKind;
 use cargo_util_terminal::report::Group;
 use cargo_util_terminal::report::Level;
@@ -57,6 +58,27 @@ pub(crate) fn lint_workspace(
         level: lint_level,
         source,
     } = level;
+
+    // Avoid materializing diagnostic spans in the common case where one member
+    // inherits the entire table. Unknown keys, split inheritance and possible
+    // warnings still use the documents below, preserving source order.
+    if let Some(toml) = maybe_pkg.original_toml() {
+        let Some(fields) = toml.workspace.as_ref().and_then(|w| w.package.as_ref()) else {
+            return Ok(());
+        };
+        if toml._unused_keys.is_empty()
+            && ws.members().any(|member| {
+                let manifest = member.manifest();
+                manifest
+                    .original_toml()
+                    .and_then(|t| t.package.as_deref())
+                    .is_some_and(|pkg| inherits_all(fields, pkg))
+                    && manifest.diagnostic_document().is_some()
+            })
+        {
+            return Ok(());
+        }
+    }
 
     let workspace_package_fields: IndexSet<_> = maybe_pkg
         .document()
@@ -132,4 +154,35 @@ pub(crate) fn lint_workspace(
     }
 
     Ok(())
+}
+
+fn inherits_all(fields: &InheritablePackage, package: &TomlPackage) -> bool {
+    // Destructure exhaustively so new fields cannot silently bypass the lint.
+    // Badges have no corresponding field in TomlPackage.
+    macro_rules! check {
+        ($($key:ident),+ $(,)?) => {{
+            let InheritablePackage { badges, $($key,)+ } = fields;
+            badges.is_none()
+                $(&& ($key.is_none() || package.$key.as_ref().is_some_and(|v| v.is_inherited())))+
+        }};
+    }
+
+    check!(
+        version,
+        authors,
+        description,
+        homepage,
+        documentation,
+        readme,
+        keywords,
+        categories,
+        license,
+        license_file,
+        repository,
+        publish,
+        edition,
+        exclude,
+        include,
+        rust_version,
+    )
 }
