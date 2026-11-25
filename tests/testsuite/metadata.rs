@@ -4984,3 +4984,41 @@ fn metadata_ignores_build_target_configuration() -> anyhow::Result<()> {
     );
     Ok(())
 }
+
+#[cargo_test]
+fn resolve_ids_preserve_renamed_package_versions() {
+    Package::new("dep", "1.0.0").publish();
+    Package::new("dep", "2.0.0").publish();
+    let p = project()
+        .file("src/lib.rs", "")
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "root"
+                version = "0.1.0"
+                edition = "2021"
+
+                [dependencies]
+                old = { package = "dep", version = "1" }
+                new = { package = "dep", version = "2" }
+            "#,
+        )
+        .build();
+    let json = p.cargo("metadata --format-version=1").run_json();
+    let nodes = json["resolve"]["nodes"].as_array().unwrap();
+    let packages = json["packages"].as_array().unwrap();
+    assert_eq!(nodes.len(), 3);
+    assert_eq!(packages.len(), 3);
+    for (node, package) in nodes.iter().zip(packages) {
+        assert_eq!(node["id"], package["id"]);
+    }
+    let root = &nodes[2];
+    assert_eq!(root["id"], json["resolve"]["root"]);
+    for (i, name) in ["old", "new"].iter().enumerate() {
+        let deps = root["deps"].as_array().unwrap();
+        let j = deps.iter().position(|dep| dep["name"] == *name).unwrap();
+        assert_eq!(deps[j]["pkg"], packages[i]["id"]);
+        assert_eq!(root["dependencies"][j], packages[i]["id"]);
+    }
+}
