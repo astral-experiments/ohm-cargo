@@ -345,7 +345,7 @@ impl ser::Serialize for TargetKind {
     {
         use self::TargetKind::*;
         match self {
-            Lib(kinds) => s.collect_seq(kinds.iter().map(|t| t.to_string())),
+            Lib(kinds) => kinds.serialize(s),
             Bin => ["bin"].serialize(s),
             ExampleBin | ExampleLib(_) => ["example"].serialize(s),
             Test => ["test"].serialize(s),
@@ -408,13 +408,17 @@ impl TargetKind {
 
     /// Returns the arguments suitable for `--crate-type` to pass to rustc.
     pub fn rustc_crate_types(&self) -> Vec<CrateType> {
+        self.crate_types().to_vec()
+    }
+
+    fn crate_types(&self) -> &[CrateType] {
         match self {
-            TargetKind::Lib(kinds) | TargetKind::ExampleLib(kinds) => kinds.clone(),
+            TargetKind::Lib(kinds) | TargetKind::ExampleLib(kinds) => kinds,
             TargetKind::CustomBuild
             | TargetKind::Bench
             | TargetKind::Test
             | TargetKind::ExampleBin
-            | TargetKind::Bin => vec![CrateType::Bin],
+            | TargetKind::Bin => &[CrateType::Bin],
         }
     }
 }
@@ -499,12 +503,12 @@ struct SerializedTarget<'a> {
     kind: &'a TargetKind,
     /// Corresponds to `--crate-type` compiler attribute.
     /// See <https://doc.rust-lang.org/reference/linkage.html>
-    crate_types: Vec<CrateType>,
+    crate_types: &'a [CrateType],
     name: &'a str,
     src_path: Option<&'a PathBuf>,
     edition: &'a str,
     #[serde(rename = "required-features", skip_serializing_if = "Option::is_none")]
-    required_features: Option<Vec<&'a str>>,
+    required_features: Option<&'a [String]>,
     /// Whether docs should be built for the target via `cargo doc`
     /// See <https://doc.rust-lang.org/cargo/commands/cargo-doc.html#target-selection>
     doc: bool,
@@ -523,13 +527,11 @@ impl ser::Serialize for Target {
         };
         SerializedTarget {
             kind: self.kind(),
-            crate_types: self.rustc_crate_types(),
+            crate_types: self.kind().crate_types(),
             name: self.name(),
             src_path,
-            edition: &self.edition().to_string(),
-            required_features: self
-                .required_features()
-                .map(|rf| rf.iter().map(|s| s.as_str()).collect()),
+            edition: self.edition().as_str(),
+            required_features: self.required_features().map(Vec::as_slice),
             doc: self.documented(),
             doctest: self.doctested() && self.doctestable(),
             test: self.tested(),
@@ -1347,5 +1349,29 @@ impl Warnings {
 
     pub fn warnings(&self) -> &[DelayedWarning] {
         &self.0
+    }
+}
+
+#[cfg(test)]
+mod target_metadata_tests {
+    use super::*;
+
+    #[test]
+    fn serialized_library_fields() {
+        let mut target = Target::lib_target(
+            "sample",
+            vec![CrateType::Rlib, CrateType::Cdylib],
+            std::env::current_dir().unwrap().join("lib.rs"),
+            Edition::Edition2024,
+        );
+        let value = serde_json::to_value(&target).unwrap();
+        assert_eq!(value["edition"], "2024");
+        assert_eq!(value["kind"], serde_json::json!(["rlib", "cdylib"]));
+        assert_eq!(value["kind"], value["crate_types"]);
+        assert!(value.get("required-features").is_none());
+
+        target.set_required_features(Some(vec!["enabled".into()]));
+        let value = serde_json::to_value(&target).unwrap();
+        assert_eq!(value["required-features"], serde_json::json!(["enabled"]));
     }
 }

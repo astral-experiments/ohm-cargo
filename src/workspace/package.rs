@@ -6,6 +6,7 @@ use std::fmt;
 use std::hash;
 use std::path::{Path, PathBuf};
 use std::rc::Rc;
+use std::sync::Arc;
 use std::time::{Duration, Instant};
 
 use crate::util::data_structures::{HashMap, HashSet};
@@ -16,7 +17,7 @@ use futures::TryStreamExt;
 use futures::stream::FuturesUnordered;
 use http::Request;
 use semver::Version;
-use serde::Serialize;
+use serde::{Serialize, Serializer};
 use tracing::debug;
 
 use crate::compiler::{CompileKind, RustcTargetData};
@@ -34,7 +35,7 @@ use crate::workspace::{
     CliUnstable, Dependency, Features, Manifest, PackageId, PackageIdSpec, SerializedDependency,
     SourceId, Target,
 };
-use crate::workspace::{Summary, Workspace};
+use crate::workspace::{FeatureMap, FeatureValue, Summary, Workspace};
 
 /// Information about a package that is available somewhere in the file system.
 ///
@@ -65,6 +66,34 @@ impl PartialOrd for Package {
     }
 }
 
+/// Metadata uses the manifest spellings of feature values. Serialize those
+/// directly from the shared map without interning them or copying the map.
+struct MetadataFeatures(Arc<FeatureMap>);
+
+impl Serialize for MetadataFeatures {
+    fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+        struct Values<'a>(&'a [FeatureValue]);
+        struct Value<'a>(&'a FeatureValue);
+
+        impl Serialize for Values<'_> {
+            fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+                serializer.collect_seq(self.0.iter().map(Value))
+            }
+        }
+
+        impl Serialize for Value<'_> {
+            fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+                match self.0 {
+                    FeatureValue::Feature(name) => name.serialize(serializer),
+                    value => serializer.collect_str(value),
+                }
+            }
+        }
+
+        serializer.collect_map(self.0.iter().map(|(key, values)| (key, Values(values))))
+    }
+}
+
 /// A Package in a form where `Serialize` can be derived.
 #[derive(Serialize)]
 pub struct SerializedPackage {
@@ -77,7 +106,7 @@ pub struct SerializedPackage {
     source: SourceId,
     dependencies: Vec<SerializedDependency>,
     targets: Vec<Target>,
-    features: BTreeMap<InternedString, Vec<InternedString>>,
+    features: MetadataFeatures,
     manifest_path: PathBuf,
     metadata: Option<toml::Value>,
     publish: Option<Vec<String>>,
@@ -211,13 +240,6 @@ impl Package {
             .filter(|t| t.src_path().is_path())
             .cloned()
             .collect();
-        // Convert Vec<FeatureValue> to Vec<InternedString>
-        let crate_features = summary
-            .features()
-            .iter()
-            .map(|(k, v)| (*k, v.iter().map(|fv| fv.to_string().into()).collect()))
-            .collect();
-
         SerializedPackage {
             name: package_id.name(),
             version: package_id.version().clone(),
@@ -232,7 +254,7 @@ impl Package {
                 .map(|dep| dep.serialized(unstable_flags, cargo_features))
                 .collect(),
             targets,
-            features: crate_features,
+            features: MetadataFeatures(summary.shared_features()),
             manifest_path: self.manifest_path().to_path_buf(),
             metadata: self.manifest().custom_metadata().cloned(),
             authors: manmeta.authors.clone(),
@@ -813,4 +835,20 @@ enum WhyTick<'a> {
     DownloadUpdate,
     DownloadFinished,
     Extracting(&'a str),
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn metadata_feature_spellings() {
+        let values = ["local", "dep:renamed", "renamed/std", "renamed?/std"]
+            .map(|value| FeatureValue::new(value.into()));
+        let features = FeatureMap::from([("local".into(), vec![]), ("all".into(), values.into())]);
+        assert_eq!(
+            serde_json::to_string(&MetadataFeatures(Arc::new(features))).unwrap(),
+            r#"{"all":["local","dep:renamed","renamed/std","renamed?/std"],"local":[]}"#,
+        );
+    }
 }

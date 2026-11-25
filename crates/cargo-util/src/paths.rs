@@ -84,7 +84,42 @@ pub fn dylib_path() -> Vec<PathBuf> {
 /// fail, or on Windows returns annoying device paths. This is a problem Cargo
 /// needs to improve on.
 pub fn normalize_path(path: &Path) -> PathBuf {
+    // Copy the already normalized prefix in one go. Use raw Unix
+    // components because Path::components elides interior dots and
+    // repeated and trailing separators. Cygwin also parses Windows paths.
+    #[cfg(all(unix, not(target_os = "cygwin")))]
+    let (mut ret, components) = {
+        use std::os::unix::ffi::OsStrExt;
+
+        let bytes = path.as_os_str().as_bytes();
+        let mut end = usize::from(bytes.starts_with(b"/"));
+        let mut start = end;
+        for part in bytes[start..].split(|&byte| byte == b'/') {
+            if matches!(part, b"" | b"." | b"..") {
+                break;
+            }
+            end = start + part.len();
+            start = end + 1;
+        }
+        if end == bytes.len() {
+            return path.to_owned();
+        }
+
+        let mut prefix = PathBuf::with_capacity(bytes.len());
+        prefix.push(OsStr::from_bytes(&bytes[..end]));
+        let suffix = Path::new(OsStr::from_bytes(&bytes[end..]));
+        let mut components = suffix.components();
+        // The root, if any, is already in the prefix. A separator at the
+        // split must not reset the prefix when pushed below.
+        if suffix.has_root() {
+            components.next();
+        }
+        (prefix, components)
+    };
+
+    #[cfg(any(not(unix), target_os = "cygwin"))]
     let mut components = path.components().peekable();
+    #[cfg(any(not(unix), target_os = "cygwin"))]
     let mut ret = if let Some(c @ Component::Prefix(..)) = components.peek().cloned() {
         components.next();
         PathBuf::from(c.as_os_str())
@@ -1012,6 +1047,40 @@ mod tests {
         for (input, expected) in cases {
             let actual = normalize_path(std::path::Path::new(input));
             assert_eq!(actual, std::path::Path::new(expected), "input: {input}");
+        }
+    }
+
+    #[test]
+    fn normalize_backslash_separators() {
+        let path = std::path::Path::new(r"a\..\b");
+        let expected = if std::path::is_separator('\\') {
+            std::path::Path::new("b")
+        } else {
+            path
+        };
+        assert_eq!(normalize_path(path).as_os_str(), expected.as_os_str());
+    }
+
+    #[cfg(all(unix, not(target_os = "cygwin")))]
+    #[test]
+    fn normalized_path_bytes() {
+        use std::ffi::OsStr;
+        use std::os::unix::ffi::OsStrExt;
+        use std::path::Path;
+
+        // Path equality ignores redundant separators and interior dots.
+        let cases: &[(&[u8], &[u8])] = &[
+            (b"//foo//bar/", b"/foo/bar"),
+            (b"foo/./bar/.", b"foo/bar"),
+            (b"./foo//../..", b".."),
+            (b"/.hidden/../..", b"/"),
+            (b"../foo/../../bar", b"../../bar"),
+            (b".hidden/.../a\xff", b".hidden/.../a\xff"),
+            (b"/a\xff/./b", b"/a\xff/b"),
+        ];
+        for &(input, expected) in cases {
+            let actual = normalize_path(Path::new(OsStr::from_bytes(input)));
+            assert_eq!(actual.as_os_str().as_bytes(), expected);
         }
     }
 

@@ -240,6 +240,16 @@ pub enum Edition {
 }
 
 impl Edition {
+    pub(super) fn as_str(&self) -> &'static str {
+        match *self {
+            Edition::Edition2015 => "2015",
+            Edition::Edition2018 => "2018",
+            Edition::Edition2021 => "2021",
+            Edition::Edition2024 => "2024",
+            Edition::EditionFuture => "future",
+        }
+    }
+
     /// The latest edition that is unstable.
     ///
     /// This is `None` if there is no next unstable edition.
@@ -374,13 +384,7 @@ impl Edition {
 
 impl fmt::Display for Edition {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match *self {
-            Edition::Edition2015 => f.write_str("2015"),
-            Edition::Edition2018 => f.write_str("2018"),
-            Edition::Edition2021 => f.write_str("2021"),
-            Edition::Edition2024 => f.write_str("2024"),
-            Edition::EditionFuture => f.write_str("future"),
-        }
+        f.write_str(self.as_str())
     }
 }
 
