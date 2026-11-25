@@ -378,6 +378,18 @@ debug = true
 Build dependencies otherwise inherit settings from the active profile in use, as
 described in [Profile selection](#profile-selection).
 
+With Ohm defaults, opt into faster repeated macro expansion with
+`-Zohm-optimize-macro-deps` or `CARGO_UNSTABLE_OHM_OPTIMIZE_MACRO_DEPS=true`.
+Cargo builds eligible registry libraries in a procedural macro's dependency
+tree at `opt-level = 1`. A workspace procedural macro must declare a
+compatible direct dependency, and the library's `proc-macro` feature must
+be active.
+
+This option applies to dev profiles with the default optimization level
+or explicit level 1. Package and build overrides take precedence. The
+first build can take longer and need a second copy of a library also used
+by a build script or the application.
+
 ## Custom profiles
 
 In addition to the built-in profiles, additional custom profiles can be

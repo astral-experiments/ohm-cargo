@@ -971,6 +971,7 @@ unstable_cli_options!(
     ohm_focused_tests: bool = ("Compile only an explicitly selected exact library test"),
     ohm_linker: Option<OhmLinker> = ("Select a bundled linker for native Linux x86-64 builds: wild or lld"),
     ohm_native_tool_trust: OhmNativeToolTrust = ("Set native-tool trust for shared registry artifacts: strict (default), build-scripts, or all (potentially unsound)"),
+    ohm_optimize_macro_deps: Option<bool> = ("Optimize token libraries used by workspace procedural macros (opt-in)"),
     ohm_proc_macro_trust: OhmProcMacroTrust = ("Set procedural-macro trust for registry sharing and workspace artifact reuse: audited (default) or all (potentially unsound)"),
     ohm_ready_tests: Option<bool> = ("Run ready test binaries during compilation (opt-in)"),
     ohm_reuse_built_deps: bool = ("Reuse built dependencies and native integration-test compilations during checks"),
@@ -1629,6 +1630,7 @@ impl CliUnstable {
                     None => bail!("flag -Z{k} requires `strict`, `build-scripts`, or `all`"),
                 };
             }
+            "ohm-optimize-macro-deps" => self.ohm_optimize_macro_deps = Some(parse_bool(k, v)?),
             "ohm-proc-macro-trust" => {
                 self.ohm_proc_macro_trust = match v {
                     Some("audited") => OhmProcMacroTrust::Audited,

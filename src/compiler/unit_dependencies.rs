@@ -1006,6 +1006,16 @@ fn new_unit_dep_with_profile(
         _ => None,
     };
     let features = state.activated_features(pkg.package_id(), features_for);
+    let mut profile = profile;
+    if state.gctx.cli_unstable().ohm_optimize_macro_deps == Some(true)
+        && mode == CompileMode::Build
+        && target.is_lib()
+        && !target.proc_macro()
+    {
+        state
+            .profiles
+            .optimize_token_library(&mut profile, pkg.package_id(), unit_for, &features);
+    }
     let unit = state.interner.intern(
         pkg,
         target,
