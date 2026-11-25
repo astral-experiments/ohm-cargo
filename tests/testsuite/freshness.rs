@@ -7639,6 +7639,76 @@ fn early_cutoff_rechecks_module_lookup_after_a_library_edit() {
 
 #[cfg(feature = "ohm-defaults")]
 #[cargo_test]
+fn terminal_library_check_does_not_satisfy_a_metadata_consumer() {
+    let rustc = std::env::var_os("RUSTC").unwrap_or_else(|| "rustc".into());
+    if cargo_test_support::process(rustc)
+        .args(&["-Zohm-check-only", "--print=sysroot"])
+        .exec_with_output()
+        .is_err()
+    {
+        return;
+    }
+    let p = project()
+        .file("src/lib.rs", "pub fn value() -> u32 { 1 }")
+        .file("src/main.rs", "fn main() { let _: u32 = foo::value(); }")
+        .build();
+    let run = |command: &str| {
+        let mut cmd = p.cargo(&format!(
+            "-Zohm-defaults -Zohm-terminal-checks {command} -v"
+        ));
+        cmd.masquerade_as_nightly_cargo(&["ohm-defaults", "ohm-terminal-checks"])
+            .env("CARGO_INCREMENTAL", "1");
+        cmd
+    };
+    let terminal = "[..]-Zohm-check-only --emit=dep-info [..]";
+    // The default check must still write metadata for tools that read it from disk.
+    p.cargo("-Zohm-defaults check --lib -v")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("CARGO_INCREMENTAL", "1")
+        .with_stderr_contains("[..]--emit=dep-info,metadata[..]")
+        .run();
+    p.change_file("src/lib.rs", "pub fn value() -> u32 { 9 }");
+    run("check --lib").with_stderr_contains(terminal).run();
+    run("check --lib")
+        .with_stderr_does_not_contain("[..]--crate-name foo [..]")
+        .run();
+    run("check")
+        .with_stderr_does_not_contain(terminal)
+        .with_stderr_contains("[..]--crate-type lib [..]--emit=dep-info,metadata[..]")
+        .run();
+    p.change_file("src/lib.rs", "pub fn value() -> u8 { 3 }");
+    run("check --lib").with_stderr_contains(terminal).run();
+    run("check")
+        .with_status(101)
+        .with_stderr_contains("[..]mismatched types[..]")
+        .run();
+
+    // Failed terminal checks must not leave a fresh fingerprint.
+    p.change_file("src/lib.rs", "pub fn value() -> u32 { false }");
+    for _ in 0..2 {
+        run("check --lib")
+            .with_status(101)
+            .with_stderr_contains("[..]mismatched types[..]")
+            .run();
+    }
+    p.change_file("src/lib.rs", "pub fn value() -> u32 { 2 }");
+    run("check --lib").with_stderr_contains(terminal).run();
+    run("rustc --profile check --lib")
+        .with_stderr_does_not_contain(terminal)
+        .with_stderr_contains("[..]--emit=dep-info,metadata[..]")
+        .run();
+    // Even with omission enabled, JSON clients must receive current metadata.
+    p.change_file("src/lib.rs", "pub fn value() -> u32 { 7 }");
+    run("check --lib --message-format=json")
+        .with_stderr_does_not_contain(terminal)
+        .with_stdout_contains("[..]libfoo[..].rmeta[..]")
+        .run();
+    run("build").run();
+    run("test --no-run").run();
+}
+
+#[cfg(feature = "ohm-defaults")]
+#[cargo_test]
 fn whole_crate_hash_hint_follows_binary_usage_and_current_graph() {
     let rustc = std::env::var_os("RUSTC").unwrap_or_else(|| "rustc".into());
     if cargo_test_support::process(rustc)

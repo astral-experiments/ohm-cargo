@@ -103,6 +103,8 @@ impl fmt::Debug for UnitHash {
 /// `RUSTFLAGS` between runs, but needs to keep the same symbol names.
 #[derive(Copy, Clone, Debug)]
 pub struct Metadata {
+    /// The terminal check emits dep-info and has no metadata artifact.
+    pub(in crate::compiler) check_only: bool,
     unit_id: UnitHash,
     c_metadata: UnitHash,
     c_extra_filename: bool,
@@ -1412,6 +1414,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
         bcx: &BuildContext<'a, 'gctx>,
     ) -> CargoResult<Arc<Vec<OutputFile>>> {
         let ret = match unit.mode {
+            CompileMode::Check { .. } if self.metadata(unit).check_only => vec![],
             _ if unit.skip_non_compile_time_dep => {
                 // This skips compilations so no outputs
                 vec![]
@@ -2806,6 +2809,12 @@ fn compute_metadata(
     if crate::compiler::unit_uses_ohm_build_helper(build_runner, unit) {
         crate::compiler::OHM_BUILD_HELPER_RUSTFLAGS.hash(&mut unit_id_hasher);
     }
+    let check_only = crate::compiler::terminal_library_check(build_runner, unit);
+    if check_only {
+        // A later dependency check needs real metadata. Give it a different
+        // fingerprint and output directory while preserving crate identity.
+        "ohm-terminal-library-check".hash(&mut unit_id_hasher);
+    }
     if crate::compiler::unit_uses_ohm_incremental_codegen(build_runner, unit) {
         "ohm-incremental-codegen-defaults".hash(&mut unit_id_hasher);
     }
@@ -2817,6 +2826,7 @@ fn compute_metadata(
     let unit_id = UnitHash(Hasher::finish(&unit_id_hasher));
 
     Metadata {
+        check_only,
         unit_id,
         c_metadata,
         c_extra_filename,

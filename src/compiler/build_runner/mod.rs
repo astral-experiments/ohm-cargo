@@ -2141,7 +2141,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
                                 .metadata()
                                 .is_ok_and(|metadata| metadata.len() > 0)
                     }))
-                && !outputs.is_empty()
+                && (!outputs.is_empty() || self.files().metadata(&check).check_only)
                 && outputs.iter().all(|output| {
                     output
                         .path

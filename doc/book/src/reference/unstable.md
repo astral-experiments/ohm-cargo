@@ -2035,6 +2035,19 @@ Code-generating builds retain their existing scheduling. Changing this setting
 changes compiler arguments and therefore invalidates existing build fingerprints.
 
 
+## Terminal library checks in Ohm
+
+With Ohm defaults and a compatible compiler, `-Zohm-terminal-checks`
+allows an incremental `cargo check` to skip writing metadata for workspace
+libraries that no other target in the command uses. You can also enable
+it with `CARGO_UNSTABLE_OHM_TERMINAL_CHECKS=true`.
+
+Leave this off if a tool reads metadata files directly. An older
+`.rmeta` can still be present after an opted-in check. Cargo uses a
+separate fingerprint when a later command needs metadata. JSON artifact
+messages, explicit compiler requests, wrappers, and checks with extra
+compiler flags keep their usual outputs.
+
 ## ohm-clippy-seed-isolation
 
 When worktree preparation is enabled, Ohm automatically keeps the selected

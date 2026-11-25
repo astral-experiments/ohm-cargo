@@ -442,6 +442,30 @@ fn unit_suppresses_default_public_api_hash(
         && fingerprint::unit_public_api_hash_override(build_runner, unit).is_none()
 }
 
+/// Terminal library checks have no consumer for their metadata. Require a
+/// dedicated unit directory and a compiler that can finish analysis without
+/// producing an rmeta file.
+fn terminal_library_check(runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
+    let bcx = runner.bcx;
+    bcx.gctx.cli_unstable().ohm_terminal_checks == Some(true)
+        && bcx.build_config.allow_terminal_check
+        && !bcx.build_config.emit_json()
+        && matches!(unit.mode, CompileMode::Check { test: false })
+        && runner.is_terminal_check_unit(unit)
+        && unit.target.is_lib()
+        && unit
+            .target
+            .rustc_crate_types()
+            .iter()
+            .all(|kind| matches!(kind, CrateType::Lib | CrateType::Rlib))
+        && unit.profile.incremental
+        && bcx.ws.is_member(&unit.pkg)
+        && bcx.gctx.cli_unstable().ohm_defaults()
+        && bcx.gctx.cli_unstable().build_dir_new_layout
+        && unit_uses_ohm_shared_stages(runner, unit)
+        && supports_check_hint(runner, unit, "-Zohm-check-only")
+}
+
 /// Only binary checks may reuse a result after a dependency's declaration locations move.
 /// Intermediates can reexport those locations in their own metadata.
 fn terminal_check_hash(runner: &BuildRunner<'_, '_>, unit: &Unit, check_messages: bool) -> bool {
@@ -481,6 +505,11 @@ fn terminal_check_hash(runner: &BuildRunner<'_, '_>, unit: &Unit, check_messages
 /// Ask rustc to account for metadata inherited through this library, including
 /// foreign trait implementations which are visible without an explicit reexport.
 fn supports_transitive_check_hash(runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
+    supports_check_hint(runner, unit, "-Zohm-transitive-check-hash")
+}
+
+/// Check hints are safe only for the unmodified compiler invocation.
+fn supports_check_hint(runner: &BuildRunner<'_, '_>, unit: &Unit, hint: &str) -> bool {
     let rustc = runner.bcx.rustc();
     rustc.wrapper.is_none()
         && rustc.workspace_wrapper.is_none()
@@ -493,7 +522,7 @@ fn supports_transitive_check_hash(runner: &BuildRunner<'_, '_>, unit: &Unit) -> 
         )
         .iter()
         .all(|flag| flag == OHM_EARLY_METADATA_RUSTFLAG)
-        && rustc.supports_metadata_hint(runner.bcx.gctx, "-Zohm-transitive-check-hash")
+        && rustc.supports_metadata_hint(runner.bcx.gctx, hint)
 }
 
 /// A declaration can move without changing a terminal hash. Replay a warning
@@ -3927,7 +3956,11 @@ fn build_base_args(
     }
 
     if unit.mode.is_check() {
-        cmd.arg("--emit=dep-info,metadata");
+        if build_runner.files().metadata(unit).check_only {
+            cmd.arg("-Zohm-check-only").arg("--emit=dep-info");
+        } else {
+            cmd.arg("--emit=dep-info,metadata");
+        }
         if unit_uses_ohm_shared_stages(build_runner, unit)
             && unit_uses_no_embed_metadata(build_runner, unit)
         {
