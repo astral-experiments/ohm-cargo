@@ -1872,6 +1872,7 @@ impl LocalFingerprint {
         &self,
         mtime_cache: &mut HashMap<PathBuf, FileTime>,
         checksum_cache: &mut HashMap<PathBuf, Checksum>,
+        checksum_buffer: &mut Vec<u8>,
         pkg: &Package,
         build_root: &Path,
         cargo_exe: &Path,
@@ -1935,6 +1936,7 @@ impl LocalFingerprint {
                     FingerprintMethod::Content => Ok(find_stale_file_with_parallelism(
                         mtime_cache,
                         checksum_cache,
+                        checksum_buffer,
                         &dep_info,
                         info.files.iter().map(|(file, checksum)| (file, *checksum)),
                         *fingerprint,
@@ -2376,6 +2378,7 @@ impl Fingerprint {
         &mut self,
         mtime_cache: &mut HashMap<PathBuf, FileTime>,
         checksum_cache: &mut HashMap<PathBuf, Checksum>,
+        checksum_buffer: &mut Vec<u8>,
         pkg: &Package,
         build_root: &Path,
         cargo_exe: &Path,
@@ -2428,6 +2431,7 @@ impl Fingerprint {
             if let Some(item) = local.find_stale_item(
                 mtime_cache,
                 checksum_cache,
+                checksum_buffer,
                 pkg,
                 build_root,
                 cargo_exe,
@@ -2746,6 +2750,7 @@ fn calculate(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
     fingerprint.check_filesystem(
         &mut build_runner.mtime_cache,
         &mut build_runner.checksum_cache,
+        &mut build_runner.checksum_buffer,
         &unit.pkg,
         &build_root,
         cargo_exe,
@@ -3626,6 +3631,7 @@ where
     find_stale_file_with_parallelism(
         mtime_cache,
         checksum_cache,
+        &mut Vec::new(),
         reference,
         paths,
         fingerprint,
@@ -3637,6 +3643,7 @@ where
 fn find_stale_file_with_parallelism<I, P>(
     mtime_cache: &mut HashMap<PathBuf, FileTime>,
     checksum_cache: &mut HashMap<PathBuf, Checksum>,
+    checksum_buffer: &mut Vec<u8>,
     reference: &Path,
     paths: I,
     fingerprint: FingerprintMethod,
@@ -3681,7 +3688,6 @@ where
     } else {
         (itertools::Either::Right(paths), None)
     };
-    let mut checksum_buffer = Vec::new();
     for (path, prior_checksum) in paths {
         let prefetched = prefetched.as_mut().and_then(Iterator::next).flatten();
         let path = path.as_ref();
@@ -3716,7 +3722,7 @@ where
                                 path,
                                 prior_checksum,
                                 file,
-                                &mut checksum_buffer,
+                                checksum_buffer,
                                 parallelism.and_then(|p| p.clippy_driver),
                             )
                         });
@@ -3976,6 +3982,30 @@ mod parallel_checksum_tests {
     }
 
     #[test]
+    fn serial_batches_hash_only_bytes_read() {
+        let directory = tempfile::tempdir().unwrap();
+        let mut cache = HashMap::default();
+        let mut buffer = Vec::new();
+        for size in [65537, 4, 0] {
+            let path = directory.path().join(size.to_string());
+            let contents = vec![42; size];
+            fs::write(&path, &contents).unwrap();
+            assert!(
+                find_stale_file_with_parallelism(
+                    &mut HashMap::default(),
+                    &mut cache,
+                    &mut buffer,
+                    &path,
+                    [(&path, Some((size as u64, checksum(&contents))))],
+                    FingerprintMethod::Content,
+                    None,
+                )
+                .is_none()
+            );
+        }
+    }
+
+    #[test]
     fn checksum_open_follows_symlinks_and_rejects_a_fifo_replacement() {
         let directory = tempfile::tempdir().unwrap();
         let target = directory.path().join("target");
@@ -4046,6 +4076,7 @@ mod parallel_checksum_tests {
         let actual = find_stale_file_with_parallelism(
             &mut HashMap::default(),
             &mut parallel,
+            &mut Vec::new(),
             reference,
             paths.iter().map(|(path, prior)| (path, *prior)),
             FingerprintMethod::Content,

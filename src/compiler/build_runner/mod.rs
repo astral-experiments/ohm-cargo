@@ -406,6 +406,8 @@ pub struct BuildRunner<'a, 'gctx> {
     pub mtime_cache: HashMap<PathBuf, FileTime>,
     /// Cache of file checksums to reduce filesystem reads.
     pub checksum_cache: HashMap<PathBuf, Checksum>,
+    /// Lazily allocated scratch space shared across serial input checks.
+    pub(super) checksum_buffer: Vec<u8>,
     pub(super) clippy_driver_checksum:
         Option<Arc<super::clippy_driver_checksum::ClippyDriverChecksum>>,
     /// A set used to track which units have been compiled.
@@ -611,6 +613,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             rustdoc_input_mtimes: HashMap::default(),
             mtime_cache: HashMap::default(),
             checksum_cache: HashMap::default(),
+            checksum_buffer: Vec::new(),
             clippy_driver_checksum: super::clippy_driver_checksum::ClippyDriverChecksum::new(bcx)
                 .map(Arc::new),
             compiled: HashSet::default(),

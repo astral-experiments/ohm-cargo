@@ -1304,7 +1304,9 @@ impl RelinkCachePaths {
                 _ => {}
             }
         }
-        objects.sort_by(|left, right| left.path.cmp(&right.path));
+        // All paths come from one read_dir, so only their final component
+        // differs. Keep the same order without reparsing the shared prefix.
+        objects.sort_by(|left, right| left.path.as_os_str().cmp(right.path.as_os_str()));
         if objects.is_empty() {
             // A successful wrapper invocation may intentionally skip compilation.
             // The cache was invalidated before running rustc, so leave it absent.
@@ -1446,8 +1448,10 @@ impl RelinkCachePaths {
 
 fn cached_file(path: PathBuf) -> CargoResult<RelinkCacheFile> {
     let mut hasher = blake3::Hasher::new();
-    hasher
-        .update_reader(paths::open_regular(&path)?)
+    // Keep BLAKE3's wide reads without zeroing a 64 KiB buffer for every
+    // object. File can fill the BufReader's uninitialized storage directly.
+    let mut reader = BufReader::with_capacity(64 * 1024, paths::open_regular(&path)?);
+    std::io::copy(&mut reader, &mut hasher)
         .with_context(|| format!("failed to hash `{}`", path.display()))?;
     Ok(RelinkCacheFile {
         path,
@@ -5718,6 +5722,45 @@ mod relink_cache_tests {
             assert!(!cache.is_valid(hash()));
             fs::remove_file(&alias)?;
         }
+        Ok(())
+    }
+
+    #[test]
+    fn relink_hashes_complete_files_across_buffer_boundaries() -> CargoResult<()> {
+        let dir = tempfile::tempdir()?;
+        let path = dir.path().join("object.o");
+        for size in [0, 1, 65535, 65536, 65537, 150000] {
+            let mut data = vec![42; size];
+            fs::write(&path, &data)?;
+            let expected = cached_file(path.clone())?;
+            assert_eq!(expected.blake3, blake3::hash(&data).to_hex().as_str());
+            if let Some(last) = data.last_mut() {
+                *last ^= 1;
+                fs::write(&path, &data)?;
+                assert!(!super::file_matches(&expected));
+            }
+        }
+        Ok(())
+    }
+
+    #[test]
+    fn relink_objects_keep_path_order() -> CargoResult<()> {
+        let dir = crate::util::text_path_tempdir();
+        let cache = RelinkCachePaths::new(dir.path().join("app"));
+        fs::create_dir(&cache.objects)?;
+        fs::write(&cache.rlink, b"recipe")?;
+        fs::write(&cache.executable, b"exe")?;
+        let mut paths = vec![];
+        for name in ["z.obj", "b.o", "b.o.o", "Δ.o", "a-1.o"] {
+            let path = cache.objects.join(name);
+            fs::write(&path, name)?;
+            paths.push(path);
+        }
+        paths.sort();
+        cache.initialize(Some(1), None)?;
+        let objects = cache.read_manifest().unwrap().objects;
+        assert!(objects.iter().map(|object| &object.path).eq(&paths));
+        assert!(cache.is_valid(Some(1)));
         Ok(())
     }
 
