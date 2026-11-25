@@ -7639,6 +7639,75 @@ fn early_cutoff_rechecks_module_lookup_after_a_library_edit() {
 
 #[cfg(feature = "ohm-defaults")]
 #[cargo_test]
+fn terminal_library_cutoff_replays_warnings_and_checks_changed_inputs() {
+    let rustc = std::env::var_os("RUSTC").unwrap_or_else(|| "rustc".into());
+    if cargo_test_support::process(rustc)
+        .args(&["-Zohm-check-only", "--print=sysroot"])
+        .exec_with_output()
+        .is_err()
+    {
+        return;
+    }
+    let dep = |n| format!(r#"#[deprecated(note = "use other")] pub fn value() -> u8 {{ {n} }}"#);
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [workspace]
+                [package]
+                name = "app"
+                version = "0.1.0"
+                edition = "2024"
+                [dependencies]
+                dep = { path = "dep" }
+            "#,
+        )
+        .file("dep/Cargo.toml", &basic_manifest("dep", "0.1.0"))
+        .file("dep/src/lib.rs", &dep(1))
+        .file("src/lib.rs", "pub fn result() -> u8 { dep::value() }")
+        .build();
+    let check = || {
+        let mut cmd = p.cargo("-Zohm-defaults check -v -p app");
+        cmd.masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("CARGO_INCREMENTAL", "1")
+            .env("CARGO_UNSTABLE_OHM_TERMINAL_CHECKS", "true")
+            .env_remove("LIBRARY_PATH");
+        cmd
+    };
+    let app = "[..]--crate-name app [..]";
+    let warning = "[WARNING] use of deprecated function `dep::value`: use other";
+    check()
+        .with_stderr_contains("[..]-Zohm-check-only --emit=dep-info [..]")
+        .with_stderr_contains(warning)
+        .run();
+    for n in [2, 3] {
+        p.change_file("dep/src/lib.rs", &dep(n));
+        check()
+            .with_stderr_contains("[..]--crate-name dep [..]")
+            .with_stderr_does_not_contain(app)
+            .with_stderr_contains(warning)
+            .run();
+    }
+    p.change_file("dep/src/lib.rs", &dep(4).replace("u8", "i8"));
+    check()
+        .with_status(101)
+        .with_stderr_contains(app)
+        .with_stderr_contains("[..]mismatched types[..]")
+        .run();
+
+    p.change_file("dep/src/lib.rs", &dep(5));
+    check().run();
+    p.change_file("dep/src/lib.rs", &dep(6));
+    p.change_file("src/lib.rs", "pub fn result() -> i8 { dep::value() }");
+    check()
+        .with_status(101)
+        .with_stderr_contains(app)
+        .with_stderr_contains("[..]mismatched types[..]")
+        .run();
+}
+
+#[cfg(feature = "ohm-defaults")]
+#[cargo_test]
 fn terminal_library_check_does_not_satisfy_a_metadata_consumer() {
     let rustc = std::env::var_os("RUSTC").unwrap_or_else(|| "rustc".into());
     if cargo_test_support::process(rustc)

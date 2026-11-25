@@ -2076,6 +2076,12 @@ fn rustc(
             .as_ref()
             .is_some_and(|fp| fp.native_recheck_can_reuse_codegen(build_runner, unit));
     let external_crate_inputs = has_external_crate_inputs(build_runner, unit);
+    // Terminal library checks record dep-info but have no advertised outputs.
+    let check_dep_info = build_runner
+        .files()
+        .metadata(unit)
+        .check_only
+        .then(|| fingerprint::dep_info_loc(build_runner, unit));
     let can_skip_compilation = fingerprint::unit_can_use_early_cutoff(build_runner, unit)
         && fingerprint
             .as_ref()
@@ -2208,8 +2214,11 @@ fn rustc(
                     .iter()
                     .filter(|output| output.flavor != FileFlavor::DebugInfo)
                     .collect::<Vec<_>>();
-                let all_outputs_exist = !essential_outputs.is_empty()
-                    && essential_outputs.iter().all(|o| o.path.exists());
+                let all_outputs_exist = if essential_outputs.is_empty() {
+                    check_dep_info.as_ref().is_some_and(|path| path.is_file())
+                } else {
+                    essential_outputs.iter().all(|o| o.path.exists())
+                };
                 if all_outputs_exist {
                     replay_output_cache_inner(
                         state,
