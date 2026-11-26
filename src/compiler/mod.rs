@@ -2244,7 +2244,12 @@ fn rustc(
         // e.g. a dependency's metadata consumed by include_bytes! through a symlink.
         let compiler_inputs_are_fresh = std::cell::LazyCell::new(|| {
             fingerprint.as_ref().is_some_and(|fp| {
-                fp.dep_info_files_are_fresh(&pkg_root, &build_dir, registry_inputs)
+                fp.dep_info_files_are_fresh(
+                    &pkg_root,
+                    &build_dir,
+                    registry_inputs,
+                    clippy_driver_checksum.as_deref(),
+                )
             })
         });
         if let Some(ref fp) = fingerprint

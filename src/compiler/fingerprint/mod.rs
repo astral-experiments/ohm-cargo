@@ -1940,7 +1940,7 @@ impl LocalFingerprint {
                         &dep_info,
                         info.files.iter().map(|(file, checksum)| (file, *checksum)),
                         *fingerprint,
-                        Some(checksum_parallelism),
+                        ChecksumMode::Parallel(checksum_parallelism),
                     )),
                     FingerprintMethod::Mtime => Ok(find_stale_file(
                         mtime_cache,
@@ -1987,6 +1987,7 @@ impl Fingerprint {
         pkg_root: &Path,
         build_root: &Path,
         registry_inputs: bool,
+        driver_recheck: Option<&super::clippy_driver_checksum::ClippyDriverChecksum>,
     ) -> bool {
         // Preparation-time caches may still describe the previous contents.
         let mut mtimes = HashMap::default();
@@ -2015,12 +2016,14 @@ impl Fingerprint {
                         (registry_inputs && path.starts_with(pkg_root))
                             || !has_competing_module_path(path)
                     })
-                    && find_stale_file(
+                    && find_stale_file_with_parallelism(
                         &mut mtimes,
                         &mut checksums,
+                        &mut Vec::new(),
                         &dep_info,
                         info.files.iter().map(|(path, checksum)| (path, *checksum)),
                         FingerprintMethod::Content,
+                        ChecksumMode::Serial(driver_recheck),
                     )
                     .is_none()
             })
@@ -3635,8 +3638,14 @@ where
         reference,
         paths,
         fingerprint,
-        None,
+        ChecksumMode::Serial(None),
     )
+}
+
+enum ChecksumMode<'a> {
+    Parallel(ChecksumParallelism<'a>),
+    /// Post-prerequisite rechecks can compare against an earlier driver read.
+    Serial(Option<&'a super::clippy_driver_checksum::ClippyDriverChecksum>),
 }
 
 /// The ordered consumer selects dirty reasons and commits the checksum-cache prefix.
@@ -3647,7 +3656,7 @@ fn find_stale_file_with_parallelism<I, P>(
     reference: &Path,
     paths: I,
     fingerprint: FingerprintMethod,
-    parallelism: Option<ChecksumParallelism<'_>>,
+    mode: ChecksumMode<'_>,
 ) -> Option<StaleItem>
 where
     I: IntoIterator<Item = (P, Option<(u64, Checksum)>)>,
@@ -3677,6 +3686,10 @@ where
         None
     };
     let paths = paths.into_iter();
+    let (parallelism, driver_recheck) = match mode {
+        ChecksumMode::Parallel(p) => (Some(p), None),
+        ChecksumMode::Serial(driver) => (None, driver),
+    };
     let (paths, mut prefetched) = if cfg!(unix)
         && fingerprint == FingerprintMethod::Content
         && paths.size_hint().0 >= MIN_PARALLEL_CHECKSUM_FILES
@@ -3718,6 +3731,16 @@ where
                             let file = File::open(path).map_err(|_| StaleItem::MissingFile {
                                 path: path.to_path_buf(),
                             })?;
+                            if let Some(driver) = driver_recheck
+                                && driver.can_compare(path, prior_checksum.algo(), file_len)
+                            {
+                                checksum_buffer.resize(64 * 1024, 0);
+                                return driver.compare(file, file_len, checksum_buffer).map_err(
+                                    |_| StaleItem::UnableToReadFile {
+                                        path: path.to_path_buf(),
+                                    },
+                                );
+                            }
                             read_checksum(
                                 path,
                                 prior_checksum,
@@ -3998,7 +4021,7 @@ mod parallel_checksum_tests {
                     &path,
                     [(&path, Some((size as u64, checksum(&contents))))],
                     FingerprintMethod::Content,
-                    None,
+                    ChecksumMode::Serial(None),
                 )
                 .is_none()
             );
@@ -4080,7 +4103,7 @@ mod parallel_checksum_tests {
             reference,
             paths.iter().map(|(path, prior)| (path, *prior)),
             FingerprintMethod::Content,
-            Some(ChecksumParallelism {
+            ChecksumMode::Parallel(ChecksumParallelism {
                 clippy_driver: None,
                 jobserver: &jobserver,
                 reserved_tokens: &reserved_tokens,
