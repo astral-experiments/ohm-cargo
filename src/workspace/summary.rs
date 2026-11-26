@@ -116,6 +116,10 @@ impl Summary {
         &self.inner.features
     }
 
+    pub(super) fn shared_features(&self) -> Arc<FeatureMap> {
+        Arc::clone(&self.inner.features)
+    }
+
     pub fn checksum(&self) -> Option<&str> {
         self.inner.checksum.as_deref()
     }

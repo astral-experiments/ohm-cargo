@@ -115,7 +115,18 @@ impl Ord for PackageId {
         if ptr::eq(self.inner, other.inner) {
             return Ordering::Equal;
         }
-        self.inner.cmp(other.inner)
+        // Most comparisons in the resolver's ordered maps stop at the cached
+        // prefix. Keep the full comparison out of line so these lookups can
+        // inline the pointer and integer comparisons.
+        #[inline(never)]
+        fn compare_full(left: &PackageIdInner, right: &PackageIdInner) -> Ordering {
+            left.cmp(right)
+        }
+
+        self.inner
+            .name_prefix
+            .cmp(&other.inner.name_prefix)
+            .then_with(|| compare_full(self.inner, other.inner))
     }
 }
 
@@ -574,6 +585,9 @@ mod tests {
                 ),
             ],
             vec![package("foo", "1.0.0+1", low)],
+            // A prefix tie with reversed version order must compare the full names.
+            vec![package("foo-long-1", "2.0.0", high)],
+            vec![package("foo-long-2", "1.0.0", low)],
             vec![package("zeta", "0.0.1", low)],
         ];
         for (i, left_group) in groups.iter().enumerate() {

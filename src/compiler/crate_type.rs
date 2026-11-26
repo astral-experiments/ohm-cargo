@@ -142,6 +142,6 @@ impl serde::Serialize for CrateType {
     where
         S: serde::ser::Serializer,
     {
-        self.to_string().serialize(s)
+        s.serialize_str(self.as_str())
     }
 }

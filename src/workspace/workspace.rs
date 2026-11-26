@@ -1069,20 +1069,31 @@ impl<'gctx> Workspace<'gctx> {
             None
         };
 
+        let mut member_urls = HashSet::default();
         for (path, glob) in &members_paths {
-            self.find_path_deps(&path.join("Cargo.toml"), &root_manifest_path, false)
-                .with_context(|| {
-                    format!(
-                        "failed to load manifest for workspace member `{}`\n\
+            self.find_path_deps(
+                &path.join("Cargo.toml"),
+                &root_manifest_path,
+                None,
+                &mut member_urls,
+            )
+            .with_context(|| {
+                format!(
+                    "failed to load manifest for workspace member `{}`\n\
                         referenced{} by workspace at `{}`",
-                        path.display(),
-                        glob.map(|g| format!(" via `{g}`")).unwrap_or_default(),
-                        root_manifest_path.display(),
-                    )
-                })?;
+                    path.display(),
+                    glob.map(|g| format!(" via `{g}`")).unwrap_or_default(),
+                    root_manifest_path.display(),
+                )
+            })?;
         }
 
-        self.find_path_deps(&root_manifest_path, &root_manifest_path, false)?;
+        self.find_path_deps(
+            &root_manifest_path,
+            &root_manifest_path,
+            None,
+            &mut member_urls,
+        )?;
 
         if let Some(default) = default_members_paths {
             for (path, default_member_glob) in default {
@@ -1125,17 +1136,21 @@ impl<'gctx> Workspace<'gctx> {
         &mut self,
         manifest_path: &Path,
         root_manifest: &Path,
-        is_path_dep: bool,
+        source: Option<SourceId>,
+        member_urls: &mut HashSet<*const Url>,
     ) -> CargoResult<()> {
         let manifest_path = paths::normalize_path(manifest_path);
         if self.members.contains(&manifest_path) {
+            if let Some(source) = source {
+                member_urls.insert(source.url());
+            }
             return Ok(());
         }
-        if is_path_dep && self.root_maybe().is_embedded() {
+        if source.is_some() && self.root_maybe().is_embedded() {
             // Embedded manifests cannot have workspace members
             return Ok(());
         }
-        if is_path_dep
+        if source.is_some()
             && !manifest_path.parent().unwrap().starts_with(self.root())
             && self.find_root(&manifest_path)? != self.root_manifest
         {
@@ -1154,6 +1169,9 @@ impl<'gctx> Workspace<'gctx> {
 
         debug!("find_path_deps - {}", manifest_path.display());
         self.members.insert(manifest_path.clone());
+        if let Some(source) = source {
+            member_urls.insert(source.url());
+        }
 
         let candidates = {
             let pkg = match *self.packages.load(&manifest_path)? {
@@ -1165,12 +1183,20 @@ impl<'gctx> Workspace<'gctx> {
                 .iter()
                 .map(|d| (d.source_id(), d.package_name()))
                 .filter(|(s, _)| s.is_path())
-                .filter_map(|(s, n)| s.url().to_file_path().ok().map(|p| (p, n)))
-                .map(|(p, n)| (p.join("Cargo.toml"), n))
                 .collect::<Vec<_>>()
         };
-        for (path, name) in candidates {
-            self.find_path_deps(&path, root_manifest, true)
+        for (source, name) in candidates {
+            // SourceId interns its URL for the process lifetime. Pointer equality
+            // guarantees identical file paths even when canonical URL equality
+            // would be too permissive. Only record paths already in self.members.
+            if member_urls.contains(&std::ptr::from_ref(source.url())) {
+                continue;
+            }
+            let Ok(mut path) = source.url().to_file_path() else {
+                continue;
+            };
+            path.push("Cargo.toml");
+            self.find_path_deps(&path, root_manifest, Some(source), member_urls)
                 .with_context(|| format!("failed to load manifest for dependency `{}`", name))
                 .map_err(|err| ManifestError::new(err, manifest_path.clone()))?;
         }

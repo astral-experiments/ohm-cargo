@@ -3976,3 +3976,35 @@ fn workspace_resolve_cache_allows_unselected_required_target_features() {
         .with_stderr_contains(WORKSPACE_RESOLVE_CACHE_HIT)
         .run();
 }
+
+#[cargo_test]
+fn repeated_path_dependencies_preserve_member_discovery_order() {
+    let p = project()
+        .file("Cargo.toml", r#"[workspace]
+            members = ["first", "last"]
+            exclude = ["other"]"#)
+        .file("first/Cargo.toml", &format!(
+            "{}\n[dependencies]\nshared = {{ path = '../shared lib' }}\nother = {{ path = '../other' }}",
+            basic_manifest("first", "0.1.0")
+        ))
+        .file("first/src/lib.rs", "")
+        .file("last/Cargo.toml", &format!(
+            "{}\n[dependencies]\nrenamed = {{ package = 'shared', path = '../shared lib' }}\nother = {{ path = '../other' }}",
+            basic_manifest("last", "0.1.0")
+        ))
+        .file("last/src/lib.rs", "")
+        .file("shared lib/Cargo.toml", &basic_manifest("shared", "0.1.0"))
+        .file("shared lib/src/lib.rs", "")
+        .file("other/Cargo.toml", &basic_manifest("other", "0.1.0"))
+        .file("other/src/lib.rs", "")
+        .build();
+    let output = p.cargo("metadata --format-version=1 --no-deps").run();
+    let metadata: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+    let names: Vec<_> = metadata["packages"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|p| p["name"].as_str().unwrap())
+        .collect();
+    assert_eq!(names, ["first", "shared", "last"]);
+}
