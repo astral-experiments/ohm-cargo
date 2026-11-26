@@ -146,14 +146,23 @@ fn hash_tree(hasher: &mut blake3::Hasher, root: &Path, directory: &Path) -> Carg
 
 fn hash_file(hasher: &mut blake3::Hasher, path: &Path) -> CargoResult<()> {
     let mut file = fs::File::open(path)?;
-    hasher.update(&file.metadata()?.len().to_le_bytes());
+    let size = file.metadata()?.len();
+    hasher.update(&size.to_le_bytes());
     let mut buffer = [0_u8; 16384];
+    let mut limit = buffer.len();
+    if size > limit as u64 {
+        // Paths, modes and lengths leave the BLAKE3 stream at arbitrary offsets.
+        // Align subsequent updates to a 16-chunk subtree so BLAKE3 can process
+        // them in parallel. Short reads only affect the alignment.
+        limit -= (hasher.count() % limit as u64) as usize;
+    }
     loop {
-        let len = file.read(&mut buffer)?;
+        let len = file.read(&mut buffer[..limit])?;
         if len == 0 {
             break;
         }
         hasher.update(&buffer[..len]);
+        limit = buffer.len();
     }
     Ok(())
 }
@@ -243,4 +252,24 @@ pub(in crate::compiler) fn can_reuse_after_scripts(
     }
 
     fingerprint.dep_info_files_are_fresh(pkg_root, build_root, false)
+}
+
+#[test]
+fn file_digest_preserves_framing_across_read_boundaries() {
+    let directory = tempfile::tempdir().unwrap();
+    let path = directory.path().join("output");
+    let bytes: Vec<_> = (0..65537).map(|i| (i % 251) as u8).collect();
+    for size in [0, 16383, 16384, 16385, 32768, 65537] {
+        fs::write(&path, &bytes[..size]).unwrap();
+        for prefix in [0, 1, 16375, 16376, 16377] {
+            let mut actual = blake3::Hasher::new();
+            actual.update(&bytes[..prefix]);
+            let mut expected = actual.clone();
+            expected.update(&(size as u64).to_le_bytes());
+            expected.update(&bytes[..size]);
+
+            hash_file(&mut actual, &path).unwrap();
+            assert_eq!(actual.finalize(), expected.finalize());
+        }
+    }
 }

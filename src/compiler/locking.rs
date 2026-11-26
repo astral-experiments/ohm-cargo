@@ -10,6 +10,7 @@ use crate::{
 use crate::util::data_structures::{HashMap, HashSet};
 use anyhow::bail;
 use std::{
+    ffi::OsString,
     fmt::{Display, Formatter},
     path::{Component, Path, PathBuf},
     sync::{OnceLock, RwLock},
@@ -451,7 +452,7 @@ impl LockManager {
 fn shared_lock_path_is_unaliased(
     profile: &Path,
     path: &Path,
-    checked_directories: &mut HashSet<PathBuf>,
+    checked_directories: &mut HashSet<OsString>,
 ) -> bool {
     let relative = path.strip_prefix(profile).unwrap();
     if relative
@@ -460,15 +461,18 @@ fn shared_lock_path_is_unaliased(
     {
         return false;
     }
-    let mut current = profile.to_path_buf();
+    // Hash the exact spelling instead of reparsing path components for every
+    // prefix. Different spellings of the same directory can only add checks.
+    let mut current = PathBuf::with_capacity(path.as_os_str().len());
+    current.push(profile);
     for component in relative.components() {
         current.push(component);
-        if checked_directories.contains(&current) {
+        if checked_directories.contains(current.as_os_str()) {
             continue;
         }
         match std::fs::symlink_metadata(&current) {
             Ok(metadata) if metadata.is_dir() => {
-                checked_directories.insert(current.clone());
+                checked_directories.insert(current.as_os_str().to_owned());
             }
             Ok(metadata) if metadata.is_file() => {}
             Err(error) if error.kind() == std::io::ErrorKind::NotFound => return true,
@@ -497,6 +501,32 @@ impl Display for LockKey {
 mod tests {
     use super::LockManager;
     use std::cell::Cell;
+
+    #[test]
+    fn shared_lock_paths_reject_aliases_below_a_checked_directory() {
+        use super::shared_lock_path_is_unaliased;
+        use std::fs;
+        use std::os::unix::fs::symlink;
+
+        let tmp = tempfile::tempdir().unwrap();
+        let profile = tmp.path();
+        let package = profile.join("pkg");
+        fs::create_dir_all(package.join("real")).unwrap();
+        symlink("real", package.join("alias")).unwrap();
+
+        let mut checked = Default::default();
+        for (relative, expected) in [
+            ("pkg/real/.lock", true),
+            ("pkg/alias/.lock", false),
+            ("pkg/real/../alias/.lock", false),
+        ] {
+            assert_eq!(
+                shared_lock_path_is_unaliased(profile, &profile.join(relative), &mut checked),
+                expected,
+                "{relative}"
+            );
+        }
+    }
 
     #[test]
     fn descriptor_budget_ignores_denied_or_unsupported_inspection() {
