@@ -34,6 +34,10 @@ enum ErrorKind {
 }
 
 pub(crate) fn validate_package_name(name: &str) -> Result<()> {
+    // Most names have no namespace. Avoid setting up a substring search in that case.
+    if !name.contains(':') {
+        return validate_name(name, "package name");
+    }
     for part in name.split("::") {
         validate_name(part, "package name")?;
     }
@@ -237,6 +241,16 @@ pub(crate) fn validate_path_base_name(name: &str) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn package_name_namespaces() {
+        for name in ["_lib", "one::two", "α::子::lib-name"] {
+            assert!(validate_package_name(name).is_ok(), "{name}");
+        }
+        for name in ["", "1lib", "a:b", "::b", "a::", "a:::b", "a::::b", "a::1b"] {
+            assert!(validate_package_name(name).is_err(), "{name}");
+        }
+    }
 
     #[test]
     fn valid_feature_names() {

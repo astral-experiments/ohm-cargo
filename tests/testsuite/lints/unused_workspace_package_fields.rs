@@ -72,3 +72,37 @@ workspace = true
 "#]])
         .run();
 }
+
+#[cargo_test]
+fn unknown_field_with_all_known_fields_inherited() {
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+[workspace.package]
+edition = "2021"
+future = true
+
+[workspace.lints.cargo]
+unused_workspace_package_fields = "warn"
+
+[package]
+name = "foo"
+version = "0.0.1"
+edition.workspace = true
+
+[lints]
+workspace = true
+"#,
+        )
+        .file("src/lib.rs", "")
+        .build();
+
+    p.cargo("fetch")
+        .with_stderr_data(str![[r#"
+...
+[WARNING] unused field `future` in `workspace.package`
+...
+"#]])
+        .run();
+}

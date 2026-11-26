@@ -1,6 +1,6 @@
 use crate::util::CargoResult;
 use crate::util::closest_msg;
-use crate::util::data_structures::{HashMap, HashSet};
+use crate::util::data_structures::HashMap;
 use crate::util::interning::InternedString;
 use crate::workspace::{Dependency, PackageId, SourceId};
 use anyhow::bail;
@@ -203,19 +203,37 @@ fn build_feature_map(
     dependencies: &[Dependency],
 ) -> CargoResult<FeatureMap> {
     use self::FeatureValue::*;
-    // A map of dependency names to whether there are any that are optional.
-    let mut dep_map: HashMap<InternedString, bool> = HashMap::default();
-    for dep in dependencies.iter() {
-        *dep_map.entry(dep.name_in_toml()).or_insert(false) |= dep.is_optional();
+    if features.is_empty() && !dependencies.iter().any(Dependency::is_optional) {
+        return Ok(FeatureMap::new());
     }
-    let dep_map = dep_map; // We are done mutating this variable
+
+    // Keep feature usage with the dependency it describes. Several target
+    // declarations may contribute to the same name.
+    #[derive(Default)]
+    struct DepInfo {
+        optional: bool,
+        explicit: bool,
+        mentioned: bool,
+    }
+    let mut dep_map: HashMap<InternedString, DepInfo> = HashMap::default();
+    for dep in dependencies {
+        dep_map.entry(dep.name_in_toml()).or_default().optional |= dep.is_optional();
+    }
 
     let mut map: FeatureMap = features
         .iter()
         .map(|(feature, list)| {
             let fvs: Vec<_> = list
                 .iter()
-                .map(|feat_value| FeatureValue::new(*feat_value))
+                .map(|feat_value| {
+                    let value = FeatureValue::new(*feat_value);
+                    if let Dep { dep_name } = &value
+                        && let Some(info) = dep_map.get_mut(dep_name)
+                    {
+                        info.explicit = true;
+                    }
+                    value
+                })
                 .collect();
             (*feature, fvs)
         })
@@ -223,18 +241,12 @@ fn build_feature_map(
 
     // Add implicit features for optional dependencies if they weren't
     // explicitly listed anywhere.
-    let explicitly_listed: HashSet<_> = map
-        .values()
-        .flatten()
-        .filter_map(|fv| fv.explicit_dep_name())
-        .collect();
-
     for dep in dependencies {
         if !dep.is_optional() {
             continue;
         }
         let dep_name = dep.name_in_toml();
-        if features.contains_key(&dep_name) || explicitly_listed.contains(&dep_name) {
+        if features.contains_key(&dep_name) || dep_map[&dep_name].explicit {
             continue;
         }
         map.insert(dep_name, vec![Dep { dep_name }]);
@@ -246,9 +258,12 @@ fn build_feature_map(
         FeatureName::new(feature)?;
         for fv in fvs {
             // Find data for the referenced dependency...
-            let dep_data = dep_map.get(&fv.feature_or_dep_name());
+            let dep_data = dep_map.get_mut(&fv.feature_or_dep_name());
             let is_any_dep = dep_data.is_some();
-            let is_optional_dep = dep_data.is_some_and(|&o| o);
+            let is_optional_dep = dep_data.as_ref().is_some_and(|info| info.optional);
+            if let Some(info) = dep_data {
+                info.mentioned |= matches!(fv, Dep { .. } | DepFeature { .. });
+            }
             match fv {
                 Feature(f) => {
                     if !features.contains_key(f) {
@@ -304,9 +319,10 @@ fn build_feature_map(
 
                     // dep: cannot be combined with /
                     if let Some(stripped_dep) = dep_name.strip_prefix("dep:") {
-                        let has_other_dep = explicitly_listed.contains(stripped_dep);
-                        let is_optional = dep_map.get(stripped_dep).is_some_and(|&o| o);
-                        let extra_help = if *weak || has_other_dep || !is_optional {
+                        let creates_implicit = dep_map
+                            .get(stripped_dep)
+                            .is_some_and(|info| info.optional && !info.explicit);
+                        let extra_help = if *weak || !creates_implicit {
                             // In this case, the user should just remove dep:.
                             // Note that "hiding" an optional dependency
                             // wouldn't work with just a single `dep:foo?/bar`
@@ -349,17 +365,9 @@ fn build_feature_map(
     }
 
     // Make sure every optional dep is mentioned at least once.
-    let used: HashSet<_> = map
-        .values()
-        .flatten()
-        .filter_map(|fv| match fv {
-            Dep { dep_name } | DepFeature { dep_name, .. } => Some(dep_name),
-            _ => None,
-        })
-        .collect();
     if let Some((dep, _)) = dep_map
         .iter()
-        .find(|&(dep, &is_optional)| is_optional && !used.contains(dep))
+        .find(|(_, info)| info.optional && !info.mentioned)
     {
         bail!(
             "optional dependency `{dep}` is not included in any feature\n\
@@ -410,14 +418,6 @@ impl FeatureValue {
                     FeatureValue::Feature(feature)
                 }
             }
-        }
-    }
-
-    /// Returns the name of the dependency if and only if it was explicitly named with the `dep:` syntax.
-    fn explicit_dep_name(&self) -> Option<InternedString> {
-        match self {
-            FeatureValue::Dep { dep_name, .. } => Some(*dep_name),
-            _ => None,
         }
     }
 
@@ -498,5 +498,53 @@ impl PackedIndexSummary {
                 pubtime: self.pubtime,
             }),
         })
+    }
+}
+
+#[cfg(test)]
+mod feature_tests {
+    use super::*;
+
+    #[test]
+    fn optional_feature_usage_across_declarations() {
+        let source =
+            SourceId::for_registry(&"https://example.invalid/index".parse().unwrap()).unwrap();
+        let required = Dependency::parse("codec", Some("1"), source).unwrap();
+        let mut optional = required.clone();
+        optional.set_optional(true);
+        let codec = InternedString::new("codec");
+
+        let empty = BTreeMap::new();
+        assert!(
+            build_feature_map(&empty, std::slice::from_ref(&required))
+                .unwrap()
+                .is_empty()
+        );
+        let deps = [optional, required];
+        assert_eq!(
+            build_feature_map(&empty, &deps).unwrap()[&codec],
+            [FeatureValue::Dep { dep_name: codec }]
+        );
+
+        let mut features = BTreeMap::from([("stream".into(), vec!["dep:codec".into()])]);
+        assert!(
+            !build_feature_map(&features, &deps)
+                .unwrap()
+                .contains_key(&codec)
+        );
+
+        // A feature with the dependency's name masks the implicit feature.
+        // Referencing the feature alone does not use the dependency.
+        features.insert(codec, vec![]);
+        features.insert("stream".into(), vec![codec]);
+        assert!(
+            build_feature_map(&features, &deps)
+                .unwrap_err()
+                .to_string()
+                .starts_with("optional dependency `codec` is not included")
+        );
+
+        features.insert("stream".into(), vec!["codec?/fast".into()]);
+        assert!(build_feature_map(&features, &deps).is_ok());
     }
 }

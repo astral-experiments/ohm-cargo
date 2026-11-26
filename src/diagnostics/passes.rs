@@ -1,7 +1,5 @@
 use std::path::Path;
 
-use cargo_util_schemas::manifest;
-
 use crate::CargoResult;
 use crate::GlobalContext;
 use crate::diagnostics::GlobalDiagnosticStats;
@@ -134,17 +132,13 @@ fn emit_parse_pkg_diagnostics(
 ) -> CargoResult<()> {
     let mut pkg_stats = global_stats.scope();
 
-    let toml_lints = pkg
-        .manifest()
-        .normalized_toml()
-        .lints
-        .clone()
-        .map(|lints| lints.lints)
-        .unwrap_or(manifest::TomlLints::default());
-    let cargo_lints = toml_lints
-        .get("cargo")
-        .cloned()
-        .unwrap_or(manifest::TomlToolLints::default());
+    let cargo_lints = crate::diagnostics::cargo_lints(
+        pkg.manifest()
+            .normalized_toml()
+            .lints
+            .as_ref()
+            .map(|l| &l.lints),
+    );
 
     for rule in rules {
         match rule {
@@ -154,7 +148,7 @@ fn emit_parse_pkg_diagnostics(
             }
             ParsePassRule::LintManifest { rule, lint } => {
                 let manifest: ManifestFor<'_> = pkg.into();
-                let level = manifest.lint_level(&cargo_lints, lint, workspace.gctx());
+                let level = manifest.lint_level(cargo_lints, lint, workspace.gctx());
                 if level.level != LintLevel::Allow {
                     rule(
                         workspace,
@@ -172,7 +166,7 @@ fn emit_parse_pkg_diagnostics(
             }
             ParsePassRule::LintPackage { rule, lint } => {
                 let level = lint.level(
-                    &cargo_lints,
+                    cargo_lints,
                     pkg.rust_version(),
                     pkg.manifest().unstable_features(),
                     workspace.gctx(),
@@ -204,7 +198,7 @@ fn emit_parse_ws_diagnostics(
 ) -> CargoResult<()> {
     let mut pkg_stats = global_stats.scope();
 
-    let cargo_lints = match workspace.root_maybe() {
+    let lints = match workspace.root_maybe() {
         MaybePackage::Package(pkg) => {
             let toml = pkg.manifest().normalized_toml();
             if let Some(ws) = &toml.workspace {
@@ -220,10 +214,8 @@ fn emit_parse_ws_diagnostics(
             .unwrap()
             .lints
             .as_ref(),
-    }
-    .and_then(|t| t.get("cargo"))
-    .cloned()
-    .unwrap_or(manifest::TomlToolLints::default());
+    };
+    let cargo_lints = crate::diagnostics::cargo_lints(lints);
 
     for rule in rules {
         match rule {
@@ -239,7 +231,7 @@ fn emit_parse_ws_diagnostics(
             }
             ParsePassRule::LintManifest { rule, lint } => {
                 let manifest: ManifestFor<'_> = (workspace, workspace.root_maybe()).into();
-                let level = manifest.lint_level(&cargo_lints, lint, workspace.gctx());
+                let level = manifest.lint_level(cargo_lints, lint, workspace.gctx());
                 if level.level != LintLevel::Allow {
                     rule(
                         workspace,
@@ -262,7 +254,7 @@ fn emit_parse_ws_diagnostics(
             }
             ParsePassRule::LintWorkspace { rule, lint } => {
                 let level = lint.level(
-                    &cargo_lints,
+                    cargo_lints,
                     workspace.lowest_rust_version(),
                     workspace.root_maybe().unstable_features(),
                     workspace.gctx(),

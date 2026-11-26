@@ -1,4 +1,4 @@
-use crate::util::data_structures::HashMap;
+use crate::util::data_structures::{HashMap, HashSet};
 use crate::workspace::SourceKind;
 use cargo_util_terminal::report::{AnnotationKind, Group, Level, Snippet};
 use std::borrow::Cow;
@@ -98,7 +98,7 @@ pub fn read_manifest(
             gctx.ws_roots()
                 .insert(package_root.to_owned(), ws_root_config.clone());
         }
-        let normalized_toml = normalize_toml(
+        let (normalized_toml, inherited_lints) = normalize_toml(
             &original_toml,
             &features,
             &workspace_config,
@@ -114,6 +114,7 @@ pub fn read_manifest(
                 Some(contents),
                 None,
                 keep_document,
+                inherited_lints.as_deref(),
                 original_toml,
                 normalized_toml,
                 features,
@@ -263,6 +264,21 @@ mod tests {
     use super::{deserialize_toml, parse_document};
 
     #[test]
+    fn inherited_lints_repeat_only_their_own_warnings() {
+        let table = super::WorkspaceLints {
+            source: toml::from_str("rust.unused-variables = 'warn'").unwrap(),
+            prepared: Default::default(),
+        };
+        let mut first = vec!["unrelated warning".to_owned()];
+        let mut second = Vec::new();
+        let flags = table.rustflags(&mut first).unwrap();
+        assert_eq!(flags, ["--warn=unused-variables"]);
+        assert_eq!(table.rustflags(&mut second).unwrap(), flags);
+        assert_eq!(second.len(), 1);
+        assert_eq!(second, first[1..]);
+    }
+
+    #[test]
     fn direct_deserialize_preserves_diagnostics() {
         let contents = "[package]\nname = []\n";
         let document = parse_document(contents).unwrap();
@@ -372,7 +388,12 @@ fn to_workspace_root_config(
     let inheritable = InheritableFields {
         package: normalized_toml.package.clone(),
         dependencies: normalized_toml.dependencies.clone().map(Arc::new),
-        lints: normalized_toml.lints.clone().map(Arc::new),
+        lints: normalized_toml.lints.clone().map(|source| {
+            Arc::new(WorkspaceLints {
+                source,
+                prepared: Default::default(),
+            })
+        }),
         _ws_root: package_root.to_owned(),
     };
     let ws_root_config = WorkspaceRootConfig::new(
@@ -397,8 +418,9 @@ fn normalize_toml(
     gctx: &GlobalContext,
     warnings: &mut Vec<String>,
     errors: &mut Vec<String>,
-) -> CargoResult<manifest::TomlManifest> {
+) -> CargoResult<(manifest::TomlManifest, Option<Arc<WorkspaceLints>>)> {
     let package_root = manifest_file.parent().unwrap();
+    let mut inherited_lints = None;
 
     let inherit_cell: OnceCell<InheritableFields> = OnceCell::new();
     let inherit = || {
@@ -660,7 +682,13 @@ fn normalize_toml(
         let normalized_lints = original_toml
             .lints
             .clone()
-            .map(|value| lints_inherit_with(value, || inherit()?.lints()))
+            .map(|value| {
+                lints_inherit_with(value, || {
+                    let fields = inherit()?;
+                    inherited_lints = fields.lints.clone();
+                    fields.lints()
+                })
+            })
             .transpose()?;
         normalized_toml.lints = normalized_lints.map(|lints| manifest::InheritableLints {
             workspace: false,
@@ -683,7 +711,7 @@ fn normalize_toml(
         }
     }
 
-    Ok(normalized_toml)
+    Ok((normalized_toml, inherited_lints))
 }
 
 fn normalize_patch<'a>(
@@ -1143,12 +1171,43 @@ macro_rules! package_field_getter {
     )
 }
 
+/// Share the result only for members inheriting this exact lint table.
+/// Compute flags lazily: unused workspace lints need not be valid rustc flags.
+#[derive(Debug)]
+struct WorkspaceLints {
+    source: manifest::TomlLints,
+    prepared: std::sync::OnceLock<PreparedLints>,
+}
+
+#[derive(Debug)]
+struct PreparedLints {
+    warnings: Vec<String>,
+    rustflags: Vec<String>,
+}
+
+impl WorkspaceLints {
+    fn rustflags(&self, warnings: &mut Vec<String>) -> CargoResult<Vec<String>> {
+        if let Some(prepared) = self.prepared.get() {
+            warnings.extend_from_slice(&prepared.warnings);
+            return Ok(prepared.rustflags.clone());
+        }
+        let start = warnings.len();
+        verify_lints(Some(&self.source), warnings)?;
+        let rustflags = lints_to_rustflags(&self.source)?;
+        self.prepared.get_or_init(|| PreparedLints {
+            warnings: warnings[start..].to_owned(),
+            rustflags: rustflags.clone(),
+        });
+        Ok(rustflags)
+    }
+}
+
 /// A group of fields that are inheritable by members of the workspace
 #[derive(Clone, Debug, Default)]
 pub struct InheritableFields {
     package: Option<manifest::InheritablePackage>,
     dependencies: Option<Arc<BTreeMap<manifest::PackageName, manifest::TomlDependency>>>,
-    lints: Option<Arc<manifest::TomlLints>>,
+    lints: Option<Arc<WorkspaceLints>>,
 
     // Bookkeeping to help when resolving values from above
     _ws_root: PathBuf,
@@ -1208,7 +1267,7 @@ impl InheritableFields {
         let Some(val) = self.lints.as_deref() else {
             bail!("`workspace.lints` was not defined");
         };
-        Ok(val.clone())
+        Ok(val.source.clone())
     }
 
     /// Gets the field `workspace.package.license-file`.
@@ -1396,6 +1455,7 @@ pub fn to_real_manifest(
         contents,
         document,
         false,
+        None,
         original_toml,
         normalized_toml,
         features,
@@ -1414,6 +1474,7 @@ fn to_real_manifest_inner(
     contents: Option<String>,
     mut document: Option<toml::Spanned<toml::de::DeTable<'static>>>,
     lazy_document: bool,
+    inherited_lints: Option<&WorkspaceLints>,
     original_toml: manifest::TomlManifest,
     normalized_toml: manifest::TomlManifest,
     features: Features,
@@ -1789,19 +1850,17 @@ fn to_real_manifest_inner(
         }
     }
 
-    verify_lints(
-        normalized_toml
-            .normalized_lints()
-            .expect("previously normalized"),
-        warnings,
-    )?;
-    let default = manifest::TomlLints::default();
-    let rustflags = lints_to_rustflags(
-        normalized_toml
-            .normalized_lints()
-            .expect("previously normalized")
-            .unwrap_or(&default),
-    )?;
+    let rustflags = if let Some(lints) = inherited_lints {
+        lints.rustflags(warnings)?
+    } else if let Some(lints) = normalized_toml
+        .normalized_lints()
+        .expect("previously normalized")
+    {
+        verify_lints(Some(lints), warnings)?;
+        lints_to_rustflags(lints)?
+    } else {
+        Vec::new()
+    };
 
     let hints = normalized_toml.hints.clone();
 
@@ -2697,13 +2756,30 @@ impl ResolveToPath for ConfigRelativePath {
     }
 }
 
-/// Checks a list of build targets, and ensures the target names are unique within a vector.
-/// If not, the name of the offending build target is returned.
+/// Group targets that share a source file for the manifest warning.
 #[tracing::instrument(skip_all)]
 fn unique_build_targets(
     targets: &[Target],
     package_root: &Path,
 ) -> Result<(), HashMap<PathBuf, Vec<Target>>> {
+    if targets.len() <= 1 {
+        return Ok(());
+    }
+
+    // An absolute path replaces the package root when joined. If the final
+    // components are distinct, avoid building and hashing the full paths and
+    // cloning targets. Repeated filenames still need the full comparison.
+    let mut names = HashSet::with_capacity_and_hasher(targets.len(), Default::default());
+    if targets.iter().all(|target| {
+        let TargetSourcePath::Path(path) = target.src_path() else {
+            return true;
+        };
+        path.is_absolute() && path.file_name().is_some_and(|name| names.insert(name))
+    }) {
+        return Ok(());
+    }
+    drop(names);
+
     let mut source_targets = HashMap::<_, Vec<_>>::default();
     for target in targets {
         if let TargetSourcePath::Path(path) = target.src_path() {
@@ -2916,7 +2992,10 @@ supported tools: {}",
                 }
                 seen_normalized.insert(normalized, name.as_str());
             }
-            if let Some((prefix, suffix)) = name.split_once("::") {
+            // Avoid a substring search for ordinary, unqualified lint names.
+            if name.contains(':')
+                && let Some((prefix, suffix)) = name.split_once("::")
+            {
                 if tool == prefix {
                     anyhow::bail!(
                         "`lints.{tool}.{name}` is not valid lint name; try `lints.{prefix}.{suffix}`"
