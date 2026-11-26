@@ -60,6 +60,11 @@ pub(in crate::ops) struct SelectedPlan {
     auth: [u8; 32],
 }
 
+enum Entry {
+    Hit(Selection),
+    Collision(Option<std::time::SystemTime>),
+}
+
 impl SelectedPlan {
     /// The workspace fingerprint includes its complete lockfile, manifests, and resolver configuration.
     /// Distinct member, feature, and dev-dependency selections can coexist in the target directory.
@@ -103,19 +108,9 @@ impl SelectedPlan {
         Some(Self { path, key, auth })
     }
 
-    /// Query each locked package through its actual source. A failed query or changed
-    /// index record, path summary, or checksum sends the caller through the resolver.
-    pub(in crate::ops) fn load(
-        &self,
-        previous: &Resolve,
-        registry: &PackageRegistry<'_>,
-        roots: &[(Summary, ResolveOpts)],
-        version: ResolveVersion,
-        version_prefs: &crate::resolver::VersionPreferences,
-        gctx: &crate::GlobalContext,
-    ) -> Option<Resolve> {
+    fn read_entry(&self, path: &Path) -> Option<Entry> {
         use std::io::Read as _;
-        let file = paths::open_regular(&self.path).ok()?;
+        let file = paths::open_regular(path).ok()?;
         let metadata = file.metadata().ok()?;
         #[cfg(unix)]
         {
@@ -137,6 +132,10 @@ impl SelectedPlan {
         if digest != blake3::keyed_hash(&self.auth, payload).as_bytes() {
             return None;
         }
+        // Selection starts with the full key. Do not decode an unrelated graph.
+        if postcard::take_from_bytes::<u64>(payload).ok()?.0 != self.key {
+            return Some(Entry::Collision(metadata.modified().ok()));
+        }
         let selected: Selection = postcard::from_bytes(payload)
             .inspect_err(|error| {
                 tracing::debug!("unable to decode a prior locked selection: {error}");
@@ -145,6 +144,47 @@ impl SelectedPlan {
         if selected.key != self.key {
             return None;
         }
+        Some(Entry::Hit(selected))
+    }
+
+    /// Try a second slot only when the primary holds an authenticated
+    /// selection for another key. Keep the same file limit and prefer
+    /// replacing the older entry if both slots are occupied.
+    fn read_selection(&mut self) -> Option<Selection> {
+        let modified = match self.read_entry(&self.path)? {
+            Entry::Hit(selection) => return Some(selection),
+            Entry::Collision(modified) => modified,
+        };
+        let primary = self.key & 63;
+        let other = (self.key >> 6) & 63;
+        let slot = if primary == other { primary ^ 1 } else { other };
+        let alternate = self
+            .path
+            .with_file_name(format!(".cargo-locked-selection-v2-{slot:02x}"));
+        let entry = self.read_entry(&alternate);
+        if matches!(entry, Some(Entry::Collision(other)) if modified <= other) {
+            return None;
+        }
+        // Refresh this slot if the selection is absent or fails validation.
+        self.path = alternate;
+        match entry {
+            Some(Entry::Hit(selection)) => Some(selection),
+            _ => None,
+        }
+    }
+
+    /// Query each locked package through its actual source. A failed query or changed
+    /// index record, path summary, or checksum sends the caller through the resolver.
+    pub(in crate::ops) fn load(
+        &mut self,
+        previous: &Resolve,
+        registry: &PackageRegistry<'_>,
+        roots: &[(Summary, ResolveOpts)],
+        version: ResolveVersion,
+        version_prefs: &crate::resolver::VersionPreferences,
+        gctx: &crate::GlobalContext,
+    ) -> Option<Resolve> {
+        let selected = self.read_selection()?;
         let mode = if gctx.cli_unstable().prerelease {
             VersionReqMatchMode::Prerelease
         } else {
