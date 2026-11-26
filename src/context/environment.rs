@@ -10,11 +10,16 @@ use anyhow::{anyhow, bail};
 fn make_case_insensitive_and_normalized_env(
     env: &HashMap<OsString, OsString>,
 ) -> (HashMap<String, String>, HashMap<String, String>) {
-    let case_insensitive_env: HashMap<_, _> = env
-        .keys()
-        .filter_map(|k| k.to_str())
-        .map(|k| (k.to_uppercase(), k.to_owned()))
-        .collect();
+    // Only the Windows fallback in get_env_os needs a second lookup
+    // table. Keep normalized_env on every platform for diagnostics.
+    let case_insensitive_env = if cfg!(windows) {
+        env.keys()
+            .filter_map(|k| k.to_str())
+            .map(|k| (k.to_uppercase(), k.to_owned()))
+            .collect()
+    } else {
+        HashMap::default()
+    };
 
     let normalized_env = env
         .iter()
