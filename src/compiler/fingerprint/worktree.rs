@@ -251,7 +251,7 @@ pub(in crate::compiler) fn can_reuse_after_scripts(
         return false;
     }
 
-    fingerprint.dep_info_files_are_fresh(pkg_root, build_root, false)
+    fingerprint.dep_info_files_are_fresh(pkg_root, build_root, false, None)
 }
 
 #[test]

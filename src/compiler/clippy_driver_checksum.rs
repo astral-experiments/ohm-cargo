@@ -5,8 +5,9 @@ use super::BuildContext;
 use super::fingerprint::dep_info::{Checksum, ChecksumAlgo};
 use cargo_util::ProcessBuilder;
 use std::fs::File;
-use std::io;
+use std::io::{self, Read};
 use std::path::Path;
+use std::sync::OnceLock;
 
 pub(super) const FDS_ENV: &str = "CARGO_OHM_CLIPPY_DRIVER_HASH_FDS";
 pub(super) const VERSION_ENV: &str = "CARGO_OHM_CLIPPY_DRIVER_HASH_VERSION";
@@ -14,6 +15,8 @@ pub(super) const VERSION_ENV: &str = "CARGO_OHM_CLIPPY_DRIVER_HASH_VERSION";
 pub(super) struct ClippyDriverChecksum {
     #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
     driver: linux::Driver,
+    recording: OnceLock<()>,
+    image: OnceLock<(Vec<u8>, Checksum)>,
 }
 
 impl ClippyDriverChecksum {
@@ -22,6 +25,8 @@ impl ClippyDriverChecksum {
         {
             Some(Self {
                 driver: linux::Driver::new(_bcx)?,
+                recording: OnceLock::new(),
+                image: OnceLock::new(),
             })
         }
         #[cfg(not(all(target_os = "linux", target_arch = "x86_64")))]
@@ -51,6 +56,64 @@ impl ClippyDriverChecksum {
             return Ok(sum);
         }
         Checksum::compute(algo, file, buffer)
+    }
+
+    pub(super) fn can_compare(&self, _path: &Path, _algo: ChecksumAlgo, _len: u64) -> bool {
+        #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
+        {
+            _algo == ChecksumAlgo::Blake3 && _path == self.driver.path && _len <= 32 * 1024 * 1024
+        }
+        #[cfg(not(all(target_os = "linux", target_arch = "x86_64")))]
+        false
+    }
+
+    /// Many workspace units can recheck this same executable after their prerequisites.
+    /// Retain at most one bounded image per build and still read each fresh file through EOF.
+    /// This makes no assumptions about writes, leases, or even inode identity.
+    pub(super) fn compare(
+        &self,
+        mut file: impl Read,
+        len: u64,
+        buffer: &mut [u8],
+    ) -> io::Result<Checksum> {
+        let algo = ChecksumAlgo::Blake3;
+        if let Some((bytes, sum)) = self.image.get() {
+            let mut matched = 0;
+            loop {
+                let n = file.read(buffer)?;
+                if n == 0 {
+                    return Ok(if matched == bytes.len() {
+                        *sum
+                    } else {
+                        Checksum::new(algo, blake3::hash(&bytes[..matched]).into())
+                    });
+                }
+                if !bytes[matched..].starts_with(&buffer[..n]) {
+                    // Hash precisely the stream we observed, without seeking or reopening.
+                    let stream = (&bytes[..matched]).chain(&buffer[..n]).chain(file);
+                    return Checksum::compute(algo, stream, &mut [0; 8192]);
+                }
+                matched += n;
+            }
+        }
+        let mut bytes = Vec::new();
+        if self.recording.set(()).is_err() || bytes.try_reserve_exact(len as usize).is_err() {
+            return Checksum::compute(algo, file, buffer);
+        }
+        loop {
+            let n = file.read(buffer)?;
+            if n == 0 {
+                let sum = Checksum::new(algo, blake3::hash(&bytes).into());
+                let _ = self.image.set((bytes, sum));
+                return Ok(sum);
+            }
+            if n > len as usize - bytes.len() {
+                // The file grew after the metadata check. Keep the allocation bounded.
+                let stream = bytes.as_slice().chain(&buffer[..n]).chain(file);
+                return Checksum::compute(algo, stream, &mut [0; 8192]);
+            }
+            bytes.extend_from_slice(&buffer[..n]);
+        }
     }
 
     pub(super) fn dispatch_to(&self, _process: &mut ProcessBuilder, _dep_info: &Path) {
@@ -321,6 +384,8 @@ mod linux {
 
         fn fixture(path: &Path) -> ClippyDriverChecksum {
             ClippyDriverChecksum {
+                recording: OnceLock::new(),
+                image: OnceLock::new(),
                 driver: Driver {
                     path: path.into(),
                     proof: OnceLock::new(),
@@ -338,6 +403,59 @@ mod linux {
                     &mut [0; 64],
                 )
                 .unwrap()
+        }
+
+        #[test]
+        fn recheck_reads_identical_replaced_and_resized_files_through_eof() {
+            let tmp = tempdir().unwrap();
+            let path = tmp.path().join("clippy-driver");
+            let handoff = fixture(&path);
+            assert!(handoff.can_compare(&path, ChecksumAlgo::Blake3, 6));
+            assert!(!handoff.can_compare(&path, ChecksumAlgo::Blake3, 1 << 26));
+            assert!(!handoff.can_compare(&path, ChecksumAlgo::Sha256, 6));
+            assert!(!handoff.can_compare(tmp.path(), ChecksumAlgo::Blake3, 6));
+            for data in [
+                "abcdef", "abcdef", "abcde!", "!!cdef", "abc", "", "abcdef!", "abcdef",
+            ] {
+                let replacement = tmp.path().join("replacement");
+                fs::write(&replacement, data).unwrap();
+                fs::rename(&replacement, &path).unwrap();
+                let sum = handoff
+                    .compare(File::open(&path).unwrap(), 6, &mut [0; 2])
+                    .unwrap();
+                assert_eq!(sum.value(), blake3::hash(data.as_bytes()).as_bytes());
+            }
+            assert_eq!(handoff.image.get().unwrap().0, b"abcdef");
+            assert!(handoff.driver.proof.get().is_none());
+        }
+
+        #[test]
+        fn incomplete_rechecks_do_not_publish_or_reuse_a_checksum() {
+            struct Interrupted;
+            impl Read for Interrupted {
+                fn read(&mut self, _: &mut [u8]) -> io::Result<usize> {
+                    Err(io::ErrorKind::Interrupted.into())
+                }
+            }
+            let path = Path::new("clippy-driver");
+            let data = b"abcdef".as_slice();
+            for seed in [true, false] {
+                let handoff = fixture(path);
+                if seed {
+                    handoff.compare(data, 6, &mut [0; 2]).unwrap();
+                }
+                let err = handoff
+                    .compare(data.chain(Interrupted), 6, &mut [0; 2])
+                    .unwrap_err();
+                assert_eq!(err.kind(), io::ErrorKind::Interrupted);
+                assert_eq!(handoff.image.get().is_some(), seed);
+                let sum = handoff.compare(data, 6, &mut [0; 2]).unwrap();
+                assert_eq!(sum.value(), blake3::hash(data).as_bytes());
+            }
+            let handoff = fixture(path);
+            let sum = handoff.compare(data, 4, &mut [0; 2]).unwrap();
+            assert!(handoff.image.get().is_none());
+            assert_eq!(sum.value(), blake3::hash(data).as_bytes());
         }
 
         #[test]
