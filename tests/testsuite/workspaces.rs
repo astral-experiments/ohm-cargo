@@ -3134,6 +3134,89 @@ fn selected_resolution_honors_locked_yanked_versions() {
 
 #[cfg(unix)]
 #[cargo_test]
+fn selected_resolution_survives_a_slot_collision() {
+    let _home = private_selection_home();
+    Package::new("dependency", "1.0.0").publish();
+    let project = project()
+        .file(
+            "Cargo.toml",
+            r#"
+            [package]
+            name = "selected"
+            version = "0.1.0"
+            edition = "2021"
+            [dependencies]
+            dependency = "1"
+        "#,
+        )
+        .file("src/lib.rs", "")
+        .build();
+    let check = || workspace_resolve_cache_command(&project, "check -p selected");
+    let hit = "[..]reusing locked package selection[..]";
+    check().run();
+    check().run();
+    check().with_stderr_contains(hit).run();
+
+    let entries = || {
+        fs::read_dir(project.root().join("target"))
+            .unwrap()
+            .map(|entry| entry.unwrap().path())
+            .filter(|path| {
+                path.file_name()
+                    .unwrap()
+                    .to_string_lossy()
+                    .starts_with(".cargo-locked-selection-v2-")
+            })
+            .collect::<Vec<_>>()
+    };
+    let paths = entries();
+    assert_eq!(paths.len(), 1);
+    let primary = &paths[0];
+    let secret: [u8; 32] =
+        fs::read(cargo_test_support::paths::cargo_home().join(".ohm-locked-selection/key-v2"))
+            .unwrap()
+            .try_into()
+            .unwrap();
+    let record = fs::read(primary).unwrap();
+    let (key, rest) = postcard::take_from_bytes::<u64>(&record[32..]).unwrap();
+    // Manufacture a valid competing record with identical low six bits.
+    let mut payload = postcard::to_allocvec(&(key ^ 64)).unwrap();
+    payload.extend_from_slice(rest);
+    let mut competing = blake3::keyed_hash(&secret, &payload).as_bytes().to_vec();
+    competing.extend_from_slice(&payload);
+    fs::write(primary, &competing).unwrap();
+
+    check().with_stderr_does_not_contain(hit).run();
+    check().with_stderr_contains(hit).run();
+    assert_eq!(fs::read(primary).unwrap(), competing);
+    let paths = entries();
+    assert_eq!(paths.len(), 2);
+    let alternate = paths.iter().find(|p| *p != primary).unwrap();
+    // Authentication and full-key checks still apply in the alternate slot.
+    for damaged in [&competing[..], &record[..record.len() - 1]] {
+        fs::write(alternate, damaged).unwrap();
+        fs::File::open(alternate)
+            .unwrap()
+            .set_modified(std::time::UNIX_EPOCH)
+            .unwrap();
+        check().with_stderr_does_not_contain(hit).run();
+        check().with_stderr_contains(hit).run();
+        assert_eq!(fs::read(primary).unwrap(), competing);
+    }
+    // When the primary is older, replace it instead of displacing the
+    // newer record from a slot that other selections can also use.
+    fs::write(alternate, &competing).unwrap();
+    fs::File::open(primary)
+        .unwrap()
+        .set_modified(std::time::UNIX_EPOCH)
+        .unwrap();
+    check().with_stderr_does_not_contain(hit).run();
+    check().with_stderr_contains(hit).run();
+    assert_eq!(fs::read(alternate).unwrap(), competing);
+}
+
+#[cfg(unix)]
+#[cargo_test]
 fn selected_resolution_validates_features_and_damaged_cache() {
     let _home = private_selection_home();
     Package::new("dependency", "1.0.0")
