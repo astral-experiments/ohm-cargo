@@ -881,6 +881,158 @@ fn debug_options_valid() {
         .run();
 }
 
+#[cargo_test]
+fn ohm_optimize_workspace_macro_token_dependencies() {
+    // Keep target discovery working with the stock compiler used in CI.
+    let wrapper = crate::rustflags::ohm_defaults_wrapper();
+    for (name, version) in [
+        ("tokens", "1.0.0"),
+        ("tokens", "2.0.0"),
+        ("inactive", "1.0.0"),
+    ] {
+        Package::new(name, version)
+            .feature("proc-macro", &[])
+            .publish();
+    }
+    let manifest = r#"
+        [package]
+        name = "app"
+        version = "0.1.0"
+        edition = "2024"
+
+        [workspace]
+
+        [dependencies]
+        macros = { path = "macros" }
+        tokens = { version = "1", features = ["proc-macro"] }
+
+        [build-dependencies]
+        indirect = { path = "indirect" }
+        tokens = { version = "1", features = ["proc-macro"] }
+    "#;
+    let p = project()
+        .file("Cargo.toml", manifest)
+        .file("src/lib.rs", "")
+        .file("build.rs", "fn main() {}")
+        .file(
+            "macros/Cargo.toml",
+            r#"
+                [package]
+                name = "macros"
+                version = "0.1.0"
+                edition = "2024"
+
+                [lib]
+                proc-macro = true
+
+                [dependencies]
+                tokens = { version = "1", features = ["proc-macro"] }
+                inactive = "1"
+                indirect = { path = "../indirect" }
+            "#,
+        )
+        .file("macros/src/lib.rs", "")
+        .file(
+            "indirect/Cargo.toml",
+            r#"
+                [package]
+                name = "indirect"
+                version = "0.1.0"
+                edition = "2024"
+
+                [dependencies]
+                tokens = { version = "1", features = ["proc-macro"] }
+                tokens_v2 = { package = "tokens", version = "2", features = ["proc-macro"] }
+            "#,
+        )
+        .file("indirect/src/lib.rs", "")
+        .build();
+
+    let check = |flag: &str, defaults, profile, settings: &str, macro_level, target_level| {
+        p.change_file("Cargo.toml", &format!("{manifest}\n{settings}"));
+        let cli = if flag == "env" { "" } else { flag };
+        let mut cmd = p
+            .cargo(&format!(
+                "check --profile {profile} --unit-graph -Zunstable-options -Zohm-defaults={defaults} {cli}"
+            ));
+        if flag == "env" {
+            cmd.env("CARGO_UNSTABLE_OHM_OPTIMIZE_MACRO_DEPS", "true");
+        }
+        let graph = cmd
+            .masquerade_as_nightly_cargo(&["unit-graph", "ohm-defaults", "ohm-optimize-macro-deps"])
+            .env("RUSTC_WRAPPER", &wrapper)
+            .env("OHM_DEFAULTS_LOG", p.root().join("ohm-defaults.log"))
+            .run_json();
+        let units = graph["units"].as_array().unwrap();
+        let dependency = |unit: &serde_json::Value, name: &str| {
+            let edge = unit["dependencies"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .find(|d| d["extern_crate_name"] == name)
+                .unwrap();
+            edge["index"].as_u64().unwrap() as usize
+        };
+        for (parent, dep, level) in [
+            ("macros", "tokens", macro_level),
+            ("macros", "inactive", "0"),
+            ("app", "tokens", target_level),
+            ("build-script-build", "tokens", "0"),
+        ] {
+            let unit = units
+                .iter()
+                .find(|u| u["target"]["name"] == parent && u["mode"] != "run-custom-build")
+                .unwrap();
+            let direct = dependency(unit, dep);
+            if parent != "app" && dep == "tokens" {
+                // The macro and the build script both use this path library.
+                // Each needs the same token type through both edges.
+                let indirect = &units[dependency(unit, "indirect")];
+                assert_eq!(direct, dependency(indirect, dep), "{graph}");
+                let other = &units[dependency(indirect, "tokens_v2")];
+                assert_eq!(other["profile"]["opt_level"], "0", "{graph}");
+            }
+            let child = &units[direct];
+            if parent == "macros" && dep == "tokens" && level == "1" && settings.is_empty() {
+                assert_eq!(child["profile"]["codegen_units"], 1, "{graph}");
+            }
+            assert_eq!(
+                child["profile"]["opt_level"], level,
+                "{parent} -> {dep}: {graph}"
+            );
+        }
+    };
+    check("", "yes", "dev", "", "0", "0");
+    check("-Zohm-optimize-macro-deps=no", "yes", "dev", "", "0", "0");
+    check("env", "yes", "dev", "", "1", "0");
+    check("-Zohm-optimize-macro-deps", "yes", "dev", "", "1", "0");
+    check(
+        "-Zohm-optimize-macro-deps",
+        "yes",
+        "dev",
+        "[profile.dev]\nopt-level = 1",
+        "1",
+        "1",
+    );
+    check("-Zohm-optimize-macro-deps", "no", "dev", "", "0", "0");
+    check("-Zohm-optimize-macro-deps", "yes", "release", "", "0", "3");
+    for settings in [
+        "[profile.dev]\nopt-level = 0",
+        "[profile.dev.package.'tokens:1.0.0']\ndebug = 1",
+        "[profile.dev.package.'*']\ndebug = 1",
+        "[profile.dev.build-override]\ndebug = 1",
+    ] {
+        check(
+            "-Zohm-optimize-macro-deps",
+            "yes",
+            "dev",
+            settings,
+            "0",
+            "0",
+        );
+    }
+}
+
 #[cargo_test(nightly, reason = "Ohm defaults require the Ohm compiler")]
 fn ohm_proc_macro_helpers() {
     Package::new("leaf", "1.0.0")

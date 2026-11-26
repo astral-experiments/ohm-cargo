@@ -134,9 +134,12 @@ impl Profiles {
         // This simplifies the API (no need for CargoResult), and enforces
         // assumptions about how config profiles are loaded.
         let maker = profile_makers.get_profile_maker(&requested_profile)?;
-        profile_makers.ohm_host_helpers = gctx.cli_unstable().ohm_defaults()
+        let optimize_helpers =
+            gctx.cli_unstable().ohm_defaults() && maker.allows_host_optimization();
+        // CGU grouping additionally requires an explicit level-1 profile.
+        profile_makers.ohm_host_helpers = optimize_helpers
             && rustc_host == "x86_64-unknown-linux-gnu"
-            && maker.can_group_host_helpers();
+            && maker.toml.as_ref().is_some_and(|p| p.opt_level.is_some());
         if profile_makers.ohm_host_helpers {
             // Keep the same budget across commands and across direct and transitive
             // uses of a library. Exclude paths that also appear as normal or dev
@@ -158,7 +161,10 @@ impl Profiles {
                     profile_makers.build_helpers.insert(pkg);
                 }
             }
-
+        }
+        if profile_makers.ohm_host_helpers
+            || (optimize_helpers && gctx.cli_unstable().ohm_optimize_macro_deps == Some(true))
+        {
             for member in ws.members().filter(|p| p.proc_macro()) {
                 for dep in member.dependencies() {
                     if dep.kind() == DepKind::Normal && dep.source_id().is_registry() {
@@ -329,6 +335,39 @@ impl Profiles {
         Ok(maker)
     }
 
+    /// Optimize token processing in registry libraries used by workspace macros.
+    /// Use the same profile throughout each macro's dependency tree.
+    pub(crate) fn optimize_token_library(
+        &self,
+        profile: &mut Profile,
+        pkg: PackageId,
+        unit_for: UnitFor,
+        features: &[InternedString],
+    ) {
+        if !self.in_macro_helper_tree(unit_for)
+            || !features.iter().any(|f| f.as_str() == "proc-macro")
+        {
+            return;
+        }
+        let Some(deps) = self
+            .workspace_macro_deps
+            .get(&(pkg.source_id(), pkg.name()))
+        else {
+            return;
+        };
+        let maker = self.get_profile_maker(&self.requested_profile).unwrap();
+        if !maker.has_package_override(pkg)
+            && deps
+                .iter()
+                .any(|dep| dep.matches_id(pkg, VersionReqMatchMode::Prerelease))
+        {
+            profile.opt_level = "1".into();
+            // Avoid implicit local ThinLTO across the default set of codegen
+            // units. Keep the existing budget for grouped helpers.
+            profile.codegen_units.get_or_insert(1);
+        }
+    }
+
     /// Whether the profile enables incremental compilation for a registry library
     /// in both its normal and build-dependency roles.
     pub(crate) fn registry_observer_incremental(&self, pkg_id: PackageId) -> bool {
@@ -340,9 +379,11 @@ impl Profiles {
         })
     }
 
-    /// Whether this unit is in a host subtree where Ohm may group registry libraries.
+    /// Keep macro and build-script subtrees separate until effective profiles are known.
     pub(crate) fn in_macro_helper_tree(&self, unit_for: UnitFor) -> bool {
-        self.ohm_host_helpers && unit_for.proc_macro_helper && unit_for.is_for_host()
+        (self.ohm_host_helpers || !self.workspace_macro_deps.is_empty())
+            && unit_for.proc_macro_helper
+            && unit_for.is_for_host()
     }
 
     /// Find registry libraries used only by build scripts from the same release.
@@ -419,7 +460,8 @@ impl Profiles {
     ) -> Profile {
         let maker = self.get_profile_maker(&self.requested_profile).unwrap();
         let mut profile = maker.get_profile(Some(pkg_id), is_member, unit_for.is_for_host());
-        if self.in_macro_helper_tree(unit_for)
+        if self.ohm_host_helpers
+            && self.in_macro_helper_tree(unit_for)
             && !is_local
             && pkg_id.source_id().is_registry()
             && !maker.has_package_override(pkg_id)
@@ -595,10 +637,10 @@ impl ProfileMaker {
         ProfileMaker { default, toml }
     }
 
-    /// Only group helpers in level-1 dev profiles without global build overrides.
-    fn can_group_host_helpers(&self) -> bool {
+    /// Allow host optimizations in default and level-1 dev profiles without build overrides.
+    fn allows_host_optimization(&self) -> bool {
         let Some(toml) = &self.toml else {
-            return false;
+            return self.default.root == ProfileRoot::Debug;
         };
         let profile = self.get_profile(None, false, true);
         profile.root == ProfileRoot::Debug
@@ -608,7 +650,7 @@ impl ProfileMaker {
             && toml
                 .opt_level
                 .as_ref()
-                .is_some_and(|level| level.0.as_str() == "1")
+                .is_none_or(|level| level.0.as_str() == "1")
             && toml.codegen_units.is_none()
             && toml.build_override.is_none()
             && toml
