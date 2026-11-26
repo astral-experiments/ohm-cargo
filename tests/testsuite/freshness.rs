@@ -4187,6 +4187,55 @@ fn private_dependency_rebuild_preserves_check_metadata_generation() {
     assert_private_dependency_rebuild_preserves_metadata_generation("check");
 }
 
+#[cargo_test]
+fn rustdoc_updates_inlined_source_links_after_an_api_preserving_check() {
+    let wrapper = public_api_hash_wrapper();
+    let p = project()
+        .file(
+            "Cargo.toml",
+            &format!(
+                "{}\n[workspace]\n[dependencies]\nleaf.path = 'leaf'\n",
+                basic_manifest("facade", "0.1.0"),
+            ),
+        )
+        .file(
+            "src/lib.rs",
+            "extern crate leaf;\n#[doc(inline)]\npub use leaf::read;\n",
+        )
+        .file("leaf/Cargo.toml", &basic_manifest("leaf", "0.1.0"))
+        .file(
+            "leaf/src/lib.rs",
+            "#![doc(html_root_url = \"https://docs.invalid/\")]\npub fn read() ->\n    u32 { 7 }\n",
+        )
+        .build();
+    let cargo = |command: &str| {
+        let mut cargo = p.cargo(command);
+        cargo
+            .env("RUSTC_WRAPPER", &wrapper)
+            .env("RUSTFLAGS", "-Zpublic-api-hash");
+        cargo
+    };
+    let page = "target/doc/facade/fn.read.html";
+    cargo("doc --no-deps").run();
+    assert!(p.read_file(page).contains("src/leaf/lib.rs.html#2-3\""));
+
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    p.change_file(
+        "leaf/src/lib.rs",
+        "#![doc(html_root_url = \"https://docs.invalid/\")]\npub fn read() -> u32 { 7 }\n",
+    );
+    cargo("check -p leaf").run();
+    cargo("doc --no-deps -v")
+        .with_stderr_contains("[FRESH] leaf [..]")
+        .run();
+    assert!(p.read_file(page).contains("src/leaf/lib.rs.html#2\""));
+    cargo("doc --no-deps -v")
+        .with_stderr_contains("[FRESH] facade [..]")
+        .run();
+}
+
 fn assert_private_dependency_rebuild_propagates_link_generation(package: &str) {
     let wrapper = public_api_hash_wrapper();
     let p = project()

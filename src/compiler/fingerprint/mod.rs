@@ -2826,11 +2826,66 @@ fn calculate(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
         }
     }
 
+    if build_runner.bcx.build_config.intent.is_doc()
+        && (unit.mode.is_doc() || (unit.mode.is_check() && unit.target.is_lib()))
+    {
+        check_rustdoc_inputs(build_runner, unit, &mut fingerprint)?;
+    }
+
     let fingerprint = Arc::new(fingerprint);
     build_runner
         .fingerprints
         .insert(unit.clone(), Arc::clone(&fingerprint));
     Ok(fingerprint)
+}
+
+/// Carry the last compiler invocation through checked libraries to rustdoc.
+///
+/// A check can preserve the rmeta mtime when the public API hash is unchanged.
+/// Rustdoc also uses details outside that hash, such as the end of an inlined
+/// function's signature. The translated dep-info still dates the compilation.
+fn check_rustdoc_inputs(
+    build_runner: &mut BuildRunner<'_, '_>,
+    unit: &Unit,
+    fingerprint: &mut Fingerprint,
+) -> CargoResult<()> {
+    let status = fingerprint.fs_status.get_mut().unwrap();
+    let FsStatus::UpToDate { mtimes, .. } = status else {
+        return Ok(());
+    };
+    let newest_dep = fingerprint
+        .deps
+        .iter()
+        .filter(|dep| dep.carries_metadata)
+        .filter_map(|dep| {
+            let index = dep.fingerprint.index;
+            let mtime = build_runner.rustdoc_input_mtimes.get(&index)?;
+            Some((index, *mtime))
+        })
+        .max_by_key(|(_, mtime)| *mtime);
+
+    if unit.mode.is_check() {
+        let mut newest = newest_dep.map(|(_, mtime)| mtime);
+        if unit.is_local() && unit_uses_public_api_hash(build_runner, unit) {
+            let mtime = paths::mtime(&dep_info_loc(build_runner, unit))?;
+            newest = newest.max(Some(mtime));
+        }
+        if let Some(mtime) = newest {
+            build_runner
+                .rustdoc_input_mtimes
+                .insert(fingerprint.index, mtime);
+        }
+    } else if let Some((unit, dep_mtime)) = newest_dep
+        && let Some(&max_mtime) = mtimes.values().max()
+        && dep_mtime > max_mtime
+    {
+        *status = FsStatus::StaleDependency {
+            unit,
+            dep_mtime,
+            max_mtime,
+        };
+    }
+    Ok(())
 }
 
 /// Hashes the profile and mode used by an existing compilation fingerprint.
