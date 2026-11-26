@@ -2624,6 +2624,41 @@ gitoxide = \"fetch\"
 }
 
 #[cargo_test]
+fn environment_case_fallback_depends_on_platform() {
+    let gctx = GlobalContextBuilder::new()
+        .env("MixedCase", "value")
+        .build();
+    assert_eq!(gctx.get_env("MixedCase").unwrap(), "value");
+    assert_eq!(gctx.get_env("MIXEDCASE").is_ok(), cfg!(windows));
+}
+
+#[cargo_test]
+fn nested_struct_env_fields_match_at_underscores() {
+    #[derive(Deserialize)]
+    struct Settings {
+        task: Option<bool>,
+        tasks: Tasks,
+    }
+
+    #[derive(Deserialize)]
+    #[serde(rename_all = "kebab-case")]
+    struct Tasks {
+        run_fast: bool,
+        jobs: u32,
+    }
+
+    let gctx = GlobalContextBuilder::new()
+        .env("CARGO_SETTING_TASKS_RUN_FAST", "true")
+        .env("CARGO_SETTING_TASKS_JOBS", "8")
+        .env("CARGO_SETTINGS_TASK", "true")
+        .build();
+    let config: Settings = gctx.get(["setting"]).unwrap();
+    assert!(config.task.is_none());
+    assert!(config.tasks.run_fast);
+    assert_eq!(config.tasks.jobs, 8);
+}
+
+#[cargo_test]
 fn nonmergeable_lists() {
     let root_path = paths::root().join(".cargo/config.toml");
     write_config_at(

@@ -310,10 +310,24 @@ impl<'gctx> ConfigMapAccess<'gctx> {
 
         // If the caller is interested in a field which we can provide from
         // the environment, get it from there.
+        // ConfigKey::push always appends "_" and the field name. Filter on
+        // the parent once, instead of checking UTF-8 on every environment
+        // key again for each possible field.
+        let keys: Vec<_> = de
+            .gctx
+            .env_keys()
+            .filter(|key| {
+                key.strip_prefix(de.key.as_env_key())
+                    .is_some_and(|suffix| suffix.starts_with('_'))
+            })
+            .collect();
         for field in given_fields {
+            if keys.is_empty() {
+                break;
+            }
             let mut field_key = de.key.clone();
             field_key.push(field);
-            for env_key in de.gctx.env_keys() {
+            for env_key in &keys {
                 let Some(nested_field) = env_key.strip_prefix(field_key.as_env_key()) else {
                     continue;
                 };
@@ -323,6 +337,8 @@ impl<'gctx> ConfigMapAccess<'gctx> {
                 // added because `unstable.gitoxide.fetch` doesn't
                 // belong to `unstable.git` struct.
                 if nested_field.is_empty() || nested_field.starts_with('_') {
+                    // Even duplicate insertions can resize the hash set and
+                    // affect which invalid field is diagnosed first.
                     fields.insert(KeyKind::Normal(field.to_string()));
                 }
             }
