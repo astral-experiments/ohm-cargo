@@ -154,7 +154,7 @@ use crate::util::machine_message::{self, Message as _};
 use crate::util::{self, internal};
 use crate::util::{DependencyQueue, GlobalContext, Progress, ProgressStyle, Queue};
 use crate::workspace::{PackageId, TargetKind};
-use cargo_util_terminal::Shell;
+use cargo_util_terminal::{Shell, Verbosity};
 
 /// This structure is backed by the `DependencyQueue` type and manages the
 /// queueing of compilation steps for each package. Packages enqueue units of
@@ -176,6 +176,7 @@ pub struct JobQueue<'gctx> {
 /// It is created from `JobQueue` when we have fully assembled the crate graph
 /// (i.e., all package dependencies are known).
 struct DrainState<'gctx> {
+    output_options: JobOutputOptions,
     pending_scripts: usize,
     doctest_env_ready: bool,
     // This is the length of the DependencyQueue when starting out
@@ -398,8 +399,14 @@ enum Artifact {
     ConditionalMetadata,
 }
 
+#[derive(Clone, Copy)]
+struct JobOutputOptions {
+    warning_handling: WarningHandling,
+    verbose: bool,
+}
+
 enum Message {
-    Run(JobId, String),
+    Run(JobId, Option<String>),
     Stdout(JobId, String),
     Stderr(JobId, String),
 
@@ -565,7 +572,12 @@ impl<'gctx> JobQueue<'gctx> {
 
         let progress =
             Progress::with_style("Building", ProgressStyle::Ratio, build_runner.bcx.gctx);
+        let output_options = JobOutputOptions {
+            warning_handling: build_runner.bcx.gctx.warning_handling().unwrap_or_default(),
+            verbose: build_runner.bcx.gctx.shell().verbosity() == Verbosity::Verbose,
+        };
         let state = DrainState {
+            output_options,
             total_units: self.queue.len(),
             pending_scripts: self.pending_scripts,
             doctest_env_ready: false,
@@ -712,11 +724,13 @@ impl<'gctx> DrainState<'gctx> {
         };
         match event {
             Message::Run(id, cmd) => {
-                build_runner
-                    .bcx
-                    .gctx
-                    .shell()
-                    .verbose(|c| c.status("Running", &cmd))?;
+                if let Some(cmd) = cmd {
+                    build_runner
+                        .bcx
+                        .gctx
+                        .shell()
+                        .verbose(|c| c.status("Running", &cmd))?;
+                }
                 self.timings
                     .unit_start(build_runner, id, self.active[&id].clone());
             }
@@ -1369,7 +1383,7 @@ impl<'gctx> DrainState<'gctx> {
             None
         };
         let lock_manager = build_runner.lock_manager.clone();
-        let warning_handling = build_runner.bcx.gctx.warning_handling().unwrap_or_default();
+        let output_options = self.output_options;
         if let Some(completion) = build_runner.early_test_completions.get(unit) {
             self.early_test_completions.insert(id, completion.guard());
         }
@@ -1382,7 +1396,7 @@ impl<'gctx> DrainState<'gctx> {
                 rmeta_required,
                 conditional_metadata,
                 lock_manager,
-                warning_handling,
+                output_options,
             );
             state.run_to_finish(job);
         };

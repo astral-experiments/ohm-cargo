@@ -26,6 +26,19 @@ use cargo_util::paths::dylib_path_envvar;
 use cargo_util_terminal::Shell;
 
 #[cargo_test]
+fn running_commands_follow_shell_verbosity() {
+    let p = project().file("src/main.rs", "fn main() {}").build();
+    p.cargo("build --timings")
+        .with_stderr_does_not_contain("[RUNNING] [..]")
+        .run();
+    p.cargo("clean").run();
+    p.cargo("build")
+        .env("CARGO_TERM_VERBOSE", "true")
+        .with_stderr_contains("[RUNNING] [..]--crate-name foo [..]")
+        .run();
+}
+
+#[cargo_test]
 fn cargo_compile_simple() {
     let p = project()
         .file("Cargo.toml", &basic_bin_manifest("foo"))
