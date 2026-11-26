@@ -77,6 +77,9 @@ Caused by:
 "#]])
         .with_status(101)
         .run();
+    // With the same single matching version, only availability has changed.
+    p.cargo("fetch --locked").run();
+    p.cargo("check --locked --offline --features=opt_dep").run();
 }
 
 #[cargo_test]

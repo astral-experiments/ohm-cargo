@@ -14,15 +14,24 @@ pub const LOCKFILE_NAME: &str = "Cargo.lock";
 
 #[tracing::instrument(skip_all)]
 pub fn load_pkg_lockfile(ws: &Workspace<'_>) -> CargoResult<Option<Resolve>> {
-    load_pkg_lockfile_with(ws, |resolve, _contents| Ok(resolve))
+    load_pkg_lockfile_with(ws, None, |resolve, _contents| Ok(resolve))
 }
 
 /// Inspects a parsed lockfile without releasing its shared filesystem lock.
 pub(super) fn load_pkg_lockfile_with<T>(
     ws: &Workspace<'_>,
+    previous: Option<(String, Resolve)>,
     action: impl FnOnce(Resolve, &str) -> CargoResult<T>,
 ) -> CargoResult<Option<T>> {
     with_pkg_lockfile(ws, |contents, path| {
+        // A checkout may replace Cargo.lock while we hold a shared lock on
+        // the old file. Reopen and lock it as usual before reusing the graph
+        // decoded for this workspace earlier in this resolution.
+        if let Some((snapshot, resolve)) = previous
+            && contents == snapshot
+        {
+            return action(resolve, contents);
+        }
         let resolve = (|| -> CargoResult<Resolve> {
             if let Some(lockfile) = parse_generated_v4(contents) {
                 return into_resolve(lockfile, contents, ws);

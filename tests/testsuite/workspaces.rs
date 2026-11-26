@@ -3255,6 +3255,85 @@ fn workspace_resolve_cache_reuses_unchanged_workspace() {
         .run();
 }
 
+#[cargo_test]
+fn workspace_resolve_cache_miss_preserves_config_patch_warnings() {
+    let project = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "demo"
+                version = "0.1.0"
+                edition = "2024"
+
+                [dependencies]
+                mydep = "1"
+            "#,
+        )
+        .file("src/lib.rs", "")
+        .file("dep/Cargo.toml", &basic_manifest("mydep", "1.0.0"))
+        .file("dep/src/lib.rs", "")
+        .file(
+            ".cargo/config.toml",
+            r#"
+                [patch.crates-io]
+                mydep = { path = "dep", version = "1.0.0+ignore" }
+            "#,
+        )
+        .build();
+    project.cargo("generate-lockfile --offline").run();
+    let output = workspace_resolve_cache_command(&project, "tree --locked --offline -p demo")
+        .exec_with_output()
+        .unwrap();
+    let stderr = String::from_utf8(output.stderr).unwrap();
+    // Both lockfile reads and patch registration diagnose the version.
+    assert_eq!(
+        stderr.matches("includes semver metadata").count(),
+        3,
+        "{stderr}"
+    );
+}
+
+#[cfg(unix)]
+#[cargo_test]
+fn workspace_resolve_cache_miss_preserves_config_env_warnings() {
+    let project = workspace_resolve_cache_project();
+    project.cargo("generate-lockfile --offline").run();
+    let output = workspace_resolve_cache_command(&project, "tree --locked --offline -p selected")
+        .env("CARGO_patch", "unused")
+        .exec_with_output()
+        .unwrap();
+    let stderr = String::from_utf8(output.stderr).unwrap();
+    assert_eq!(stderr.matches("CARGO_patch").count(), 3, "{stderr}");
+}
+
+#[cargo_test]
+fn workspace_resolve_cache_miss_still_checks_locked_dependencies() {
+    let project = workspace_resolve_cache_project();
+    project.change_file(
+        "Cargo.toml",
+        r#"[workspace]
+            resolver = "2"
+            members = ["selected", "other", "external"]
+        "#,
+    );
+    let check = || workspace_resolve_cache_command(&project, "check --locked -p selected");
+    workspace_resolve_cache_command(&project, "check -p selected").run();
+    let lockfile = project.read_lockfile();
+    let before = project.read_file("external/Cargo.toml");
+    project.change_file("external/Cargo.toml", &basic_manifest("external", "0.2.0"));
+    check()
+        .with_status(101)
+        .with_stderr_contains("[..]--locked[..]")
+        .with_stderr_does_not_contain(WORKSPACE_RESOLVE_CACHE_HIT)
+        .run();
+    assert_eq!(lockfile, project.read_lockfile());
+    project.change_file("external/Cargo.toml", &before);
+    check()
+        .with_stderr_contains(WORKSPACE_RESOLVE_CACHE_HIT)
+        .run();
+}
+
 #[cfg(unix)]
 #[cargo_test]
 fn workspace_resolve_cache_survives_switching_workspace_wrappers() {

@@ -136,9 +136,27 @@ version. This may also occur with an optional dependency that is not enabled.";
 /// `package`, which don't specify any options or features.
 pub fn resolve_ws<'a>(ws: &Workspace<'a>, dry_run: bool) -> CargoResult<(PackageSet<'a>, Resolve)> {
     let mut registry = ws.package_registry()?;
-    let (resolve, _) = resolve_with_registry(ws, &mut registry, dry_run, false)?;
+    let (resolve, _) = resolve_with_registry(ws, &mut registry, dry_run, false, None)?;
     let packages = get_resolved_packages(&resolve, registry)?;
     Ok((packages, resolve))
+}
+
+/// Lockfile decoding walks path dependencies. Workspace members are already
+/// loaded, but an external manifest that failed to load could appear on retry.
+fn has_only_member_paths(ws: &Workspace<'_>) -> bool {
+    // Parsing config patches again can repeat diagnostics. Fall back without
+    // parsing them, even when the configured patch table is empty.
+    if ws.gctx().may_have_config_patches()
+        || !ws.root_replace().is_empty()
+        || !ws.root_patch().is_ok_and(|patches| patches.is_empty())
+    {
+        return false;
+    }
+    let members: HashSet<_> = ws.members().map(|p| p.package_id().source_id()).collect();
+    ws.members().flat_map(|p| p.dependencies()).all(|dep| {
+        let source = dep.source_id();
+        !source.is_path() || members.contains(&source)
+    })
 }
 
 /// Resolves dependencies for some packages of the workspace,
@@ -198,15 +216,22 @@ pub fn resolve_ws_with_opts<'gctx>(
                         })
                     })
                 });
+        let mut previous = None;
         let cached_resolve = if can_reuse_workspace_resolve {
-            ops::lockfile::load_pkg_lockfile_with(ws, |resolve, lockfile_contents| {
-                Ok(resolve_cache::cached_workspace_resolve_fingerprint(
+            ops::lockfile::load_pkg_lockfile_with(ws, None, |resolve, lockfile_contents| {
+                if let Some(fingerprint) = resolve_cache::cached_workspace_resolve_fingerprint(
                     ws,
                     &resolve,
                     &target_data.rustc,
                     lockfile_contents,
-                )
-                .map(|fingerprint| (resolve, fingerprint)))
+                ) {
+                    return Ok(Some((resolve, fingerprint)));
+                }
+                // Full resolution still needs the previous lockfile graph.
+                if has_only_member_paths(ws) {
+                    previous = Some((lockfile_contents.to_owned(), resolve));
+                }
+                Ok(None)
             })?
             .flatten()
         } else {
@@ -224,8 +249,13 @@ pub fn resolve_ws_with_opts<'gctx>(
                 // packages with required target features take the ordinary path.
                 (resolve, true, Some(fingerprint))
             } else {
-                let (resolve, encoding) =
-                    resolve_with_registry(ws, &mut registry, dry_run, can_reuse_workspace_resolve)?;
+                let (resolve, encoding) = resolve_with_registry(
+                    ws,
+                    &mut registry,
+                    dry_run,
+                    can_reuse_workspace_resolve,
+                    previous,
+                )?;
                 if let Some(encoding) = encoding {
                     if let Err(error) = resolve_cache::mark_workspace_resolve_fresh(
                         ws,
@@ -422,8 +452,9 @@ fn resolve_with_registry<'gctx>(
     registry: &mut PackageRegistry<'gctx>,
     dry_run: bool,
     retain_lockfile_encoding: bool,
+    previous: Option<(String, Resolve)>,
 ) -> CargoResult<(Resolve, Option<String>)> {
-    let prev = ops::load_pkg_lockfile(ws)?;
+    let prev = ops::lockfile::load_pkg_lockfile_with(ws, previous, |resolve, _| Ok(resolve))?;
     let mut resolve = resolve_with_previous(
         registry,
         ws,

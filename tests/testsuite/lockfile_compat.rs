@@ -1315,3 +1315,39 @@ dependencies = [
         );
     }
 }
+
+/// The same name may be referenced with or without a version in a lockfile.
+#[cargo_test]
+fn mixed_qualified_and_unqualified_edges() {
+    Package::new("leaf", "1.0.0").publish();
+    Package::new("middle", "1.0.0").dep("leaf", "1").publish();
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "root"
+                version = "0.1.0"
+
+                [dependencies]
+                leaf = "1"
+                middle = "1"
+            "#,
+        )
+        .file("src/lib.rs", "")
+        .build();
+    p.cargo("generate-lockfile").run();
+    let lock = p.read_file("Cargo.lock");
+    let edge = " \"leaf\",";
+    let qualified = " \"leaf 1.0.0\",";
+    assert_eq!(lock.matches(edge).count(), 2);
+
+    Package::new("leaf", "1.1.0").publish();
+    for pos in [lock.find(edge).unwrap(), lock.rfind(edge).unwrap()] {
+        let mut mixed = lock.clone();
+        mixed.replace_range(pos..pos + edge.len(), qualified);
+        p.change_file("Cargo.lock", &mixed);
+        p.cargo("check --locked").run();
+        assert_eq!(p.read_file("Cargo.lock"), mixed);
+    }
+}
