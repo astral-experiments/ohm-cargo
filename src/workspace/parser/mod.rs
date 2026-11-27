@@ -1021,17 +1021,23 @@ fn normalize_dependencies<'a>(
         return Ok(None);
     };
 
-    let mut deps = BTreeMap::new();
-    for (name_in_toml, v) in dependencies.iter() {
-        let mut resolved = dependency_inherit_with(
-            v.clone(),
-            name_in_toml,
-            inherit,
-            package_root,
-            edition,
-            warnings,
-        )?;
-        if let manifest::TomlDependency::Detailed(ref mut d) = resolved {
+    // Normalization preserves every key. Clone the tree once and edit its values
+    // without rebuilding the search tree or moving already-detailed dependencies.
+    let mut deps = dependencies.clone();
+    for (name_in_toml, dependency) in &mut deps {
+        if let manifest::InheritableDependency::Inherit(w) = dependency {
+            let resolved = dependency_inherit_with(
+                w, name_in_toml, inherit, package_root, edition, warnings,
+            ).with_context(|| {
+                format!(
+                    "error inheriting `{name_in_toml}` from workspace root manifest's `workspace.dependencies.{name_in_toml}`",
+                )
+            })?;
+            *dependency = manifest::InheritableDependency::Value(resolved);
+        }
+        if let manifest::InheritableDependency::Value(manifest::TomlDependency::Detailed(d)) =
+            dependency
+        {
             deprecated_underscore(
                 &d.default_features2,
                 &d.default_features,
@@ -1076,11 +1082,6 @@ fn normalize_dependencies<'a>(
             normalize_path_dependency(gctx, d, workspace_root, features)
                 .with_context(|| format!("resolving path dependency {name_in_toml}"))?;
         }
-
-        deps.insert(
-            name_in_toml.clone(),
-            manifest::InheritableDependency::Value(resolved),
-        );
     }
     Ok(Some(deps))
 }
@@ -1329,27 +1330,7 @@ fn lints_inherit_with(
 }
 
 fn dependency_inherit_with<'a>(
-    dependency: manifest::InheritableDependency,
-    name: &str,
-    inherit: &dyn Fn() -> CargoResult<&'a InheritableFields>,
-    package_root: &Path,
-    edition: Edition,
-    warnings: &mut Vec<String>,
-) -> CargoResult<manifest::TomlDependency> {
-    match dependency {
-        manifest::InheritableDependency::Value(value) => Ok(value),
-        manifest::InheritableDependency::Inherit(w) => {
-            inner_dependency_inherit_with(w, name, inherit, package_root, edition, warnings).with_context(|| {
-                format!(
-                    "error inheriting `{name}` from workspace root manifest's `workspace.dependencies.{name}`",
-                )
-            })
-        }
-    }
-}
-
-fn inner_dependency_inherit_with<'a>(
-    pkg_dep: manifest::TomlInheritedDependency,
+    pkg_dep: &mut manifest::TomlInheritedDependency,
     name: &str,
     inherit: &dyn Fn() -> CargoResult<&'a InheritableFields>,
     package_root: &Path,
@@ -1374,7 +1355,7 @@ fn inner_dependency_inherit_with<'a>(
         public,
 
         _unused_keys: _,
-    } = &pkg_dep;
+    } = pkg_dep;
     let default_features = default_features.or(*default_features2);
 
     // RFC 3945: Allow workspace members to override the workspace dependency's
@@ -1403,17 +1384,13 @@ fn inner_dependency_inherit_with<'a>(
             _ => {}
         }
     }
-    merged_dep.features = match (merged_dep.features.clone(), features.clone()) {
-        (Some(dep_feat), Some(inherit_feat)) => Some(
-            dep_feat
-                .into_iter()
-                .chain(inherit_feat)
-                .collect::<Vec<String>>(),
-        ),
-        (Some(dep_fet), None) => Some(dep_fet),
-        (None, Some(inherit_feat)) => Some(inherit_feat),
-        (None, None) => None,
-    };
+    if let Some(features) = features.take() {
+        if let Some(existing) = &mut merged_dep.features {
+            existing.extend(features);
+        } else {
+            merged_dep.features = Some(features);
+        }
+    }
     merged_dep.optional = *optional;
     merged_dep.public = *public;
     Ok(manifest::TomlDependency::Detailed(merged_dep))
