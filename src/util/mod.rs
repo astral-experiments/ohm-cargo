@@ -101,6 +101,32 @@ pub fn elapsed(duration: Duration) -> String {
     }
 }
 
+/// Split bytes using [`memchr`], omitting the final slice if empty.
+pub(crate) fn split_bytes(haystack: &[u8], needle: u8) -> impl Iterator<Item = &[u8]> {
+    struct Split<'a> {
+        haystack: &'a [u8],
+        needle: u8,
+    }
+
+    impl<'a> Iterator for Split<'a> {
+        type Item = &'a [u8];
+
+        fn next(&mut self) -> Option<&'a [u8]> {
+            if self.haystack.is_empty() {
+                return None;
+            }
+            let (ret, remaining) = match memchr::memchr(self.needle, self.haystack) {
+                Some(pos) => (&self.haystack[..pos], &self.haystack[pos + 1..]),
+                None => (self.haystack, &[][..]),
+            };
+            self.haystack = remaining;
+            Some(ret)
+        }
+    }
+
+    Split { haystack, needle }
+}
+
 /// Formats a number of bytes into a human readable SI-prefixed size.
 pub struct HumanBytes(pub u64);
 

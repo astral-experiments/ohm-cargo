@@ -427,6 +427,110 @@ fn build_work(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResul
     // carried over.
     let to_exec = to_exec.into_os_string();
     let mut cmd = build_runner.compilation.host_process(to_exec, &unit.pkg)?;
+
+    // Keep fallible command preparation even for fresh scripts so that invalid
+    // configuration and paths produce the same diagnostics.
+    let rustdoc = bcx.gctx.rustdoc()?;
+    let artifact_env = artifact::get_env(build_runner, unit, dependencies)?;
+    let trim_paths = &unit.profile.trim_paths;
+    let pairs = if trim_paths.is_none() {
+        Vec::new()
+    } else {
+        super::trim_paths::trim_paths_remap(build_runner, unit)
+    };
+    let trim_paths_remap = paths::join_paths(&pairs, "CARGO_TRIM_PATHS_REMAP")?;
+
+    let library_name = unit.pkg.library().map(|t| t.crate_name());
+    let pkg_descr = unit.pkg.to_string();
+    let build_script_outputs = Arc::clone(&build_runner.build_script_outputs);
+    let id = unit.pkg.package_id();
+    let run_files = BuildScriptRunFiles::for_unit(build_runner, unit);
+    let shared_registry_root = bcx
+        .ws
+        .shared_registry_cache_enabled()
+        .then(|| bcx.ws.configured_build_dir().into_path_unlocked());
+    let validate_shared_registry_environment = build_runner.files().is_shared_registry_unit(unit);
+    let shared_registry_compiler_driver = build_runner
+        .files()
+        .shared_registry_compiler_driver()
+        .map(Path::to_path_buf);
+    let shared_registry_implicit_native_tools = build_runner
+        .files()
+        .shared_registry_implicit_native_tools()
+        .map(Arc::<[String]>::from);
+    let json_messages = bcx.build_config.emit_json();
+    let shared_paths = shared_registry_root
+        .as_ref()
+        .filter(|_| json_messages)
+        .and_then(|root| root.canonicalize().ok())
+        .map(|registry_root| SharedLibraryPaths {
+            registry_root,
+            workspace_build: build_runner
+                .files()
+                .layout(unit.kind)
+                .build_dir()
+                .build()
+                .to_owned(),
+        });
+    let (prev_output, prev_script_out_dir) = prev_build_output(build_runner, unit);
+    let metadata_hash = build_runner.get_run_build_script_metadata(unit);
+
+    paths::create_dir_all(&script_dir)?;
+    paths::create_dir_all(&script_out_dir)?;
+    paths::create_dir_all(&run_files.root)?;
+
+    let nightly_features_allowed = build_runner.bcx.gctx.nightly_features_allowed;
+    let targets: Vec<Target> = unit.pkg.targets().to_vec();
+    let msrv = unit.pkg.rust_version().cloned();
+    build_runner.inherit_shared_cache_locks(&mut cmd)?;
+
+    let mut job = fingerprint::prepare_target(build_runner, unit, false)?;
+    if !job.freshness().is_dirty() {
+        let report_fresh = json_messages && !build_runner.deferred_dev_deps.already_reported(unit);
+        let fresh = Work::new(move |state| {
+            let output = match prev_output {
+                Some(output) => output,
+                None => BuildOutput::parse_file(
+                    &run_files.stdout,
+                    library_name,
+                    &pkg_descr,
+                    &prev_script_out_dir,
+                    &script_out_dir,
+                    nightly_features_allowed,
+                    &targets,
+                    &msrv,
+                )?,
+            };
+            validate_shared_registry_build_output(
+                validate_shared_registry_environment,
+                id,
+                &output,
+                shared_registry_compiler_driver.as_deref(),
+                shared_registry_implicit_native_tools.as_deref(),
+            )?;
+
+            if report_fresh {
+                emit_build_output(
+                    state,
+                    &output,
+                    script_out_dir.as_path(),
+                    id,
+                    shared_paths.as_ref(),
+                )?;
+            }
+
+            build_script_outputs
+                .lock()
+                .unwrap()
+                .insert(id, metadata_hash, output);
+            Ok(())
+        });
+        job.before(fresh);
+        return Ok(job);
+    }
+
+    let bcx = &build_runner.bcx;
+    let dependencies = build_runner.unit_deps(unit);
     let debug = unit.profile.debuginfo.is_turned_on();
     cmd.env("OUT_DIR", &script_out_dir)
         .env("CARGO_MANIFEST_DIR", unit.pkg.root())
@@ -444,11 +548,11 @@ fn build_work(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResul
         )
         .env("HOST", &bcx.host_triple())
         .env("RUSTC", &bcx.rustc().path)
-        .env("RUSTDOC", &*bcx.gctx.rustdoc()?)
+        .env("RUSTDOC", rustdoc)
         .inherit_jobserver(&build_runner.jobserver);
 
     // Find all artifact dependencies and make their file and containing directory discoverable using environment variables.
-    for (var, value) in artifact::get_env(build_runner, unit, dependencies)? {
+    for (var, value) in artifact_env {
         cmd.env(&var, value);
     }
 
@@ -460,17 +564,8 @@ fn build_work(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResul
         cmd.env("CARGO_MANIFEST_LINKS", links);
     }
 
-    let trim_paths = &unit.profile.trim_paths;
     cmd.env("CARGO_TRIM_PATHS_SCOPE", trim_paths.to_string());
-    let pairs = if trim_paths.is_none() {
-        Vec::new()
-    } else {
-        super::trim_paths::trim_paths_remap(build_runner, unit)
-    };
-    cmd.env(
-        "CARGO_TRIM_PATHS_REMAP",
-        paths::join_paths(&pairs, "CARGO_TRIM_PATHS_REMAP")?,
-    );
+    cmd.env("CARGO_TRIM_PATHS_REMAP", trim_paths_remap);
 
     // Be sure to pass along all enabled features for this package, this is the
     // last piece of statically known information that we have.
@@ -563,65 +658,9 @@ fn build_work(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResul
             }
         })
         .collect::<Vec<_>>();
-    let library_name = unit.pkg.library().map(|t| t.crate_name());
-    let pkg_descr = unit.pkg.to_string();
-    let build_script_outputs = Arc::clone(&build_runner.build_script_outputs);
-    let id = unit.pkg.package_id();
-    let run_files = BuildScriptRunFiles::for_unit(build_runner, unit);
     let host_target_root = build_runner.files().host_dest().map(|v| v.to_path_buf());
-    let shared_registry_root = bcx
-        .ws
-        .shared_registry_cache_enabled()
-        .then(|| bcx.ws.configured_build_dir().into_path_unlocked());
-    let validate_shared_registry_environment = build_runner.files().is_shared_registry_unit(unit);
-    let shared_registry_compiler_driver = build_runner
-        .files()
-        .shared_registry_compiler_driver()
-        .map(Path::to_path_buf);
-    let shared_registry_compiler_driver_fresh = shared_registry_compiler_driver.clone();
-    let shared_registry_implicit_native_tools = build_runner
-        .files()
-        .shared_registry_implicit_native_tools()
-        .map(Arc::<[String]>::from);
-    let shared_registry_implicit_native_tools_fresh = shared_registry_implicit_native_tools.clone();
-    let all = (
-        id,
-        library_name.clone(),
-        pkg_descr.clone(),
-        Arc::clone(&build_script_outputs),
-        run_files.stdout.clone(),
-        script_out_dir.clone(),
-    );
     let build_scripts = build_runner.build_scripts.get(unit).cloned();
-    let json_messages = bcx.build_config.emit_json();
-    let shared_paths = shared_registry_root
-        .as_ref()
-        .filter(|_| json_messages)
-        .and_then(|root| root.canonicalize().ok())
-        .map(|registry_root| SharedLibraryPaths {
-            registry_root,
-            workspace_build: build_runner
-                .files()
-                .layout(unit.kind)
-                .build_dir()
-                .build()
-                .to_owned(),
-        });
-    let fresh_shared_paths = shared_paths.clone();
     let extra_verbose = bcx.gctx.extra_verbose();
-    let (prev_output, prev_script_out_dir) = prev_build_output(build_runner, unit);
-    let metadata_hash = build_runner.get_run_build_script_metadata(unit);
-
-    paths::create_dir_all(&script_dir)?;
-    paths::create_dir_all(&script_out_dir)?;
-    paths::create_dir_all(&run_files.root)?;
-
-    let nightly_features_allowed = build_runner.bcx.gctx.nightly_features_allowed;
-    let targets: Vec<Target> = unit.pkg.targets().to_vec();
-    let msrv = unit.pkg.rust_version().cloned();
-    // Need a separate copy for the fresh closure.
-    let targets_fresh = targets.clone();
-    let msrv_fresh = msrv.clone();
 
     let env_profile_name = unit.profile.name.to_uppercase();
     let built_with_debuginfo = build_runner
@@ -637,7 +676,6 @@ fn build_work(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResul
     //
     // Note that this has to do some extra work just before running the command
     // to determine extra environment variables and such.
-    build_runner.inherit_shared_cache_locks(&mut cmd)?;
     let dirty = Work::new(move |state| {
         // Make sure that OUT_DIR exists.
         //
@@ -815,56 +853,7 @@ fn build_work(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResul
         Ok(())
     });
 
-    // Now that we've prepared our work-to-do, we need to prepare the fresh work
-    // itself to run when we actually end up just discarding what we calculated
-    // above.
-    let report_fresh = json_messages && !build_runner.deferred_dev_deps.already_reported(unit);
-    let fresh = Work::new(move |state| {
-        let (id, library_name, pkg_descr, build_script_outputs, output_file, script_out_dir) = all;
-        let output = match prev_output {
-            Some(output) => output,
-            None => BuildOutput::parse_file(
-                &output_file,
-                library_name,
-                &pkg_descr,
-                &prev_script_out_dir,
-                &script_out_dir,
-                nightly_features_allowed,
-                &targets_fresh,
-                &msrv_fresh,
-            )?,
-        };
-        validate_shared_registry_build_output(
-            validate_shared_registry_environment,
-            id,
-            &output,
-            shared_registry_compiler_driver_fresh.as_deref(),
-            shared_registry_implicit_native_tools_fresh.as_deref(),
-        )?;
-
-        if report_fresh {
-            emit_build_output(
-                state,
-                &output,
-                script_out_dir.as_path(),
-                id,
-                fresh_shared_paths.as_ref(),
-            )?;
-        }
-
-        build_script_outputs
-            .lock()
-            .unwrap()
-            .insert(id, metadata_hash, output);
-        Ok(())
-    });
-
-    let mut job = fingerprint::prepare_target(build_runner, unit, false)?;
-    if job.freshness().is_dirty() {
-        job.before(dirty);
-    } else {
-        job.before(fresh);
-    }
+    job.before(dirty);
     Ok(job)
 }
 
@@ -1157,11 +1146,8 @@ impl BuildOutput {
             data: &'a str,
             old_syntax: bool,
         ) -> CargoResult<(&'a str, &'a str)> {
-            let mut iter = data.splitn(2, "=");
-            let key = iter.next();
-            let value = iter.next();
-            match (key, value) {
-                (Some(a), Some(b)) => Ok((a, b.trim_end())),
+            match data.split_once('=') {
+                Some((a, b)) => Ok((a, b.trim_end())),
                 _ => bail!(
                     "invalid output in {whence}: `{line}`\n\
                     Expected a line with `{syntax}KEY=VALUE` with an `=` character, \
@@ -1178,11 +1164,8 @@ impl BuildOutput {
             data: &'a str,
             old_syntax: bool,
         ) -> CargoResult<(&'a str, &'a str)> {
-            let mut iter = data.splitn(2, "=");
-            let key = iter.next();
-            let value = iter.next();
-            match (key, value) {
-                (Some(a), Some(b)) => Ok((a, b.trim_end())),
+            match data.split_once('=') {
+                Some((a, b)) => Ok((a, b.trim_end())),
                 _ => bail!(
                     "invalid output in {whence}: `{line}`\n\
                     Expected a line with `{syntax}KEY=VALUE` with an `=` character, \
@@ -1204,7 +1187,15 @@ impl BuildOutput {
             .zip(script_out_dir.to_str())
             .is_some_and(|(old, new)| old == new);
 
-        for line in input.split(|b| *b == b'\n') {
+        for line in crate::util::split_bytes(input, b'\n') {
+            // Native build logs can dwarf the directives. A leading printable
+            // ASCII byte other than 'c' cannot start a directive or be trimmed.
+            if line
+                .first()
+                .is_some_and(|b| b.is_ascii_graphic() && *b != b'c')
+            {
+                continue;
+            }
             let line = match str::from_utf8(line) {
                 Ok(line) => line.trim(),
                 Err(..) => continue,
