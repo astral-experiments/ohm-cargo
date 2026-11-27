@@ -49,13 +49,48 @@ impl ClippyDriverChecksum {
         {
             // Keep the same open file throughout leasing, hashing, and handoff.
             let before = linux::read_lease(&file);
-            let sum = Checksum::compute(algo, &file, buffer)?;
+            let sum = self.read_initial(&file, buffer)?;
             if let Some(identity) = before {
                 let _ = self.driver.record(file, identity, &sum);
             }
             return Ok(sum);
         }
         Checksum::compute(algo, file, buffer)
+    }
+
+    /// Seed late comparisons from the initial freshness read. Read directly
+    /// into the bounded image so a build without rechecks needn't copy it.
+    #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
+    fn read_initial(&self, mut file: &File, buffer: &mut [u8]) -> io::Result<Checksum> {
+        let algo = ChecksumAlgo::Blake3;
+        let mut bytes = Vec::new();
+        let Some(meta) = file
+            .metadata()
+            .ok()
+            .filter(|meta| meta.is_file() && self.can_compare(&self.driver.path, algo, meta.len()))
+        else {
+            return Checksum::compute(algo, file, buffer);
+        };
+        if self.recording.set(()).is_err() || bytes.try_reserve_exact(meta.len() as usize).is_err()
+        {
+            return Checksum::compute(algo, file, buffer);
+        }
+        while bytes.len() < bytes.capacity() {
+            if rustix::io::read(file, rustix::buffer::spare_capacity(&mut bytes))? == 0 {
+                break;
+            }
+        }
+        if bytes.len() == bytes.capacity() {
+            let n = file.read(buffer)?;
+            if n != 0 {
+                // Preserve the observed stream if the file grew.
+                let stream = bytes.as_slice().chain(&buffer[..n]).chain(file);
+                return Checksum::compute(algo, stream, &mut [0; 8192]);
+            }
+        }
+        let sum = Checksum::new(algo, blake3::hash(&bytes).into());
+        let _ = self.image.set((bytes, sum));
+        Ok(sum)
     }
 
     pub(super) fn can_compare(&self, _path: &Path, _algo: ChecksumAlgo, _len: u64) -> bool {
@@ -427,6 +462,21 @@ mod linux {
             }
             assert_eq!(handoff.image.get().unwrap().0, b"abcdef");
             assert!(handoff.driver.proof.get().is_none());
+        }
+
+        #[test]
+        fn initial_read_seeds_rechecks_without_trusting_the_original_file() {
+            let tmp = tempdir().unwrap();
+            let path = tmp.path().join("clippy-driver");
+            let handoff = fixture(&path);
+            fs::write(&path, b"first").unwrap();
+            let sum = read(&handoff, &path);
+            assert_eq!(sum.value(), blake3::hash(b"first").as_bytes());
+            assert_eq!(handoff.image.get().unwrap().0, b"first");
+            for data in ["first", "other", "", "longer", "first"] {
+                let sum = handoff.compare(data.as_bytes(), 5, &mut [0; 2]).unwrap();
+                assert_eq!(sum.value(), blake3::hash(data.as_bytes()).as_bytes());
+            }
         }
 
         #[test]
