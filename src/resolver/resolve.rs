@@ -320,6 +320,15 @@ unable to verify that `{0}` is the same as when the lockfile was generated
         self.graph.iter().cloned()
     }
 
+    /// Like iterating `deps_not_replaced` for each node, without looking nodes up again.
+    pub(crate) fn nodes_with_children(
+        &self,
+    ) -> impl Iterator<Item = (PackageId, impl Iterator<Item = PackageId> + '_)> {
+        self.graph
+            .nodes_with_edges()
+            .map(|(&id, edges)| (id, edges.keys().copied()))
+    }
+
     pub fn len(&self) -> usize {
         self.graph.len()
     }

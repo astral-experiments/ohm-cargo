@@ -10,6 +10,7 @@
 //! whole node is finished.
 
 use crate::util::data_structures::{HashMap, HashSet};
+use std::collections::BTreeMap;
 use std::hash::Hash;
 
 #[derive(Debug)]
@@ -19,7 +20,11 @@ pub struct DependencyQueue<N: Hash + Eq, E: Hash + Eq, V> {
     /// The value of the hash map is list of dependencies which still need to be
     /// built before the package can be built. Note that the set is dynamically
     /// updated as more dependencies are built.
-    dep_map: HashMap<N, (HashSet<(N, E)>, V)>,
+    dep_map: HashMap<N, (HashSet<(N, E)>, V, usize)>,
+
+    /// Ready nodes in (priority, dep_map iteration order). The latter is
+    /// stored in dep_map so ties still favor the last node, as in max_by_key.
+    ready: BTreeMap<(usize, usize), N>,
 
     /// A reverse mapping of a package to all packages that depend on that
     /// package.
@@ -49,6 +54,7 @@ impl<N: Hash + Eq, E: Hash + Eq, V> DependencyQueue<N, E, V> {
     pub fn new() -> DependencyQueue<N, E, V> {
         DependencyQueue {
             dep_map: HashMap::default(),
+            ready: BTreeMap::new(),
             reverse_dep_map: HashMap::default(),
             priority: HashMap::default(),
             cost: HashMap::default(),
@@ -91,13 +97,25 @@ impl<N: Hash + Eq + Clone, E: Eq + Hash + Clone, V> DependencyQueue<N, E, V> {
                 .or_insert_with(HashSet::default)
                 .insert(key.clone());
         }
-        self.dep_map.insert(key.clone(), (my_dependencies, value));
+        self.dep_map
+            .insert(key.clone(), (my_dependencies, value, 0));
         self.cost.insert(key, cost);
     }
 
     /// All nodes have been added, calculate some internal metadata and prepare
     /// for `dequeue`.
     pub fn queue_finished(&mut self) {
+        self.calculate_priorities();
+        self.ready.clear();
+        for (i, (node, (deps, _, order))) in self.dep_map.iter_mut().enumerate() {
+            *order = i;
+            if deps.is_empty() {
+                self.ready.insert((self.priority[node], i), node.clone());
+            }
+        }
+    }
+
+    fn calculate_priorities(&mut self) {
         if let Some(priority) = self.bitset_priorities() {
             self.priority = priority;
             return;
@@ -258,13 +276,13 @@ impl<N: Hash + Eq + Clone, E: Eq + Hash + Clone, V> DependencyQueue<N, E, V> {
 
     /// Dequeues the highest priority ready package satisfying the predicate.
     pub fn dequeue_if(&mut self, eligible: impl Fn(&V) -> bool) -> Option<(N, V, usize)> {
-        let (key, priority) = self
-            .dep_map
+        let (&(priority, order), _) = self
+            .ready
             .iter()
-            .filter(|(_, (deps, value))| deps.is_empty() && eligible(value))
-            .map(|(key, _)| (key.clone(), self.priority[key]))
-            .max_by_key(|(_, priority)| *priority)?;
-        let (_, data) = self.dep_map.remove(&key).unwrap();
+            .rev()
+            .find(|(_, key)| eligible(&self.dep_map[*key].1))?;
+        let key = self.ready.remove(&(priority, order)).unwrap();
+        let (key, (_, data, _)) = self.dep_map.remove_entry(&key).unwrap();
         Some((key, data, priority))
     }
 
@@ -295,9 +313,10 @@ impl<N: Hash + Eq + Clone, E: Eq + Hash + Clone, V> DependencyQueue<N, E, V> {
         let key = (node.clone(), edge.clone());
         let mut result = Vec::new();
         for dep in reverse_deps.iter() {
-            let edges = &mut self.dep_map.get_mut(dep).unwrap().0;
+            let (edges, _, order) = self.dep_map.get_mut(dep).unwrap();
             assert!(edges.remove(&key));
             if edges.is_empty() {
+                self.ready.insert((self.priority[dep], *order), dep.clone());
                 result.push(dep);
             }
         }
@@ -308,6 +327,34 @@ impl<N: Hash + Eq + Clone, E: Eq + Hash + Clone, V> DependencyQueue<N, E, V> {
 #[cfg(test)]
 mod test {
     use super::DependencyQueue;
+
+    #[test]
+    fn ready_order_matches_scan_with_changing_eligibility() {
+        let mut q = DependencyQueue::new();
+        for i in 0..128 {
+            let deps = (i >= 64).then(|| (i - 64, ()));
+            q.queue(i, i, deps, i % 5);
+        }
+        q.queue_finished();
+
+        for round in 0..256 {
+            if q.is_empty() {
+                break;
+            }
+            let eligible = |value: &usize| value % 2 == round % 2;
+            let expected = q
+                .dep_map
+                .iter()
+                .filter(|(_, (deps, value, _))| deps.is_empty() && eligible(value))
+                .map(|(&node, _)| (node, node, q.priority[&node]))
+                .max_by_key(|(_, _, priority)| *priority);
+            assert_eq!(q.dequeue_if(eligible), expected);
+            if let Some((node, _, _)) = expected {
+                q.finish(&node, &());
+            }
+        }
+        assert!(q.is_empty());
+    }
 
     #[test]
     fn deep_first_equal_cost() {

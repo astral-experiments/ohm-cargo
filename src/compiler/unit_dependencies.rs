@@ -198,8 +198,7 @@ pub fn build_unit_dependencies<'a, 'gctx>(
             .pkg
             .manifest()
             .unstable_features()
-            .require(Feature::multiple_build_scripts())
-            .is_ok();
+            .is_enabled(Feature::multiple_build_scripts());
 
         if is_multiple_build_scripts_enabled {
             list.sort_by_key(|unit_dep| {

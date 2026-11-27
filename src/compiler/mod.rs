@@ -4405,8 +4405,7 @@ fn build_deps_args(
         .pkg
         .manifest()
         .unstable_features()
-        .require(Feature::multiple_build_scripts())
-        .is_ok();
+        .is_enabled(Feature::multiple_build_scripts());
 
     if is_multiple_build_scripts_enabled {
         for dep in deps {
@@ -4597,8 +4596,7 @@ fn is_public_dependency_enabled(build_runner: &BuildRunner<'_, '_>, unit: &Unit)
     unit.pkg
         .manifest()
         .unstable_features()
-        .require(Feature::public_dependency())
-        .is_ok()
+        .is_enabled(Feature::public_dependency())
         || build_runner.bcx.gctx.cli_unstable().public_dependency
 }
 

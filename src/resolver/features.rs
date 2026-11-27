@@ -44,10 +44,9 @@ use crate::resolver::{Resolve, ResolveBehavior};
 use crate::util::CargoResult;
 use crate::util::data_structures::{HashMap, HashSet};
 use crate::util::interning::{INTERNED_DEFAULT, InternedString};
-use crate::workspace::dependency::{ArtifactTarget, DepKind, Dependency};
+use crate::workspace::dependency::{Artifact, ArtifactTarget, DepKind, Dependency};
 use crate::workspace::{FeatureValue, PackageId, PackageIdSpec, PackageSet, Workspace};
 use anyhow::{Context, bail};
-use itertools::Itertools;
 use std::collections::{BTreeMap, BTreeSet};
 use std::rc::Rc;
 
@@ -545,17 +544,15 @@ impl<'a, 'gctx> FeatureResolver<'a, 'gctx> {
             // features that enable other features.
             return Ok(());
         }
-        for (dep_pkg_id, deps) in self.deps(pkg_id, fk)? {
-            for (dep, dep_fk) in deps {
-                if dep.is_optional() {
-                    // Optional dependencies are enabled in `activate_fv` when
-                    // a feature enables it.
-                    continue;
-                }
-                // Recurse into the dependency.
-                let fvs = self.fvs_from_dependency(dep_pkg_id, dep);
-                self.activate_pkg(dep_pkg_id, dep_fk, &fvs)?;
+        for (dep_pkg_id, dep, dep_fk) in self.deps(pkg_id, fk, None)? {
+            if dep.is_optional() {
+                // Optional dependencies are enabled in `activate_fv` when
+                // a feature enables it.
+                continue;
             }
+            // Recurse into the dependency.
+            let fvs = self.fvs_from_dependency(dep_pkg_id, dep);
+            self.activate_pkg(dep_pkg_id, dep_fk, &fvs)?;
         }
         Ok(())
     }
@@ -645,27 +642,22 @@ impl<'a, 'gctx> FeatureResolver<'a, 'gctx> {
             .deferred_weak_dependencies
             .remove(&(pkg_id, fk, dep_name));
         // Activate the optional dep.
-        for (dep_pkg_id, deps) in self.deps(pkg_id, fk)? {
-            for (dep, dep_fk) in deps {
-                if dep.name_in_toml() != dep_name {
-                    continue;
+        for (dep_pkg_id, dep, dep_fk) in self.deps(pkg_id, fk, Some(dep_name))? {
+            if let Some(to_enable) = &to_enable {
+                for dep_feature in to_enable {
+                    tracing::trace!(
+                        "activate deferred {} {} -> {}/{}",
+                        pkg_id.name(),
+                        fk,
+                        dep_name,
+                        dep_feature
+                    );
+                    let fv = FeatureValue::new(*dep_feature);
+                    self.activate_fv(dep_pkg_id, dep_fk, &fv)?;
                 }
-                if let Some(to_enable) = &to_enable {
-                    for dep_feature in to_enable {
-                        tracing::trace!(
-                            "activate deferred {} {} -> {}/{}",
-                            pkg_id.name(),
-                            fk,
-                            dep_name,
-                            dep_feature
-                        );
-                        let fv = FeatureValue::new(*dep_feature);
-                        self.activate_fv(dep_pkg_id, dep_fk, &fv)?;
-                    }
-                }
-                let fvs = self.fvs_from_dependency(dep_pkg_id, dep);
-                self.activate_pkg(dep_pkg_id, dep_fk, &fvs)?;
             }
+            let fvs = self.fvs_from_dependency(dep_pkg_id, dep);
+            self.activate_pkg(dep_pkg_id, dep_fk, &fvs)?;
         }
         Ok(())
     }
@@ -679,58 +671,53 @@ impl<'a, 'gctx> FeatureResolver<'a, 'gctx> {
         dep_feature: InternedString,
         weak: bool,
     ) -> CargoResult<()> {
-        for (dep_pkg_id, deps) in self.deps(pkg_id, fk)? {
-            for (dep, dep_fk) in deps {
-                if dep.name_in_toml() != dep_name {
+        for (dep_pkg_id, dep, dep_fk) in self.deps(pkg_id, fk, Some(dep_name))? {
+            if dep.is_optional() {
+                let save_for_host = fk.apply_opts(&self.opts);
+                if weak
+                    && !self
+                        .activated_dependencies
+                        .get(&(pkg_id, save_for_host))
+                        .map(|deps| deps.contains(&dep_name))
+                        .unwrap_or(false)
+                {
+                    // This is weak, but not yet activated. Defer in case
+                    // something comes along later and enables it.
+                    tracing::trace!(
+                        "deferring feature {} {} -> {}/{}",
+                        pkg_id.name(),
+                        fk,
+                        dep_name,
+                        dep_feature
+                    );
+                    self.deferred_weak_dependencies
+                        .entry((pkg_id, fk, dep_name))
+                        .or_default()
+                        .insert(dep_feature);
                     continue;
                 }
-                if dep.is_optional() {
-                    let save_for_host = fk.apply_opts(&self.opts);
-                    if weak
-                        && !self
-                            .activated_dependencies
-                            .get(&(pkg_id, save_for_host))
-                            .map(|deps| deps.contains(&dep_name))
-                            .unwrap_or(false)
-                    {
-                        // This is weak, but not yet activated. Defer in case
-                        // something comes along later and enables it.
-                        tracing::trace!(
-                            "deferring feature {} {} -> {}/{}",
-                            pkg_id.name(),
-                            fk,
-                            dep_name,
-                            dep_feature
-                        );
-                        self.deferred_weak_dependencies
-                            .entry((pkg_id, fk, dep_name))
-                            .or_default()
-                            .insert(dep_feature);
-                        continue;
-                    }
 
-                    // Activate the dependency on self.
-                    let fv = FeatureValue::Dep { dep_name };
-                    self.activate_fv(pkg_id, fk, &fv)?;
-                    if !weak {
-                        // The old behavior before weak dependencies were
-                        // added is to also enables a feature of the same
-                        // name.
-                        //
-                        // Don't enable if the implicit optional dependency
-                        // feature wasn't created due to `dep:` hiding.
-                        // See rust-lang/cargo#10788 and rust-lang/cargo#12130
-                        let summary = self.resolve.summary(pkg_id);
-                        let feature_map = summary.features();
-                        if feature_map.contains_key(&dep_name) {
-                            self.activate_rec(pkg_id, fk, dep_name)?;
-                        }
+                // Activate the dependency on self.
+                let fv = FeatureValue::Dep { dep_name };
+                self.activate_fv(pkg_id, fk, &fv)?;
+                if !weak {
+                    // The old behavior before weak dependencies were
+                    // added is to also enables a feature of the same
+                    // name.
+                    //
+                    // Don't enable if the implicit optional dependency
+                    // feature wasn't created due to `dep:` hiding.
+                    // See rust-lang/cargo#10788 and rust-lang/cargo#12130
+                    let summary = self.resolve.summary(pkg_id);
+                    let feature_map = summary.features();
+                    if feature_map.contains_key(&dep_name) {
+                        self.activate_rec(pkg_id, fk, dep_name)?;
                     }
                 }
-                // Activate the feature on the dependency.
-                let fv = FeatureValue::new(dep_feature);
-                self.activate_fv(dep_pkg_id, dep_fk, &fv)?;
             }
+            // Activate the feature on the dependency.
+            let fv = FeatureValue::new(dep_feature);
+            self.activate_fv(dep_pkg_id, dep_fk, &fv)?;
         }
         Ok(())
     }
@@ -776,7 +763,8 @@ impl<'a, 'gctx> FeatureResolver<'a, 'gctx> {
         &mut self,
         pkg_id: PackageId,
         fk: FeaturesFor,
-    ) -> CargoResult<Vec<(PackageId, Vec<(&'a Dependency, FeaturesFor)>)>> {
+        name: Option<InternedString>,
+    ) -> CargoResult<Vec<(PackageId, &'a Dependency, FeaturesFor)>> {
         // Helper for determining if a platform is activated.
         fn platform_activated(
             dep: &Dependency,
@@ -811,12 +799,10 @@ impl<'a, 'gctx> FeatureResolver<'a, 'gctx> {
             this: &mut FeatureResolver<'_, '_>,
             pkg_id: PackageId,
             dep: &Dependency,
+            artifact: &Artifact,
             lib_fk: FeaturesFor,
             unstable_json_spec: bool,
         ) -> CargoResult<Vec<FeaturesFor>> {
-            let Some(artifact) = dep.artifact() else {
-                return Ok(vec![lib_fk]);
-            };
             let mut result = Vec::new();
             let host_triple = this.target_data.rustc.host;
             // Not all targets may be queried before resolution since artifact
@@ -864,72 +850,73 @@ impl<'a, 'gctx> FeatureResolver<'a, 'gctx> {
         }
 
         let unstable_json_spec = self.ws.gctx().cli_unstable().json_target_spec;
-        self.resolve
-            .deps(pkg_id)
-            .map(|(dep_id, deps)| {
-                let deps = deps
-                    .iter()
-                    .filter(|dep| {
-                        if dep.platform().is_some()
-                            && self.opts.ignore_inactive_targets
-                            && !platform_activated(
-                                dep,
-                                fk,
-                                self.target_data,
-                                self.requested_targets,
-                            )
-                        {
-                            return false;
-                        }
-                        if self.opts.decouple_dev_deps && dep.kind() == DepKind::Development {
-                            return false;
-                        }
-                        true
-                    })
-                    .collect_vec() // collect because the next closure mutably borrows `self.target_data`
-                    .into_iter()
-                    .map(|dep| {
-                        // Each `dep`endency can be built for multiple targets. For one, it
-                        // may be a library target which is built as initially configured
-                        // by `fk`. If it appears as build dependency, it must be built
-                        // for the host.
-                        //
-                        // It may also be an artifact dependency,
-                        // which could be built either
-                        //
-                        //  - for a specified (aka 'forced') target, specified by
-                        //    `dep = { …, target = <tuple>` }`
-                        //  - as an artifact for use in build dependencies that should
-                        //    build for whichever `--target`s are specified
-                        //  - like a library would be built
-                        //
-                        // Generally, the logic for choosing a target for dependencies is
-                        // unaltered and used to determine how to build non-artifacts,
-                        // artifacts without target specification and no library,
-                        // or an artifacts library.
-                        //
-                        // All this may result in a dependency being built multiple times
-                        // for various targets which are either specified in the manifest
-                        // or on the cargo command-line.
-                        let lib_fk = if fk != FeaturesFor::HostDep
-                            && self.track_for_host
-                            && (dep.is_build() || self.has_proc_macro_lib(dep_id))
-                        {
-                            FeaturesFor::HostDep
-                        } else {
-                            fk
-                        };
+        let mut result = Vec::new();
+        for (dep_id, deps) in self.resolve.deps(pkg_id) {
+            for dep in deps {
+                let matches = name.is_none_or(|name| dep.name_in_toml() == name);
+                // Even for named requests, validate and register artifact targets
+                // in their original order before recursing into any dependency.
+                if !matches && dep.artifact().is_none() {
+                    continue;
+                }
+                if dep.platform().is_some()
+                    && self.opts.ignore_inactive_targets
+                    && !platform_activated(dep, fk, self.target_data, self.requested_targets)
+                {
+                    continue;
+                }
+                if self.opts.decouple_dev_deps && dep.kind() == DepKind::Development {
+                    continue;
+                }
+                // Each `dep`endency can be built for multiple targets. For one, it
+                // may be a library target which is built as initially configured
+                // by `fk`. If it appears as build dependency, it must be built
+                // for the host.
+                //
+                // It may also be an artifact dependency,
+                // which could be built either
+                //
+                //  - for a specified (aka 'forced') target, specified by
+                //    `dep = { …, target = <tuple>` }`
+                //  - as an artifact for use in build dependencies that should
+                //    build for whichever `--target`s are specified
+                //  - like a library would be built
+                //
+                // Generally, the logic for choosing a target for dependencies is
+                // unaltered and used to determine how to build non-artifacts,
+                // artifacts without target specification and no library,
+                // or an artifacts library.
+                //
+                // All this may result in a dependency being built multiple times
+                // for various targets which are either specified in the manifest
+                // or on the cargo command-line.
+                let lib_fk = if fk != FeaturesFor::HostDep
+                    && self.track_for_host
+                    && (dep.is_build() || self.has_proc_macro_lib(dep_id))
+                {
+                    FeaturesFor::HostDep
+                } else {
+                    fk
+                };
 
-                        let dep_fks =
-                            artifact_features_for(self, pkg_id, dep, lib_fk, unstable_json_spec)?;
-                        Ok(dep_fks.into_iter().map(move |dep_fk| (dep, dep_fk)))
-                    })
-                    .flatten_ok()
-                    .collect::<CargoResult<Vec<_>>>()?;
-                Ok((dep_id, deps))
-            })
-            .filter(|res| res.as_ref().map_or(true, |(_id, deps)| !deps.is_empty()))
-            .collect()
+                if let Some(artifact) = dep.artifact() {
+                    let dep_fks = artifact_features_for(
+                        self,
+                        pkg_id,
+                        dep,
+                        artifact,
+                        lib_fk,
+                        unstable_json_spec,
+                    )?;
+                    if matches {
+                        result.extend(dep_fks.into_iter().map(|fk| (dep_id, dep, fk)));
+                    }
+                } else {
+                    result.push((dep_id, dep, lib_fk));
+                }
+            }
+        }
+        Ok(result)
     }
 
     /// Compare the activated features to the resolver. Used for testing.
