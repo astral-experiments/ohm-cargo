@@ -653,8 +653,11 @@ fn prefer_full_crate_hash(runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
     {
         return false;
     }
-    let terminal =
-        runner.is_terminal_check_unit(unit) && !unit_uses_ohm_shared_stages(runner, unit);
+    let terminal = runner.is_terminal_check_unit(unit)
+        && (!unit_uses_ohm_shared_stages(runner, unit)
+            || (unit.profile.incremental
+                && runner.bcx.ws.is_member(&unit.pkg)
+                && runner.files().terminal_hash_marker(unit).is_file()));
     (terminal || only_unused_binary_consumers(runner, unit))
         && fingerprint::unit_public_api_hash_override(runner, unit).is_none()
         && runner
@@ -1014,6 +1017,35 @@ fn compile<'gctx>(
             {
                 let files = build_runner.files();
                 let metadata = files.metadata(unit);
+                // Start with per-item hashes. After successive terminal checks we
+                // can use the cheaper whole-crate hash. A consumer, even of fresh
+                // metadata, restores per-item hashing on the next edit.
+                if !metadata.check_only
+                    && unit.profile.incremental
+                    && unit_uses_ohm_shared_stages(build_runner, unit)
+                {
+                    let marker = files.terminal_hash_marker(unit);
+                    if build_runner.is_terminal_check_unit(unit) {
+                        // Cache the compiler capability on the initial check, so
+                        // selecting the hint on an edit won't need another probe.
+                        if job.freshness().is_dirty()
+                            && build_runner.bcx.rustc().supports_metadata_hint(
+                                build_runner.bcx.gctx,
+                                "-Zohm-prefer-full-crate-hash",
+                            )
+                        {
+                            job.after(Work::new(move |_| {
+                                let _ = std::fs::File::create_new(&marker);
+                                Ok(())
+                            }));
+                        }
+                    } else if marker.exists() {
+                        job.after(Work::new(move |_| {
+                            let _ = std::fs::remove_file(&marker);
+                            Ok(())
+                        }));
+                    }
+                }
                 if metadata.anticipates_metadata && job.freshness().is_dirty() {
                     let marker = files.unrequested_metadata_marker(unit);
                     job.after(Work::new(move |_| {

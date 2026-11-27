@@ -7942,6 +7942,49 @@ fn whole_crate_hash_hint_follows_binary_usage_and_current_graph() {
 }
 
 #[cfg(feature = "ohm-defaults")]
+#[cargo_test]
+fn repeated_terminal_checks_use_whole_crate_hash_until_metadata_is_consumed() {
+    let rustc = std::env::var_os("RUSTC").unwrap_or_else(|| "rustc".into());
+    if cargo_test_support::process(rustc)
+        .args(&[
+            "-Zohm-shared-stages",
+            "-Zohm-prefer-full-crate-hash",
+            "--print=sysroot",
+        ])
+        .exec_with_output()
+        .is_err()
+    {
+        return;
+    }
+    let p = project()
+        .file("src/lib.rs", "pub fn value() -> u8 { 1 }")
+        .file("src/main.rs", "fn main() { let _: u8 = foo::value(); }")
+        .build();
+    let check = |selection: &str| {
+        let mut cmd = p.cargo(&format!("-Zohm-defaults check -v {selection}"));
+        cmd.masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("CARGO_INCREMENTAL", "1");
+        cmd
+    };
+    let hint = "[..]-Zohm-prefer-full-crate-hash[..]";
+    check("--lib").with_stderr_does_not_contain(hint).run();
+    p.change_file("src/lib.rs", "pub fn value() -> u8 { 2 }");
+    check("--lib").with_stderr_contains(hint).run();
+    // The binary consumes the metadata from the terminal check.
+    check("")
+        .with_stderr_does_not_contain("[..]--crate-type lib [..]")
+        .run();
+    p.change_file("src/lib.rs", "pub fn value() -> u8 { 3 }");
+    check("--lib").with_stderr_does_not_contain(hint).run();
+    p.change_file("src/lib.rs", "pub fn value() -> u64 { 4 }");
+    check("--lib").with_stderr_contains(hint).run();
+    check("")
+        .with_status(101)
+        .with_stderr_contains("[..]mismatched types[..]")
+        .run();
+}
+
+#[cfg(feature = "ohm-defaults")]
 fn supports_terminal_declaration_hash() -> bool {
     let rustc = std::env::var_os("RUSTC").unwrap_or_else(|| "rustc".into());
     cargo_test_support::process(rustc)
