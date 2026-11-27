@@ -768,6 +768,11 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
         self.fingerprint_file_path(unit, "unrequested-")
     }
 
+    /// Records a terminal library check whose metadata hasn't had a consumer since.
+    pub(in crate::compiler) fn terminal_hash_marker(&self, unit: &Unit) -> PathBuf {
+        self.fingerprint_file_path(unit, "terminal-hash-")
+    }
+
     /// Keep the stronger check fresh on no-ops, but go back to skipping
     /// metadata on the next source edit if nobody needed the previous one.
     /// Timestamps affect only this choice. Cargo still checks the fingerprint.
