@@ -55,7 +55,7 @@ pub struct Unit {
 }
 
 /// Internal fields of `Unit` which `Unit` will dereference to.
-#[derive(Clone, Hash, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct UnitInner {
     /// Information about available targets, which files to include/exclude, etc. Basically stuff in
     /// `Cargo.toml`.
@@ -137,6 +137,19 @@ pub struct UnitInner {
     /// Since dependencies of this unit might be compile time dependencies, we
     /// set this field instead of completely dropping out this unit from unit graph.
     pub skip_non_compile_time_dep: bool,
+}
+
+// Most units in the interner differ in these fields. Avoid hashing entire
+// profiles, targets and flag lists on every lookup. Equality still checks
+// every field, including for variants of the same target.
+impl Hash for UnitInner {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.pkg.package_id().hash(state);
+        self.target.name().hash(state);
+        self.kind.hash(state);
+        self.mode.hash(state);
+        self.dep_hash.hash(state);
+    }
 }
 
 impl UnitInner {
@@ -284,7 +297,7 @@ impl UnitInterner {
             }
             _ => target.clone(),
         };
-        let inner = self.intern_inner(&UnitInner {
+        let inner = self.intern_inner(UnitInner {
             pkg: pkg.clone(),
             target,
             profile,
@@ -303,12 +316,12 @@ impl UnitInterner {
         Unit { inner }
     }
 
-    fn intern_inner(&self, item: &UnitInner) -> Rc<UnitInner> {
+    fn intern_inner(&self, item: UnitInner) -> Rc<UnitInner> {
         let mut me = self.state.borrow_mut();
-        if let Some(item) = me.cache.get(item) {
+        if let Some(item) = me.cache.get(&item) {
             return item.clone();
         }
-        let item = Rc::new(item.clone());
+        let item = Rc::new(item);
         me.cache.insert(item.clone());
         item
     }

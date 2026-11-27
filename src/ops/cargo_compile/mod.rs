@@ -46,7 +46,7 @@ use crate::compiler::build_runner::RegistryReuseNeedsFallback;
 use crate::compiler::unit_dependencies::{
     audited_proc_macro_package_identity, build_unit_dependencies,
 };
-use crate::compiler::unit_graph::{self, UnitDep, UnitGraph};
+use crate::compiler::unit_graph::{self, UnitGraph};
 use crate::compiler::{BuildConfig, BuildContext, BuildRunner, Compilation};
 use crate::compiler::{CompileKind, CompileMode, CompileTarget, RustcTargetData, Unit};
 use crate::compiler::{CrateType, TargetInfo, apply_env_config, standard_lib};
@@ -1311,7 +1311,7 @@ fn validate_target_path_as_source_file(
 /// or not regarding `--compile-time-deps` flag.
 fn rebuild_unit_graph_shared(
     interner: &UnitInterner,
-    unit_graph: UnitGraph,
+    mut unit_graph: UnitGraph,
     roots: &[Unit],
     scrape_units: &[Unit],
     to_host: Option<CompileKind>,
@@ -1329,7 +1329,7 @@ fn rebuild_unit_graph_shared(
                 interner,
                 &mut memo,
                 &mut result,
-                &unit_graph,
+                &mut unit_graph,
                 root,
                 true,
                 false,
@@ -1358,7 +1358,7 @@ fn traverse_and_share(
     interner: &UnitInterner,
     memo: &mut HashMap<Unit, Unit>,
     new_graph: &mut UnitGraph,
-    unit_graph: &UnitGraph,
+    unit_graph: &mut UnitGraph,
     unit: &Unit,
     unit_is_root: bool,
     unit_is_for_host: bool,
@@ -1376,31 +1376,34 @@ fn traverse_and_share(
         // Root unit is not a dependency unless other units are dependant
         // to it.
         unit_is_root);
-    let new_deps: Vec<_> = unit_graph[unit]
-        .iter()
-        .map(|dep| {
-            let new_dep_unit = traverse_and_share(
-                interner,
-                memo,
-                new_graph,
-                unit_graph,
-                &dep.unit,
-                false,
-                dep.unit_for.is_for_host(),
-                to_host,
-                // If we should compile the current unit, we should also compile
-                // its dependencies. And if not, we should compile compile time
-                // dependencies only.
-                skip_non_compile_time_deps,
-                shared_stages,
-            );
-            new_dep_unit.hash(&mut dep_hash);
-            UnitDep {
-                unit: new_dep_unit,
-                ..dep.clone()
-            }
-        })
-        .collect();
+    // Memoized units are visited once. Reuse their edges while retaining
+    // the keys for host/runtime counterpart probes. A compile-time-only
+    // root may be revisited as a dependency with different settings.
+    let memoize = !unit_is_root || !compile_time_deps_only;
+    let mut new_deps = if memoize {
+        std::mem::take(unit_graph.get_mut(unit).unwrap())
+    } else {
+        unit_graph[unit].clone()
+    };
+    for dep in &mut new_deps {
+        let new_dep_unit = traverse_and_share(
+            interner,
+            memo,
+            new_graph,
+            unit_graph,
+            &dep.unit,
+            false,
+            dep.unit_for.is_for_host(),
+            to_host,
+            // If we should compile the current unit, we should also compile
+            // its dependencies. And if not, we should compile compile time
+            // dependencies only.
+            skip_non_compile_time_deps,
+            shared_stages,
+        );
+        new_dep_unit.hash(&mut dep_hash);
+        dep.unit = new_dep_unit;
+    }
     // Here, we have recursively traversed this unit's dependencies, and hashed them: we can
     // finalize the dep hash.
     let new_dep_hash = Hasher::finish(&dep_hash);
@@ -1516,7 +1519,7 @@ fn traverse_and_share(
         None,
         skip_non_compile_time_deps,
     );
-    if !unit_is_root || !compile_time_deps_only {
+    if memoize {
         assert!(memo.insert(unit.clone(), new_unit.clone()).is_none());
     }
     new_graph.entry(new_unit.clone()).or_insert(new_deps);
