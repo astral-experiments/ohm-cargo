@@ -697,25 +697,14 @@ impl<'de> de::Deserialize<'de> for InheritableDependency {
     where
         D: de::Deserializer<'de>,
     {
-        let value = serde_value::Value::deserialize(deserializer)?;
+        let mut value = serde_value::Value::deserialize(deserializer)?;
 
-        // This common spelling has no overrides or extra keys. Avoid
-        // cloning the table and decoding it a second time.
-        use serde_value::Value;
-        if let Value::Map(fields) = &value
-            && fields.len() == 1
-            && let Some((Value::String(key), Value::Bool(true))) = fields.first_key_value()
-            && key == "workspace"
+        // Common published and inherited dependencies have only a handful of
+        // fields. Move the already decoded values directly into the dependency.
+        if let serde_value::Value::Map(fields) = &mut value
+            && let Some(dependency) = common_dependency(fields)
         {
-            return Ok(Self::Inherit(TomlInheritedDependency {
-                workspace: true,
-                features: None,
-                default_features: None,
-                default_features2: None,
-                optional: None,
-                public: None,
-                _unused_keys: BTreeMap::new(),
-            }));
+            return Ok(dependency);
         }
 
         // A plain version is already owned. Tables without the required
@@ -750,6 +739,65 @@ impl<'de> de::Deserialize<'de> for InheritableDependency {
         TomlDependency::deserialize(serde_value::ValueDeserializer::<D::Error>::new(value))
             .map(InheritableDependency::Value)
     }
+}
+
+/// If the spelling or type of any field is unfamiliar, leave the table
+/// untouched for Serde to handle unused keys, validation and diagnostics.
+fn common_dependency(
+    fields: &mut BTreeMap<serde_value::Value, serde_value::Value>,
+) -> Option<InheritableDependency> {
+    use serde_value::Value;
+
+    let mut version = None;
+    let mut workspace = false;
+    let mut features = None;
+    let mut optional = None;
+    let mut default_features = None;
+    for (key, value) in fields {
+        let Value::String(key) = key else {
+            return None;
+        };
+        match (key.as_str(), value) {
+            ("version", Value::String(v)) => version = Some(v),
+            ("workspace", Value::Bool(true)) => workspace = true,
+            ("optional", Value::Bool(v)) => optional = Some(*v),
+            ("default-features", Value::Bool(v)) => default_features = Some(*v),
+            ("features", Value::Seq(v)) if v.iter().all(|f| matches!(f, Value::String(_))) => {
+                features = Some(v);
+            }
+            _ => return None,
+        }
+    }
+    if workspace == version.is_some() {
+        return None;
+    }
+    let features = features.map(|values| {
+        std::mem::take(values)
+            .into_iter()
+            .map(|v| match v {
+                Value::String(s) => s,
+                _ => unreachable!("validated feature strings"),
+            })
+            .collect()
+    });
+    Some(match version {
+        Some(v) => InheritableDependency::Value(TomlDependency::Detailed(TomlDetailedDependency {
+            version: Some(std::mem::take(v)),
+            features,
+            optional,
+            default_features,
+            ..Default::default()
+        })),
+        None => InheritableDependency::Inherit(TomlInheritedDependency {
+            workspace,
+            features,
+            optional,
+            default_features,
+            default_features2: None,
+            public: None,
+            _unused_keys: BTreeMap::new(),
+        }),
+    })
 }
 
 #[derive(Deserialize, Serialize, Clone, Debug)]
@@ -1926,4 +1974,34 @@ fn dependency_inheritance_requires_workspace() {
     assert!(parse(json!({"workspace": false})).is_err());
     assert!(parse(json!({"workspace": true, "builtin": true})).is_err());
     assert!(parse(json!({"version": 1})).is_err());
+}
+
+#[test]
+fn common_dependency_tables_keep_overrides() {
+    use serde_json::{from_value, json};
+
+    let parse = from_value::<InheritableDependency>;
+    for base in [json!({"version": "1"}), json!({"workspace": true})] {
+        let mut table = base;
+        table["default-features"] = json!(false);
+        table["optional"] = json!(true);
+        table["features"] = json!(["b", "a"]);
+        let (optional, defaults, features) = match parse(table).unwrap() {
+            InheritableDependency::Value(TomlDependency::Detailed(d)) => {
+                assert_eq!(d.version.as_deref(), Some("1"));
+                (d.optional, d.default_features, d.features)
+            }
+            InheritableDependency::Inherit(d) => (d.optional, d.default_features, d.features),
+            _ => panic!("expected a table"),
+        };
+        assert_eq!(optional, Some(true));
+        assert_eq!(defaults, Some(false));
+        assert_eq!(features.unwrap(), ["b", "a"]);
+    }
+    assert!(parse(json!({"version": "1", "features": ["a", false]})).is_err());
+    let mixed = parse(json!({"version": "1", "workspace": true})).unwrap();
+    let InheritableDependency::Inherit(d) = mixed else {
+        panic!("expected inheritance");
+    };
+    assert_eq!(d._unused_keys["version"].as_str(), Some("1"));
 }
