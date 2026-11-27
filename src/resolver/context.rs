@@ -193,9 +193,9 @@ impl ResolverContext {
         self.activations
             .values()
             .for_each(|(r, _)| graph.add(r.package_id()));
-        for i in self.parents.iter() {
+        for (i, edges) in self.parents.nodes_with_edges() {
             graph.add(*i);
-            for (o, e) in self.parents.edges(i) {
+            for (o, e) in edges {
                 let old_link = graph.link(*o, *i);
                 assert!(old_link.is_empty());
                 *old_link = e.iter().cloned().collect();

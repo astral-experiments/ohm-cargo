@@ -17,20 +17,26 @@ impl<N: Eq + Ord + Clone, E: Default + Clone> Graph<N, E> {
         self.nodes.entry(node).or_insert_with(im_rc::OrdMap::new);
     }
 
+    /// Adds a parent once when populating several outgoing edges.
+    pub(crate) fn children_mut(&mut self, node: N) -> &mut im_rc::OrdMap<N, E> {
+        self.nodes.entry(node).or_insert_with(im_rc::OrdMap::new)
+    }
+
+    /// Visit all nodes with their immediate edges, including nodes with no edges.
+    pub(crate) fn nodes_with_edges(&self) -> impl Iterator<Item = (&N, &im_rc::OrdMap<N, E>)> {
+        self.nodes.iter()
+    }
+
     /// Adds the node even if it has no children. Existing edge values are preserved.
     pub(crate) fn add_with_children(&mut self, node: N, children: impl IntoIterator<Item = N>) {
-        let edges = self.nodes.entry(node).or_insert_with(im_rc::OrdMap::new);
+        let edges = self.children_mut(node);
         for child in children {
             edges.entry(child).or_default();
         }
     }
 
     pub fn link(&mut self, node: N, child: N) -> &mut E {
-        self.nodes
-            .entry(node)
-            .or_insert_with(im_rc::OrdMap::new)
-            .entry(child)
-            .or_default()
+        self.children_mut(node).entry(child).or_default()
     }
 
     /// Returns the graph obtained by reversing all edges.
@@ -327,5 +333,13 @@ mod tests {
             graph.add_with_children(parent, children.iter().copied());
         }
         assert_eq!(graph, expected);
+        let mut rebuilt = Graph::new();
+        for (&parent, edges) in graph.nodes_with_edges() {
+            let children = rebuilt.children_mut(parent);
+            for (&child, &value) in edges {
+                children.insert(child, value);
+            }
+        }
+        assert_eq!(rebuilt, expected);
     }
 }

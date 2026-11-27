@@ -252,14 +252,14 @@ impl SelectedPlan {
                     tracing::debug!("the locked source summary changed for {id}");
                     return None;
                 }
-                graph.add(id);
+                let edges = graph.children_mut(id);
                 for (target, ordinal) in pkg.dependencies {
                     let target = *ids.get(target)?;
                     let declaration = summary.dependencies().get(ordinal)?;
                     if !declaration.matches_id(target, mode) {
                         return None;
                     }
-                    graph.link(id, target).insert(declaration.clone());
+                    edges.entry(target).or_default().insert(declaration.clone());
                 }
                 if let Some(f) = pkg.features {
                     features.insert(id, f);

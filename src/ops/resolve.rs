@@ -755,12 +755,21 @@ fn register_previous_locks(
     keep: Keep<'_>,
     dev_deps: bool,
 ) {
-    let path_pkg = |id: SourceId| {
+    // Workspace::load already retains successful loads. Index them by source here
+    // to avoid URL conversion and manifest-path lookup for every incoming edge.
+    let mut path_packages: HashMap<SourceId, crate::workspace::Package> = HashMap::default();
+    let mut path_pkg = |id: SourceId| {
         if !id.is_path() {
             return None;
         }
+        if let Some((source, pkg)) = path_packages.get_key_value(&id)
+            && source.full_eq(id)
+        {
+            return Some(pkg.clone());
+        }
         if let Ok(path) = id.url().to_file_path() {
             if let Ok(pkg) = ws.load(&path.join("Cargo.toml")) {
+                path_packages.entry(id).or_insert_with(|| pkg.clone());
                 return Some(pkg);
             }
         }
@@ -940,12 +949,11 @@ fn register_previous_locks(
     registry.clear_lock();
     {
         let _span = tracing::span!(tracing::Level::TRACE, "register_lock").entered();
-        for node in resolve.iter().filter(keep) {
-            let deps = resolve
-                .deps_not_replaced(node)
-                .map(|p| p.0)
-                .filter(keep)
-                .collect::<Vec<_>>();
+        for (node, children) in resolve.nodes_with_children() {
+            if !keep(&node) {
+                continue;
+            }
+            let deps = children.filter(keep).collect::<Vec<_>>();
 
             // In the v2 lockfile format and prior the `branch=master` dependency
             // directive was serialized the same way as the no-branch-listed
