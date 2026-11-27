@@ -446,10 +446,16 @@ fn unit_suppresses_default_public_api_hash(
 /// dedicated unit directory and a compiler that can finish analysis without
 /// producing an rmeta file.
 fn terminal_library_check(runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
+    use crate::workspace::features::OhmTerminalChecks;
+
     let bcx = runner.bcx;
-    bcx.gctx.cli_unstable().ohm_terminal_checks == Some(true)
+    let enabled = match bcx.gctx.cli_unstable().ohm_terminal_checks {
+        OhmTerminalChecks::Off => false,
+        OhmTerminalChecks::Plain => !bcx.build_config.emit_json(),
+        OhmTerminalChecks::Diagnostics => true,
+    };
+    enabled
         && bcx.build_config.allow_terminal_check
-        && !bcx.build_config.emit_json()
         && matches!(unit.mode, CompileMode::Check { test: false })
         && runner.is_terminal_check_unit(unit)
         && unit.target.is_lib()

@@ -2048,6 +2048,13 @@ separate fingerprint when a later command needs metadata. JSON artifact
 messages, explicit compiler requests, wrappers, and checks with extra
 compiler flags keep their usual outputs.
 
+For tools that only need diagnostics, pass `-Zohm-terminal-checks=diagnostics`
+on the command line. This also allows metadata omission with
+`--message-format=json`. If Cargo skips a library's metadata, the
+`compiler-artifact` message for that library has an empty `filenames`
+array. Plain and JSON checks can then reuse the same result. The boolean
+configuration and environment settings keep producing metadata for JSON clients.
+
 After a compatible request for the same library's metadata, the next
 opted-in check can write metadata even without a consumer. If nothing
 requests it, a subsequent source edit with a newer timestamp restores
