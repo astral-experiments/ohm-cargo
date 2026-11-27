@@ -102,6 +102,17 @@ Be aware that Cargo and rustc have different defaults for this option. This
 option exists to allow Cargo to experiment on different combinations of flags
 thus providing better debugging and developer experience.
 
+With Ohm defaults on native x86-64 GNU/Linux, opt in with
+`-Zohm-split-limited-debuginfo` or `CARGO_UNSTABLE_OHM_SPLIT_LIMITED_DEBUGINFO=true`.
+For unoptimized development profiles with `debug = "limited"`, this stores
+ordinary Rust libraries’ debug information in separate `.dwo` files to reduce
+linking work. The debugger needs the matching files at their original paths.
+Cleaning the build directory or rebuilding a library can remove or replace them.
+
+This requires a private build directory outside the workspace on a filesystem
+where Cargo cannot clone files to seed worktrees. Explicit `split-debuginfo`
+settings take precedence.
+
 [nightly channel]: ../../book/appendix-07-nightly-rust.html
 [`-C split-debuginfo` flag]: ../../rustc/codegen-options/index.html#split-debuginfo
 

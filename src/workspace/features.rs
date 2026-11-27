@@ -977,6 +977,7 @@ unstable_cli_options!(
     ohm_reuse_built_deps: bool = ("Reuse built dependencies and native integration-test compilations during checks"),
     ohm_shared_registry_cache: bool = ("Share deterministic registry artifacts across isolated workspaces without global compiler wrappers"),
     ohm_shared_stages: Option<bool> = ("Reuse compatible frontend queries between check and build (enabled by Ohm defaults)"),
+    ohm_split_limited_debuginfo: Option<bool> = ("Split limited library debug information on Linux (opt-in)"),
     ohm_terminal_checks: Option<bool> = ("Skip unused library metadata in plain cargo check (opt-in)"),
     ohm_thinlto_cache: Option<bool> = ("Cache native ThinLTO objects in the build directory (enabled by Ohm defaults)"),
     ohm_worktree_seeds: Option<bool> = ("Prepare mutable packages for worktree seeding (enabled by Ohm defaults)"),
@@ -1646,6 +1647,9 @@ impl CliUnstable {
             }
             "ohm-reuse-built-deps" => self.ohm_reuse_built_deps = parse_empty(k, v)?,
             "ohm-shared-registry-cache" => self.ohm_shared_registry_cache = parse_empty(k, v)?,
+            "ohm-split-limited-debuginfo" => {
+                self.ohm_split_limited_debuginfo = Some(parse_bool(k, v)?)
+            }
             "ohm-worktree-seeds" => self.ohm_worktree_seeds = Some(parse_bool(k, v)?),
             "panic-abort-tests" => self.panic_abort_tests = parse_empty(k, v)?,
             "prerelease" => self.prerelease = parse_empty(k, v)?,

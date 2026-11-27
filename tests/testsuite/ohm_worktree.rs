@@ -60,6 +60,53 @@ fn full_debug_info_keeps_the_checkout_path_by_default() {
         .run();
 }
 
+#[cfg(all(target_arch = "x86_64", target_os = "linux", target_env = "gnu"))]
+#[cargo_test]
+fn limited_library_debug_info_respects_worktree_storage_and_explicit_profiles() {
+    if !crate::build_dir::selected_compiler_supports_ohm_defaults() {
+        return;
+    }
+    let p = project()
+        .file("src/lib.rs", "pub fn answer() -> u8 { 42 }")
+        .build();
+    let tmp = tempfile::tempdir_in(paths::root()).unwrap();
+    let source = tmp.path().join("source");
+    fs::write(&source, [0x42; 4096]).unwrap();
+    let cloneable = paths::clone_file(&source, &tmp.path().join("clone"));
+    let build = |flag| {
+        let mut cargo = seeded_cargo(&p, &format!("{flag} build --lib -v"));
+        cargo.masquerade_as_nightly_cargo(&["ohm-defaults", "ohm-split-limited-debuginfo"]);
+        cargo.env("CARGO_PROFILE_DEV_DEBUG", "limited");
+        cargo
+    };
+    build("-Zohm-split-limited-debuginfo")
+        .with_stderr_does_not_contain("[..]split-debuginfo=unpacked[..]")
+        .run();
+    let target = tmp.path().join("target");
+    build("")
+        .env("CARGO_TARGET_DIR", &target)
+        .with_stderr_does_not_contain("[..]split-debuginfo=unpacked[..]")
+        .run();
+    let mut command = build("-Zohm-split-limited-debuginfo");
+    command.env("CARGO_TARGET_DIR", &target);
+    if cloneable {
+        command.with_stderr_does_not_contain("[..]split-debuginfo=unpacked[..]");
+    } else {
+        command.with_stderr_contains("[..]split-debuginfo=unpacked[..]");
+    }
+    command.run();
+    build("-Zohm-split-limited-debuginfo")
+        .env("CARGO_TARGET_DIR", &target)
+        .env("RUSTFLAGS", "-g")
+        .with_stderr_does_not_contain("[..]split-debuginfo=unpacked[..]")
+        .run();
+    build("-Zohm-split-limited-debuginfo")
+        .env("CARGO_TARGET_DIR", &target)
+        .env("CARGO_PROFILE_DEV_SPLIT_DEBUGINFO", "off")
+        .with_stderr_contains("[..]split-debuginfo=off[..]")
+        .run();
+}
+
 #[cargo_test]
 fn coverage_uses_source_paths_from_the_checkout() {
     let p = project()

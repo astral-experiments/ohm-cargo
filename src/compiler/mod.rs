@@ -1731,7 +1731,7 @@ fn may_set_rustc_option(
 /// Visits possible options, including `-C` and `-Z` suboptions. Returns true on a
 /// match or opaque input. The last callback argument is true when
 /// the token could be the value of a preceding option, such as a search path.
-fn may_have_compiler_option<'a, S: AsRef<OsStr> + ?Sized + 'a>(
+pub(crate) fn may_have_compiler_option<'a, S: AsRef<OsStr> + ?Sized + 'a>(
     arguments: impl Iterator<Item = &'a S>,
     mut matches: impl FnMut(&str, &str, bool) -> bool,
 ) -> bool {
