@@ -7790,6 +7790,18 @@ fn terminal_library_check_does_not_satisfy_a_metadata_consumer() {
     run("check --lib")
         .with_stderr_does_not_contain("[..]--crate-name foo [..]")
         .run();
+    let diagnostics = || run("check --lib --message-format=json -Zohm-terminal-checks=diagnostics");
+    // Reuse the plain check. The older rmeta on disk belongs to a different fingerprint.
+    diagnostics()
+        .with_stderr_does_not_contain("[..]--crate-name foo [..]")
+        .with_stdout_contains(r#"[..]"filenames":[][..]"fresh":true[..]"#)
+        .run();
+    p.change_file("src/lib.rs", "pub fn value() -> u32 { let unused = 0; 2 }");
+    diagnostics()
+        .with_stderr_contains(terminal)
+        .with_stdout_contains(r#"[..]"compiler-message"[..]"unused_variables"[..]"#)
+        .with_stdout_contains(r#"[..]"filenames":[][..]"fresh":false[..]"#)
+        .run();
     run("check")
         .with_stderr_does_not_contain(terminal)
         .with_stderr_contains("[..]--crate-type lib [..]--emit=dep-info,metadata[..]")

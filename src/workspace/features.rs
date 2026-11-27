@@ -140,6 +140,24 @@ pub const SEE_CHANNELS: &str = "See https://doc.rust-lang.org/book/appendix-07-n
 /// Value of [`allow-features`](CliUnstable::allow_features)
 pub type AllowFeatures = BTreeSet<String>;
 
+/// When a terminal library check may omit metadata.
+#[derive(Clone, Copy, Debug, Default, Deserialize)]
+#[serde(from = "bool")]
+pub enum OhmTerminalChecks {
+    #[default]
+    Off,
+    Plain,
+    /// The caller also accepts JSON artifact records without metadata.
+    Diagnostics,
+}
+
+impl From<bool> for OhmTerminalChecks {
+    fn from(enabled: bool) -> Self {
+        // A workspace or environment setting cannot opt JSON clients in.
+        if enabled { Self::Plain } else { Self::Off }
+    }
+}
+
 /// Bundled linker selected for native Linux x86-64 builds.
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, PartialEq)]
 #[serde(rename_all = "kebab-case")]
@@ -977,7 +995,7 @@ unstable_cli_options!(
     ohm_reuse_built_deps: bool = ("Reuse built dependencies and native integration-test compilations during checks"),
     ohm_shared_registry_cache: bool = ("Share deterministic registry artifacts across isolated workspaces without global compiler wrappers"),
     ohm_shared_stages: Option<bool> = ("Reuse compatible frontend queries between check and build (enabled by Ohm defaults)"),
-    ohm_terminal_checks: Option<bool> = ("Skip unused library metadata in plain cargo check (opt-in)"),
+    ohm_terminal_checks: OhmTerminalChecks = ("Skip unused check metadata (opt-in, =diagnostics includes JSON)"),
     ohm_thinlto_cache: Option<bool> = ("Cache native ThinLTO objects in the build directory (enabled by Ohm defaults)"),
     ohm_worktree_seeds: Option<bool> = ("Prepare mutable packages for worktree seeding (enabled by Ohm defaults)"),
     panic_abort_tests: bool = ("Enable support to run tests with -Cpanic=abort"),
@@ -1606,7 +1624,16 @@ impl CliUnstable {
             "ohm-early-tests" => self.ohm_early_tests = Some(parse_bool(k, v)?),
             "ohm-cached-doctests" => self.ohm_cached_doctests = Some(parse_bool(k, v)?),
             "ohm-ready-tests" => self.ohm_ready_tests = Some(parse_bool(k, v)?),
-            "ohm-terminal-checks" => self.ohm_terminal_checks = Some(parse_bool(k, v)?),
+            "ohm-terminal-checks" => {
+                self.ohm_terminal_checks = match v {
+                    None | Some("yes") => OhmTerminalChecks::Plain,
+                    Some("no") => OhmTerminalChecks::Off,
+                    Some("diagnostics") => OhmTerminalChecks::Diagnostics,
+                    Some(s) => {
+                        bail!("flag -Z{k} expected `no`, `yes` or `diagnostics`, found `{s}`")
+                    }
+                };
+            }
             "ohm-thinlto-cache" => self.ohm_thinlto_cache = Some(parse_bool(k, v)?),
             "ohm-shared-stages" => self.ohm_shared_stages = Some(parse_bool(k, v)?),
             "ohm-focused-tests" => self.ohm_focused_tests = parse_empty(k, v)?,
