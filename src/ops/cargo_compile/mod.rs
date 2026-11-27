@@ -65,7 +65,7 @@ use crate::util::machine_message;
 use crate::util::machine_message::Message as _;
 use crate::util::{CargoResult, StableHasher};
 use crate::workspace::features::{OhmNativeToolTrust, OhmProcMacroTrust};
-use crate::workspace::profiles::{ProfileRoot, Profiles};
+use crate::workspace::profiles::{Profile, ProfileRoot, Profiles};
 use crate::workspace::{PackageId, PackageIdSpec, PackageSet, SourceId, TargetKind, Workspace};
 
 mod compile_filter;
@@ -945,6 +945,12 @@ fn create_bcx_with_registry_reuse<'a, 'gctx>(
         &scrape_units,
         host_kind_requested.then_some(explicit_host_kind),
         build_config.compile_time_deps_only,
+        (gctx.cli_unstable().ohm_split_limited_debuginfo == Some(true)
+            && gctx.cli_unstable().ohm_defaults()
+            && target_data.rustc.host.as_str() == "x86_64-unknown-linux-gnu"
+            && extra_args.is_none()
+            && can_keep_debug_sidecars(ws))
+        .then_some(explicit_host_kind),
         &|unit| {
             shared_stages
                 && (target_data.rustc.workspace_wrapper.is_none() || !ws.is_member(&unit.pkg))
@@ -1316,6 +1322,7 @@ fn rebuild_unit_graph_shared(
     scrape_units: &[Unit],
     to_host: Option<CompileKind>,
     compile_time_deps_only: bool,
+    split_debug_host: Option<CompileKind>,
     shared_stages: &impl Fn(&Unit) -> bool,
 ) -> (Vec<Unit>, Vec<Unit>, UnitGraph) {
     let mut result = UnitGraph::default();
@@ -1335,6 +1342,7 @@ fn rebuild_unit_graph_shared(
                 false,
                 to_host,
                 compile_time_deps_only,
+                split_debug_host,
                 shared_stages,
             )
         })
@@ -1364,6 +1372,7 @@ fn traverse_and_share(
     unit_is_for_host: bool,
     to_host: Option<CompileKind>,
     compile_time_deps_only: bool,
+    split_debug_host: Option<CompileKind>,
     shared_stages: &impl Fn(&Unit) -> bool,
 ) -> Unit {
     if let Some(new_unit) = memo.get(unit) {
@@ -1392,6 +1401,7 @@ fn traverse_and_share(
                 // its dependencies. And if not, we should compile compile time
                 // dependencies only.
                 skip_non_compile_time_deps,
+                split_debug_host,
                 shared_stages,
             );
             new_dep_unit.hash(&mut dep_hash);
@@ -1498,6 +1508,14 @@ fn traverse_and_share(
         }
     }
 
+    // Resolve this after weakening build-dependency profiles and before
+    // hashing the unit so toggling the option changes its artifact identity.
+    if split_debug_host.is_some_and(|host| unit.kind.is_host() || unit.kind == host)
+        && can_split_library_debug_info(unit, &profile)
+    {
+        profile.split_debuginfo = Some("unpacked".into());
+    }
+
     let new_unit = interner.intern(
         &unit.pkg,
         &unit.target,
@@ -1521,6 +1539,55 @@ fn traverse_and_share(
     }
     new_graph.entry(new_unit.clone()).or_insert(new_deps);
     new_unit
+}
+
+/// Keep binaries self-contained and respect any caller-supplied compiler options
+/// that could change the format or location of the library's debug records.
+fn can_split_library_debug_info(unit: &Unit, profile: &Profile) -> bool {
+    profile.root == ProfileRoot::Debug
+        && profile.opt_level == "0"
+        && profile.debuginfo.into_inner() == cargo_util_schemas::manifest::TomlDebugInfo::Limited
+        && profile.split_debuginfo.is_none()
+        && profile.trim_paths.is_none()
+        && profile.codegen_backend.is_none()
+        && matches!(
+            unit.mode,
+            CompileMode::Build | CompileMode::Check { test: false }
+        )
+        && matches!(unit.target.kind(), TargetKind::Lib(kinds)
+            if kinds.iter().all(|k| matches!(k, CrateType::Lib | CrateType::Rlib)))
+        && !crate::compiler::may_have_compiler_option(
+            profile
+                .rustflags
+                .iter()
+                .map(|s| s.as_str())
+                .chain(unit.rustflags.iter().map(String::as_str)),
+            |name, _, _| {
+                matches!(
+                    name,
+                    "g" | "debuginfo"
+                        | "split-debuginfo"
+                        | "split_debuginfo"
+                        | "remap-path-prefix"
+                        | "remap-cwd-prefix"
+                        | "remap_cwd_prefix"
+                        | "codegen-backend"
+                        | "codegen_backend"
+                        | "O"
+                        | "opt-level"
+                        | "opt_level"
+                )
+            },
+        )
+}
+
+/// Remapping the checkout or cloning a worktree could invalidate absolute
+/// references to private debug files. Keep them embedded in those cases.
+fn can_keep_debug_sidecars(ws: &Workspace<'_>) -> bool {
+    let dir = ws.build_dir().into_path_unlocked();
+    !ws.is_ephemeral()
+        && !dir.starts_with(ws.root())
+        && !crate::util::file_clone::supported_between(&dir, &dir)
 }
 
 /// Removes duplicate `CompileMode::Doc` units that would cause problems with
