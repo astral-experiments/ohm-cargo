@@ -28,6 +28,7 @@ use crate::util::IntoUrl;
 use crate::util::VersionReqMatchMode;
 use crate::util::data_structures::HashMap;
 use crate::util::interning::InternedString;
+use crate::util::split_bytes as split;
 use crate::util::{CargoResult, Filesystem, GlobalContext, OptVersionReq, internal};
 use crate::workspace::dependency::{Artifact, DepKind};
 use crate::workspace::{CliUnstable, Dependency};
@@ -839,32 +840,6 @@ fn registry_dependency_into_dep(
         .set_public(public);
 
     Ok(dep)
-}
-
-/// Like [`slice::split`] but is optimized by [`memchr`].
-fn split(haystack: &[u8], needle: u8) -> impl Iterator<Item = &[u8]> {
-    struct Split<'a> {
-        haystack: &'a [u8],
-        needle: u8,
-    }
-
-    impl<'a> Iterator for Split<'a> {
-        type Item = &'a [u8];
-
-        fn next(&mut self) -> Option<&'a [u8]> {
-            if self.haystack.is_empty() {
-                return None;
-            }
-            let (ret, remaining) = match memchr::memchr(self.needle, self.haystack) {
-                Some(pos) => (&self.haystack[..pos], &self.haystack[pos + 1..]),
-                None => (self.haystack, &[][..]),
-            };
-            self.haystack = remaining;
-            Some(ret)
-        }
-    }
-
-    Split { haystack, needle }
 }
 
 #[cfg(test)]
