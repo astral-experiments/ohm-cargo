@@ -343,12 +343,13 @@ fn deps_of(unit: &Unit, state: &mut State<'_, '_>, unit_for: UnitFor) -> CargoRe
     // new_unit_dep_with_profile gives it a distinct initial dep_hash.
     if !state.unit_dependencies.contains_key(unit) {
         let unit_deps = compute_deps(unit, state, unit_for)?;
-        state
-            .unit_dependencies
-            .insert(unit.clone(), unit_deps.clone());
-        for unit_dep in unit_deps {
+        // Mark the unit as visited before recursing. Only membership is
+        // queried during this walk, so we can move the edges in afterward.
+        state.unit_dependencies.insert(unit.clone(), Vec::new());
+        for unit_dep in &unit_deps {
             deps_of(&unit_dep.unit, state, unit_dep.unit_for)?;
         }
+        *state.unit_dependencies.get_mut(unit).unwrap() = unit_deps;
     }
     Ok(())
 }
