@@ -1,4 +1,4 @@
-//! Reuse a successful native link when a build script identifies its native archive.
+//! Reuse a successful native link with declared archives or an unused package library.
 //! The real linker still discovers transitive inputs. Custom drivers must declare
 //! private configuration files through the build script's rerun-if-changed list.
 use std::collections::{BTreeMap, BTreeSet};
@@ -452,11 +452,13 @@ fn action(
             }
         }
     }
-    if !watched.iter().any(|p| {
-        p.file_name()
-            .and_then(OsStr::to_str)
-            .is_some_and(|f| names.iter().any(|name| f == format!("lib{name}.a")))
-    }) {
+    if !watched.is_empty()
+        && !watched.iter().any(|p| {
+            p.file_name()
+                .and_then(OsStr::to_str)
+                .is_some_and(|f| names.iter().any(|name| f == format!("lib{name}.a")))
+        })
+    {
         return None;
     }
     // GNU dependency files list successful opens but omit failed searches.
@@ -557,13 +559,55 @@ pub(super) fn checked(
     temp: &Path,
     objects: &Path,
 ) -> Option<io::Result<Output>> {
-    let watched: BTreeSet<PathBuf> = serde_json::from_str(&env::var(WATCHED).ok()?).ok()?;
-    if watched.is_empty()
-        || watched.len() > 1024
-        || !watched.iter().all(|p| p.is_absolute() && p.is_file())
-    {
-        return None;
-    }
+    let value = env::var(WATCHED).ok()?;
+    let watched = if let Some(name) = value.strip_prefix("unused:") {
+        if !cfg!(target_os = "linux")
+            || [
+                "GCC_EXEC_PREFIX",
+                "COMPILER_PATH",
+                "LIBRARY_PATH",
+                "LD_PRELOAD",
+                "LD_AUDIT",
+                "CCC_OVERRIDE_OPTIONS",
+            ]
+            .iter()
+            .any(|key| env::var_os(key).is_some())
+        {
+            return None;
+        }
+        let cc = cargo_util::paths::resolve_executable(Path::new(driver))
+            .ok()?
+            .canonicalize()
+            .ok()?;
+        if !["/usr/bin/gcc", "/usr/bin/clang"]
+            .iter()
+            .any(|p| Path::new(p).canonicalize().is_ok_and(|p| p == cc))
+        {
+            return None;
+        }
+        // Avoid hashing inputs and saving a second link for the common case
+        // where the binary does link its package library. Cargo separately
+        // requires rustc's unused-extern proof to reuse the binary's codegen.
+        let library = format!("lib{name}-");
+        if args.iter().any(|arg| {
+            Path::new(arg)
+                .file_name()
+                .and_then(OsStr::to_str)
+                .is_some_and(|f| f.starts_with(&library) && f.ends_with(".rlib"))
+        }) {
+            return None;
+        }
+        BTreeSet::new()
+    } else {
+        let paths: BTreeSet<PathBuf> = serde_json::from_str(&value).ok()?;
+        if paths.is_empty()
+            || paths.len() > 1024
+            || !paths.iter().all(|p| p.is_absolute() && p.is_file())
+        {
+            return None;
+        }
+        paths
+    };
     let cache = Entry::open(&objects.join("declared-native")).ok()?;
     #[allow(unused_mut)]
     let mut seed = Report::default();
@@ -582,6 +626,13 @@ pub(super) fn checked(
         && let Ok(snapshot) = inputs.snapshot()
         && let Some(stderr) = cache.reuse(snapshot.action, output).ok().flatten()
     {
+        // Cargo compares the executable's mtime to every dependency, including
+        // the unused library. Advance the restored product past this rebuild.
+        if watched.is_empty()
+            && let Err(err) = filetime::set_file_mtime(output, filetime::FileTime::now())
+        {
+            return Some(Err(err));
+        }
         return Some(Ok(Output {
             status: ExitStatus::from_raw(0),
             stdout: vec![],
@@ -638,13 +689,7 @@ pub(super) fn checked(
                 && let Ok(snapshot) = complete.snapshot()
                 && inputs.snapshot().ok() == Some(before)
                 && !report.files.iter().any(|p| changed_after(p, start))
-                && cargo_util::paths::read_regular_bounded(output, 128 * 1024 * 1024)
-                    .ok()
-                    .is_some_and(|product| {
-                        memchr::memmem::find(&product, temp.as_os_str().as_encoded_bytes())
-                            .is_none()
-                            && memchr::memmem::find(&product, b"symbols.o\0").is_none()
-                    })
+                && independent_of_temp_paths(output, temp).unwrap_or(false)
                 && let Ok(bytes) = serde_json::to_vec(&report)
                 && cargo_util::paths::write_atomic_no_follow(&closure, bytes).is_ok()
             {
@@ -655,9 +700,47 @@ pub(super) fn checked(
     Some(result)
 }
 
+/// Check across block boundaries without holding a large debug executable in memory.
+fn independent_of_temp_paths(output: &Path, temp: &Path) -> anyhow::Result<bool> {
+    let path = temp.as_os_str().as_encoded_bytes();
+    let object = b"symbols.o\0";
+    let overlap = path.len().max(object.len()) - 1;
+    let mut buf = vec![0; 64 * 1024 + overlap];
+    let mut file = cargo_util::paths::open_regular(output)?;
+    let before = file.metadata()?;
+    let mut left = before.len();
+    let mut start = 0;
+    while left != 0 {
+        let count = left.min(64 * 1024) as usize;
+        let end = start + count;
+        file.read_exact(&mut buf[start..end])?;
+        if memchr::memmem::find(&buf[..end], path).is_some()
+            || memchr::memmem::find(&buf[..end], object).is_some()
+        {
+            return Ok(false);
+        }
+        start = overlap.min(end);
+        buf.copy_within(end - start..end, 0);
+        left -= count as u64;
+    }
+    Ok(super::stamp(&fs::symlink_metadata(output)?) == super::stamp(&before))
+}
+
 #[cfg(all(test, target_os = "linux"))]
 mod tests {
     use super::*;
+
+    #[test]
+    fn embedded_linker_paths_straddling_two_reads_prevent_reuse() {
+        let out = tempfile::NamedTempFile::new().unwrap();
+        let temp = Path::new("/tmp/link-dir");
+        for path in [b"/tmp/link-dir".as_slice(), b"symbols.o\0"] {
+            let mut bytes = vec![0; 64 * 1024 - 3];
+            bytes.extend_from_slice(path);
+            fs::write(out.path(), bytes).unwrap();
+            assert!(!independent_of_temp_paths(out.path(), temp).unwrap());
+        }
+    }
 
     #[test]
     fn gnu_scripts_cannot_introduce_unobserved_library_searches() {

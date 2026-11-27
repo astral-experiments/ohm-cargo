@@ -1544,19 +1544,25 @@ fn object_matches(expected: &RelinkCacheObject) -> bool {
         .unwrap_or(false)
 }
 
-/// Finds an unused-self-library candidate that cannot be linked transitively.
-///
-/// Cargo permits development-dependency cycles, so a package library can still be
-/// linked through another dependency even when its direct `--extern` is unused.
 fn unused_integration_self_dependency(
+    build_runner: &BuildRunner<'_, '_>,
+    unit: &Unit,
+) -> Option<(UnitIndex, InternedString)> {
+    if !unit.target.is_test() || unit.mode == CompileMode::Build {
+        return None;
+    }
+    implicit_library_dependency(build_runner, unit)
+}
+
+/// Excludes transitive uses of an implicit library, including dev-dependency cycles.
+fn implicit_library_dependency(
     build_runner: &BuildRunner<'_, '_>,
     unit: &Unit,
 ) -> Option<(UnitIndex, InternedString)> {
     let check = unit.mode == CompileMode::Check { test: true }
         && build_runner.bcx.gctx.cli_unstable().ohm_early_tests();
     if !build_runner.bcx.gctx.cli_unstable().ohm_defaults()
-        || (unit.mode != CompileMode::Test && !check)
-        || !unit.target.is_test()
+        || (!matches!(unit.mode, CompileMode::Build | CompileMode::Test) && !check)
         || build_runner.bcx.build_config.primary_unit_rustc.is_some()
         || matches!(unit.kind, CompileKind::Target(CompileTarget::Json { .. }))
         || build_runner.compilation.target_linker(unit.kind).is_some()
@@ -1930,6 +1936,34 @@ fn rustc(
     let source_arg = path_args(build_runner.bcx.ws, unit).0;
     let relinkable_dependencies = relinkable_dependencies(build_runner, unit);
     let unused_integration_dependency = unused_integration_self_dependency(build_runner, unit);
+    #[cfg(all(
+        feature = "ohm-defaults",
+        target_os = "linux",
+        target_arch = "x86_64",
+        target_env = "gnu"
+    ))]
+    let binary_dependency = (relink_cache.is_some()
+        && check_relink_inputs
+        && !force
+        && unit.kind == CompileKind::Host
+        && unit.mode == CompileMode::Build
+        && build_runner.bcx.ws.is_member_id(unit.pkg.package_id())
+        && !unit.pkg.has_custom_build()
+        && !build_runner.bcx.build_config.sbom
+        && !build_runner.bcx.build_config.future_incompat_report
+        && !build_runner.bcx.build_config.dry_run
+        && native_link_driver::declared_driver(build_runner, unit).is_some()
+        // Cargo appends the bundled linker's flags after the user's flags.
+        && build_runner.rustflags_for_cache_admission(unit).len() < unit.rustflags.len())
+    .then(|| implicit_library_dependency(build_runner, unit))
+    .flatten();
+    #[cfg(not(all(
+        feature = "ohm-defaults",
+        target_os = "linux",
+        target_arch = "x86_64",
+        target_env = "gnu"
+    )))]
+    let binary_dependency = None;
     let record_dev_unused = ohm_deferred_dev_deps::supported(build_runner, unit);
     let dev_native_output_dirs = record_dev_unused
         .then(|| ohm_deferred_dev_deps::native_output_dirs(build_runner))
@@ -2321,21 +2355,26 @@ fn rustc(
             }
         }
 
-        let can_relink_dependencies = (reuse_codegen || recheck_rebuilt_dependencies)
-            && fingerprint.as_ref().is_some_and(|fingerprint| {
-                // An unused Rust library can leave this test's codegen valid even if its
-                // public API changed. Native inputs are resolved independently by the linker.
-                fingerprint::can_relink_due_to_early_cutoff(fingerprint, &relinkable_dependencies)
-                    || reuse_codegen
-                        && unused_integration_dependency.is_some_and(|(dependency, extern_name)| {
-                            fingerprint::can_relink_unused_integration_dependency(
-                                fingerprint,
-                                dependency,
-                            ) && relink_cache
-                                .as_ref()
-                                .is_some_and(|cache| cache.proves_unused_extern(extern_name))
-                        })
-            });
+        let can_relink_dependencies = fingerprint.as_ref().is_some_and(|fingerprint| {
+            if (reuse_codegen || recheck_rebuilt_dependencies)
+                && fingerprint::can_relink_due_to_early_cutoff(
+                    fingerprint,
+                    &relinkable_dependencies,
+                )
+            {
+                return true;
+            }
+            // Rustc can prove this particular dependency unused even when its
+            // public API changes. Native resolution still runs independently.
+            binary_dependency
+                .or(unused_integration_dependency.filter(|_| reuse_codegen))
+                .is_some_and(|(dependency, extern_name)| {
+                    fingerprint::can_relink_unused_dependency(fingerprint, dependency)
+                        && relink_cache
+                            .as_ref()
+                            .is_some_and(|cache| cache.proves_unused_extern(extern_name))
+                })
+        });
         let validation_started = Instant::now();
         let extern_paths_hash = relink_cache
             .as_ref()
@@ -2505,6 +2544,12 @@ fn rustc(
             && fp.needs_native_link_driver()
         {
             native_link_driver::install_declared(&mut rustc, cache, &inputs);
+        } else if let (Some((_, name)), Some(cache)) = (binary_dependency, &relink_cache) {
+            native_link_driver::install_declared(
+                &mut rustc,
+                cache,
+                &("cc".into(), format!("unused:{name}")),
+            );
         }
         let link_only = if let Some(cache) = &relink_cache {
             let mut link_only = rustc.clone();
@@ -2835,7 +2880,9 @@ fn rustc(
         }
 
         if let Some(cache) = &relink_cache {
-            let unused_externs = (unused_integration_dependency.is_some() || record_dev_unused)
+            let unused_externs = (unused_integration_dependency.is_some()
+                || binary_dependency.is_some()
+                || record_dev_unused)
                 .then(|| state.recorded_unused_externs())
                 .flatten()
                 // Avoid speculating again when the last test embedded a build artifact.
